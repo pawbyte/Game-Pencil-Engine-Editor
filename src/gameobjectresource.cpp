@@ -1328,7 +1328,7 @@ void gameObjectResource::preprocess_self(std::string alternatePath)
         std::ifstream gameObjFileIn( newameObjFilename.c_str() );
 
         //If the level file could be loaded
-        if( gameObjFileIn != NULL )
+        if( !gameObjFileIn.fail() )
         {
             //makes sure the file is open
             if (gameObjFileIn.is_open())
@@ -2520,7 +2520,7 @@ void gameObjectResource::save_resource(std::string alternatePath, int backupId)
     }
 
     std::ofstream newGameObjFile( newFileOut.c_str() );
-    if( newGameObjFile != NULL )
+    if( !newGameObjFile.fail() )
     {
         resourceNameLabel->set_name(resourceName );
         //makes sure the file is open

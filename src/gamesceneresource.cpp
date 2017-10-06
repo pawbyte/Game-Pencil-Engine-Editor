@@ -1595,7 +1595,7 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
 
         //record_error("Loading scene - "+newScnFilename);
         //If the level file could be loaded
-        if( gameScnFileIn != NULL )
+        if( !gameScnFileIn.fail() )
         {
             //makes sure the file is open
             if (gameScnFileIn.is_open())
@@ -4442,7 +4442,7 @@ void gameSceneResource::save_resource(std::string alternatePath, int backupId)
     }
     std::ofstream newSceneFile( newFileOut.c_str() );
     //If the scene file could be saved
-    if( newSceneFile != NULL )
+    if( !newSceneFile.fail() )
     {
         //makes sure the file is open
         if (newSceneFile.is_open())

@@ -283,8 +283,8 @@ void audioResource::preprocess_self(std::string alternatePath )
         std::ifstream gameResourceFileIn( newFileIn.c_str() );
 
         record_error("Loading audio - "+newFileIn);
+        if( !gameResourceFileIn.fail() )
         //If the level file could be loaded
-        if( gameResourceFileIn != NULL )
         {
             //makes sure the file is open
             if (gameResourceFileIn.is_open())
@@ -594,7 +594,7 @@ void audioResource::save_resource(std::string alternatePath, int backupId)
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
     //If the audio file could be saved
-    if( newSaveDataFile != NULL )
+    if( !newSaveDataFile.fail() )
     {
         //makes sure the file is open
         if (newSaveDataFile.is_open())
