@@ -1,6 +1,6 @@
 --------------------------------------------------
 
-The Game Pencil Engine Version 0.1.1 Public Alpha
+The Game Pencil Engine Version 1.1.2 Public Beta
 Website: http://create.pawbyte.com/
 Email: code@pawbyte.com
 
