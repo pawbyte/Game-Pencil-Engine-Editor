@@ -1,0 +1,109 @@
+Game Pencil Engine Changelog
+
+Version 1.1.1 Changelog
+
+#26 changes made...
+
+[Critical Changes]
+-Detected Text Editor crashes fixed.
+-Out of bounds errors fixed.
+-Gamepad support integrated into editor and engine.
+-Tile searching supported added.
+
+[General Stabilization  and Optimizations made.]
+-Project Resource searching by name now available.
+-Find/Replace Fixed and added to bottom of window.
+-Find All/Replace All Functionality added with selectable scopes added.
+
+[Engine changes]
+	-Html5 Export
+		-General speed improvements and bug-fixes applied..
+		-Added gpe.find_tile() function.
+		-Added gpe.find_tile_in_box() function.
+		-Added gpe.find_matching_tile() function.
+		-Added gpe.find_matching_tile_in_box() function.
+		-Added GameObject.touches_tile() function.
+		-Added GameObject.touches_certain_tile() function.
+		-Added gpe.get_scene_name() function.
+		-Added gpe.get_current_scene_id() function.
+		-Added gpe.get_current_scene_name() function.
+		-Added gpe.gamepad_connected(controllerPos) function.
+		-Added gpe.gamepad_name(controllerPos) function.
+		-Added gpe.gamepad_mapping(controllerPos) function.
+		-Added gpe.check_gamepad(controllerPos, buttonId) function.
+		-Added gpe.check_gamepad_down(controllerPos, buttonId) function.
+		-Added gpe.check_gamepad_pressed(controllerPos, buttonId) function.
+		-Added gpe.check_gamepad_released(controllerPos, buttonId) function.
+	-Wii U Export
+		-See Html5 Export changes
+
+["Pawbituous Compiler" upgrades]
+-Custom header code added on build in supported platforms.
+-Slight updates to creating scene
+
+[Themes]
+	-Unchanged
+	
+[General Editor & Gui Changes]
+	Bottom Log/Search Panel
+	-Added Search Panel opened via shortcuts, toolbar and simply clicking on menu.
+	-Added Search Results Panel to locate code in project resources.
+	-Search /Find Menu added to top toolbar.
+	-Gui Panel Keyboard events slowed down by approximately 300%.
+	-Editor minimum window size enlarged to 800x600px.
+	
+	File Open/Save Menu
+	-Unchanged
+
+	Input Field Changes
+	-Keyboard events slowed down by approximately 200%.
+	
+	Text Editor Changes
+	-Search system updated to newer system.
+	-Addition of more highlightable terms, functions, variables and keywords made.
+	-Keyboard related events slowed to near-native speeds.
+	-Suggested Code texts now show scopes.
+	-Speed, Bug fixes and General Improvements made.
+
+[General Editor & Compiler Settings]
+-Editor & Gui Settings changes made
+	-Multiple new GUI clases and functions added.
+	
+-Compiler Tab / Section added.
+	-Exit on found errors checkbox added.
+	-Use strict-mode choice added to Pawbituous compiler.
+	-More options to come.
+-External Editors
+	-Unchanged
+
+[Functon Editor Changes]
+	-Function code integrated into Search System.
+
+[Audio Editor Changes]
+	-Unchanged
+
+[Video Editor Changes]
+	-Unchanged
+
+[Font Editor Changes]
+	-Unchanged
+
+[Sprite Editor Changes]
+	-Blank sprites now auto-load sprite properties to 1 frame animation on image upload.
+
+[Texture Editor Changes]
+	-Unchanged
+
+[Tilesheet Editor Changes]
+	-Individual tile size increased from 512x512px to 2048x2048px.
+
+[Object Editor Changes]
+	-Object function code integrated into Search System.
+	-Function Icons in menus resized to be 1:1 ratio.
+	
+[Scene Editor Changes]
+	-General speed improvements and bug fixes applied.
+	
+[Project Properties/Settings Changes]
+	-HTML5 Header Code now available.
+	-HTML5 Header code placement checkbox added.

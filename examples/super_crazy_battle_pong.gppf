@@ -1,0 +1,47 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project File 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.11
+Name=super_crazy_battle_pong
+Count=1012
+ProjectLanguage=JS
+ProjectIcon=
+[Project=super_crazy_battle_pong]
+    [SuperFolder=Textures]
+    [/SuperFolder]
+    [SuperFolder=Tilesheets]
+    [/SuperFolder]
+    [SuperFolder=Sprites]
+        Sprite=spr_paddle,1001,
+        Sprite=spr_ball,1006,
+        Sprite=spr_paddle2,1007,
+    [/SuperFolder]
+    [SuperFolder=Audio]
+        audio=aud_bounce,1012,
+    [/SuperFolder]
+    [SuperFolder=Videos]
+    [/SuperFolder]
+    [SuperFolder=Functions]
+    [/SuperFolder]
+    [SuperFolder=Paths]
+    [/SuperFolder]
+    [SuperFolder=Objects]
+        GameObject=obj_ball,1004,
+        GameObject=obj_paddle_p1,1005,
+        GameObject=obj_paddle_p2,1008,
+    [/SuperFolder]
+    [SuperFolder=Scenes]
+        scene=newScene1,1002,
+    [/SuperFolder]
+    [SuperFolder=Fonts]
+        Font=guiFont,1010,
+        Font=smallGuiFont,1011,
+    [/SuperFolder]
+[/Project]

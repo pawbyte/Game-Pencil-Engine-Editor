@@ -1,0 +1,6 @@
+Welcome to Game Pencil Engine - Version 1.12!
+
+Game Pencil is a full-featured open source cross-platform 2D game engine and IDE(Integrated Development Environment. It's current version 1.12 specializes in two platforms HTML5 and WiiU exports. It gives a pleasant
+experience to making fully functional games with its simple and yet advanced structure.
+
+This new version is the first release since the IDE was made open source with hopes of a bright future ahead in the FLOSS world.

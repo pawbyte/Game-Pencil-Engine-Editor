@@ -1,0 +1,39 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project File 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.11
+Name=rpg
+Count=1003
+ProjectLanguage=JS
+ProjectIcon=
+[Project=rpg]
+    [SuperFolder=Textures]
+    [/SuperFolder]
+    [SuperFolder=Tilesheets]
+    [/SuperFolder]
+    [SuperFolder=Sprites]
+    [/SuperFolder]
+    [SuperFolder=Audio]
+    [/SuperFolder]
+    [SuperFolder=Videos]
+    [/SuperFolder]
+    [SuperFolder=Functions]
+        Function=increase_money,1003,
+    [/SuperFolder]
+    [SuperFolder=Paths]
+    [/SuperFolder]
+    [SuperFolder=Objects]
+        GameObject=obj_crow,1002,
+    [/SuperFolder]
+    [SuperFolder=Scenes]
+    [/SuperFolder]
+    [SuperFolder=Fonts]
+    [/SuperFolder]
+[/Project]

@@ -1,0 +1,43 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project Layer InfoFile 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.1
+ProjectLayerName[0]=Default Background Layer
+ProjectLayerName[1]=Default Object Layer
+ProjectLayerName[2]=Custom Layer0
+ProjectLayerName[3]=Custom Layer1
+ProjectLayerName[4]=Custom Layer2
+ProjectLayerName[5]=Custom Layer3
+ProjectLayerName[6]=Custom Layer4
+ProjectLayerName[7]=Custom Layer5
+ProjectLayerName[8]=Custom Layer6
+ProjectLayerName[9]=Custom Layer7
+ProjectLayerName[10]=Custom Layer8
+ProjectLayerName[11]=Custom Layer9
+ProjectLayerName[12]=Custom Layer10
+ProjectLayerName[13]=Custom Layer11
+ProjectLayerName[14]=Custom Layer12
+ProjectLayerName[15]=Custom Layer13
+ProjectLayerName[16]=Custom Layer14
+ProjectLayerName[17]=Custom Layer15
+ProjectLayerName[18]=Custom Layer16
+ProjectLayerName[19]=Custom Layer17
+ProjectLayerName[20]=Custom Layer18
+ProjectLayerName[21]=Custom Layer19
+ProjectLayerName[22]=Custom Layer20
+ProjectLayerName[23]=Custom Layer21
+ProjectLayerName[24]=Default Tile Layer0
+ProjectLayerName[25]=Default Tile Layer1
+ProjectLayerName[26]=Default Tile Layer2
+ProjectLayerName[27]=Default Tile Layer3
+ProjectLayerName[28]=Default Tile Layer4
+ProjectLayerName[29]=Default Tile Layer5
+ProjectLayerName[30]=Default Tile Layer6
+ProjectLayerName[31]=Default Tile Layer7

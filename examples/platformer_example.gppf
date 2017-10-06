@@ -1,0 +1,62 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project File 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.12
+Name=platformer_example
+Count=1032
+ProjectLanguage=JS
+ProjectIcon=icon.png
+[Project=platformer_example]
+    [SuperFolder=Textures]
+        Texture=bg_death,1020,
+        Texture=bg_sky,1026,
+    [/SuperFolder]
+    [SuperFolder=Tilesheets]
+        Tilesheet=ts_map,1021,
+    [/SuperFolder]
+    [SuperFolder=Sprites]
+        [Folder=Enemy Sprites,1001]
+            Sprite=spr_slime,1002,
+        [/Folder]
+        [Folder=Scenary Sprites,1006]
+            Sprite=spr_block,1007,
+        [/Folder]
+        [Folder=Player Sprites,1009]
+            Sprite=spr_player,1011,
+        [/Folder]
+        [Folder=Item Sprites,1012]
+            Sprite=spr_heartpiece,1013,
+            Sprite=spr_coin,1015,
+        [/Folder]
+    [/SuperFolder]
+    [SuperFolder=Audio]
+    [/SuperFolder]
+    [SuperFolder=Videos]
+    [/SuperFolder]
+    [SuperFolder=Functions]
+    [/SuperFolder]
+    [SuperFolder=Paths]
+    [/SuperFolder]
+    [SuperFolder=Objects]
+        GameObject=obj_slime,1003,
+        GameObject=obj_block,1008,
+        GameObject=obj_heart_piece,1014,
+        GameObject=obj_player,1010,
+        GameObject=obj_coin,1016,
+        GameObject=obj_player2,1032,
+    [/SuperFolder]
+    [SuperFolder=Scenes]
+        scene=newScene1,1004,
+        scene=game_win,1017,
+        scene=game_over,1018,
+    [/SuperFolder]
+    [SuperFolder=Fonts]
+    [/SuperFolder]
+[/Project]

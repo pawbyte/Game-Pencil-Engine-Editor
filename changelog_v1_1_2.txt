@@ -1,0 +1,108 @@
+Game Pencil Engine Changelog
+
+Version 1.1.2 Changelog
+
+#5 KEY changes made...
+
+[Critical Changes]
+-Scene Editor default layer data-processing fixed
+-Path Resource created
+-Multiple cameras are now supported once more.
+-Editor is now completely free as well. Deluxe features enabled on all future versions.
+	-Deluxe Version retired and will is now a fully fledged open source project.
+	
+
+[General Stabilization  and Optimizations made.]
+-Clean Windows, Linux and OSX build folder functionality restored.
+
+[Engine changes]
+	-Html5 Export
+		-Added gp_nokey and gp_anykey constants
+		-Greatly improved gpe.check_gamepad_down() function.
+		-Greatly improved  gpe.check_gamepad_pressed() function.
+		-Greatly improved  gpe.check_gamepad_down() function.
+		-Added gp_nobutton and gp_anybutton constants
+		-Added PS4 DullShock4 Default Button mapping
+		-Added gpe.font_is_monospaced() function.
+		-Added gpe.get_font_family() function.
+		-Added gpe.get_font_height() function.
+		-Added gpe.get_font_size() function.
+		-Added gpe.get_font_width() function.
+		-Added SuperVector.insert() function.
+		-Fixed gpe.center_camera() function.
+		-Fixed gpe.setup_camera() function.
+		-Added gpe.get_current_camera() function.
+		-Added gpe.split_screen() function.
+		-Added gpe.replace_background() function.
+		-Added gpe.replace_all_backgrounds() function.
+		-Modified gpe.set_background() function to be layer aware.
+	-Wii U Export
+		-See Html5 Export changes
+
+["Pawbituous Compiler" upgrades]
+	-Updated to accomadate Version 1.12 changes.
+	-Exports fonts with more predetermined data-processing.
+[Themes]
+	-Unchanged
+	
+[General Editor & Gui Changes]
+	Bottom Log/Search Panel
+	-Unchanged
+	File Open/Save Menu
+	-Unchanged
+
+	Input Field Changes
+	-Unchanged
+	
+	Text Editor Changes
+	-Unchanged
+
+[General Editor & Compiler Settings]
+-Editor & Gui Settings changes made
+	-GPE Support Center added.
+	-Multiple new GUI clases and functions added.
+	
+-Compiler Tab / Section
+	-Unchanged
+	
+-External Editors
+	-Unchanged
+
+[Functon Editor Changes]
+	-Function code integrated into Search System.
+
+[Audio Editor Changes]
+	-Unchanged
+
+[Video Editor Changes]
+	-Unchanged
+
+[Font Editor Changes]
+	-Unchanged
+
+[Sprite Editor Changes]
+	-Blank sprites now auto-load sprite properties to 1 frame animation on image upload.
+
+[Texture Editor Changes]
+	-Unchanged
+
+[Tilesheet Editor Changes]
+	-Individual tile size increased from 512x512px to 2048x2048px.
+
+[Path Editor Changes]
+	-Beta version of path editor created.
+	
+[Object Editor Changes]
+	-Unchanged
+	
+[Scene Editor Changes]
+	-General speed improvements and bug fixes applied.
+	
+[Project Properties/Settings Changes]
+	-Unchanged
+	
+[About Page Changes]
+	-Shortkeys Tab's text now loaded from local file
+	
+[Help Page Changes]
+	-Description Tab's text now loaded from local file

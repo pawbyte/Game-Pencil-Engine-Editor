@@ -1,0 +1,23 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project GameObject File 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.12
+ResourceName=obj_heart_piece
+SpriteId=spr_heartpiece
+ParentGameObjectId=
+NeedsCamera=1
+IsMoveable=1
+IsVisible=1
+IsContinuous=0
+
+
+[[[Function=Constructor]]] 
+this.start_countdown(0,15);
+this.movementDirection = 0.25;

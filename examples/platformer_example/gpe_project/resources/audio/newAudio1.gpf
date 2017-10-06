@@ -1,0 +1,16 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project Game Audio DataFile 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.0
+ResourceName=newAudio1
+Preload=1
+DefaultVolume=100
+AudioGroup=
+AudioType=0

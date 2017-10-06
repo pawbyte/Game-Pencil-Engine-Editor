@@ -1,0 +1,31 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project GameObject File 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.1
+ResourceName=obj_block
+SpriteId=spr_block
+ParentGameObjectId=
+NeedsCamera=0
+IsMoveable=1
+IsVisible=1
+IsContinuous=0
+
+
+[[[Function=Constructor]]] 
+this.set_velocity( 180 * GPE_TO_RADIANS,-4 );
+[[[Function=Main Logic]]] 
+if( this.getx2() < 0)
+{
+    this.self_destruct();
+}
+if( GAME_OVER )
+{
+    this.set_velocity(0,0);
+}
