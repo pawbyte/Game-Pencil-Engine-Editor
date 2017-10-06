@@ -13952,7 +13952,7 @@ bool GPE_TextAreaInputBasic::import_text(std::string newFileName)
     {
         std::ifstream newTxtFile( newFileName.c_str() );
         //If the level file could be loaded
-        if( newTxtFile != NULL )
+        if( !newTxtFile.fail() )
         {
             //makes sure the file is open
             if (newTxtFile.is_open())
@@ -19492,7 +19492,7 @@ void GPE_Template::load_theme(std::string themeLocationIn)
     if( file_exists(themeGlobalLocation) )
     {
         std::ifstream templateFileIn( themeGlobalLocation.c_str() );
-        if( templateFileIn != NULL )
+        if( !templateFileIn.fail() )
         {
             //makes sure the file is open
             if (templateFileIn.is_open())
@@ -24075,7 +24075,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
         std::ifstream newprofileFile( projectFileIn.c_str() );
 
         //If the level file could be loaded
-        if( newprofileFile != NULL )
+        if( !newprofileFile.fail() )
         {
             //makes sure the file is open
             if (newprofileFile.is_open())
@@ -27257,7 +27257,7 @@ GPE_Gui_Engine::GPE_Gui_Engine()
     //loads the recent file list
     std::string recentFileListFileName = get_user_settings_folder()+"recent_projects.txt";
     std::ifstream recentFileListFile( recentFileListFileName.c_str() );
-    if( recentFileListFile != NULL )
+    if( !recentFileListFile.fail() )
     {
         std::string currLine = "";
         //makes sure the file is open
@@ -27453,7 +27453,7 @@ void GPE_Gui_Engine::add_to_recent_project_list(std::string newProjectFileName, 
         cSize = (int)gpeRecentProjects.size();
         std::string recentFileListFileName = get_user_settings_folder()+"recent_projects.txt";
         std::ofstream recentFileListFile( recentFileListFileName.c_str() );
-        if( recentFileListFile != NULL )
+        if( !recentFileListFile.fail() )
         {
             //makes sure the file is open
             if (recentFileListFile.is_open())
@@ -28385,7 +28385,7 @@ void GPE_Gui_Engine::load_settings()
 
     record_error("Loading settings - "+newFileIn);
     //If the level file could be loaded
-    if( gameResourceFileIn != NULL )
+    if( !gameResourceFileIn.fail() )
     {
         //makes sure the file is open
         if (gameResourceFileIn.is_open())
@@ -29633,7 +29633,7 @@ void GPE_Gui_Engine::save_settings()
     std::string newSaveDataFilename = get_user_settings_folder()+"gpe_ide_settings.txt";
     std::ofstream newSaveDataFile( newSaveDataFilename.c_str() );
     //If the scene file could be saved
-    if( newSaveDataFile != NULL )
+    if( !newSaveDataFile.fail() )
     {
         //makes sure the file is open
         if (newSaveDataFile.is_open())

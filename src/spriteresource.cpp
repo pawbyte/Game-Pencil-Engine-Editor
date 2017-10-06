@@ -449,7 +449,7 @@ void spriteResource::preprocess_self(std::string alternatePath)
         //record_error("Loading sprite - "+newFileIn);
         //If the level file could be loaded
         double foundFileVersion = -1;
-        if( gameResourceFileIn != NULL )
+        if( !gameResourceFileIn.fail() )
         {
             //record_error("Procesing sprite file...");
             //makes sure the file is open
@@ -1330,7 +1330,7 @@ void spriteResource::save_resource(std::string alternatePath, int backupId)
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
     //If the scene file could be saved
-    if( newSaveDataFile != NULL )
+    if( !newSaveDataFile.fail() )
     {
         //makes sure the file is open
         if (newSaveDataFile.is_open())

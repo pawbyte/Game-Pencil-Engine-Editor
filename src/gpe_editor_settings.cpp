@@ -301,7 +301,7 @@ void gamePencilEditorSettingsResource::preprocess_self(std::string alternatePath
 
     record_error("Loading Local settings - "+newFileIn);
     //If the level file could be loaded
-    if( gameResourceFileIn != NULL )
+    if( !gameResourceFileIn.fail() )
     {
         //makes sure the file is open
         if (gameResourceFileIn.is_open())
@@ -683,7 +683,7 @@ void gamePencilEditorSettingsResource::save_resource(std::string alternatePath, 
     std::string newSaveDataFilename = get_user_settings_folder()+"gpe_ide_local_settings.txt";
     std::ofstream newSaveDataFile( newSaveDataFilename.c_str() );
     //If the scene file could be saved
-    if( newSaveDataFile != NULL )
+    if( !newSaveDataFile.fail() )
     {
         //makes sure the file is open
         if (newSaveDataFile.is_open())

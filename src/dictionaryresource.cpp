@@ -153,7 +153,7 @@ void dictionaryResource::preprocess_self(std::string alternatePath )
 
         record_error("Loading dictionary - "+newFileIn);
         //If the level file could be loaded
-        if( gameResourceFileIn != NULL )
+        if( !gameResourceFileIn.fail() )
         {
             //makes sure the file is open
             if (gameResourceFileIn.is_open())
@@ -363,7 +363,7 @@ void dictionaryResource::save_resource(std::string alternatePath, int backupId )
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
     //If the font file could be saved
-    if( newSaveDataFile != NULL )
+    if( !newSaveDataFile.fail() )
     {
         //makes sure the file is open
         if (newSaveDataFile.is_open())

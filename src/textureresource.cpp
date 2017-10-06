@@ -172,7 +172,7 @@ void textureResource::preprocess_self(std::string alternatePath)
 
         //record_error("Loading Texture - "+newFileIn);
         //If the level file could be loaded
-        if( gameResourceFileIn != NULL )
+        if( !gameResourceFileIn.fail() )
         {
             //makes sure the file is open
             if (gameResourceFileIn.is_open())
@@ -543,7 +543,7 @@ void textureResource::save_resource(std::string alternatePath, int backupId)
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
     //If the scene file could be saved
-    if( newSaveDataFile != NULL )
+    if( !newSaveDataFile.fail() )
     {
 
         //makes sure the file is open

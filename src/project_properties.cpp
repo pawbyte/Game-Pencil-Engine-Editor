@@ -987,7 +987,7 @@ void projectPropertiesResource::preprocess_self(std::string alternatePath)
 
         record_error("Loading project properties - "+newFileIn);
         //If the level file could be loaded
-        if( gameResourceFileIn != NULL )
+        if( !gameResourceFileIn.fail() )
         {
             record_error("Processing project properties file...");
             //makes sure the file is open

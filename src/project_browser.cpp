@@ -60,7 +60,7 @@ bool quickProjectReader::review_project(std::string projectFileName)
         std::ifstream newprofileFile( projectFileName.c_str() );
 
         //If the level file could be loaded
-        if( newprofileFile != NULL )
+        if( !newprofileFile.fail() )
         {
             //makes sure the file is open
             if (newprofileFile.is_open())
