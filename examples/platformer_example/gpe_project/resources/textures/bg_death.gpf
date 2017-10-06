@@ -1,0 +1,14 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project Game Texture DataFile 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.12
+ResourceName=bg_death
+ImageLocation=gg_Screen_plat.png
+Preload=1

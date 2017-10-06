@@ -1,0 +1,20 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project Game Tilesheet DataFile 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.12
+ResourceName=ts_map
+ImageLocation=grassmap.png
+Preload=1
+TilesheetData[0]=70
+TilesheetData[1]=70
+TilesheetData[2]=0
+TilesheetData[3]=0
+TilesheetData[4]=0
+TilesheetData[5]=0

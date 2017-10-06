@@ -1,0 +1,150 @@
+Game Pencil Engine Changelog
+
+Version 1.1.0 Changelog
+
+[Critical Changes]
+	-Faster Editor Load/Start Times.
+	-Layer System completely revamped.
+		-Project Layer System applied(Capped at 32 Unique Layers).
+	-Font System modified.
+	-Many editor crash-fixes applied.
+	-Many editor bug-fixes applied.
+	-Importing and Exporting of Project Resources is now possible.
+	-Resource Drop Down menus now save ResourceNames instead of ids.
+	-Compatibility to load in previous project files added.
+	-Saves into newer project format.
+
+[General Stabilization  and Optimizations made.]
+	-Improved UsserInput Class.
+	-General speed improvements.
+	-render_new_number() function added to render numbers in a bitmap-font like way to reduce cache sizes.
+	-Tooltips are now displayed as normal tooltips.
+	-Status bar now shows Project in view file name and/or Current Function cursor Line/Column.
+	-Numerous edtions to synthax highligher
+	-Numerous edtions to logs.
+	-System and IDE undeclared variables corrected.
+	-General Smooth Scrolling changes applied.
+	-Font caching now applied and able to be cleared.
+	
+[Engine changes]
+	-Html5 Export
+		-Automated  Function Default Parameters
+		-General speed improvements and bug-fixes applied..
+		-Addition of get_sprite_width, get_sprite_length functions for GameObjects.
+		-Addition of get_texture_width, get_texture_length functions for GameObjects.
+		-Fullscreen keys no longer disabled.
+		-Collision system upgraded for new layer system.
+		-Corrected object movement related functions to be away of spatial grids.
+		-Updated Scenes and Objects to be aware of project layer system.
+	-Wii U Export
+		-See Html5 Export changes
+
+["Pawbituous Compiler" upgrades]
+-Resource name checking now applied to all resources
+-Function parameter validation
+-Functions are parsed for missing symbols and invalid end-line modes.
+-Compiler now communicates with newly formed WIP Build Log system.
+-Build logs now have more information.
+
+[Themes]
+	-Addition of more colors including but limited to scrollbars, code editors, 
+	-Custom Themes are now allowed in Personal Edition of the Editor.
+	-Temporarily removed Red, Blue and Green themes.
+	-Editor now ships with Light and Dark Themes in all editions.
+	-Light and Dark Themes revamped.
+	
+[General Editor & Gui Changes]
+	-Autmated Function Default Parameters
+	-General and Build Logs added to bottom of screen.
+	-Buttonbars now navigatable through arrow keys.
+	-Addition of the Project Browser Page
+	-Unpleasant flashes corrected.
+	-More professional icons, wordings and grammaar applied application and engine-wide.
+	-Start Page updated.
+	-Helpful Links updated.
+	-Popups made more visible.
+	-More tips added to Tip of the Day menu
+	-Window Titlebar now displays Project Names before GAme Pencil Version and Release Type.
+	
+	File Open/Save Menu
+	-Speed, Bug fixes and General Improvements made
+
+	Input Field Changes
+	-Speed, Bug fixes and General Improvements made
+	
+	Text Editor Changes
+	-Text editor scrolling math corrected.
+	-Addition of more highlightable terms, functions, variables and keywords made.
+	-Speed, Bug fixes and General Improvements made
+
+[General Editor & Compiler Settings]
+-Editor & Gui Settings changes made
+	-Added FPS dropdown.
+	-Added Key Delay time[Reccommended to leave at 0 for fast performance]
+	-Added Normal Delay time[Reccommended to leave at 0 for fast performance]
+	-Show Hidden Files in Browser added[Important for Linux users].
+	-Open last project check box added.
+	-Added Clear Cache Button.
+	-You can not now drag resources into scene, resource-drop downs and text-area and input fields.
+	-You can now use CTRL+C to copy selected Labels and Titles.
+	-Selection tabbing enabled inside of panels.
+	-You can also use CTRL+< and CTRL+> to move through panels[including text and code editors].
+	-Screenshot saving enabled via F6 AND F12 and for some devices PRINT-SCREEN.
+	-Shorter Project Names supported in Recent Project Lists and Statusbar.
+	-Option to redraw editor every frame enabled in gui.
+	-Multiple new GUI clases and functions added.
+	
+-Compiler Tab / Section added.
+	-Exit on found errors checkbox added.
+	-Use strict-mode choice added to Pawbituous compiler.
+	-More options to come.
+-External Editors
+	-Font Editor added
+
+[Functon Editor Changes]
+	-Tabbing system added to Function Editor fields and buttons.
+	-General speed improvements and bug fixes applied.
+
+[Audio Editor Changes]
+	-General speed improvements and bug fixes applied.
+
+[Video Editor Changes]
+	-General speed improvements and bug fixes applied.
+
+[Font Editor Changes]
+	-General speed improvements and bug fixes applied.
+
+[Sprite Editor Changes]
+	-New max-frames option added when importing sprites. Leave -1 for automated frame count.
+	-New mode respects older sprite files when older version is detected.
+	-Preview Sprite Frames now available in Data-Enry-Mode for sprite editor.
+	-General speed improvements and bug fixes applied.
+
+[Texture Editor Changes]
+	-General speed improvements and bug fixes applied.
+
+[Tilesheet Editor Changes]
+	-General speed improvements and bug fixes applied.
+
+[Object Editor Changes]
+	-Object Properties and Objects Components merged into one tab[Start Tab].
+	-Icons added to many of the basic, timed and special functions.
+	-Function selectors are now distinguished if function has content/code.
+	-Change Collision Object ability added in Collision Functios Tab.
+	-Unknown Object Collisions are now loaded, imported, exported and saved.
+	-General speed improvements and bug fixes applied.
+	
+[Scene Editor Changes]
+	-New Scene Layering System applied.
+	-Zooming ability added.
+	-2 Panel mode added with toggability.
+	-Layer Matrix System added to editor.
+	-Tiles, Backgrounds and Objects applied into Layer System as different layer types.
+	-Change Object of selected object now applied.
+	-Numerous navigational improvements applied.
+	-General speed improvements and bug fixes applied.
+	
+[Project Properties/Settings Changes]
+	-Physics Tab added for new Project Layer Matrix.
+	-Project Icons now added.
+	-Platforms Tab improved and minimized to differentiate between HTML, Desktop and multiple supported and planned supported systems.

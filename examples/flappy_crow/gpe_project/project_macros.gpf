@@ -1,0 +1,3 @@
+var GAME_OVER = false;
+var CURRENT_SCORE = 0;
+var HIGH_SCORE = 0;

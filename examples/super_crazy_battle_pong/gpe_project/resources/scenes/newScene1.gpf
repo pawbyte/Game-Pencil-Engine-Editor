@@ -1,0 +1,34 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project GameScene File 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.11
+ResourceName=newScene1
+SceneMusic=
+SceneStartAudio=
+SceneEndAudio=-1
+LevelWidth=800
+LevelHeight=640
+TileWidth=32
+TileHeight=32
+ViewTileGrid=1
+Preload=1
+Isometric=0
+Continuous=0
+BGColor=19,19,22
+ObjectGridWidth=32
+ObjectGridHeight=32
+DisplayObjectGrid=1
+[GPE_Layer=1,0,]
+[/GPE_Layer]
+[GPE_Layer=2,1,]
+   GPEObject=obj_paddle_p2,672,288,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
+   GPEObject=obj_paddle_p1,64,288,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
+   GPEObject=obj_ball,352,288,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
+[/GPE_Layer]

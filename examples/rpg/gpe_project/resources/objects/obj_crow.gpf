@@ -1,0 +1,128 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project GameObject File 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.11
+ResourceName=obj_crow
+SpriteId=
+ParentGameObjectId=
+NeedsCamera=0
+IsMoveable=1
+IsVisible=1
+IsContinuous=0
+
+
+[[[Function=Constructor]]] 
+this.imageSpeed = 0.125;
+this.canJump = true;
+this.start_countdown( 1, 5);
+GAME_OVER = false;
+[[[Function=Main Logic]]] 
+
+if( GAME_OVER )
+{
+    if( gpe.check_keyboard_released(gp_enter) )
+    {
+        gpe.scene_enter( scn_title );
+        GAME_OVER = false;
+        CURRENT_SCORE = 0;
+    }
+}
+else
+{
+    if (gpe.position_collides(this,this.getx(), this.gety() + 1, obj_ground)==IS_NULL )
+    {
+        if ( gpe.check_keyboard_released(gp_space) && this.canJump && !this.gameOver )
+        {
+            if (gpe.position_collides(this,this.getx(), this.gety() -4, obj_ground)==IS_NULL )
+            {
+                this.yspeed = -5;
+            }
+            this.canJump = false;
+            this.start_countdown( 0, 5);
+            this.move_up(2);
+        }
+    }
+
+    this.yspeed += 0.5;
+
+    if( this.yspeed < -14 )
+    {
+        this.yspeed = -14;
+    }
+    else if( this.yspeed > 14 )
+    {
+        this.yspeed = 14;
+    }
+    var _abs = gpe.abs(this.yspeed);
+    var _sign = gpe.sign(this.yspeed);
+    for (var i = 0; i < _abs; i++)
+    {
+        if (gpe.position_collides(this,this.getx(), this.gety() + _sign, obj_ground )!=IS_NULL)
+        {
+            // hit ground/ceiling
+            this.bird_die();
+            break;
+        }
+        else
+        {
+            this.move_down(_sign);
+        }
+    }
+}
+gpe.center_camera(0,this.getx(), this.gety() );
+[[[Function=Render HUD]]] 
+if( GAME_OVER )
+{
+    gpe.render_text(-1,32,64,"Game Over!","red");
+    gpe.render_text(-1,32,32,"Score: "+CURRENT_SCORE+" | High Score: "+HIGH_SCORE,"red");
+    gpe.render_text(-1,gpe.get_camera_screen_width(0)/2,gpe.get_camera_screen_height(0)-64,"Press [ENTER] to Restart!","white",fa_center,fa_middle );
+}
+else
+{
+    gpe.render_text(-1,32,32,"Score: "+CURRENT_SCORE,"white");
+}
+
+[[[TimedFunction=Timer0]]] 
+this.canJump = true;
+[[[TimedFunction=Timer1]]] 
+if( !GAME_OVER )
+{
+    var sceneWidth = gpe.get_scene_width();
+    var sceneHeight = gpe.get_scene_height();
+    var ii = 0;
+    var scoreNewYPos = Math.round( gpe.get_random( 2*96,sceneHeight-(96*3) )/96 )*96;
+    for( ii = scoreNewYPos-96; ii >=0; ii-=96 )
+    {
+        this.add_object(obj_block, sceneWidth,ii );
+    }
+    var newBlock = this.add_object(obj_score_block, sceneWidth, scoreNewYPos );
+    for( ii = scoreNewYPos+96; ii <= sceneHeight+96; ii+=96 )
+    {
+        this.add_object(obj_block, sceneWidth,ii );
+    }
+}
+this.start_countdown( 1, 90 );
+[[[CollideFunction=]]] 
+CURRENT_SCORE++;
+other.self_destruct();
+[[[CollideFunction=obj_crow]]] 
+if( !this.gameOver)
+{
+    this.bird_die();
+}
+[[[CustomFunction=bird_die,Return Type,]]]
+this.canJump = false;
+GAME_OVER = true;
+this.yspeed = 0;
+if( CURRENT_SCORE > HIGH_SCORE)
+{
+    HIGH_SCORE = CURRENT_SCORE;
+}
+this.imageSpeed = 0;

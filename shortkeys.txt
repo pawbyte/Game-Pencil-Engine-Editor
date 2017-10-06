@@ -1,0 +1,34 @@
+
+Editor Shortcuts:
+MouseWheel Up/Down:                    Scroll Up/Down
+MouseWheel Up/Down+CTRL:               Scroll Left/Right
+F1                                     Opens Help Page
+F2                                     Opens Editor User Settings
+F5                                     Builds & Run Game
+F6                                     Saves screenshots
+F11                                    Toggle Full Screen Mode
+F12                                    Saves screenshots
+CTRL+A                                 Select All
+CTRL+B                                 Opens About Page
+CTRL+C                                 Copy Selection
+CTRL+E                                 Exports Project Resource
+CTRL+D                                 Find Search
+CTRL+F                                 Line Search
+CTRL+G                                 Find / Replace
+CTRL+H                                 Duplicate-Line
+CTRL+N                                 Create New Project
+CTRL+O                                 Open Project File
+CTRL+S                                 Save Project
+CTRL+S+Shift                           Save All Opened Projects
+CTRL+S+Alt                             Save All Opened Projects
+CTRL+U                                 Opens Editor User Settings
+CTRL+V                                 Paste Clipboard
+CTRL+W                                 Closes Current Tab
+CTRL+X                                 Cut Selection
+CTRL+Y                                 Redo
+CTRL+Z                                 Undo
+CTRL+TAB                               Switches to Next Tab
+CTRL+TAB+SHIFT                         Switches to Previous Tab
+TAB                                    Moves selected value down by one
+TAB+SHIFT                              Moves selected value up by one
+.

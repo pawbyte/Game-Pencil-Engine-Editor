@@ -1,0 +1,97 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project GameObject File 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.11
+ResourceName=obj_enemy_basic
+SpriteId=spr_enemy
+ParentGameObjectId=
+NeedsCamera=1
+IsMoveable=1
+IsVisible=1
+IsContinuous=0
+
+
+[[[Function=Constructor]]] 
+this.imageSpeed = 0;
+this.healthMax = 5;
+this.health = 5;
+this.canFire = false;
+this.start_countdown(0,15);
+this.start_countdown(1,30);
+
+[[[Function=Main Logic]]] 
+if( !GAME_OVER)
+{
+    if( this.health <=0)
+    {
+        this.self_destruct();
+    }
+    this.canBounce = true;
+
+    if( PLAYER_OBJECT!=IS_NULL )
+    {
+        var distanceToPlayer = this.get_my_distance( PLAYER_OBJECT.getx(), PLAYER_OBJECT.gety() );
+        if( distanceToPlayer <32 || distanceToPlayer > 512 )
+        {
+            this.speed = 0;
+        }
+    }
+    else
+    {
+        this.speed = 0;
+    }
+
+    var myDegrees = gpe.degree(this.direction);
+    if( myDegrees >=45 && myDegrees < 135 )
+    {
+        this.spriteFrame = 2;
+    }
+    else if( myDegrees >= 135 && myDegrees < 225 )
+    {
+        this.spriteFrame = 1;
+    }
+    else if( myDegrees > 225 && myDegrees < 315 )
+    {
+        this.spriteFrame = 0;
+    }
+    else
+    {
+        this.spriteFrame =  3;
+    }
+}
+[[[TimedFunction=Timer0]]] 
+if( PLAYER_OBJECT!=IS_NULL && !GAME_OVER )
+{
+    var distanceToPlayer = this.get_my_distance( PLAYER_OBJECT.getx(), PLAYER_OBJECT.gety() );
+    if( distanceToPlayer >32 && distanceToPlayer < 512 )
+    {
+        this.move_towards(PLAYER_OBJECT.getx(), PLAYER_OBJECT.gety(),1 );
+    }
+}
+this.start_countdown(0,gpe.get_random(10,45) );
+[[[TimedFunction=Timer1]]] 
+if( gpe.get_object_count(obj_enemy_bullet) < 50  && !GAME_OVER  )
+{
+    var distanceToPlayer = this.get_my_distance( PLAYER_OBJECT.getx(), PLAYER_OBJECT.gety() );
+    if( distanceToPlayer > 16 && distanceToPlayer < 256 )
+    {
+        var newBullet = gpe.add_new_object( obj_enemy_bullet, this.getx(), this.gety() );
+        newBullet.direction = this.get_my_direction( PLAYER_OBJECT.getx(), PLAYER_OBJECT.gety() );
+        newBullet.speed = 6;
+        this.canFire = false;
+    }
+}
+this.canFire = !this.canFire;
+this.start_countdown( 1, 30+gpe.get_random(0,90) );
+[[[CollideFunction=obj_bullet]]] 
+this.health-=1;
+other.self_destruct();
+[[[CollideFunction=obj_block]]] 
+this.update_cords(this.xPast, this.yPast);

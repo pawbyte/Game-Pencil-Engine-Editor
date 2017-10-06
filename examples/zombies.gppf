@@ -1,0 +1,36 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project File 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.0
+Name=zombies
+Count=1003
+[Project=zombies]
+    [SuperFolder=Textures]
+    [/SuperFolder]
+    [SuperFolder=Tilesheets]
+    [/SuperFolder]
+    [SuperFolder=Sprites]
+        Sprite=newSprite1,1003,
+    [/SuperFolder]
+    [SuperFolder=Audio]
+    [/SuperFolder]
+    [SuperFolder=Videos]
+    [/SuperFolder]
+    [SuperFolder=Functions]
+    [/SuperFolder]
+    [SuperFolder=Objects]
+        GameObject=newObject1,1002,
+    [/SuperFolder]
+    [SuperFolder=Scenes]
+        scene=newScene1,1001,
+    [/SuperFolder]
+    [SuperFolder=Fonts]
+    [/SuperFolder]
+[/Project]

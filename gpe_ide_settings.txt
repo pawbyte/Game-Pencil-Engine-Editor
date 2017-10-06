@@ -1,0 +1,19 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Settings DataFile 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.0
+ResourceBarPosition=1
+ResourceBarVisible=1
+ResourceBarWidth=192
+ShowStartPageAtStart=1
+ShowTipOfDayAtStart=1
+TextAreaViewLineCount=1
+TextAreaViewSynthaxHighlighting=1
+ColorTheme=default.gpf

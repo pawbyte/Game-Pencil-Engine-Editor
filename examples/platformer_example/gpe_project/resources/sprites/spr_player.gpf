@@ -1,0 +1,27 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project Game Sprite DataFile 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.12
+ResourceName=spr_player
+SpriteData[0]=11
+SpriteData[1]=72
+SpriteData[2]=97
+SpriteData[3]=0
+SpriteData[4]=0
+SpriteData[5]=0
+SpriteData[6]=0
+SubimageInView=0
+Preload=1
+EditorPreviewFrame=0
+PreviewCollisionShape=1
+CollisionShape=0
+CircleCollisionRegion=0,0,72
+RectangleCollisionBox=16,0,48,97
+ImageLocation=player_walk.png

@@ -1,0 +1,101 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project GameObject File 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.11
+ResourceName=obj_player
+SpriteId=spr_player_ship
+ParentGameObjectId=
+NeedsCamera=0
+IsMoveable=1
+IsVisible=1
+IsContinuous=1
+
+
+[[[Function=Constructor]]] 
+this.speed = 0;
+this.direction = 0;
+
+this.targetX = this.getx();
+this.targetY = this.gety();
+
+this.canFire = true;
+
+PLAYER_OBJECT = this;
+this.mouseDirection = 0;
+this.myHealth = 100;
+[[[Function=Main Logic]]] 
+this.mouseDirection = this.get_my_direction( gpe.get_camera_mouse_x(0), gpe.get_camera_mouse_y(0) );
+if( GAME_OVER)
+{
+    if( gpe.check_keyboard(gp_space) )
+    {
+        gpe.scene_reset();
+        GAME_OVER = false;
+    }
+}
+else
+{
+    if( gpe.check_mouse_released( 0 ) )
+    {
+        this.targetX = gpe.get_camera_mouse_x(0);
+        this.targetY = gpe.get_camera_mouse_y(0);
+        this.move_towards(this.targetX, this.targetY, 4 );
+    }
+    else if( gpe.check_mouse_released( 2 ) && this.canFire  )
+    {
+        var newBullet = gpe.add_new_object( obj_bullet, this.getx(), this.gety() );
+        newBullet.direction = this.mouseDirection;
+        newBullet.speed = 7;
+        this.canFire = false;
+        this.start_countdown( 0, 30 );
+    }
+
+    if( this.speed !=0)
+    {
+        if( this.get_my_distance( this.targetX, this.targetY ) < this.speed )
+        {
+            this.speed = 0;
+        }
+    }
+
+    gpe.center_camera( 0, this.getx(), this.gety() );
+}
+[[[Function=PRE-Render]]] 
+if( this.speed !=0 && this.targetX!=IS_NULL && this.targetY!=IS_NULL)
+{
+    gpe.render_sprite(spr_xcoord, 0, this.targetX,this.targetY,1,1);
+}
+[[[Function=Render HUD]]] 
+if( GAME_OVER)
+{
+    GPE.render_rectangle(0,0,gpe.get_camera_screen_width(0),gpe.get_camera_screen_height(0),"rgba(228,32,32,0.5)",false);
+    gpe.render_text(-1,gpe.get_camera_screen_width(0)/2,gpe.get_camera_screen_height(0)/2,"Game Over!","white",fa_center,fa_middle );
+    gpe.render_text(-1,gpe.get_camera_screen_width(0)/2,gpe.get_camera_screen_height(0)/2+64,"Press SPACE TO RESTART!","white",fa_center,fa_middle );
+}
+else
+{
+    gpe.render_text(-1,32,32,"Mouse direction "+gpe.round(gpe.degree(this.mouseDirection) )+"["+(gpe.get_camera_mouse_x(0)|0)+" , "+(gpe.get_camera_mouse_y(0)|0)+"]","white",fa_left,fa_top);
+    gpe.render_text(-1,gpe.get_camera_screen_width(0)-64,32,"FPS:"+gpe.get_fps(),"white",fa_right,fa_top);
+    gpe.render_text(-1,32,gpe.get_camera_screen_height(0)-64,"Health:"+this.myHealth,"white",fa_left,fa_bottom);
+}
+
+[[[TimedFunction=Timer0]]] 
+this.canFire = true;
+[[[CollideFunction=obj_block]]] 
+this.update_cords(this.xPast, this.yPast);
+this.speed = 0;
+[[[CollideFunction=obj_enemy_bullet]]] 
+other.self_destruct();
+this.myHealth-=10;
+if( this.myHealth <= 0)
+{
+      GAME_OVER = true;
+      this.myHealth = 0;
+}

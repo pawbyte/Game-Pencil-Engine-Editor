@@ -1,0 +1,2 @@
+var PLAYER_OBJECT = IS_NULL;
+var GAME_OVER = false;

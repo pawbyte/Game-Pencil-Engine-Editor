@@ -1,0 +1,220 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project GameObject File 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.12
+ResourceName=obj_player2
+SpriteId=spr_player
+ParentGameObjectId=
+NeedsCamera=0
+IsMoveable=1
+IsVisible=1
+IsContinuous=0
+
+
+[[[Function=Constructor]]] 
+this.imageSpeed = 0.25;
+this.onGround = false;
+this.gravityEffect = 0.5;
+this.yspeed = 0;
+
+this.isJumping = false;
+this.isRunning = false;
+this.canRun = true;
+this.canJump = true;
+this.isWalking = true;
+this.myDirection = 1;
+this.can_hurt = true;
+
+this.start_countdown( 1, 5);
+
+this.coins = 0;
+this.lives = 3;
+this.score = 0;
+this.hearts = 3;
+this.heatsMax = 3;
+this.renderSelf = true;
+
+gpe.enable_camera(1);
+gpe.setup_camera();
+
+[[[Function=Main Logic]]] 
+if( gpe.get_object_count( obj_slime ) ==0 )
+{
+    gpe.scene_enter(game_win);
+}
+if( this.canRun==true && gpe.check_keyboard(gp_x) )
+{
+    this.isRunning = true;
+    this.isWalking = false;
+}
+else
+{
+    this.isRunning = false;
+    this.isWalking = true;
+}
+if( gpe.check_keyboard( gp_r ) )
+{
+    gpe.scene_reset();
+}
+
+if( gpe.check_keyboard( gp_left) )
+{
+    if( this.isRunning && this.getx() >=6 )
+    {
+        if( gpe.position_collides(this,this.getx()-6, this.gety(), obj_block)==IS_NULL && this.getx()-4 >=0 )
+        {
+            this.move_left(6);
+        }
+    }
+    else if( gpe.position_collides(this,this.getx()-3, this.gety(), obj_block)==IS_NULL && this.getx()-3 >=0 )
+    {
+        this.move_left(3);
+    }
+    this.myDirection = -1;
+}
+else if( gpe.check_keyboard( gp_right) )
+{
+    if( this.isRunning && this.getx() >=6 )
+    {
+        if( gpe.position_collides(this,this.getx()+6, this.gety(), obj_block)==IS_NULL  )
+        {
+            this.move_right(6);
+        }
+    }
+    else if( gpe.position_collides(this,this.getx()+3, this.gety(), obj_block)==IS_NULL  )
+    {
+        this.move_right(3);
+    }
+    this.myDirection = 1;
+}
+else
+{
+    this.isRunning = false;
+    this.isWalking = false;
+}
+
+if (gpe.position_collides(this,this.getx(), this.gety() + 1, obj_block)!=IS_NULL )
+{
+    if (gpe.check_keyboard_pressed(gp_up) && this.canJump)
+    {
+        if (gpe.position_collides(this,this.getx(), this.gety() -4, obj_block)==IS_NULL )
+        {
+            if( this.isRunning)
+            {
+                this.yspeed = -16;
+            }
+            else
+            {
+                this.yspeed = -14;
+            }
+            this.canJump = false;
+            this.move_up(4);
+        }
+    }
+}
+else this.yspeed += 0.5;
+var _abs = gpe.abs(this.yspeed);
+var _sign = gpe.sign(this.yspeed);
+var foundEnemy = IS_NULL;
+for (var i = 0; i < _abs; i++)
+{
+    if (gpe.position_collides(this,this.getx(), this.gety() + _sign, obj_block)!=IS_NULL)
+    {
+        // hit ground/ceiling
+            this.yspeed = 0;
+            this.canJump = true
+            break;
+    }
+    else
+    {
+        this.move_down(_sign);
+    }
+}
+
+if( this.isRunning)
+{
+    //this.set_sprite( );
+}
+else if(this.isWalking)
+{
+    //this.set_sprite( );
+}
+else
+{
+    //this.set_sprite();
+}
+
+gpe.center_camera( 1,this.getx(), this.gety() );
+
+if( this.hearts <=0 )
+{
+    gpe.scene_enter( game_over);
+}
+[[[Function=Render]]] 
+if(this.renderSelf)
+{
+    gpe.render_sprite( this.get_sprite(), this.spriteFrame,this.getx(), this.gety(),gpe.sign(this.myDirection) );
+}
+[[[Function=Render HUD]]] 
+gpe.render_text(-1,gpe.get_camera_screen_width(0)-64,32,"FPS:"+gpe.get_fps(),"white",fa_right,fa_top);
+if( gpe.get_current_scene_id() == game_win )
+{
+    gpe.render_text(-1,0,32,"You win!","white",fa_left,fa_top);
+}
+else
+{
+
+    gpe.render_text(-1,0,32,"Destroy all enemies to win!","white",fa_left,fa_top);
+    gpe.render_text(-1,0,96,"Coins:"+this.coins,"white",fa_left,fa_top);
+    gpe.render_text(-1,0,128,"GamePad Button 0 down:"+gpe.check_gamepad_down(0, 0 ),"white",fa_left,fa_top);
+
+
+    for( var i = 0; i < this.hearts; i++)
+    {
+        gpe.render_sprite( spr_heartpiece, 0,i*32,64);
+    }
+}
+[[[SpecialFunction=Scene Start]]] 
+console.log( "Value="+this.get_component("player_Variable234") );
+[[[TimedFunction=Timer0]]] 
+this.can_hurt = true;
+this.renderSelf = true;
+console.log("Can hurt now...");
+[[[TimedFunction=Timer1]]] 
+if( this.can_hurt == false )
+{
+    this.renderSelf = !this.renderSelf;
+}
+this.start_countdown( 1, 5);
+
+[[[CollideFunction=obj_heart_piece]]] 
+other.self_destruct();
+if( this.hearts < this.heatsMax)
+{
+    this.hearts++;
+}
+[[[CollideFunction=obj_slime]]] 
+if( this.gety2() <= other.gety()+other.get_collision_height()/2 )
+{
+    if( this.can_hurt )
+    {
+        other.self_destruct();
+        this.yspeed = -14;
+    }
+}
+else if( this.can_hurt && this.hearts > 0)
+{
+    this.hearts -=1;
+    this.can_hurt = false;
+    this.start_timer( 0, 2);
+}
+[[[CollideFunction=obj_coin]]] 
+other.self_destruct();
+this.coins+=1;
