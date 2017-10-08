@@ -31,3 +31,7 @@ Forums
 Download Newest Version
 - http://gamepencil.pawbyte.com/get-game-pencil-engine/
 
+
+Building Game Pencil From Source Code
+-Guide to learning how to compile Game Pencil from its C++ source 
+-http://gamepencil.pawbyte.com/building-source-code/
