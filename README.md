@@ -8,10 +8,10 @@ Additionally, please report all bugs in the [issues](https://github.com/pawbyte/
 
 Developers
 ----------
-[Nathan H.](https://github.com/theweirdn8)
+[theweirdn8](https://github.com/theweirdn8)
 ![](https://avatars0.githubusercontent.com/u/3193947?v=4&s=100)
 and
-[Chase L.](https://github.com/clee231)
+[clee231](https://github.com/clee231)
 ![](https://avatars0.githubusercontent.com/u/1387910?v=4&s=100)
 
 
