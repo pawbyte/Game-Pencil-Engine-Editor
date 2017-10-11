@@ -9,7 +9,7 @@ Copyright (c) 2014-2017 PawByte.
 Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
+of this software and associated documentation files (the ï¿½Softwareï¿½), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -18,7 +18,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED ï¿½AS ISï¿½, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -27638,19 +27638,24 @@ void GPE_Gui_Engine::apply_logic()
             GPE_Main_TabManager->add_new_tab(MAIN_EDITOR_SETTINGS);
         }
     }
-    else if( userInput->check_keyboard_released(kb_f1) )
+    else if( userInput->check_keyboard_released(kb_ctrl) ||
+            userInput->check_keyboard_released(kb_f) )
     {
         GPE_Main_TabManager->add_new_tab(MAIN_HELP_PAGE);
     }
-    else if( userInput->check_keyboard_released(kb_f2) )
+    else if( userInput->check_keyboard_released(kb_application) ||
+            userInput->check_keyboard_released(kb_comma) )
     {
         GPE_Main_TabManager->add_new_tab(MAIN_EDITOR_SETTINGS);
     }
-    else if( userInput->check_keyboard_released(kb_f5) )
+    else if( userInput->check_keyboard_released(kb_application) ||
+            userInput->check_keyboard_released(kb_r) )
     {
         GPE_MAIN_GUI->export_current_project_html5( userInput->check_keyboard_down(kb_ctrl)==false );
     }
-    if( userInput->check_keyboard_released(kb_f6) )
+    if( userInput->check_keyboard_released(kb_application) ||
+        userInput->check_keyboard_released(kb_ctrl) ||
+        userInput->check_keyboard_released(kb_p) )
     {
         GPE_Main_TabManager->add_new_tab(MAIN_START_PAGE);
     }
@@ -27658,19 +27663,17 @@ void GPE_Gui_Engine::apply_logic()
     {
         GPE_MAIN_GUI->rum_current_project("",GPE_BUILD_HTML5);
     }
-    else if( userInput->check_keyboard_released(kb_f10) )
-    {
-        //GPE_GetFontCacheCount(true);
-    }
-    else if( userInput->check_keyboard_released(kb_f11) )
+    else if( userInput->check_keyboard_released(kb_ctrl) ||
+            userInput->check_keyboard_released(kb_application) || 
+            userInput->check_keyboard_released(kb_f) )
     {
         if( !MAIN_RENDERER->is_fullscreen() )
         {
-            update_temporary_message("Entering Full-Screen","Press [F11] to exit","",1);
+            update_temporary_message("Entering Full-Screen","Press [CTRL - CMD - F] to exit","",1);
         }
         else
         {
-            update_temporary_message("Exiting Full-Screen","Press [F11] to toggle","",1);
+            update_temporary_message("Exiting Full-Screen","Press [CTRL - CMD - F] to toggle","",1);
         }
         MAIN_RENDERER->toggle_fullscreen();
     }
