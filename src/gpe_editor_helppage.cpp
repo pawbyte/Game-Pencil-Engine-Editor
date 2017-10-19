@@ -1,7 +1,7 @@
 /*
 gpe_editor_helppage.cpp
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -66,22 +66,21 @@ gamePencilHelpPageResource::gamePencilHelpPageResource(GPE_ResourceContainer * p
     pencilInformation->set_read_only();
     pencilInformation->isCodeEditor = false;
     pencilInformation->clear_all_lines();
-    pencilInformation->add_line("Name:                  Game Pencil Engine");
-
+    pencilInformation->add_line("Name:                          Game Pencil Engine");
     std::string versionInfoLine = "";
     if( GPE_VERSION_UPDATE_NUMBER==0)
     {
-        versionInfoLine = "Version:               "+float_to_string(GPE_VERSION_DOUBLE_NUMBER)+"0";
+        versionInfoLine = "Version:                       "+float_to_string(GPE_VERSION_DOUBLE_NUMBER)+"0";
     }
     else
     {
-        versionInfoLine = "Version:               "+float_to_string(GPE_VERSION_DOUBLE_NUMBER);
+        versionInfoLine = "Version:                       "+float_to_string(GPE_VERSION_DOUBLE_NUMBER);
     }
     if( GPE_MAIN_GUI!=NULL)
     {
-        if( GPE_MAIN_GUI->editorReleaseType==RELEASE_TYPE_ALPHA)
+        if( GPE_MAIN_GUI->editorReleaseType==RELEASE_TYPE_RC)
         {
-            versionInfoLine+="[Alpha Version]";
+            versionInfoLine+="[Release Candidate]";
         }
         else if( GPE_MAIN_GUI->editorReleaseType==RELEASE_TYPE_BETA)
         {
@@ -89,13 +88,14 @@ gamePencilHelpPageResource::gamePencilHelpPageResource(GPE_ResourceContainer * p
         }
     }
     pencilInformation->add_line( versionInfoLine+"." );
-    pencilInformation->add_line("SDL Version:           "+int_to_string(SDL_MAJOR_VERSION)+"."+int_to_string(SDL_MINOR_VERSION)+"."+int_to_string(SDL_PATCHLEVEL)+"." );
-
-    pencilInformation->add_line("Release Date:          10-05-2017");
-    pencilInformation->add_line("Author:                PawByte");
-    pencilInformation->add_line("Lead Developer:        Nathan Hurde aka theweirdn8");
-    pencilInformation->add_line("Email:                 debug@pawbyte.com");
-    pencilInformation->add_line("Website:               gamepencil.pawbyte.com");
+    pencilInformation->add_line("SDL Version:                   "+int_to_string(SDL_MAJOR_VERSION)+"."+int_to_string(SDL_MINOR_VERSION)+"."+int_to_string(SDL_PATCHLEVEL)+"." );
+    pencilInformation->add_line("PGUI Version:                  "+int_to_string(PGUI_MAJOR_VERSION)+"."+int_to_string(PGUI_MINOR_VERSION)+"."+int_to_string(PGUI_PATCHLEVEL)+"." );
+    pencilInformation->add_line("GPE(runtime) Version:          "+int_to_string(GPE_MAJOR_VERSION)+"."+int_to_string(GPE_MINOR_VERSION)+"."+int_to_string(GPE_PATCHLEVEL)+"." );
+    pencilInformation->add_line("Release Date:                  10-18-2017");
+    pencilInformation->add_line("Author:                        PawByte");
+    pencilInformation->add_line("Lead Developer:                Nathan Hurde aka theweirdn8");
+    pencilInformation->add_line("Email:                         help@pawbyte.com");
+    pencilInformation->add_line("Website:                       gamepencil.pawbyte.com");
     pencilInformation->isCodeEditor = false;
 
     updateCheckerButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/download.png","Download new updates...","Compares latest version to your copy");
@@ -263,7 +263,7 @@ void gamePencilHelpPageResource::preprocess_self(std::string alternatePath)
 
 }
 
-void gamePencilHelpPageResource::process_self(SDL_Rect * viewedSpace , SDL_Rect *cam )
+void gamePencilHelpPageResource::process_self(GPE_Rect * viewedSpace , GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -349,7 +349,7 @@ void gamePencilHelpPageResource::process_self(SDL_Rect * viewedSpace , SDL_Rect 
     }
 }
 
-void gamePencilHelpPageResource::render_self(GPE_Renderer * cRender,SDL_Rect * viewedSpace, SDL_Rect * cam, bool forceRedraw )
+void gamePencilHelpPageResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);

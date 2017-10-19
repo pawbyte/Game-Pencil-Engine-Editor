@@ -34,6 +34,6 @@ SOFTWARE.
 #ifndef PROJECT_BROWSER_H
 #define PROJECT_BROWSER_H
 
-#include "gpe_editor.h"
+#include "gpe_project_resources.h"
 
 #endif

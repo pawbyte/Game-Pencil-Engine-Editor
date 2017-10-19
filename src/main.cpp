@@ -1,7 +1,7 @@
 /*
 main.cpp
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -39,26 +39,14 @@ Attribution required at start of program and in credits.
 SDL 2.0.5 used for this version...
 */
 
-#include "GPE_CIncludes.h"
-#include "GPE_Color_Manager.h"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <ctime>
-#include "sprite.h"
-#include "stateManager.h"
-#include "functions.h"
-#include "color_master.h"
-#include "GPE_Globals.h"
-#include "resources_controller.h"
-#include "timer.h"
-#include "shared_resources.h"
-#include "gameobjectresource.h"
-#include "pathresource.h"
-#include "dictionaryresource.h"
-#include "project_browser.h"
 #include "gpe_editor.h"
+#include "gpe_project_resources.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -74,10 +62,10 @@ bool init()
     record_error("Setting starting cursor...");
     SDL_SetCursor(SDL_CreateSystemCursor( SDL_SYSTEM_CURSOR_WAIT) );
     GPE_IS_LOADING = true;
-    camera.x=0;
-    camera.y=0;
-    camera.w=(Uint16)SCREEN_WIDTH;
-    camera.h=(Uint16)(SCREEN_HEIGHT);
+    GPE_DEFAULT_CAMERA.x=0;
+    GPE_DEFAULT_CAMERA.y=0;
+    GPE_DEFAULT_CAMERA.w=(Uint16)SCREEN_WIDTH;
+    GPE_DEFAULT_CAMERA.h=(Uint16)(SCREEN_HEIGHT);
     record_error("Setting event system..");
     SDL_EventState(SDL_DROPFILE,SDL_ENABLE);
     /*
@@ -204,6 +192,14 @@ int main( int argc, char* args[] )
         record_error("Unable to load fonts!\n");
         gameFailed=1;
     }
+
+    if( !PAW_GUI_START() )
+    {
+        record_error("Unable to start Paw_GUI LIBRARY!\n");
+        gameFailed=1;
+    }
+    GPE_MAIN_GUI = new GPE_Gui_Engine();
+
     if(gameFailed==0)
     {
         record_error("IDE started smoothly.\n");
@@ -216,18 +212,12 @@ int main( int argc, char* args[] )
     }
     fpsTimer = new Timer();
     capTimer = new Timer();
-    GPE_Audio = new GPE_IDE_Audio();
-    GPE_Audio->load_audio_settings( get_user_settings_folder()+"gpe_audio_settings.txt" );
-    if( GPE_Audio->playGPEAudio && GPE_Audio->gpeAudioVolume > 0)
-    {
-        Mix_Volume(0,GPE_Audio->gpeAudioVolume );
-        //Mix_PlayChannel(-1,GPE_Audio->startUpAudio,0);
-    }
+
     //If everything initialized fine
     SDL_Surface *windowIcon = load_surface_image(APP_DIRECTORY_NAME+"gamepencil_icon_128px.png");
     SDL_SetWindowIcon(MAIN_RENDERER->get_window(), windowIcon);
+
     GPE_Main_TabManager = new GPE_TabManager();
-    GPE_MAIN_GUI = new GPE_Gui_Engine();
 
     MAIN_EDITOR_SETTINGS = new gamePencilEditorSettingsResource();
     MAIN_EDITOR_SETTINGS->set_global_rid(-1);
@@ -263,7 +253,7 @@ int main( int argc, char* args[] )
     GPE_Main_Logs->set_height(64);
 
 
-    GPE_MINI_COMPILER = new GPE_Gui_Engine_MiniCompiler();
+    GPE_MAIN_HIGHLIGHTER = new GPE_Syntax_Highlighter();
     //Sets the 1st Game State;
     nextProgramState = STATE_NULL;
     programStateId = STATE_INTRO;
@@ -308,6 +298,7 @@ int main( int argc, char* args[] )
             }
         }
     }
+
     while( programStateId!=STATE_EXIT )
     {
 
@@ -385,10 +376,10 @@ int main( int argc, char* args[] )
         MAIN_TOOLBAR_RECENT_PROJECTS = NULL;
     }
     record_error("Deleting mini-compiler....");
-    if( GPE_MINI_COMPILER!=NULL)
+    if( GPE_MAIN_HIGHLIGHTER!=NULL)
     {
-        delete GPE_MINI_COMPILER;
-        GPE_MINI_COMPILER = NULL;
+        delete GPE_MAIN_HIGHLIGHTER;
+        GPE_MAIN_HIGHLIGHTER = NULL;
     }
     record_error("Deleting gui....");
     if( GPE_MAIN_GUI!=NULL)
@@ -411,6 +402,9 @@ int main( int argc, char* args[] )
     }*/
     record_error("Deleting resource manager....");
     //Clean up
+    record_error("Deleting PAW_GUI ....");
+    PAW_GUI_END();
+    record_error("Deleting resource manager....");
     if( rsm!=NULL)
     {
         rsm->clean_up();

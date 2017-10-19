@@ -1,7 +1,7 @@
 /*
 gpe_editor_settings.cpp
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -31,7 +31,7 @@ SOFTWARE.
 
 */
 
-#include "project_properties.h"
+#include "gpe_project_resources.h"
 
 gamePencilEditorSettingsResource::gamePencilEditorSettingsResource(GPE_ResourceContainer * pFolder)
 {
@@ -46,6 +46,17 @@ gamePencilEditorSettingsResource::gamePencilEditorSettingsResource(GPE_ResourceC
 
     stopCompileOnError = new GPE_CheckBoxBasic("Stop Compiling on first detected error","Exit build phase as soon as error is found",0,0,false);
     useStrictMode = new GPE_CheckBoxBasic("Use Strict Mode[Reccommended]","Use Strict mode to help prevent irregularities and possible bugs",0,0,true);
+
+    //Added as of 1.13 [ BEGIN ]
+    renderSceneBGColor = new GPE_CheckBoxBasic("Preview Scene Background Color","Use to display scene bg color instead of transparent tiles in scene editor",0,0, false);
+    minifyCode = new GPE_CheckBoxBasic("Minify Code","Use to eliminate many linebreaks and un-needed spaces in code base",0,0,true);
+    pluginConstantValues = new GPE_CheckBoxBasic("Plugin Constant Values","Removes constants in codebase and replaces it with their values",0,0,true);
+    obfuscateCode = new GPE_CheckBoxBasic("Obfuscate Code","Obfuscate your games code as a layer of protection",0,0,true);
+    googleClosureCompilerFile = new GPE_TextInputBasic("","");
+    googleClosureCompilerFile->set_label("Google Closure File Location");
+    googleClosureCompilerLoadButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/binoculars.png","Find Editor..",-1,32);
+
+    //Added as of 1.13 [ END ]
     for( int i = 0; i < GPE_EXTERNAL_EDITOR_MAX; i++)
     {
         pencilExternalEditorsFile[i] = new GPE_TextInputBasic("","");
@@ -63,15 +74,15 @@ gamePencilEditorSettingsResource::gamePencilEditorSettingsResource(GPE_ResourceC
 
     editorNormalDelayTime = new GPE_TextInputNumber("Valid from 0 to 60",true,0,60);
     editorNormalDelayTime->set_label("User Input Delay Time: (0-60)");
-    editorNormalDelayTime->set_number( GPE_MAIN_GUI->normalInputDelayTime );
+    editorNormalDelayTime->set_number( MAIN_GUI_SETTINGS->normalInputDelayTime );
 
     editorTextInputDelayTime = new GPE_TextInputNumber("Valid from 0 to 60",true,0,60);
     editorTextInputDelayTime->set_label("Fast Input Delay Time: (0-60)");
-    editorTextInputDelayTime->set_number( GPE_MAIN_GUI->textInputDelayTime );
+    editorTextInputDelayTime->set_number( MAIN_GUI_SETTINGS->textInputDelayTime );
 
     editorTextAreaDelayTime = new GPE_TextInputNumber("Valid from 0 to 60",true,0,60);
     editorTextAreaDelayTime->set_label("Text Area KeyDelay Time: (0-60)");
-    editorTextAreaDelayTime->set_number( GPE_MAIN_GUI->textAreaDelayTime-1 );
+    editorTextAreaDelayTime->set_number( MAIN_GUI_SETTINGS->textAreaDelayTime-1 );
 
     advancedAreaLabel = new GPE_Label_Title("Advanced","Advanged Editor Settings");
     forceFrameRedraw = new GPE_CheckBoxBasic("Redraw every frame[Not reccommended]","Redraws the Editor every frame regardless of user input",0,0,false);
@@ -124,7 +135,7 @@ gamePencilEditorSettingsResource::gamePencilEditorSettingsResource(GPE_ResourceC
     tabSpaceSize = new GPE_TextInputNumber("Range: 1 to 16",true,1,16);
     tabSpaceSize->set_number(4);
     tabSpaceSize->set_label("Tab SIZE in spaces:");
-    tabSpaceCount = 4;
+    MAIN_GUI_SETTINGS->tabSpaceCount = 4;
 
     editorPageList = new GPE_GuiElementList();
     editorPageList->barXPadding = GENERAL_GPE_PADDING;
@@ -252,6 +263,38 @@ gamePencilEditorSettingsResource::~gamePencilEditorSettingsResource()
     {
         delete stopCompileOnError;
         stopCompileOnError = NULL;
+    }
+    if( renderSceneBGColor!=NULL)
+    {
+        delete renderSceneBGColor;
+        renderSceneBGColor = NULL;
+    }
+    if( minifyCode!=NULL)
+    {
+        delete minifyCode;
+        minifyCode = NULL;
+    }
+    if( pluginConstantValues!=NULL)
+    {
+        delete pluginConstantValues;
+        pluginConstantValues = NULL;
+    }
+    if( obfuscateCode!=NULL)
+    {
+        delete obfuscateCode;
+        obfuscateCode = NULL;
+    }
+
+    if( googleClosureCompilerFile!=NULL)
+    {
+        delete googleClosureCompilerFile;
+        googleClosureCompilerFile = NULL;
+    }
+
+    if( googleClosureCompilerLoadButton!=NULL)
+    {
+        delete googleClosureCompilerLoadButton;
+        googleClosureCompilerLoadButton = NULL;
     }
 
     GPE_TextInputBasic * tempInput = NULL;
@@ -381,6 +424,10 @@ void gamePencilEditorSettingsResource::preprocess_self(std::string alternatePath
                             {
                                 autoSaveScreenshots->set_clicked( is_bool( valString ) );
                             }
+                            else if( keyString=="PreviewSceneBGColor")
+                            {
+                                renderSceneBGColor->set_clicked( is_bool( valString ) );
+                            }
                             else if( keyString=="MakeMetaScreenshots")
                             {
                                 makeMetaScreenshots->set_clicked( is_bool( valString ) );
@@ -428,7 +475,7 @@ void gamePencilEditorSettingsResource::preprocess_self(std::string alternatePath
                                 {
                                     textDelTime = 60;
                                 }
-                                GPE_MAIN_GUI->normalInputDelayTime = textDelTime;
+                                MAIN_GUI_SETTINGS->normalInputDelayTime = textDelTime;
                                 editorNormalDelayTime->set_number(textDelTime-1);
                             }
                             else if( keyString=="InputDelayTime")
@@ -442,7 +489,7 @@ void gamePencilEditorSettingsResource::preprocess_self(std::string alternatePath
                                 {
                                     textDelTime = 60;
                                 }
-                                GPE_MAIN_GUI->textInputDelayTime = textDelTime;
+                                MAIN_GUI_SETTINGS->textInputDelayTime = textDelTime;
                                 editorTextInputDelayTime->set_number(textDelTime-1);
                             }
                             else if( keyString=="TextAreaDelayTime")
@@ -456,7 +503,7 @@ void gamePencilEditorSettingsResource::preprocess_self(std::string alternatePath
                                 {
                                     textDelTime = 60;
                                 }
-                                GPE_MAIN_GUI->textAreaDelayTime = textDelTime;
+                                MAIN_GUI_SETTINGS->textAreaDelayTime = textDelTime;
                                 editorTextAreaDelayTime->set_number(textDelTime-1);
                             }
                             else if( keyString=="FPS")
@@ -487,7 +534,7 @@ void gamePencilEditorSettingsResource::preprocess_self(std::string alternatePath
     }
 }
 
-void gamePencilEditorSettingsResource::process_self(SDL_Rect * viewedSpace,SDL_Rect *cam)
+void gamePencilEditorSettingsResource::process_self(GPE_Rect * viewedSpace,GPE_Rect *cam)
 {
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
@@ -519,13 +566,13 @@ void gamePencilEditorSettingsResource::process_self(SDL_Rect * viewedSpace,SDL_R
             editorPageList->add_gui_element(autoSaveScreenshots,true);
             editorPageList->add_gui_element(makeMetaScreenshots,true);
             editorPageList->add_gui_element(showShortProjectNames,true);
+            editorPageList->add_gui_element(renderSceneBGColor,true);
+
             editorPageList->add_gui_element(editorNormalDelayTime,true);
             editorPageList->add_gui_element(editorTextAreaDelayTime,true);
             editorPageList->add_gui_element(editorTextInputDelayTime,true);
 
-            editorPageList->add_gui_element(tabSectionLabel,true);
-            editorPageList->add_gui_element(mouseAutoFindTabs,true);
-            editorPageList->add_gui_element(tabSpaceSize,true);
+
 
             editorPageList->add_gui_element(ideSettingsFPSRateLabel,true);
             editorPageList->add_gui_element(ideSettingsFPSRate,true);
@@ -538,6 +585,10 @@ void gamePencilEditorSettingsResource::process_self(SDL_Rect * viewedSpace,SDL_R
             editorPageList->add_gui_element(launchLastProjectBox,true);
             editorPageList->add_gui_element(projectAutoSaveRateLabel,true);
             editorPageList->add_gui_element(projectAutoSaveRate,true);
+
+            editorPageList->add_gui_element(tabSectionLabel,true);
+            editorPageList->add_gui_element(mouseAutoFindTabs,true);
+            editorPageList->add_gui_element(tabSpaceSize,true);
 
             editorPageList->add_gui_element(advancedAreaLabel,true);
             editorPageList->add_gui_element(clearCacheButton,true);
@@ -561,6 +612,13 @@ void gamePencilEditorSettingsResource::process_self(SDL_Rect * viewedSpace,SDL_R
         {
             editorPageList->add_gui_element(stopCompileOnError,true);
             editorPageList->add_gui_element(useStrictMode,true);
+            /* To be used in future Versions hopefully...
+            editorPageList->add_gui_element(minifyCode,true);
+            editorPageList->add_gui_element(pluginConstantValues,true);
+            editorPageList->add_gui_element(obfuscateCode,true);
+            editorPageList->add_gui_element(googleClosureCompilerFile,false);
+            editorPageList->add_gui_element(googleClosureCompilerLoadButton,true);
+            */
             editorPageList->add_gui_element(confirmResourceButton,false);
             editorPageList->add_gui_element(cancelResourceButton,true);
         }
@@ -586,7 +644,7 @@ void gamePencilEditorSettingsResource::process_self(SDL_Rect * viewedSpace,SDL_R
             {
                 if( pencilExternalEditorsLoadButton[i]->is_clicked() )
                 {
-                    std::string newFileName = GPE_GetOpenFileName("Find External File Editor","",GPE_MAIN_GUI->fileOpenDefaultDir);
+                    std::string newFileName = GPE_GetOpenFileName("Find External File Editor","",MAIN_GUI_SETTINGS->fileOpenDefaultDir);
                     if( file_exists(newFileName) )
                     {
                         pencilExternalEditorsFile[i]->set_string(newFileName);
@@ -610,7 +668,7 @@ void gamePencilEditorSettingsResource::process_self(SDL_Rect * viewedSpace,SDL_R
             {
                 foundDelTime = 60;
             }
-            GPE_MAIN_GUI->textAreaDelayTime = foundDelTime+1;
+            MAIN_GUI_SETTINGS->textAreaDelayTime = foundDelTime+1;
             editorTextAreaDelayTime->set_number(foundDelTime);
 
             foundDelTime = editorTextInputDelayTime->get_held_number();
@@ -622,7 +680,7 @@ void gamePencilEditorSettingsResource::process_self(SDL_Rect * viewedSpace,SDL_R
             {
                 foundDelTime = 60;
             }
-            GPE_MAIN_GUI->textInputDelayTime = foundDelTime;
+            MAIN_GUI_SETTINGS->textInputDelayTime = foundDelTime;
             editorTextInputDelayTime->set_number(foundDelTime-1);
 
             foundDelTime = editorNormalDelayTime->get_held_number();
@@ -634,7 +692,7 @@ void gamePencilEditorSettingsResource::process_self(SDL_Rect * viewedSpace,SDL_R
             {
                 foundDelTime = 60;
             }
-            GPE_MAIN_GUI->normalInputDelayTime = foundDelTime;
+            MAIN_GUI_SETTINGS->normalInputDelayTime = foundDelTime;
             editorNormalDelayTime->set_number(foundDelTime-1);
 
 
@@ -651,7 +709,7 @@ void gamePencilEditorSettingsResource::process_self(SDL_Rect * viewedSpace,SDL_R
     }
 }
 
-void gamePencilEditorSettingsResource::render_self(GPE_Renderer * cRender,SDL_Rect * viewedSpace,SDL_Rect *cam, bool forceRedraw)
+void gamePencilEditorSettingsResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace,GPE_Rect *cam, bool forceRedraw)
 {
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
@@ -663,16 +721,16 @@ void gamePencilEditorSettingsResource::render_self(GPE_Renderer * cRender,SDL_Re
             editorPageTabBar->render_self(cRender,viewedSpace,cam,forceRedraw);
             render_rectangle(cRender,editorPageTabBar->get_xpos(),editorPageTabBar->get_y2pos(),viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Header_Color,false);
         }
-        SDL_RenderSetViewport(cRender->get_renderer(),NULL);
-        SDL_RenderSetViewport(cRender->get_renderer(),&subViewedSpace);
+        cRender->reset_viewpoint();
+        cRender->set_viewpoint(&subViewedSpace);
         editorPageList->render_self(cRender,&subViewedSpace,cam, forceRedraw);
         /*
         if(editorPageTabBar->get_selected_name()=="Platforms")
         {
             exportSettingsBar->render_self(cRender,&subViewedSpace,cam,forceRedraw);
         }*/
-        SDL_RenderSetViewport(cRender->get_renderer(),NULL);
-        SDL_RenderSetViewport(cRender->get_renderer(),viewedSpace);
+        cRender->reset_viewpoint();
+        cRender->set_viewpoint( viewedSpace);
     }
 }
 
@@ -694,7 +752,7 @@ void gamePencilEditorSettingsResource::save_resource(std::string alternatePath, 
             newSaveDataFile << "#    Game Pencil Engine Project Local Settings DataFile \n";
             newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
             newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to debug@pawbyte.com . \n";
+            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#    --------------------------------------------------  # \n";
@@ -715,6 +773,7 @@ void gamePencilEditorSettingsResource::save_resource(std::string alternatePath, 
             newSaveDataFile << "NormalDelayTime=" << editorNormalDelayTime->get_held_number() << "\n";
             newSaveDataFile << "BrowseHiddenFiles=" << showHiddenFilesInBrowser->is_clicked() << "\n";
             newSaveDataFile << "ForceRedraw=" << forceFrameRedraw->is_clicked() << "\n";
+            newSaveDataFile << "PreviewSceneBGColor=" << renderSceneBGColor->is_clicked() << "\n";
             newSaveDataFile << "ShowCompileAtFirstError=" << stopCompileOnError->is_clicked() << "\n";
             newSaveDataFile << "UseStrictMode=" << useStrictMode->is_clicked() << "\n";
             newSaveDataFile << "FPS="+int_to_string( ideSettingsFPSRate->get_selected_value() ) << "\n";

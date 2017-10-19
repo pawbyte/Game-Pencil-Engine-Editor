@@ -1,7 +1,7 @@
 /*
 pathresource.cpp
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -31,7 +31,7 @@ SOFTWARE.
 
 */
 
-#include "gpe_editor.h"
+#include "pathresource.h"
 
 GPE_PathPoint::GPE_PathPoint(int pointX, int pointY, float speed)
 {
@@ -262,7 +262,7 @@ bool gamePathResource::export_and_play_native( bool launchProgram )
     return false;
 }
 
-bool gamePathResource::get_mouse_coords(SDL_Rect * viewedSpace, SDL_Rect * cam)
+bool gamePathResource::get_mouse_coords(GPE_Rect * viewedSpace, GPE_Rect * cam)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -278,7 +278,7 @@ bool gamePathResource::get_mouse_coords(SDL_Rect * viewedSpace, SDL_Rect * cam)
         {
             sceneMouseXPos = (userInput->mouse_x-sceneEditorView.x-viewedSpace->x)/sceneZoomAmount +scenePreviewRect.x;
             sceneMouseYPos = (userInput->mouse_y-sceneEditorView.y-viewedSpace->y)/sceneZoomAmount +scenePreviewRect.y;
-            GPE_MAIN_GUI->update_tooltip( "Mouse( "+int_to_string(sceneMouseXPos )+" , "+int_to_string(sceneMouseYPos)+")" );
+            MAIN_OVERLAY->update_tooltip( "Mouse( "+int_to_string(sceneMouseXPos )+" , "+int_to_string(sceneMouseYPos)+")" );
             return true;
         }
     }
@@ -407,7 +407,7 @@ void gamePathResource::handle_scrolling()
     }
 }
 
-void gamePathResource::integrate_into_synthax()
+void gamePathResource::integrate_into_syntax()
 {
 
 }
@@ -559,7 +559,7 @@ void gamePathResource::preprocess_self(std::string alternatePath )
     }
 }
 
-void gamePathResource::process_self(SDL_Rect * viewedSpace ,SDL_Rect *cam )
+void gamePathResource::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -941,7 +941,7 @@ bool gamePathResource::remove_point( int pointId )
     return false;
 }
 
-void gamePathResource::render_self(GPE_Renderer * cRender,SDL_Rect * viewedSpace, SDL_Rect *cam , bool forceRedraw )
+void gamePathResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam , bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -1160,7 +1160,7 @@ void gamePathResource::save_resource(std::string alternatePath, int backupId )
             newSaveDataFile << "#    Game Pencil Engine Project Path DataFile \n";
             newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
             newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to debug@pawbyte.com . \n";
+            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#    --------------------------------------------------  # \n";

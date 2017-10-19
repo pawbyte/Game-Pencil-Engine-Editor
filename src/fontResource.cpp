@@ -1,7 +1,7 @@
 /*
 fontResource.cpp
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -417,7 +417,7 @@ void fontResource::prerender_self(GPE_Renderer * cRender)
     }
 }
 
-void fontResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
+void fontResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -501,7 +501,7 @@ void fontResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
         }
         if( loadResourceButton->is_clicked() )
         {
-            std::string newFontFile = GPE_GetOpenFileName("Load In Custom Font...","",GPE_MAIN_GUI->fileOpenFontDir );
+            std::string newFontFile = GPE_GetOpenFileName("Load In Custom Font...","",MAIN_GUI_SETTINGS->fileOpenFontDir );
             if( (int)newFontFile.size() > 3)
             {
                 load_font( newFontFile, fontSizeField->get_held_number() );
@@ -514,7 +514,7 @@ void fontResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
     }
 }
 
-void fontResource::render_self(GPE_Renderer * cRender,SDL_Rect *viewedSpace,SDL_Rect *cam,bool forceRedraw )
+void fontResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -590,7 +590,7 @@ void fontResource::save_resource(std::string alternatePath, int backupId)
             newSaveDataFile << "#    Game Pencil Engine Project Font DataFile \n";
             newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
             newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to debug@pawbyte.com . \n";
+            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#    --------------------------------------------------  # \n";
