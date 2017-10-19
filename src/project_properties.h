@@ -1,7 +1,7 @@
 /*
 project_properties.h
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -34,6 +34,6 @@ SOFTWARE.
 #ifndef GPE_PROJECT_PROOPERTIES_H
 #define GPE_PROJECT_PROOPERTIES_H
 
-#include "gpe_editor.h"
+#include "gpe_project_resources.h"
 
 #endif

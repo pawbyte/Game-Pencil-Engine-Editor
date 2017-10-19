@@ -1,7 +1,7 @@
 /*
 spriteresource.cpp
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -390,7 +390,9 @@ void spriteResource::load_image(std::string newFileName, bool autoProcess)
                     spriteInEditor->fileName = newFileName;
 
                     spriteInEditor->spriteImages.clear();
-                    SDL_Rect newBox = {0,0,spriteInEditor->spriteTexture->get_width(),spriteInEditor->spriteTexture->get_height() };
+                    GPE_Rect newBox;
+                    newBox.w = spriteInEditor->spriteTexture->get_width();
+                    newBox.h = spriteInEditor->spriteTexture->get_height();
                     spriteInEditor->spriteImages.push_back(newBox);
                     if( autoProcess )
                     {
@@ -639,7 +641,11 @@ void spriteResource::process_data_fields(float versionToProcess)
 
             int hPadding = spriteDataFields[sprHPixelPadding]->make_valid_number(0);
             int vPadding = spriteDataFields[sprVPixelPadding]->make_valid_number(0);
-            SDL_Rect tempRect = {fPixelOffsetH,fPixelOffsetV,fWidth,fHeight};
+            GPE_Rect tempRect;
+            tempRect.x = fPixelOffsetH;
+            tempRect.y = fPixelOffsetV;
+            tempRect.w = fWidth;
+            tempRect.h = fHeight;
             if( fWidth > 0 && fHeight > 0 && hPadding>=0 && vPadding >=0)
             {
                 spriteInEditor->spriteImages.clear();
@@ -656,7 +662,12 @@ void spriteResource::process_data_fields(float versionToProcess)
                         {
                             if( spritesAdded <  maxSpriteFrames )
                             {
-                                spriteInEditor->spriteImages.push_back( {j,i,fWidth,fHeight} );
+                                GPE_Rect newRect;
+                                newRect.x = j;
+                                newRect.y = i;
+                                newRect.w = fWidth;
+                                newRect.h = fHeight;
+                                spriteInEditor->spriteImages.push_back( newRect );
                                 spritesAdded++;
                             }
                         }
@@ -668,7 +679,12 @@ void spriteResource::process_data_fields(float versionToProcess)
                     {
                         for( j = startX; j < spriteInEditor->spriteTexture->get_width();  j += fWidth+hPadding)
                         {
-                            spriteInEditor->spriteImages.push_back( {j,i,fWidth,fHeight} );
+                            GPE_Rect newRect;
+                            newRect.x = j;
+                            newRect.y = i;
+                            newRect.w = fWidth;
+                            newRect.h = fHeight;
+                            spriteInEditor->spriteImages.push_back( newRect );
                             spritesAdded++;
                         }
                     }
@@ -706,7 +722,7 @@ void spriteResource::prerender_self(GPE_Renderer * cRender )
     }
 }
 
-void spriteResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
+void spriteResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -809,7 +825,7 @@ void spriteResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
             {
                 if( loadResourceButton->is_clicked() )
                 {
-                    std::string newFileName = GPE_GetOpenFileName("Load Your Sprite Image","Image",GPE_MAIN_GUI->fileOpenSpriteDir);
+                    std::string newFileName = GPE_GetOpenFileName("Load Your Sprite Image","Image",MAIN_GUI_SETTINGS->fileOpenSpriteDir);
                     if( (int)newFileName.size() > 3 && file_exists(newFileName) )
                     {
                         bool autoProcessData = false;
@@ -1168,7 +1184,7 @@ void spriteResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
     }
 }
 
-void spriteResource::render_self(GPE_Renderer * cRender,SDL_Rect *viewedSpace,SDL_Rect *cam,bool forceRedraw )
+void spriteResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace,GPE_Rect * cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -1179,7 +1195,7 @@ void spriteResource::render_self(GPE_Renderer * cRender,SDL_Rect *viewedSpace,SD
         {
             render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
         }
-        SDL_Rect spritePreviewCam = {0,0,0,0};
+        GPE_Rect spritePreviewCam;
         spritePreviewCam.x = viewedSpace->x+editorPaneList->get_x2pos();
         spritePreviewCam.y = viewedSpace->y+GENERAL_GPE_PADDING;
         spritePreviewCam.w = viewedSpace->x+viewedSpace->w-spritePreviewCam.x - GENERAL_GPE_PADDING;
@@ -1188,7 +1204,7 @@ void spriteResource::render_self(GPE_Renderer * cRender,SDL_Rect *viewedSpace,SD
         {
             //renders the right side of the area, mainly preview of sprite
         }
-        SDL_RenderSetViewport( cRender->get_renderer(), &spritePreviewCam );
+        cRender->set_viewpoint(&spritePreviewCam );
 
         if( (forceRedraw || editorMode==0) && GPE_TEXTURE_TRANSPARENT_BG!=NULL)
         {
@@ -1264,7 +1280,7 @@ void spriteResource::render_self(GPE_Renderer * cRender,SDL_Rect *viewedSpace,SD
                     int i = 0;
                     int rectanglesRendered = 0;
                     int maxSpriteFrames = spriteDataFields[0]->get_held_number();
-                    SDL_Rect * tempRect = NULL;
+                    GPE_Rect * tempRect = NULL;
                     for( i = 0; i < (int)spriteInEditor->spriteImages.size(); i++)
                     {
                         if( maxSpriteFrames < 0 || ( rectanglesRendered < maxSpriteFrames) )
@@ -1278,7 +1294,7 @@ void spriteResource::render_self(GPE_Renderer * cRender,SDL_Rect *viewedSpace,SD
             }
             process_data_fields(GPE_VERSION_DOUBLE_NUMBER);
         }
-        SDL_RenderSetViewport( cRender->get_renderer(), NULL );
+        cRender->reset_viewpoint();
         if(forceRedraw )
         {
             if( spritePreviewIsRendered)
@@ -1302,7 +1318,7 @@ void spriteResource::render_self(GPE_Renderer * cRender,SDL_Rect *viewedSpace,SD
                 "Zoom Level: "+double_to_string(zoomLevel*100 )+"%",
                                 GPE_MAIN_TEMPLATE->Text_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
         }
-        SDL_RenderSetViewport( cRender->get_renderer(), viewedSpace );
+        cRender->set_viewpoint( viewedSpace );
         editorPaneList->render_self(cRender,viewedSpace,cam, forceRedraw || editorMode==0);
 
     }
@@ -1341,7 +1357,7 @@ void spriteResource::save_resource(std::string alternatePath, int backupId)
             newSaveDataFile << "#    Game Pencil Engine Project Game Sprite DataFile \n";
             newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
             newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to debug@pawbyte.com . \n";
+            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#    --------------------------------------------------  # \n";

@@ -1,7 +1,7 @@
 /*
 pathresource.h
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -34,7 +34,7 @@ SOFTWARE.
 #ifndef GPE_PATH_RESOURCE_H
 #define GPE_PATH_RESOURCE_H
 
-#include "gpe_editor.h"
+#include "gpe_project_resources.h"
 
 #endif
 

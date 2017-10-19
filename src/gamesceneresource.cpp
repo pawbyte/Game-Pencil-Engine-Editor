@@ -1,7 +1,7 @@
 /*
 gamesceneresource.cpp
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -31,7 +31,7 @@ SOFTWARE.
 
 */
 
-#include "gpe_editor.h"
+#include "gpe_project_resources.h"
 
 GPE_SceneTexture::GPE_SceneTexture(GPE_ResourceContainer *pFolder)
 {
@@ -1376,7 +1376,7 @@ sceneLayer * gameSceneResource::find_layer( int layerIdToFind )
     return NULL;
 }
 
-bool gameSceneResource::get_mouse_coords(SDL_Rect * viewedSpace, SDL_Rect * cam)
+bool gameSceneResource::get_mouse_coords(GPE_Rect * viewedSpace, GPE_Rect * cam)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -2191,7 +2191,7 @@ void gameSceneResource::inherit_components(GPE_SceneGameObject * objectToInherit
 }
 
 
-void gameSceneResource::manage_components(SDL_Rect *viewedSpace ,SDL_Rect *cam )
+void gameSceneResource::manage_components(GPE_Rect * viewedSpace ,GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -2337,7 +2337,7 @@ void gameSceneResource::manage_components(SDL_Rect *viewedSpace ,SDL_Rect *cam )
     }
 }
 
-void gameSceneResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
+void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 {
     currentLayer = NULL;
     saveResourceButton->disable_self();
@@ -2505,6 +2505,10 @@ void gameSceneResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
                 //editorPaneList->add_gui_element(isometricCheckBox,true);
                 editorPaneList->add_gui_element(checkBoxIsContinuous,true);
                 editorPaneList->add_gui_element(sceneBackgroundColor,true);
+                if( MAIN_EDITOR_SETTINGS!=NULL && MAIN_EDITOR_SETTINGS->renderSceneBGColor!=NULL)
+                {
+                    editorPaneList->add_gui_element(MAIN_EDITOR_SETTINGS->renderSceneBGColor,true);
+                }
                 editorPaneList->add_gui_element(confirmResourceButton,true);
                 editorPaneList->add_gui_element(cancelResourceButton,true);
                 editorPaneList->set_maxed_out_width();
@@ -2953,7 +2957,7 @@ void gameSceneResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
                                                                     }
                                                                     else
                                                                     {
-                                                                    //    GPE_MAIN_GUI->update_tooltip("Unable to find scene tile to edit...");
+                                                                    //    MAIN_OVERLAY->update_tooltip("Unable to find scene tile to edit...");
                                                                     }
                                                                     newTileX+=1;
                                                                     tileRowItr+=1;
@@ -2967,7 +2971,7 @@ void gameSceneResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
                                                             }
                                                             else
                                                             {
-                                                                GPE_MAIN_GUI->update_tooltip("Unknown scene layer to edit...");
+                                                                MAIN_OVERLAY->update_tooltip("Unknown scene layer to edit...");
                                                             }
                                                         }
                                                     }
@@ -3440,7 +3444,7 @@ void gameSceneResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
                                             {
                                                 if( userInput->check_mouse_released(0) )
                                                 {
-                                                    GPE_MAIN_GUI->update_tooltip("Placing Object");
+                                                    MAIN_OVERLAY->update_tooltip("Placing Object");
                                                     GPE_SceneGameObject * newPlacedObject = new GPE_SceneGameObject();
                                                     if( showObjLines)
                                                     {
@@ -3600,7 +3604,7 @@ void gameSceneResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
                                             {
                                                 if( (lastCreatedObjXPos < 0 || lastCreatedObjYPos < 0 || lastCreatedObjTypeId < 0) || sceneMouseXPos!=lastCreatedObjXPos && lastCreatedObjXPos|| sceneMouseYPos!=lastCreatedObjYPos || lastCreatedObjTypeId!=objTypeBeingPlaced )
                                                 {
-                                                    GPE_MAIN_GUI->update_tooltip("Placing Object");
+                                                    MAIN_OVERLAY->update_tooltip("Placing Object");
                                                     GPE_SceneGameObject * newPlacedObject = new GPE_SceneGameObject();
                                                     newPlacedObject->objRect.x = sceneMouseXPos;
                                                     newPlacedObject->objRect.y = sceneMouseYPos;
@@ -3846,7 +3850,7 @@ void gameSceneResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
     }
 }
 
-void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,SDL_Rect * viewedSpace, SDL_Rect * cam, GPE_Rect * renderZone, GPE_Rect * sceneCamera,double renderScale, bool showEditorPreviews,  bool checkListDependent, bool forceRedraw )
+void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam, GPE_Rect * renderZone, GPE_Rect * sceneCamera,double renderScale, bool showEditorPreviews,  bool checkListDependent, bool forceRedraw )
 {
     if( forceRedraw)
     {
@@ -3869,7 +3873,9 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,SDL_Rect * vi
         sceneLayer* cTempLayer = NULL;
         GPE_SceneTile* fSceneTile = NULL;
         GPE_SceneTexture * currBg = NULL;
-        SDL_Rect tempBgRect = {0,0,32,32};
+        GPE_Rect tempBgRect;
+        tempBgRect.w = 32;
+        tempBgRect.h = 32;
         GPE_ResourceContainer * texTypeContainer = NULL;
 
         GPE_ResourceContainer * allObjsFolder = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_OBJECT]+"s");
@@ -3877,7 +3883,9 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,SDL_Rect * vi
 
         GPE_ResourceContainer * allTexturesFolder = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_TEXTURE]+"s");
         GPE_SceneGameObject * cGGO = NULL;
-        SDL_Rect tempObjRect = {0,0,32,32};
+        GPE_Rect tempObjRect;
+        tempObjRect.w = 32;
+        tempObjRect.h = 32;
         GPE_ResourceContainer * objTypeContainer = NULL;
         GPE_ResourceContainer * sprTypeContainer = NULL;
         GPE_ResourceContainer * allSpritesFolder = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_SPRITE]+"s");
@@ -3912,7 +3920,7 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,SDL_Rect * vi
             }
         }
         */
-        SDL_Rect foundTsRect;
+        GPE_Rect foundTsRect;
         int cTileXPos = 0;
         int cTileYPos = 0;
         int currentSceneBGCount = 0;
@@ -4024,33 +4032,33 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,SDL_Rect * vi
                                                 }
                                                 else
                                                 {
-                                                    GPE_MAIN_GUI->update_tooltip("Texture held image not found!");
+                                                    MAIN_OVERLAY->update_tooltip("Texture held image not found!");
                                                 }
                                             }
                                             else
                                             {
-                                                GPE_MAIN_GUI->update_tooltip("Texture not loading properly");
+                                                MAIN_OVERLAY->update_tooltip("Texture not loading properly");
                                             }
                                         }
                                         else
                                         {
-                                            GPE_MAIN_GUI->update_tooltip("Texture not found");
+                                            MAIN_OVERLAY->update_tooltip("Texture not found");
                                         }
                                     }
                                     else
                                     {
-                                        //GPE_MAIN_GUI->update_tooltip("Texture id <=0");
+                                        //MAIN_OVERLAY->update_tooltip("Texture id <=0");
                                     }
                                 }
                                 else
                                 {
-                                    //GPE_MAIN_GUI->update_tooltip("CurrentBG = NULL ");
+                                    //MAIN_OVERLAY->update_tooltip("CurrentBG = NULL ");
                                 }
                             }
                         }
                         else
                         {
-                            //GPE_MAIN_GUI->update_tooltip("Empty Background Layer");
+                            //MAIN_OVERLAY->update_tooltip("Empty Background Layer");
                         }
                     }
                     else if( cTempLayer->layerType==LAYER_TYPE_OBJECTS)
@@ -4157,7 +4165,7 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,SDL_Rect * vi
     }
 }
 
-void gameSceneResource::render_self(GPE_Renderer * cRender,SDL_Rect * viewedSpace, SDL_Rect * cam,bool forceRedraw )
+void gameSceneResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -4180,7 +4188,9 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,SDL_Rect * viewedSpac
     //renders the background
 
     int bgI = 0;
-    SDL_Rect tempObjRect = {0,0,32,32};
+    GPE_Rect tempObjRect;
+    tempObjRect.w = 32;
+    tempObjRect.h = 32;
     if( forceRedraw && allTexturesFolder!=NULL)
     {
         if( sceneBackgroundColor!=NULL)
@@ -4193,7 +4203,32 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,SDL_Rect * viewedSpac
                 bgRenderColor = NULL;
             }
         }
+
+        if( (forceRedraw || editorMode==0) && GPE_TEXTURE_TRANSPARENT_BG!=NULL)
+        {
+            if( MAIN_EDITOR_SETTINGS!=NULL && MAIN_EDITOR_SETTINGS->renderSceneBGColor!=NULL && MAIN_EDITOR_SETTINGS->renderSceneBGColor->is_clicked()==false )
+            {
+                for(int iPV= editorView.x; iPV<= editorView.x+viewedSpace->w;iPV+=GPE_TEXTURE_TRANSPARENT_BG->get_width() )
+                {
+                    for(int jPV= editorView.y; jPV<= editorView.y+editorView.h; jPV+=GPE_TEXTURE_TRANSPARENT_BG->get_height() )
+                    {
+                        GPE_TEXTURE_TRANSPARENT_BG->render_tex(cRender,iPV-editorView.x,jPV-editorView.y,NULL,NULL);
+                    }
+                }
+            }
+        }
+
         render_scene_layers(cRender,viewedSpace,cam);
+
+        GPE_Color * gridLineColor = c_blgray;
+        if( MAIN_EDITOR_SETTINGS!=NULL && MAIN_EDITOR_SETTINGS->renderSceneBGColor!=NULL && MAIN_EDITOR_SETTINGS->renderSceneBGColor->is_clicked()==false )
+        {
+            gridLineColor = c_ltblue;
+        }
+        else
+        {
+            gridLineColor = c_olive;
+        }
 
         if( selectedSceneObject!=NULL)
         {
@@ -4240,7 +4275,7 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,SDL_Rect * viewedSpac
                     for( i = ( (int)sceneEditorViewRect.x/objSnapX)*objSnapX; i <= std::min( (int)sceneRect.w, (int)( sceneEditorViewRect.x+(sceneEditorViewRect.w+objSnapX)/sceneZoomAmount) ); i+=objSnapX )
                     {
                         gridX1 = floor( (i*sceneZoomAmount+editorView.x-sceneEditorViewRect.x*sceneZoomAmount) );
-                        render_vertical_line_color(cRender,gridX1,gridY1,gridY2,c_blgray);
+                        render_vertical_line_color(cRender,gridX1,gridY1,gridY2,gridLineColor);
                     }
                     gridX1 = editorView.x;
                     if( sceneZoomAmount <=1)
@@ -4254,7 +4289,7 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,SDL_Rect * viewedSpac
                     for( j = ( (int)sceneEditorViewRect.y/objSnapY)*objSnapY; j <= std::min( (int)sceneRect.h, (int)( sceneEditorViewRect.y+(sceneEditorViewRect.h+objSnapY)/sceneZoomAmount) ); j+=objSnapY )
                     {
                         gridY1 = floor( (j*sceneZoomAmount+editorView.y-sceneEditorViewRect.y*sceneZoomAmount) );
-                        render_horizontal_line_color(cRender,gridY1,gridX1,gridX2,c_blgray);
+                        render_horizontal_line_color(cRender,gridY1,gridX1,gridX2,gridLineColor);
                     }
                 }
 
@@ -4325,7 +4360,7 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,SDL_Rect * viewedSpac
                     for( i = ( (int)sceneEditorViewRect.x/lvlTileWidth)*lvlTileWidth; i <= std::min( (int)sceneRect.w, (int)( sceneEditorViewRect.x+sceneEditorViewRect.w/sceneZoomAmount) ); i+=lvlTileWidth )
                     {
                         gridX1 = floor( editorView.x+i*sceneZoomAmount-sceneEditorViewRect.x*sceneZoomAmount );
-                        render_vertical_line_color(cRender,gridX1,gridY1,gridY2,c_blgray);
+                        render_vertical_line_color(cRender,gridX1,gridY1,gridY2,gridLineColor);
                     }
                     gridX1 = editorView.x;
                     if( sceneZoomAmount <=1)
@@ -4339,7 +4374,7 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,SDL_Rect * viewedSpac
                     for( j =(int)(sceneEditorViewRect.y/lvlTileHeight)*lvlTileHeight; j <= std::min( (int)sceneRect.h, (int)( sceneEditorViewRect.y+sceneEditorViewRect.h/sceneZoomAmount) ); j+=lvlTileHeight )
                     {
                         gridY1 = floor( editorView.y+j*sceneZoomAmount-sceneEditorViewRect.y*sceneZoomAmount );
-                        render_horizontal_line_color(cRender,gridY1,gridX1,gridX2,c_blgray);
+                        render_horizontal_line_color(cRender,gridY1,gridX1,gridX2,gridLineColor);
                     }
                 }
             }
@@ -4458,7 +4493,7 @@ void gameSceneResource::save_resource(std::string alternatePath, int backupId)
             newSceneFile << "#    Game Pencil Engine Project GameScene File \n";
             newSceneFile << "#    Created automatically via the Game Pencil Engine Editor \n";
             newSceneFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSceneFile << "#    If you have any problems reading this file please report it to debug@pawbyte.com . \n";
+            newSceneFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
             newSceneFile << "#     \n";
             newSceneFile << "#     \n";
             newSceneFile << "#    --------------------------------------------------  # \n";

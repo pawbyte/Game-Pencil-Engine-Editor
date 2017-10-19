@@ -1,7 +1,7 @@
 /*
 gameobjectresource.cpp
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -297,7 +297,7 @@ gameObjectResource::gameObjectResource(GPE_ResourceContainer * pFolder)
     specialFunctionsSelector->set_width(editorButtonBar->get_width() );
     for( i= 0 ; i < DEFAULT_SPECIAL_FUNCTIONS_COUNT; i++)
     {
-        specialFunctionsSelector->add_option(DEFAULT_OBJECT_SPECIALS_NAMES[i],NULL,NULL);
+        specialFunctionsSelector->add_option(DEFAULT_OBJECT_SPECIALS_NAMES[i] );
         specialObjectFunctions[i] = new GPE_TextAreaInputBasic(true);
     }
 
@@ -671,9 +671,9 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
 
         if( !objectFunctions[0]->compile_into_code( fileTarget, leftTabAmount+2,true,true) )
         {
-            for( iErrorLine=0; iErrorLine < (int)objectFunctions[0]->foundSynthaxErrors.size(); iErrorLine++)
+            for( iErrorLine=0; iErrorLine < (int)objectFunctions[0]->foundSyntaxErrors.size(); iErrorLine++)
             {
-                GPE_Main_Logs->log_build_error(get_name()+"'s Constructor: "+objectFunctions[0]->foundSynthaxErrors[0] );
+                GPE_Main_Logs->log_build_error(get_name()+"'s Constructor: "+objectFunctions[0]->foundSyntaxErrors[0] );
                 buildSuccessful = false;
             }
         }
@@ -685,9 +685,9 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
                 *fileTarget << nestedTabsStrObjFunc << "    {\n";
                 if( !objectFunctions[iFunc]->compile_into_code( fileTarget, leftTabAmount+3,true,true) )
                 {
-                    for( iErrorLine=0; iErrorLine < (int)objectFunctions[iFunc]->foundSynthaxErrors.size(); iErrorLine++)
+                    for( iErrorLine=0; iErrorLine < (int)objectFunctions[iFunc]->foundSyntaxErrors.size(); iErrorLine++)
                     {
-                        GPE_Main_Logs->log_build_error(get_name()+"'s "+DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[iFunc]+" function: "+objectFunctions[iFunc]->foundSynthaxErrors[iErrorLine] );
+                        GPE_Main_Logs->log_build_error(get_name()+"'s "+DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[iFunc]+" function: "+objectFunctions[iFunc]->foundSyntaxErrors[iErrorLine] );
                     }
                     buildSuccessful = false;
                     if( MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked() )
@@ -724,9 +724,9 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
                 *fileTarget << nestedTabsStrObjFunc << "    {\n";
                 if( !timedObjectFunctions[iFunc]->compile_into_code( fileTarget, leftTabAmount+3,true,true) )
                 {
-                    for( iErrorLine=0; iErrorLine < (int)timedObjectFunctions[iFunc]->foundSynthaxErrors.size(); iErrorLine++)
+                    for( iErrorLine=0; iErrorLine < (int)timedObjectFunctions[iFunc]->foundSyntaxErrors.size(); iErrorLine++)
                     {
-                        GPE_Main_Logs->log_build_error(get_name()+"'s timedFunction["+int_to_string(iFunc)+"]: "+timedObjectFunctions[iFunc]->foundSynthaxErrors[iErrorLine] );
+                        GPE_Main_Logs->log_build_error(get_name()+"'s timedFunction["+int_to_string(iFunc)+"]: "+timedObjectFunctions[iFunc]->foundSyntaxErrors[iErrorLine] );
                     }
                     buildSuccessful = false;
                     if( MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked() )
@@ -761,9 +761,9 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
                 *fileTarget << nestedTabsStrObjFunc << "    {\n";
                 if( !specialObjectFunctions[iFunc]->compile_into_code( fileTarget, leftTabAmount+3,true,true) )
                 {
-                    for( iErrorLine=0; iErrorLine < (int)timedObjectFunctions[iFunc]->foundSynthaxErrors.size(); iErrorLine++)
+                    for( iErrorLine=0; iErrorLine < (int)timedObjectFunctions[iFunc]->foundSyntaxErrors.size(); iErrorLine++)
                     {
-                        GPE_Main_Logs->log_build_error(get_name()+"'s "+DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[iFunc]+" function: "+timedObjectFunctions[iFunc]->foundSynthaxErrors[iErrorLine] );
+                        GPE_Main_Logs->log_build_error(get_name()+"'s "+DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[iFunc]+" function: "+timedObjectFunctions[iFunc]->foundSyntaxErrors[iErrorLine] );
                     }
                     buildSuccessful = false;
                     if( MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked() )
@@ -800,9 +800,9 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
                         *fileTarget << nestedTabsStrObjFunc << "    {\n";
                         if( !cColContainer->textEditor->compile_into_code( fileTarget, leftTabAmount+3,true,true) )
                         {
-                            for( iErrorLine=0; iErrorLine < (int)cColContainer->textEditor->foundSynthaxErrors.size(); iErrorLine++)
+                            for( iErrorLine=0; iErrorLine < (int)cColContainer->textEditor->foundSyntaxErrors.size(); iErrorLine++)
                             {
-                                GPE_Main_Logs->log_build_error( get_name()+"'s Collision Function["+otherObjResContainer->get_name()+"]: "+cColContainer->textEditor->foundSynthaxErrors[iErrorLine] );
+                                GPE_Main_Logs->log_build_error( get_name()+"'s Collision Function["+otherObjResContainer->get_name()+"]: "+cColContainer->textEditor->foundSyntaxErrors[iErrorLine] );
                             }
                             buildSuccessful = false;
                             if( MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked() )
@@ -847,9 +847,9 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
                 {
                     if( cFuncContainer->textEditor!=NULL && cFuncContainer->textEditor->has_content() && cFuncContainer->parametersField!=NULL )
                     {
-                        if( GPE_MINI_COMPILER->process_parameters_string( cFuncContainer->parametersField->get_string() ) )
+                        if( GPE_MAIN_HIGHLIGHTER->process_parameters_string( cFuncContainer->parametersField->get_string() ) )
                         {
-                            *fileTarget << nestedTabsStrObjFunc << "    this." << cFuncContainer->functionName << " = function("<< GPE_MINI_COMPILER->newParametersString << ")\n";
+                            *fileTarget << nestedTabsStrObjFunc << "    this." << cFuncContainer->functionName << " = function("<< GPE_MAIN_HIGHLIGHTER->newParametersString << ")\n";
                             *fileTarget << nestedTabsStrObjFunc << "    {\n";
                         }
                         else
@@ -857,9 +857,9 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
                             *fileTarget << nestedTabsStrObjFunc << "    this." << cFuncContainer->functionName << " = function( )\n";
                             *fileTarget << nestedTabsStrObjFunc << "    {\n";
 
-                            for( iErrorLine = 0; iErrorLine < (int)GPE_MINI_COMPILER->functionParameterErrors.size(); iErrorLine++)
+                            for( iErrorLine = 0; iErrorLine < (int)GPE_MAIN_HIGHLIGHTER->functionParameterErrors.size(); iErrorLine++)
                             {
-                                GPE_Main_Logs->log_build_error("[Build Error] [ "+resourceName+"] object custom ["+cFuncContainer->functionName+"] function parameters: "+GPE_MINI_COMPILER->functionParameterErrors[iErrorLine] );
+                                GPE_Main_Logs->log_build_error("[Build Error] [ "+resourceName+"] object custom ["+cFuncContainer->functionName+"] function parameters: "+GPE_MAIN_HIGHLIGHTER->functionParameterErrors[iErrorLine] );
                             }
                             buildSuccessful = false;
                             if( MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked() )
@@ -867,15 +867,15 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
                                 break;
                             }
                         }
-                        for( paramLine = 0; paramLine < (int)GPE_MINI_COMPILER->defaultParameterLines.size(); paramLine++)
+                        for( paramLine = 0; paramLine < (int)GPE_MAIN_HIGHLIGHTER->defaultParameterLines.size(); paramLine++)
                         {
-                            *fileTarget << "     "+GPE_MINI_COMPILER->defaultParameterLines[paramLine] << "\n";
+                            *fileTarget << "     "+GPE_MAIN_HIGHLIGHTER->defaultParameterLines[paramLine] << "\n";
                         }
                         if( !cFuncContainer->textEditor->compile_into_code( fileTarget, leftTabAmount+3,true,true) )
                         {
-                            for( iErrorLine=0; iErrorLine < (int)cFuncContainer->textEditor->foundSynthaxErrors.size(); iErrorLine++)
+                            for( iErrorLine=0; iErrorLine < (int)cFuncContainer->textEditor->foundSyntaxErrors.size(); iErrorLine++)
                             {
-                                GPE_Main_Logs->log_build_error( get_name()+"'s Custom Function["+cFuncContainer->functionName+"]: "+cFuncContainer->textEditor->foundSynthaxErrors[iErrorLine] );
+                                GPE_Main_Logs->log_build_error( get_name()+"'s Custom Function["+cFuncContainer->functionName+"]: "+cFuncContainer->textEditor->foundSyntaxErrors[iErrorLine] );
                             }
                             buildSuccessful = false;
                             if( MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked() )
@@ -1022,7 +1022,7 @@ GPE_TextAreaInputBasic * gameObjectResource::find_function_textarea(std::string 
                 {
                     tempColContainer = new collisionContainer();
                     tempColContainer->otherObjectType = string_to_int( functionNameIn,-1);
-                    colliderFunctionsSelector->add_option(otherObjResContainer->get_name(),NULL,NULL);
+                    colliderFunctionsSelector->add_option(otherObjResContainer->get_name() );
                     collisionFunctions.push_back(tempColContainer);
                     return tempColContainer->textEditor;
                 }
@@ -1032,7 +1032,7 @@ GPE_TextAreaInputBasic * gameObjectResource::find_function_textarea(std::string 
                     int functionIntId = string_to_int( functionNameIn,-1);
                     tempColContainer = new collisionContainer();
                     tempColContainer->otherObjectType = string_to_int( functionNameIn,-1);
-                    colliderFunctionsSelector->add_option("Unknown ObjectId ["+int_to_string( tempColContainer->otherObjectType)+"]",NULL,NULL);
+                    colliderFunctionsSelector->add_option("Unknown ObjectId ["+int_to_string( tempColContainer->otherObjectType)+"]" );
                     collisionFunctions.push_back(tempColContainer);
                     return tempColContainer->textEditor;
                 }
@@ -1066,7 +1066,7 @@ GPE_TextAreaInputBasic * gameObjectResource::find_function_textarea(std::string 
                     tempColContainer = new collisionContainer();
                     tempColContainer->otherObjectType = otherObjResContainer->get_global_id();
                     tempColContainer->otherObjectName =  functionNameIn;
-                    colliderFunctionsSelector->add_option( functionNameIn,NULL,NULL);
+                    colliderFunctionsSelector->add_option( functionNameIn );
                     collisionFunctions.push_back(tempColContainer);
                     return tempColContainer->textEditor;
                 }
@@ -1076,7 +1076,7 @@ GPE_TextAreaInputBasic * gameObjectResource::find_function_textarea(std::string 
                     tempColContainer = new collisionContainer();
                     tempColContainer->otherObjectType = string_to_int( functionNameIn,-1);
                     tempColContainer->otherObjectName =  functionNameIn;
-                    colliderFunctionsSelector->add_option("Unknown Object ["+functionNameIn+"]",NULL,NULL);
+                    colliderFunctionsSelector->add_option("Unknown Object ["+functionNameIn+"]" );
                     collisionFunctions.push_back(tempColContainer);
                     return tempColContainer->textEditor;
                 }
@@ -1110,7 +1110,7 @@ GPE_TextAreaInputBasic * gameObjectResource::find_function_textarea(std::string 
             //if nothing has been returned yet, we make a new custom function
             tempCFuncContainer = new customFunctionContainer();
             tempCFuncContainer->functionName = functionNameIn;
-            customFunctionsSelector->add_option(functionNameIn,NULL,NULL);
+            customFunctionsSelector->add_option(functionNameIn );
             customFunctions.push_back(tempCFuncContainer);
             return tempCFuncContainer->textEditor;
         }
@@ -1118,7 +1118,7 @@ GPE_TextAreaInputBasic * gameObjectResource::find_function_textarea(std::string 
     return NULL;
 }
 
-void gameObjectResource::integrate_into_synthax()
+void gameObjectResource::integrate_into_syntax()
 {
     if( CURRENT_PROJECT!=NULL)
     {
@@ -1168,7 +1168,7 @@ void gameObjectResource::integrate_into_synthax()
     }
 }
 
-void gameObjectResource::manage_components(SDL_Rect *viewedSpace, SDL_Rect *cam )
+void gameObjectResource::manage_components(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -1588,7 +1588,7 @@ void gameObjectResource::preprocess_self(std::string alternatePath)
     }
 }
 
-void gameObjectResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
+void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -2022,7 +2022,7 @@ void gameObjectResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
                 }
                 for( functionI = 0; functionI< DEFAULT_OBJECT_FUNCTIONS_COUNT;functionI++)
                 {
-                    if( objectFunctions[functionI!=NULL] )
+                    if( objectFunctions[functionI]!=NULL )
                     {
                         if( objectFunctions[functionI]->has_content() )
                         {
@@ -2067,7 +2067,7 @@ void gameObjectResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
             {
                 for( functionI = 0; functionI< DEFAULT_OBJECT_TIMED_FUNCTIONS_COUNT;functionI++)
                 {
-                    if( timedObjectFunctions[functionI!=NULL] )
+                    if( timedObjectFunctions[functionI]!=NULL )
                     {
                         if( timedObjectFunctions[functionI]->has_content() )
                         {
@@ -2132,7 +2132,7 @@ void gameObjectResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
                         {
                             collisionContainer * newColllisionContainer = new collisionContainer();
                             newColllisionContainer->otherObjectType = GPE_Action_ID;
-                            colliderFunctionsSelector->add_option(newObjectToCollideDropDown->get_selected_container()->get_name(),NULL,NULL,0,true);
+                            colliderFunctionsSelector->add_option(newObjectToCollideDropDown->get_selected_container()->get_name(),-1,NULL,NULL,0,true);
                             collisionFunctions.push_back(newColllisionContainer);
                         }
                         newObjectToCollideDropDown->set_name("Add Collision");
@@ -2332,7 +2332,7 @@ void gameObjectResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
             {
                 for( functionI = 0; functionI< DEFAULT_SPECIAL_FUNCTIONS_COUNT;functionI++)
                 {
-                    if( specialObjectFunctions[functionI!=NULL] )
+                    if( specialObjectFunctions[functionI]!=NULL )
                     {
                         if( specialObjectFunctions[functionI]->has_content() )
                         {
@@ -2372,7 +2372,7 @@ void gameObjectResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
     }
 }
 
-void gameObjectResource::render_self(GPE_Renderer * cRender,SDL_Rect * viewedSpace, SDL_Rect * cam,bool forceRedraw )
+void gameObjectResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -2532,7 +2532,7 @@ void gameObjectResource::save_resource(std::string alternatePath, int backupId)
             newGameObjFile << "#    Game Pencil Engine Project GameObject File \n";
             newGameObjFile << "#    Created automatically via the Game Pencil Engine Editor \n";
             newGameObjFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newGameObjFile << "#    If you have any problems reading this file please report it to debug@pawbyte.com . \n";
+            newGameObjFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
             newGameObjFile << "#     \n";
             newGameObjFile << "#     \n";
             newGameObjFile << "#    --------------------------------------------------  # \n";
@@ -2703,7 +2703,7 @@ int gameObjectResource::search_for_string(std::string needle)
             foundTextArea = objectFunctions[i];
             if( foundTextArea!=NULL && foundTextArea->has_content() )
             {
-                foundStrings=foundTextArea->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true, DEFAULT_OBJECT_FUNCTIONS_NAMES[i] );
+                foundStrings=foundTextArea->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true, DEFAULT_OBJECT_FUNCTIONS_NAMES[i] );
             }
         }
 
@@ -2712,7 +2712,7 @@ int gameObjectResource::search_for_string(std::string needle)
             foundTextArea = timedObjectFunctions[i];
             if( foundTextArea!=NULL && foundTextArea->has_content() )
             {
-                foundStrings=foundTextArea->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true, "Timed Function("+int_to_string(i)+")");
+                foundStrings=foundTextArea->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true, "Timed Function("+int_to_string(i)+")");
             }
         }
 
@@ -2721,7 +2721,7 @@ int gameObjectResource::search_for_string(std::string needle)
             foundTextArea = specialObjectFunctions[i];
             if( foundTextArea!=NULL && foundTextArea->has_content() )
             {
-                foundStrings=foundTextArea->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true, DEFAULT_OBJECT_SPECIALS_NAMES[i] );
+                foundStrings=foundTextArea->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true, DEFAULT_OBJECT_SPECIALS_NAMES[i] );
             }
         }
 
@@ -2733,7 +2733,7 @@ int gameObjectResource::search_for_string(std::string needle)
                 foundTextArea = tempCustomFunction->textEditor;
                 if( foundTextArea!=NULL && foundTextArea->has_content() )
                 {
-                    foundStrings=foundTextArea->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true, tempCustomFunction->functionName );
+                    foundStrings=foundTextArea->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true, tempCustomFunction->functionName );
                 }
             }
         }
@@ -2746,7 +2746,7 @@ int gameObjectResource::search_for_string(std::string needle)
                 foundTextArea = tempCollisionContainer->textEditor;
                 if( foundTextArea!=NULL && foundTextArea->has_content() )
                 {
-                    foundStrings=foundTextArea->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true,tempCollisionContainer->otherObjectName );
+                    foundStrings=foundTextArea->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true,tempCollisionContainer->otherObjectName );
                 }
             }
         }
@@ -2774,7 +2774,7 @@ int gameObjectResource::search_and_replace_string(std::string needle, std::strin
             foundTextArea = objectFunctions[i];
             if( foundTextArea!=NULL && foundTextArea->has_content() )
             {
-                tempFoundCount =foundTextArea->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,false, DEFAULT_OBJECT_FUNCTIONS_NAMES[i] );
+                tempFoundCount =foundTextArea->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,false, DEFAULT_OBJECT_FUNCTIONS_NAMES[i] );
                 if( tempFoundCount > 0)
                 {
                     foundStrings+=tempFoundCount;
@@ -2788,7 +2788,7 @@ int gameObjectResource::search_and_replace_string(std::string needle, std::strin
             foundTextArea = timedObjectFunctions[i];
             if( foundTextArea!=NULL && foundTextArea->has_content() )
             {
-                tempFoundCount =foundTextArea->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,false, "Timed Function("+int_to_string(i)+")");
+                tempFoundCount =foundTextArea->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,false, "Timed Function("+int_to_string(i)+")");
                 if( tempFoundCount > 0)
                 {
                     foundStrings+=tempFoundCount;
@@ -2802,7 +2802,7 @@ int gameObjectResource::search_and_replace_string(std::string needle, std::strin
             foundTextArea = specialObjectFunctions[i];
             if( foundTextArea!=NULL && foundTextArea->has_content() )
             {
-                tempFoundCount =foundTextArea->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,false, DEFAULT_OBJECT_SPECIALS_NAMES[i] );
+                tempFoundCount =foundTextArea->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,false, DEFAULT_OBJECT_SPECIALS_NAMES[i] );
                 if( tempFoundCount > 0)
                 {
                     foundStrings+=tempFoundCount;
@@ -2819,7 +2819,7 @@ int gameObjectResource::search_and_replace_string(std::string needle, std::strin
                 foundTextArea = tempCustomFunction->textEditor;
                 if( foundTextArea!=NULL && foundTextArea->has_content() )
                 {
-                    tempFoundCount =foundTextArea->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,false, tempCustomFunction->functionName );
+                    tempFoundCount =foundTextArea->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,false, tempCustomFunction->functionName );
                     if( tempFoundCount > 0)
                     {
                         foundStrings+=tempFoundCount;
@@ -2837,7 +2837,7 @@ int gameObjectResource::search_and_replace_string(std::string needle, std::strin
                 foundTextArea = tempCollisionContainer->textEditor;
                 if( foundTextArea!=NULL && foundTextArea->has_content() )
                 {
-                    tempFoundCount =foundTextArea->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,false,tempCollisionContainer->otherObjectName );
+                    tempFoundCount =foundTextArea->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,false,tempCollisionContainer->otherObjectName );
                     if( tempFoundCount > 0)
                     {
                         foundStrings+=tempFoundCount;
