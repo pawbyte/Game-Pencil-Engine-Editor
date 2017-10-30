@@ -1,7 +1,7 @@
 /*
 project_properties.cpp
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -670,7 +670,7 @@ bool projectPropertiesResource::export_and_play_native(bool launchProgram)
     return buildAndRunSuccessful;
 }
 
-void projectPropertiesResource::integrate_into_synthax()
+void projectPropertiesResource::integrate_into_syntax()
 {
     //parses the macros text editor for joy...
     if( projectGameMacros!=NULL && CURRENT_PROJECT!=NULL)
@@ -738,11 +738,11 @@ void projectPropertiesResource::integrate_into_synthax()
                                     lineParseXCursorPos++;
                                 }
                             }
-                            else if (GPE_MINI_COMPILER->charIsSymbol(currentLineToRead[lineParseXCursorPos]))
+                            else if (GPE_MAIN_HIGHLIGHTER->charIsSymbol(currentLineToRead[lineParseXCursorPos]))
                             {
                                 lineParseXCursorPos++;
                                 commentFoundInSymbols = false;
-                                while( ( commentFoundInSymbols==false && lineParseXCursorPos < currentLineSize && GPE_MINI_COMPILER->charIsSymbol(currentLineToRead[lineParseXCursorPos] ) )|| currentLineToRead[lineParseXCursorPos] ==' ')
+                                while( ( commentFoundInSymbols==false && lineParseXCursorPos < currentLineSize && GPE_MAIN_HIGHLIGHTER->charIsSymbol(currentLineToRead[lineParseXCursorPos] ) )|| currentLineToRead[lineParseXCursorPos] ==' ')
                                 {
                                     if( currentLineSize > lineParseXCursorPos+1)
                                     {
@@ -1243,7 +1243,7 @@ void projectPropertiesResource::preprocess_self(std::string alternatePath)
     }
 }
 
-void projectPropertiesResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
+void projectPropertiesResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 {
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
@@ -1755,7 +1755,7 @@ void projectPropertiesResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * 
     }
 }
 
-void projectPropertiesResource::render_self(GPE_Renderer * cRender,SDL_Rect * viewedSpace, SDL_Rect * cam,bool forceRedraw )
+void projectPropertiesResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -1766,9 +1766,9 @@ void projectPropertiesResource::render_self(GPE_Renderer * cRender,SDL_Rect * vi
             render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
             projectSettingsTabBar->render_self(cRender,viewedSpace,cam,true);
         }
-        SDL_RenderSetViewport(cRender->get_renderer(),NULL);
-        //SDL_RenderSetViewport(cRender->get_renderer(),viewedSpace);
-        SDL_RenderSetViewport(cRender->get_renderer(),&subViewedSpace);
+        cRender->reset_viewpoint();
+        cRender->set_viewpoint( viewedSpace);
+
         projectSettingsList->render_self(cRender,&subViewedSpace,cam, true);
 
         if(projectSettingsTabBar->get_selected_name()=="Platforms")
@@ -1776,8 +1776,8 @@ void projectPropertiesResource::render_self(GPE_Renderer * cRender,SDL_Rect * vi
             exportSettingsBar->render_self(cRender,&subViewedSpace,cam,true);
         }
 
-        SDL_RenderSetViewport(cRender->get_renderer(),NULL);
-        SDL_RenderSetViewport(cRender->get_renderer(),viewedSpace);
+        cRender->reset_viewpoint();
+        cRender->set_viewpoint( viewedSpace);
 
     }
 }
@@ -1799,7 +1799,7 @@ void projectPropertiesResource::save_resource(std::string alternatePath, int bac
             newSaveDataFile << "#    Game Pencil Engine Project Settings DataFile \n";
             newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
             newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to debug@pawbyte.com . \n";
+            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#    --------------------------------------------------  # \n";
@@ -1957,7 +1957,7 @@ void projectPropertiesResource::save_resource(std::string alternatePath, int bac
             projectCollisionMatrixFile << "#    Game Pencil Engine Project Settings DataFile \n";
             projectCollisionMatrixFile << "#    Created automatically via the Game Pencil Engine Editor \n";
             projectCollisionMatrixFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            projectCollisionMatrixFile << "#    If you have any problems reading this file please report it to debug@pawbyte.com . \n";
+            projectCollisionMatrixFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
             projectCollisionMatrixFile << "#     \n";
             projectCollisionMatrixFile << "#     \n";
             projectCollisionMatrixFile << "#    --------------------------------------------------  # \n";
@@ -1991,27 +1991,27 @@ int projectPropertiesResource::search_for_string(std::string needle)
         GPE_MAIN_GUI->searchResultResourceName = resourceName;
         if( projectGameMacros!=NULL && projectGameMacros->has_content() )
         {
-            foundStrings+=projectGameMacros->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true,"Macros");
+            foundStrings+=projectGameMacros->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true,"Macros");
         }
 
         if( projectGameNotes!=NULL && projectGameNotes->has_content() )
         {
-            foundStrings+=projectGameNotes->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true,"Notes");
+            foundStrings+=projectGameNotes->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true,"Notes");
         }
 
         if( projectCSSCode!=NULL && projectCSSCode->has_content() )
         {
-            foundStrings+=projectCSSCode->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true,"CSS");
+            foundStrings+=projectCSSCode->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true,"CSS");
         }
 
         if( projectHtmlCode!=NULL && projectHtmlCode->has_content() )
         {
-            foundStrings+=projectHtmlCode->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true,"HTML");
+            foundStrings+=projectHtmlCode->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true,"HTML");
         }
 
         if( projectHtmlHeaderCode!=NULL && projectHtmlHeaderCode->has_content() )
         {
-            foundStrings+=projectHtmlHeaderCode->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true,"HTML-Header");
+            foundStrings+=projectHtmlHeaderCode->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true,"HTML-Header");
         }
     }
     return foundStrings;
@@ -2030,7 +2030,7 @@ int projectPropertiesResource::search_and_replace_string(std::string needle, std
         GPE_MAIN_GUI->searchResultResourceName = resourceName;
         if( projectGameMacros!=NULL && projectGameMacros->has_content() )
         {
-            tempFoundCount = projectGameMacros->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true,"Macros");
+            tempFoundCount = projectGameMacros->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true,"Macros");
             if( tempFoundCount > 0)
             {
                 foundStrings+=tempFoundCount;
@@ -2040,7 +2040,7 @@ int projectPropertiesResource::search_and_replace_string(std::string needle, std
 
         if( projectGameNotes!=NULL && projectGameNotes->has_content() )
         {
-            tempFoundCount = projectGameNotes->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true,"Notes");
+            tempFoundCount = projectGameNotes->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true,"Notes");
             if( tempFoundCount > 0)
             {
                 foundStrings+=tempFoundCount;
@@ -2050,7 +2050,7 @@ int projectPropertiesResource::search_and_replace_string(std::string needle, std
 
         if( projectCSSCode!=NULL && projectCSSCode->has_content() )
         {
-            tempFoundCount = projectCSSCode->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true,"CSS");
+            tempFoundCount = projectCSSCode->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true,"CSS");
             if( tempFoundCount > 0)
             {
                 foundStrings+=tempFoundCount;
@@ -2060,7 +2060,7 @@ int projectPropertiesResource::search_and_replace_string(std::string needle, std
 
         if( projectHtmlCode!=NULL && projectHtmlCode->has_content() )
         {
-            tempFoundCount = projectHtmlCode->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true,"HTML");
+            tempFoundCount = projectHtmlCode->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true,"HTML");
             if( tempFoundCount > 0)
             {
                 foundStrings+=tempFoundCount;
@@ -2070,7 +2070,7 @@ int projectPropertiesResource::search_and_replace_string(std::string needle, std
 
         if( projectHtmlHeaderCode!=NULL && projectHtmlHeaderCode->has_content() )
         {
-            tempFoundCount = projectHtmlHeaderCode->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true,"HTML-Header");
+            tempFoundCount = projectHtmlHeaderCode->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true,"HTML-Header");
             if( tempFoundCount > 0)
             {
                 foundStrings+=tempFoundCount;
