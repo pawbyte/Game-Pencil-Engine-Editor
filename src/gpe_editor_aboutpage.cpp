@@ -1,7 +1,7 @@
 /*
 gpe_editor_aboutpage.cpp
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -73,23 +73,26 @@ gamePencilAboutPageResource::gamePencilAboutPageResource(GPE_ResourceContainer *
     pencilCredits->add_line("Clint R Bellenger:          Technical advising and help with input systems");
     pencilCredits->add_line("Daniel Gump:                Technical advising and help with HTML5 engine optimizations");
     pencilCredits->add_line("@deadda7a:                  Helped with creation of new color theming for Version 1.0.1 and beyond.");
+    pencilCredits->add_line("@GTMalachiasV:              Critical feedback and testing for improving Project Browser");
     pencilCredits->add_line("@JeZxLee:                   Located Launcher error for files with spaces/symbols in their file name.");
     pencilCredits->add_line("Mac Carter:                 Usage of Mac to create & test OSX build.");
-    pencilCredits->add_line("Russell Johnston:           Technical advising and help with synthax highlighting system");
+    pencilCredits->add_line("Russell Johnston:           Technical advising and help with syntax highlighting system");
+    pencilCredits->add_line("Tim C( timchoh585):         Updated README.md to a professional level");
+    pencilCredits->add_line("Toyam Cox( Vaelatern):      Created initial makefile");
     pencilCredits->add_line("YellowAfterLife:            Technical advising and help with collision systems");
 
     pencilCredits->add_line("");
     pencilCredits->add_line("");
     pencilCredits->add_line("Artwork (Ordered Alphabetically):");
     pencilCredits->add_line("-----------------------------------");
-    pencilCredits->add_line("David Gandy:            Creator of Font Aesome [ https://twitter.com/davegandy ]");
-    pencilCredits->add_line("Damian Kaczmarek       Font-Awesome-SVG-PNG Author [ rush@rushbase.net @Rush ]");
-    pencilCredits->add_line("Dominykas Blyžė        Font-Awesome-SVG-PNG Author [ hello@dominykas.com @dominykas]");
-    pencilCredits->add_line("@deadda7a:              Created 'Game Pencil' logo");
-    pencilCredits->add_line("Font Awesome:           Icons and Buttons [ http://fontawesome.io/ ]");
+    pencilCredits->add_line("David Gandy:               Creator of Font Aesome [ https://twitter.com/davegandy ]");
+    pencilCredits->add_line("Damian Kaczmarek           Font-Awesome-SVG-PNG Author [ rush@rushbase.net @Rush ]");
+    pencilCredits->add_line("Dominykas Blyžė            Font-Awesome-SVG-PNG Author [ hello@dominykas.com @dominykas]");
+    pencilCredits->add_line("@deadda7a:                 Created 'Game Pencil' logo");
+    pencilCredits->add_line("Font Awesome:              Icons and Buttons [ http://fontawesome.io/ ]");
     pencilCredits->add_line("The Font Awesome font is licensed under the SIL OFL 1.1:");
-    pencilCredits->add_line("   http://scripts.sil.org/OFL  ");
-    pencilCredits->add_line("   Font-Awesome-SVG-PNG is licensed under the MIT license  ");
+    pencilCredits->add_line("http://scripts.sil.org/OFL  ");
+    pencilCredits->add_line("Font-Awesome-SVG-PNG is licensed under the MIT license  ");
 
     pencilCredits->add_line("");
     pencilCredits->add_line("");
@@ -104,8 +107,18 @@ gamePencilAboutPageResource::gamePencilAboutPageResource(GPE_ResourceContainer *
 
 
     pencilCredits->add_line("");
+    pencilCredits->add_line("Patreon Backers (Ordered Alphabetically):");
+    pencilCredits->add_line("-----------------------------------");
+    pencilCredits->add_line("     Feral Monk");
+    pencilCredits->add_line("     Jen Anderson");
+    pencilCredits->add_line("     Keith Thomas");
+    pencilCredits->add_line("     Thomas Ingham");
+
+
+    pencilCredits->add_line("");
     pencilCredits->add_line("KickStarter Backers (Ordered Alphabetically):");
     pencilCredits->add_line("-----------------------------------");
+
     pencilCredits->add_line("     Aisha Halim");
     pencilCredits->add_line("     Aleksander Kwitakowski");
     pencilCredits->add_line("     Alex King");
@@ -187,21 +200,21 @@ gamePencilAboutPageResource::gamePencilAboutPageResource(GPE_ResourceContainer *
     pencilInformation->set_read_only();
     pencilInformation->isCodeEditor = false;
     pencilInformation->clear_all_lines();
-    pencilInformation->add_line("Name:                  Game Pencil Engine");
+    pencilInformation->add_line("Name:                          Game Pencil Engine");
     std::string versionInfoLine = "";
     if( GPE_VERSION_UPDATE_NUMBER==0)
     {
-        versionInfoLine = "Version:               "+float_to_string(GPE_VERSION_DOUBLE_NUMBER)+"0";
+        versionInfoLine = "Version:                       "+float_to_string(GPE_VERSION_DOUBLE_NUMBER)+"0";
     }
     else
     {
-        versionInfoLine = "Version:               "+float_to_string(GPE_VERSION_DOUBLE_NUMBER);
+        versionInfoLine = "Version:                       "+float_to_string(GPE_VERSION_DOUBLE_NUMBER);
     }
     if( GPE_MAIN_GUI!=NULL)
     {
-        if( GPE_MAIN_GUI->editorReleaseType==RELEASE_TYPE_ALPHA)
+        if( GPE_MAIN_GUI->editorReleaseType==RELEASE_TYPE_RC)
         {
-            versionInfoLine+="[Alpha Version]";
+            versionInfoLine+="[Release Candidate]";
         }
         else if( GPE_MAIN_GUI->editorReleaseType==RELEASE_TYPE_BETA)
         {
@@ -209,12 +222,14 @@ gamePencilAboutPageResource::gamePencilAboutPageResource(GPE_ResourceContainer *
         }
     }
     pencilInformation->add_line( versionInfoLine+"." );
-    pencilInformation->add_line("SDL Version:           "+int_to_string(SDL_MAJOR_VERSION)+"."+int_to_string(SDL_MINOR_VERSION)+"."+int_to_string(SDL_PATCHLEVEL)+"." );
-    pencilInformation->add_line("Release Date:          10-05-2017");
-    pencilInformation->add_line("Author:                PawByte");
-    pencilInformation->add_line("Lead Developer:        Nathan Hurde aka theweirdn8");
-    pencilInformation->add_line("Email:                 debug@pawbyte.com");
-    pencilInformation->add_line("Website:               gamepencil.pawbyte.com");
+    pencilInformation->add_line("SDL Version:                   "+int_to_string(SDL_MAJOR_VERSION)+"."+int_to_string(SDL_MINOR_VERSION)+"."+int_to_string(SDL_PATCHLEVEL)+"." );
+    pencilInformation->add_line("PGUI Version:                  "+int_to_string(PGUI_MAJOR_VERSION)+"."+int_to_string(PGUI_MINOR_VERSION)+"."+int_to_string(PGUI_PATCHLEVEL)+"." );
+    pencilInformation->add_line("GPE(runtime) Version:          "+int_to_string(GPE_MAJOR_VERSION)+"."+int_to_string(GPE_MINOR_VERSION)+"."+int_to_string(GPE_PATCHLEVEL)+"." );
+    pencilInformation->add_line("Release Date:                  10-18-2017");
+    pencilInformation->add_line("Author:                        PawByte");
+    pencilInformation->add_line("Lead Developer:                Nathan Hurde aka theweirdn8");
+    pencilInformation->add_line("Email:                         help@pawbyte.com");
+    pencilInformation->add_line("Website:                       gamepencil.pawbyte.com");
     pencilInformation->isCodeEditor = false;
     pencilMissionStatement = new GPE_TextAreaInputBasic();
     pencilMissionStatement->set_read_only();
@@ -289,7 +304,7 @@ void gamePencilAboutPageResource::preprocess_self(std::string alternatePath)
 
 }
 
-void gamePencilAboutPageResource::process_self(SDL_Rect * viewedSpace , SDL_Rect *cam )
+void gamePencilAboutPageResource::process_self(GPE_Rect * viewedSpace , GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -348,7 +363,7 @@ void gamePencilAboutPageResource::process_self(SDL_Rect * viewedSpace , SDL_Rect
     }
 }
 
-void gamePencilAboutPageResource::render_self(GPE_Renderer * cRender,SDL_Rect * viewedSpace, SDL_Rect * cam, bool forceRedraw )
+void gamePencilAboutPageResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);

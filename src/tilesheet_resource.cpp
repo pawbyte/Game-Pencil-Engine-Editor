@@ -1,7 +1,7 @@
 /*
 tilesheet_resource.cpp
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -31,7 +31,407 @@ SOFTWARE.
 
 */
 
-#include "gpe_editor.h"
+#include "gpe_project_resources.h"
+
+
+tilesheetPreviewer::tilesheetPreviewer()
+{
+    showGrid = true;
+    tileSheetToPreview = NULL;
+    tsRenderRect.x = 0;
+    tsRenderRect.y = 0;
+    tsRenderRect.w = 0;
+    tsRenderRect.h = 0;
+    tsSelectedArea.x = 0;
+    tsSelectedArea.y = 0;
+    tsSelectedArea.w = 0;
+    tsSelectedArea.h = 0;
+    tileToPrevX1 = 0;
+    tileToPrevX2 = 0;
+    tileToPrevY1 = 0;
+    tileToPrevY2 = 0;
+    xTileScroll = new GPE_ScrollBar_XAxis();
+    yTileScroll = new GPE_ScrollBar_YAxis();
+}
+
+tilesheetPreviewer::~tilesheetPreviewer()
+{
+    tilesIdsInPreview.clear();
+    if( xTileScroll!=NULL)
+    {
+        delete xTileScroll;
+        xTileScroll = NULL;
+    }
+    if( yTileScroll!=NULL)
+    {
+        delete yTileScroll;
+        yTileScroll = NULL;
+    }
+}
+
+void tilesheetPreviewer::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
+{
+    viewedSpace = GPE_find_camera(viewedSpace);
+    cam = GPE_find_camera(cam);
+    GPE_GeneralGuiElement::process_self(viewedSpace,cam);
+    if( isClicked && RESOURCE_TO_DRAG==NULL )
+    {
+        hasScrollControl = true;
+        hasArrowkeyControl = true;
+    }
+    else if( clickedOutside)
+    {
+        hasScrollControl = false;
+        hasArrowkeyControl = false;
+    }
+    if(tileSheetToPreview!=NULL && cam!=NULL && viewedSpace!=NULL )
+    {
+        if( tileSheetToPreview->tsImage!=NULL)
+        {
+            tsRenderRect.w = tileSheetToPreview->tsImage->get_width();
+            tsRenderRect.h = tileSheetToPreview->tsImage->get_height();
+            if( tileSheetToPreview->tsImage->get_width() > barBox.w-16)
+            {
+                tsRenderRect.w = barBox.w-16;
+            }
+            if( tileSheetToPreview->tsImage->get_height() > barBox.h-16)
+            {
+                tsRenderRect.h = barBox.h-16;
+            }
+
+            if( isHovered && RESOURCE_TO_DRAG==NULL && !userInput->check_keyboard_down(kb_ctrl) )
+            {
+                if( userInput->shiftKeyIsPressed )
+                {
+                    if( userInput->mouseScrollingUp > 0 )
+                    {
+                        tsRenderRect.x-=tsRenderRect.w/8;
+                    }
+                    else if( userInput->mouseScrollingDown > 0 )
+                    {
+                        tsRenderRect.x+=tsRenderRect.w/8;
+                    }
+                }
+                else
+                {
+                    if( userInput->mouseScrollingUp > 0 )
+                    {
+                        tsRenderRect.y-= tsRenderRect.h/4;
+                    }
+                    else if( userInput->mouseScrollingDown > 0 )
+                    {
+                        tsRenderRect.y+=tsRenderRect.h/4;
+                    }
+                }
+            }
+
+
+            if( hasScrollControl && RESOURCE_TO_DRAG==NULL )
+            {
+                if( userInput->check_keyboard_down(kb_left) )
+                {
+                    tsRenderRect.x-=tsRenderRect.w/8;
+                }
+                else if( userInput->check_keyboard_down(kb_right)  )
+                {
+                    tsRenderRect.x+=tsRenderRect.w/8;
+                }
+
+                if( userInput->check_keyboard_down(kb_up) )
+                {
+                    tsRenderRect.y-=tsRenderRect.h/8;
+                }
+                else if( userInput->check_keyboard_down(kb_down)  )
+                {
+                    tsRenderRect.y+=tsRenderRect.h/8;
+                }
+            }
+
+            //select tiles to place
+            xTileScroll->barBox.x = barBox.x;
+            xTileScroll->barBox.y = barBox.y+barBox.h-16;
+            xTileScroll->barBox.w = barBox.w;
+            xTileScroll->barBox.h = 16;
+
+            xTileScroll->fullRect.x = 0;
+            xTileScroll->fullRect.y = 0;
+            xTileScroll->fullRect.w = tileSheetToPreview->tsImage->get_width();
+            xTileScroll->fullRect.h = tileSheetToPreview->tsImage->get_height();
+
+            xTileScroll->contextRect.x = tsRenderRect.x;
+            xTileScroll->contextRect.y = tsRenderRect.y;
+            xTileScroll->contextRect.w = tsRenderRect.w;
+            xTileScroll->contextRect.h = tsRenderRect.h;
+
+            xTileScroll->process_self(viewedSpace,cam,true);
+            tsRenderRect.x = xTileScroll->contextRect.x;
+            yTileScroll->barBox.x = barBox.x+barBox.w-16;
+
+            yTileScroll->barBox.y = barBox.y;
+            yTileScroll->barBox.w = 16;
+            yTileScroll->barBox.h = barBox.h;
+
+            yTileScroll->fullRect.x = 0;
+            yTileScroll->fullRect.y = 0;
+            yTileScroll->fullRect.w = tileSheetToPreview->tsImage->get_width();
+            yTileScroll->fullRect.h = tileSheetToPreview->tsImage->get_height();
+
+            yTileScroll->contextRect.x = tsRenderRect.x;
+            yTileScroll->contextRect.y = tsRenderRect.y;
+            yTileScroll->contextRect.w = tsRenderRect.w;
+            yTileScroll->contextRect.h = tsRenderRect.h;
+
+            yTileScroll->process_self(viewedSpace,cam,true);
+            tsRenderRect.y = yTileScroll->contextRect.y;
+
+
+            if( isHovered)
+            {
+                //Calculates the tile to select via the tilesheet
+                if( xTileScroll->is_scrolling()==false && yTileScroll->is_scrolling()==false  && RESOURCE_TO_DRAG==NULL )
+                {
+                    if( point_between(userInput->mouse_x,userInput->mouse_y,
+                                      viewedSpace->x-cam->x+barBox.x,
+                                      viewedSpace->y-cam->y+barBox.y,
+                                      viewedSpace->x-cam->x+barBox.x+tsRenderRect.w,
+                                      viewedSpace->y-cam->y+barBox.y+tsRenderRect.h
+                                      )
+                    )
+                    {
+                        GPE_Rect foundTSRect;
+                        int iTSX = 0;
+
+                        if( userInput->check_mouse_pressed(0) )
+                        {
+                            tileToPrevX1 = userInput->mouse_x-viewedSpace->x+cam->x-barBox.x+tsRenderRect.x;
+                            tileToPrevY1 = userInput->mouse_y-viewedSpace->y+cam->y-barBox.y+tsRenderRect.y;
+                            for(  iTSX = 0; iTSX < (int)tileSheetToPreview->tsRects.size(); iTSX++)
+                            {
+                                foundTSRect = tileSheetToPreview->tsRects.at(iTSX);
+
+                                if( point_between_rect(tileToPrevX1,tileToPrevY1,&foundTSRect) )
+                                {
+                                    tileToPrevX1 =tileToPrevX2 = foundTSRect.x;
+                                    tileToPrevY1 =tileToPrevY2 = foundTSRect.y;
+                                    break;
+                                }
+                            }
+
+                        }
+                        if( userInput->check_mouse_down(0) )
+                        {
+                            tileToPrevX2 = userInput->mouse_x-viewedSpace->x+cam->x-barBox.x+tsRenderRect.x;
+                            tileToPrevY2 = userInput->mouse_y-viewedSpace->y+cam->y-barBox.y+tsRenderRect.y;
+                            tsSelectedArea.w = tileSheetToPreview->tsWidth;
+                            tsSelectedArea.h = tileSheetToPreview->tsHeight;
+                            for(  iTSX = 0; iTSX < (int)tileSheetToPreview->tsRects.size(); iTSX++)
+                            {
+                                foundTSRect = tileSheetToPreview->tsRects.at(iTSX);
+
+                                if( point_between_rect(tileToPrevX2,tileToPrevY2,&foundTSRect) )
+                                {
+                                    tileToPrevX2 = foundTSRect.x;
+                                    tileToPrevY2 = foundTSRect.y;
+                                    break;
+                                }
+                            }
+
+
+                            if( tileToPrevX1!=tileToPrevX2)
+                            {
+                                tsSelectedArea.x = std::min(tileToPrevX1,tileToPrevX2);
+                                tsSelectedArea.w += abs(tileToPrevX1-tileToPrevX2);
+                            }
+                            else
+                            {
+                                tsSelectedArea.x = tileToPrevX1;
+                            }
+
+                            if( tileToPrevY1!=tileToPrevY2)
+                            {
+                                tsSelectedArea.y = std::min(tileToPrevY1,tileToPrevY2);
+                                tsSelectedArea.h += abs(tileToPrevY1-tileToPrevY2);
+
+                            }
+                            else
+                            {
+                                tsSelectedArea.y = tileToPrevY1;
+                            }
+                            //int tileRowItr = 0;
+                            //int tilesItr= 0;
+                            //int newTileX = 0, newTileY = 0;
+                            tilesIdsInPreview.clear();
+                            bool yValueChanged = false;
+                            tilesToPlacePerRow = 0;
+                            int firstY = -1;
+                            for(  iTSX = 0; iTSX < (int)tileSheetToPreview->tsRects.size(); iTSX++)
+                            {
+                                foundTSRect = tileSheetToPreview->tsRects.at(iTSX);
+
+                                if( check_collision(tsSelectedArea,foundTSRect) )
+                                {
+                                    if( firstY < 0)
+                                    {
+                                        firstY = foundTSRect.y;
+                                    }
+                                    else if( yValueChanged==false && firstY!=foundTSRect.y)
+                                    {
+                                        yValueChanged = true;
+                                        tilesToPlacePerRow = (int)tilesIdsInPreview.size();
+                                    }
+                                    tilesIdsInPreview.push_back(iTSX);
+                                }
+                            }
+                            if( yValueChanged==false)
+                            {
+                                tilesToPlacePerRow = (int)tilesIdsInPreview.size();
+                            }
+                        }
+                        else if( isRightClicked)
+                        {
+                            GPE_open_context_menu();
+                            MAIN_CONTEXT_MENU->set_width(256);
+                            if( showGrid)
+                            {
+                                MAIN_CONTEXT_MENU->add_menu_option("Show Grid",1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/check.png"),-1,NULL,true,true,false);
+                            }
+                            else
+                            {
+                                MAIN_CONTEXT_MENU->add_menu_option("Show Grid",1,NULL,-1,NULL,true,true,false );
+                            }
+                            int menuSelection = get_popupmenu_result();
+                            if( menuSelection==0 && GPE_Main_TabManager!=NULL && tileSheetToPreview!=NULL)
+                            {
+                                //GPE_Main_TabManager->add_new_tab(tileSheetToPreview);
+                            }
+                            else if( menuSelection==1)
+                            {
+                                showGrid = !showGrid;
+                            }
+                        }
+                    }
+                    else if( isHovered && userInput->check_mouse_released(-1) )
+                    {
+                        reset_preview(false);
+                    }
+                }
+            }
+            else if( userInput->check_mouse_released(1) || userInput->check_mouse_released(2) )
+            {
+                reset_preview(false);
+            }
+        }
+        else
+        {
+            //reset tile preview data
+            reset_preview(true);
+        }
+    }
+}
+
+void tilesheetPreviewer::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace , GPE_Rect * cam , bool forceRedraw)
+{
+    viewedSpace = GPE_find_camera(viewedSpace);
+    cam = GPE_find_camera(cam);
+    if( forceRedraw && tileSheetToPreview!=NULL && cam!=NULL && viewedSpace!=NULL )
+    {
+        if(tileSheetToPreview->tsImage!=NULL)
+        {
+            tileSheetToPreview->tsImage->render_tex(cRender,barBox.x-cam->x,barBox.y-cam->y,&tsRenderRect);
+            if( showGrid)
+            {
+                GPE_Rect foundTSRect;
+                int iTSX = 0;
+                int bx1 = 0;
+                int bx2 = 0;
+                int by1 = 0;
+                int by2 = 0;
+                for(  iTSX = 0; iTSX < (int)tileSheetToPreview->tsRects.size(); iTSX++)
+                {
+                    foundTSRect = tileSheetToPreview->tsRects.at(iTSX);
+                    bx1 =foundTSRect.x - tsRenderRect.x;
+                    bx1 = bound_number(bx1,0, barBox.w);
+
+                    by1 =foundTSRect.y - tsRenderRect.y;
+                    by1 = bound_number(by1,0, barBox.h);
+
+                    bx2 =foundTSRect.x+foundTSRect.w - tsRenderRect.x;
+                    bx2 = bound_number(bx2,0, barBox.w);
+
+                    by2 =foundTSRect.y+foundTSRect.h - tsRenderRect.y;
+                    by2 = bound_number(by2,0, barBox.h);
+
+                    render_rectangle(cRender,barBox.x+bx1-cam->x,barBox.y+by1-cam->y,barBox.x+bx2-cam->x,barBox.y+by2-cam->y,GPE_MAIN_TEMPLATE->Text_Box_Font_Color,true,255);
+                }
+            }
+            if( tsSelectedArea.x >=0 && tsSelectedArea.y >=0)
+            {
+                double renderTSSelectX1 = tsSelectedArea.x;
+                renderTSSelectX1+=barBox.x-tsRenderRect.x;
+                renderTSSelectX1 = bound_number(renderTSSelectX1,barBox.x,barBox.x+barBox.w);
+
+                double renderTSSelectY1 = tsSelectedArea.y;
+                renderTSSelectY1+=barBox.y-tsRenderRect.y;
+                renderTSSelectY1 = bound_number(renderTSSelectY1,barBox.y,barBox.y+barBox.h);
+
+                double renderTSSelectX2 = tsSelectedArea.x+tsSelectedArea.w;
+                renderTSSelectX2+=barBox.x-tsRenderRect.x;
+                renderTSSelectX2 = bound_number(renderTSSelectX2,barBox.x,barBox.x+barBox.w);
+
+                double renderTSSelectY2 = tsSelectedArea.y+tsSelectedArea.h;
+                renderTSSelectY2+=barBox.y-tsRenderRect.y;
+                renderTSSelectY2 = bound_number(renderTSSelectY2,barBox.y,barBox.y+barBox.h);
+
+                render_rectangle(cRender,renderTSSelectX1,renderTSSelectY1,renderTSSelectX2,renderTSSelectY2,GPE_MAIN_TEMPLATE->Button_Box_Highlighted_Color,false,128);
+            }
+            if( xTileScroll!=NULL)
+            {
+                xTileScroll->render_self(cRender,viewedSpace,cam);
+            }
+            if( yTileScroll!=NULL)
+            {
+                yTileScroll->render_self(cRender,viewedSpace,cam);
+            }
+            //render_new_text(cRender,xTileScroll->barBox.x,xTileScroll->barBox.x)
+        }
+    }
+}
+
+void tilesheetPreviewer::render_selection(GPE_Renderer * cRender, int xPos, int yPos,GPE_Rect * viewedSpace , GPE_Rect * cam , bool forceRedraw, double scaleSize, GPE_Color * fColor)
+{
+    viewedSpace = GPE_find_camera(viewedSpace);
+    cam = GPE_find_camera(cam);
+    if( forceRedraw && tileSheetToPreview!=NULL && cam!=NULL && viewedSpace!=NULL && scaleSize!=0 )
+    {
+        if(tileSheetToPreview->tsImage!=NULL)
+        {
+            if( tsSelectedArea.x >=0 && tsSelectedArea.y >=0 && tsSelectedArea.w  >0 && tsSelectedArea.h > 0 )
+            {
+                if( tsSelectedArea.x+tsSelectedArea.w <= tileSheetToPreview->tsImage->get_width() && tsSelectedArea.y+tsSelectedArea.h <= tileSheetToPreview->tsImage->get_height()  )
+                {
+                    tileSheetToPreview->tsImage->render_tex_resized(cRender,xPos-cam->x,yPos-cam->y,tsSelectedArea.w*scaleSize,tsSelectedArea.h*scaleSize, &tsSelectedArea,NULL,fColor );
+                }
+            }
+        }
+    }
+}
+
+void tilesheetPreviewer::reset_preview(bool moveCamera)
+{
+    tilesIdsInPreview.clear();
+    if( moveCamera)
+    {
+        tsRenderRect.x = 0;
+        tsRenderRect.y = 0;
+        tsRenderRect.w = 0;
+        tsRenderRect.h = 0;
+    }
+    tsSelectedArea.x = 0;
+    tsSelectedArea.y = 0;
+    tsSelectedArea.w = 0;
+    tsSelectedArea.h = 0;
+    tileToPrevX1 = tileToPrevY1 = tileToPrevX2 = tileToPrevY2 = 0;
+}
 
 tilesheetResource::tilesheetResource(GPE_ResourceContainer * pFolder)
 {
@@ -132,7 +532,7 @@ bool tilesheetResource::build_intohtml5_file(std::ofstream * fileTarget, int lef
         }
         else
         {
-            *fileTarget << nestedTabsStr << "var " << html5TSName << " = -1;\n";
+            *fileTarget << nestedTabsStr << "var " << html5TSName << " = GPE.rsm.add_tilesheet( -1 );\n";
         }
     }
     return false;
@@ -177,7 +577,9 @@ void tilesheetResource::load_image(std::string newFileName)
                             //successfully added new image.
                             tilesheetInEditor->tsRects.clear();
                             tilesheetInEditor->fileNameLocation = newFileName;
-                            SDL_Rect newBox = {0,0,tilesheetInEditor->tsImage->get_width(),tilesheetInEditor->tsImage->get_height() };
+                            GPE_Rect newBox;
+                            newBox.w = tilesheetInEditor->tsImage->get_width();
+                            newBox.h = tilesheetInEditor->tsImage->get_height();
                             tilesheetInEditor->tsRects.push_back(newBox);
                             tsDataFields[0]->set_string( int_to_string(tempTexture->get_width()) );
                             tsDataFields[1]->set_string( int_to_string(tempTexture->get_height()) );
@@ -371,7 +773,7 @@ void tilesheetResource::prerender_self(GPE_Renderer * cRender)
     }
 }
 
-void tilesheetResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
+void tilesheetResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -394,7 +796,7 @@ void tilesheetResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
         editorPaneList->add_gui_element(transformResourceButton,true);
         editorPaneList->add_gui_element(tilesheetDimensionsStr,true);
 
-        SDL_Rect tilesheetPreviewCam;
+        GPE_Rect tilesheetPreviewCam;
         tilesheetPreviewCam.x = viewedSpace->x+editorPaneList->get_x2pos()+GENERAL_GPE_PADDING*2;
         tilesheetPreviewCam.y = viewedSpace->y;
         tilesheetPreviewCam.w = viewedSpace->x+viewedSpace->w-tilesheetPreviewCam.x - GENERAL_GPE_PADDING;
@@ -444,7 +846,7 @@ void tilesheetResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
         {
             if( loadResourceButton->is_clicked() )
             {
-                std::string newFileName = GPE_GetOpenFileName("Load Your tilesheet Image","Image",GPE_MAIN_GUI->fileOpenTilesheetDir);
+                std::string newFileName = GPE_GetOpenFileName("Load Your tilesheet Image","Image",MAIN_GUI_SETTINGS->fileOpenTilesheetDir);
                 if( (int)newFileName.size() > 3)
                 {
                     load_image(newFileName);
@@ -564,7 +966,7 @@ void tilesheetResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
     }
 }
 
-void tilesheetResource::render_self(GPE_Renderer * cRender,SDL_Rect *viewedSpace,SDL_Rect *cam,bool forceRedraw )
+void tilesheetResource::render_self(GPE_Renderer * cRender,GPE_Rect *viewedSpace,GPE_Rect *cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -575,7 +977,7 @@ void tilesheetResource::render_self(GPE_Renderer * cRender,SDL_Rect *viewedSpace
         {
             render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
         }
-        SDL_Rect tilesheetPreviewCam = {0,0,0,0};
+        GPE_Rect tilesheetPreviewCam;
         tilesheetPreviewCam.x = viewedSpace->x+editorPaneList->get_x2pos();
         tilesheetPreviewCam.y = viewedSpace->y;
         tilesheetPreviewCam.w = viewedSpace->x+viewedSpace->w-tilesheetPreviewCam.x - GENERAL_GPE_PADDING;
@@ -593,8 +995,8 @@ void tilesheetResource::render_self(GPE_Renderer * cRender,SDL_Rect *viewedSpace
                 render_new_text(cRender,tilesheetPreviewCam.x,tilesheetPreviewCam.y+tilesheetPreviewCam.h+GENERAL_GPE_PADDING,"Number of Tiles:   "+int_to_string((int)tilesheetInEditor->tsRects.size()),GPE_MAIN_TEMPLATE->Text_Box_Color,DEFAULT_FONT,FA_LEFT,FA_TOP );
             }
         }
-        SDL_RenderSetViewport( cRender->get_renderer(), NULL );
-        SDL_RenderSetViewport( cRender->get_renderer(), viewedSpace );
+        cRender->reset_viewpoint();
+        cRender->set_viewpoint( viewedSpace);
 
         if(editorPaneList!=NULL)
         {
@@ -635,7 +1037,7 @@ void tilesheetResource::save_resource(std::string alternatePath, int backupId)
             newSaveDataFile << "#    Game Pencil Engine Project Game Tilesheet DataFile \n";
             newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
             newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to debug@pawbyte.com . \n";
+            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#    --------------------------------------------------  # \n";

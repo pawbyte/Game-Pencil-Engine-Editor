@@ -1,7 +1,7 @@
 /*
 video_resource.cpp
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -31,7 +31,7 @@ SOFTWARE.
 
 */
 
-#include "gpe_editor.h"
+#include "gpe_project_resources.h"
 
 videoResource::videoResource(GPE_ResourceContainer * pFolder)
 {
@@ -309,7 +309,7 @@ void videoResource::prerender_self(GPE_Renderer * cRender)
     standardEditableGameResource::prerender_self(cRender);
 }
 
-void videoResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
+void videoResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -338,7 +338,7 @@ void videoResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
         {
             if( loadResourceButton->is_clicked() )
             {
-                std::string newFileName = GPE_GetOpenFileName("Load In an video File","Video",GPE_MAIN_GUI->fileOpenVideoDir);
+                std::string newFileName = GPE_GetOpenFileName("Load In an video File","Video",MAIN_GUI_SETTINGS->fileOpenVideoDir);
                 load_video(newFileName);
             }
         }
@@ -403,7 +403,7 @@ void videoResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
     }
 }
 
-void videoResource::render_self(GPE_Renderer * cRender,SDL_Rect *viewedSpace,SDL_Rect *cam,bool forceRedraw )
+void videoResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -462,7 +462,7 @@ void videoResource::save_resource(std::string alternatePath, int backupId)
             newSaveDataFile << "#    Game Pencil Engine Project Game Video DataFile \n";
             newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
             newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to debug@pawbyte.com . \n";
+            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#    --------------------------------------------------  # \n";

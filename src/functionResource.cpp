@@ -1,7 +1,7 @@
 /*
 functionResource.cpp
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -92,7 +92,7 @@ bool functionResource::build_intohtml5_file(std::ofstream * fileTarget, int left
     return true;
 }
 
-void functionResource::integrate_into_synthax()
+void functionResource::integrate_into_syntax()
 {
     if( CURRENT_PROJECT!=NULL)
     {
@@ -268,7 +268,7 @@ void functionResource::prerender_self(GPE_Renderer * cRender )
 	standardEditableGameResource::prerender_self( cRender);
 }
 
-void functionResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
+void functionResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -300,7 +300,7 @@ void functionResource::process_self(SDL_Rect * viewedSpace, SDL_Rect * cam)
     }
 }
 
-void functionResource::render_self(GPE_Renderer * cRender,SDL_Rect * viewedSpace, SDL_Rect * cam,bool forceRedraw )
+void functionResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -346,7 +346,7 @@ void functionResource::save_resource(std::string alternatePath, int backupId)
             newSaveDataFile << "#    Game Pencil Engine Project Game Function DataFile \n";
             newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
             newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to debug@pawbyte.com . \n";
+            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#    --------------------------------------------------  # \n";
@@ -419,7 +419,7 @@ int functionResource::search_for_string(std::string needle)
         GPE_MAIN_GUI->searchResultProjectName = parentProjectName;
         GPE_MAIN_GUI->searchResultResourceId = globalResouceIdNumber;
         GPE_MAIN_GUI->searchResultResourceName = resourceName;
-        foundStrings=functionCode->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() ,true);
+        foundStrings=functionCode->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() ,true);
     }
     return foundStrings;
 }
@@ -427,24 +427,24 @@ int functionResource::search_for_string(std::string needle)
 int functionResource::search_and_replace_string(std::string needle, std::string newStr )
 {
     int foundStrings = 0;
-    if( functionCode!=NULL && GPE_MAIN_GUI!=NULL && functionCode->has_content() )
+    if( functionCode!=NULL && MAIN_SEARCH_CONTROLLER!=NULL && functionCode->has_content() )
     {
-        foundStrings=functionCode->find_all_strings(needle,GPE_MAIN_GUI->findMatchCase->is_clicked() );
+        foundStrings=functionCode->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() );
         displayMessageTitle = "Replacing Substring";
         displayMessageSubtitle = needle;
 
         if( foundStrings > 0)
         {
             displayMessageString = "Replaced "+int_to_string( functionCode->replace_all_found(needle, newStr ) )+" copies.";;
-            GPE_MAIN_GUI->showFindAllResults = true;
+            MAIN_SEARCH_CONTROLLER->showFindAllResults = true;
         }
         else
         {
             displayMessageString ="No matches found";
-            GPE_MAIN_GUI->showFindAllResults = false;
+            MAIN_SEARCH_CONTROLLER->showFindAllResults = false;
         }
         display_user_messaage();
-        GPE_MAIN_GUI->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessageString,1);
+        MAIN_OVERLAY->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessageString,1);
     }
     return foundStrings;
 }

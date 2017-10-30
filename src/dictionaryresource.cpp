@@ -1,7 +1,7 @@
 /*
 dictionaryresource.cpp
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -31,7 +31,7 @@ SOFTWARE.
 
 */
 
-#include "gpe_editor.h"
+#include "dictionaryresource.h"
 
 definitionResource::definitionResource(std::string key, std::string value)
 {
@@ -113,7 +113,7 @@ bool dictionaryResource::export_and_play_native( bool launchProgram )
 }
 
 
-void dictionaryResource::integrate_into_synthax()
+void dictionaryResource::integrate_into_syntax()
 {
 
 }
@@ -235,7 +235,7 @@ void dictionaryResource::preprocess_self(std::string alternatePath )
     }
 }
 
-void dictionaryResource::process_self(SDL_Rect * viewedSpace ,SDL_Rect *cam )
+void dictionaryResource::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -323,7 +323,7 @@ void dictionaryResource::process_self(SDL_Rect * viewedSpace ,SDL_Rect *cam )
     }
 }
 
-void dictionaryResource::render_self(GPE_Renderer * cRender,SDL_Rect * viewedSpace, SDL_Rect *cam , bool forceRedraw )
+void dictionaryResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam , bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -374,7 +374,7 @@ void dictionaryResource::save_resource(std::string alternatePath, int backupId )
             newSaveDataFile << "#    Game Pencil Engine Project Dictionary DataFile \n";
             newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
             newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to debug@pawbyte.com . \n";
+            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#    --------------------------------------------------  # \n";

@@ -1,7 +1,7 @@
 /*
 texturesource.cpp
 This file is part of:
-GAME PENCI ENGINE
+GAME PENCIL ENGINE
 https://create.pawbyte.com
 Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
 
@@ -31,7 +31,7 @@ SOFTWARE.
 
 */
 
-#include "gpe_editor.h"
+#include "gpe_project_resources.h"
 
 textureResource::textureResource(GPE_ResourceContainer * pFolder)
 {
@@ -103,7 +103,7 @@ bool textureResource::build_intohtml5_file(std::ofstream * fileTarget, int leftT
         }
         else
         {
-            *fileTarget << nestedTabsStr << "var " << html5TSName << " = -1;\n";
+            *fileTarget << nestedTabsStr << "var " << html5TSName << " = GPE.rsm.add_texture( -1 );\n";
         }
     }
     return false;
@@ -267,7 +267,7 @@ void textureResource::prerender_self(GPE_Renderer * cRender )
     }
 }
 
-void textureResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
+void textureResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -323,7 +323,7 @@ void textureResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
             {
                 if( loadResourceButton->is_clicked() )
                 {
-                    std::string newFileName = GPE_GetOpenFileName("Load Your Texture and such...","Images",GPE_MAIN_GUI->fileOpenTextureDir);
+                    std::string newFileName = GPE_GetOpenFileName("Load Your Texture and such...","Images",MAIN_GUI_SETTINGS->fileOpenTextureDir);
                     if( (int)newFileName.size() > 3)
                     {
                         int loadResult = load_image(newFileName);
@@ -462,7 +462,7 @@ void textureResource::process_self(SDL_Rect *viewedSpace,SDL_Rect *cam )
     }
 }
 
-void textureResource::render_self(GPE_Renderer * cRender,SDL_Rect *viewedSpace,SDL_Rect *cam,bool forceRedraw )
+void textureResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -472,14 +472,13 @@ void textureResource::render_self(GPE_Renderer * cRender,SDL_Rect *viewedSpace,S
         {
             render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
         }
-        SDL_Rect texturePreviewCam = {0,0,0,0};
+        GPE_Rect texturePreviewCam;
         texturePreviewCam.x = viewedSpace->x+editorPaneList->get_x2pos()+GENERAL_GPE_PADDING;
         texturePreviewCam.y = viewedSpace->y+GENERAL_GPE_PADDING;
         texturePreviewCam.w = viewedSpace->x+viewedSpace->w-texturePreviewCam.x - GENERAL_GPE_PADDING;
         texturePreviewCam.h = abs(viewedSpace->y+viewedSpace->h-GENERAL_GPE_PADDING-(GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING)*2- texturePreviewCam.y);
         //renders the right side of the area, mainly preview of tilesheet
-
-        SDL_RenderSetViewport( cRender->get_renderer(), &texturePreviewCam );
+        cRender->set_viewpoint( &texturePreviewCam );
         if( forceRedraw && GPE_TEXTURE_TRANSPARENT_BG!=NULL)
         {
             for(int iPV= texturePreviewCam.x; iPV< texturePreviewCam.x+texturePreviewCam.w;iPV+=GPE_TEXTURE_TRANSPARENT_BG->get_width() )
@@ -504,7 +503,7 @@ void textureResource::render_self(GPE_Renderer * cRender,SDL_Rect *viewedSpace,S
                 textureInEditor->render_tex_resized(cRender,0, 0,textureInEditor->get_width()*neededTextureScale,textureInEditor->get_height()*neededTextureScale,NULL,NULL);
             }
         }
-        SDL_RenderSetViewport( cRender->get_renderer(), NULL );
+        cRender->reset_viewpoint();
         if(forceRedraw )
         {
             render_rect(cRender,&texturePreviewCam,GPE_MAIN_TEMPLATE->Button_Box_Color,true);
@@ -515,7 +514,7 @@ void textureResource::render_self(GPE_Renderer * cRender,SDL_Rect *viewedSpace,S
             render_vertical_line_color(cRender,texturePreviewCam.x-GENERAL_GPE_PADDING,
                                    viewedSpace->y,viewedSpace->y+viewedSpace->h,GPE_MAIN_TEMPLATE->Text_Box_Color );
         }
-        SDL_RenderSetViewport( cRender->get_renderer(), viewedSpace );
+        cRender->set_viewpoint( viewedSpace );
         editorPaneList->render_self(cRender,viewedSpace,cam,forceRedraw);
     }
 }
@@ -555,7 +554,7 @@ void textureResource::save_resource(std::string alternatePath, int backupId)
             newSaveDataFile << "#    Game Pencil Engine Project Game Texture DataFile \n";
             newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
             newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to debug@pawbyte.com . \n";
+            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#     \n";
             newSaveDataFile << "#    --------------------------------------------------  # \n";
