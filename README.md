@@ -31,9 +31,13 @@ Documentation
 =============
 If you would like to see our documentation to this project, go [here](http://docs.pawbyte.com/)
 
+Discord Chat
+======
+Come and  [join our discord server](https://discord.gg/aNX3Fcx)!  Here, you can engage in chats about game pencil, get help and even voice chat the developers and users!
+
 Forums
 ======
-Come become a member on our [forum](http://community.pawbyte.com/)!  Here, you can find help and talk directly with the developers of this project!
+Become a member on our [forum](http://community.pawbyte.com/)!  Here, you can find help and talk directly with the developers of this project!
 
 Download Newest Version
 =======================
