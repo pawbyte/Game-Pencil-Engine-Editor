@@ -1,4 +1,4 @@
-The Game Pencil Engine Version 1.1.2 Public Beta
+The Game Pencil Engine Version 1.1.4 and beyond!
 ================================================
 Please look at our [Website](http://create.pawbyte.com/) and take a look around!
 
