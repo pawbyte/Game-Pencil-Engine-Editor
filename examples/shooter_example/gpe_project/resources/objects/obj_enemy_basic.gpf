@@ -4,11 +4,11 @@
 #    Game Pencil Engine Project GameObject File 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.11
+Version=1.14
 ResourceName=obj_enemy_basic
 SpriteId=spr_enemy
 ParentGameObjectId=
@@ -27,7 +27,7 @@ this.start_countdown(0,15);
 this.start_countdown(1,30);
 
 [[[Function=Main Logic]]] 
-if( !GAME_OVER)
+/*if( !GAME_OVER)
 {
     if( this.health <=0)
     {
@@ -66,6 +66,7 @@ if( !GAME_OVER)
         this.spriteFrame =  3;
     }
 }
+*/
 [[[TimedFunction=Timer0]]] 
 if( PLAYER_OBJECT!=IS_NULL && !GAME_OVER )
 {
@@ -77,7 +78,7 @@ if( PLAYER_OBJECT!=IS_NULL && !GAME_OVER )
 }
 this.start_countdown(0,gpe.get_random(10,45) );
 [[[TimedFunction=Timer1]]] 
-if( gpe.get_object_count(obj_enemy_bullet) < 50  && !GAME_OVER  )
+/*if( gpe.get_object_count(obj_enemy_bullet) < 50  && !GAME_OVER  )
 {
     var distanceToPlayer = this.get_my_distance( PLAYER_OBJECT.getx(), PLAYER_OBJECT.gety() );
     if( distanceToPlayer > 16 && distanceToPlayer < 256 )
@@ -89,7 +90,7 @@ if( gpe.get_object_count(obj_enemy_bullet) < 50  && !GAME_OVER  )
     }
 }
 this.canFire = !this.canFire;
-this.start_countdown( 1, 30+gpe.get_random(0,90) );
+this.start_countdown( 1, 30+gpe.get_random(0,90) );*/
 [[[CollideFunction=obj_bullet]]] 
 this.health-=1;
 other.self_destruct();

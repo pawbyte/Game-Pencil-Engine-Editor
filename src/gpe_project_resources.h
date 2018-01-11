@@ -203,6 +203,28 @@ class functionResource: public standardEditableGameResource
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 
+class classResource: public standardEditableGameResource
+{
+    public:
+        GPE_TextAreaInputBasic * classHeaderCode;
+        GPE_TextAreaInputBasic * classSourceCode;
+        GPE_TabBar * codeCategoryTabs;
+        GPE_ToolIconButton * saveButton;
+        classResource(GPE_ResourceContainer * pFolder = NULL);
+        ~classResource();
+        bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
+        void integrate_into_syntax();
+        void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
+        void preprocess_self(std::string alternatePath = "");
+        void prerender_self(GPE_Renderer * cRender);
+        void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
+        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void save_resource(std::string alternatePath = "", int backupId = -1);
+        int search_for_string(std::string needle);
+        int search_and_replace_string(std::string needle, std::string newStr = "");
+        bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
+};
+
 const double ZOOM_LEVEL_MIN = 0.0625;
 const double ZOOM_LEVEL_MAX = 16;
 class spriteResource: public standardEditableGameResource
@@ -1059,7 +1081,6 @@ class gamePencilEditorSettingsResource: public standardEditableGameResource
     public:
         //Compiler Settings
         GPE_CheckBoxBasic * stopCompileOnError;
-        GPE_CheckBoxBasic * useStrictMode;
         GPE_CheckBoxBasic * showShortProjectNames;
         //Added as of 1.13 [ BEGIN ]
         GPE_CheckBoxBasic * renderSceneBGColor;

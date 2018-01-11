@@ -9,7 +9,7 @@ Copyright (c) 2014-2017 PawByte.
 Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the ìSoftwareî), to deal
+of this software and associated documentation files (the ‘ìoftware‘©, to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -18,7 +18,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED ìAS ISî, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED ‘ÅS IS‘¨ WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -54,27 +54,27 @@ std::vector < GPE_Font * > loadedGPEFonts;
 bool render_circle_filled_rgba(GPE_Renderer * gRender, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
     //Modified from SDL_GFX
-	Sint16 cx = 0;
-	Sint16 cy = rad;
-	Sint16 ocx = (Sint16) 0xffff;
-	Sint16 ocy = (Sint16) 0xffff;
-	Sint16 df = 1 - rad;
-	Sint16 d_e = 3;
-	Sint16 d_se = -2 * rad + 5;
-	Sint16 xpcx, xmcx, xpcy, xmcy;
-	Sint16 ypcy, ymcy, ypcx, ymcx;
+    Sint16 cx = 0;
+    Sint16 cy = rad;
+    Sint16 ocx = (Sint16) 0xffff;
+    Sint16 ocy = (Sint16) 0xffff;
+    Sint16 df = 1 - rad;
+    Sint16 d_e = 3;
+    Sint16 d_se = -2 * rad + 5;
+    Sint16 xpcx, xmcx, xpcy, xmcy;
+    Sint16 ypcy, ymcy, ypcx, ymcx;
 
-	/*
-	* Sanity check radius
-	*/
-	if (rad <= 0 || gRender==NULL)
+    /*
+    * Sanity check radius
+    */
+    if (rad <= 0 || gRender==NULL)
     {
-		return false;
-	}
+        return false;
+    }
 
-	/*
-	* Special case for rad=0 - draw a point
-	*/
+    /*
+    * Special case for rad=0 - draw a point
+    */
 
 
     SDL_Renderer * renderer = gRender->gpeRender;
@@ -95,25 +95,34 @@ bool render_circle_filled_rgba(GPE_Renderer * gRender, Sint16 x, Sint16 y, Sint1
             xmcx = x - cx;
             xpcy = x + cy;
             xmcy = x - cy;
-            if (ocy != cy) {
-                if (cy > 0) {
+            if (ocy != cy)
+            {
+                if (cy > 0)
+                {
                     ypcy = y + cy;
                     ymcy = y - cy;
                     render_horizontal_line(gRender, ypcy,xmcx, xpcx);
                     render_horizontal_line(gRender, ymcy,xmcx, xpcx);
-                } else {
+                }
+                else
+                {
 
                 }
                 ocy = cy;
             }
-            if (ocx != cx) {
-                if (cx != cy) {
-                    if (cx > 0) {
+            if (ocx != cx)
+            {
+                if (cx != cy)
+                {
+                    if (cx > 0)
+                    {
                         ypcx = y + cx;
                         ymcx = y - cx;
                         render_horizontal_line(gRender, ymcx,xmcy, xpcy);
                         render_horizontal_line(gRender, ypcx,xmcy, xpcy);
-                    } else {
+                    }
+                    else
+                    {
                         render_horizontal_line(gRender, y,xmcy, xpcy);
                     }
                 }
@@ -123,20 +132,24 @@ bool render_circle_filled_rgba(GPE_Renderer * gRender, Sint16 x, Sint16 y, Sint1
             /*
             * Update
             */
-            if (df < 0) {
+            if (df < 0)
+            {
                 df += d_e;
                 d_e += 2;
                 d_se += 2;
-            } else {
+            }
+            else
+            {
                 df += d_se;
                 d_e += 2;
                 d_se += 4;
                 cy--;
             }
             cx++;
-        } while (cx <= cy);
+        }
+        while (cx <= cy);
     }
-	return true;
+    return true;
 }
 
 void render_gradient_vertical(GPE_Renderer * gRender, GPE_Rect * rendRect, GPE_Color * rendColor)
@@ -155,9 +168,9 @@ void render_gradient_vertical(GPE_Renderer * gRender, GPE_Rect * rendRect, GPE_C
             for( int i = 0; i <= rendRect->h; i++)
             {
                 colorShadeDivision = (float)i/(float) rendRect->h;
-                colorShadeTempColor->change_r( merge_channel(rendColor->get_r() ,(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
-                colorShadeTempColor->change_g( merge_channel(rendColor->get_g() ,(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
-                colorShadeTempColor->change_b( merge_channel(rendColor->get_b() ,(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
+                colorShadeTempColor->change_r( merge_channel(rendColor->get_r(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
+                colorShadeTempColor->change_g( merge_channel(rendColor->get_g(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
+                colorShadeTempColor->change_b( merge_channel(rendColor->get_b(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
 
                 render_horizontal_line_color(gRender,rendRect->y+i,rendRect->x,rendRect->x+rendRect->w,colorShadeTempColor);
             }
@@ -183,9 +196,9 @@ void render_gradient_horizontal(GPE_Renderer * gRender, GPE_Rect * rendRect, GPE
             for( int i = 0; i <= rendRect->w; i++)
             {
                 colorShadeDivision = (float)i/(float) rendRect->w;
-                colorShadeTempColor->change_r( merge_channel(rendColor->get_r() ,(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
-                colorShadeTempColor->change_g( merge_channel(rendColor->get_g() ,(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
-                colorShadeTempColor->change_b( merge_channel(rendColor->get_b() ,(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
+                colorShadeTempColor->change_r( merge_channel(rendColor->get_r(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
+                colorShadeTempColor->change_g( merge_channel(rendColor->get_g(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
+                colorShadeTempColor->change_b( merge_channel(rendColor->get_b(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
 
                 render_vertical_line_color(gRender,rendRect->x+i,rendRect->y,rendRect->y+rendRect->h,colorShadeTempColor);
             }
@@ -563,36 +576,36 @@ void GPE_Font::render_bitmapped_text( GPE_Renderer * cRenderer,int xPos, int yPo
     {
         switch(hAlign)
         {
-            case FA_CENTER:
-                xPos=xPos-(numberWidth*numberSize)/2;
-                //LAST_USED_HALIGNMENT=FA_CENTER;
+        case FA_CENTER:
+            xPos=xPos-(numberWidth*numberSize)/2;
+            //LAST_USED_HALIGNMENT=FA_CENTER;
             break;
 
-            case FA_RIGHT:
-                xPos=xPos-(numberWidth*numberSize);
-                // LAST_USED_HALIGNMENT=FA_RIGHT;
+        case FA_RIGHT:
+            xPos=xPos-(numberWidth*numberSize);
+            // LAST_USED_HALIGNMENT=FA_RIGHT;
             break;
 
-            //rendering left will be the default
-            default:
-                // LAST_USED_HALIGNMENT=FA_LEFT;
+        //rendering left will be the default
+        default:
+            // LAST_USED_HALIGNMENT=FA_LEFT;
             break;
         }
         switch(vAlign)
         {
-            case FA_MIDDLE:
-                yPos=yPos-numberHeight/2;
-                // LAST_USED_VALIGNMENT=FA_MIDDLE;
+        case FA_MIDDLE:
+            yPos=yPos-numberHeight/2;
+            // LAST_USED_VALIGNMENT=FA_MIDDLE;
             break;
 
-            case FA_BOTTOM:
-                yPos=yPos-numberHeight;
-                // LAST_USED_VALIGNMENT=FA_MIDDLE;
+        case FA_BOTTOM:
+            yPos=yPos-numberHeight;
+            // LAST_USED_VALIGNMENT=FA_MIDDLE;
             break;
 
-            //rendering left will be the default
-            default:
-                //LAST_USED_VALIGNMENT=FA_TOP;
+        //rendering left will be the default
+        default:
+            //LAST_USED_VALIGNMENT=FA_TOP;
             break;
         }
         fontPair * strTex = NULL;
@@ -627,7 +640,7 @@ void GPE_Font::render_bitmapped_text( GPE_Renderer * cRenderer,int xPos, int yPo
 
                     if(hAlign<FA_LEFT || hAlign<0)
                     {
-                            hAlign=LAST_USED_HALIGNMENT;
+                        hAlign=LAST_USED_HALIGNMENT;
                     }
                     if(vAlign <FA_TOP || vAlign<0)
                     {
@@ -673,7 +686,7 @@ void GPE_Font::render_text( GPE_Renderer * cRenderer,int xPos, int yPos, std::st
 
                 if(hAlign<FA_LEFT || hAlign<0)
                 {
-                        hAlign=LAST_USED_HALIGNMENT;
+                    hAlign=LAST_USED_HALIGNMENT;
                 }
                 if(vAlign <FA_TOP || vAlign<0)
                 {
@@ -681,36 +694,36 @@ void GPE_Font::render_text( GPE_Renderer * cRenderer,int xPos, int yPos, std::st
                 }
                 switch(hAlign)
                 {
-                    case FA_CENTER:
-                        xPos=xPos-texWid/2;
-                        //LAST_USED_HALIGNMENT=FA_CENTER;
+                case FA_CENTER:
+                    xPos=xPos-texWid/2;
+                    //LAST_USED_HALIGNMENT=FA_CENTER;
                     break;
 
-                    case FA_RIGHT:
-                        xPos=xPos-texWid;
-                        // LAST_USED_HALIGNMENT=FA_RIGHT;
+                case FA_RIGHT:
+                    xPos=xPos-texWid;
+                    // LAST_USED_HALIGNMENT=FA_RIGHT;
                     break;
 
-                    //rendering left will be the default
-                    default:
-                        // LAST_USED_HALIGNMENT=FA_LEFT;
+                //rendering left will be the default
+                default:
+                    // LAST_USED_HALIGNMENT=FA_LEFT;
                     break;
                 }
                 switch(vAlign)
                 {
-                    case FA_MIDDLE:
-                        yPos=yPos-texHeight/2;
-                        // LAST_USED_VALIGNMENT=FA_MIDDLE;
+                case FA_MIDDLE:
+                    yPos=yPos-texHeight/2;
+                    // LAST_USED_VALIGNMENT=FA_MIDDLE;
                     break;
 
-                    case FA_BOTTOM:
-                        yPos=yPos-texHeight;
-                        // LAST_USED_VALIGNMENT=FA_MIDDLE;
+                case FA_BOTTOM:
+                    yPos=yPos-texHeight;
+                    // LAST_USED_VALIGNMENT=FA_MIDDLE;
                     break;
 
-                    //rendering left will be the default
-                    default:
-                        //LAST_USED_VALIGNMENT=FA_TOP;
+                //rendering left will be the default
+                default:
+                    //LAST_USED_VALIGNMENT=FA_TOP;
                     break;
                 }
                 SDL_Rect clip = {xPos, yPos, texWid,texHeight};
@@ -773,36 +786,36 @@ void GPE_Font::render_text_ext( GPE_Renderer * cRenderer,int xPos, int yPos, std
                 }
                 switch(hAlign)
                 {
-                    case FA_CENTER:
-                        xPos=xPos-texWid/2;
-                        //LAST_USED_HALIGNMENT=FA_CENTER;
+                case FA_CENTER:
+                    xPos=xPos-texWid/2;
+                    //LAST_USED_HALIGNMENT=FA_CENTER;
                     break;
 
-                    case FA_RIGHT:
-                        xPos=xPos-texWid;
-                        // LAST_USED_HALIGNMENT=FA_RIGHT;
+                case FA_RIGHT:
+                    xPos=xPos-texWid;
+                    // LAST_USED_HALIGNMENT=FA_RIGHT;
                     break;
 
-                    //rendering left will be the default
-                    default:
-                        // LAST_USED_HALIGNMENT=FA_LEFT;
+                //rendering left will be the default
+                default:
+                    // LAST_USED_HALIGNMENT=FA_LEFT;
                     break;
                 }
                 switch(vAlign)
                 {
-                    case FA_MIDDLE:
-                        yPos=yPos-texHeight/2;
-                        // LAST_USED_VALIGNMENT=FA_MIDDLE;
+                case FA_MIDDLE:
+                    yPos=yPos-texHeight/2;
+                    // LAST_USED_VALIGNMENT=FA_MIDDLE;
                     break;
 
-                    case FA_BOTTOM:
-                        yPos=yPos-texHeight;
-                        // LAST_USED_VALIGNMENT=FA_MIDDLE;
+                case FA_BOTTOM:
+                    yPos=yPos-texHeight;
+                    // LAST_USED_VALIGNMENT=FA_MIDDLE;
                     break;
 
-                    //rendering left will be the default
-                    default:
-                        //LAST_USED_VALIGNMENT=FA_TOP;
+                //rendering left will be the default
+                default:
+                    //LAST_USED_VALIGNMENT=FA_TOP;
                     break;
                 }
 
@@ -845,7 +858,7 @@ void GPE_Font::render_text_boxed( GPE_Renderer * cRenderer,int xPos, int yPos, s
 
                 if(hAlign<FA_LEFT || hAlign<0)
                 {
-                        hAlign=LAST_USED_HALIGNMENT;
+                    hAlign=LAST_USED_HALIGNMENT;
                 }
                 if(vAlign <FA_TOP || vAlign<0)
                 {
@@ -853,36 +866,36 @@ void GPE_Font::render_text_boxed( GPE_Renderer * cRenderer,int xPos, int yPos, s
                 }
                 switch(hAlign)
                 {
-                    case FA_CENTER:
-                        xPos=xPos-texWid/2;
-                        //LAST_USED_HALIGNMENT=FA_CENTER;
+                case FA_CENTER:
+                    xPos=xPos-texWid/2;
+                    //LAST_USED_HALIGNMENT=FA_CENTER;
                     break;
 
-                    case FA_RIGHT:
-                        xPos=xPos-texWid;
-                        // LAST_USED_HALIGNMENT=FA_RIGHT;
+                case FA_RIGHT:
+                    xPos=xPos-texWid;
+                    // LAST_USED_HALIGNMENT=FA_RIGHT;
                     break;
 
-                    //rendering left will be the default
-                    default:
-                        // LAST_USED_HALIGNMENT=FA_LEFT;
+                //rendering left will be the default
+                default:
+                    // LAST_USED_HALIGNMENT=FA_LEFT;
                     break;
                 }
                 switch(vAlign)
                 {
-                    case FA_MIDDLE:
-                        yPos=yPos-texHeight/2;
-                        // LAST_USED_VALIGNMENT=FA_MIDDLE;
+                case FA_MIDDLE:
+                    yPos=yPos-texHeight/2;
+                    // LAST_USED_VALIGNMENT=FA_MIDDLE;
                     break;
 
-                    case FA_BOTTOM:
-                        yPos=yPos-texHeight;
-                        // LAST_USED_VALIGNMENT=FA_MIDDLE;
+                case FA_BOTTOM:
+                    yPos=yPos-texHeight;
+                    // LAST_USED_VALIGNMENT=FA_MIDDLE;
                     break;
 
-                    //rendering left will be the default
-                    default:
-                        //LAST_USED_VALIGNMENT=FA_TOP;
+                //rendering left will be the default
+                default:
+                    //LAST_USED_VALIGNMENT=FA_TOP;
                     break;
                 }
                 GPE_Rect gpeClip;
@@ -1025,7 +1038,7 @@ int GPE_GetFontCacheCount(bool recordCache)
     return cacheCount;
 }
 
-bool render_bitmap_text( GPE_Renderer * cRenderer,int xPos, int yPos, std::string numberToRender, GPE_Color * textColor, GPE_Font * textFont, int hAlign, int vAlign, int renderAlpha)
+bool render_bitmap_text( GPE_Renderer * cRenderer,int xPos, int yPos, std::string textureText, GPE_Color * textColor, GPE_Font * textFont, int hAlign, int vAlign, int renderAlpha)
 {
     if( textFont==NULL)
     {
@@ -1033,17 +1046,38 @@ bool render_bitmap_text( GPE_Renderer * cRenderer,int xPos, int yPos, std::strin
     }
     if( textFont!=NULL)
     {
-        textFont->render_bitmapped_text(cRenderer,xPos,yPos,numberToRender,textColor,hAlign,vAlign,renderAlpha);
+        textFont->render_bitmapped_text(cRenderer,xPos,yPos,mainTranslator->get_str(textureText ),textColor,hAlign,vAlign,renderAlpha);
         return true;
     }
     else
     {
-        std::cout << "Unable to render number ("+ numberToRender + ").\n";
+        std::cout << "Unable to render number ("+ textureText + ").\n";
     }
     return false;
 }
 
 bool render_new_text( GPE_Renderer * cRenderer,int xPos, int yPos, std::string textureText, GPE_Color * textColor, GPE_Font * textFont, int hAlign, int vAlign, int renderAlpha)
+{
+    if( textFont==NULL)
+    {
+        textFont = LAST_USED_FONT;
+    }
+    if( (int)textureText.size() > 0)
+    {
+        if( textFont!=NULL)
+        {
+            textFont->render_text(cRenderer,xPos,yPos,mainTranslator->get_str(textureText ),textColor,hAlign,vAlign,renderAlpha);
+            return true;
+        }
+        else
+        {
+            std::cout << "Unable to render text (" << textureText << ").\n";
+        }
+    }
+    return false;
+}
+
+bool render_only_text( GPE_Renderer * cRenderer,int xPos, int yPos, std::string textureText, GPE_Color * textColor, GPE_Font * textFont, int hAlign, int vAlign, int renderAlpha)
 {
     if( textFont==NULL)
     {
@@ -1072,7 +1106,7 @@ bool render_new_text_ext( GPE_Renderer * cRenderer,int xPos, int yPos, std::stri
     }
     if( textFont!=NULL)
     {
-        textFont->render_text_ext(cRenderer,xPos,yPos,textureText,textColor,hAlign,vAlign,rendWid,rendHeight,renderAlpha);
+        textFont->render_text_ext(cRenderer,xPos,yPos,mainTranslator->get_str(textureText ),textColor,hAlign,vAlign,rendWid,rendHeight,renderAlpha);
         return true;
     }
     else
@@ -1090,7 +1124,7 @@ bool render_new_boxed( GPE_Renderer * cRenderer,int xPos, int yPos, std::string 
     }
     if( textFont!=NULL)
     {
-        textFont->render_text_boxed(cRenderer,xPos,yPos,textureText,textColor,boxColor,hAlign,vAlign,renderAlpha);
+        textFont->render_text_boxed(cRenderer,xPos,yPos,mainTranslator->get_str(textureText ),textColor,boxColor,hAlign,vAlign,renderAlpha);
         return true;
     }
     else
@@ -1108,7 +1142,7 @@ bool render_new_text_rotated( GPE_Renderer * cRenderer,int xPos, int yPos, std::
     }
     if( textFont!=NULL)
     {
-        textFont->render_text_rotated(cRenderer,xPos,yPos,textureText,textColor,textAngle,renderAlpha);
+        textFont->render_text_rotated(cRenderer,xPos,yPos,mainTranslator->get_str(textureText ),textColor,textAngle,renderAlpha);
         return true;
     }
     else

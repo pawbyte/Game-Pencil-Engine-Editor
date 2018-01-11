@@ -4,11 +4,11 @@
 #    Game Pencil Engine Project GameObject File 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.11
+Version=1.13
 ResourceName=obj_ball
 SpriteId=spr_ball
 ParentGameObjectId=
@@ -75,6 +75,7 @@ if( this.gety2() >= gpe.get_scene_height() )
         this.set_velocity( -this.direction, this.speed);
     }
 }
+//Sets the ball in motion if the Space or Y key is pressed
 if( this.speed ==0 && gpe.check_keyboard(gp_space) || gpe.check_keyboard(gp_y) )
 {
     if( this.futureSpeed!=0)
@@ -87,7 +88,7 @@ if( this.speed ==0 && gpe.check_keyboard(gp_space) || gpe.check_keyboard(gp_y) )
     }
 }
 
-if( this.speed > 20)
+if( this.speed > 20 )
 {
     this.speed = 20;
 }
@@ -99,20 +100,20 @@ if( this.speed ==0)
 }
 gpe.render_text(guiFont,gpe.get_scene_width()/2,64,this.player1Score+":"+this.player2Score,"white",fa_center,fa_top);
 
-[[[CollideFunction=]]] 
+[[[CollideFunction=obj_paddle_p1]]] 
 if( this.canBounce==true)
 {
     gpe.audio_play(aud_bounce);
     this.update_cords( other.getx2()+2, this.yPast );
     var hh = other.get_collision_height() / 2;
     var bounceAngle = ((this.gety() + this.get_collision_height() / 2) - (other.gety() + hh)) / hh * 45;
-    //please note the angel automatically sets it to 45 degrees
+    //please note the angle automatically sets it to 45 degrees
     //In a real game there will be a bit more math for the "perfect bounce"
     //For this tutorial we will not go that advanced.
     this.set_velocity( gpe.radian(bounceAngle), this.speed*-1.1);
     this.canBounce = false;
 }
-[[[CollideFunction=]]] 
+[[[CollideFunction=obj_paddle_p2]]] 
 if( this.canBounce==true)
 {
     gpe.audio_play(aud_bounce);
@@ -124,7 +125,7 @@ if( this.canBounce==true)
     bounceAngle =( (this.gety() + this.get_collision_height() / 2) - (other.gety() + hh) ) / hh *(-45);
     this.set_velocity( gpe.radian(bounceAngle+180), this.speed*-1.1);
     this.canBounce = false;
-    //please note the angel automatically sets it to 45 degrees
+    //please note the angle automatically sets it to 45 degrees
     //In a real game there will be a bit more math for the "perfect bounce"
     //For this tutorial we will not go that advanced.
 }

@@ -38,7 +38,7 @@ SOFTWARE.
 
 const int PGUI_MAJOR_VERSION = 1;
 const int PGUI_MINOR_VERSION = 0;
-const int PGUI_PATCHLEVEL = 0;
+const int PGUI_PATCHLEVEL = 2;
 
 const int nestedFolderLimit = 4;
 const int SEARCH_MODE_FIND = 1;
@@ -842,7 +842,7 @@ class GPE_ToolIconButtonBar: public GPE_GeneralGuiElement
         int get_tab_id();
         void limit_width(bool isLimited = false);
         void set_width(int newWid);
-        GPE_ToolIconButton * adkb_dton( std::string buttonImgFile,std::string name, int id = -1, bool endsSection = false);
+        GPE_ToolIconButton * add_option( std::string buttonImgFile,std::string name, int id = -1, bool endsSection = false);
         void process_self(GPE_Rect * viewedSpace =NULL, GPE_Rect *renderCam = NULL);
         void render_self(GPE_Renderer *cRender=NULL, GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
         void set_coords(int newX = -1, int newY = -1);
@@ -1413,6 +1413,8 @@ const int RESOURCE_TYPE_SPREADSHEET = 14;
 
 const int RESOURCE_TYPE_EVENT = 15;
 const int RESOURCE_TYPE_QUEST = 16;
+
+const int RESOURCE_TYPE_CLASS = 17;
 
 
 extern GPE_ResourceContainer * RESOURCE_TO_DRAG;

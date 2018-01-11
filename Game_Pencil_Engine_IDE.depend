@@ -19,7 +19,7 @@
 	"gameobjectresource.h"
 	"gpe_editor.h"
 
-1495248128 r.h"
+1475274872 r.h"
 
 1429202750 source:c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\collision_checks.cpp
 	"collision_checks.h"
@@ -30,7 +30,7 @@
 	<algorithm>
 	"GPE_CIncludes.h"
 
-1491593885 udes.h"
+1475514882 udes.h"
 
 1451683614 c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\gpe_cincludes.h
 	<algorithm>
@@ -64,7 +64,7 @@
 1418855184 c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\color_master.h
 	"GPE_Color_Manager.h"
 
-1475274874 _Manager.h"
+1475274872 _Manager.h"
 
 1451270249 c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\gpe_color_manager.h
 	"GPE_CIncludes.h"
@@ -73,7 +73,7 @@
 	<string>
 	<vector>
 
-1477594032 
+1475698638 
 
 1448223223 c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\gpe_color.h
 	"GPE_CIncludes.h"
@@ -87,7 +87,7 @@
 	"utils_file_system.h"
 	"shared_resources.h"
 
-1476110888 sources.h"
+1452472423 sources.h"
 
 1403799368 c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\file_parser.h
 	"GPE_CIncludes.h"
@@ -104,7 +104,7 @@
 	"input_manager.h"
 	"resources_controller.h"
 
-1493755070 _controller.h"
+1475698634 _controller.h"
 
 1448058328 c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\input_state.h
 	"GPE_CIncludes.h"
@@ -133,7 +133,7 @@
 	"functions.h"
 	"string_ex.h"
 
-1478052564 .h"
+1475176956 .h"
 
 1451856157 c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\gpe_globals.h
 	"GPE_CIncludes.h"
@@ -151,7 +151,7 @@
 	"string_ex.h"
 	"GPE_Globals.h"
 
-1482946972 ls.h"
+1475513617 ls.h"
 
 1448416026 c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\functions.h
 	"GPE_CIncludes.h"
@@ -215,7 +215,7 @@
 1451951621 source:c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\gpe_texture.cpp
 	"GPE_Texture.h"
 
-1491511667 re.h"
+1475365973 re.h"
 
 1448035767 source:c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\input_state.cpp
 	<iostream>
@@ -303,7 +303,7 @@
 1451332745 source:c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\gpe_engine.cpp
 	"GPE_Engine.h"
 
-1495207067 e.h"
+1475863972 e.h"
 
 1450116955 c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\gpe_engine.h
 	"GPE_CIncludes.h"
@@ -334,7 +334,7 @@
 1450116664 source:c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\fontresource.cpp
 	"fontResource.h"
 
-1496771430 rce.h"
+1475583803 rce.h"
 
 1447628286 c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\fontresource.h
 	"gpe_editor.h"
@@ -345,12 +345,12 @@
 1451869938 source:c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\gameobjectresource.cpp
 	"gameobjectresource.h"
 
-1507047888 tresource.h"
+1475886915 tresource.h"
 
 1450367294 source:c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\project_properties.cpp
 	"project_properties.h"
 
-1495646296 roperties.h"
+1475407678 roperties.h"
 
 1448058400 c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\project_properties.h
 	"gpe_editor.h"
@@ -358,7 +358,7 @@
 1452012489 source:c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\spriteresource.cpp
 	"spriteresource.h"
 
-1507047838 ource.h"
+1475699110 ource.h"
 
 1448549256 c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\spriteresource.h
 	"gpe_editor.h"
@@ -374,7 +374,7 @@
 	"string_ex.h"
 	"input_manager.h"
 
-1507048330 ager.h"
+1476109547 ager.h"
 
 1451683494 c:\users\thenathanh\documents\pawbyte\game_pencil_engine_ide\src\libs\tinydir.h
 	<errno.h>
@@ -997,7 +997,7 @@
 	<dirent.h>
 	<exception>
 
-1478563052 >
+1474470702 >
 
 1468867380 c:\users\thenathanh\documents\pawbyte\gpe_crossplatform\game_pencil_engine_ide\src\libs\tinydir.h
 	<errno.h>
@@ -1124,7 +1124,7 @@
 	"GPE_CIncludes.h"
 	"GPE_Renderer.h"
 
-1487802727 rer.h"
+1472649572 rer.h"
 
 1477140021 c:\users\thenathanh\documents\pawbyte\gpe_crossplatform\game_pencil_engine_ide\src\gpe_engine.h
 	"GPE_CIncludes.h"
@@ -1177,7 +1177,7 @@
 	"gpe_editor.h"
 	"windows.h"
 
-1507048205 "
+1475869336 "
 
 1477140174 source:c:\users\thenathanh\documents\pawbyte\gpe_crossplatform\game_pencil_engine_ide\src\gpe_engine.cpp
 	"GPE_Engine.h"
@@ -1287,7 +1287,7 @@
 1478896391 source:c:\users\thenathanh\documents\pawbyte\gpe_crossplatform\game_pencil_engine_ide\src\functionresource.cpp
 	"functionResource.h"
 
-1493755070 esource.h"
+1475274872 esource.h"
 
 1463862325 c:\users\thenathanh\documents\pawbyte\gpe_crossplatform\game_pencil_engine_ide\src\functionresource.h
 	"gpe_editor.h"
@@ -1295,7 +1295,7 @@
 1479157089 source:c:\users\thenathanh\documents\pawbyte\gpe_crossplatform\game_pencil_engine_ide\src\gpe_editor_helppage.cpp
 	"gpe_editor_helppage.h"
 
-1507066736 r_helppage.h"
+1473424448 r_helppage.h"
 
 1468091296 c:\users\thenathanh\documents\pawbyte\gpe_crossplatform\game_pencil_engine_ide\src\gpe_editor_helppage.h
 	"gpe_editor.h"
@@ -1303,7 +1303,7 @@
 1479157011 source:c:\users\thenathanh\documents\pawbyte\gpe_crossplatform\game_pencil_engine_ide\src\gpe_editor_aboutpage.cpp
 	"gpe_editor_aboutpage.h"
 
-1507066743 r_aboutpage.h"
+1475937970 r_aboutpage.h"
 
 1473424448 c:\users\thenathanh\documents\pawbyte\gpe_crossplatform\game_pencil_engine_ide\src\gpe_editor_aboutpage.h
 	"gpe_editor_helppage.h"
@@ -3941,8 +3941,6 @@
 1472507626 c:\users\thenathanh\documents\pawbyte\gpe_crossplatform\game_pencil_engine_ide\src\external_lib\duktape.h
 	"duk_config.h"
 
-1472507626 g.h"
-
 1478450297 c:\users\thenathanh\documents\pawbyte\gpe_crossplatform\game_pencil_engine_ide\src\external_lib\duk_config.h
 	<TargetConditionals.h>
 	<architecture/byte_order.h>
@@ -4017,8 +4015,6 @@
 	<exception>
 	<inttypes.h>
 	"duk_custom.h"
-
-1478450297 m.h"
 
 1457239574 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\game_pencil_engine_ide\resource.rc
 
@@ -4326,8 +4322,6 @@
 1488232359 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\game_pencil_engine_ide\src\project_brower.cpp
 	"project_browser.h"
 
-1492133117 rowser.h"
-
 1487885878 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\game_pencil_engine_ide\src\project_brower.h
 	"gpe_editor.h"
 
@@ -4350,20 +4344,27 @@
 1495248128 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\game_pencil_engine_ide\src\dictionaryresource.h
 	"gpe_editor.h"
 
-1507251474 source:/home/clee231/Downloads/gpe_source_v112/src/audio_resource.cpp
-	"gpe_editor.h"
+1457243174 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\resource.rc
 
-1507159826 /home/clee231/Downloads/gpe_source_v112/src/gpe_editor.h
-	"GPE_CIncludes.h"
-	"shared_resources.h"
-	"functions.h"
+1508378438 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\aosgui\ambitious_gui_library.cpp
+	"ambitious_gui_library.h"
+
+1508383632 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\aosgui\ambitious_gui_library.h
+	"../GPE_Engine/GPE.h"
+
+1508382896 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe.h
 	"GPE_Engine.h"
-	"program_state.h"
-	"stateManager.h"
-	"SDL2/SDL_version.h"
-	"timer.h"
+	"GPE_File_System.h"
+	"GPE_Program_State.h"
+	"GPE_State_Manager.h"
 
-1507159750 /home/clee231/Downloads/gpe_source_v112/src/GPE_CIncludes.h
+1508379223 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_engine.h
+	"GPE_CIncludes.h"
+	"GPE_Shared_Resources.h"
+	"GPE_Functions.h"
+	"GPE_Globals.h"
+
+1508380663 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_cincludes.h
 	<algorithm>
 	<fstream>
 	<iostream>
@@ -4376,6 +4377,7 @@
 	<windows.h>
 	<windows.h>
 	<Commdlg.h>
+	"SDL2/SDL_version.h"
 	"SDL2/SDL_video.h"
 	"SDL2/SDL_image.h"
 	"SDL2/SDL_ttf.h"
@@ -4387,22 +4389,22 @@
 	<dirent.h>
 	<exception>
 
-1507159998 /home/clee231/Downloads/gpe_source_v112/src/shared_resources.h
+1508382438 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_shared_resources.h
 	"GPE_CIncludes.h"
-	"input_manager.h"
-	"resources_controller.h"
+	"GPE_Input.h"
+	"GPE_Resources_Controller.h"
 
-1507159938 /home/clee231/Downloads/gpe_source_v112/src/input_manager.h
+1508381952 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_input.h
 	"GPE_CIncludes.h"
-	"timer.h"
+	"GPE_Timer.h"
 	<string>
 
-1507160054 /home/clee231/Downloads/gpe_source_v112/src/timer.h
+1508378191 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_timer.h
 	"GPE_CIncludes.h"
 
-1507159988 /home/clee231/Downloads/gpe_source_v112/src/resources_controller.h
+1508379715 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_resources_controller.h
 	"GPE_CIncludes.h"
-	"constants.h"
+	"GPE_Constants.h"
 	"GPE_Globals.h"
 	"GPE_Texture.h"
 	<string>
@@ -4411,43 +4413,44 @@
 	<algorithm>
 	<fstream>
 	<vector>
-	"color_master.h"
-	"sprite.h"
-	"functions.h"
-	"string_ex.h"
+	"GPE_Color_Manager.h"
+	"GPE_Color_Master.h"
+	"GPE_Sprite.h"
+	"GPE_Functions.h"
+	"GPE_String_Ex.h"
 
-1507159690 /home/clee231/Downloads/gpe_source_v112/src/constants.h
+1508383449 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_constants.h
 	"GPE_CIncludes.h"
 
-1507159906 /home/clee231/Downloads/gpe_source_v112/src/GPE_Globals.h
+1508376626 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_globals.h
 	"GPE_CIncludes.h"
 	"GPE_Color_Manager.h"
 	"GPE_Renderer.h"
 	<string>
 
-1507159778 /home/clee231/Downloads/gpe_source_v112/src/GPE_Color_Manager.h
+1508379183 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_color_manager.h
 	"GPE_CIncludes.h"
 	"GPE_Color.h"
-	"constants.h"
+	"GPE_Constants.h"
 	<string>
 	<vector>
 
-1507159768 /home/clee231/Downloads/gpe_source_v112/src/GPE_Color.h
+1507695656 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_color.h
 	"GPE_CIncludes.h"
 
-1507159918 /home/clee231/Downloads/gpe_source_v112/src/GPE_Renderer.h
+1508367283 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_renderer.h
 	"GPE_CIncludes.h"
 
-1507159928 /home/clee231/Downloads/gpe_source_v112/src/GPE_Texture.h
+1508379208 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_texture.h
 	"GPE_CIncludes.h"
 	"GPE_Renderer.h"
 	"GPE_Color.h"
 	"GPE_Globals.h"
-	"constants.h"
-	"string_ex.h"
-	"functions.h"
+	"GPE_Constants.h"
+	"GPE_String_Ex.h"
+	"GPE_Functions.h"
 
-1507160044 /home/clee231/Downloads/gpe_source_v112/src/string_ex.h
+1508379106 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_string_ex.h
 	<algorithm>
 	<string>
 	<vector>
@@ -4458,68 +4461,151 @@
 	<ctime>
 	<cstdlib>
 
-1507159728 /home/clee231/Downloads/gpe_source_v112/src/functions.h
+1508379001 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_functions.h
 	<string>
 	"GPE_CIncludes.h"
 	"GPE_Renderer.h"
 
-1507159680 /home/clee231/Downloads/gpe_source_v112/src/color_master.h
+1508378982 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_color_master.h
 	"GPE_Color_Manager.h"
 
-1507160010 /home/clee231/Downloads/gpe_source_v112/src/sprite.h
+1508379301 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_sprite.h
 	<vector>
 	<string>
 	<cmath>
 	<sstream>
-	"functions.h"
-	"collision_checks.h"
-	"string_ex.h"
+	"GPE_Functions.h"
+	"GPE_Collisions.h"
+	"GPE_String_Ex.h"
 	"GPE_Globals.h"
 	"GPE_Texture.h"
 
-1507159670 /home/clee231/Downloads/gpe_source_v112/src/collision_checks.h
+1508378350 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_collisions.h
 	<algorithm>
 	"GPE_CIncludes.h"
+	"GPE_Renderer.h"
 
-1507159850 /home/clee231/Downloads/gpe_source_v112/src/GPE_Engine.h
+1508379173 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_file_system.h
+	"GPE_File_System.h"
+	"GPE_Functions.h"
+	"GPE_Texture.h"
+
+1508379029 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_program_state.h
 	"GPE_CIncludes.h"
-	"shared_resources.h"
-	"functions.h"
-	"GPE_Globals.h"
 
-1507159632 /home/clee231/Downloads/gpe_source_v112/src/program_state.h
-	"GPE_CIncludes.h"
+1508379356 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_state_manager.h
+	"GPE_Program_State.h"
 
-1507160034 /home/clee231/Downloads/gpe_source_v112/src/stateManager.h
-	"program_state.h"
+1508366416 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\aosgui\gpe_syntax_handler.cpp
+	"gpe_syntax_handler.h"
+	"ambitious_gui_library.h"
 
-1507160252 source:/home/clee231/Downloads/gpe_source_v112/src/collision_checks.cpp
-	"collision_checks.h"
+1508381589 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\aosgui\gpe_syntax_handler.h
+	"../GPE_Engine/GPE_File_System.h"
 
-1507160262 source:/home/clee231/Downloads/gpe_source_v112/src/color_master.cpp
-	"color_master.h"
+1507902469 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\aosgui\paw_gui.cpp
+	"paw_gui.h"
 
-1507251530 source:/home/clee231/Downloads/gpe_source_v112/src/dictionaryresource.cpp
+1508082278 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\aosgui\paw_gui.h
+	"ambitious_gui_library.h"
+	"text_editor.h"
+
+1508362812 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\aosgui\text_editor.h
+	"gpe_syntax_handler.h"
+	"ambitious_gui_library.h"
+
+1508366380 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\aosgui\text_editor.cpp
+	"text_editor.h"
+
+1508362812 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\audio_resource.cpp
+	"gpe_project_resources.h"
+
+1508385344 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_project_resources.h
 	"gpe_editor.h"
 
-1507251642 source:/home/clee231/Downloads/gpe_source_v112/src/fontResource.cpp
+1508381589 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_editor.h
+	"AOSGUI/paw_gui.h"
+
+1508362033 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\dictionaryresource.cpp
+	"dictionaryresource.h"
+
+1507997872 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\dictionaryresource.h
+	"gpe_project_resources.h"
+
+1508362812 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\fontresource.cpp
 	"fontResource.h"
 
-1507159706 /home/clee231/Downloads/gpe_source_v112/src/fontResource.h
-	"gpe_editor.h"
+1507759133 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\fontresource.h
+	"gpe_project_resources.h"
 
-1507251642 source:/home/clee231/Downloads/gpe_source_v112/src/functionResource.cpp
+1508361700 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\functionresource.cpp
 	"functionResource.h"
 
-1507159718 /home/clee231/Downloads/gpe_source_v112/src/functionResource.h
-	"gpe_editor.h"
+1507759151 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\functionresource.h
+	"gpe_project_resources.h"
 
-1507160310 source:/home/clee231/Downloads/gpe_source_v112/src/functions.cpp
-	"functions.h"
+1508384062 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gameobjectresource.cpp
+	"gameobjectresource.h"
+
+1507759309 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gameobjectresource.h
+	"gpe_project_resources.h"
+
+1508363979 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gamesceneresource.cpp
+	"gpe_project_resources.h"
+
+1508366443 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\giant_popup_menus.cpp
+	"gpe_editor.h"
+	"windows.h"
+
+1508364362 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_editor.cpp
+	"gpe_editor.h"
+	"gpe_project_resources.h"
+
+1508384609 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_editor_aboutpage.cpp
+	"gpe_editor_aboutpage.h"
+
+1507763006 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_editor_aboutpage.h
+	"gpe_project_resources.h"
+
+1508384475 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_editor_helppage.cpp
+	"gpe_editor_helppage.h"
+
+1507763023 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_editor_helppage.h
+	"gpe_project_resources.h"
+
+1508384942 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_editor_settings.cpp
+	"gpe_project_resources.h"
+
+1508385378 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_editor_start_page.cpp
+	"gpe_editor_start_page.h"
+
+1507992483 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_editor_start_page.h
+	"gpe_project_resources.h"
+
+1508379571 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_collisions.cpp
+	"GPE_Collisions.h"
+
+1507695660 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_color.cpp
+	"GPE_Color.h"
+
+1507695655 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_color_manager.cpp
+	"GPE_Color_Manager.h"
+
+1508379591 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_color_master.cpp
+	"GPE_Color_Master.h"
+
+1508365111 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_engine.cpp
+	"GPE_Engine.h"
+
+1508377707 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_file_system.cpp
+	"GPE_File_System.h"
+
+1508379620 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_functions.cpp
+	"GPE_Functions.h"
 	"GPE_Globals.h"
 	"GPE_Texture.h"
-	"collision_checks.h"
-	"constants.h"
+	"GPE_Collisions.h"
+	"GPE_Constants.h"
 	<iostream>
 	<fstream>
 	<string>
@@ -4531,141 +4617,91 @@
 	<sys/stat.h>
 	<limits>
 
-1507251742 source:/home/clee231/Downloads/gpe_source_v112/src/gameobjectresource.cpp
-	"gameobjectresource.h"
-
-1507159740 /home/clee231/Downloads/gpe_source_v112/src/gameobjectresource.h
-	"gpe_editor.h"
-
-1507251808 source:/home/clee231/Downloads/gpe_source_v112/src/gamesceneresource.cpp
-	"gpe_editor.h"
-
-1507160344 source:/home/clee231/Downloads/gpe_source_v112/src/GPE_Color.cpp
-	"GPE_Color.h"
-
-1507160368 source:/home/clee231/Downloads/gpe_source_v112/src/GPE_Color_Manager.cpp
-	"GPE_Color_Manager.h"
-
-1507251934 source:/home/clee231/Downloads/gpe_source_v112/src/gpe_editor.cpp
-	"gpe_editor.h"
-	"windows.h"
-
-1507160894 source:/home/clee231/Downloads/gpe_source_v112/src/gpe_editor_aboutpage.cpp
-	"gpe_editor_aboutpage.h"
-
-1507160834 /home/clee231/Downloads/gpe_source_v112/src/gpe_editor_aboutpage.h
-	"gpe_editor_helppage.h"
-
-1507159840 /home/clee231/Downloads/gpe_source_v112/src/gpe_editor_helppage.h
-	"gpe_editor.h"
-
-1507160420 source:/home/clee231/Downloads/gpe_source_v112/src/gpe_editor_helppage.cpp
-	"gpe_editor_helppage.h"
-
-1507251642 source:/home/clee231/Downloads/gpe_source_v112/src/gpe_editor_settings.cpp
-	"project_properties.h"
-
-1507159974 /home/clee231/Downloads/gpe_source_v112/src/project_properties.h
-	"gpe_editor.h"
-
-1507160450 source:/home/clee231/Downloads/gpe_source_v112/src/GPE_Engine.cpp
-	"GPE_Engine.h"
-
-1507160470 source:/home/clee231/Downloads/gpe_source_v112/src/GPE_Globals.cpp
+1508365124 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_globals.cpp
 	"GPE_Globals.h"
 
-1507160478 source:/home/clee231/Downloads/gpe_source_v112/src/GPE_Renderer.cpp
-	"GPE_Renderer.h"
-	"GPE_Globals.h"
-	"string_ex.h"
-	"functions.h"
-
-1507160488 source:/home/clee231/Downloads/gpe_source_v112/src/GPE_Texture.cpp
-	"GPE_Texture.h"
-
-1507160500 source:/home/clee231/Downloads/gpe_source_v112/src/input_manager.cpp
+1508382713 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_input.cpp
 	<iostream>
 	"GPE_CIncludes.h"
-	"shared_resources.h"
-	"string_ex.h"
-	"input_manager.h"
+	"GPE_Globals.h"
+	"GPE_String_Ex.h"
+	"GPE_Input.h"
 
-1507160530 source:/home/clee231/Downloads/gpe_source_v112/src/main.cpp
+1508379651 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_program_state.cpp
+	"GPE_Program_State.h"
+
+1508379666 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_renderer.cpp
+	"GPE_Renderer.h"
+	"GPE_Globals.h"
+	"GPE_String_Ex.h"
+	"GPE_Functions.h"
+
+1508379678 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_resources_controller.cpp
+	"GPE_Resources_Controller.h"
+
+1508379877 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_shared_resources.cpp
+	"GPE_Shared_Resources.h"
+
+1508379893 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_sprite.cpp
+	"GPE_Sprite.h"
+
+1508378783 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_state_manager.cpp
+	"GPE_State_Manager.h"
+
+1508379908 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_string_ex.cpp
+	"GPE_String_Ex.h"
 	"GPE_CIncludes.h"
-	"GPE_Color_Manager.h"
+
+1508365747 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_texture.cpp
+	"GPE_Texture.h"
+
+1508379921 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_engine\gpe_timer.cpp
+	"GPE_Timer.h"
+
+1508362812 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\gpe_project_resources.cpp
+	"gpe_project_resources.h"
+
+1508379939 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\main.cpp
 	<iostream>
 	<fstream>
 	<sstream>
 	<string>
 	<ctime>
-	"sprite.h"
-	"stateManager.h"
-	"functions.h"
-	"color_master.h"
-	"GPE_Globals.h"
-	"resources_controller.h"
-	"timer.h"
-	"shared_resources.h"
-	"gameobjectresource.h"
-	"pathresource.h"
-	"dictionaryresource.h"
-	"project_browser.h"
 	"gpe_editor.h"
+	"gpe_project_resources.h"
 	<stdio.h>
 	<stdlib.h>
 
-1507159948 /home/clee231/Downloads/gpe_source_v112/src/pathresource.h
-	"gpe_editor.h"
+1508362034 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\pathresource.cpp
+	"pathresource.h"
 
-1507159700 /home/clee231/Downloads/gpe_source_v112/src/dictionaryresource.h
-	"gpe_editor.h"
+1507763501 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\pathresource.h
+	"gpe_project_resources.h"
 
-1507160798 /home/clee231/Downloads/gpe_source_v112/src/project_browser.h
-	"gpe_editor.h"
-
-1507251643 source:/home/clee231/Downloads/gpe_source_v112/src/pathresource.cpp
-	"gpe_editor.h"
-
-1507160554 source:/home/clee231/Downloads/gpe_source_v112/src/program_state.cpp
-	"program_state.h"
-
-1507251908 source:/home/clee231/Downloads/gpe_source_v112/src/project_browser.cpp
+1508366457 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\project_browser.cpp
 	"project_browser.h"
 
-1507251610 source:/home/clee231/Downloads/gpe_source_v112/src/project_properties.cpp
+1507763531 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\project_browser.h
+	"gpe_project_resources.h"
+
+1508366574 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\project_properties.cpp
 	"project_properties.h"
 
-1507160586 source:/home/clee231/Downloads/gpe_source_v112/src/resources_controller.cpp
-	"resources_controller.h"
+1507763548 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\project_properties.h
+	"gpe_project_resources.h"
 
-1507160596 source:/home/clee231/Downloads/gpe_source_v112/src/shared_resources.cpp
-	"shared_resources.h"
-
-1507160604 source:/home/clee231/Downloads/gpe_source_v112/src/sprite.cpp
-	"sprite.h"
-
-1507251643 source:/home/clee231/Downloads/gpe_source_v112/src/spriteresource.cpp
+1508367066 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\spriteresource.cpp
 	"spriteresource.h"
 
-1507160022 /home/clee231/Downloads/gpe_source_v112/src/spriteresource.h
-	"gpe_editor.h"
+1507763563 c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\spriteresource.h
+	"gpe_project_resources.h"
 
-1507160626 source:/home/clee231/Downloads/gpe_source_v112/src/stateManager.cpp
-	"stateManager.h"
+1508367121 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\textureresource.cpp
+	"gpe_project_resources.h"
 
-1507160636 source:/home/clee231/Downloads/gpe_source_v112/src/string_ex.cpp
-	"string_ex.h"
-	"GPE_CIncludes.h"
+1508367167 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\tilesheet_resource.cpp
+	"gpe_project_resources.h"
 
-1507251642 source:/home/clee231/Downloads/gpe_source_v112/src/textureresource.cpp
-	"gpe_editor.h"
-
-1507251643 source:/home/clee231/Downloads/gpe_source_v112/src/tilesheet_resource.cpp
-	"gpe_editor.h"
-
-1507160664 source:/home/clee231/Downloads/gpe_source_v112/src/timer.cpp
-	"timer.h"
-
-1507251642 source:/home/clee231/Downloads/gpe_source_v112/src/video_resource.cpp
-	"gpe_editor.h"
+1508362812 source:c:\users\sirnathanhurde\onedrive\documents\gpe_crossplatform\gpe_source_v113_rc\src\video_resource.cpp
+	"gpe_project_resources.h"
 

@@ -9,7 +9,7 @@ Copyright (c) 2014-2017 PawByte.
 Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the ìSoftwareî), to deal
+of this software and associated documentation files (the ‚ÄúSoftware‚Äù), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -18,7 +18,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED ìAS ISî, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED ‚ÄúAS IS‚Äù, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -45,6 +45,7 @@ int create_directory( std::string newPathToCreate);
 double bound_number(double numbIn,double xMin =0, double xMax = 100);
 
 std::string get_file_ext(std::string fileLocationIn);
+std::string get_file_ext_last_dot(std::string fileLocationIn);
 bool file_is_audio(std::string fileLocationIn);
 bool file_is_font(std::string fileLocationIn);
 bool file_is_image(std::string fileLocationIn);

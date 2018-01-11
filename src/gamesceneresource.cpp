@@ -9,7 +9,7 @@ Copyright (c) 2014-2017 PawByte.
 Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
+of this software and associated documentation files (the â€œSoftwareâ€), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -18,7 +18,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED â€œAS ISâ€, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -549,9 +549,9 @@ gameSceneResource::gameSceneResource(GPE_ResourceContainer * pFolder)
     editorButtonBar->barPadding = 0;
     editorButtonBar->xPadding = 0;
     editorButtonBar->set_height(24);
-    editorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/dashboard.png","Settings",-1,false);
-    editorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/object-group.png","Layers",-1,false);
-    //editorButtonBar->adkb_dton("resources/gfx/buttons/percent.png","Statistics",-1,false);
+    editorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/dashboard.png","Settings",-1,false);
+    editorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/object-group.png","Layers",-1,false);
+    //editorButtonBar->add_option("resources/gfx/buttons/percent.png","Statistics",-1,false);
 
     confirmResourceButton->enable_self();
     confirmResourceButton->set_name("Confirm Changes");
@@ -2329,7 +2329,8 @@ void gameSceneResource::manage_components(GPE_Rect * viewedSpace ,GPE_Rect * cam
                     }
                     addNewComponentDropDown->set_selection(-1,false);
                     userInput->reset_all_input();
-                    manage_components();
+                    //calls recursive call
+                    manage_components( viewedSpace, cam);
                 }
             }
 
@@ -2345,7 +2346,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     int paneMode = 0;
-    if( cam!=NULL && viewedSpace!=NULL && editorPaneList!=NULL && sceneXScroll!=NULL && sceneYScroll!=NULL && layerPaneList!=NULL )
+    if( cam!=NULL && viewedSpace!=NULL && sceneXScroll!=NULL && sceneYScroll!=NULL && editorPaneList!=NULL && layerPaneList!=NULL )
     {
         editorPane.x = 0;
         editorPane.y = 0;
@@ -2393,6 +2394,8 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 
             editorPaneList->clear_list();
             layerPaneList->clear_list();
+
+            //If the editor mode changed reset the panels and such
             if( prevEditorMode!=editorMode)
             {
                 userInput->reset_all_input();
@@ -2408,6 +2411,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                 layerPaneList->reset_self();
             }
 
+            //Handles part of the scene zoom/scale values
             if( sceneZoomLevel!=NULL)
             {
                 sceneZoomLevel->set_coords(editorButtonBar->get_x2pos(),editorPane.y);
@@ -2425,6 +2429,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                 sceneZoomAmount = 1;
             }
 
+            //Sets the coordinates for the comment pane on the bottom of the editor
             editorCommentPane.x = editorView.x;
             editorCommentPane.y = editorView.y+editorView.h+16;
             editorCommentPane.w = viewedSpace->w-editorView.x;
@@ -2439,30 +2444,31 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                 layerPaneList->set_height( viewedSpace->h-layerPaneList->get_ypos() );
                 sceneEditorViewRect.w = editorView.w = (int)(viewedSpace->w-editorView.x-sceneYScroll->get_box_width() )-16; //xcroll = 16px height
             }
-            else if( paneMode==1)
-            {
-                editorPaneList->set_height(160);
-                rightEditorPane.x =  editorView.x+editorView.w+sceneYScroll->barBox.w;
-                rightEditorPane.y = 0;
-                rightEditorPane.w = viewedSpace->w-rightEditorPane.x;
-                rightEditorPane.h = viewedSpace->h;
-                layerPaneList->set_coords(0,editorButtonBar->get_y2pos() );
-                layerPaneList->set_width(editorPane.w);
-                layerPaneList->set_height(viewedSpace->h-layerPaneList->get_ypos() );
-
-                layerPaneList->set_coords( rightEditorPane.x, rightEditorPane.y );
-                layerPaneList->set_width( rightEditorPane.w );
-                layerPaneList->set_height( rightEditorPane.h );
-                sceneEditorViewRect.w = editorView.w = (int)(viewedSpace->w-editorView.x-rightPaneWidth-sceneYScroll->get_box_width() )-16; //xcroll = 16px height
-            }
             else
             {
                 editorPaneList->set_height(160);
-                rightEditorPane.y = rightEditorPane.x = rightEditorPane.w = rightEditorPane.h = 0;
-                layerPaneList->set_coords( 0, editorPaneList->get_y2pos() );
-                layerPaneList->set_width( editorPaneList->get_width() );
-                layerPaneList->set_height( viewedSpace->h-layerPaneList->get_ypos() );
-                sceneEditorViewRect.w = editorView.w = (int)(viewedSpace->w-editorView.x-sceneYScroll->get_box_width() )-16; //xcroll = 16px height
+                if( paneMode==1)
+                {
+                    sceneEditorViewRect.w = editorView.w = (int)(viewedSpace->w-editorView.x-rightPaneWidth-sceneYScroll->get_box_width() )-16; //xcroll = 16px height
+
+                    rightEditorPane.x =  editorView.x+editorView.w+sceneYScroll->barBox.w;
+                    rightEditorPane.y = 0;
+                    rightEditorPane.w = viewedSpace->w-rightEditorPane.x;
+                    rightEditorPane.h = viewedSpace->h;
+
+                    layerPaneList->set_coords( rightEditorPane.x, rightEditorPane.y );
+                    layerPaneList->set_width( rightEditorPane.w );
+                    layerPaneList->set_height( rightEditorPane.h );
+                }
+                else
+                {
+                    rightEditorPane.x = 0;
+                    rightEditorPane.y = rightEditorPane.x = rightEditorPane.w = rightEditorPane.h = 0;
+                    layerPaneList->set_coords( 0, editorPaneList->get_y2pos() );
+                    layerPaneList->set_width( editorPaneList->get_width() );
+                    layerPaneList->set_height( viewedSpace->h-layerPaneList->get_ypos() );
+                    sceneEditorViewRect.w = editorView.w = (int)(viewedSpace->w-editorView.x-sceneYScroll->get_box_width() )-16; //xcroll = 16px height
+                }
             }
 
             sceneEditorViewRect.h = editorView.h = viewedSpace->h-64; //Comment pane = 32, yscroll = 16 height
@@ -2600,7 +2606,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                     }
                 }
             }
-            else if( editorMode == LEDITOR_MODE_LAYERS)
+            else
             {
                 layerPaneList->barXPadding = GENERAL_GPE_PADDING;
                 layerPaneList->barXMargin = 0;
@@ -2628,12 +2634,11 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                     layerInEdit = layerMenu->get_selection();
                     if( layerInEdit >= 0 && layerInEdit < (int)sceneLayers.size() )
                     {
-                        currentLayer =sceneLayers[layerInEdit];
+                        currentLayer = sceneLayers[layerInEdit];
                     }
 
                     if( ( layerAddButtton!=NULL && layerAddButtton->is_clicked() )  || ( layerSettingsButtton!=NULL && layerSettingsButtton->is_clicked() ) )
                     {
-
                         std::vector< int > availableLayerIds;
                         int availI = 0;
                         int sLayerJ = 0;
@@ -3083,6 +3088,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 
                             if( selectedSceneObject!=NULL)
                             {
+                                //Manages the objects components if it is indeed selected
                                 manage_components(viewedSpace, cam);
 
                                 GPE_ObjectComponent * tempCustomComponent = NULL;
@@ -3177,6 +3183,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                                         }
                                                     }
                                                 }
+                                                //Rests input and manages the object's components where needed
                                                 userInput->reset_all_input();
                                                 manage_components(viewedSpace, cam);
                                                 break;
@@ -3284,6 +3291,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                         {
                                             if( display_get_prompt("[WARNING]Object Component deletion?","Are you sure you will like to delete ["+int_to_string(selectedObjComponentCount)+" components] from this object? This action is irreversible!")==DISPLAY_QUERY_YES)
                                             {
+                                                //resets and manages object components
                                                 selectedSceneObject->reset_components();
                                                 manage_components(viewedSpace,cam);
                                             }
@@ -4204,6 +4212,7 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpac
             }
         }
 
+        //Renders the transparent background texture below the layers
         if( (forceRedraw || editorMode==0) && GPE_TEXTURE_TRANSPARENT_BG!=NULL)
         {
             if( MAIN_EDITOR_SETTINGS!=NULL && MAIN_EDITOR_SETTINGS->renderSceneBGColor!=NULL && MAIN_EDITOR_SETTINGS->renderSceneBGColor->is_clicked()==false )
@@ -4218,18 +4227,10 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpac
             }
         }
 
+        //Renders the scene layers( tiles, backgrounds, objects, etc)
         render_scene_layers(cRender,viewedSpace,cam);
 
-        GPE_Color * gridLineColor = c_blgray;
-        if( MAIN_EDITOR_SETTINGS!=NULL && MAIN_EDITOR_SETTINGS->renderSceneBGColor!=NULL && MAIN_EDITOR_SETTINGS->renderSceneBGColor->is_clicked()==false )
-        {
-            gridLineColor = c_ltblue;
-        }
-        else
-        {
-            gridLineColor = c_olive;
-        }
-
+        //Renders the selected scene object above the scene at mouse coordinates
         if( selectedSceneObject!=NULL)
         {
             tempObjRect.x = sceneZoomAmount*(selectedSceneObject->objRect.x-2)+editorView.x-sceneEditorViewRect.x;
@@ -4247,6 +4248,16 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpac
             render_rect(cRender,&tempObjRect,c_blue,true);*/
         }
 
+        //Chooses  the grid lines for objects/tiles(depending on current layer)
+        GPE_Color * gridLineColor = c_blgray;
+        if( MAIN_EDITOR_SETTINGS!=NULL && MAIN_EDITOR_SETTINGS->renderSceneBGColor!=NULL && MAIN_EDITOR_SETTINGS->renderSceneBGColor->is_clicked()==false )
+        {
+            gridLineColor = c_ltblue;
+        }
+        else
+        {
+            gridLineColor = c_olive;
+        }
         if(currentLayer!=NULL && editorMode == LEDITOR_MODE_LAYERS )
         {
             if( currentLayer->layerType==LAYER_TYPE_OBJECTS)
@@ -4378,14 +4389,10 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpac
                     }
                 }
             }
-            else if( currentLayer->layerType == LAYER_TYPE_BACKGROUND )
-            {
-                for( i = 0; i <= (int)(currentLayer->layerBackgrounds.size() ) ;i++ )
-                {
-
-                }
-            }
         }
+
+        //Clears the editor pane
+        if( forceRedraw)
         render_rect(cRender,&editorPane,GPE_MAIN_TEMPLATE->Program_Color,false);
 
         if( editorButtonBar!=NULL)
@@ -4435,11 +4442,10 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpac
     {
         if( currentLayer->layerType==LAYER_TYPE_TILES )
         {
-            if( forceRedraw  )
-            {
-                tSPreviewer->render_self(cRender,viewedSpace,cam);
-            }
+            tSPreviewer->render_self(cRender,viewedSpace,cam, forceRedraw);
         }
+
+        render_rectangle(cRender,layerPaneList->get_xpos(), layerPaneList->get_ypos(), layerPaneList->get_x2pos(), layerPaneList->get_y2pos(),GPE_MAIN_TEMPLATE->Program_Color,false);
         layerPaneList->render_self(cRender,viewedSpace,cam,forceRedraw);
     }
 

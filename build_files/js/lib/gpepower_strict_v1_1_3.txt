@@ -1,8 +1,8 @@
-3/**
+/**
 The MIT License (MIT)
 Copyright (c) 2016-2017 PawByte [ PawByte.com ]
 
-VERSION 1.13 [ October 2017 Paths Update]
+VERSION 1.14 [ November 2017 Layers Update]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of 
 this software and associated documentation files (the "Software"), to deal in the 
@@ -21,6 +21,7 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE 
 OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */	
+
 "use strict"; 
 
 //var eval = function(){};
@@ -5249,7 +5250,7 @@ function addSourceToVideo(element, src, type)
 		this.add_tilesheet= function(setId,fileName, tWidth, tHeight, hOff, vOff, hSep, vSep)
 		{
 			if( setId >=0 )
-			{mouse
+			{
 				var nTilesheet = new GPE_Tilesheet();
 				nTilesheet.id=setId;
 				

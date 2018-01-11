@@ -4,11 +4,11 @@
 #    Game Pencil Engine Project File 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.11
+Version=1.14
 Name=shooter_example
 Count=1030
 ProjectLanguage=JS
@@ -30,7 +30,6 @@ ProjectIcon=icon.png
     [/SuperFolder]
     [SuperFolder=Audio]
         audio=newAudio1,1006,
-        audio=tex_grass,1023,
     [/SuperFolder]
     [SuperFolder=Videos]
         video=newVideo1,1008,
@@ -59,6 +58,8 @@ ProjectIcon=icon.png
                 [/Folder]
             [/Folder]
         [/Folder]
+    [/SuperFolder]
+    [SuperFolder=Classes]
     [/SuperFolder]
     [SuperFolder=Scenes]
         scene=newScene1,1003,

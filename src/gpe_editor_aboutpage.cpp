@@ -110,9 +110,14 @@ gamePencilAboutPageResource::gamePencilAboutPageResource(GPE_ResourceContainer *
     pencilCredits->add_line("Patreon Backers (Ordered Alphabetically):");
     pencilCredits->add_line("-----------------------------------");
     pencilCredits->add_line("     Feral Monk");
+    pencilCredits->add_line("     James Thomas");
     pencilCredits->add_line("     Jen Anderson");
+    pencilCredits->add_line("     Mark Medrano");
     pencilCredits->add_line("     Keith Thomas");
+    pencilCredits->add_line("     Noel Hurde");
     pencilCredits->add_line("     Thomas Ingham");
+
+
 
 
     pencilCredits->add_line("");
@@ -224,7 +229,7 @@ gamePencilAboutPageResource::gamePencilAboutPageResource(GPE_ResourceContainer *
     pencilInformation->add_line( versionInfoLine+"." );
     pencilInformation->add_line("SDL Version:                   "+int_to_string(SDL_MAJOR_VERSION)+"."+int_to_string(SDL_MINOR_VERSION)+"."+int_to_string(SDL_PATCHLEVEL)+"." );
     pencilInformation->add_line("PGUI Version:                  "+int_to_string(PGUI_MAJOR_VERSION)+"."+int_to_string(PGUI_MINOR_VERSION)+"."+int_to_string(PGUI_PATCHLEVEL)+"." );
-    pencilInformation->add_line("GPE(runtime) Version:          "+int_to_string(GPE_MAJOR_VERSION)+"."+int_to_string(GPE_MINOR_VERSION)+"."+int_to_string(GPE_PATCHLEVEL)+"." );
+    pencilInformation->add_line("GPE(runtime) Version:          "+int_to_string(GPR_MAJOR_VERSION)+"."+int_to_string(GPR_MINOR_VERSION)+"."+int_to_string(GPR_PATCHLEVEL)+"." );
     pencilInformation->add_line("Release Date:                  10-18-2017");
     pencilInformation->add_line("Author:                        PawByte");
     pencilInformation->add_line("Lead Developer:                Nathan Hurde aka theweirdn8");

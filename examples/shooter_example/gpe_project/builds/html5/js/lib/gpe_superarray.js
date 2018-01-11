@@ -22,6 +22,15 @@ Array.prototype.back = function()
 	return -1;
 }
 
+//Added as of Version 1.12 [ BEGIN ] 
+Array.prototype.insert = function (pos, inValue)
+{
+  this.splice(pos, 0, inValue);
+};
+
+//Added as of Version 1.12 [ END ] 
+
+
 Array.prototype.makeLowercase = function() 
 {
     for (var i = 0; i < this.length; i++)

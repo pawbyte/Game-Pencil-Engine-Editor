@@ -1,4 +1,4 @@
-3/**
+/**
 The MIT License (MIT)
 Copyright (c) 2016-2017 PawByte [ PawByte.com ]
 
@@ -6431,7 +6431,7 @@ function addSourceToVideo(element, src, type)
 				gpe.currentState.render_state();
 			}
 			this.render_top_hud();
-			SYS_FPS = countFPS();
+			SYS_FPS = window.countFPS();
 		};
 		
 		this.erase_data = function( dataIdentifier, dataTitle)

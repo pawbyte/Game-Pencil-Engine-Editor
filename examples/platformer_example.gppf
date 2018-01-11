@@ -4,13 +4,13 @@
 #    Game Pencil Engine Project File 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.12
+Version=1.13
 Name=platformer_example
-Count=1032
+Count=1033
 ProjectLanguage=JS
 ProjectIcon=icon.png
 [Project=platformer_example]
@@ -58,5 +58,6 @@ ProjectIcon=icon.png
         scene=game_over,1018,
     [/SuperFolder]
     [SuperFolder=Fonts]
+        Font=newFont1,1033,
     [/SuperFolder]
 [/Project]

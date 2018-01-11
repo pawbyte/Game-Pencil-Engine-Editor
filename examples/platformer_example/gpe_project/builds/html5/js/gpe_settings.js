@@ -5,7 +5,7 @@
 #  Game Pencil Engine Game File 
 #  Created automatically via the Game Pencil Engine Editor 
 #  Warning: Manually editing this file may cause unexpected bugs and errors. 
-#  If you have any problems reading this file please report it to debug@pawbyte.com . 
+#  If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #      
 #    --------------------------------------------------  # 

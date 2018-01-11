@@ -5,7 +5,7 @@
 #  Game Pencil Engine Game File 
 #  Created automatically via the Game Pencil Engine Editor 
 #  Warning: Manually editing this file may cause unexpected bugs and errors. 
-#  If you have any problems reading this file please report it to debug@pawbyte.com . 
+#  If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #      
 #    --------------------------------------------------  # 
@@ -18,16 +18,16 @@ GPE_STANDARD_FPS =60;
 GPE_STANDARD_INTERVAL = 1000/GPE_STANDARD_FPS;;
  
 var GPE_SETTINGS_APP_LOGO_LOCATION = 'res/gpe_logo_start.png'; 
-var GPE_SETTINGS_START_SCENE = 'newScene1'; 
+var GPE_SETTINGS_START_SCENE = 'scn_title'; 
 var GPE_SETTINGS_SCREEN_WIDTH = 800;
 var GPE_SETTINGS_SCREEN_HEIGHT = 640;
 var GPE_SETTINGS_PROG_NAME = 'Flappy Crow';
 var GPE_SETTINGS_VERSION_NUMBER = 1;
-var GPE_MAX_OBJECT_TYPES = 7;
+var GPE_MAX_OBJECT_TYPES = 5;
 var GPE_SETTINGS_SYSTEM_OS = 'Browser';
 var GPE_GAME_PUBLISHER = '';
 var GPE_GAME_DEVELOPER = '';
-var GPE_GAME_OBJECTS_COUNT = 7;
+var GPE_GAME_OBJECTS_COUNT = 5;
 var GPE_SETTINGS_IS_DEBUGGING = false;
 var GPE_SETTINGS_SHOW_FPS = true;
 var GPE_GAME_SCALING_SETTING = 3;
@@ -37,7 +37,6 @@ GPE_PreloadImageResource[1] = 'resources/sprites/spr_crow.png';
 GPE_PreloadImageResource[2] = 'resources/sprites/spr_season_grass.png';
 GPE_PreloadImageResource[3] = 'resources/sprites/spr_block.png';
 GPE_PreloadImageResource[4] = 'resources/sprites/spr_score_block.png';
-GPE_PreloadImageResource[5] = 'resources/sprites/shooter_enemies.png';
 var GPE_PreloadAudioResource = [];
 var GPE_PreloadAACResource = [];
 GPE_PreloadAudioResource[0] = GPE_PreloadAACResource;

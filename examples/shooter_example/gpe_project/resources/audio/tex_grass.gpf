@@ -8,7 +8,7 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.11
+Version=1.12
 ResourceName=tex_grass
 Preload=1
 DefaultVolume=100

@@ -4,11 +4,11 @@
 #    Game Pencil Engine Project GameObject File 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.12
+Version=1.13
 ResourceName=obj_slime
 SpriteId=spr_slime
 ParentGameObjectId=
@@ -23,13 +23,16 @@ CustomComponent=resourcedropdown:test123==|||==Textures,,,-1,
 [[[Function=Constructor]]] 
 this.horiSpeed = 2;
 [[[Function=Main Logic]]] 
+//Scans for a block in the way of slime's movement
 if( gpe.position_collides(this,this.getx()+this.horiSpeed, this.gety()-4,obj_block)!=IS_NULL)
 {
+    //if found one it flips direction and updates its x/y coords to before it collided
     this.update_cords(this.xPast, this.yPast);
     this.horiSpeed*=-1;
 }
 else
 {
+    //does the same check for other slimes nearby
     var nearFriend = gpe.position_collides(this,this.getx()+this.horiSpeed, this.gety(),obj_slime)
     if( nearFriend!=IS_NULL)
     {
@@ -52,8 +55,10 @@ else
         }*/
     }
 }
+//moves by its horizontal speed
 this.move_right( this.horiSpeed);
 
+//calculates gravity
 if (gpe.position_collides(this,this.getx(), this.gety() + 1, obj_block)==IS_NULL && gpe.position_collides(this,this.getx(), this.gety() + 1, obj_slime)==IS_NULL )
 {
     this.yspeed += 1;

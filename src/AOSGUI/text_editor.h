@@ -210,8 +210,7 @@ class GPE_TextAreaInputBasic: public GPE_GeneralGuiElement
         void reset_selection(int resetDirection = 0);
         void reset_self();
         void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = false);
-        void render_code_css(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_code_javascript(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
+        void render_code(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
 
         int replace_all_found(std::string strToReplace, std::string newString);
         void revise_edit(int editId = -1);

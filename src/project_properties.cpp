@@ -9,7 +9,7 @@ Copyright (c) 2014-2017 PawByte.
 Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
+of this software and associated documentation files (the â€œSoftwareâ€), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -18,7 +18,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED â€œAS ISâ€, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -327,8 +327,8 @@ projectPropertiesResource::projectPropertiesResource(GPE_ResourceContainer * pFo
     exportSettingsBar->add_option("Raspberry Pi",NULL,mainExportOptionsSprite,11);
     */
     sceneEditorPaneMode = new GPE_ToolIconButtonBar(0,0,32,true);
-    sceneEditorPaneMode->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/newspaper-o.png","Mode0 - 2 Panes",-1,false);
-    sceneEditorPaneMode->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/map.png","Mode1 - 3 Panes",-1,false);
+    sceneEditorPaneMode->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/newspaper-o.png","Mode0 - 2 Panes",-1,false);
+    sceneEditorPaneMode->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/map.png","Mode1 - 3 Panes",-1,false);
 
     projectSettingsTabBar = new GPE_TabBar();
     projectSettingsTabBar->set_coords(16, 16);

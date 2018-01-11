@@ -4,11 +4,11 @@
 #    Game Pencil Engine Project GameObject File 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.11
+Version=1.14
 ResourceName=obj_player
 SpriteId=spr_player_ship
 ParentGameObjectId=
@@ -82,6 +82,7 @@ if( GAME_OVER)
 else
 {
     gpe.render_text(-1,32,32,"Mouse direction "+gpe.round(gpe.degree(this.mouseDirection) )+"["+(gpe.get_camera_mouse_x(0)|0)+" , "+(gpe.get_camera_mouse_y(0)|0)+"]","white",fa_left,fa_top);
+    gpe.render_text(-1,32,64,"Global Mouse ["+(gpe.get_mouse_x(0)|0)+" , "+(gpe.get_mouse_y(0)|0)+"]","white",fa_left,fa_top);
     gpe.render_text(-1,gpe.get_camera_screen_width(0)-64,32,"FPS:"+gpe.get_fps(),"white",fa_right,fa_top);
     gpe.render_text(-1,32,gpe.get_camera_screen_height(0)-64,"Health:"+this.myHealth,"white",fa_left,fa_bottom);
 }

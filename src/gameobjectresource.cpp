@@ -9,7 +9,7 @@ Copyright (c) 2014-2017 PawByte.
 Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
+of this software and associated documentation files (the â€œSoftwareâ€), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -18,7 +18,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED â€œAS ISâ€, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -245,12 +245,12 @@ gameObjectResource::gameObjectResource(GPE_ResourceContainer * pFolder)
 
     editorButtonBar = new GPE_ToolIconButtonBar(0,0,32, true);
     editorButtonBar->widthAutoResizes = true;
-    editorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/tags.png","Object Components",OBJ_EDITOR_MODE_COMPONENTS,false );
-    editorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/star.png","Basic Functions",OBJ_EDITOR_MODE_BASIC,false );
-    editorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/clock-o.png","Timed Functions",OBJ_EDITOR_MODE_TIMED,false );
-    editorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/qq.png","Collision Functions",OBJ_EDITOR_MODE_COLLISIONS,false );
-    editorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/code.png","Custom Functions",OBJ_EDITOR_MODE_CUSTOM,false );
-    editorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/leaf.png","Special Functions",OBJ_EDITOR_MODE_SPECIAL,false );
+    editorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/tags.png","Object Components",OBJ_EDITOR_MODE_COMPONENTS,false );
+    editorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/star.png","Basic Functions",OBJ_EDITOR_MODE_BASIC,false );
+    editorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/clock-o.png","Timed Functions",OBJ_EDITOR_MODE_TIMED,false );
+    editorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/qq.png","Collision Functions",OBJ_EDITOR_MODE_COLLISIONS,false );
+    editorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/code.png","Custom Functions",OBJ_EDITOR_MODE_CUSTOM,false );
+    editorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/leaf.png","Special Functions",OBJ_EDITOR_MODE_SPECIAL,false );
 
     if(renameBox!=NULL)
     {

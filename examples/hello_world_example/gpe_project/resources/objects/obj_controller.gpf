@@ -1,0 +1,57 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project GameObject File 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.13
+ResourceName=obj_controller
+SpriteId=
+ParentGameObjectId=
+NeedsCamera=0
+IsMoveable=1
+IsVisible=1
+IsContinuous=0
+
+
+[[[Function=Constructor]]] 
+//Toy around with it
+this.phrase = "Hello World!";
+[[[Function=Destructor]]] 
+//For its final action it writes to the console its sad note
+console.log(" Goodbye world!");
+[[[Function=Main Logic]]] 
+//If you press X check the console window in your browser.
+if( gpe.check_keyboard(gp_x) )
+{
+    this.self_destruct();
+}
+
+//To make this example slightly more interesting use WASD to change the phrase
+if( gpe.check_keyboard(gp_a) )
+{
+    this.phrase = "Hello world";
+}
+else if( gpe.check_keyboard(gp_d) )
+{
+    this.phrase = "Sup?";
+}
+else if( gpe.check_keyboard(gp_w) )
+{
+    this.phrase = "Duuuuuubya";
+}
+else if( gpe.check_keyboard(gp_s) )
+{
+    this.phrase = "Ello Guvnah!";
+}
+[[[Function=Render]]] 
+/*
+Renders the phrase ("Hello World") to the screen at this x/y coordinates aligned top/left.
+With the 1st parameter being the -1 it will use the "Browser's" default font to render it.
+*/
+gpe.render_text(-1,this.getx(), this.gety(),this.phrase,"white",fa_left, fa_top );
+gpe.render_text(-1,this.getx(), this.gety()+32,"Use the WASD keys to change text","yellow",fa_left, fa_top );

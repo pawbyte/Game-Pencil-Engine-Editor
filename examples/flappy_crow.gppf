@@ -4,11 +4,11 @@
 #    Game Pencil Engine Project File 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.1
+Version=1.14
 Name=flappy_crow
 Count=1024
 ProjectLanguage=JS
@@ -24,7 +24,6 @@ ProjectIcon=flappy_crow_icon.png
         Sprite=spr_ground,1002,
         Sprite=spr_block,1014,
         Sprite=spr_score_block,1016,
-        Sprite=spr_enemy,1017,
     [/SuperFolder]
     [SuperFolder=Audio]
         audio=newAudio1,1022,
@@ -35,17 +34,18 @@ ProjectIcon=flappy_crow_icon.png
     [SuperFolder=Functions]
         Function=newFunction1,1024,
     [/SuperFolder]
+    [SuperFolder=Paths]
+    [/SuperFolder]
     [SuperFolder=Objects]
         GameObject=obj_crow,1003,
         GameObject=obj_ground,1004,
         GameObject=obj_main_menu,1008,
         GameObject=obj_score_block,1013,
         GameObject=obj_block,1015,
-        GameObject=obj_enemy_basic,1018,
-        GameObject=obj_player,1021,
+    [/SuperFolder]
+    [SuperFolder=Classes]
     [/SuperFolder]
     [SuperFolder=Scenes]
-        scene=newScene1,1019,
         scene=scn_title,1005,
         scene=scn_game,1006,
     [/SuperFolder]

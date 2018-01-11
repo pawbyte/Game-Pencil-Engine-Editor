@@ -4,13 +4,15 @@
 #    Game Pencil Engine Project File 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to debug@pawyte.com . 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.0
+Version=1.13
 Name=sneaky_bricky
-Count=1000
+Count=1004
+ProjectLanguage=JS
+ProjectIcon=
 [Project=sneaky_bricky]
     [SuperFolder=Textures]
     [/SuperFolder]
@@ -24,9 +26,17 @@ Count=1000
     [/SuperFolder]
     [SuperFolder=Functions]
     [/SuperFolder]
+    [SuperFolder=Paths]
+    [/SuperFolder]
     [SuperFolder=Objects]
+        GameObject=newObject1,1001,
+    [/SuperFolder]
+    [SuperFolder=Classes]
+        Class=new1,1003,
+        Class=newClass2,1004,
     [/SuperFolder]
     [SuperFolder=Scenes]
+        scene=newScene1,1002,
     [/SuperFolder]
     [SuperFolder=Fonts]
     [/SuperFolder]

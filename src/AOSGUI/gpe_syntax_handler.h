@@ -72,6 +72,7 @@ class GPE_Gui_Engine_Language
         std::vector <GPE_Compiler_Term *> languageKeywords;
         std::vector <GPE_Compiler_Term *> languageDataTypes;
         std::vector <char> symbolLibrary;
+        std::string macroCommentChar;
         std::string commentChar;
         std::string blockcommentStartStr;
         std::string blockcommentEndStr;

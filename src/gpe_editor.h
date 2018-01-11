@@ -9,7 +9,7 @@ Copyright (c) 2014-2017 PawByte.
 Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the ìSoftwareî), to deal
+of this software and associated documentation files (the ‚ÄúSoftware‚Äù), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -18,7 +18,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED ìAS ISî, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED ‚ÄúAS IS‚Äù, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -50,8 +50,6 @@ typedef void (*CallbackType)(void);
 
 
 void GPE_Show_Tip_Of_Day();
-bool GPE_Open_Support_Center();
-
 
 typedef enum
 {
@@ -113,6 +111,7 @@ class GPE_ProjectFolder
         std::string projectStartDirectoryName;
         std::string projectDirectory;
         std::string projectFileName;
+        std::string projectLanguage;
         int GLOBAL_REZ_ID_COUNT;
         double projectFilePreviousVersion;
         double projectFileVersion;
@@ -128,6 +127,8 @@ class GPE_ProjectFolder
         GPE_ResourceContainer * RESC_VIDEOS;
         GPE_ResourceContainer * RESC_FUNCTIONS;
         GPE_ResourceContainer * RESC_OBJECTS;
+        GPE_ResourceContainer * RESC_CLASSES;
+        GPE_ResourceContainer * RESC_RESOURCES;
         GPE_ResourceContainer * RESC_PATHS;
         GPE_ResourceContainer * RESC_DICTIONARIES;
         GPE_ResourceContainer * RESC_SCENES;
@@ -150,7 +151,7 @@ class GPE_ProjectFolder
         time_t lastTimeBackedUp;
         std::string projectLayerNames[32];
 
-        GPE_ProjectFolder(std::string name, std::string directoryIn, std::string fileNameIn);
+        GPE_ProjectFolder(std::string name, std::string directoryIn, std::string fileNameIn, std::string projectLanguageIn = "JS", bool createBlankScene = false);
         ~GPE_ProjectFolder();
 
         //Used for syntax highlights and such
@@ -169,6 +170,7 @@ class GPE_ProjectFolder
         GPE_ResourceContainer * create_blank_path( GPE_ResourceContainer * folderContainer = NULL, std::string newName="", int newResId = -1);
         GPE_ResourceContainer * create_blank_font( GPE_ResourceContainer * folderContainer = NULL, std::string newName="", int newResId = -1);
         GPE_ResourceContainer * create_blank_function( GPE_ResourceContainer * folderContainer = NULL, std::string newName="", int newResId = -1);
+        GPE_ResourceContainer * create_blank_class( GPE_ResourceContainer * folderContainer = NULL, std::string newName="", int newResId = -1);
         GPE_ResourceContainer * create_blank_gameobject( GPE_ResourceContainer * folderContainer = NULL, std::string newName="", int newResId = -1);
         GPE_ResourceContainer * create_blank_scene( GPE_ResourceContainer * folderContainer = NULL, std::string newName="", int newResId = -1);
         GPE_ResourceContainer * create_blank_sprite( GPE_ResourceContainer * folderContainer = NULL, std::string newName="", int newResId = -1);
@@ -180,6 +182,7 @@ class GPE_ProjectFolder
         bool export_project_windows(std::string projectBuildDirectory = "",int buildBits = 32, bool runGameOnCompile = false, bool inDebugMode = false, int nativeBuildType = true);
         bool export_project_osx(std::string projectBuildDirectory = "",int buildBits = 32, bool runGameOnCompile = false, bool inDebugMode = false, int nativeBuildType = true);
         bool export_project_linux(std::string projectBuildDirectory = "",int buildBits = 32, bool runGameOnCompile = false, bool inDebugMode = false, int nativeBuildType = true);
+        std::string get_project_language();
         std::string get_project_name();
         std::string get_project_directory();
         std::string get_project_file_name();

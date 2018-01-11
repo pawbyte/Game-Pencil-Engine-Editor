@@ -504,17 +504,17 @@ void GPE_TextAreaInputBasic::create_buttonbar()
         textEditorButtonBar = NULL;
     }
     textEditorButtonBar = new GPE_ToolIconButtonBar(0, 0,24);
-    textEditorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/plane.png","Export Text",TEXTAREA_OPTION_EXPORT,false );
-    textEditorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/file.png","Import Text",TEXTAREA_OPTION_IMPORT,true );
-    textEditorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/eraser.png","Clear Text ",TEXTAREA_OPTION_CLEAR );
-    textEditorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/backward.png","Undo Action",TEXTAREA_OPTION_UNDO,false );
-    textEditorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/forward.png","Redo Action",TEXTAREA_OPTION_REDO,true );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/plane.png","Export Text",TEXTAREA_OPTION_EXPORT,false );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/file.png","Import Text",TEXTAREA_OPTION_IMPORT,true );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/eraser.png","Clear Text ",TEXTAREA_OPTION_CLEAR );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/backward.png","Undo Action",TEXTAREA_OPTION_UNDO,false );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/forward.png","Redo Action",TEXTAREA_OPTION_REDO,true );
 
-    textEditorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/cut.png","Cut",TEXTAREA_OPTION_CUT,false );
-    textEditorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/copy.png","Copy",TEXTAREA_OPTION_COPY,true );
-    textEditorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/paste.png","Paste",TEXTAREA_OPTION_PASTE,true );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/cut.png","Cut",TEXTAREA_OPTION_CUT,false );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/copy.png","Copy",TEXTAREA_OPTION_COPY,true );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/paste.png","Paste",TEXTAREA_OPTION_PASTE,true );
 
-    //textEditorButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/info.png","Text Info (Not Available Yet)",TEXTAREA_OPTION_TEXTINFO,true );
+    //textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/info.png","Text Info (Not Available Yet)",TEXTAREA_OPTION_TEXTINFO,true );
     textEditorButtonBar->limit_width(true);
 }
 
@@ -4208,450 +4208,7 @@ void GPE_TextAreaInputBasic::redo_edit()
     }
 }
 
-void GPE_TextAreaInputBasic::render_code_css(GPE_Renderer * cRender ,GPE_Rect * viewedSpace, GPE_Rect * cam )
-{
-    viewedSpace = GPE_find_camera(viewedSpace);
-    cam = GPE_find_camera(cam);
-
-    if( viewedSpace!=NULL && cam!=NULL && textEditorButtonBar!=NULL)
-    {
-        renderBox.x = barBox.x-cam->x;
-        renderBox.y = barBox.y-cam->y+textEditorButtonBar->get_height();
-        renderBox.w = barBox.w;
-
-        if(showYScroll)
-        {
-            renderBox.w-=16;
-        }
-        renderBox.h = barBox.h-textEditorButtonBar->get_height()-32;
-
-        int mostCharactersOfText = get_most_characters_used();
-        if( mostCharactersOfText > charactersWithinView && showYScroll )
-        {
-            mostCharactersOfText-=2;
-        }
-        int i = 0;
-        std::string currStringToRender = "";
-        std::string currentLineInView = "";
-        //Processes the sythax to re-render each one
-        std::string foundSyntaxString = "";
-        std::string foundGPEKeyTag= "";
-        std::string foundGPEProperty = "";
-        int tempSynStringSize = 0;
-        int currPosToParse = 0, lineEnd = 0;
-        int textRenderXPos = 0, textRenderYPos = 0;
-        GPE_Color * color = NULL;
-        bool isInBlockCommentMode = false;
-        bool isInDoubleQuoteMode = false;
-        bool isInSingleQuoteMode = false;
-        int minLineToRender = std::max(lineStartYPos-50 ,0);
-        int maxLineToRender = std::min(lineStartYPos+linesWithinView ,(int)listOfStrings.size()-1 );
-        int endBlockCommentPos = 0;
-        int endDQuoteCommentPos = 0;
-        int endSQuoteCommentPos = 0;
-        bool commentFoundInSymbols = false;
-        GPE_ParsedText * mLineComment = new GPE_ParsedText(-1, -1);
-        GPE_ParsedText * dqLineComment = new GPE_ParsedText(-1, -1);
-        GPE_ParsedText * sqLineComment = new GPE_ParsedText(-1, -1);
-        GPE_ParsedText * tempParseTextToAdd = new GPE_ParsedText(-1, -1);
-
-        //Finds the previous mode of  the editor up to 20 lines to the current lineStartYPos
-        for( i=minLineToRender; i < lineStartYPos && i < (int)listOfStrings.size(); i++)
-        {
-            currStringToRender = listOfStrings[i];
-            currPosToParse = 0;
-            lineEnd = (int)currStringToRender.size();
-            while (currPosToParse < lineEnd)
-            {
-                if( isInBlockCommentMode==false && isInDoubleQuoteMode==false && isInSingleQuoteMode==false)
-                {
-                    if (currPosToParse < lineEnd)
-                    {
-                        if (currPosToParse+1<lineEnd && currStringToRender[currPosToParse] == '/' && currPosToParse + 1 < lineEnd && currStringToRender[currPosToParse + 1] == '/' )
-                        {
-                            currPosToParse = lineEnd;
-                        }
-                        else if (currPosToParse+1<lineEnd && currStringToRender[currPosToParse] == '/' && currStringToRender[currPosToParse + 1] == '*' )
-                        {
-                            isInBlockCommentMode = true;
-                            currPosToParse+=2;
-                        }
-                        else if(currStringToRender[currPosToParse] == '"')
-                        {
-                            isInDoubleQuoteMode = true;
-                            currPosToParse++;
-                        }
-                        else if(currStringToRender[currPosToParse] == '\'')
-                        {
-                            isInSingleQuoteMode = true;
-                            currPosToParse++;
-                        }
-                        else
-                        {
-                            currPosToParse++;
-                        }
-                    }
-                }
-
-                if( isInBlockCommentMode)
-                {
-                    endBlockCommentPos = currStringToRender.find("*/");
-                    if( endBlockCommentPos==(int)std::string::npos)
-                    {
-                        currPosToParse = lineEnd;
-                    }
-                    else
-                    {
-                        currPosToParse = endBlockCommentPos+2;
-                        isInBlockCommentMode = false;
-                    }
-                }
-                else if( isInDoubleQuoteMode)
-                {
-                    endDQuoteCommentPos = currStringToRender.find('"',currPosToParse);
-                    if( endDQuoteCommentPos==(int)std::string::npos)
-                    {
-                        currPosToParse = lineEnd;
-                    }
-                    else
-                    {
-                        currPosToParse = endDQuoteCommentPos+1;
-                        isInDoubleQuoteMode = false;
-                    }
-                }
-                else if( isInSingleQuoteMode)
-                {
-                    endSQuoteCommentPos = currStringToRender.find("'",currPosToParse);
-                    if( endSQuoteCommentPos==(int)std::string::npos)
-                    {
-                        currPosToParse = lineEnd;
-                    }
-                    else
-                    {
-                        currPosToParse = endSQuoteCommentPos+1;
-                        isInSingleQuoteMode = false;
-                    }
-                }
-            }
-        }
-
-        for( i=lineStartYPos; i <= maxLineToRender; i++)
-        {
-            //resets highlight boxes and such
-            if( commentLineText!=NULL)
-            {
-                commentLineText->reset_self();
-            }
-            if( datatypeLineText!=NULL)
-            {
-                datatypeLineText->reset_self();
-            }
-            if( dQuoteLineText!=NULL)
-            {
-                dQuoteLineText->reset_self();
-            }
-            if( functionLineText!=NULL)
-            {
-                functionLineText->reset_self();
-            }
-            if( keywordLineText!=NULL)
-            {
-                keywordLineText->reset_self();
-            }
-            if( normalLineText!=NULL)
-            {
-                normalLineText->reset_self();
-            }
-
-            if( numberLineText!=NULL)
-            {
-                numberLineText->reset_self();
-            }
-
-            if( sQuoteLineText!=NULL)
-            {
-                sQuoteLineText->reset_self();
-            }
-
-            if( symbolLineText!=NULL)
-            {
-                symbolLineText->reset_self();
-            };
-
-            currStringToRender = listOfStrings[i];
-            currPosToParse = 0;
-
-            lineEnd = (int)currStringToRender.size();
-
-            endBlockCommentPos=(int)std::string::npos;
-            endDQuoteCommentPos=(int)std::string::npos;
-            endSQuoteCommentPos=(int)std::string::npos;
-
-            foundGPEKeyTag = "";
-            foundGPEProperty = "";
-            mLineComment->textStart = -1;
-            mLineComment->textEnd = -1;
-            tempParseTextToAdd->textStart = -1;
-            tempParseTextToAdd->textEnd = -1;
-
-            while (currPosToParse < lineEnd)
-            {
-                if( isInBlockCommentMode==false && isInDoubleQuoteMode==false && isInSingleQuoteMode==false)
-                {
-                    while (currPosToParse < lineEnd && currStringToRender[currPosToParse]==' ')
-                    {
-                        currPosToParse++;
-                    }
-                    if (currPosToParse < lineEnd)
-                    {
-                        if (currPosToParse+1<lineEnd && currStringToRender[currPosToParse] == '/' && currPosToParse + 1 < lineEnd && currStringToRender[currPosToParse + 1] == '/' )
-                        {
-                            commentLineText->foundParses.push_back( new GPE_ParsedText(currPosToParse, lineEnd));
-                            currPosToParse = lineEnd;
-                        }
-                        else if (currPosToParse+1<lineEnd && currStringToRender[currPosToParse] == '/' && currStringToRender[currPosToParse + 1] == '*' )
-                        {
-                            isInBlockCommentMode = true;
-                            mLineComment->textStart = currPosToParse;
-                            currPosToParse+=2;
-                        }
-                        else if(currStringToRender[currPosToParse] == '"')
-                        {
-                            isInDoubleQuoteMode = true;
-                            dqLineComment->textStart = currPosToParse;
-                            currPosToParse++;
-                        }
-                        else if(currStringToRender[currPosToParse] == '\'')
-                        {
-                            isInSingleQuoteMode = true;
-                            sqLineComment->textStart = currPosToParse;
-                            currPosToParse++;
-                        }
-                        else if (isdigit(currStringToRender[currPosToParse]))
-                        {
-                            tempParseTextToAdd->textStart = currPosToParse;
-                            currPosToParse++;
-                            while( (currPosToParse < lineEnd && isdigit( currStringToRender[currPosToParse] )  ) || currStringToRender[currPosToParse] ==' ')
-                            {
-                                currPosToParse++;
-                            }
-                            tempParseTextToAdd->textEnd = currPosToParse;
-                            numberLineText->foundParses.push_back(tempParseTextToAdd);
-                            tempParseTextToAdd = new GPE_ParsedText(0, -1);
-                        }
-                        else if (GPE_MAIN_HIGHLIGHTER->charIsSymbol(currStringToRender[currPosToParse]))
-                        {
-                            tempParseTextToAdd->textStart = currPosToParse;
-                            currPosToParse++;
-                            commentFoundInSymbols = false;
-                            while( ( commentFoundInSymbols==false && currPosToParse < lineEnd && GPE_MAIN_HIGHLIGHTER->charIsSymbol(currStringToRender[currPosToParse] ) )|| currStringToRender[currPosToParse] ==' ')
-                            {
-                                if( lineEnd > currPosToParse+1)
-                                {
-                                    if( currStringToRender[currPosToParse] == '/' && (currStringToRender[currPosToParse + 1] == '/' || currStringToRender[currPosToParse + 1] == '*' ) )
-                                    {
-                                        commentFoundInSymbols = true;
-                                    }
-                                    else if (currStringToRender[currPosToParse] == '*' && currStringToRender[currPosToParse + 1] == '/' )
-                                    {
-                                        commentFoundInSymbols = true;
-                                    }
-                                    else
-                                    {
-                                        currPosToParse++;
-                                    }
-                                }
-                                else
-                                {
-                                    currPosToParse++;
-                                }
-                            }
-                            tempParseTextToAdd->textEnd = currPosToParse;
-                            symbolLineText->foundParses.push_back(tempParseTextToAdd);
-                            tempParseTextToAdd = new GPE_ParsedText(0, -1);
-                        }
-                        else
-                        {
-                            if (char_is_alpha(currStringToRender[currPosToParse],false,true) )
-                            {
-                                //color = GPE_MAIN_TEMPLATE->Main_Box_Font_Color;
-                                tempParseTextToAdd->textStart = currPosToParse;
-                                currPosToParse++;
-                                while (currPosToParse < lineEnd && char_is_alnum(currStringToRender[currPosToParse],false,true) )
-                                {
-                                    currPosToParse++;
-                                }
-                                tempParseTextToAdd->textEnd = currPosToParse;
-                                normalLineText->foundParses.push_back(tempParseTextToAdd);
-                                tempParseTextToAdd = new GPE_ParsedText(-1, -1);
-                            }
-                            // add new cases here:
-                            // else if (...)
-                            // {
-                            //     ...
-                            // }
-                            else
-                            {
-                                //color = GPE_MAIN_TEMPLATE->Main_Box_Font_Color;
-                                //anything else is just regular text as well...
-                                tempParseTextToAdd->textStart = currPosToParse;
-                                tempParseTextToAdd->textEnd = currPosToParse+1;
-                                normalLineText->foundParses.push_back(tempParseTextToAdd);
-                                tempParseTextToAdd = new GPE_ParsedText(-1, -1);
-                                currPosToParse++;
-                            }
-                        }
-                    }
-                }
-                if( isInBlockCommentMode)
-                {
-                    endBlockCommentPos = currStringToRender.find("*/");
-                    if( endBlockCommentPos==(int)std::string::npos)
-                    {
-                        currPosToParse = lineEnd;
-                    }
-                    else
-                    {
-                        currPosToParse = endBlockCommentPos+2;
-                        isInBlockCommentMode = false;
-                    }
-                    mLineComment->textEnd = currPosToParse;
-                    commentLineText->foundParses.push_back(mLineComment);
-                    mLineComment = new GPE_ParsedText(0, -1);
-                }
-                else if( isInDoubleQuoteMode)
-                {
-                    endDQuoteCommentPos = currStringToRender.find('"',currPosToParse);
-                    if( endDQuoteCommentPos==(int)std::string::npos)
-                    {
-                        currPosToParse = lineEnd;
-                    }
-                    else
-                    {
-                        currPosToParse = endDQuoteCommentPos+1;
-                        isInDoubleQuoteMode = false;
-                    }
-                    dqLineComment->textEnd = currPosToParse;
-                    dQuoteLineText->foundParses.push_back(dqLineComment);
-                    dqLineComment = new GPE_ParsedText(0, -1);
-                }
-                else if( isInSingleQuoteMode)
-                {
-                    endSQuoteCommentPos = currStringToRender.find("'",currPosToParse);
-                    if( endSQuoteCommentPos==(int)std::string::npos)
-                    {
-                        currPosToParse = lineEnd;
-                    }
-                    else
-                    {
-                        currPosToParse = endSQuoteCommentPos+1;
-                        isInSingleQuoteMode = false;
-                    }
-                    sqLineComment->textEnd = currPosToParse;
-                    sQuoteLineText->foundParses.push_back(sqLineComment);
-                    sqLineComment = new GPE_ParsedText(0, -1);
-                }
-            }
-
-            if ( i >=lineStartYPos  )
-            {
-                textRenderXPos = renderBox.x+lineCountBoxWidth+2;
-                textRenderYPos = renderBox.y+(i-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4;
-
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_Color;
-                normalLineText->render_tokens(cRender,FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
-
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_Number_Color;
-                numberLineText->render_tokens(cRender,FONT_TEXTINPUT_NUMBER,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color,true );
-
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_Symbols_Color;
-                symbolLineText->render_tokens(cRender,FONT_TEXTINPUT_SYMBOL,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
-
-                //
-                if( USE_COLORBLINDMODE)
-                {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Font_Function_Alt_Color;
-                }
-                else
-                {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Font_Function_Color;
-                }
-                functionLineText->render_tokens(cRender,FONT_TEXTINPUT_FUNCTION,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
-
-                //
-                if( USE_COLORBLINDMODE)
-                {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Font_Keyword_Alt_Color;
-                }
-                else
-                {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Font_Keyword_Color;
-                }
-                keywordLineText->render_tokens(cRender,FONT_TEXTINPUT_KEYWORD,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
-
-                if( USE_COLORBLINDMODE)
-                {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Project_Keyword_Alt_Color;
-                }
-                else
-                {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Project_Keyword_Color;
-                }
-                projectKeywordLineText->render_tokens(cRender,FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
-
-                if( USE_COLORBLINDMODE)
-                {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Project_Function_Alt_Color;
-                }
-                else
-                {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Project_Function_Color;
-                }
-                projectFunctionLineText->render_tokens(cRender,FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
-
-
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_DataType_Color;
-                datatypeLineText->render_tokens(cRender,FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
-
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_DataType_Color;
-                datatypeLineText->render_tokens(cRender,FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
-
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_SQuote_Color;
-                sQuoteLineText->render_tokens(cRender,FONT_TEXTINPUT_QUOTE,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
-
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_DQuote_Color;
-                dQuoteLineText->render_tokens(cRender,FONT_TEXTINPUT_QUOTE,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
-
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_Comment_Color;
-                commentLineText->render_tokens(cRender,FONT_TEXTINPUT_COMMENT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
-            }
-
-        }
-
-        if( mLineComment!=NULL)
-        {
-            delete mLineComment;
-            mLineComment = NULL;
-        }
-        if( dqLineComment!=NULL)
-        {
-            delete dqLineComment;
-            dqLineComment = NULL;
-        }
-        if( sqLineComment!=NULL)
-        {
-            delete sqLineComment;
-            sqLineComment = NULL;
-        }
-        if( tempParseTextToAdd!=NULL)
-        {
-            delete tempParseTextToAdd;
-            tempParseTextToAdd = NULL;
-        }
-    }
-}
-
-void GPE_TextAreaInputBasic::render_code_javascript(GPE_Renderer * cRender ,GPE_Rect * viewedSpace, GPE_Rect * cam )
+void GPE_TextAreaInputBasic::render_code(GPE_Renderer * cRender ,GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -4858,6 +4415,9 @@ void GPE_TextAreaInputBasic::render_code_javascript(GPE_Renderer * cRender ,GPE_
             tempParseTextToAdd->textStart = 0;
             tempParseTextToAdd->textEnd = -1;
 
+            //Add C/C++ macro processor here..[1.14 begin]
+            //Add C/C++ macro processor here..[1.14 end]
+
             while (currPosToParse < lineEnd)
             {
                 while (currPosToParse < lineEnd && currStringToRender[currPosToParse]==' ')
@@ -4884,19 +4444,19 @@ void GPE_TextAreaInputBasic::render_code_javascript(GPE_Renderer * cRender ,GPE_
                             mLineComment->textStart = currPosToParse;
                             currPosToParse+=2;
                         }
-                        else if(currStringToRender[currPosToParse] == '"')
+                        else if( currStringToRender[currPosToParse] == '"' )
                         {
                             isInDoubleQuoteMode = true;
                             dqLineComment->textStart = currPosToParse;
                             currPosToParse++;
                         }
-                        else if(currStringToRender[currPosToParse] == '\'')
+                        else if( currStringToRender[currPosToParse] == '\'' )
                         {
                             isInSingleQuoteMode = true;
                             sqLineComment->textStart = currPosToParse;
                             currPosToParse++;
                         }
-                        else if (isdigit(currStringToRender[currPosToParse]))
+                        else if ( isdigit(currStringToRender[currPosToParse]) )
                         {
                             tempParseTextToAdd->textStart = currPosToParse;
                             currPosToParse++;
@@ -4908,7 +4468,7 @@ void GPE_TextAreaInputBasic::render_code_javascript(GPE_Renderer * cRender ,GPE_
                             numberLineText->foundParses.push_back(tempParseTextToAdd);
                             tempParseTextToAdd = new GPE_ParsedText(0, -1);
                         }
-                        else if( GPE_MAIN_HIGHLIGHTER->charIsSymbol(currStringToRender[currPosToParse] ))
+                        else if( GPE_MAIN_HIGHLIGHTER->charIsSymbol(currStringToRender[currPosToParse] ) )
                         {
                             tempParseTextToAdd->textStart = currPosToParse;
                             currPosToParse++;
@@ -5437,16 +4997,8 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                 std::string currStringToRender = "";
                 if( MAIN_GUI_SETTINGS->showTextEditorSyntaxHightlight && isCodeEditor)
                 {
-                    //CSS Codes
-                    if( codeEditorType==1)
-                    {
-                        render_code_css(cRender,viewedSpace,cam);
-                    }
-                    else
-                    {
-                        //JavaScript Codes
-                        render_code_javascript(cRender,viewedSpace,cam);
-                    }
+                    //Codes
+                    render_code(cRender,viewedSpace,cam);
                 }
                 else
                 {
@@ -5488,7 +5040,7 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                             }
                             currStringToRender = get_substring(currStringToRender,lineStartXPos,charactersWithinView );
 
-                            render_new_text(cRender,renderBox.x+lineCountBoxWidth+2,renderBox.y+4+(i-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
+                            render_only_text(cRender,renderBox.x+lineCountBoxWidth+2,renderBox.y+4+(i-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
                                             currStringToRender,textColor,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
                         }
                     }
@@ -5637,12 +5189,12 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                             if( iSuggestedEntry==iSuggestionPos)
                             {
                                 render_rectangle(cRender, barBox.x+viewedSpace->x, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*iRendSuggestion,barBox.x+viewedSpace->x+maxSuggestedTextWidth, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*(iRendSuggestion+1),GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Color,false);
-                                render_new_text(cRender,barBox.x+viewedSpace->x+32, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*iRendSuggestion,fullPhraseToRender,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
+                                render_only_text(cRender,barBox.x+viewedSpace->x+32, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*iRendSuggestion,fullPhraseToRender,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
                             }
                             else
                             {
                                 render_rectangle(cRender, barBox.x+viewedSpace->x, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*iRendSuggestion,barBox.x+viewedSpace->x+maxSuggestedTextWidth, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*(iRendSuggestion+1),GPE_MAIN_TEMPLATE->PopUp_Box_Color,false);
-                                render_new_text(cRender,barBox.x+viewedSpace->x+32, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*iRendSuggestion,fullPhraseToRender,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
+                                render_only_text(cRender,barBox.x+viewedSpace->x+32, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*iRendSuggestion,fullPhraseToRender,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
                             }
                             iRendSuggestion++;
                         }

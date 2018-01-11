@@ -4,11 +4,11 @@
 #    Game Pencil Engine Project GameObject File 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.1
+Version=1.14
 ResourceName=obj_crow
 SpriteId=spr_crow
 ParentGameObjectId=
@@ -109,7 +109,7 @@ if( !GAME_OVER )
     }
 }
 this.start_countdown( 1, 90 );
-[[[CollideFunction=]]] 
+[[[CollideFunction=obj_score_block]]] 
 CURRENT_SCORE++;
 other.self_destruct();
 [[[CollideFunction=obj_block]]] 

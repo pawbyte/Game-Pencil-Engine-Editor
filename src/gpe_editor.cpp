@@ -9,7 +9,7 @@ Copyright (c) 2014-2017 PawByte.
 Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the ìSoftwareî), to deal
+of this software and associated documentation files (the ‚ÄúSoftware‚Äù), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -18,7 +18,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED ìAS ISî, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED ‚ÄúAS IS‚Äù, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -2684,7 +2684,7 @@ bool GPE_ResourceContainer::write_data_into_projectfile(std::ofstream * fileTarg
     return !foundProblem;
 }
 
-GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directoryIn, std::string fileNameIn)
+GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directoryIn, std::string fileNameIn, std::string projectLanguageIn, bool createBlankScene)
 {
     int iLayerN = 0;
     for( iLayerN = 0; iLayerN < 32; iLayerN++)
@@ -2720,6 +2720,7 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directoryIn, 
     RESC_VIDEOS = NULL;
     RESC_FUNCTIONS = NULL;
     RESC_OBJECTS = NULL;
+    RESC_CLASSES = NULL;
     RESC_PATHS = NULL;
     RESC_SCENES = NULL;
     RESC_ACHIEVEMENTS = NULL;
@@ -2743,6 +2744,7 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directoryIn, 
     RESC_FUNCTIONS =  RESC_ALL[RESOURCE_TYPE_FUNCTION] =RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_FUNCTION,"Functions", increment_resouce_count(), restype_superfolder);
     RESC_PATHS =  RESC_ALL[RESOURCE_TYPE_PATH] =RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_PATH,"Paths", increment_resouce_count(), restype_superfolder);
     RESC_OBJECTS =  RESC_ALL[RESOURCE_TYPE_OBJECT] =RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_OBJECT,"Objects", increment_resouce_count(), restype_superfolder);
+    RESC_CLASSES =  RESC_ALL[RESOURCE_TYPE_CLASS] =RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_CLASS,"Classes", increment_resouce_count(), restype_superfolder);
     RESC_SCENES =  RESC_ALL[RESOURCE_TYPE_SCENE] =RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_SCENE,"Scenes", increment_resouce_count(), restype_superfolder);
     //RESC_ACHIEVEMENTS =  RESC_ALL[RESOURCE_TYPE_ACHIEVEMENT] =RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_ACHIEVEMENT,"Achievements", increment_resouce_count(), restype_superfolder);
     RESC_FONTS =  RESC_ALL[RESOURCE_TYPE_FONT] =RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_FONT,"Fonts", increment_resouce_count(), restype_superfolder);
@@ -2934,7 +2936,7 @@ GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_folder(GPE_ResourceCont
 
 GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_resource(int rNewType, GPE_ResourceContainer * folderContainer, std::string newName, int newResId )
 {
-    if( rNewType >= 0 && rNewType <= RESOURCE_TYPE_QUEST)
+    if( rNewType >= 0 && rNewType <= RESOURCE_TYPE_CLASS )
     {
         GPE_ResourceContainer * RES_FOLDER_HOLDER = RESC_ALL[rNewType];
         if(RES_FOLDER_HOLDER!=NULL)
@@ -2959,6 +2961,9 @@ GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_resource(int rNewType, 
                 break;
                 case RESOURCE_TYPE_FUNCTION:
                     newProjectResource = new functionResource(RESC_PROJECT_FOLDER);
+                break;
+                case RESOURCE_TYPE_CLASS:
+                    newProjectResource = new classResource(RESC_PROJECT_FOLDER);
                 break;
                 case RESOURCE_TYPE_OBJECT:
                     newProjectResource = new gameObjectResource(RESC_PROJECT_FOLDER);
@@ -3050,6 +3055,11 @@ GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_function(GPE_ResourceCo
     return create_blank_resource(RESOURCE_TYPE_FUNCTION, folderContainer, newName, newResId);
 }
 
+GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_class(GPE_ResourceContainer * folderContainer, std::string newName, int newResId )
+{
+    return create_blank_resource(RESOURCE_TYPE_CLASS, folderContainer, newName, newResId);
+}
+
 GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_sprite(GPE_ResourceContainer * folderContainer, std::string newName, int newResId )
 {
     return create_blank_resource(RESOURCE_TYPE_SPRITE, folderContainer, newName, newResId);
@@ -3119,6 +3129,9 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                 std::vector <GPE_ResourceContainer *> buildPathsOptions;
                 std::vector <GPE_ResourceContainer *> buildFunctionsOptions;
                 std::vector <GPE_ResourceContainer *> buildFontOptions;
+                //Added as of 1.14 [ BEGIN ]
+                std::vector <GPE_ResourceContainer *> buildClassesOptions;
+                //Added as of 1.14 [ END ]
                 std::vector <GPE_ResourceContainer *> buildGameObjectOptions;
                 std::vector <GPE_ResourceContainer *> buildGameSceneOptions;
                 projectPropertiesResource * projectSettingsObject = (projectPropertiesResource*)RESC_PROJECT_SETTINGS->get_held_resource();
@@ -3130,6 +3143,9 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                 RESC_PATHS->grab_useable_resources(buildPathsOptions);
                 RESC_FUNCTIONS->grab_useable_resources(buildFunctionsOptions);
                 RESC_FONTS->grab_useable_resources(buildFontOptions);
+                //Added as of 1.14 [ BEGIN ]
+                RESC_CLASSES->grab_useable_resources(buildClassesOptions);
+                //Added as of 1.14 [ END ]
                 RESC_OBJECTS->grab_useable_resources(buildGameObjectOptions);
                 RESC_SCENES->grab_useable_resources(buildGameSceneOptions);
 
@@ -3143,6 +3159,9 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                 RESC_PATHS->grab_useable_resources(buildGameBuildAllOptions);
                 RESC_FUNCTIONS->grab_useable_resources(buildGameBuildAllOptions);
                 RESC_FONTS->grab_useable_resources(buildGameBuildAllOptions);
+                //Added as of 1.14 [ BEGIN ]
+                RESC_CLASSES->grab_useable_resources(buildGameBuildAllOptions);
+                //Added as of 1.14 [ END ]
                 RESC_OBJECTS->grab_useable_resources(buildGameBuildAllOptions);
                 RESC_SCENES->grab_useable_resources(buildGameBuildAllOptions);
 
@@ -3203,6 +3222,9 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                     videoResource * tempVidRes = NULL;
                     gamePathResource * tempPathRes = NULL;
                     functionResource * tempFuncRes = NULL;
+                    //Added as of 1.14 [ BEGIN ]
+                    classResource * tempClassRes = NULL;
+                    //Added as of 1.14 [ END ]
                     gameObjectResource * tempObjRes = NULL;
                     gameSceneResource * tempScnRes = NULL;
                     //achievementResource * tempAchRes = NULL;
@@ -3268,6 +3290,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                         }
                     }
                     appendToFile(get_user_settings_folder()+"resources_check.txt","[Sprites]");
+
                     for( iRes = 0; iRes < (int)buildSpriteOptions.size(); iRes++)
                     {
                         tempContainer = buildSpriteOptions[iRes];
@@ -3295,6 +3318,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                             }
                         }
                     }
+
                     appendToFile(get_user_settings_folder()+"resources_check.txt","[Audio]");
                     for( iRes = 0; iRes < (int)buildAudioOptions.size(); iRes++)
                     {
@@ -3365,6 +3389,19 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                         }
                     }
 
+                    //Added as of 1.14 [ BEGIN ]
+                    appendToFile(get_user_settings_folder()+"resources_check.txt","[Custom Classes]");
+                    for( iRes = 0; iRes < (int)buildClassesOptions.size(); iRes++)
+                    {
+                        tempContainer = buildClassesOptions[iRes];
+                        if( tempContainer!=NULL)
+                        {
+                            tempContainer->set_global_html5id ( iRes);
+                            appendToFile(get_user_settings_folder()+"resources_check.txt",tempContainer->get_name() +"...");
+                        }
+                    }
+                    //Added as of 1.14 [ END ]
+
                     appendToFile(get_user_settings_folder()+"resources_check.txt","[Game Objects]");
                     for( iRes = 0; iRes < (int)buildGameObjectOptions.size(); iRes++)
                     {
@@ -3423,21 +3460,17 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
 
                     std::string buildFileGPEPowerFilleName = "";
                     std::string indexFileGPEPowerFileName = "";
-                    if( MAIN_EDITOR_SETTINGS->useStrictMode->is_clicked() )
+                    if( inDebugMode )
                     {
-                        GPE_Main_Logs->log_build_line("Using strict mode...");
-                        buildFileGPEPowerFilleName = APP_DIRECTORY_NAME+"build_files/js/lib/gpepower_strict_v1_1_3.txt";
-                        indexFileGPEPowerFileName =projectBuildDirectory+"/js/lib/gpepower_strict_v1_1_3.js";
+                        GPE_Main_Logs->log_build_line("Using DEBUG mode...");
+                        buildFileGPEPowerFilleName = APP_DIRECTORY_NAME+"build_files/js/lib/gpepower_strict_v1_1_4_debug.txt";
+                        indexFileGPEPowerFileName =projectBuildDirectory+"/js/lib/gpepower_strict_v1_1_4_debug.js";
                     }
                     else
                     {
-                        GPE_Main_Logs->log_build_line("Using non-strict mode...");
-                        buildFileGPEPowerFilleName = APP_DIRECTORY_NAME+"build_files/js/lib/gpepower_v1_1_3.txt";
-                        indexFileGPEPowerFileName =projectBuildDirectory+"/js/lib/gpepower_v1_1_3.js";
-                    }
-                    if( inDebugMode)
-                    {
-                        //APP_DIRECTORY_NAME+"build_files/js/lib/gpepower_debug_strict.txt";
+                        GPE_Main_Logs->log_build_line("Using RELEASE mode...");
+                        buildFileGPEPowerFilleName = APP_DIRECTORY_NAME+"build_files/js/lib/gpepower_strict_v1_1_4.txt";
+                        indexFileGPEPowerFileName =projectBuildDirectory+"/js/lib/gpepower_strict_v1_1_4.js";
                     }
 
                     if( buildMetaTemplate ==GPE_BUILD_WIIU)
@@ -3560,7 +3593,14 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
 
                             indexHTML5FILE << "        <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>\n";
                             indexHTML5FILE << "        <meta name='viewport' content='width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1.0'> \n";
-                            indexHTML5FILE << "        <title>" << projectSettingsObject->projectGameShortTitleField->get_string() << "</title> \n";
+                            //Modified as of 1.14 [ BEGIN ]
+                            indexHTML5FILE << "        <title>";
+                            if( inDebugMode)
+                            {
+                                indexHTML5FILE << "[DEBUG MODE]";
+                            }
+                            indexHTML5FILE << projectSettingsObject->projectGameShortTitleField->get_string() << "</title> \n";
+                            //Added as of 1.14 [ END ]
                             indexHTML5FILE << "        <link rel='stylesheet' type='text/css'  href='css/style.css'> \n";
                             indexHTML5FILE << "        <link rel='stylesheet' type='text/css'  href='css/gpe_custom_style.css'> \n";
 
@@ -3577,7 +3617,16 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                             //indexHTML5FILE << "        <script src='js/lib/screenfull.js'></script> \n";
                             indexHTML5FILE << "        <script src='js/lib/gpe_superarray.js'></script> \n";
                             indexHTML5FILE << "        <script src='js/gpe_settings.js'></script> \n";
-                            indexHTML5FILE << "        <script src='js/lib/gpepower_strict_v1_1_3.js'></script>	 \n";
+                            //Modified as of 1.14 [ BEGIN ]
+                            if( inDebugMode)
+                            {
+                                indexHTML5FILE << "        <script src='js/lib/gpepower_strict_v1_1_4_debug.js'></script>	 \n";
+                            }
+                            else
+                            {
+                                indexHTML5FILE << "        <script src='js/lib/gpepower_strict_v1_1_4.js'></script>	 \n";
+                            }
+                            //Modified as of 1.14 [ END ]
                             if( buildMetaTemplate ==GPE_BUILD_WIIU)
                             {
                                 //Nintendo Web Franmework Export Code
@@ -3877,10 +3926,9 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                 indexJSCustomGameFILE << "#    --------------------------------------------------  # \n";
                                 indexJSCustomGameFILE << "*/     \n\n";
 
-                                if( MAIN_EDITOR_SETTINGS->useStrictMode->is_clicked() )
-                                {
-                                    indexJSCustomGameFILE << "'use strict';\n";
-                                }
+                                //Modified as of 1.14 [ BEGIN ]
+                                indexJSCustomGameFILE << "'use strict';\n";
+                                //Modified as of 1.14 [ END ]
                                 currentObjParents.clear();
                                 nextObjParents.clear();
 
@@ -3990,6 +4038,37 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                 }*/
 
                                 int iErrorLine = 0;
+
+                                //Added as of 1.14 [ BEGIN ]
+                                for( iRes = 0; iRes < (int)buildClassesOptions.size() && ( !hadSaveErrors || MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked()==false ); iRes++)
+                                {
+                                    tempContainer = buildClassesOptions[iRes];
+                                    if( tempContainer!=NULL &&tempContainer->get_held_resource()!=NULL)
+                                    {
+                                        tempClassRes = (classResource * )tempContainer->get_held_resource();
+                                        if( ( tempClassRes!=NULL) && ( tempClassRes->classSourceCode!=NULL )  )
+                                        {
+                                            indexJSCustomGameFILE << "{\n\n";
+                                            if( !tempClassRes->classSourceCode->compile_into_code( &indexJSCustomGameFILE, 1,true,true) )
+                                            {
+                                                for( iErrorLine=0; iErrorLine < (int)tempClassRes->classSourceCode->foundSyntaxErrors.size(); iErrorLine++)
+                                                {
+                                                    GPE_Main_Logs->log_build_error( tempContainer->get_name()+": "+tempClassRes->classSourceCode->foundSyntaxErrors[iErrorLine] );
+                                                }
+                                                hadSaveErrors = true;
+                                                if( MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked() )
+                                                {
+                                                    break;
+                                                }
+                                            }
+                                            indexJSCustomGameFILE << "}\n\n";
+                                        }
+                                    }
+                                }
+                                indexJSCustomGameFILE << "\n";
+                                //Added as of 1.14 [ END ]
+
+                                iErrorLine = 0;
                                 for( iRes = 0; iRes < (int)buildFunctionsOptions.size() && ( !hadSaveErrors || MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked()==false ); iRes++)
                                 {
                                     tempContainer = buildFunctionsOptions[iRes];
@@ -4048,6 +4127,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                 }
 
                                 indexJSCustomGameFILE << "\n";
+
                                 if( !hadSaveErrors || MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked()==false )
                                 {
                                     std::string tempObjName = "";
@@ -4571,6 +4651,11 @@ bool GPE_ProjectFolder::export_project_linux(std::string projectBuildDirectory, 
     return buildResult;
 }
 
+std::string GPE_ProjectFolder::get_project_language()
+{
+    return projectLanguage;
+}
+
 std::string GPE_ProjectFolder::get_project_name()
 {
     return projectName;
@@ -4627,6 +4712,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 videoResource * tempVidRes = NULL;
                 gamePathResource * tempPathRes = NULL;
                 functionResource * tempFuncRes = NULL;
+                classResource *    tempClassRes = NULL;
                 gameObjectResource * tempObjRes = NULL;
                 gameSceneResource * tempScnRes = NULL;
                 //achievementResource * tempAchRes = NULL;
@@ -4655,6 +4741,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 std::vector <videoResource *> projectGameVideos;
                 std::vector <gamePathResource *> projectGamePaths;
                 std::vector <functionResource *> projectGameFunctions;
+                std::vector <classResource *> projectGameClasses;
                 std::vector <gameObjectResource *> projectGameObjects;
                 std::vector <gameSceneResource *> projectScenes;
                 std::vector <fontResource *> projectGameFonts;
@@ -4879,7 +4966,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                          }
                                     }
                                 }
-                                else if( keyString=="Function" || keyString=="functions" )
+                                else if( keyString=="Function" || keyString=="function" )
                                 {
                                     tempNewResName = split_first_string(valString,',');
                                     foundResGlobalId = split_first_int(valString,',');
@@ -4891,6 +4978,21 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                         {
                                             tempFuncRes->resourcePostProcessed = false;
                                             projectGameFunctions.push_back( tempFuncRes);
+                                        }
+                                    }
+                                }
+                                else if( keyString=="Class" || keyString=="class" )
+                                {
+                                    tempNewResName = split_first_string(valString,',');
+                                    foundResGlobalId = split_first_int(valString,',');
+                                    newContainer = create_blank_class(containerFolderToEdit,tempNewResName,foundResGlobalId);
+                                    if( newContainer->get_held_resource()!=NULL)
+                                    {
+                                        tempClassRes = (classResource * )newContainer->get_held_resource();
+                                        if( tempClassRes!=NULL)
+                                        {
+                                            tempClassRes->resourcePostProcessed = false;
+                                            projectGameClasses.push_back( tempClassRes);
                                         }
                                     }
                                 }
@@ -5069,6 +5171,16 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                         tempFuncRes->preprocess_self();
                     }
                 }
+
+                for( iItr = 0; iItr < (int)projectGameClasses.size(); iItr++)
+                {
+                    tempClassRes = projectGameClasses[iItr];
+                    if( tempClassRes!=NULL)
+                    {
+                        tempClassRes->preprocess_self();
+                    }
+                }
+
                 for( iItr = 0; iItr < (int)projectGameObjects.size(); iItr++)
                 {
                     tempObjRes = projectGameObjects[iItr];
@@ -5420,7 +5532,7 @@ bool GPE_ProjectFolder::save_project_as(std::string projectFileNewName)
                 myfile << "Name=" << projectName << "\n";
 
                 myfile << "Count=" << GLOBAL_REZ_ID_COUNT << "\n";
-                if( myProjectLanguage >=0 && myProjectLanguage < PROJECT_LANGUAGE_MAX)
+                if( myProjectLanguage >=0 && myProjectLanguage < PROJECT_LANGUAGE_MAX )
                 {
                     myfile << "ProjectLanguage=" << PROJECT_LANGUAGE_NAMES[myProjectLanguage] << "\n";
                 }
@@ -7248,6 +7360,10 @@ void GPE_Gui_Engine::apply_logic()
                 save_current_project();
             }
         }
+        else if( userInput->check_keyboard_released(kb_t) )
+        {
+            GPE_Main_TabManager->add_new_tab(PROJECT_BROWSER_PAGE);
+        }
         else if( userInput->check_keyboard_released(kb_u) )
         {
             GPE_Main_TabManager->add_new_tab(MAIN_EDITOR_SETTINGS);
@@ -8754,8 +8870,7 @@ void GPE_Gui_Engine::process_overlay_message()
     }
     else if( GPE_Action_Message=="Report Issue")
     {
-        GPE_Open_Support_Center();
-        //GPE_OpenURL("https://gitlab.com/pawbyte/Game-Pencil-Engine");
+        GPE_OpenURL("https://github.com/pawbyte/Game-Pencil-Engine/issues");
     }
     else if( GPE_Action_Message=="About" || GPE_Action_Message=="About..." || GPE_Action_Message=="About Game Pencil Engine" )
     {
@@ -9104,6 +9219,8 @@ void GPE_Gui_Engine::setup_project_directory(std::string newProjectDir)
         create_directory(newProjectDir+"/gpe_project/resources");
         create_directory(newProjectDir+"/gpe_project/resources/achievements");
         create_directory(newProjectDir+"/gpe_project/resources/audio");
+        //Class Directory addition for 1.14
+        create_directory(newProjectDir+"/gpe_project/resources/classes");
         create_directory(newProjectDir+"/gpe_project/resources/fonts");
         create_directory(newProjectDir+"/gpe_project/resources/functions");
         create_directory(newProjectDir+"/gpe_project/resources/objects");
@@ -9401,6 +9518,7 @@ GPE_Editor_State::GPE_Editor_State()
     RESOURCE_TYPE_NAMES[RESOURCE_TYPE_VIDEO] = "Video";
 
     RESOURCE_TYPE_NAMES[RESOURCE_TYPE_FUNCTION] = "Function";
+    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_CLASS] = "Class";
     RESOURCE_TYPE_NAMES[RESOURCE_TYPE_OBJECT] = "Object";
     RESOURCE_TYPE_NAMES[RESOURCE_TYPE_SCENE] = "Scene";
     RESOURCE_TYPE_NAMES[RESOURCE_TYPE_ACHIEVEMENT] = "Achievement";
@@ -9549,13 +9667,13 @@ GPE_Editor_State::GPE_Editor_State()
     GPE_Sprite * mainExportOptionsSprite = rsm->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/main_export_options_icons.png",12,true,0,0,false);
     mainButtonBar = new GPE_ToolIconButtonBar(0, mainToolBar->get_height(),24);
     mainButtonBar->widthAutoResizes = true;
-    mainButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/binoculars.png","Project Browser",0,true );
-    mainButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/file.png","New Project",1,true );
-    mainButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/folder.png","Open Project",2,true );
-    mainButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/save.png","Save Project",3,false );
-    mainButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/book.png","Save All Projects",4,true );
-    mainButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/cog.png","Build Project",5,false);
-    mainButtonBar->adkb_dton(APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png","Build & PLAY Project",6,false);
+    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/binoculars.png","Project Browser",0,true );
+    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/file.png","New Project",1,true );
+    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/folder.png","Open Project",2,true );
+    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/save.png","Save Project",3,false );
+    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/book.png","Save All Projects",4,true );
+    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/cog.png","Build Project",5,false);
+    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png","Build & PLAY Project",6,false);
 
     GPE_PopUpMenu_Option * newOption = NULL;
     GPE_PopUpMenu_Option * newOptionLayer2 = NULL;
@@ -9615,9 +9733,9 @@ GPE_Editor_State::GPE_Editor_State()
 
     newOptionLayer3 = newOptionLayer2->add_menu_option("Custom Themes",-1,NULL,-1,NULL,false,false);
 
+    newOption->add_menu_option("Project Browser",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/binoculars.png"),-1,NULL,false);
     newOption->add_menu_option("Start Page",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/cube.png"),-1,NULL,false);
     newOption->add_menu_option("Tip of the Day",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/info.png"),-1,NULL,false);
-    newOption->add_menu_option("Report Issue",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/bug.png"),-1,NULL,false);
 
     std::string customThemeFolder = APP_DIRECTORY_NAME+"themes/custom";
 

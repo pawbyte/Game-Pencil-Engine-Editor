@@ -1,15 +1,16 @@
 #    --------------------------------------------------  # 
 #     
 #     
-#    Game Pencil Engine Project Project Settings DataFile 
+#    Game Pencil Engine Project Settings DataFile 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to debug@pawyte.com . 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.0
+Version=1.13
 #Project Settings     
+ProjectIcon=
 ScreenWidth=640
 ScreenHeight=480
 ProjectVersion=1
@@ -37,3 +38,4 @@ LinkActiveColor=192,192,192
 LinkHoverColor=192,255,192
 LinkVisitedColor=192,16,192
 HTML5WarnOnClose=1
+HTML5CodeBeforeGPE=1

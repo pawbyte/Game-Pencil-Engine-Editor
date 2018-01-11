@@ -81,6 +81,10 @@ std::string GPE_Compiler_Term::get_parameters()
 
 GPE_Gui_Engine_Language::GPE_Gui_Engine_Language(std::string langName, std::string langShortName, bool projectCodeLanguage,bool useDefaultSymbols)
 {
+    macroCommentChar = "";
+    commentChar = "//";
+    blockcommentStartStr = "/*";
+    blockcommentEndStr = "*/";
     languageName = langName;
     languageShortName = langShortName;
     isCodingLanguage = projectCodeLanguage;
@@ -90,7 +94,7 @@ GPE_Gui_Engine_Language::GPE_Gui_Engine_Language(std::string langName, std::stri
         symbolLibrary.push_back('~');
         symbolLibrary.push_back('!');
         symbolLibrary.push_back('@');
-        symbolLibrary.push_back('#');
+        //symbolLibrary.push_back('#');
         symbolLibrary.push_back('$');
         symbolLibrary.push_back('%');
         symbolLibrary.push_back('^');
@@ -563,7 +567,9 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     newParametersString = "";
     parametersAreValid = false;
 
-    GPE_Gui_Engine_Language * JSLang = defaultLanguage = add_programming_language("JavaScript","JS",true,true,true);
+    GPE_Gui_Engine_Language * CPPLang  = add_programming_language("C++","CPP",true,true,false );
+    CPPLang->macroCommentChar = "#";
+    GPE_Gui_Engine_Language * JSLang = defaultLanguage = add_programming_language("JavaScript","JS",true,true,true );
     //JS constants
     JSLang->add_language_constant("IS_NULL");
     JSLang->add_language_constant("GPE_SETTINGS_ENTRY_LEVEL_LOCATION");
@@ -662,8 +668,8 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_function("get_camera_height","Get the height of the camera","cameraId","int","gpe");
     JSLang->add_language_function("get_camera_info","Get the height of the camera","cameraId","CameraData","gpe");
     JSLang->add_language_function("get_camera_width","Get the height of the camera","cameraId","int","gpe");
-    JSLang->add_language_function("get_camera_x","Get the height of the camera","cameraId","int","gpe");
-    JSLang->add_language_function("get_camera_y","Get the height of the camera","cameraId","int","gpe");
+    JSLang->add_language_function("get_camera_x","Get the x-value of the camera","cameraId","int","gpe");
+    JSLang->add_language_function("get_camera_y","Get the y-value of the camera","cameraId","int","gpe");
     JSLang->add_language_function("get_camera_screen_height","Get the height of the camera on screen","cameraId","int","gpe");
     JSLang->add_language_function("get_camera_screen_width","Get the height of the camera on screen","cameraId","int","gpe");
     JSLang->add_language_function("get_camera_screen_x","Get the height of the camera on screen","cameraId","int","gpe");
@@ -703,7 +709,7 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_function("get_fps","Returns frame rate","","int","gpe");
     JSLang->add_language_function("get_object_count","Returns the amount of objects within the scene","objectType","int","gpe");
     JSLang->add_language_function("get_object_count_all","Returns the amount of objects belonging to the family in the scene","familyId","int","gpe");
-    JSLang->add_language_function("set_background","Changes the background texture","bgToChange, newBgId","void","gpe");
+    JSLang->add_language_function("set_background","Changes the background texture","layerBeingChanged, bgToChange, newBgId","void","gpe");
     //JS Object processing functions
     JSLang->add_language_function("get_component","Gets component value","componentName","ANYTYPE","GameObject");
     JSLang->add_language_function("get_collision_height","Returns object collision height","","int","GameObject");
@@ -726,7 +732,6 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_function("move_down","Moves this object down by m pixels","m","void","GameObject");
     JSLang->add_language_function("move_towards","Moves this towards the point (x,y) at speed","x,y,speed","void","GameObject");
     JSLang->add_language_function("under_mouse","Checks if this object is under the mouse via the cameraId(defaults to 0).","cameraId","void","GameObject");
-    JSLang->add_language_function("set_depth","Sets the depth of this object","newDepth","void","GameObject");
     JSLang->add_language_function("set_sprite","Sets the sprite of this object","newSprite","void","GameObject");
 
     //Added as of Version 1.12 [ BEGIN ]

@@ -9,7 +9,7 @@ Copyright (c) 2014-2017 PawByte.
 Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
+of this software and associated documentation files (the â€œSoftwareâ€), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -18,7 +18,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED â€œAS ISâ€, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -45,7 +45,6 @@ gamePencilEditorSettingsResource::gamePencilEditorSettingsResource(GPE_ResourceC
     showShortProjectNames = new GPE_CheckBoxBasic("Show Shorter Project Names","Show Shorter Project Names[Reccommended]",0,0,true);
 
     stopCompileOnError = new GPE_CheckBoxBasic("Stop Compiling on first detected error","Exit build phase as soon as error is found",0,0,false);
-    useStrictMode = new GPE_CheckBoxBasic("Use Strict Mode[Reccommended]","Use Strict mode to help prevent irregularities and possible bugs",0,0,true);
 
     //Added as of 1.13 [ BEGIN ]
     renderSceneBGColor = new GPE_CheckBoxBasic("Preview Scene Background Color","Use to display scene bg color instead of transparent tiles in scene editor",0,0, false);
@@ -448,10 +447,6 @@ void gamePencilEditorSettingsResource::preprocess_self(std::string alternatePath
                             {
                                 stopCompileOnError->set_clicked( is_bool( valString ) );
                             }
-                            else if( keyString=="UseStrictMode")
-                            {
-                                useStrictMode->set_clicked( is_bool( valString ) );
-                            }
                             else if( keyString=="BrowseHiddenFiles")
                             {
                                 showHiddenFilesInBrowser->set_clicked( is_bool( valString ) );
@@ -611,7 +606,6 @@ void gamePencilEditorSettingsResource::process_self(GPE_Rect * viewedSpace,GPE_R
         else if(editorPageTabBar->get_selected_name()=="Compiler")
         {
             editorPageList->add_gui_element(stopCompileOnError,true);
-            editorPageList->add_gui_element(useStrictMode,true);
             /* To be used in future Versions hopefully...
             editorPageList->add_gui_element(minifyCode,true);
             editorPageList->add_gui_element(pluginConstantValues,true);
@@ -775,7 +769,6 @@ void gamePencilEditorSettingsResource::save_resource(std::string alternatePath, 
             newSaveDataFile << "ForceRedraw=" << forceFrameRedraw->is_clicked() << "\n";
             newSaveDataFile << "PreviewSceneBGColor=" << renderSceneBGColor->is_clicked() << "\n";
             newSaveDataFile << "ShowCompileAtFirstError=" << stopCompileOnError->is_clicked() << "\n";
-            newSaveDataFile << "UseStrictMode=" << useStrictMode->is_clicked() << "\n";
             newSaveDataFile << "FPS="+int_to_string( ideSettingsFPSRate->get_selected_value() ) << "\n";
             newSaveDataFile << "ProjectFolderList="+projectFolderListLocation << "\n";
             newSaveDataFile << "ButtonBarSize="+int_to_string( ideButtonBarSize->get_selected_value() ) << "\n";

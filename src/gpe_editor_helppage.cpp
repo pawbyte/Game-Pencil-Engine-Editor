@@ -9,7 +9,7 @@ Copyright (c) 2014-2017 PawByte.
 Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
+of this software and associated documentation files (the â€œSoftwareâ€), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -18,7 +18,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED â€œAS ISâ€, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -90,7 +90,7 @@ gamePencilHelpPageResource::gamePencilHelpPageResource(GPE_ResourceContainer * p
     pencilInformation->add_line( versionInfoLine+"." );
     pencilInformation->add_line("SDL Version:                   "+int_to_string(SDL_MAJOR_VERSION)+"."+int_to_string(SDL_MINOR_VERSION)+"."+int_to_string(SDL_PATCHLEVEL)+"." );
     pencilInformation->add_line("PGUI Version:                  "+int_to_string(PGUI_MAJOR_VERSION)+"."+int_to_string(PGUI_MINOR_VERSION)+"."+int_to_string(PGUI_PATCHLEVEL)+"." );
-    pencilInformation->add_line("GPE(runtime) Version:          "+int_to_string(GPE_MAJOR_VERSION)+"."+int_to_string(GPE_MINOR_VERSION)+"."+int_to_string(GPE_PATCHLEVEL)+"." );
+    pencilInformation->add_line("GPE(runtime) Version:          "+int_to_string(GPR_MAJOR_VERSION)+"."+int_to_string(GPR_MINOR_VERSION)+"."+int_to_string(GPR_PATCHLEVEL)+"." );
     pencilInformation->add_line("Release Date:                  10-18-2017");
     pencilInformation->add_line("Author:                        PawByte");
     pencilInformation->add_line("Lead Developer:                Nathan Hurde aka theweirdn8");
@@ -127,7 +127,7 @@ gamePencilHelpPageResource::gamePencilHelpPageResource(GPE_ResourceContainer * p
     tHelpfulLink = new GPE_TextURL("Documentation","Documentation","http://docs.pawbyte.com/");
     add_helpfullink(tHelpfulLink);
 
-    tHelpfulLink = new GPE_TextURL("Tutorials","Tutorials","http://gamepencil.pawbyte.com/tutorials");
+    tHelpfulLink = new GPE_TextURL("Tutorials","Tutorials","http://gamepencil.pawbyte.com/category/tutorials/");
     add_helpfullink(tHelpfulLink);
 
     tHelpfulLink = new GPE_TextURL("Examples","Examples","http://gamepencil.pawbyte.com/examples");

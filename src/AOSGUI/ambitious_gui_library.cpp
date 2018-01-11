@@ -2941,6 +2941,7 @@ void GPE_GuiElementList::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpa
     if( viewedSpace!=NULL && cam!=NULL )
     {
         cRender->reset_viewpoint();
+        cRender->reset_viewpoint();
         menuBox.w+=16;
         menuBox.h+=16;
         cRender->set_viewpoint( &menuBox);
@@ -5465,7 +5466,7 @@ void GPE_ToolIconButtonBar::set_width(int newWid)
     barBox.w = newWid;
 }
 
-GPE_ToolIconButton * GPE_ToolIconButtonBar::adkb_dton( std::string buttonImgFile,std::string name, int id, bool endsSection)
+GPE_ToolIconButton * GPE_ToolIconButtonBar::add_option( std::string buttonImgFile,std::string name, int id, bool endsSection)
 {
     int barSize = (int)barOptions.size();
     GPE_ToolIconButton * newOp = new GPE_ToolIconButton( barBox.x+newButtonXPos, barBox.y,buttonImgFile,name,id,barBox.h, endsSection);

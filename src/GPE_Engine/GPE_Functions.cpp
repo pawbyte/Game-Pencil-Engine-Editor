@@ -9,7 +9,7 @@ Copyright (c) 2014-2017 PawByte.
 Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
+of this software and associated documentation files (the â€œSoftwareâ€), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -18,7 +18,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED â€œAS ISâ€, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -71,6 +71,19 @@ std::string get_file_ext(std::string fileLocationIn)
     if( (int)fileLocationIn.size() > 0)
     {
         int dotPos = fileLocationIn.find_first_of(".");
+        if(dotPos != (int)std::string::npos)
+        {
+            return fileLocationIn.substr( dotPos+ 1);
+        }
+    }
+    return "null";
+}
+
+std::string get_file_ext_last_dot(std::string fileLocationIn)
+{
+    if( (int)fileLocationIn.size() > 0)
+    {
+        int dotPos = fileLocationIn.find_last_of(".");
         if(dotPos != (int)std::string::npos)
         {
             return fileLocationIn.substr( dotPos+ 1);

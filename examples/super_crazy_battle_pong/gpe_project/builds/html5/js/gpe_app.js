@@ -5,7 +5,7 @@
 #  Game Pencil Engine Game File 
 #  Created automatically via the Game Pencil Engine Editor Version 1
 #  Warning: Manually editing this file may cause unexpected bugs and errors. 
-#  If you have any problems reading this file please report it to debug@pawbyte.com . 
+#  If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #      
 #    --------------------------------------------------  # 
@@ -16,13 +16,13 @@ var spr_paddle =  GPE.rsm.add_sprite(0,1,'resources/sprites/pong_paddle.png',0,0
 var spr_ball =  GPE.rsm.add_sprite(1,1,'resources/sprites/spr_pong_ball.png',0,0,12,12,0,0,0,12,12);
 var spr_paddle2 =  GPE.rsm.add_sprite(2,1,'resources/sprites/pong_paddle2.png',0,0,32,64,0,0,0,32,64);
 var aud_bounce =  GPE.rsm.add_audio(0,'aud_bounce','','','','resources/audio/pong_bounce_sound.wav',0,'',1,100); 
-var guiFont =  GPE.rsm.add_font(0,'Arial','','','','','',72,0);
-var smallGuiFont =  GPE.rsm.add_font(1,'Arial','','','','','',24,0);
+var guiFont =  GPE.rsm.add_font(0,'Arial','','','','','',72,32,32,0);
+var smallGuiFont =  GPE.rsm.add_font(1,'Arial','','','','','',24,32,32,0);
 var obj_ball =  0; 
 var obj_paddle_p1 =  1; 
 var obj_paddle_p2 =  2; 
 var newScene1 =  0; 
-var  _scn_newScene1 =  GPE.add_gamescene(); 
+var  _scn_newScene1 =  GPE.add_gamescene(0 , 'newScene1'); 
 
 GPE._obj_obj_ball =  (function (xPosIn, yPosIn,objectLayerId) 
 { 
@@ -61,7 +61,6 @@ GPE._obj_obj_ball =  (function (xPosIn, yPosIn,objectLayerId)
                 //player 1 starts
                 this.player2Score++;
             }
-            
             if( this.getx2() > gpe.get_scene_width() )
             {
                 this.update_cords( this.xBegin, this.yBegin);
@@ -71,7 +70,6 @@ GPE._obj_obj_ball =  (function (xPosIn, yPosIn,objectLayerId)
                  //player 2 starts
                 this.player1Score++;
             }
-            
             if( this.gety() < 0)
             {
                 if(!gpe.audio_playing(aud_bounce) )
@@ -81,7 +79,6 @@ GPE._obj_obj_ball =  (function (xPosIn, yPosIn,objectLayerId)
                     this.set_velocity( -this.direction, this.speed);
                 }
             }
-            
             if( this.gety2() >= gpe.get_scene_height() )
             {
                 if(!gpe.audio_playing(aud_bounce) )
@@ -102,7 +99,6 @@ GPE._obj_obj_ball =  (function (xPosIn, yPosIn,objectLayerId)
                     this.speed = 4;
                 }
             }
-            
             if( this.speed > 20)
             {
                 this.speed = 20;
@@ -116,7 +112,6 @@ GPE._obj_obj_ball =  (function (xPosIn, yPosIn,objectLayerId)
                 gpe.render_text(smallGuiFont,gpe.get_camera_screen_width()/2,gpe.get_camera_screen_height()-64,"Press Y or Space to Start","white",fa_center,fa_bottom);
             }
             gpe.render_text(guiFont,gpe.get_scene_width()/2,64,this.player1Score+":"+this.player2Score,"white",fa_center,fa_top);
-            
         }
         this.hasHudRenderFunction = true;
         this.gpeHasLogicFunction = true;
@@ -142,7 +137,6 @@ GPE._obj_obj_ball =  (function (xPosIn, yPosIn,objectLayerId)
                 gpe.audio_play(aud_bounce);
                 this.update_cords( other.getx()-this.get_collision_width()-2, this.yPast );
                 //The only change in code is the angle 235[degrees]
-            
                 var bounceAngle = 180;
                 var hh = other.get_collision_height() / 2;
                 bounceAngle =( (this.gety() + this.get_collision_height() / 2) - (other.gety() + hh) ) / hh *(-45);
@@ -188,7 +182,6 @@ GPE._obj_obj_paddle_p1 =  (function (xPosIn, yPosIn,objectLayerId)
         this.isVisible = 1;
         this.gpeIsContinuousObject = 0;
         this.isViewIndependent = 1;
-        
         this.perform_object_logic = function()
         {
             if( gpe.check_keyboard( gp_w ) && this.gety() > 4 )
@@ -199,7 +192,7 @@ GPE._obj_obj_paddle_p1 =  (function (xPosIn, yPosIn,objectLayerId)
             {
                 this.move_down(8);
             }
-            else if( gpe.check_keyboard( gp_d ) && this.x() < gpe.get_scene_width()() )
+            else if( gpe.check_keyboard( gp_d ) && this.x() < gpe.get_scene_width() )
             {
                 this.x+=8;
             }
@@ -223,7 +216,6 @@ GPE._obj_obj_paddle_p2 =  (function (xPosIn, yPosIn,objectLayerId)
         this.isVisible = 1;
         this.gpeIsContinuousObject = 0;
         this.isViewIndependent = 1;
-        
         this.perform_object_logic = function()
         {
             if( gpe.check_keyboard( gp_up ) && this.gety() > 4 )
@@ -288,7 +280,7 @@ if( typeof objectLayerId!="number"){objectLayerId = 1;}
 GPE.rsm.audioIsReadyForLoading = true; 
 var _scn_temp_layer = IS_NULL; 
 
-_scn_newScene1.sceneIdNumber = 0;
+_scn_newScene1.sceneId = 0;
 _scn_newScene1.sceneName = "newScene1";
 _scn_newScene1.sceneCaption = "";
 _scn_newScene1.sceneWidth = 800;

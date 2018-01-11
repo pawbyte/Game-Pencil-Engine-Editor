@@ -4,11 +4,11 @@
 #    Game Pencil Engine Project Game Sprite DataFile 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.12
+Version=1.13
 ResourceName=spr_slime
 SpriteData[0]=2
 SpriteData[1]=51

@@ -9,7 +9,7 @@ Copyright (c) 2014-2017 PawByte.
 Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the ìSoftwareî), to deal
+of this software and associated documentation files (the ‚ÄúSoftware‚Äù), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -18,7 +18,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED ìAS ISî, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED ‚ÄúAS IS‚Äù, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -36,9 +36,16 @@ SOFTWARE.
 #include "GPE_CIncludes.h"
 
 //Version INFO VARIABLES
-const int GPE_MAJOR_VERSION = 1;
-const int GPE_MINOR_VERSION = 0;
-const int GPE_PATCHLEVEL = 0;
+//Game Pencil Runtime
+const int GPR_MAJOR_VERSION = 1;
+const int GPR_MINOR_VERSION =1;
+const int GPR_PATCHLEVEL = 4;
+//Game Pencil Engine Editor
+const double GPE_VERSION_NUMBER = 1;
+const double GPE_VERSION_SUB_NUMBER = 1;
+const double GPE_VERSION_UPDATE_NUMBER = 4;
+const double GPE_VERSION_DOUBLE_NUMBER = GPE_VERSION_NUMBER + GPE_VERSION_SUB_NUMBER/10 + GPE_VERSION_UPDATE_NUMBER/100;
+const double GPE_VERSION_SIG_UPDATE1 = 1.04;
 //The screen attributes
 
 //STARTS INVENTORY RELATED CONSTANTS
@@ -88,11 +95,7 @@ const int GPE_IDE_WINDOWS = 1;
 const int GPE_IDE_MAC = 2;
 const int GPE_IDE_LINUX = 3;
 
-const double GPE_VERSION_NUMBER = 1;
-const double GPE_VERSION_SUB_NUMBER = 1;
-const double GPE_VERSION_UPDATE_NUMBER = 3;
-const double GPE_VERSION_DOUBLE_NUMBER = GPE_VERSION_NUMBER + GPE_VERSION_SUB_NUMBER/10 + GPE_VERSION_UPDATE_NUMBER/100;
-const double GPE_VERSION_SIG_UPDATE1 = 1.04;
+
 
 const int GENERAL_GPE_PADDING = 8;
 const int GPE_AVERAGE_LINE_HEIGHT = 20;
