@@ -13,6 +13,7 @@ HEADERS = \
 	src/AOSGUI/gpe_syntax_handler.h \
 	src/AOSGUI/paw_gui.h \
 	src/AOSGUI/text_editor.h \
+	src/classresource.h \
 	src/gameobjectresource.h \
 	src/functionResource.h \
 	src/gpe_editor_aboutpage.h \
@@ -31,6 +32,7 @@ HEADERS = \
 	src/GPE_Engine/GPE.h \
 	src/GPE_Engine/GPE_Functions.h \
 	src/GPE_Engine/GPE_Color_Manager.h \
+	src/GPE_Engine/GPE_Translator.h \
 	src/GPE_Engine/GPE_Timer.h \
 	src/GPE_Engine/GPE_Collisions.h \
 	src/GPE_Engine/GPE_Resources_Controller.h \
@@ -53,6 +55,7 @@ OBJECTS = \
 	src/AOSGUI/ambitious_gui_library.o \
 	src/AOSGUI/gpe_syntax_handler.o \
 	src/AOSGUI/paw_gui.o \
+	src/classresource.cpp \
 	src/gpe_editor_start_page.o \
 	src/fontResource.o \
 	src/gpe_editor.o \
@@ -80,6 +83,7 @@ OBJECTS = \
 	src/GPE_Engine/GPE_Color_Manager.o \
 	src/GPE_Engine/GPE_Engine.o \
 	src/GPE_Engine/GPE_Timer.o \
+	src/GPE_Engine/GPE_Translator.o \
 	src/GPE_Engine/GPE_Renderer.o \
 	src/GPE_Engine/GPE_Color_Master.o \
 	src/video_resource.o \
@@ -89,6 +93,7 @@ OBJECTS = \
 	src/audio_resource.o \
 	src/project_properties.o \
 	src/spriteresource.o \
+	src/gpe_editor.o \
 	src/gpe_editor_helppage.o \
 	src/main.o \
 	src/textureresource.o \
