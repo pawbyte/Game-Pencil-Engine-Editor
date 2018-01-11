@@ -3,10 +3,10 @@ gpe_editor_helppage.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,7 +39,7 @@ gamePencilHelpPageResource::gamePencilHelpPageResource(GPE_ResourceContainer * p
     resourceName = "Help Page";
     parentProjectName = "";
     parentProjectDirectory = "";
-    //GPE_Sprite * mainMenuSprite = rsm->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/gpe_main_icons_big.png",70,true,0,0,false);
+    //GPE_Animation * mainMenuSprite = rsm->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/gpe_main_icons_big.png",70,true,0,0,false);
     projectParentFolder = pFolder;
     renameBox->disable_self();
     confirmResourceButton->disable_self();
@@ -91,14 +91,14 @@ gamePencilHelpPageResource::gamePencilHelpPageResource(GPE_ResourceContainer * p
     pencilInformation->add_line("SDL Version:                   "+int_to_string(SDL_MAJOR_VERSION)+"."+int_to_string(SDL_MINOR_VERSION)+"."+int_to_string(SDL_PATCHLEVEL)+"." );
     pencilInformation->add_line("PGUI Version:                  "+int_to_string(PGUI_MAJOR_VERSION)+"."+int_to_string(PGUI_MINOR_VERSION)+"."+int_to_string(PGUI_PATCHLEVEL)+"." );
     pencilInformation->add_line("GPE(runtime) Version:          "+int_to_string(GPR_MAJOR_VERSION)+"."+int_to_string(GPR_MINOR_VERSION)+"."+int_to_string(GPR_PATCHLEVEL)+"." );
-    pencilInformation->add_line("Release Date:                  10-18-2017");
+    pencilInformation->add_line("Release Date:                  01-05-2018");
     pencilInformation->add_line("Author:                        PawByte");
     pencilInformation->add_line("Lead Developer:                Nathan Hurde aka theweirdn8");
     pencilInformation->add_line("Email:                         help@pawbyte.com");
     pencilInformation->add_line("Website:                       gamepencil.pawbyte.com");
     pencilInformation->isCodeEditor = false;
 
-    updateCheckerButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/download.png","Download new updates...","Compares latest version to your copy");
+    updateCheckerButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/download.png","Download new updates...","Compares latest version to your copy");
     updateCheckerButton->set_website("http://gamepencil.pawbyte.com/get-game-pencil-engine/");
 
     pencilShortkeys= new GPE_TextAreaInputBasic();
@@ -144,42 +144,34 @@ gamePencilHelpPageResource::gamePencilHelpPageResource(GPE_ResourceContainer * p
 
 
     //Social Media
-    GPE_ToolPushButton * tSocialButton = NULL;
+    GPE_ToolIconButton * tSocialButton = NULL;
 
-    tSocialButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/facebook.png","Facebook","Visit our Facebok Page");
+    tSocialButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/facebook.png","Facebook" );
     tSocialButton->set_website("https://facebook.com/pawbyte");
-    tSocialButton->set_width(256);
-    tSocialButton->set_height(64);
     add_socialmedia_url(tSocialButton);
 
-    tSocialButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/gamepad.png","IndieDB","Visit our IndieDB Page");
-    tSocialButton->set_website("http://www.indiedb.com/engines/game-pencil-engine");
-    tSocialButton->set_width(256);
-    tSocialButton->set_height(64);
-    add_socialmedia_url(tSocialButton);
-
-    tSocialButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/reddit.png","Reddit","Visit our Reddit Page");
+    tSocialButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/reddit.png","Reddit" );
     tSocialButton->set_website("https://reddit.com/r/gamepencil");
-    tSocialButton->set_width(256);
-    tSocialButton->set_height(64);
     add_socialmedia_url(tSocialButton);
 
-    tSocialButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/comments.png","Discord Chat Group","Visit our Discord Chat Group");
+    tSocialButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/github.png","GitHub repo");
+    tSocialButton->set_website("https://github.com/pawbyte/Game-Pencil-Engine");
+    add_socialmedia_url(tSocialButton);
+
+    tSocialButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/comments.png","Discord Chat Group" );
     tSocialButton->set_website("https://discord.gg/aNX3Fcx");
-    tSocialButton->set_width(256);
-    tSocialButton->set_height(64);
     add_socialmedia_url(tSocialButton);
 
-    tSocialButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/twitter.png","Twitter","Visit our Twitter Page");
+    tSocialButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/twitter.png","Twitter" );
     tSocialButton->set_website("https://twitter.com/pawbyte");
-    tSocialButton->set_width(256);
-    tSocialButton->set_height(64);
     add_socialmedia_url(tSocialButton);
 
-    tSocialButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/youtube.png","YouTube","Visit our YouTube Page");
+    tSocialButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/youtube.png","YouTube" );
     tSocialButton->set_website("https://www.youtube.com/user/PawByte");
-    tSocialButton->set_width(256);
-    tSocialButton->set_height(64);
+    add_socialmedia_url(tSocialButton);
+
+    tSocialButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/gamepad.png","IndieDB" );
+    tSocialButton->set_website("http://www.indiedb.com/engines/game-pencil-engine");
     add_socialmedia_url(tSocialButton);
 }
 
@@ -244,7 +236,7 @@ void gamePencilHelpPageResource::add_helpfullink(GPE_TextURL * newLink)
     }
 }
 
-void gamePencilHelpPageResource::add_socialmedia_url(GPE_ToolPushButton * newLink)
+void gamePencilHelpPageResource::add_socialmedia_url( GPE_ToolIconButton * newLink)
 {
     if( newLink!=NULL)
     {
@@ -253,7 +245,7 @@ void gamePencilHelpPageResource::add_socialmedia_url(GPE_ToolPushButton * newLin
 }
 
 
-void gamePencilHelpPageResource::prerender_self(GPE_Renderer * cRender)
+void gamePencilHelpPageResource::prerender_self( )
 {
 
 }
@@ -305,13 +297,14 @@ void gamePencilHelpPageResource::process_self(GPE_Rect * viewedSpace , GPE_Rect 
                 }
             }
             helpPageList->add_gui_element(socialMediaTitle,true);
-            GPE_ToolPushButton * tSocialLink = NULL;
-            for( subMenuI= 0; subMenuI <(int)socialMediaSites.size(); subMenuI++)
+            GPE_ToolIconButton * tSocialLink = NULL;
+            int menuLinksTotal = (int)socialMediaSites.size();
+            for( subMenuI= 0; subMenuI < menuLinksTotal; subMenuI++)
             {
                 tSocialLink = socialMediaSites.at(subMenuI);
                 if( tSocialLink!=NULL)
                 {
-                    helpPageList->add_gui_element(tSocialLink, true);
+                    helpPageList->add_gui_element( tSocialLink, subMenuI == menuLinksTotal-1 );
                 }
             }
             helpPageList->process_self(viewedSpace,cam);
@@ -349,39 +342,34 @@ void gamePencilHelpPageResource::process_self(GPE_Rect * viewedSpace , GPE_Rect 
     }
 }
 
-void gamePencilHelpPageResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+void gamePencilHelpPageResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( viewedSpace!=NULL && helpPageList!=NULL)
     {
-//        render_gradient_vertical(cRender,&gpeLogoSpace,GPE_MAIN_TEMPLATE->Button_Box_Highlighted_Color);
-
-        if( forceRedraw)
-        {
-            render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
-        }
+//        gpe->render_gradient_vertical( &gpeLogoSpace,GPE_MAIN_THEME->Button_Box_Highlighted_Color);
         if( helpPageTabBar->get_selected_name()=="General Help")
         {
-            //pencilCredits->render_self(cRender,viewedSpace,cam,forceRedraw);
+            //pencilCredits->render_self( viewedSpace,cam,forceRedraw);
         }
         if( helpPageTabBar->get_selected_name()=="Changelog")
         {
-            pencilChangelog->render_self(cRender,viewedSpace,cam,forceRedraw);
+            pencilChangelog->render_self( viewedSpace,cam,forceRedraw);
         }
         else if( helpPageTabBar->get_selected_name()=="Shortkeys" )
         {
-            pencilShortkeys->render_self(cRender,viewedSpace,cam,forceRedraw);
+            pencilShortkeys->render_self( viewedSpace,cam,forceRedraw);
         }
         else
         {
-            helpPageList->render_self(cRender,viewedSpace,cam,forceRedraw);
+            helpPageList->render_self( viewedSpace,cam,forceRedraw);
         }
 
-        //render_new_text(cRender,gpeLogoSpace.x,gpeLogoSpace.y+gpeLogoSpace.h-GENERAL_GPE_PADDING,"PUBLIC[BETA] - Version 0.2 | Copyright (c)2016 PawByte | make.pawbyte.com",GPE_MAIN_TEMPLATE->Main_Box_Faded_Font_Color,DEFAULT_FONT,FA_LEFT,FA_BOTTOM);
+        //render_new_text( gpeLogoSpace.x,gpeLogoSpace.y+gpeLogoSpace.h-GENERAL_GPE_PADDING,"PUBLIC[BETA] - Version 0.2 | Copyright (c)2016 PawByte | make.pawbyte.com",GPE_MAIN_THEME->Main_Box_Faded_Font_Color,DEFAULT_FONT,FA_LEFT,FA_BOTTOM);
 
-        //render_new_text(cRender,subViewedSpace.x+GENERAL_GPE_PADDING,subViewedSpace.y+GENERAL_GPE_PADDING,"Recent Projects",GPE_MAIN_TEMPLATE->Main_Box_Font_Color,textboxFont,FA_LEFT,FA_TOP);
-        helpPageTabBar->render_self(cRender,viewedSpace,cam,forceRedraw);
+        //render_new_text( subViewedSpace.x+GENERAL_GPE_PADDING,subViewedSpace.y+GENERAL_GPE_PADDING,"Recent Projects",GPE_MAIN_THEME->Main_Box_Font_Color,textboxFont,FA_LEFT,FA_TOP);
+        helpPageTabBar->render_self( viewedSpace,cam,forceRedraw);
     }
 }
 

@@ -3,10 +3,10 @@ GPE_CIncludes.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -50,7 +50,7 @@ SOFTWARE.
 
 #include <windows.h>
 //#include <SDL_sysWM.h>
-#undef WIN32_LEAN_AND_MEAN
+//#undef WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <Commdlg.h>
 
@@ -61,6 +61,7 @@ SOFTWARE.
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL_ttf.h"
 #include "SDL2/SDL_mixer.h"
+
 #include <iostream>
 #include <fstream>
 #include <cerrno>

@@ -3,10 +3,10 @@ ambitious_gui_library.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -77,17 +77,9 @@ GPE_Font * FONT_STATUSBAR = NULL;
 GPE_Font * FONT_HEADER = NULL;
 GPE_Font * FONT_LABEL_TITLE = NULL;
 
-//Define GUI Templates to NULL
-GPE_Template * GPE_MAIN_TEMPLATE = NULL;
-
-GPE_Template * GPE_CUSTOM_TEMPLATE = NULL;
-GPE_Template * GPE_DEFAULT_TEMPLATE = NULL;
-
-GPE_Template * GPE_DARK_TEMPLATE = NULL;
-GPE_Template * GPE_LIGHT_TEMPLATE = NULL;
-GPE_Template * GPE_RED_TEMPLATE = NULL;
-GPE_Template * GPE_GREEN_TEMPLATE = NULL;
-GPE_Template * GPE_BLUE_TEMPLATE = NULL;
+//Define GUI Themes to NULL
+GPE_Theme * GPE_MAIN_THEME = NULL;
+GPE_Theme * GPE_DEFAULT_TEMPLATE = NULL;
 
 GPE_StatusBar * GPE_Main_Statusbar = NULL;
 GPE_GUI_Settings * MAIN_GUI_SETTINGS = NULL;
@@ -99,6 +91,7 @@ int POPUP_MENU_VALUE = -1;
 
 GPE_GUI_Settings::GPE_GUI_Settings()
 {
+    useShortProjectNames = false;
     textAreaFindBox.x = 0;
     textAreaFindBox.y = 0;
     textAreaFindBox.w = 32;
@@ -156,7 +149,7 @@ PAW_GUI_SEARCH_CONTROLLER::PAW_GUI_SEARCH_CONTROLLER()
 
     findMatchCase = new GPE_CheckBoxBasic("Match case","Search is case-sensitive",0,0,true);
     scopeLabel = new GPE_Label_Text("Scope:     ","Scope of your search");
-    findScope = new GPE_DropDown_Menu(0,0,"Scope");
+    findScope = new GPE_DropDown_Menu( "Scope");
     findScope->add_menu_option("Open Tabs","Open Tabs",0,false);
     findScope->add_menu_option("Project Resources","Project Resources",1,true);
     findScope->add_menu_option("Workspace Resources","Workspace Resources",2);
@@ -281,7 +274,7 @@ GPE_Rect * GPE_find_camera(GPE_Rect * rectIn)
     return rectIn;
 }
 
-bool load_fonts()
+bool PAW_GUI_LOAD_FONTS()
 {
     std::string mainGuiFontLocation = APP_DIRECTORY_NAME+"resources/fonts/dejavu_sans_mono/DejaVuSansMono.ttf";
     std::string textEditorFontLocation = APP_DIRECTORY_NAME+"resources/fonts/dejavu_sans_mono/DejaVuSansMono.ttf";
@@ -302,43 +295,43 @@ bool load_fonts()
         mainGuiFontLocation = "C:/Windows/Fonts/Candara.ttf";
         fontIsMonoSpaced = false;
     }
-
+    record_error("Using "+mainGuiFontLocation+" font..." );
     //Open the fonts
-    font = GPE_OpenFont( mainGuiFontLocation, 24,fontIsMonoSpaced, "Generic Font");
-    textboxFont = GPE_OpenFont( mainGuiFontLocation, 24,fontIsMonoSpaced, "textboxFont");
-    FONT_CATEGORY_BAR = GPE_OpenFont( mainGuiFontLocation, 14,fontIsMonoSpaced , "FONT_CATEGORY_BAR");
+    font = gpe->open_font( mainGuiFontLocation, 24,fontIsMonoSpaced, "Generic Font");
+    textboxFont = gpe->open_font( mainGuiFontLocation, 24,fontIsMonoSpaced, "textboxFont");
+    FONT_CATEGORY_BAR = gpe->open_font( mainGuiFontLocation, 14,fontIsMonoSpaced , "FONT_CATEGORY_BAR");
 
-    LAST_USED_FONT = GPE_OpenFont(mainGuiFontLocation,24,fontIsMonoSpaced, "LAST_USED_FONT");
-    DEFAULT_FONT = GPE_OpenFont(mainGuiFontLocation,14,fontIsMonoSpaced, "DEFAULT_FONT");
+    LAST_USED_FONT = gpe->open_font(mainGuiFontLocation,24,fontIsMonoSpaced, "LAST_USED_FONT");
+    DEFAULT_FONT = gpe->open_font(mainGuiFontLocation,14,fontIsMonoSpaced, "DEFAULT_FONT");
 
-    FONT_POPUP = GPE_OpenFont(mainGuiFontLocation,14,fontIsMonoSpaced, "FONT_POPUP");
-    FONT_TOOLBAR = GPE_OpenFont(mainGuiFontLocation,14,fontIsMonoSpaced, "FONT_TOOLBAR");
-    FONT_RESOURCEBAR = GPE_OpenFont(textEditorFontLocation,12,fontIsMonoSpaced, "FONT_RESOURCEBAR");
+    FONT_POPUP = gpe->open_font(mainGuiFontLocation,14,fontIsMonoSpaced, "FONT_POPUP");
+    FONT_TOOLBAR = gpe->open_font(mainGuiFontLocation,14,fontIsMonoSpaced, "FONT_TOOLBAR");
+    FONT_RESOURCEBAR = gpe->open_font(mainGuiFontLocation,12,fontIsMonoSpaced, "FONT_RESOURCEBAR");
 
-    FONT_TEXTINPUT = GPE_OpenFont(textEditorFontLocation,12,true, "FONT_TEXTINPUT_GENERAL");
-    FONT_TEXTINPUT_COMMENT = GPE_OpenFont(textEditorFontLocation,12,true, "FONT_TEXTINPUT_COMMENT");
-    FONT_TEXTINPUT_KEYWORD = GPE_OpenFont(textEditorFontLocation,12,true, "FONT_TEXTINPUT_KEYWORD");
-    FONT_TEXTINPUT_FUNCTION = GPE_OpenFont(textEditorFontLocation,12,true, "FONT_TEXTINPUT_FUNCTION");
-    FONT_TEXTINPUT_NUMBER = GPE_OpenFont(textEditorFontLocation,12,true, "FONT_TEXTINPUT_NUMBER");
-    FONT_TEXTINPUT_QUOTE = GPE_OpenFont(textEditorFontLocation,12,true, "FONT_TEXTINPUT_QUOTE");
-    FONT_TEXTINPUT_SYMBOL = GPE_OpenFont(textEditorFontLocation,12,true, "FONT_TEXTINPUT_SYMBOL");
-    FONT_TEXTINPUT_PROJECT_FUNCTION = GPE_OpenFont(textEditorFontLocation,12,true, "FONT_TEXTINPUT_PROJECT_FUNCTION");
-    FONT_TEXTINPUT_PROJECT_KEYWORD = GPE_OpenFont(textEditorFontLocation,12,true, "FONT_TEXTINPUT_PROJECT_KEYWORD");
+    FONT_TEXTINPUT = gpe->open_font(textEditorFontLocation,11,true, "FONT_TEXTINPUT_GENERAL");
+    FONT_TEXTINPUT_COMMENT = gpe->open_font(textEditorFontLocation,11,true, "FONT_TEXTINPUT_COMMENT");
+    FONT_TEXTINPUT_KEYWORD = gpe->open_font(textEditorFontLocation,11,true, "FONT_TEXTINPUT_KEYWORD");
+    FONT_TEXTINPUT_FUNCTION = gpe->open_font(textEditorFontLocation,11,true, "FONT_TEXTINPUT_FUNCTION");
+    FONT_TEXTINPUT_NUMBER = gpe->open_font(textEditorFontLocation,11,true, "FONT_TEXTINPUT_NUMBER");
+    FONT_TEXTINPUT_QUOTE = gpe->open_font(textEditorFontLocation,11,true, "FONT_TEXTINPUT_QUOTE");
+    FONT_TEXTINPUT_SYMBOL = gpe->open_font(textEditorFontLocation,11,true, "FONT_TEXTINPUT_SYMBOL");
+    FONT_TEXTINPUT_PROJECT_FUNCTION = gpe->open_font(textEditorFontLocation,11,true, "FONT_TEXTINPUT_PROJECT_FUNCTION");
+    FONT_TEXTINPUT_PROJECT_KEYWORD = gpe->open_font(textEditorFontLocation,11,true, "FONT_TEXTINPUT_PROJECT_KEYWORD");
 
-    FONT_TERM_NAME = GPE_OpenFont(textEditorFontLocation,11,true, "FONT_TERM_NAME");
-    FONT_TERM_DESCRIPTION = GPE_OpenFont(textEditorFontLocation,11,true, "FONT_TERM_DESCRIPTION");
-    FONT_TERM_SCOPE = GPE_OpenFont(textEditorFontLocation,11,true, "FONT_TERM_SCOPE");
-    FONT_TOOLTIP = GPE_OpenFont(textEditorFontLocation,12,true, "FONT_TOOLTIP");
+    FONT_TERM_NAME = gpe->open_font(textEditorFontLocation,11,true, "FONT_TERM_NAME");
+    FONT_TERM_DESCRIPTION = gpe->open_font(textEditorFontLocation,11,true, "FONT_TERM_DESCRIPTION");
+    FONT_TERM_SCOPE = gpe->open_font(textEditorFontLocation,11,true, "FONT_TERM_SCOPE");
+    FONT_TOOLTIP = gpe->open_font(textEditorFontLocation,12,true, "FONT_TOOLTIP");
 
-    FONT_DEFAULT_PROMPT = GPE_OpenFont(textEditorFontLocation,16,true, "FONT_DEFAULT_PROMPT");
-    FONT_CHECKBOX = GPE_OpenFont(mainGuiFontLocation,12,fontIsMonoSpaced, "FONT_CHECKBOX");
+    FONT_DEFAULT_PROMPT = gpe->open_font(textEditorFontLocation,16,true, "FONT_DEFAULT_PROMPT");
+    FONT_CHECKBOX = gpe->open_font(mainGuiFontLocation,12,fontIsMonoSpaced, "FONT_CHECKBOX");
 
-    FONT_HEADER = GPE_OpenFont( mainGuiFontLocation, 18,fontIsMonoSpaced , "FONT_HEADER");
-    FONT_LABEL = GPE_OpenFont( mainGuiFontLocation, 14,fontIsMonoSpaced , "FONT_LABEL");
-    FONT_LABEL_ANCHOR = GPE_OpenFont( mainGuiFontLocation, 14,fontIsMonoSpaced , "FONT_LABEL_ANCHOR");
-    FONT_LABEL_TITLE = GPE_OpenFont( mainGuiFontLocation, 24,fontIsMonoSpaced , "FONT_LABEL_TITLE");
-    FONT_PARAGRAGH = GPE_OpenFont( textEditorFontLocation, 14,true, "FONT_PARAGRAGH" );
-    FONT_STATUSBAR = GPE_OpenFont( textEditorFontLocation, 12,true, "FONT_STATUSBAR" );
+    FONT_HEADER = gpe->open_font( mainGuiFontLocation, 18,fontIsMonoSpaced , "FONT_HEADER");
+    FONT_LABEL = gpe->open_font( mainGuiFontLocation, 14,fontIsMonoSpaced , "FONT_LABEL");
+    FONT_LABEL_ANCHOR = gpe->open_font( mainGuiFontLocation, 14,fontIsMonoSpaced , "FONT_LABEL_ANCHOR");
+    FONT_LABEL_TITLE = gpe->open_font( mainGuiFontLocation, 24,fontIsMonoSpaced , "FONT_LABEL_TITLE");
+    FONT_PARAGRAGH = gpe->open_font( textEditorFontLocation, 14,true, "FONT_PARAGRAGH" );
+    FONT_STATUSBAR = gpe->open_font( textEditorFontLocation, 12,true, "FONT_STATUSBAR" );
 
     if(DEFAULT_FONT==NULL || LAST_USED_FONT==NULL)
     {
@@ -366,112 +359,112 @@ void cleanup_fonts()
     //Close the fonts that was used
     if( font!=NULL)
     {
-        GPE_CloseFont(font);
+        gpe->close_font(font);
         font = NULL;
     }
 
     if( textboxFont!=NULL)
     {
-        GPE_CloseFont( textboxFont );
+        gpe->close_font( textboxFont );
         textboxFont = NULL;
     }
 
     if( FONT_CATEGORY_BAR!=NULL)
     {
-        GPE_CloseFont( FONT_CATEGORY_BAR );
+        gpe->close_font( FONT_CATEGORY_BAR );
         FONT_CATEGORY_BAR = NULL;
     }
     //
     if( DEFAULT_FONT!=NULL)
     {
-        GPE_CloseFont(DEFAULT_FONT);
+        gpe->close_font(DEFAULT_FONT);
         DEFAULT_FONT = NULL;
     }
 
     if( FONT_POPUP!=NULL)
     {
-        GPE_CloseFont( FONT_POPUP );
+        gpe->close_font( FONT_POPUP );
         FONT_POPUP = NULL;
     }
 
     if( FONT_TOOLBAR!=NULL)
     {
-        GPE_CloseFont( FONT_TOOLBAR );
+        gpe->close_font( FONT_TOOLBAR );
         FONT_TOOLBAR = NULL;
     }
     if( FONT_RESOURCEBAR!=NULL)
     {
-        GPE_CloseFont( FONT_RESOURCEBAR );
+        gpe->close_font( FONT_RESOURCEBAR );
         FONT_RESOURCEBAR = NULL;
     }
     //
     if( FONT_TEXTINPUT!=NULL)
     {
-        GPE_CloseFont(FONT_TEXTINPUT);
+        gpe->close_font(FONT_TEXTINPUT);
         FONT_TEXTINPUT = NULL;
     }
 
     if( FONT_TERM_NAME!=NULL)
     {
-        GPE_CloseFont(FONT_TERM_NAME);
+        gpe->close_font(FONT_TERM_NAME);
         FONT_TERM_NAME = NULL;
     }
 
     if( FONT_TERM_DESCRIPTION!=NULL)
     {
-        GPE_CloseFont(FONT_TERM_DESCRIPTION);
+        gpe->close_font(FONT_TERM_DESCRIPTION);
         FONT_TERM_DESCRIPTION = NULL;
     }
 
     if( FONT_TERM_SCOPE!=NULL)
     {
-        GPE_CloseFont(FONT_TERM_SCOPE);
+        gpe->close_font(FONT_TERM_SCOPE);
         FONT_TERM_SCOPE = NULL;
     }
     if( FONT_DEFAULT_PROMPT!=NULL)
     {
-        GPE_CloseFont(FONT_DEFAULT_PROMPT);
+        gpe->close_font(FONT_DEFAULT_PROMPT);
         FONT_DEFAULT_PROMPT = NULL;
     }
 
     if( FONT_CHECKBOX!=NULL)
     {
-        GPE_CloseFont( FONT_CHECKBOX );
+        gpe->close_font( FONT_CHECKBOX );
         FONT_CHECKBOX = NULL;
     }
     //
     if( FONT_HEADER!=NULL)
     {
-        GPE_CloseFont( FONT_HEADER );
+        gpe->close_font( FONT_HEADER );
         FONT_HEADER = NULL;
     }
 
     if( FONT_LABEL!=NULL)
     {
-        GPE_CloseFont( FONT_LABEL );
+        gpe->close_font( FONT_LABEL );
         FONT_LABEL = NULL;
     }
     if( FONT_LABEL_ANCHOR!=NULL)
     {
-        GPE_CloseFont( FONT_LABEL_ANCHOR );
+        gpe->close_font( FONT_LABEL_ANCHOR );
         FONT_LABEL_ANCHOR = NULL;
     }
 
     if( FONT_LABEL_PARAGRAPH!=NULL)
     {
-        GPE_CloseFont( FONT_LABEL_PARAGRAPH );
+        gpe->close_font( FONT_LABEL_PARAGRAPH );
         FONT_LABEL_PARAGRAPH = NULL;
     }
 
     if( FONT_LABEL_TITLE!=NULL)
     {
-        GPE_CloseFont( FONT_LABEL_TITLE );
+        gpe->close_font( FONT_LABEL_TITLE );
         FONT_LABEL_TITLE = NULL;
     }
 
     if( FONT_PARAGRAGH!=NULL)
     {
-        GPE_CloseFont( FONT_PARAGRAGH );
+        gpe->close_font( FONT_PARAGRAGH );
         FONT_PARAGRAGH = NULL;
     }
 }
@@ -492,10 +485,7 @@ void update_rectangle(GPE_Rect * rectIn, double nx, double ny, double nw, double
 {
     if( rectIn!=NULL)
     {
-        rectIn->x = nx;
-        rectIn->y = ny;
-        rectIn->w = nw;
-        rectIn->h = nh;
+        rectIn->update_shape( nx, ny, nw, nh);
     }
 }
 
@@ -511,806 +501,431 @@ GPE_KeyPair::~GPE_KeyPair()
 
 }
 
-GPE_Template::GPE_Template()
+GPE_Theme::GPE_Theme(std::string name, bool isCustomTheme)
 {
-    templateLocalLocation = "default.gpf";
+    themeName = name;
+    nonDefaultTheme = isCustomTheme;
+    if( nonDefaultTheme)
+    {
+        themeLocalLocation = name+".gpf";
+    }
+    else
+    {
+        themeLocalLocation = "custom/"+name+".gpf";
+    }
+
+    //Background info
+    themeBgFileLocation = "";
+    themeBgTexture = NULL;
     //sprites
      Main_Menu_Sprite = NULL;
-    //For icons and Folders
-    Main_Folder_Color = new GPE_Color(1,86,231);
-    Main_Folder_Highlighted_Color = new GPE_Color(181,95,62);
+
     //for bg and standard colors
-    Program_Color = new GPE_Color(32,32,32);
-    Program_Header_Color = new GPE_Color(62,62,62);
-
-    //For input fields and drop down-related menus
-    Input_Highlight_Color = Main_Folder_Color->duplicate_color();
-    Input_Highlight_Outline_Color = Main_Folder_Color->duplicate_color();
-    Input_Highlight_Alt_Color = new GPE_Color(218,140,16);
-
-    Input_Color = new GPE_Color(27,27,29);
-    Input_Error_Box_Color = new GPE_Color(255,29,29);
-    Input_Outline_Color = c_ltgray->duplicate_color();
-    Input_Font_Color = c_ltgray->duplicate_color();
-    Input_Faded_Font_Color = c_gray->duplicate_color();
-    Input_Selected_Color = c_olive->duplicate_color();
-    Input_Highlight_Font_Color = c_blgray->duplicate_color();
-    Input_Error_Font_Color = new GPE_Color(228,8,8);
-    Input_Error_Outline_Color = c_maroon->duplicate_color();
-
-    //Used mainly for labels, urls and such
-    Checkbox_Color = new GPE_Color(1,86,231);
+    Program_Color = add_color("MainBackground",32,32,32);
+    Program_Header_Color = add_color("HeaderBackground",62,62,62);
 
     //Button colors and such
-    Button_Box_Color = new GPE_Color(25,25,25);
-    Button_Font_Color = new GPE_Color(249,249,249);
-    Button_Font_Highlighted_Color = new GPE_Color(240,240,240);
-    Button_Border_Color = new GPE_Color(16,16,16);
-    Button_Box_Highlighted_Color = new GPE_Color(40,40,40);
-    Button_Box_Selected_Color = new GPE_Color(96,96,96);
-    Button_Border_Color = c_dkgray->duplicate_color();
-    Button_Border_Highlighted_Color = c_blgray->duplicate_color();
-    Button_Border_Selected_Color = c_ltgray->duplicate_color();
+    Button_Box_Color = add_color("ButtonBox",25,25,25);
+    Button_Font_Color = add_color("ButtonFont",249,249,249);
+    Button_Font_Highlighted_Color = add_color("ButtonFontHighlighted",240,240,240);
+    Button_Border_Color = add_color("ButtonBorder",16,16,16);
+    Button_Box_Highlighted_Color = add_color("ButtonBoxHighlighted",40,40,40);
+    Button_Box_Selected_Color = add_color("MainBoxHighlightedAlt",96,96,96);
+    Button_Border_Color = add_color( "ButtonBorder",c_dkgray );
+    Button_Border_Highlighted_Color = add_color( "ButtonBorderHighlighted", c_blgray );
+    Button_Border_Selected_Color = add_color( "ButtonBorderSelected", c_ltgray );
+
+    //Used mainly for labels, urls and such
+    Checkbox_Color = add_color("Checkbox", 210,180,40 );
+
+    //For icons and Folders
+    Main_Folder_Color = add_color("FolderColor", 192,192,192 );
+    Main_Folder_Highlighted_Color = add_color("FolderHighlightedColor", 255, 99,71);
 
     //IconButton colors and such
-    Icon_Box_Color = new GPE_Color(25,25,25);
-    Icon_Font_Color = new GPE_Color(224,224,224);
-    Icon_Font_Highlighted_Color = new GPE_Color(255,255,255);
-    Icon_Font_Selected_Color = new GPE_Color(235,235,235);
-    Icon_Border_Color = new GPE_Color(16,16,16);
-    Icon_Box_Highlighted_Color = new GPE_Color(40,40,40);
-    Icon_Box_Selected_Color = new GPE_Color(96,96,96);
-    Icon_Border_Color = c_ltgray->duplicate_color();
-    Icon_Border_Highlighted_Color = c_blgray->duplicate_color();
-    Icon_Border_Selected_Color = new GPE_Color(235, 235, 235);
+    Icon_Box_Color = add_color("IconBox",25,25,25);
+    Icon_Font_Color = add_color("IconFont",224,224,224);
+    Icon_Font_Highlighted_Color = add_color("IconFontHighlighted",255,255,255);
+    Icon_Font_Selected_Color = add_color("IconFontSelected",235,235,235);
+    Icon_Border_Color = add_color("IconBorder",16,16,16);
+    Icon_Box_Highlighted_Color = add_color("IconBorderHighlighted",40,40,40);
+    Icon_Box_Selected_Color = add_color("IconBoxSelected",96,96,96);
+    Icon_Border_Highlighted_Color = add_color("IconBorderHighlighted",c_blgray );
+    Icon_Border_Selected_Color = add_color("IconBorderSelected", 75, 82, 92 );
 
-    Main_Box_Color = new GPE_Color(16,16,16);
-    Main_Box_Highlighted_Color = new GPE_Color(24,24,24);
-    Main_Box_Faded_Color = new GPE_Color(32,32,32);
-    Main_Border_Color = new GPE_Color(27,27,29);
-    Main_Border_Highlighted_Color = new GPE_Color( 64,32,250 );
-    Main_Box_Font_Color = c_white->duplicate_color();
-    Main_Box_Font_URL_Color = new GPE_Color(115,161,196);
-    Main_Box_Font_URL_Visited_Color = new GPE_Color(179,204,223);
-    Main_Box_Font_Highlight_Color = c_white->duplicate_color();
-    Main_Box_Faded_Font_Color = c_ltgray->duplicate_color();
+    //For input fields and drop down-related menus
+    Input_Color = add_color("Input",27,27,29);
+    Input_Error_Box_Color = add_color("InputError",255,29,29);
+    Input_Outline_Color = add_color("InputOutline",c_ltgray );
+    Input_Font_Color = add_color("InputFont",c_ltgray );
+    Input_Faded_Font_Color = add_color("InputFontFaded",c_gray );
+    Input_Selected_Color = add_color("InputSelected",c_olive );
+    Input_Highlight_Font_Color = add_color("InputOutline",c_blgray );
+    Input_Error_Font_Color = add_color("InputErrorFont",228,8,8);
+    Input_Error_Outline_Color = add_color("InputErrorOutline",c_maroon );
+    Input_Highlight_Color = add_color("InputHighlighted",Main_Folder_Color );
+    Input_Highlight_Outline_Color = add_color("InputHighlightedOutline", Main_Folder_Color );
+    Input_Highlight_Alt_Color = add_color("InputHighlightedAlt",218,140,16);
 
+    Main_Box_Color = add_color("MainBox",16,16,16);
+    Main_Box_Faded_Color = add_color("MainBoxFaded",32,32,32);
+    Main_Box_Highlighted_Color = add_color("MainBoxHighlighted",24,24,24);
+    Main_Border_Color = add_color("MainBorder",27,27,29);
+    Main_Border_Highlighted_Color = add_color("MainBorderHighlighted", 75, 82, 92 );
+    Main_Box_Font_Color = add_color( "MainBoxFont",c_white );
+    Main_Box_Font_URL_Color = add_color( "MainBoxFontURL",115,161,196);
+    Main_Box_Font_URL_Visited_Color = add_color( "MainBoxFontURLVisited", 115,161,196 );
+    Main_Box_Font_Highlight_Color = add_color( "MainBoxFontHighlighted",c_white );
+    Main_Box_Faded_Font_Color = add_color( "MainBoxFontFaded",c_ltgray );
 
+    //for errors
+    Main_Error_Font_Color = add_color( "Errors",  c_maroon );
+    Main_Warning_Font_Color = add_color( "Warnings",  c_blue );
+    Main_Suggestion_Font_Color = add_color( "Suggestions",  c_aqua );
 
     //for pop up boxes like toolbar options, context menu, tool tip, etc. Essentially top Z-layer
-    PopUp_Box_Highlight_Color = new GPE_Color(0,0,220);
-    PopUp_Box_Highlight_Alt_Color = new GPE_Color(0,220,0);
-    PopUp_Box_Close_Color = c_red->duplicate_color();
-    PopUp_Box_Close_Font_Color = c_white->duplicate_color();
-    PopUp_Box_Close_Hightlight_Color = c_maroon->duplicate_color();
+    PopUp_Box_Color =  add_color("PopUpBox",35,35,35);
+    PopUp_Box_Border_Color = add_color( "PopUpBoxOutline",  c_blgray );
+    PopUp_Box_Font_Color = add_color( "PopUpBoxFont",  c_silver );
+    PopUp_Box_Highlight_Font_Color = add_color( "PopUpBoxFontHighlighted",  c_ltgray );
+    PopUp_Box_Faded_Font_Color = add_color( "PopUpBoxFontHighlighted",  c_gray );
 
-    PopUp_Box_Color =  new GPE_Color(35,35,35);
-    PopUp_Box_Border_Color = c_blgray->duplicate_color();
-    PopUp_Box_Font_Color = c_silver->duplicate_color();
-    PopUp_Box_Highlight_Font_Color = c_ltgray->duplicate_color();
-    PopUp_Box_Faded_Font_Color = c_gray->duplicate_color();
+    PopUp_Box_Highlight_Color = add_color("PopUpBoxHighlighted",0,0,220);
+    PopUp_Box_Highlight_Alt_Color = add_color("PopUpBoxHighlightedAlt",0,220,0);
+    PopUp_Box_Close_Color = add_color( "PopUpBoxClose",  c_red );
+    PopUp_Box_Close_Font_Color = add_color( "PopUpBoxCloseFont",  c_white );
+    PopUp_Box_Close_Hightlight_Color = add_color( "PopUpBoxCloseHighlighted",  c_maroon );
 
     //For Scroll Boxes
-    Scroll_Box_Color = new GPE_Color(55,55,55);
-    Scroll_Box_Border_Color = new GPE_Color(0,0,0);
-    Scroll_Box_Arrow_Color = new GPE_Color(245, 245, 245);
-    Scroll_Box_Camera_Color = new GPE_Color(85, 85, 85);
-    Scroll_Box_Camera_Highlight_Color = new GPE_Color(128, 128, 128);
+    Scroll_Box_Color = add_color( "ScrollBox",55,55,55);
+    Scroll_Box_Border_Color = add_color( "ScrollBoxBorder",0,0,0);
+    Scroll_Box_Arrow_Color = add_color( "ScrollBoxArrow",245, 245, 245);
+    Scroll_Box_Camera_Color = add_color( "ScrollBoxCamera",85, 85, 85);
+    Scroll_Box_Camera_Highlight_Color = add_color( "ScrollBoxCameraHighlight",128, 128, 128);
 
     //for text boxes
-    Text_Box_Outer_Color = c_blgray->duplicate_color();
-    Text_Box_Outer_Font_Color = c_ltgray->duplicate_color();
-    Text_Box_Color = c_alblack->duplicate_color();
-    Text_Box_Outline_Color = c_jetblack->duplicate_color();
-    Text_Box_Highlight_Color = new GPE_Color(50,35,50);
-    Text_Box_Font_Color = c_ltgray->duplicate_color();
-    Text_Box_Font_Highlight_Color = c_ltgray->duplicate_color();
-    Text_Box_Font_Comment_Color = c_lime->duplicate_color();
+    Text_Box_Color = add_color( "TextBox",  c_alblack );
+    Text_Box_Outer_Color = add_color( "TextBoxOuter",  c_blgray );
+    Text_Box_Outer_Font_Color = add_color( "TextBoxOuterFont",  c_ltgray );
+    Text_Box_Outline_Color = add_color( "TextBoxOutline",  c_jetblack );
+    Text_Box_Highlight_Color = add_color("TextBoxHighlighted",50,35,50);
+    Text_Box_Font_Color = add_color( "TextBoxFont",  c_ltgray );
+    Text_Box_Font_Highlight_Color = add_color( "TextFontHighlighted",  c_ltgray );
+    Text_Box_Font_Comment_Color = add_color("TextBoxFontComment",117, 113, 94 );
 
-    Text_Box_Font_DataType_Color = c_ltpurple->duplicate_color();
-    Text_Box_Font_DQuote_Color = c_yellow->duplicate_color();
-    Text_Box_Font_Function_Color = c_teal->duplicate_color();
-    Text_Box_Font_Function_Alt_Color = c_lime->duplicate_color();
-    Text_Box_Font_Keyword_Color = c_ltblue->duplicate_color();
-    Text_Box_Font_Variable_Color = new GPE_Color(183,183,255);
-    Text_Box_Font_Variable_Alt_Color = new GPE_Color(183,255,183);
+    Text_Box_Font_DataType_Color = add_color("TextBoxFontDataType",121, 163, 39 );
+    Text_Box_Font_DQuote_Color = add_color( "TextFontDQuote",  c_yellow );
+    Text_Box_Font_SQuote_Color = add_color( "TextFontSQuote",  c_aqua );
 
-    Text_Box_Font_Keyword_Alt_Color = c_green->duplicate_color();
-    Text_Box_Font_JavaScript_Color = c_violet->duplicate_color();
-    Text_Box_Font_JavaScript_Alt_Color = c_violet->duplicate_color();
-    Text_Box_Font_Number_Color = c_fuchsia->duplicate_color();
-    Text_Box_Font_SQuote_Color = c_aqua->duplicate_color();
-    Text_Box_Font_Symbols_Color = new GPE_Color(255,99,71);
+    Text_Box_Font_Function_Color = add_color( "TextFontFunction",  c_teal );
+    Text_Box_Font_Function_Alt_Color = add_color( "TextFontFunctionAlt",  c_lime );
+
+    Text_Box_Font_Keyword_Color = add_color("TextFontKeyword",249,38,114 );
+    Text_Box_Font_Keyword_Alt_Color = add_color("TextFontKeywordAlt",38,114,249);
+
+    Text_Box_Font_Variable_Color = add_color("TextFontVariable",164,223, 46 );
+    Text_Box_Font_Variable_Alt_Color = add_color( "TextFontVariableAlt",  c_green );
+
+    Text_Box_Font_JavaScript_Color = add_color( "TextFontJavaScript",  c_violet );
+    Text_Box_Font_JavaScript_Alt_Color = add_color( "TextFontJavaScriptAlt",  c_violet );
+
+    Text_Box_Font_Number_Color =  add_color( "TextFontNumber", 170, 126, 249 );
+    Text_Box_Font_Symbols_Color = add_color( "TextFontSymbol",75, 82, 92);
 
     //Project Variables
-    Text_Box_Project_Function_Color = new GPE_Color(135,206,250);
-    Text_Box_Project_Function_Alt_Color = new GPE_Color(206,135,250);
+    Text_Box_Project_Function_Color = add_color( "TextFontProjectFunction",135,206,250);
+    Text_Box_Project_Function_Alt_Color = add_color( "TextFontProjectFunctionAlt",206,135,250);
 
-
-
-    Text_Box_Project_Keyword_Color = new GPE_Color(218,140,16);
-    Text_Box_Project_Keyword_Alt_Color = new GPE_Color(50,35,150);
-    //for errors
-    Main_Error_Font_Color = c_maroon->duplicate_color();
-    Main_Warning_Font_Color = c_blue->duplicate_color();
-    Main_Suggestion_Font_Color = c_aqua->duplicate_color();
-
+    Text_Box_Project_Keyword_Color = add_color( "TextFontProjectKeyword",200,131,30 );
+    Text_Box_Project_Keyword_Alt_Color = add_color( "TextFontProjectKeywordAlt",50,35,150);
 }
 
-GPE_Template::~GPE_Template()
+GPE_Theme::~GPE_Theme()
 {
-    if( Program_Color!=NULL)
+    GPE_Color * tempColor = NULL;
+    for(int i = (int)themeColors.size()-1; i >=0; i-- )
     {
-        delete Program_Color;
-        Program_Color = NULL;
+        tempColor = themeColors[i];
+        if( tempColor!=NULL )
+        {
+            delete tempColor;
+            tempColor = NULL;
+        }
     }
-    if( Program_Header_Color!=NULL)
-    {
-        delete Program_Header_Color;
-        Program_Header_Color = NULL;
-    }
-    if( Main_Folder_Color!=NULL)
-    {
-        delete Main_Folder_Color;
-        Main_Folder_Color = NULL;
-    }
-    if( Main_Folder_Highlighted_Color!=NULL)
-    {
-        delete Main_Folder_Highlighted_Color;
-        Main_Folder_Highlighted_Color = NULL;
-    }
-
-    //For Input Fields, Drop Down Menus & Resource Drop Downs
-    if( Input_Highlight_Color!=NULL)
-    {
-        delete Input_Highlight_Color;
-        Input_Highlight_Color = NULL;
-    }
-    if( Input_Highlight_Outline_Color!=NULL)
-    {
-        delete Input_Highlight_Outline_Color;
-        Input_Highlight_Outline_Color = NULL;
-    }
-    if( Input_Highlight_Alt_Color!=NULL)
-    {
-        delete Input_Highlight_Alt_Color;
-        Input_Highlight_Alt_Color = NULL;
-    }
-    if( Input_Color!=NULL)
-    {
-        delete Input_Color;
-        Input_Color = NULL;
-    }
-    if( Input_Error_Font_Color!=NULL)
-    {
-        delete Input_Error_Font_Color;
-        Input_Error_Font_Color = NULL;
-    }
-    if( Input_Error_Box_Color!=NULL)
-    {
-        delete Input_Error_Box_Color;
-        Input_Error_Box_Color = NULL;
-    }
-    if( Input_Error_Outline_Color!=NULL)
-    {
-        delete Input_Error_Outline_Color;
-        Input_Error_Outline_Color = NULL;
-    }
-    if( Input_Outline_Color!=NULL)
-    {
-        delete Input_Outline_Color;
-        Input_Outline_Color = NULL;
-    }
-    if( Input_Font_Color!=NULL)
-    {
-        delete Input_Font_Color;
-        Input_Font_Color = NULL;
-    }
-    if( Input_Highlight_Font_Color!=NULL)
-    {
-        delete Input_Highlight_Font_Color;
-        Input_Highlight_Font_Color = NULL;
-    }
-    if( Input_Faded_Font_Color!=NULL)
-    {
-        delete Input_Faded_Font_Color;
-        Input_Faded_Font_Color = NULL;
-    }
-    if( Input_Selected_Color!=NULL)
-    {
-        delete Input_Selected_Color;
-        Input_Selected_Color = NULL;
-    }
-        //For Gui boxes, like main menu, toolbar and oontext menus
-        if( Checkbox_Color!=NULL)
-        {
-            delete Checkbox_Color;
-            Checkbox_Color = NULL;
-        }
-
-        if( Button_Box_Highlighted_Color!=NULL)
-        {
-            delete Button_Box_Highlighted_Color;
-            Button_Box_Highlighted_Color = NULL;
-        }
-
-        if( Button_Border_Highlighted_Color!=NULL)
-        {
-            delete Button_Border_Highlighted_Color;
-            Button_Border_Highlighted_Color = NULL;
-        }
-
-        if( Button_Box_Selected_Color!=NULL)
-        {
-            delete Button_Box_Selected_Color;
-            Button_Box_Selected_Color = NULL;
-        }
-
-        if( Main_Box_Faded_Color!=NULL)
-        {
-            delete Main_Box_Faded_Color;
-            Main_Box_Faded_Color = NULL;
-        }
-
-        if( Main_Border_Color!=NULL)
-        {
-            delete Main_Border_Color;
-            Main_Border_Color = NULL;
-        }
-
-        if( Main_Box_Font_Color!=NULL)
-        {
-            delete Main_Box_Font_Color;
-            Main_Box_Font_Color = NULL;
-        }
-
-        if( Main_Box_Font_URL_Color!=NULL)
-        {
-            delete Main_Box_Font_URL_Color;
-            Main_Box_Font_URL_Color = NULL;
-        }
-
-        if( Main_Box_Font_URL_Visited_Color!=NULL)
-        {
-            delete Main_Box_Font_URL_Visited_Color;
-            Main_Box_Font_URL_Visited_Color = NULL;
-        }
-
-        if( Main_Box_Font_Highlight_Color!=NULL)
-        {
-            delete Main_Box_Font_Highlight_Color;
-            Main_Box_Font_Highlight_Color = NULL;
-        }
-
-        if( Main_Box_Faded_Font_Color!=NULL)
-        {
-            delete Main_Box_Faded_Font_Color;
-            Main_Box_Faded_Font_Color = NULL;
-        }
-
-        //For Gui boxes, like main menu, toolbar and oontext menus
-
-        if( PopUp_Box_Highlight_Color!=NULL)
-        {
-            delete PopUp_Box_Highlight_Color;
-            PopUp_Box_Highlight_Color = NULL;
-        }
-
-        if( PopUp_Box_Highlight_Alt_Color!=NULL)
-        {
-            delete PopUp_Box_Highlight_Alt_Color;
-            PopUp_Box_Highlight_Alt_Color = NULL;
-        }
-
-        if( PopUp_Box_Close_Color!=NULL)
-        {
-            delete PopUp_Box_Close_Color;
-            PopUp_Box_Close_Color = NULL;
-        }
-
-        if( PopUp_Box_Close_Hightlight_Color!=NULL)
-        {
-            delete PopUp_Box_Close_Hightlight_Color;
-            PopUp_Box_Close_Hightlight_Color = NULL;
-        }
-
-
-        if( PopUp_Box_Close_Font_Color!=NULL)
-        {
-            delete PopUp_Box_Close_Font_Color;
-            PopUp_Box_Close_Font_Color = NULL;
-        }
-
-
-        if( PopUp_Box_Color!=NULL)
-        {
-            delete PopUp_Box_Color;
-            PopUp_Box_Color = NULL;
-        }
-
-
-        if( PopUp_Box_Border_Color!=NULL)
-        {
-            delete PopUp_Box_Border_Color;
-            PopUp_Box_Border_Color = NULL;
-        }
-
-
-        if( PopUp_Box_Font_Color!=NULL)
-        {
-            delete PopUp_Box_Font_Color;
-            PopUp_Box_Font_Color = NULL;
-        }
-
-
-        if( PopUp_Box_Highlight_Font_Color!=NULL)
-        {
-            delete PopUp_Box_Highlight_Font_Color;
-            PopUp_Box_Highlight_Font_Color = NULL;
-        }
-
-
-        if( PopUp_Box_Faded_Font_Color!=NULL)
-        {
-            delete PopUp_Box_Faded_Font_Color;
-            PopUp_Box_Faded_Font_Color = NULL;
-        }
-        //for text boxes
-        if( Text_Box_Outer_Color!=NULL)
-        {
-            delete Text_Box_Outer_Color;
-            Text_Box_Outer_Color = NULL;
-        }
-        if( Text_Box_Outer_Font_Color!=NULL)
-        {
-            delete Text_Box_Outer_Font_Color;
-            Text_Box_Outer_Font_Color = NULL;
-        }
-        if( Text_Box_Color!=NULL)
-        {
-            delete Text_Box_Color;
-            Text_Box_Color = NULL;
-        }
-        if( Text_Box_Outline_Color!=NULL)
-        {
-            delete Text_Box_Outline_Color;
-            Text_Box_Outline_Color = NULL;
-        }
-        if( Text_Box_Highlight_Color!=NULL)
-        {
-            delete Text_Box_Highlight_Color;
-            Text_Box_Highlight_Color = NULL;
-        }
-        if( Text_Box_Font_Color!=NULL)
-        {
-            delete Text_Box_Font_Color;
-            Text_Box_Font_Color = NULL;
-        }
-        if( Text_Box_Font_Comment_Color!=NULL)
-        {
-            delete Text_Box_Font_Comment_Color;
-            Text_Box_Font_Comment_Color = NULL;
-        }
-        if( Text_Box_Font_Highlight_Color!=NULL)
-        {
-            delete Text_Box_Font_Highlight_Color;
-            Text_Box_Font_Highlight_Color = NULL;
-        }
-
-        delete Text_Box_Font_DataType_Color;
-        delete Text_Box_Font_DQuote_Color;
-        delete Text_Box_Font_Function_Color;
-        delete Text_Box_Font_Function_Alt_Color;
-        delete Text_Box_Font_Keyword_Color;
-        delete Text_Box_Font_Keyword_Alt_Color;
-        delete Text_Box_Font_JavaScript_Color;
-        delete Text_Box_Font_JavaScript_Alt_Color;
-        delete Text_Box_Font_Number_Color;
-        delete Text_Box_Font_SQuote_Color;
-        delete Text_Box_Font_Symbols_Color;
-
-        if( Text_Box_Project_Function_Color!=NULL )
-        {
-            delete Text_Box_Project_Function_Color;
-            Text_Box_Project_Function_Color = NULL;
-        }
-
-        if( Text_Box_Project_Function_Alt_Color!=NULL )
-        {
-            delete Text_Box_Project_Function_Alt_Color;
-            Text_Box_Project_Function_Alt_Color = NULL;
-        }
-
-        if( Text_Box_Project_Keyword_Color!=NULL )
-        {
-            delete Text_Box_Project_Keyword_Color;
-            Text_Box_Project_Keyword_Color = NULL;
-        }
-
-        if( Text_Box_Project_Keyword_Alt_Color!=NULL )
-        {
-            delete Text_Box_Project_Keyword_Alt_Color;
-            Text_Box_Project_Keyword_Alt_Color = NULL;
-        }
-        //for errors
-        if( Main_Error_Font_Color!=NULL)
-        {
-            delete Main_Error_Font_Color;
-            Main_Error_Font_Color = NULL;
-        }
-        if( Main_Warning_Font_Color!=NULL)
-        {
-            delete Main_Warning_Font_Color;
-            Main_Warning_Font_Color = NULL;
-        }
-        if( Main_Suggestion_Font_Color!=NULL)
-        {
-            delete Main_Suggestion_Font_Color;
-            Main_Suggestion_Font_Color = NULL;
-        }
+    themeColors.clear();
 }
 
-void GPE_Template::load_theme(std::string themeLocationIn)
+GPE_Color * GPE_Theme::add_color(std::string name,Uint8 r, Uint8 g, Uint8 b)
+{
+    GPE_Color * fColor = find_color( name);
+    /*if( fColor!=NULL)
+    {
+        fColor->change_rgba(r,g,b);
+    }
+    else
+    {
+        */fColor = new GPE_Color( name, r, g, b);
+        themeColors.push_back(fColor);
+    //}
+    return fColor;
+}
+
+GPE_Color * GPE_Theme::add_color(std::string name, GPE_Color * savedColor )
+{
+    GPE_Color * fColor = find_color( name);
+    /*
+    if( fColor!=NULL)
+    {
+        if( savedColor!=NULL)
+        fColor->change_rgba( savedColor->get_r() , savedColor->get_g() , savedColor->get_b() );
+    }
+    else
+    {*/
+        if( savedColor!=NULL)
+        {
+            fColor = new GPE_Color( name, savedColor->get_r() , savedColor->get_g() , savedColor->get_b() );
+        }
+        else
+        {
+            fColor = new GPE_Color( name, 0,0,0 );
+        }
+        themeColors.push_back(fColor);
+    //}
+    return fColor;
+}
+
+bool GPE_Theme::change_color(std::string name,Uint8 r, Uint8 g, Uint8 b)
+{
+    GPE_Color * fColor = find_color( name);
+    if( fColor!=NULL )
+    {
+        fColor->change_rgba(r,g,b);
+        return true;
+    }
+    return false;
+}
+
+
+
+GPE_Color * GPE_Theme::find_color(std::string name)
+{
+    if( (int)name.size() > 0)
+    {
+        for(int i = (int)themeColors.size()-1; i >=0; i-- )
+        {
+            if( themeColors[i]->get_name()==name )
+            {
+                return themeColors[i];
+            }
+        }
+    }
+    return NULL;
+}
+
+GPE_Color * GPE_Theme::get_color(int pos)
+{
+    if( pos >=0 && pos < (int)themeColors.size() )
+    {
+        return themeColors[pos];
+    }
+    return NULL;
+}
+
+int GPE_Theme::get_color_count()
+{
+    return (int)themeColors.size();
+}
+
+bool GPE_Theme::is_custom_theme()
+{
+    return nonDefaultTheme;
+}
+
+bool GPE_Theme::load_background( std::string bgTextureLocation)
+{
+    if( (int)bgTextureLocation.size() > 0 )
+    {
+        themeBgFileLocation = get_local_from_global_file( bgTextureLocation );
+        if( themeBgTexture== NULL)
+        {
+            themeBgTexture = new GPE_Texture();
+        }
+        themeBgTexture->load_new_texture( bgTextureLocation );
+        if( themeBgTexture->get_width() > 0)
+        {
+            themeBgTexture->set_blend_mode( blend_mode_blend );
+            return true;
+        }
+    }
+    //if all the loading failed, delete texture object
+    if( themeBgTexture!=NULL)
+    {
+        delete themeBgTexture;
+        themeBgTexture = NULL;
+    }
+    return false;
+}
+
+bool GPE_Theme::load_theme(std::string themeLocationIn)
 {
     //If the level file could be loaded
-    std::string themeGlobalLocation = APP_DIRECTORY_NAME+"themes/"+themeLocationIn;
-    if( file_exists(themeGlobalLocation) )
+    std::string themeGlobalLocation = "";
+    if( file_exists(themeLocationIn) )
     {
-        std::ifstream templateFileIn( themeGlobalLocation.c_str() );
-        if( !templateFileIn.fail() )
+        themeGlobalLocation = themeLocationIn;
+    }
+    else
+    {
+      themeGlobalLocation  = APP_DIRECTORY_NAME+"themes/"+ get_local_from_global_file( themeLocationIn );
+    }
+
+    std::ifstream templateFileIn( themeGlobalLocation.c_str() );
+    if( !templateFileIn.fail() )
+    {
+        //makes sure the file is open
+        if (templateFileIn.is_open())
         {
-            //makes sure the file is open
-            if (templateFileIn.is_open())
+            themeLocalLocation = themeLocationIn;
+            int equalPos = 0;
+            int hashPos = 0;
+            std::string firstChar="";
+            std::string section="";
+            std::string cur_layer="";
+            std::string data_format="";
+            std::string keyString="";
+            std::string valString="";
+            std::string subValString="";
+            std::string currLine="";
+            std::string currLineToBeProcessed;
+            //float foundFileVersion = 0;
+            GPE_Color * foundColor = NULL;
+            int rFound = 0, gFound = 0, bFound = 0;
+            while ( templateFileIn.good() )
             {
-                templateLocalLocation = themeLocationIn;
-                int equalPos = 0;
-                int hashPos = 0;
-                std::string firstChar="";
-                std::string section="";
-                std::string cur_layer="";
-                std::string data_format="";
-                std::string keyString="";
-                std::string valString="";
-                std::string subValString="";
-                std::string currLine="";
-                std::string currLineToBeProcessed;
-                //float foundFileVersion = 0;
-
-                int rFound = 0, gFound = 0, bFound = 0;
-                while ( templateFileIn.good() )
+                getline (templateFileIn,currLine); //gets the next line of the file
+                currLineToBeProcessed = trim_left_inplace(currLine);
+                currLineToBeProcessed = trim_right_inplace(currLine);
+                //Empty Line skipping is only allowed at the top of the file
+                if(!currLineToBeProcessed.empty() )
                 {
-                    getline (templateFileIn,currLine); //gets the next line of the file
-                    currLineToBeProcessed = trim_left_inplace(currLine);
-                    currLineToBeProcessed = trim_right_inplace(currLine);
-                    //Empty Line skipping is only allowed at the top of the file
-                    if(!currLineToBeProcessed.empty() )
+                    //Comment skipping is only allowed at the top of the file
+                    if( currLineToBeProcessed[0]!= '#' && currLineToBeProcessed[0]!='/'  )
                     {
-                        //Comment skipping is only allowed at the top of the file
-                        if( currLineToBeProcessed[0]!= '#' && currLineToBeProcessed[0]!='/'  )
+                        //searches for an equal character and parses through the variable
+                        equalPos = currLineToBeProcessed.find_first_of("=");
+                        rFound = 0;
+                        gFound = 0;
+                        bFound = 0;
+
+                        if(equalPos!=(int)std::string::npos)
                         {
-                            //searches for an equal character and parses through the variable
-                            equalPos = currLineToBeProcessed.find_first_of("=");
-                            rFound = 0;
-                            gFound = 0;
-                            bFound = 0;
+                            //if the equalPos is present, then parse on through and carryon
+                            keyString = currLineToBeProcessed.substr(0,equalPos);
+                            valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
-                            if(equalPos!=(int)std::string::npos)
+                            if( keyString=="Background")
                             {
-                                //if the equalPos is present, then parse on through and carryon
-                                keyString = currLineToBeProcessed.substr(0,equalPos);
-                                valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-
-                                hashPos = valString.find_first_of("#");
-                                if(hashPos!=(int)std::string::npos)
+                                if( nonDefaultTheme)
                                 {
-                                    HEXtoRGB(valString,rFound,gFound, bFound);
+                                    load_background(APP_DIRECTORY_NAME+"themes/custom/"+valString);
                                 }
                                 else
                                 {
-                                    rFound = split_first_int(valString,',');
-                                    gFound = split_first_int(valString,',');
-                                    bFound = string_to_int(valString);
+                                    load_background(APP_DIRECTORY_NAME+"themes/"+valString);
+                                }
+                            }
+                            else
+                            {
+                                foundColor = find_color( keyString );
+                                if( foundColor !=NULL )
+                                {
+                                    hashPos = valString.find_first_of("#");
+                                    if(hashPos!=(int)std::string::npos)
+                                    {
+                                        HEXtoRGB(valString,rFound,gFound, bFound);
+                                    }
+                                    else
+                                    {
+                                        rFound = split_first_int(valString,',');
+                                        gFound = split_first_int(valString,',');
+                                        bFound = string_to_int(valString);
+                                    }
+                                    foundColor->change_rgba( rFound, gFound, bFound );
                                 }
-                                if( keyString=="MainBackground")
-                                {
-                                    Program_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="HeaderBackground")
-                                {
-                                    Program_Header_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="FolderColor")
-                                {
-                                    Main_Folder_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="FolderHighlightedColor")
-                                {
-                                    Main_Folder_Highlighted_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="Input")
-                                {
-                                    Input_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="InputHighlighted")
-                                {
-                                    Input_Highlight_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="InputHighlightedOutline")
-                                {
-                                    Input_Highlight_Outline_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="InputHighlightedAlt")
-                                {
-                                    Input_Highlight_Alt_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="InputBackground")
-                                {
-                                    Input_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="InputOutline")
-                                {
-                                    Input_Outline_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="InputFont")
-                                {
-                                    Input_Font_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="InputFontHighlighted")
-                                {
-                                    Input_Highlight_Font_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="InputFontFaded")
-                                {
-                                    Input_Faded_Font_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="MainBorder")
-                                {
-                                    Main_Border_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="MainBorderHighlighted")
-                                {
-                                    Main_Border_Highlighted_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="MainBoxHighlightedAlt")
-                                {
-                                    Button_Box_Selected_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="MainBox")
-                                {
-                                    Main_Box_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="MainBoxFaded")
-                                {
-                                    Main_Box_Faded_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="MainBoxOutline" || keyString=="MainBorder" )
-                                {
-                                    Main_Border_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="MainBoxFont")
-                                {
-                                    Main_Box_Font_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="MainBoxFontHighlighted")
-                                {
-                                    Main_Box_Font_Highlight_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="MainBoxFontFaded")
-                                {
-                                    Main_Box_Faded_Font_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="MainBoxFontURL")
-                                {
-                                    Main_Box_Font_URL_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="MainBoxFontURLVisited")
-                                {
-                                    Main_Box_Font_URL_Visited_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="ButtonBox")
-                                {
-                                    //Butons and such...
-                                    Button_Box_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="ButtonBoxHighlighted")
-                                {
-                                    Button_Box_Highlighted_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="ButtonBoxSelected")
-                                {
-                                    Button_Box_Selected_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="ButtonBorder")
-                                {
-                                    Button_Border_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="ButtonBorderHighlighted")
-                                {
-                                    Button_Border_Highlighted_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="ButtonBorderSelected")
-                                {
-                                    Button_Border_Selected_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="ButtonFont")
-                                {
-                                    Button_Font_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="ButtonFontHighlighted")
-                                {
-                                    Button_Font_Highlighted_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="IconBox")
-                                {
-                                    //Butons and such...
-                                    Icon_Box_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="IconBoxHighlighted")
-                                {
-                                    Icon_Box_Highlighted_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="IconBoxSelected")
-                                {
-                                    Icon_Box_Selected_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="IconBorder")
-                                {
-                                    Icon_Border_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="IconBorderHighlighted")
-                                {
-                                    Icon_Border_Highlighted_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="IconBorderSelected")
-                                {
-                                    Icon_Border_Selected_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="IconFont")
-                                {
-                                    Icon_Font_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="IconFontHighlighted")
-                                {
-                                    Icon_Font_Highlighted_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="IconFontSelected")
-                                {
-                                    Icon_Font_Selected_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="PopUpBox")
-                                {
-                                    PopUp_Box_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="PopUpBoxHighlighted")
-                                {
-                                    PopUp_Box_Highlight_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="PopUpBoxHighlightedAlt")
-                                {
-                                    PopUp_Box_Highlight_Alt_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="PopUpBoxOutline")
-                                {
-                                    PopUp_Box_Border_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="PopUpBoxFont")
-                                {
-                                    PopUp_Box_Font_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="PopUpBoxFontHighlighted")
-                                {
-                                    PopUp_Box_Highlight_Font_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="PopUpBoxFontFaded")
-                                {
-                                    PopUp_Box_Faded_Font_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextBoxOuter")
-                                {
-                                    Text_Box_Outer_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextBoxOuterFont")
-                                {
-                                    Text_Box_Outer_Font_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextBox")
-                                {
-                                    Text_Box_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextBoxOutline")
-                                {
-                                    Text_Box_Outline_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextBoxHighlighted")
-                                {
-                                    Text_Box_Highlight_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextBoxFont")
-                                {
-                                    Text_Box_Font_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextBoxFontComment")
-                                {
-                                    Text_Box_Font_Comment_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextFontHighlighted")
-                                {
-                                    Text_Box_Font_Highlight_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextFontFunction")
-                                {
-                                    Text_Box_Font_Function_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextFontKeyword")
-                                {
-                                    Text_Box_Font_Keyword_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextFontNumber")
-                                {
-                                    Text_Box_Font_Number_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextFontDQuote")
-                                {
-                                    Text_Box_Font_DQuote_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextFontSQuote")
-                                {
-                                    Text_Box_Font_SQuote_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextFontSymbol")
-                                {
-                                    Text_Box_Font_Symbols_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextFontJavaScript")
-                                {
-                                    Text_Box_Font_JavaScript_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextFontProjectFunction")
-                                {
-                                    Text_Box_Project_Function_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextFontProjectKeyword")
-                                {
-                                    Text_Box_Project_Keyword_Color->change_rgba(rFound,gFound,bFound);
-                                }
-                                else if( keyString=="TextFontVariable" )
-                                {
-                                    Text_Box_Font_Variable_Color->change_rgba(rFound,gFound, bFound );
-                                }
-                                else if( keyString=="TextFontVariableAlt" )
-                                {
-                                    Text_Box_Font_Variable_Alt_Color->change_rgba(rFound,gFound, bFound );
-                                }
-                                else if( keyString=="ScrollBox" )
-                                {
-                                    Scroll_Box_Color->change_rgba(rFound,gFound, bFound );
-                                }
-                                else if( keyString=="ScrollBoxBorder" )
-                                {
-                                    Scroll_Box_Border_Color->change_rgba(rFound,gFound, bFound );
-                                }
-                                else if( keyString=="ScrollBoxArrow" )
-                                {
-                                    Scroll_Box_Arrow_Color->change_rgba(rFound,gFound, bFound );
-                                }
-                                else if( keyString=="ScrollBoxCamera" )
-                                {
-                                    Scroll_Box_Camera_Color->change_rgba(rFound,gFound, bFound );
-                                }
-                                else if( keyString=="ScrollBoxCameraHighlight" )
-                                {
-                                    Scroll_Box_Camera_Highlight_Color->change_rgba(rFound,gFound, bFound );
-                                }
-
-
                             }
                         }
                     }
                 }
-                templateFileIn.close();
             }
+            templateFileIn.close();
+            return true;
         }
     }
+    return false;
+}
+
+bool GPE_Theme::render_background(GPE_Rect * viewedSpace,GPE_Rect * cam )
+{
+    viewedSpace = GPE_find_camera(viewedSpace);
+    cam = GPE_find_camera(cam);
+    if(cam!=NULL && viewedSpace!=NULL )
+    {
+        gpe->render_rectangle( cam->x, cam->y,cam->w,cam->h,GPE_MAIN_THEME->Program_Color,false);
+        if( themeBgTexture!=NULL )
+        {
+            themeBgTexture->render_tex_resized( cam->x, cam->y, cam->w,cam->h );
+            return true;
+        }
+    }
+    return false;
+}
+
+bool GPE_Theme::save_theme()
+{
+    save_theme_as( themeLocalLocation );
+}
+
+bool GPE_Theme::save_theme_as(std::string themeLocationOut)
+{
+    //If the level file could be loaded
+    std::string themeGlobalLocation = "";
+    if( (int)themeLocationOut.size() ==0)
+    {
+        themeLocationOut = themeName+".gpf";
+    }
+    if( file_exists(themeLocationOut) )
+    {
+        themeGlobalLocation = themeLocationOut;
+    }
+    else if( nonDefaultTheme)
+    {
+        themeGlobalLocation  = APP_DIRECTORY_NAME+"themes/custom/"+ get_local_from_global_file( themeLocationOut );
+    }
+    else
+    {
+      themeGlobalLocation  = APP_DIRECTORY_NAME+"themes/"+ get_local_from_global_file( themeLocationOut );
+    }
+
+    std::ofstream templateFileOut( themeGlobalLocation.c_str() );
+    if( !templateFileOut.fail() )
+    {
+        //makes sure the file is open
+        if (templateFileOut.is_open())
+        {
+            templateFileOut << "Background="+get_local_from_global_file( themeBgFileLocation )+"\n";
+            GPE_Color * tempColor = NULL;
+            for(int i = 0; i < (int)themeColors.size(); i++ )
+            {
+                tempColor = themeColors[i];
+                if( tempColor!=NULL )
+                {
+                    templateFileOut << tempColor->get_name()+"="+int_to_string( tempColor->get_r() )+","+int_to_string( tempColor->get_g() )+","+int_to_string( tempColor->get_b() ) << "\n";
+                }
+            }
+        }
+        themeLocalLocation = themeGlobalLocation;
+    }
+    templateFileOut.close();
 }
 
 GPE_Overlay_System::GPE_Overlay_System()
@@ -1378,20 +993,16 @@ void GPE_Overlay_System::process_cursor()
     GPE_PreviousCursor = GPE_CurrentCursor;
 }
 
-void GPE_Overlay_System::take_frozen_screenshot(GPE_Renderer * renderTarget)
+void GPE_Overlay_System::take_frozen_screenshot()
 {
-    if( renderTarget==NULL)
-    {
-        renderTarget = MAIN_RENDERER;
-    }
     if( previousScreenshot==NULL)
     {
         previousScreenshot = new GPE_Texture();
     }
-    if( previousScreenshot!=NULL && renderTarget!=NULL)
+    if( previousScreenshot!=NULL && MAIN_RENDERER!=NULL)
     {
-        renderTarget->save_screenshot(APP_DIRECTORY_NAME+"frozen_screenshot.png");
-        previousScreenshot->load_new_texture(renderTarget,APP_DIRECTORY_NAME+"frozen_screenshot.png");
+        MAIN_RENDERER->save_screenshot(APP_DIRECTORY_NAME+"frozen_screenshot.png");
+        previousScreenshot->load_new_texture(APP_DIRECTORY_NAME+"frozen_screenshot.png");
     }
 }
 
@@ -1406,7 +1017,7 @@ void GPE_Overlay_System::update_tooltip(std::string newTip)
         }
         if( toolTipTexture!=NULL)
         {
-            //toolTipTexture->loadFromRenderedText(MAIN_RENDERER,newTip,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT);
+            //toolTipTexture->loadFromRenderedText(MAIN_RENDERER,newTip,GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT);
         }
         tipTipJustUpdated = true;
     }
@@ -1431,60 +1042,51 @@ void GPE_Overlay_System::update_temporary_message(std::string mTitle, std::strin
     }
 }
 
-void GPE_Overlay_System::render_frozen_screenshot(GPE_Renderer * renderTarget)
+void GPE_Overlay_System::render_frozen_screenshot()
 {
-    if( renderTarget==NULL)
+    if( MAIN_RENDERER!=NULL &&  previousScreenshot!=NULL)
     {
-        renderTarget = MAIN_RENDERER;
-    }
-    if( renderTarget!=NULL &&  previousScreenshot!=NULL)
-    {
-        previousScreenshot->render_tex_resized(renderTarget,0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+        previousScreenshot->render_tex_resized(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
     }
 }
 
-void GPE_Overlay_System::render_temporary_message(GPE_Renderer * renderTarget)
+void GPE_Overlay_System::render_temporary_message()
 {
-    if( renderTarget==NULL)
+    if( temporayMessageDisplayTimer > 0 && temporayMessageDisplayStartTimer > 0 )
     {
-        renderTarget = MAIN_RENDERER;
-    }
-    if( renderTarget!=NULL && temporayMessageDisplayTimer > 0 && temporayMessageDisplayStartTimer > 0 )
-    {
-
         int noticeAlphaValue = (temporayMessageDisplayTimer/temporayMessageDisplayStartTimer)*255;
         if( tempTopLeftMessage)
         {
-            render_rectangle(renderTarget,0,0,256,96,GPE_MAIN_TEMPLATE->PopUp_Box_Color,false, noticeAlphaValue);
-            render_rectangle(renderTarget,0,0,256,96,GPE_MAIN_TEMPLATE->PopUp_Box_Border_Color,true,noticeAlphaValue);
-            render_new_text(renderTarget,0,GENERAL_GPE_PADDING,tempUserMessageTitle,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP,noticeAlphaValue);
-            render_new_text(renderTarget,0,GENERAL_GPE_PADDING*2+GPE_AVERAGE_LINE_HEIGHT,tempUserMessageSubtitle,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP,noticeAlphaValue);
-            render_new_text(renderTarget,0,GENERAL_GPE_PADDING*3+GPE_AVERAGE_LINE_HEIGHT*2,tempUserMessageText,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP,noticeAlphaValue);
+            gpe->render_rectangle( 0,0,256,96,GPE_MAIN_THEME->PopUp_Box_Color,false, noticeAlphaValue);
+            gpe->render_rectangle( 0,0,256,96,GPE_MAIN_THEME->PopUp_Box_Border_Color,true,noticeAlphaValue);
+            render_new_text( 0,GENERAL_GPE_PADDING,tempUserMessageTitle,GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP,noticeAlphaValue);
+            render_new_text( 0,GENERAL_GPE_PADDING*2+GPE_AVERAGE_LINE_HEIGHT,tempUserMessageSubtitle,GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP,noticeAlphaValue);
+            render_new_text( 0,GENERAL_GPE_PADDING*3+GPE_AVERAGE_LINE_HEIGHT*2,tempUserMessageText,GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP,noticeAlphaValue);
 
         }
         else
         {
-            render_rectangle(renderTarget,SCREEN_WIDTH/2-256,SCREEN_HEIGHT-128,SCREEN_WIDTH/2+256,SCREEN_HEIGHT-32,GPE_MAIN_TEMPLATE->PopUp_Box_Color,false, noticeAlphaValue);
-            render_rectangle(renderTarget,SCREEN_WIDTH/2-256,SCREEN_HEIGHT-128,SCREEN_WIDTH/2+256,SCREEN_HEIGHT-32,GPE_MAIN_TEMPLATE->PopUp_Box_Border_Color,true,noticeAlphaValue);
-            render_new_text(renderTarget,SCREEN_WIDTH/2,SCREEN_HEIGHT-128+GENERAL_GPE_PADDING,tempUserMessageTitle,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT,FA_CENTER,FA_TOP,noticeAlphaValue);
-            render_new_text(renderTarget,SCREEN_WIDTH/2,SCREEN_HEIGHT-128+GENERAL_GPE_PADDING*2+GPE_AVERAGE_LINE_HEIGHT,tempUserMessageSubtitle,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT,FA_CENTER,FA_TOP,noticeAlphaValue);
-            render_new_text(renderTarget,SCREEN_WIDTH/2,SCREEN_HEIGHT-128+GENERAL_GPE_PADDING*3+GPE_AVERAGE_LINE_HEIGHT*2,tempUserMessageText,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT,FA_CENTER,FA_TOP,noticeAlphaValue);
+            gpe->render_rectangle( SCREEN_WIDTH/2-256,SCREEN_HEIGHT-128,SCREEN_WIDTH/2+256,SCREEN_HEIGHT-32,GPE_MAIN_THEME->PopUp_Box_Color,false, noticeAlphaValue);
+            gpe->render_rectangle( SCREEN_WIDTH/2-256,SCREEN_HEIGHT-128,SCREEN_WIDTH/2+256,SCREEN_HEIGHT-32,GPE_MAIN_THEME->PopUp_Box_Border_Color,true,noticeAlphaValue);
+            render_new_text( SCREEN_WIDTH/2,SCREEN_HEIGHT-128+GENERAL_GPE_PADDING,tempUserMessageTitle,GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_CENTER,FA_TOP,noticeAlphaValue);
+            render_new_text( SCREEN_WIDTH/2,SCREEN_HEIGHT-128+GENERAL_GPE_PADDING*2+GPE_AVERAGE_LINE_HEIGHT,tempUserMessageSubtitle,GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_CENTER,FA_TOP,noticeAlphaValue);
+            render_new_text( SCREEN_WIDTH/2,SCREEN_HEIGHT-128+GENERAL_GPE_PADDING*3+GPE_AVERAGE_LINE_HEIGHT*2,tempUserMessageText,GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_CENTER,FA_TOP,noticeAlphaValue);
         }
         temporayMessageDisplayTimer--;
     }
 }
 
-void GPE_Overlay_System::render_tooltip(GPE_Renderer * cRender,int xPos, int yPos)
+void GPE_Overlay_System::render_tooltip(int xPos, int yPos)
 {
     if( (int)toolTipString.size()>0)
     {
         if( xPos < 0)
         {
-            xPos = userInput->mouse_x;
+            xPos = input->mouse_x;
         }
         if( yPos < 0 || yPos > SCREEN_HEIGHT-GENERAL_GPE_PADDING-toolTipTexture->get_height() )
         {
-            yPos = userInput->mouse_y+32;
+            yPos = input->mouse_y+32;
         }
 
         int TEXTBOX_FONT_SIZE_WIDTH = 12;
@@ -1526,23 +1128,24 @@ void GPE_Overlay_System::render_tooltip(GPE_Renderer * cRender,int xPos, int yPo
             xPos2 = xPos+ TEXTBOX_FONT_SIZE_WIDTH*(int)toolTipString.size()+GENERAL_GPE_PADDING*2;
         }
 
-        render_rectangle(cRender,xPos-GENERAL_GPE_PADDING/2,yPos-GENERAL_GPE_PADDING/2,xPos2,yPos2,GPE_MAIN_TEMPLATE->PopUp_Box_Color,false);
+        gpe->render_rectangle( xPos-GENERAL_GPE_PADDING/2,yPos-GENERAL_GPE_PADDING/2,xPos2,yPos2,GPE_MAIN_THEME->PopUp_Box_Color,false);
         for( int i = 0; i < (int)toolTipLines.size(); i++)
         {
-            render_new_text(cRender,xPos+GENERAL_GPE_PADDING,yPos+TEXTBOX_FONT_SIZE_HEIGHT*i, toolTipLines[i],GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,FONT_TOOLTIP,FA_LEFT,FA_TOP);
+            render_new_text( xPos+GENERAL_GPE_PADDING,yPos+TEXTBOX_FONT_SIZE_HEIGHT*i, toolTipLines[i],GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TOOLTIP,FA_LEFT,FA_TOP);
         }
 
-        render_rectangle(cRender,xPos-GENERAL_GPE_PADDING/2,yPos-GENERAL_GPE_PADDING/2,xPos2,yPos2,GPE_MAIN_TEMPLATE->PopUp_Box_Border_Color,true);
+        gpe->render_rectangle( xPos-GENERAL_GPE_PADDING/2,yPos-GENERAL_GPE_PADDING/2,xPos2,yPos2,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
     }
     tipTipJustUpdated = false;
 }
 
 GPE_ScrollBar_XAxis::GPE_ScrollBar_XAxis()
 {
-    barBox.x = contextRect.x =  fullRect.x = 0;
-    barBox.y = contextRect.y =  fullRect.y = 0;
-    barBox.w = contextRect.w =  fullRect.w = 32;
-    barBox.h = contextRect.h =  fullRect.h = 32;
+    autoCorrect = true;
+    elementBox.x = contextRect.x =  fullRect.x = 0;
+    elementBox.y = contextRect.y =  fullRect.y = 0;
+    elementBox.w = contextRect.w =  fullRect.w = 32;
+    elementBox.h = contextRect.h =  fullRect.h = 32;
 
 
     scrollWidth = 32;
@@ -1561,14 +1164,37 @@ GPE_ScrollBar_XAxis::~GPE_ScrollBar_XAxis()
 
 }
 
+bool GPE_ScrollBar_XAxis::calculate_sizing()
+{
+    //calculates the height needed to be scrolled.
+    if( fullRect.w!=0)
+    {
+        if( contextRect.w < fullRect.w)
+        {
+            scrollPercent =  (float)contextRect.w/(float)fullRect.w;
+            scrollDisplayPixels = (float)(elementBox.w)*scrollPercent;
+            scrollXPos = (float)(contextRect.x)/(float)(fullRect.w)*(float)elementBox.w;
+        }
+        else
+        {
+            scrollPercent = 1;
+            scrollDisplayPixels = elementBox.w;
+            scrollXPos = 0;
+            contextRect.x = 0;
+            return false;
+        }
+    }
+    return true;
+}
+
 int GPE_ScrollBar_XAxis::get_box_width()
 {
-    return barBox.w;
+    return elementBox.w;
 }
 
 int GPE_ScrollBar_XAxis::get_box_height()
 {
-    return barBox.h;
+    return elementBox.h;
 }
 
 bool GPE_ScrollBar_XAxis::has_moved()
@@ -1586,43 +1212,28 @@ bool GPE_ScrollBar_XAxis::is_scrolling()
     return isOnScrollBox;
 }
 
-void GPE_ScrollBar_XAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool autoCorrect)
+void GPE_ScrollBar_XAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
     bool doWork = true;
-    //calculates the height needed to be scrolled.
-    if( fullRect.w!=0)
-    {
-        if( contextRect.w < fullRect.w)
-        {
-            scrollPercent =  (float)contextRect.w/(float)fullRect.w;
-            scrollDisplayPixels = (float)(barBox.w)*scrollPercent;
-            scrollXPos = (float)(contextRect.x)/(float)(fullRect.w)*(float)barBox.w;
-        }
-        else
-        {
-            scrollPercent = 1;
-            scrollDisplayPixels = barBox.w;
-            scrollXPos = 0;
-            doWork = false;
-            contextRect.x = 0;
-        }
-    }
+
+    calculate_sizing();
+
 
     float prevPosition = scrollXPos;
     hasMoved = false;
     isHeldOn = false;
     if( doWork)
     {
-        if( point_within(userInput->mouse_x,userInput->mouse_y,viewedSpace->x+barBox.x-cam->x,viewedSpace->y+barBox.y-cam->y,viewedSpace->x+barBox.x+barBox.w-cam->x,viewedSpace->y+barBox.y+barBox.h-cam->y) )
+        if( point_within(input->mouse_x,input->mouse_y,viewedSpace->x+elementBox.x-cam->x,viewedSpace->y+elementBox.y-cam->y,viewedSpace->x+elementBox.x+elementBox.w-cam->x,viewedSpace->y+elementBox.y+elementBox.h-cam->y) )
         {
-            if( userInput->check_mouse_pressed(0 ) )
+            if( input->check_mouse_pressed(0 ) )
             {
                 isOnScrollBox = true;
                 isHeldOn = false;
             }
-            else if( userInput->check_mouse_down(0 ) )
+            else if( input->check_mouse_down(0 ) )
             {
                 if( !isOnScrollBox)
                 {
@@ -1630,17 +1241,17 @@ void GPE_ScrollBar_XAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam, b
                 }
             }
         }
-        else if( userInput->check_mouse_released(-1) )
+        else if( input->check_mouse_released(-1) )
         {
             isOnScrollBox = false;
             isHeldOn = false;
         }
 
-        if(viewedSpace->x+barBox.x-cam->x <= userInput->mouse_x && userInput->mouse_x <= viewedSpace->x+barBox.x+barBox.w-cam->x )
+        if(viewedSpace->x+elementBox.x-cam->x <= input->mouse_x && input->mouse_x <= viewedSpace->x+elementBox.x+elementBox.w-cam->x )
         {
-            if( userInput->check_mouse_down(0 ) && isOnScrollBox)
+            if( input->check_mouse_down(0 ) && isOnScrollBox)
             {
-                mouseXScrolPos = userInput->mouse_x - viewedSpace->x-barBox.x-cam->x; //translates mouse coords to viewed space coords
+                mouseXScrolPos = input->mouse_x - viewedSpace->x-elementBox.x-cam->x; //translates mouse coords to viewed space coords
                 if( isOnScrollBox)
                 {
                     scrollXPos = mouseXScrolPos;
@@ -1653,11 +1264,11 @@ void GPE_ScrollBar_XAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam, b
             isHeldOn = false;
         }
 
-        if( userInput->check_mouse_released(0) || userInput->check_mouse_released(1))
+        if( input->check_mouse_released(0) || input->check_mouse_released(1))
         {
             if( isOnScrollBox)
             {
-                userInput->reset_all_input();
+                input->reset_all_input();
             }
             isOnScrollBox = false;
             isHeldOn = false;
@@ -1665,9 +1276,9 @@ void GPE_ScrollBar_XAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam, b
 
         if( autoCorrect)
         {
-            if( scrollXPos > barBox.w- scrollDisplayPixels)
+            if( scrollXPos > elementBox.w- scrollDisplayPixels)
             {
-                scrollXPos = barBox.w- scrollDisplayPixels;
+                scrollXPos = elementBox.w- scrollDisplayPixels;
             }
 
             if( scrollXPos < 0)
@@ -1677,7 +1288,7 @@ void GPE_ScrollBar_XAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam, b
         }
 
         prevPosition = contextRect.x;
-        contextRect.x =  ( scrollXPos/barBox.w )*fullRect.w;
+        contextRect.x =  ( scrollXPos/elementBox.w )*fullRect.w;
 
         if( contextRect.x!=prevPosition)
         {
@@ -1687,7 +1298,7 @@ void GPE_ScrollBar_XAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam, b
     else
     {
         scrollPercent = 1;
-        scrollDisplayPixels = barBox.w;
+        scrollDisplayPixels = elementBox.w;
         scrollXPos = 0;
         contextRect.x = 0;
         //hasMoved = true;
@@ -1695,33 +1306,32 @@ void GPE_ScrollBar_XAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam, b
 
 }
 
-void GPE_ScrollBar_XAxis::render_self(GPE_Renderer *  cRender, GPE_Rect * viewedSpace, GPE_Rect * cam)
+void GPE_ScrollBar_XAxis::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 {
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
-    if( cRender==NULL)
+
+    if( cam!=NULL && viewedSpace!=NULL)
     {
-        cRender = MAIN_RENDERER;
-    }
-    if( cRender!=NULL && cam!=NULL && viewedSpace!=NULL)
-    {
-        render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Scroll_Box_Color,false);
-        render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Scroll_Box_Border_Color,true);
+        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Scroll_Box_Color,false);
+        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Scroll_Box_Border_Color,true);
         int scrollRenderPixels = scrollDisplayPixels;
-        if( scrollRenderPixels < barBox.h)
+        if( scrollRenderPixels < elementBox.h)
         {
-            scrollRenderPixels = barBox.h;
+            scrollRenderPixels = elementBox.h;
         }
         if( isOnScrollBox )
         {
-            render_rectangle(cRender,barBox.x+scrollXPos-cam->x,barBox.y-cam->y,barBox.x+scrollXPos+scrollRenderPixels-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Scroll_Box_Camera_Highlight_Color,false);
+            gpe->render_rectangle( elementBox.x+scrollXPos-cam->x,elementBox.y-cam->y,elementBox.x+scrollXPos+scrollRenderPixels-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Scroll_Box_Camera_Highlight_Color,false);
         }
         else
         {
-            render_rectangle(cRender,barBox.x+scrollXPos-cam->x,barBox.y-cam->y,barBox.x+scrollXPos+scrollRenderPixels-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Scroll_Box_Camera_Color,false);
+            gpe->render_rectangle( elementBox.x+scrollXPos-cam->x,elementBox.y-cam->y,elementBox.x+scrollXPos+scrollRenderPixels-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Scroll_Box_Camera_Color,false);
         }
-        render_sprite_ext(cRender,GPE_TRIANGLE,2,barBox.x+barBox.h/4-cam->x,barBox.y+barBox.h/4-cam->y,barBox.h/2,barBox.h/2, GPE_MAIN_TEMPLATE->Scroll_Box_Arrow_Color );
-        render_sprite_ext(cRender,GPE_TRIANGLE,0,barBox.x+barBox.w-barBox.h*3/4-cam->x,  barBox.y+barBox.h/4-cam->y,barBox.h/2,barBox.h/2,GPE_MAIN_TEMPLATE->Scroll_Box_Arrow_Color );
+        render_animation_ext( GPE_TRIANGLE,2,
+                             elementBox.x+elementBox.h/4-cam->x,elementBox.y+elementBox.h/4-cam->y,
+                             elementBox.h/2,elementBox.h/2, GPE_MAIN_THEME->Scroll_Box_Arrow_Color );
+        render_animation_ext( GPE_TRIANGLE,0,elementBox.x+elementBox.w-elementBox.h*3/4-cam->x,  elementBox.y+elementBox.h/4-cam->y,elementBox.h/2,elementBox.h/2,GPE_MAIN_THEME->Scroll_Box_Arrow_Color );
     }
 }
 
@@ -1729,19 +1339,20 @@ void GPE_ScrollBar_XAxis::reset_scroller()
 {
     hasMoved = false;
     isOnScrollBox = false;
-    barBox.x = 0;
-    barBox.y = 0;
-    barBox.w = 0;
-    barBox.h = 0;
+    elementBox.x = 0;
+    elementBox.y = 0;
+    elementBox.w = 0;
+    elementBox.h = 0;
 }
 
 GPE_ScrollBar_YAxis::GPE_ScrollBar_YAxis()
 {
+    autoCorrect = true;
     documentActions = false;
-    barBox.x = 0;
-    barBox.y = 0;
-    barBox.w = 16;
-    barBox.h = 16;
+    elementBox.x = 0;
+    elementBox.y = 0;
+    elementBox.w = 16;
+    elementBox.h = 16;
 
     contextRect.x = fullRect.x = 0;
     contextRect.y = fullRect.y = 0;
@@ -1765,14 +1376,40 @@ GPE_ScrollBar_YAxis::~GPE_ScrollBar_YAxis()
 
 }
 
+bool GPE_ScrollBar_YAxis::calculate_sizing()
+{
+    //calculates the height needed to be scrolled.
+    if( fullRect.h!=0)
+    {
+        if( contextRect.h < fullRect.h)
+        {
+            scrollPercent =  contextRect.h/fullRect.h;
+            scrollDisplayPixels = (elementBox.h)*scrollPercent;
+            scrollYPos = ( contextRect.y/fullRect.h )*elementBox.h;
+        }
+        else
+        {
+            scrollPercent = 1;
+            scrollDisplayPixels = elementBox.h;
+            scrollYPos = 0;
+            return false;
+        }
+    }
+    else
+    {
+        return false;
+    }
+    return true;
+}
+
 int GPE_ScrollBar_YAxis::get_box_width()
 {
-    return barBox.w;
+    return elementBox.w;
 }
 
 int GPE_ScrollBar_YAxis::get_box_height()
 {
-    return barBox.h;
+    return elementBox.h;
 }
 
 bool GPE_ScrollBar_YAxis::has_moved()
@@ -1790,51 +1427,31 @@ bool GPE_ScrollBar_YAxis::is_scrolling()
     return isOnScrollBox;
 }
 
-void GPE_ScrollBar_YAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool autoCorrect)
+void GPE_ScrollBar_YAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
     bool doWork = true;
     if( viewedSpace!=NULL && cam!=NULL )
     {
-        //calculates the height needed to be scrolled.
-        if( fullRect.h!=0)
-        {
-            if( contextRect.h < fullRect.h)
-            {
-                scrollPercent =  contextRect.h/fullRect.h;
-                scrollDisplayPixels = (barBox.h)*scrollPercent;
-                scrollYPos = ( contextRect.y/fullRect.h )*barBox.h;
-            }
-            else
-            {
-                scrollPercent = 1;
-                scrollDisplayPixels = barBox.h;
-                scrollYPos = 0;
-                doWork = false;
-            }
-        }
-        else
-        {
-            doWork = false;
-        }
+        doWork = calculate_sizing();
         hasMoved = false;
         isHeldOn = false;
         if( doWork)
         {
-            if( point_between(userInput->mouse_x,userInput->mouse_y,barBox.x+viewedSpace->x-cam->x,barBox.y+viewedSpace->y-cam->y,barBox.x+barBox.w+viewedSpace->x-cam->x,barBox.y+barBox.h+viewedSpace->y-cam->y) )
+            if( point_between(input->mouse_x,input->mouse_y,elementBox.x+viewedSpace->x-cam->x,elementBox.y+viewedSpace->y-cam->y,elementBox.x+elementBox.w+viewedSpace->x-cam->x,elementBox.y+elementBox.h+viewedSpace->y-cam->y) )
             {
-                if( userInput->check_mouse_pressed(0 ) )
+                if( input->check_mouse_pressed(0 ) )
                 {
                     isOnScrollBox = true;
                 }
             }
 
-            if(barBox.y+viewedSpace->y-cam->y <= userInput->mouse_y && userInput->mouse_y <= barBox.y+barBox.h+viewedSpace->y-cam->y )
+            if(elementBox.y+viewedSpace->y-cam->y <= input->mouse_y && input->mouse_y <= elementBox.y+elementBox.h+viewedSpace->y-cam->y )
             {
-                if( userInput->check_mouse_down(0 ) && isOnScrollBox)
+                if( input->check_mouse_down(0 ) && isOnScrollBox)
                 {
-                    mouseYScrolPos = userInput->mouse_y - viewedSpace->y-barBox.y+cam->y; //translates mouse coords to viewed space coords
+                    mouseYScrolPos = input->mouse_y - viewedSpace->y-elementBox.y+cam->y; //translates mouse coords to viewed space coords
                     if( isOnScrollBox)
                     {
                         scrollYPos = mouseYScrolPos;
@@ -1852,11 +1469,11 @@ void GPE_ScrollBar_YAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam, b
                 isHeldOn = false;
             }
 
-            if( userInput->check_mouse_released(0) || userInput->check_mouse_released(1))
+            if( input->check_mouse_released(0) || input->check_mouse_released(1))
             {
                 if( isOnScrollBox)
                 {
-                    userInput->reset_all_input();
+                    input->reset_all_input();
                 }
                 isOnScrollBox = false;
                 isHeldOn = false;
@@ -1864,9 +1481,9 @@ void GPE_ScrollBar_YAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam, b
             float prevPosition = contextRect.y;
             //if( scrollPercent)
             {
-                if( scrollYPos+scrollDisplayPixels > barBox.h )
+                if( scrollYPos+scrollDisplayPixels > elementBox.h )
                 {
-                    scrollYPos = barBox.h- scrollDisplayPixels;
+                    scrollYPos = elementBox.h- scrollDisplayPixels;
                 }
 
                 if( scrollYPos < 0)
@@ -1874,7 +1491,7 @@ void GPE_ScrollBar_YAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam, b
                     scrollYPos = 0;
                 }
             }
-            contextRect.y =  ( scrollYPos/barBox.h )*fullRect.h;
+            contextRect.y =  ( scrollYPos/elementBox.h )*fullRect.h;
 
             //if( autoCorrect)
             {
@@ -1896,36 +1513,39 @@ void GPE_ScrollBar_YAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam, b
         else
         {
             scrollPercent = 1;
-            scrollDisplayPixels = barBox.h;
+            scrollDisplayPixels = elementBox.h;
             scrollYPos = 0;
             contextRect.y = 0;
         }
     }
 }
 
-void GPE_ScrollBar_YAxis::render_self(GPE_Renderer *  cRender, GPE_Rect * viewedSpace, GPE_Rect * cam)
+void GPE_ScrollBar_YAxis::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( viewedSpace!=NULL && cam!=NULL )
     {
-        render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Scroll_Box_Color,false);
-        render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Scroll_Box_Border_Color,true);
+        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Scroll_Box_Color,false);
+        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Scroll_Box_Border_Color,true);
         int scrollRenderPixels = scrollDisplayPixels;
-        if( scrollRenderPixels < barBox.w)
+        if( scrollRenderPixels < elementBox.w)
         {
-            scrollRenderPixels = barBox.w;
+            scrollRenderPixels = elementBox.w;
         }
         if( isOnScrollBox )
         {
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y+scrollYPos-cam->y,barBox.x+barBox.w-cam->x,barBox.y+scrollYPos+scrollRenderPixels-cam->y,GPE_MAIN_TEMPLATE->Scroll_Box_Camera_Highlight_Color,false);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y+scrollYPos-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+scrollYPos+scrollRenderPixels-cam->y,GPE_MAIN_THEME->Scroll_Box_Camera_Highlight_Color,false);
         }
         else
         {
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y+scrollYPos-cam->y,barBox.x+barBox.w-cam->x,barBox.y+scrollYPos+scrollRenderPixels-cam->y,GPE_MAIN_TEMPLATE->Scroll_Box_Camera_Color,false);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y+scrollYPos-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+scrollYPos+scrollRenderPixels-cam->y,GPE_MAIN_THEME->Scroll_Box_Camera_Color,false);
         }
-        render_sprite_ext(cRender,GPE_TRIANGLE,1,barBox.x+barBox.w/4-cam->x,barBox.y+barBox.w/4,barBox.w/2-cam->y,barBox.w/2,GPE_MAIN_TEMPLATE->Scroll_Box_Arrow_Color);
-        render_sprite_ext(cRender,GPE_TRIANGLE,3,barBox.x+barBox.w/4-cam->x,barBox.y+barBox.h-barBox.w*3/4-cam->y,barBox.w/2,barBox.w/2,GPE_MAIN_TEMPLATE->Scroll_Box_Arrow_Color);
+        render_animation_ext( GPE_TRIANGLE,1,
+                             elementBox.x+elementBox.w/4-cam->x,elementBox.y+elementBox.w/4-cam->y,
+                             elementBox.w/2,elementBox.w/2,
+                             GPE_MAIN_THEME->Scroll_Box_Arrow_Color);
+        render_animation_ext( GPE_TRIANGLE,3,elementBox.x+elementBox.w/4-cam->x,elementBox.y+elementBox.h-elementBox.w*3/4-cam->y,elementBox.w/2,elementBox.w/2,GPE_MAIN_THEME->Scroll_Box_Arrow_Color);
     }
 }
 
@@ -1933,19 +1553,19 @@ void GPE_ScrollBar_YAxis::reset_scroller()
 {
     isOnScrollBox = false;
     hasMoved = false;
-    barBox.x = 0;
-    barBox.y = 0;
-    barBox.w = 0;
-    barBox.h = 0;
+    elementBox.x = 0;
+    elementBox.y = 0;
+    elementBox.w = 0;
+    elementBox.h = 0;
 
 }
 
 GPE_GeneralGuiElement::GPE_GeneralGuiElement()
 {
-    barBox.x =0;
-    barBox.y = 0;
-    barBox.w = 0;
-    barBox.h = 0;
+    elementBox.x =0;
+    elementBox.y = 0;
+    elementBox.w = 0;
+    elementBox.h = 0;
     maxWidth = 0;
     maxHeight = 0;
     autoResizes = false;
@@ -2004,7 +1624,7 @@ void GPE_GeneralGuiElement::enable_self()
 
 int GPE_GeneralGuiElement::get_height()
 {
-    return barBox.h;
+    return elementBox.h;
 }
 
 int GPE_GeneralGuiElement::get_max_height()
@@ -2049,28 +1669,28 @@ void GPE_GeneralGuiElement::remove_data(std::string dataString)
 
 int GPE_GeneralGuiElement::get_width()
 {
-    return barBox.w;
+    return elementBox.w;
 }
 
 int GPE_GeneralGuiElement::get_xpos()
 {
-    return barBox.x;
+    return elementBox.x;
 
 }
 
 int GPE_GeneralGuiElement::get_x2pos()
 {
-    return barBox.x+barBox.w;
+    return elementBox.x+elementBox.w;
 }
 
 int GPE_GeneralGuiElement::get_ypos()
 {
-    return barBox.y;
+    return elementBox.y;
 }
 
 int GPE_GeneralGuiElement::get_y2pos()
 {
-    return barBox.y+barBox.h;
+    return elementBox.y+elementBox.h;
 }
 
 bool GPE_GeneralGuiElement::is_clicked()
@@ -2098,11 +1718,11 @@ void GPE_GeneralGuiElement::move_pos(int newX, int newY)
 {
     if( newX!=0)
     {
-        barBox.x += newX;
+        elementBox.x += newX;
     }
     if(newY!=0)
     {
-        barBox.y += newY;
+        elementBox.y += newY;
     }
 }
 
@@ -2119,9 +1739,9 @@ void GPE_GeneralGuiElement::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
         cam = GPE_find_camera(cam);
         if(viewedSpace!=NULL && cam!=NULL)
         {
-            if( point_between(userInput->mouse_x,userInput->mouse_y,viewedSpace->x,viewedSpace->y,viewedSpace->x+viewedSpace->w,viewedSpace->y+viewedSpace->h) )
+            if( point_between(input->mouse_x,input->mouse_y,viewedSpace->x,viewedSpace->y,viewedSpace->x+viewedSpace->w,viewedSpace->y+viewedSpace->h) )
             {
-                if (point_between(userInput->mouse_x,userInput->mouse_y,barBox.x+viewedSpace->x-cam->x,barBox.y+viewedSpace->y-cam->y,barBox.x+barBox.w+viewedSpace->x-cam->x,barBox.y+barBox.h+viewedSpace->y-cam->y) )
+                if (point_between(input->mouse_x,input->mouse_y,elementBox.x+viewedSpace->x-cam->x,elementBox.y+viewedSpace->y-cam->y,elementBox.x+elementBox.w+viewedSpace->x-cam->x,elementBox.y+elementBox.h+viewedSpace->y-cam->y) )
                 {
                     isHovered = true;
                     if( MAIN_OVERLAY!=NULL)
@@ -2135,19 +1755,19 @@ void GPE_GeneralGuiElement::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                             MAIN_OVERLAY->update_tooltip(opName);
                         }
                     }
-                    if( userInput->check_mouse_released(0) )
+                    if( input->check_mouse_released(0) )
                     {
                         isClicked = true;
                         isInUse = true;
                     }
 
-                    if( userInput->check_mouse_pressed(1) )
+                    if( input->check_mouse_pressed(1) )
                     {
                         isRightClicked = true;
                         isInUse = true;
                     }
                 }
-                else if( userInput->check_mouse_pressed(-1) || userInput->check_mouse_released(-1) )
+                else if( input->check_mouse_pressed(-1) || input->check_mouse_released(-1) )
                 {
                     clickedOutside = true;
                     isInUse = false;
@@ -2155,7 +1775,7 @@ void GPE_GeneralGuiElement::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                     hasArrowkeyControl = false;
                 }
             }
-            else if( userInput->check_mouse_pressed(-1)  || userInput->check_mouse_released(-1) )
+            else if( input->check_mouse_pressed(-1)  || input->check_mouse_released(-1) )
             {
                 clickedOutside = true;
                 isInUse = false;
@@ -2166,14 +1786,24 @@ void GPE_GeneralGuiElement::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     }
 }
 
-void GPE_GeneralGuiElement::prerender_self(GPE_Renderer * cRender)
+void GPE_GeneralGuiElement::prerender_self( )
 {
 
 }
 
-void GPE_GeneralGuiElement::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_GeneralGuiElement::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
 {
 
+}
+
+void GPE_GeneralGuiElement::scale_height(double scaleH)
+{
+    set_height( elementBox.h * scaleH);
+}
+
+void GPE_GeneralGuiElement::scale_width(double scaleW)
+{
+    set_width( elementBox.w* scaleW);
 }
 
 void GPE_GeneralGuiElement::set_name(std::string newName)
@@ -2185,29 +1815,29 @@ void GPE_GeneralGuiElement::set_coords(int newX, int newY)
 {
     if( newX!=-1)
     {
-        barBox.x = newX;
+        elementBox.x = newX;
     }
     if(newY!=-1)
     {
-        barBox.y = newY;
+        elementBox.y = newY;
     }
 }
 
 void GPE_GeneralGuiElement::set_max_width( int nMW)
 {
     maxWidth = nMW;
-    if( maxWidth > 0 && barBox.w > maxWidth)
+    if( maxWidth > 0 && elementBox.w > maxWidth)
     {
-        barBox.w = maxWidth;
+        elementBox.w = maxWidth;
     }
 }
 
 void GPE_GeneralGuiElement::set_max_height( int nMH)
 {
     maxHeight = nMH;
-    if( maxHeight > 0 && barBox.h > maxHeight)
+    if( maxHeight > 0 && elementBox.h > maxHeight)
     {
-        barBox.h = maxHeight;
+        elementBox.h = maxHeight;
     }
 }
 
@@ -2224,10 +1854,10 @@ void GPE_GeneralGuiElement::set_rightclicked( bool clickedVal)
 
 void GPE_GeneralGuiElement::set_height(int newHeight)
 {
-    barBox.h = newHeight;
-    /*if(barBox.y+barBox.h > SCREEN_HEIGHT)
+    elementBox.h = newHeight;
+    /*if(elementBox.y+elementBox.h > SCREEN_HEIGHT)
     {
-        barBox.h = SCREEN_HEIGHT-barBox.y;
+        elementBox.h = SCREEN_HEIGHT-elementBox.y;
     }*/
 }
 
@@ -2238,21 +1868,230 @@ void GPE_GeneralGuiElement::set_hovered(bool hoverVal)
 
 void GPE_GeneralGuiElement::set_width(int newWid)
 {
-    barBox.w = newWid;
+    elementBox.w = newWid;
 }
 
+GPE_GuiElementRow::GPE_GuiElementRow()
+{
+    inDebugMode = false;
+    elementBox.x = 0;
+    elementBox.y = 0;
+    elementBox.w = 0;
+    elementBox.h = 0;
+    hAlign = FA_LEFT;
+    vAlign = FA_TOP;
+    barXPadding = 0;
+    barYPadding = 0;
+    outterWidth = 0;
+    outterHeight = 0;
+    /*barXMargin = 0;
+    barYMargin = 0;*/
+}
+
+GPE_GuiElementRow::~GPE_GuiElementRow()
+{
+    clear_list();
+}
+
+void GPE_GuiElementRow::add_gui_element(GPE_GeneralGuiElement *  newElement )
+{
+    subOptions.push_back( newElement );
+}
+
+void GPE_GuiElementRow::clear_list()
+{
+    /*
+    GPE_GeneralGuiElement * tempItem = NULL;
+    for( int i = 0; (int)subOptions.size(); i++)
+    {
+        tempItem = subOptions[i];
+        if( tempItem!=NULL )
+        {
+            delete tempItem;
+            tempItem = NULL;
+        }
+    }*/
+    subOptions.clear();
+}
+
+//Correct width issue
+void GPE_GuiElementRow::set_coords(int newX, int newY)
+{
+    elementBox.x = newX;
+    elementBox.y = newY;
+    elementBox.w = 0;
+    elementBox.h = 0;
+    //For now we just gonna assume is all fa_left until its time to fix it
+    GPE_GeneralGuiElement * cContainer = NULL;
+    int tempX = newX;
+    int tempY = newY;//+barYPadding;
+    int i;
+    int optionsSize = (int)subOptions.size();
+    int maxHeight = 0;
+
+    //Does horizontal align calculations
+    if( hAlign==FA_RIGHT || hAlign == FA_CENTER  )
+    {
+        int foundRowWidth = 0;
+        for( i=0; i<optionsSize;i++)
+        {
+            cContainer = subOptions[i];
+            if(cContainer!=NULL)
+            {
+                if( cContainer->get_element_type() == "paragraph" )
+                {
+                    cContainer->set_width(elementBox.w - (barXPadding)*2 );
+                    foundRowWidth = cContainer->get_width();
+                    break;
+                }
+                else
+                {
+                    foundRowWidth+=cContainer->get_width()+barXPadding;
+                }
+            }
+        }
+
+        if( hAlign==FA_RIGHT)
+        {
+            tempX += outterWidth - foundRowWidth;
+        }
+        else if(hAlign == FA_CENTER  )
+        {
+            tempX += abs( outterWidth - foundRowWidth )/2;
+        }
+    }
+    else
+    {
+        //defaults to left align( FA_LEFT )
+        elementBox.w = outterWidth;
+    }
+
+    //Does vertical align calculations
+    //and actually sets coordinates
+    int cHeight = 0;
+    elementBox.w = 0;
+    if( vAlign == FA_MIDDLE)
+    {
+        for( i = 0; i < optionsSize; i++)
+        {
+            cContainer = subOptions[i];
+            if( cContainer!=NULL )
+            {
+                cHeight = cContainer->get_height();
+                if(cContainer->autoResizes)
+                {
+                    //cContainer->set_width( elementBox.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
+                }
+
+                if( cHeight > elementBox.h)
+                {
+                    elementBox.h = cContainer->get_height();
+                    cContainer->set_coords(tempX, tempY  );
+                }
+                else
+                {
+                    cContainer->set_coords(tempX, tempY + abs( elementBox.h - cHeight ) /2 );
+                }
+                tempX+=barXPadding+cContainer->get_width();
+                elementBox.w+= barXPadding + cContainer->get_width();
+            }
+        }
+    }
+    else if( vAlign == FA_BOTTOM )
+    {
+        for( i = 0; i < optionsSize; i++)
+        {
+            cContainer = subOptions[i];
+            if( cContainer!=NULL )
+            {
+                cHeight = cContainer->get_height();
+                if(cContainer->autoResizes)
+                {
+                    //cContainer->set_width( elementBox.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
+                }
+                if( cHeight > elementBox.h)
+                {
+                    elementBox.h = cHeight;
+                    cContainer->set_coords(tempX, tempY );
+                }
+                else
+                {
+                    cContainer->set_coords(tempX, tempY + (elementBox.h - cHeight) );
+                }
+                tempX+=barXPadding+cContainer->get_width();
+                elementBox.w+= barXPadding + cContainer->get_width();
+            }
+        }
+    }
+    else
+    {
+        //defaults to FA_TOP
+        for( i = 0; i < optionsSize; i++)
+        {
+            cContainer = subOptions[i];
+            if( cContainer!=NULL )
+            {
+                cContainer->set_coords(tempX, tempY );
+                if(cContainer->autoResizes)
+                {
+                    //cContainer->set_width( elementBox.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
+                }
+                tempX+=barXPadding+cContainer->get_width();
+                if( cContainer->get_height() > elementBox.h)
+                {
+                    elementBox.h = cContainer->get_height();
+                }
+                elementBox.w+= barXPadding + cContainer->get_width();
+            }
+        }
+    }
+}
+
+void GPE_GuiElementRow::set_full_width( int maxRowWidth )
+{
+
+}
+
+void GPE_GuiElementRow::set_horizontal_align(int hValue)
+{
+    hAlign = hValue;
+}
+
+void GPE_GuiElementRow::set_vertical_align(int vValue)
+{
+    vAlign = vValue;
+}
+
+void GPE_GuiElementRow::set_full_width()
+{
+
+}
+
+void GPE_GuiElementRow::set_maxed_out_width()
+{
+
+}
+
+void set_maxed_out_height()
+{
+
+}
 
 GPE_GuiElementList::GPE_GuiElementList()
 {
-    hideXScroll = false;
-    hideYScroll = false;
-    cameraBox.x = menuBox.x = entireBox.x = barBox.x = 0;
-    cameraBox.y = menuBox.y = entireBox.y = barBox.y = 0;
-    cameraBox.w = menuBox.w = entireBox.w = barBox.w;
-    cameraBox.h = menuBox.h = entireBox.h = barBox.h = RESOURCE_kb_AREA_HEIGHT*3;
+    inDebugMode = false;
+    rowWithViewId = 0;
+    optionWithViewId = 0;
+    newRowRequested = false;
+    hideXScroll = true;
+    hideYScroll = true;
+    cameraBox.x = menuBox.x = entireBox.x = elementBox.x = 0;
+    cameraBox.y = menuBox.y = entireBox.y = elementBox.y = 0;
+    cameraBox.w = menuBox.w = entireBox.w = elementBox.w;
+    cameraBox.h = menuBox.h = entireBox.h = elementBox.h = RESOURCE_AREA_HEIGHT*3;
     xScroll = new GPE_ScrollBar_XAxis();
     yScroll = new GPE_ScrollBar_YAxis();
-    cameraBox.w = menuBox.w = entireBox.w = barBox.w - yScroll->get_box_width();
+    cameraBox.w = menuBox.w = entireBox.w = elementBox.w - yScroll->get_box_width();
     barXPadding = GENERAL_GPE_PADDING*2;
     barYPadding = GENERAL_GPE_PADDING*2;
     barXMargin = 0;
@@ -2262,7 +2101,6 @@ GPE_GuiElementList::GPE_GuiElementList()
     subElementsIsScrolling = false;
     hAlign = FA_LEFT;
     vAlign = FA_TOP;
-    optionWithViewId = 0;
     guiListTypeName = "guilist";
     tabDelay = 0;
     leserKeyDelay = 0;
@@ -2285,34 +2123,66 @@ GPE_GuiElementList::~GPE_GuiElementList()
         delete yScroll;
         yScroll = NULL;
     }
-    subOptions.clear();
+    clear_list();
 }
 
 void GPE_GuiElementList::add_gui_element(GPE_GeneralGuiElement *  newElement, bool isNLElement)
 {
     if( newElement!=NULL)
     {
+        GPE_GuiElementRow *  currentRow = NULL;
         newElement->hasLineBreak = isNLElement;
-        /*
-        if( isNLElement)
+        int rowSize = (int)subRows.size();
+
+        if(  rowSize == 0 || newRowRequested )
         {
-            newElement->hasLineBreak = true;
+            currentRow = new GPE_GuiElementRow();
+            currentRow->hAlign = hAlign;
+            currentRow->vAlign = vAlign;
+            subRows.push_back( currentRow );
         }
         else
         {
-
+            currentRow = subRows[ rowSize -1 ];
         }
-        */
-        subOptions.push_back( newElement);
+
+        if( currentRow !=NULL )
+        {
+            currentRow->add_gui_element( newElement );
+        }
+        //Reverts to old method temporarily
+        allElements.push_back( newElement );
+        if( newElement->hasLineBreak || newElement->get_element_type() == "labelimage" || newElement->get_element_type() == "paragraph" )
+        {
+            isNLElement = true;
+        }
+        newRowRequested = isNLElement;
     }
 }
 
 void GPE_GuiElementList::clear_list()
 {
-    subOptions.clear();
-    cameraBox.w = menuBox.w = entireBox.w = barBox.w;
-    cameraBox.h = menuBox.h = entireBox.h = barBox.h;
+    allElements.clear();
+    cameraBox.w = menuBox.w = entireBox.w = elementBox.w;
+    cameraBox.h = menuBox.h = entireBox.h = elementBox.h;
 
+    GPE_GuiElementRow * tempRow = NULL;
+    for( int i = (int)subRows.size()-1; i>=0; i--)
+    {
+        tempRow = subRows[i];
+        if( tempRow!=NULL )
+        {
+            delete tempRow;
+            tempRow = NULL;
+        }
+    }
+    subRows.clear();
+    newRowRequested = true;
+    subElementsHasArrowControl = false;
+    subElementsIsScrolling = false;
+    newRowRequested = false;
+    rowWithViewId = -1;
+    optionWithViewId = -1;
 }
 
 void GPE_GuiElementList::scroll_down(int yToMove )
@@ -2371,6 +2241,11 @@ void GPE_GuiElementList::scroll_right(int xToMove )
     {
         cameraBox.x+=xToMove;
     }
+    else
+    {
+        cameraBox.x = 0;
+    }
+
     if( cameraBox.x+cameraBox.w > entireBox.w )
     {
         cameraBox.x = entireBox.w-cameraBox.w;
@@ -2385,9 +2260,33 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-
+    if( inDebugMode)
+    {
+        record_error("Starting to process GPE_GuiElementList...");
+    }
     GPE_GeneralGuiElement::process_self(viewedSpace,cam);
-    if( isClicked)
+    xScroll->set_coords( elementBox.x, elementBox.h-16);
+    xScroll->set_width( elementBox.w );
+    xScroll->set_height( 16);
+
+    yScroll->set_coords( elementBox.w-16, elementBox.y );
+    yScroll->set_width( 16 );
+    yScroll->set_height( elementBox.h );
+     //Handles row / option in view
+    GPE_GuiElementRow * cRow = NULL;
+    GPE_GeneralGuiElement * cContainer = NULL;
+    GPE_GeneralGuiElement * containerInControl = NULL;
+    int lastContainerRowControlId = -1;
+    int lastContainerInControlId = -1;
+    int i = 0, j = 0;
+    int pastRowChange = 0;
+    int currentRowCount = (int)subRows.size();
+    int rowOptionsCount = 0;
+    if( inDebugMode)
+    {
+        record_error("["+int_to_string(currentRowCount)+"] unique rows gathered...");
+    }
+    if( isClicked )
     {
         //if( RESOURCE_TO_DRAG==NULL)
         {
@@ -2396,48 +2295,43 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
             hasArrowkeyControl = true;
         }
     }
-    else if( clickedOutside)
+    else if( clickedOutside )
     {
         isInUse = false;
         hasScrollControl = false;
         hasArrowkeyControl = false;
     }
-    else if( !isInUse)
+    else if( !isInUse )
     {
         hasScrollControl = false;
     }
     entireBox.x = 0;
     entireBox.y = 0;
-    entireBox.w = (barXPadding+barXMargin)*2;
-    entireBox.h = (barYPadding+barYMargin)*2;
+    entireBox.w = (barXMargin)*2;
+    entireBox.h = (barYMargin)*2;
 
-    menuBox.x = barBox.x+viewedSpace->x;
-    menuBox.y = barBox.y+viewedSpace->y;
-    if( hideXScroll)
+    menuBox.x = elementBox.x+viewedSpace->x;
+    menuBox.y = elementBox.y+viewedSpace->y;
+    if( hideXScroll )
     {
-        cameraBox.w = menuBox.w = barBox.w;
+        cameraBox.w = menuBox.w = elementBox.w;
     }
     else
     {
-        cameraBox.w = menuBox.w = barBox.w-16;
+        cameraBox.w = menuBox.w = elementBox.w-16;
     }
+
     if( hideYScroll)
     {
-        cameraBox.h = menuBox.h = barBox.h;
+        cameraBox.h = menuBox.h = elementBox.h;
     }
     else
     {
-        cameraBox.h = menuBox.h = barBox.h-16;
+        cameraBox.h = menuBox.h = elementBox.h-16;
     }
     subElementsHasArrowControl = false;
     subElementsIsScrolling = false;
-    int xPos = barXMargin+barXPadding;
-    int yPos = barYMargin+barYPadding;
-    int y2Pos = yPos;
-    int rowWidth = 0;
-    int maxRowWidth = 0;
-    int totalMaxRowWidth = 0;
-    int rowHeight = 0;
+
     bool scrolingHasntOccurred = false;
     if( hideXScroll!=true && hideYScroll!=true )
     {
@@ -2448,14 +2342,11 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
         scrolingHasntOccurred = true;
     }
 
-    GPE_GeneralGuiElement * cContainer = NULL;
-    GPE_GeneralGuiElement * dContainer = NULL;
-    int i = 0;
-    int j = 0;
-    int pastRowChange = 0;
+
+    //Handles keyboard/gamepad input as well as delays
     if( isInUse && hasArrowkeyControl )
     {
-        if( userInput->down[kb_tab] && userInput->pressed[kb_tab]==false && userInput->released[kb_tab]==false )
+        if( input->down[kb_tab] && input->pressed[kb_tab]==false && input->released[kb_tab]==false )
         {
             tabDelay += 0.5;
         }
@@ -2463,50 +2354,50 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
         {
             tabDelay = -1;
         }
-        if( userInput->down[kb_left] && userInput->pressed[kb_left]==false && userInput->released[kb_left]==false )
+        if( input->down[kb_left] && input->pressed[kb_left]==false && input->released[kb_left]==false )
         {
-            leftDelay+=0.5;
+            leftDelay+=1;
         }
         else
         {
             leftDelay = -1;
         }
-        if( userInput->down[kb_right] && userInput->pressed[kb_right]==false && userInput->released[kb_right]==false )
+        if( input->down[kb_right] && input->pressed[kb_right]==false && input->released[kb_right]==false )
         {
-            rightDelay+=0.5;
+            rightDelay+=1;
         }
         else
         {
             rightDelay = -1;
         }
-        if( userInput->down[kb_up] && userInput->pressed[kb_up]==false && userInput->released[kb_up]==false )
+        if( input->down[kb_up] && input->pressed[kb_up]==false && input->released[kb_up]==false )
         {
-            upDelay+=0.5;
+            upDelay+=1;
         }
         else
         {
             upDelay = -1;
         }
-        if(userInput->down[kb_down] && userInput->pressed[kb_down]==false && userInput->released[kb_down]==false )
+        if( input->down[kb_down] && input->pressed[kb_down]==false && input->released[kb_down]==false )
         {
-            downDelay+=0.5;
+            downDelay+=1;
         }
         else
         {
             downDelay = -1;
         }
-        if( userInput->down[kb_comma] && userInput->pressed[kb_comma]==false && userInput->released[kb_comma]==false )
+        if( input->down[kb_comma] && input->pressed[kb_comma]==false && input->released[kb_comma]==false )
         {
-            leserKeyDelay+=0.5;
+            leserKeyDelay+=1;
         }
         else
         {
             leserKeyDelay = -1;
         }
 
-        if( userInput->down[kb_period] && userInput->pressed[kb_period]==false && userInput->released[kb_period]==false )
+        if( input->down[kb_period] && input->pressed[kb_period]==false && input->released[kb_period]==false )
         {
-            greaterKeyDelay+=0.5;
+            greaterKeyDelay+=1;
         }
         else
         {
@@ -2524,184 +2415,225 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
         rightDelay = -1;
     }
 
-    if( hAlign==FA_CENTER)
+    if( inDebugMode)
     {
-        xPos = barXPadding;
-        yPos = barYPadding;
-        y2Pos = yPos;
-        int optionsSize = (int)subOptions.size();
-        for( i=0; i<optionsSize;i++)
-        {
-            cContainer = subOptions[i];
-            if(cContainer!=NULL)
-            {
-                if( cContainer->get_element_type() == "labelimage" )
-                {
-                    cContainer->set_width(barBox.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
-                }
-                else if( cContainer->get_element_type() == "paragraph" )
-                {
-                    cContainer->set_width(barBox.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
-                }
-                if( cContainer->get_height() > rowHeight)
-                {
-                    rowHeight = cContainer->get_height();
-                }
-                rowWidth+=cContainer->get_width()+barXPadding;
-                if( maxRowWidth < rowWidth)
-                {
-                    maxRowWidth = rowWidth;
-                }
-                if( totalMaxRowWidth < maxRowWidth)
-                {
-                    totalMaxRowWidth = maxRowWidth;
-                }
-                if( cContainer->hasLineBreak || i>=optionsSize-1 )
-                {
-                    xPos = barXPadding+abs(maxRowWidth-cameraBox.w)/2;
+        record_error("[Calculating box size...");
+    }
 
-                    for( j = pastRowChange; j <=i; j++)
-                    {
-                        dContainer = subOptions[j];
-                        if(dContainer!=NULL)
-                        {
-                            dContainer->set_coords(xPos, y2Pos);
-                            xPos+=barXPadding+dContainer->get_width();
-                        }
-                    }
-                    pastRowChange = i+1;
-                    //pastRowChange++;
-                    entireBox.h+=rowHeight+barYPadding;
-                    y2Pos+=rowHeight+barYPadding;
-                    rowWidth = 0;
-                    rowHeight = 0;
-                    maxRowWidth = 0;
-                }
-            }
-        }
-        xPos = barXPadding+abs(maxRowWidth-cameraBox.w)/2;
-        y2Pos+=rowHeight+barYPadding;
-        entireBox.h+=rowHeight+barYPadding;
-        pastRowChange++;
-        for( j = pastRowChange; j < (int)subOptions.size(); j++)
+    int xPos = barXMargin+barXPadding;
+    int yPos = barYMargin+barYPadding;
+    int y2Pos = yPos;
+    int rowWidth = 0;
+    int maxRowWidth = 0;
+    int totalMaxRowWidth = 0;
+    int rowHeight = 0;
+    //Sets up the coordinates for the rows and their content
+    xPos = barXMargin+barXPadding;
+    for( i=0; i < currentRowCount; i++)
+    {
+        cRow = subRows[i];
+        if( cRow!=NULL )
         {
-            cContainer = subOptions[j];
-            if(cContainer!=NULL)
+            cRow->barXPadding = barXPadding;
+            cRow->barYPadding = barYPadding;
+
+            cRow->outterWidth = menuBox.w;
+            cRow->outterHeight = menuBox.h;
+            cRow->set_coords(xPos, y2Pos );
+
+            rowHeight = cRow->get_height();
+            y2Pos+=rowHeight+barYPadding;
+            rowWidth = cRow->get_width();
+            if( maxRowWidth < rowWidth)
             {
-                cContainer->set_coords(xPos, y2Pos);
-                /*
-                if( cContainer->get_element_type() == "labelimage" )
-                {
-                    cContainer->set_width(barBox.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
-                }
-                else if( cContainer->get_element_type() == "paragraph" )
-                {
-                    cContainer->set_width(barBox.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
-                }
-                */
-                if(cContainer->autoResizes)
-                {
-                    cContainer->set_width(barBox.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
-                }
-                xPos+=barXPadding+cContainer->get_width();
+                maxRowWidth = rowWidth;
             }
         }
-        entireBox.w = totalMaxRowWidth;
+    }
+
+    entireBox.w = maxRowWidth + (barXMargin+barXPadding)*2;
+    entireBox.h = y2Pos + barYMargin;
+
+    if( entireBox.w > menuBox.w )
+    {
+        hideXScroll = false;
     }
     else
     {
-        for( i=0; i < (int)subOptions.size();i++)
+        hideXScroll = true;
+    }
+
+    if( entireBox.h > menuBox.h )
+    {
+        hideYScroll = false;
+    }
+    else
+    {
+        hideYScroll = true;
+    }
+    if( inDebugMode)
+    {
+        record_error("["+int_to_string(entireBox.w)+"] X ["+int_to_string(entireBox.h)+"] size...");
+    }
+    //Processes each container if they are in focus or not...
+    if( scrolingHasntOccurred )
+    {
+        if( inDebugMode)
         {
-            cContainer = subOptions[i];
-            if(cContainer!=NULL)
+            record_error("Checking rolls for scrolling..." );
+        }
+        for( i=0; i < currentRowCount; i++ )
+        {
+            cRow = subRows[i];
+            if( cRow!=NULL )
             {
-                cContainer->set_coords(xPos, y2Pos);
-                /*
-                if( cContainer->get_element_type() == "labelimage" )
+                rowOptionsCount = (int)cRow->subOptions.size();
+                for( j=0; j < rowOptionsCount; j++ )
                 {
-                    cContainer->set_width(barBox.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
-                }
-                else if( cContainer->get_element_type() == "paragraph" )
-                {
-                    cContainer->set_width(barBox.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
-                }*/
-                if(cContainer->autoResizes)
-                {
-                    cContainer->set_width(barBox.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
-                }
-                if( cContainer->get_height() > rowHeight)
-                {
-                    rowHeight = cContainer->get_height();
-                }
-                rowWidth+=cContainer->get_width()+barXPadding;
-                if( maxRowWidth < rowWidth)
-                {
-                    maxRowWidth = rowWidth+barXPadding;
-                }
-                if( cContainer->hasLineBreak || i==(int)subOptions.size()-1 )
-                {
-                    entireBox.h+=barYMargin+rowHeight+barYPadding;
-                    y2Pos+=rowHeight+barYPadding;
-                    rowWidth = 0;
-                    rowHeight = 0;
-                    xPos = barXMargin+barXPadding;
-                }
-                else
-                {
-                    xPos = barXMargin+barXPadding+rowWidth;
+                    cContainer = cRow->subOptions[j];
+                    if( cContainer!=NULL )
+                    {
+                        if( cContainer->hasScrollControl )
+                        {
+                            subElementsIsScrolling = true;
+                            containerInControl = cContainer;
+                            lastContainerRowControlId = i;
+                            lastContainerInControlId = j;
+                            break;
+                        }
+                        if( cContainer->hasArrowkeyControl )
+                        {
+                            subElementsHasArrowControl = true;
+                            containerInControl = cContainer;
+                            lastContainerRowControlId = i;
+                            lastContainerInControlId = j;
+                            break;
+                        }
+                        if( cContainer->is_inuse() )
+                        {
+                            rowWithViewId = i;
+                            optionWithViewId = j;
+                            containerInControl = cContainer;
+                            lastContainerRowControlId = i;
+                            lastContainerInControlId = j;
+                            break;
+                        }
+                    }
                 }
             }
         }
-        entireBox.w = barXMargin+maxRowWidth;
-    }
-
-    if( scrolingHasntOccurred)
-    {
-        for( i=0; i<(int)subOptions.size();i++)
+        if( inDebugMode)
         {
-            cContainer = subOptions[i];
-            if(cContainer!=NULL)
+            record_error("Done..." );
+        }
+        //locks on one gui item until it is taken out of focus...
+        if( containerInControl!=NULL )
+        {
+            if( inDebugMode)
             {
-                cContainer->process_self(&menuBox,&cameraBox);
-                if( cContainer->hasScrollControl )
+                record_error("Processing selected container..." );
+                record_error("Trying to process "+cContainer->get_element_type() +"..." );
+            }
+            containerInControl->process_self(&menuBox,&cameraBox);
+            if( containerInControl->hasScrollControl==false && containerInControl->hasArrowkeyControl )
+            {
+                containerInControl = NULL;
+                lastContainerInControlId = -1;
+                lastContainerRowControlId = -1;
+            }
+            if( containerInControl!=NULL && containerInControl->is_inuse() == false )
+            {
+                containerInControl = NULL;
+                lastContainerInControlId = -1;
+                lastContainerRowControlId = -1;
+            }
+            if( inDebugMode)
+            {
+                record_error("Done..." );
+            }
+        }
+        //else
+        if( inDebugMode)
+        {
+            record_error("Processing other containers..." );
+        }
+        bool canProcessSelf = true;
+        for( i=0; i < currentRowCount; i++)
+        {
+            cRow = subRows[i];
+            if( cRow!=NULL )
+            {
+                rowOptionsCount = (int)cRow->subOptions.size();
+                for( j=0; j < rowOptionsCount; j++)
                 {
-                    subElementsIsScrolling=true;
-                }
-                if( cContainer->hasArrowkeyControl )
-                {
-                    subElementsHasArrowControl=true;
-                }
-                if( cContainer->is_inuse() )
-                {
-                    optionWithViewId = i;
+                    cContainer = cRow->subOptions[j];
+                    if(cContainer!=NULL)
+                    {
+                        canProcessSelf = true;
+                        if( containerInControl != NULL && lastContainerRowControlId == i && lastContainerInControlId == j )
+                        {
+                            canProcessSelf = false;
+                        }
+
+                        if( canProcessSelf)
+                        {
+                            //record_error("Trying to process "+cContainer->get_element_type() +"..." );
+                            if( inDebugMode)
+                            {
+                                record_error("Trying to process "+cContainer->get_element_type() +"..." );
+                            }
+                            cContainer->process_self(&menuBox,&cameraBox);
+                            if( cContainer->hasScrollControl )
+                            {
+                                subElementsIsScrolling=true;
+                                containerInControl = cContainer;
+
+                            }
+                            if( cContainer->hasArrowkeyControl )
+                            {
+                                subElementsHasArrowControl=true;
+                                containerInControl = cContainer;
+                            }
+                            if( cContainer->is_inuse() )
+                            {
+                                optionWithViewId = j;
+                                rowWithViewId = i;
+                                containerInControl = cContainer;
+                            }
+                        }
+                    }
                 }
             }
+        }
+        if( inDebugMode)
+        {
+            record_error("Done..." );
         }
     }
 
     //if(  isHovered || (isInUse && subElementsIsScrolling==false && hasScrollControl ) )
-    if( isHovered && subElementsIsScrolling==false)
+    if( isHovered && subElementsIsScrolling==false )
     {
-        if( userInput->mouseScrollingUp )
+        if( input->mouseScrollingUp )
         {
-            if( userInput->shiftKeyIsPressed)
+            if( input->shiftKeyIsPressed)
             {
-                scroll_left( cameraBox.w/8);
+                scroll_left( cameraBox.w/4 );
             }
             else
             {
-                scroll_up( cameraBox.h/8);
+                scroll_up( cameraBox.h/4 );
             }
         }
-        else if( userInput->mouseScrollingDown )
+        else if( input->mouseScrollingDown )
         {
-            if( userInput->shiftKeyIsPressed )
+            if( input->shiftKeyIsPressed )
             {
-                scroll_right( cameraBox.w/8);
+                scroll_right( cameraBox.w/4 );
             }
             else
             {
-                scroll_down( cameraBox.h/8);
+                scroll_down( cameraBox.h/4 );
             }
         }
     }
@@ -2710,9 +2642,9 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
 
     if( hasScrollControl && subElementsIsScrolling==false)
     {
-        if( tabDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO || ( !userInput->pressed[kb_tab] && userInput->released[kb_tab] ) && userInput->check_keyboard_down(kb_ctrl)==false )
+        if( tabDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO || ( !input->pressed[kb_tab] && input->released[kb_tab] ) && input->check_keyboard_down(kb_ctrl)==false )
         {
-            if( userInput->shiftKeyIsPressed)
+            if( input->shiftKeyIsPressed)
             {
                 optionWithViewId--;
                 directionChangeRequested = true;
@@ -2724,15 +2656,15 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
             }
             tabDelay = -1;
         }
-        else if( userInput->check_keyboard_down(kb_ctrl) )
+        else if( input->check_keyboard_down(kb_ctrl) )
         {
-            if( leserKeyDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO || ( !userInput->pressed[kb_comma] && userInput->released[kb_comma] ) )
+            if( leserKeyDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO || ( !input->pressed[kb_comma] && input->released[kb_comma] ) )
             {
                 optionWithViewId--;
                 directionChangeRequested = true;
                 leserKeyDelay = -1;
             }
-            else if( greaterKeyDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO || ( !userInput->pressed[kb_period] && userInput->released[kb_period] ) )
+            else if( greaterKeyDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO || ( !input->pressed[kb_period] && input->released[kb_period] ) )
             {
                 optionWithViewId++;
                 directionChangeRequested = true;
@@ -2740,24 +2672,14 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
             }
         }
 
-        if( optionWithViewId < 0)
-        {
-            optionWithViewId = (int)subOptions.size() -1;
-        }
-
-        if( optionWithViewId >= (int)subOptions.size() )
-        {
-            optionWithViewId = 0;
-        }
-
         if( subElementsHasArrowControl==false)
         {
-            if( upDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO || ( !userInput->pressed[kb_up] && userInput->released[kb_up] ) )
+            if( upDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO || ( !input->pressed[kb_up] && input->released[kb_up] ) )
             {
                 scroll_up( cameraBox.h/4 );
                 upDelay = 0;
             }
-            else if( downDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO || ( userInput->pressed[kb_down] && !userInput->released[kb_down] ) )
+            else if( downDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO || ( input->pressed[kb_down] && !input->released[kb_down] ) )
             {
                 scroll_down( cameraBox.h/4 );
                 downDelay = 0;
@@ -2766,116 +2688,160 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
     }
     else if( hasScrollControl && subElementsIsScrolling==false)
     {
-        if( userInput->check_keyboard_down(kb_ctrl) )
+        if( input->check_keyboard_down(kb_ctrl) )
         {
-            if( leserKeyDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO || ( userInput->pressed[kb_comma] && !userInput->released[kb_comma] ) && userInput->check_keyboard_down(kb_ctrl)==false )
+            if( leserKeyDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO || ( input->pressed[kb_comma] && !input->released[kb_comma] ) && input->check_keyboard_down(kb_ctrl)==false )
             {
                 optionWithViewId--;
                 directionChangeRequested = true;
                 leserKeyDelay = -1;
             }
-            else if( greaterKeyDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO || ( userInput->pressed[kb_period] && !userInput->released[kb_period] ) && userInput->check_keyboard_down(kb_ctrl)==false )
+            else if( greaterKeyDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO || ( input->pressed[kb_period] && !input->released[kb_period] ) && input->check_keyboard_down(kb_ctrl)==false )
             {
                 optionWithViewId++;
                 directionChangeRequested = true;
                 greaterKeyDelay = -1;
             }
         }
-        if( optionWithViewId < 0)
-        {
-            optionWithViewId = (int)subOptions.size() -1;
-        }
+    }
 
-        if( optionWithViewId >= (int)subOptions.size() )
+    if( rowWithViewId < 0 )
+    {
+        rowWithViewId = currentRowCount-1;
+        optionWithViewId = 0;
+    }
+
+    if( rowWithViewId >=0 && rowWithViewId < currentRowCount )
+    {
+        selectedRow = subRows[rowWithViewId];
+        if( selectedRow!=NULL )
         {
-            optionWithViewId = 0;
+            //goes up a row or loops to bottom of content
+            if( optionWithViewId < 0 )
+            {
+                rowWithViewId--;
+                if( rowWithViewId >=0 )
+                {
+                    selectedRow = subRows[rowWithViewId];
+                }
+                else if( currentRowCount> 0 )
+                {
+                    rowWithViewId = currentRowCount-1;
+                    selectedRow = subRows[rowWithViewId];
+                }
+
+                if( selectedRow !=NULL )
+                {
+                    optionWithViewId = (int)selectedRow->subOptions.size() -1;
+                }
+                else
+                {
+                    optionWithViewId = 0;
+                }
+
+                /*if( rowWithViewId < 0)
+                {
+                    rowWithViewId = 0;
+                }
+                else
+                {
+                    rowWithViewId = currentRowCount-1;
+                }
+                if( rowWithViewId < 0)
+                {
+                    rowWithViewId= 0;
+                }
+                */
+            }
+            else if( optionWithViewId >= (int)selectedRow->subOptions.size() )
+            {
+                optionWithViewId = 0;
+                //goes down a row
+                rowWithViewId++;
+            }
+
+            if( rowWithViewId >= currentRowCount)
+            {
+                optionWithViewId = 0;
+                rowWithViewId = 0;
+            }
         }
+    }
+    else
+    {
+        rowWithViewId = 0;
+        optionWithViewId = 0;
+    }
+    //Revert to (0,0) if row is out of bounds somehow magically...
+    if( rowWithViewId >= currentRowCount || rowWithViewId < 0 )
+    {
+        rowWithViewId = 0;
+        optionWithViewId = 0;
     }
 
     if( directionChangeRequested)
     {
-        for( i=0; i<(int)subOptions.size();i++)
+        for( i =0; i < (int)currentRowCount; i++)
         {
-            cContainer = subOptions[i];
-            if(cContainer!=NULL)
+            cRow = subRows[i];
+            if( cRow!=NULL )
             {
-                if( optionWithViewId == i)
+                rowOptionsCount = (int)cRow->subOptions.size();
+                for( j =0; j < rowOptionsCount; j++)
                 {
-                    cContainer->switch_inuse( true );
-                    ///cameraBox.x = cContainer->get_xpos()-(barXPadding+barXMargin-totalMaxRowWidth);
-                    if( cameraBox.y > cContainer->get_ypos() || cContainer->get_ypos() > cameraBox.y+cameraBox.h )
+                    cContainer = cRow->subOptions[j];
+                    if(cContainer!=NULL)
                     {
-                        cameraBox.y = cContainer->get_ypos()-(barYPadding+barYMargin);
+                        if( rowWithViewId == i && optionWithViewId == j )
+                        {
+                            cContainer->switch_inuse( true );
+                            ///cameraBox.x = cContainer->get_xpos()-(barXPadding+barXMargin-totalMaxRowWidth);
+                            if( cameraBox.y > cContainer->get_ypos() || cContainer->get_ypos() > cameraBox.y+cameraBox.h )
+                            {
+                                cameraBox.y = cContainer->get_ypos()-(barYPadding+barYMargin);
+                            }
+                        }
+                        else
+                        {
+                            cContainer->switch_inuse( false );
+                        }
                     }
-                }
-                else
-                {
-                    cContainer->switch_inuse( false );
                 }
             }
         }
     }
 
-    if( hasScrollControl && subElementsHasArrowControl==false)
+    xScroll->elementBox.x = elementBox.x;
+    xScroll->elementBox.y = elementBox.y+elementBox.h-16;
+    xScroll->elementBox.w = elementBox.w-16;
+    xScroll->elementBox.h = 16;
+
+    xScroll->fullRect.x = 0;
+    xScroll->fullRect.y = 0;
+    xScroll->fullRect.w = entireBox.w;
+    xScroll->fullRect.h = entireBox.h;
+
+    xScroll->contextRect.x = cameraBox.x;
+    xScroll->contextRect.y = cameraBox.y;
+    xScroll->contextRect.w = cameraBox.w;
+    xScroll->contextRect.h = cameraBox.h;
+
+    update_rectangle(&yScroll->elementBox, elementBox.x+elementBox.w-16, elementBox.y, 16,elementBox.h);
+    update_rectangle(&yScroll->fullRect, 0, 0, entireBox.w,entireBox.h);
+    update_rectangle(&yScroll->contextRect, cameraBox.x, cameraBox.y, cameraBox.w,cameraBox.h);
+
+    if( hasScrollControl && subElementsHasArrowControl==false &&  xScroll!=NULL && yScroll!=NULL)
     {
-        if( leftDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+1)*FPS_RATIO || ( userInput->pressed[kb_left] && !userInput->released[kb_left] ) )
+        if( entireBox.w >=elementBox.w  && hideXScroll!=true )
         {
-            scroll_left( cameraBox.w/4 );
-            leftDelay =-1;
-        }
-        else if( rightDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+1)*FPS_RATIO || ( userInput->pressed[kb_right] && !userInput->released[kb_right] ) )
-        {
-            scroll_right( cameraBox.w/4 );
-            rightDelay = -1;
-        }
-
-        if( upDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+1)*FPS_RATIO || ( !userInput->pressed[kb_up] && userInput->released[kb_up] ) )
-        {
-            scroll_up( cameraBox.h/4 );
-            upDelay = 0;
-        }
-        else if( downDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+1)*FPS_RATIO || ( userInput->pressed[kb_down] && !userInput->released[kb_down] ) )
-        {
-            scroll_down( cameraBox.h/4 );
-            downDelay = -1;
-        }
-    }
-
-    if( optionWithViewId < 0)
-    {
-        optionWithViewId = (int)subOptions.size() -1;
-    }
-
-    if( optionWithViewId >= (int)subOptions.size() )
-    {
-        optionWithViewId = 0;
-    }
-
-    if( xScroll!=NULL && yScroll!=NULL)
-    {
-        xScroll->barBox.x = barBox.x;
-        xScroll->barBox.y = barBox.y+barBox.h;
-        xScroll->barBox.w = barBox.w-16;
-        xScroll->barBox.h = 16;
-
-        xScroll->fullRect.x = 0;
-        xScroll->fullRect.y = 0;
-        xScroll->fullRect.w = entireBox.w;
-        xScroll->fullRect.h = entireBox.h;
-
-        xScroll->contextRect.x = cameraBox.x;
-        xScroll->contextRect.y = cameraBox.y;
-        xScroll->contextRect.w = cameraBox.w;
-        xScroll->contextRect.h = cameraBox.h;
-        if( entireBox.w >=barBox.w  && hideXScroll!=true )
-        {
-            xScroll->process_self(viewedSpace,cam,true);
+            xScroll->process_self(viewedSpace,cam);
         }
         else
         {
             cameraBox.x =0;
-            cameraBox.w = menuBox.w = barBox.w;
+            cameraBox.w = menuBox.w = elementBox.w;
         }
+
         if( xScroll->has_moved() || xScroll->is_scrolling() )
         {
             cameraBox.x = xScroll->contextRect.x;
@@ -2889,20 +2855,15 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
             }
         }
 
-        update_rectangle(&yScroll->barBox, barBox.x+barBox.w-16, barBox.y, 16,barBox.h);
-        update_rectangle(&yScroll->fullRect, 0, 0, entireBox.w,entireBox.h);
-        update_rectangle(&yScroll->contextRect, cameraBox.x, cameraBox.y, cameraBox.w,cameraBox.h);
-
-        //yScroll->process_self( viewedSpace,cam );
-
         if( hideYScroll!=true )
         {
-            yScroll->process_self(viewedSpace,cam,false);
+            yScroll->autoCorrect = false;
+            yScroll->process_self(viewedSpace,cam );
         }
         else
         {
             cameraBox.y = 0;
-            cameraBox.w = menuBox.w = barBox.w;
+            cameraBox.w = menuBox.w = elementBox.w;
             yScroll->contextRect.y = 0;
             yScroll->contextRect.h = entireBox.h;
         }
@@ -2931,145 +2892,364 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
             }*/
         }
     }
-
+    else
+    {
+        xScroll->process_self(viewedSpace, cam);
+        yScroll->process_self(viewedSpace, cam);
+    }
 }
 
-void GPE_GuiElementList::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace,GPE_Rect * cam , bool forceRedraw )
+void GPE_GuiElementList::render_self(GPE_Rect * viewedSpace,GPE_Rect * cam , bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( viewedSpace!=NULL && cam!=NULL )
     {
-        cRender->reset_viewpoint();
-        cRender->reset_viewpoint();
         menuBox.w+=16;
         menuBox.h+=16;
-        cRender->set_viewpoint( &menuBox);
+        MAIN_RENDERER->reset_viewpoint();
+        MAIN_RENDERER->set_viewpoint( &menuBox);
 
+        GPE_GuiElementRow * cRow = NULL;
         GPE_GeneralGuiElement * cResource = NULL;
-        for(int i=0; i<(int)subOptions.size();i++)
+        int i = 0,j = 0;
+        for( i=0; i<(int)subRows.size(); i++)
         {
-            cResource = subOptions[i];
-            if(cResource!=NULL)
+            cRow = subRows[i];
+            if(cRow!=NULL)
             {
-                cResource->render_self(cRender,&menuBox,&cameraBox,forceRedraw);
+                for( j =0; j < (int)cRow->subOptions.size(); j++ )
+                {
+                    cResource = cRow->subOptions[j];
+                    if(cResource!=NULL)
+                    {
+                        cResource->render_self( &menuBox,&cameraBox,forceRedraw);
+                    }
+                }
             }
         }
 
-        cRender->reset_viewpoint();
-        cRender->set_viewpoint( viewedSpace);
+        MAIN_RENDERER->reset_viewpoint();
+        MAIN_RENDERER->set_viewpoint( viewedSpace);
         menuBox.w-=16;
         menuBox.h-=16;
         if( xScroll!=NULL && forceRedraw && hideXScroll!=true )
         {
-            if( entireBox.w >barBox.w)
+            //if( entireBox.w >elementBox.w)
             {
-                xScroll->render_self(cRender,viewedSpace,cam);
+                xScroll->render_self( viewedSpace,cam);
             }
         }
         if( yScroll!=NULL && forceRedraw && hideYScroll!=true )
         {
-            if( entireBox.h >barBox.h )
+            if( entireBox.h >elementBox.h )
             {
-                yScroll->render_self(cRender,viewedSpace,cam);
+                yScroll->render_self( viewedSpace,cam);
             }
         }
 
         /*if( isInUse && subElementsIsScrolling==false && hasScrollControl && forceRedraw)
         {
-            render_rect(cRender,&barBox,GPE_MAIN_TEMPLATE->Button_Box_Highlighted_Color,true);
+            gpe->render_rect( &elementBox,GPE_MAIN_THEME->Button_Box_Highlighted_Color,true);
         }
         else
         {
-            render_rect(cRender,&barBox,GPE_MAIN_TEMPLATE->Main_Box_Faded_Color,true);
+            gpe->render_rect( &elementBox,GPE_MAIN_THEME->Main_Box_Faded_Color,true);
         }*/
         //if( forceRedraw)
         {
-            render_rect(cRender,&barBox,GPE_MAIN_TEMPLATE->Main_Border_Color,true);
+            gpe->render_rect( &elementBox,GPE_MAIN_THEME->Main_Border_Color,true);
         }
     }
 }
 
 void GPE_GuiElementList::reset_self()
 {
-    subOptions.clear();
+    clear_list();
     cameraBox.x = menuBox.x = entireBox.x = 0;
     cameraBox.y = menuBox.y = entireBox.y = 0;
     cameraBox.w = menuBox.w = entireBox.w = 32;
-    cameraBox.h = menuBox.h = entireBox.h = RESOURCE_kb_AREA_HEIGHT*3;
+    cameraBox.h = menuBox.h = entireBox.h = RESOURCE_AREA_HEIGHT*3;
 }
 
 void GPE_GuiElementList::set_horizontal_align(int hValue)
 {
     hAlign = hValue;
+    GPE_GuiElementRow * tguiRow = NULL;
+    for( int i = (int)subRows.size()-1; i>=0; i--)
+    {
+        tguiRow = subRows[i];
+        if( tguiRow!=NULL )
+        {
+            tguiRow->hAlign = hValue;
+        }
+    }
 }
 
 void GPE_GuiElementList::set_full_width()
 {
-    GPE_GeneralGuiElement * tguiElement = NULL;
-    int maxWidth = barBox.w-(barXMargin+barXPadding)*2;
-    for( int i = (int)subOptions.size()-1; i>=0; i--)
+    GPE_GuiElementRow * tguiRow = NULL;
+    int maxWidth = elementBox.w-(barXMargin+barXPadding)*3;
+    for( int i = (int)subRows.size()-1; i>=0; i--)
     {
-        tguiElement = subOptions[i];
-        if( tguiElement!=NULL )
+        tguiRow = subRows[i];
+        if( tguiRow!=NULL )
         {
-            tguiElement->set_width(maxWidth);
+            tguiRow->set_width(maxWidth);
         }
     }
 }
 
 void GPE_GuiElementList::set_maxed_out_width()
 {
-    GPE_GeneralGuiElement * tguiElement = NULL;
+    GPE_GuiElementRow * tguiRow = NULL;
     int i = 0;
     int maxWidth = 0;
-    for( i = (int)subOptions.size()-1; i>=0; i--)
+    for( i = (int)subRows.size()-1; i>=0; i--)
     {
-        tguiElement = subOptions[i];
-        if( tguiElement!=NULL )
+        tguiRow = subRows[i];
+        if( tguiRow!=NULL )
         {
-            if( tguiElement->get_width() > maxWidth)
+            if( tguiRow->get_width() > maxWidth)
             {
-                maxWidth = tguiElement->get_width();
+                maxWidth = tguiRow->get_width();
             }
         }
     }
 
-    for( i = (int)subOptions.size()-1; i>=0; i--)
+    for( i = (int)subRows.size()-1; i>=0; i--)
     {
-        tguiElement = subOptions[i];
-        if( tguiElement!=NULL )
+        tguiRow = subRows[i];
+        if( tguiRow!=NULL )
         {
-            tguiElement->set_width(maxWidth);
+            tguiRow->set_width(maxWidth);
         }
     }
 }
 
 void GPE_GuiElementList::set_maxed_out_height()
 {
-    GPE_GeneralGuiElement * tguiElement = NULL;
+    GPE_GuiElementRow * tguiRow = NULL;
     int i = 0;
     int maxHeight = 0;
-    for( i = (int)subOptions.size()-1; i>=0; i--)
+    for( i = (int)subRows.size()-1; i>=0; i--)
     {
-        tguiElement = subOptions[i];
-        if( tguiElement!=NULL )
+        tguiRow = subRows[i];
+        if( tguiRow!=NULL )
         {
-            if( tguiElement->get_height() > maxHeight)
+            if( tguiRow->get_height() > maxHeight)
             {
-                maxHeight = tguiElement->get_height();
+                maxHeight = tguiRow->get_height();
             }
         }
     }
 
-    for( i = (int)subOptions.size()-1; i>=0; i--)
+    for( i = (int)subRows.size()-1; i>=0; i--)
     {
-        tguiElement = subOptions[i];
-        if( tguiElement!=NULL )
+        tguiRow = subRows[i];
+        if( tguiRow!=NULL )
         {
-            tguiElement->set_height(maxHeight);
+            tguiRow->set_height(maxHeight);
         }
     }
+}
+
+GPE_Slider_XAxis::GPE_Slider_XAxis( int sVal, int sMin, int sMax )
+{
+    elementBox.x = 0;
+    elementBox.y = 0;
+    elementBox.w = 192;
+    elementBox.h = 24;
+    scrollDisplayPixels = 24;
+    currentSliderXPos = 0;
+    isHeldOn = false;
+    hasMoved = false;
+    isOnScrollBox = false;
+    mouseXScrolPos = 0;
+    //Will let the function do optimizations needed below
+    minValue = sMin;
+    maxValue = sMax;
+    myValue = sVal;
+    set_data( sVal, sMin, sMax );
+}
+
+GPE_Slider_XAxis::~GPE_Slider_XAxis()
+{
+
+}
+
+int GPE_Slider_XAxis::get_value()
+{
+    return myValue;
+}
+bool GPE_Slider_XAxis::has_moved()
+{
+    return hasMoved;
+}
+
+bool GPE_Slider_XAxis::is_held()
+{
+    return isHeldOn;
+}
+
+bool GPE_Slider_XAxis::is_scrolling()
+{
+    return isOnScrollBox;
+}
+
+void GPE_Slider_XAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
+{
+    cam = GPE_find_camera(cam);
+    viewedSpace = GPE_find_camera(viewedSpace);
+    bool doWork = false;
+    //calculates the height needed to be scrolled.
+    hasMoved = false;
+    isHeldOn = false;
+
+    if( point_within(input->mouse_x,input->mouse_y,viewedSpace->x+elementBox.x-cam->x,viewedSpace->y+elementBox.y-cam->y,viewedSpace->x+elementBox.x+elementBox.w-cam->x,viewedSpace->y+elementBox.y+elementBox.h-cam->y) )
+    {
+        if( input->check_mouse_pressed(0 ) )
+        {
+            isOnScrollBox = true;
+            isHeldOn = false;
+            hasArrowkeyControl = true;
+            hasScrollControl = true;
+        }
+        else if( input->check_mouse_down(0 ) )
+        {
+            if( !isOnScrollBox)
+            {
+                isHeldOn = true;
+                hasArrowkeyControl = true;
+                hasScrollControl = true;
+            }
+        }
+    }
+    else if( input->check_mouse_released(-1) )
+    {
+        isOnScrollBox = false;
+        isHeldOn = false;
+        hasArrowkeyControl = false;
+        hasScrollControl = false;
+    }
+
+    if(viewedSpace->x+elementBox.x-cam->x <= input->mouse_x && input->mouse_x <= viewedSpace->x+elementBox.x+elementBox.w-cam->x )
+    {
+        if( input->check_mouse_down(0 ) && isOnScrollBox)
+        {
+            mouseXScrolPos = input->mouse_x - viewedSpace->x-elementBox.x-cam->x; //translates mouse coords to viewed space coords
+            if( isOnScrollBox)
+            {
+                currentSliderXPos = mouseXScrolPos;
+                doWork = true;
+            }
+        }
+    }
+    else
+    {
+        isOnScrollBox = false;
+        isHeldOn = false;
+    }
+
+
+    if( input->check_mouse_released(0) || input->check_mouse_released(1))
+    {
+        if( isOnScrollBox)
+        {
+            input->reset_all_input();
+        }
+        isOnScrollBox = false;
+        isHeldOn = false;
+    }
+
+
+    if( currentSliderXPos > elementBox.w )
+    {
+        currentSliderXPos = elementBox.w;
+        doWork = true;
+    }
+
+    if( currentSliderXPos < 0)
+    {
+        currentSliderXPos = 0;
+        doWork = true;
+    }
+
+    if( doWork )
+    {
+        set_value( minValue+ ( ( (double)currentSliderXPos)/elementBox.w )*( maxValue-minValue ) );
+    }
+
+    if( hasArrowkeyControl )
+    {
+        int scrollRenderPixels = 8;
+
+        if( input->check_keyboard_down(kb_left) && !input->check_keyboard_pressed(kb_left)  )
+        {
+            set_value( myValue-scrollRenderPixels );
+        }
+        else if( input->check_keyboard_down(kb_right)&& !input->check_keyboard_pressed(kb_right)   )
+        {
+            set_value( myValue+scrollRenderPixels );
+        }
+    }
+}
+
+void GPE_Slider_XAxis::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+{
+    viewedSpace = GPE_find_camera(viewedSpace);
+    cam = GPE_find_camera(cam);
+    if( forceRedraw && cam!=NULL && viewedSpace!=NULL )
+    {
+        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y+4,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y-4 ,GPE_MAIN_THEME->Scroll_Box_Color,false);
+        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y+4,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y-4 ,GPE_MAIN_THEME->Scroll_Box_Border_Color,true);
+
+        int scrollRenderPixels = 24;
+        if( scrollRenderPixels < elementBox.h)
+        {
+            scrollRenderPixels = elementBox.h;
+        }
+        int scrollPreviewX = std::min( currentSliderXPos, (int)(elementBox.w-scrollRenderPixels) );
+
+        if( isOnScrollBox )
+        {
+            gpe->render_rectangle( elementBox.x+scrollPreviewX-cam->x,elementBox.y-cam->y,elementBox.x+scrollPreviewX+scrollRenderPixels-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Scroll_Box_Camera_Highlight_Color,false);
+        }
+        else if( hasArrowkeyControl)
+        {
+            gpe->render_rectangle( elementBox.x+scrollPreviewX-cam->x,elementBox.y-cam->y,elementBox.x+scrollPreviewX+scrollRenderPixels-cam->x,elementBox.y+elementBox.h-cam->y, c_red,false );
+        }
+        else
+        {
+            gpe->render_rectangle( elementBox.x+scrollPreviewX-cam->x,elementBox.y-cam->y,elementBox.x+scrollPreviewX+scrollRenderPixels-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Scroll_Box_Camera_Color,false);
+        }
+    }
+}
+
+void GPE_Slider_XAxis::set_data( int sVal  , int sMin , int sMax  )
+{
+    minValue = sMin;
+    maxValue = sMax;
+    if( sMin > sMax)
+    {
+        minValue = sMax;
+        maxValue = sMin;
+    }
+    set_value( sVal);
+}
+
+bool GPE_Slider_XAxis::set_value( int sVal )
+{
+    myValue = sVal;
+    if( myValue < minValue)
+    {
+        myValue = minValue;
+    }
+    else if( maxValue < myValue )
+    {
+        myValue = maxValue;
+    }
+    currentSliderXPos =  ( elementBox.w )*( ( (float)myValue-(float)minValue) / ( (float)maxValue-(float)minValue ) );
 }
 
 GPE_TabBar::GPE_TabBar()
@@ -3077,12 +3257,12 @@ GPE_TabBar::GPE_TabBar()
     tabIsRightClicked = false;
     isInUse = false;
     guiListTypeName = "tabbar";
-    barBox.x = 16;
-    barBox.y = 16;
-    barBox.w = 0;
-    barBox.h = 28;
+    elementBox.x = 16;
+    elementBox.y = 16;
+    elementBox.w = 0;
+    elementBox.h = 28;
 
-    barXPadding = GENERAL_GPE_PADDING*2;
+    barXPadding = GENERAL_GPE_PADDING;
     barYPadding = 4;
     fontTextWidth = 12;
     fontTextHeight = 12;
@@ -3124,7 +3304,7 @@ void GPE_TabBar::add_new_tab(std::string newOption, bool switchToNew )
             tabInUse = (int)subOptions.size();
         }
         subOptions.push_back(newOption);
-        barBox.w+=fontTextWidth*(int)newOption.size()+barXPadding;
+        elementBox.w+=fontTextWidth*(int)newOption.size()+barXPadding;
     }
 }
 
@@ -3172,7 +3352,7 @@ void GPE_TabBar::process_self(GPE_Rect * viewedSpace,GPE_Rect *cam)
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     tabIsRightClicked = false;
-    if( barBox.w!=0 && viewedSpace!=NULL && cam!=NULL)
+    if( elementBox.w!=0 && viewedSpace!=NULL && cam!=NULL)
     {
         GPE_GeneralGuiElement::process_self(viewedSpace, cam);
         if( isClicked || isRightClicked)
@@ -3187,14 +3367,14 @@ void GPE_TabBar::process_self(GPE_Rect * viewedSpace,GPE_Rect *cam)
         {
             if( isClicked || isRightClicked)
             {
-                int cTabXPos = barBox.x+viewedSpace->x-cam->x;
-                int cTabX2Pos = barBox.x+viewedSpace->x-cam->x;
-                int cTabYPos = barBox.y+viewedSpace->y-cam->y;
-                int cTabY2Pos = barBox.y+barBox.h+viewedSpace->y-cam->y;
+                int cTabXPos = elementBox.x+viewedSpace->x-cam->x;
+                int cTabX2Pos = elementBox.x+viewedSpace->x-cam->x;
+                int cTabYPos = elementBox.y+viewedSpace->y-cam->y;
+                int cTabY2Pos = elementBox.y+elementBox.h+viewedSpace->y-cam->y;
                 for(int i=0; i< (int)subOptions.size(); i++)
                 {
                     cTabX2Pos+=fontTextWidth*(int)subOptions[i].size()+barXPadding;
-                    if(point_within(userInput->mouse_x,userInput->mouse_y,cTabXPos,cTabYPos,cTabX2Pos,cTabY2Pos) )
+                    if(point_within(input->mouse_x,input->mouse_y,cTabXPos,cTabYPos,cTabX2Pos,cTabY2Pos) )
                     {
                         tabInUse = i;
                         if( isRightClicked )
@@ -3205,11 +3385,11 @@ void GPE_TabBar::process_self(GPE_Rect * viewedSpace,GPE_Rect *cam)
                     cTabXPos = cTabX2Pos+1;
                 }
             }
-            if( userInput->check_keyboard_released(kb_left) &&  tabInUse > 0)
+            if( input->check_keyboard_released(kb_left) &&  tabInUse > 0)
             {
                 tabInUse--;
             }
-            else if( userInput->check_keyboard_released(kb_right) && tabInUse < (int)subOptions.size()-1 )
+            else if( input->check_keyboard_released(kb_right) && tabInUse < (int)subOptions.size()-1 )
             {
                 tabInUse++;
             }
@@ -3217,18 +3397,18 @@ void GPE_TabBar::process_self(GPE_Rect * viewedSpace,GPE_Rect *cam)
     }
 }
 
-void GPE_TabBar::render_self(GPE_Renderer * rendTarget, GPE_Rect * viewedSpace,GPE_Rect * cam , bool forceRedraw)
+void GPE_TabBar::render_self( GPE_Rect * viewedSpace,GPE_Rect * cam , bool forceRedraw)
 {
-    //render_rect(rendTarget,&barBox,barColor,false);
-    //render_rect(rendTarget,&barBox,barOutlineColor,true);
+    //gpe->render_rect(&elementBox,barColor,false);
+    //gpe->render_rect(&elementBox,barOutlineColor,true);
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if(forceRedraw && viewedSpace!=NULL && cam!=NULL)
     {
         if( (int)subOptions.size() >0 )
         {
-            int cTabXPos = barBox.x-cam->x;
-            int cTabX2Pos = barBox.x-cam->x;
+            int cTabXPos = elementBox.x-cam->x;
+            int cTabX2Pos = elementBox.x-cam->x;
             int thisTabWidth = 0;
             for(int i=0; i< (int)subOptions.size(); i++)
             {
@@ -3236,34 +3416,35 @@ void GPE_TabBar::render_self(GPE_Renderer * rendTarget, GPE_Rect * viewedSpace,G
                 cTabX2Pos+=thisTabWidth;
                 if( tabInUse==i)
                 {
-                    render_rectangle(rendTarget,cTabXPos,barBox.y-cam->y,cTabX2Pos,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Program_Color,false);
-                    render_rectangle(rendTarget,cTabXPos,barBox.y-cam->y,cTabX2Pos,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Border_Color,true);
-                    render_new_text(rendTarget,cTabXPos+thisTabWidth/2,barBox.y+barBox.h/2-cam->y,subOptions[i],GPE_MAIN_TEMPLATE->Main_Box_Font_Color,DEFAULT_FONT,FA_CENTER,FA_MIDDLE);
+                    gpe->render_rectangle( cTabXPos,elementBox.y-cam->y,cTabX2Pos,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Program_Color,false);
+                    gpe->render_rectangle( cTabXPos,elementBox.y-cam->y,cTabX2Pos,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Border_Color,true);
+                    render_new_text( cTabXPos+thisTabWidth/2,elementBox.y+elementBox.h/2-cam->y,subOptions[i],GPE_MAIN_THEME->Main_Box_Font_Color,DEFAULT_FONT,FA_CENTER,FA_MIDDLE);
                 }
                 else
                 {
-                    render_rectangle(rendTarget,cTabXPos,barBox.y-cam->y,cTabX2Pos,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Program_Header_Color,false);
-                    render_rectangle(rendTarget,cTabXPos,barBox.y-cam->y,cTabX2Pos,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Border_Color,true);
-                    render_new_text(rendTarget,cTabXPos+thisTabWidth/2,barBox.y+barBox.h/2-cam->y,subOptions[i],GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT,FA_CENTER,FA_MIDDLE);
+                    gpe->render_rectangle( cTabXPos,elementBox.y-cam->y,cTabX2Pos,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Program_Header_Color,false);
+                    gpe->render_rectangle( cTabXPos,elementBox.y-cam->y,cTabX2Pos,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Border_Color,true);
+                    render_new_text( cTabXPos+thisTabWidth/2,elementBox.y+elementBox.h/2-cam->y,subOptions[i],GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_CENTER,FA_MIDDLE);
                 }
-                cTabXPos = cTabX2Pos+1;
+                cTabXPos = cTabX2Pos;
             }
         }
         else
         {
-            render_rectangle(rendTarget,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Program_Color,false);
-            render_rectangle(rendTarget,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Border_Color,true);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Program_Color,false);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Border_Color,true);
         }
         /*if( isHovered)
         {
             //Uncomment in the even a tab bar randomly behaves weirdly
-            render_rectangle(rendTarget,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Border_Highlighted_Color,true);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Border_Highlighted_Color,true);
         }*/
     }
 }
 
 GPE_StatusBar::GPE_StatusBar()
 {
+    elementBox.h = 24;
     guiListTypeName = "statusbar";
     codeEditorStatusBarString = "";
     insertModeString = "";
@@ -3280,57 +3461,54 @@ void GPE_StatusBar::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     insertModeString = "";
 }
 
-void GPE_StatusBar::render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace,GPE_Rect *cam, bool forceRedraw)
+void GPE_StatusBar::render_self( GPE_Rect * viewedSpace,GPE_Rect *cam, bool forceRedraw)
 {
-    if( isEnabled && forceRedraw && cRender!=NULL && barBox.h >0 && FONT_STATUSBAR!=NULL)
+    if( isEnabled && forceRedraw && elementBox.h >0 && FONT_STATUSBAR!=NULL)
     {
-        render_rect(cRender,&barBox,GPE_MAIN_TEMPLATE->Program_Color,false);
+        gpe->render_rect( &elementBox,GPE_MAIN_THEME->Program_Color,false);
         int statusBarStringWidth = 0, statusBarStringHeight = 0;
         int projectNameWidth = 0, projectNameHeight = 0;
         if( (int)CURRENT_PROJECT_NAME.size() > 0)
         {
             std::string  projectNameToRender = CURRENT_PROJECT_NAME;
-            /*Commented out for Version 1.13 temporarily
-            if( MAIN_EDITOR_SETTINGS!=NULL && MAIN_EDITOR_SETTINGS->showShortProjectNames!=NULL  )
+            //Commented out for Version 1.13 temporarily
+            if( MAIN_GUI_SETTINGS && MAIN_GUI_SETTINGS->useShortProjectNames )
             {
-                if( MAIN_EDITOR_SETTINGS->showShortProjectNames->is_clicked() )
-                {
-                    projectNameToRender = get_file_noext( get_local_from_global_file(CURRENT_PROJECT_NAME) );
+                projectNameToRender = get_file_noext( get_local_from_global_file(CURRENT_PROJECT_NAME) );
 
-                }
             }
-            */
+
             FONT_STATUSBAR->get_metrics(projectNameToRender,&projectNameWidth, &projectNameHeight);
 
             if( (int)codeEditorStatusBarString.size() > 0)
             {
                 FONT_STATUSBAR->get_numbered_metrics(codeEditorStatusBarString,&statusBarStringWidth, &statusBarStringHeight);
-                if( barBox.w > statusBarStringWidth+projectNameWidth +GENERAL_GPE_PADDING )
+                if( elementBox.w > statusBarStringWidth+projectNameWidth +GENERAL_GPE_PADDING )
                 {
-                    render_new_text(cRender,barBox.x,barBox.y+GENERAL_GPE_PADDING,projectNameToRender,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_TOP);
-                    //render_rectangle(cRender,barBox.x+projectNameWidth,barBox.y,barBox.x+barBox.w,barBox.y+barBox.h,GPE_MAIN_TEMPLATE->Button_Box_Color,false);
-                    render_bitmap_text(cRender,barBox.x+projectNameWidth+GENERAL_GPE_PADDING,barBox.y+GENERAL_GPE_PADDING,codeEditorStatusBarString,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_TOP);
+                    render_new_text( elementBox.x,elementBox.y+elementBox.h/2,projectNameToRender,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_MIDDLE);
+                    //gpe->render_rectangle( elementBox.x+projectNameWidth,elementBox.y,elementBox.x+elementBox.w,elementBox.y+elementBox.h,GPE_MAIN_THEME->Button_Box_Color,false);
+                    render_bitmap_text( elementBox.x+projectNameWidth+GENERAL_GPE_PADDING,elementBox.y+elementBox.h/2,codeEditorStatusBarString,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_MIDDLE);
                 }
                 else
                 {
-                    render_bitmap_text(cRender,barBox.x+GENERAL_GPE_PADDING,barBox.y+GENERAL_GPE_PADDING,codeEditorStatusBarString,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_TOP);
+                    render_bitmap_text( elementBox.x+GENERAL_GPE_PADDING,elementBox.y+elementBox.h/2,codeEditorStatusBarString,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_MIDDLE);
                 }
             }
-            else if( barBox.w > projectNameWidth +GENERAL_GPE_PADDING )
+            else if( elementBox.w > projectNameWidth +GENERAL_GPE_PADDING )
             {
-                render_new_text(cRender,barBox.x+GENERAL_GPE_PADDING,barBox.y+GENERAL_GPE_PADDING,projectNameToRender,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_TOP);
+                render_new_text( elementBox.x+GENERAL_GPE_PADDING,elementBox.y+elementBox.h/2,projectNameToRender,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_MIDDLE);
             }
             else
             {
-                render_new_text(cRender,barBox.x+barBox.w-GENERAL_GPE_PADDING/2,barBox.y+GENERAL_GPE_PADDING,projectNameToRender,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_STATUSBAR,FA_RIGHT,FA_TOP);
+                render_new_text( elementBox.x+elementBox.w-GENERAL_GPE_PADDING/2,elementBox.y+elementBox.h/2,projectNameToRender,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_RIGHT,FA_MIDDLE);
             }
         }
         else if( (int)codeEditorStatusBarString.size() > 0)
         {
             FONT_STATUSBAR->get_numbered_metrics(codeEditorStatusBarString,&statusBarStringWidth, &statusBarStringHeight);
-            render_bitmap_text(cRender,barBox.x+GENERAL_GPE_PADDING,barBox.y+GENERAL_GPE_PADDING,codeEditorStatusBarString,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_TOP);
+            render_bitmap_text( elementBox.x+GENERAL_GPE_PADDING,elementBox.y+elementBox.h/2,codeEditorStatusBarString,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_MIDDLE );
         }
-        render_rect(cRender,&barBox,GPE_MAIN_TEMPLATE->Main_Border_Color,true);
+        gpe->render_rect( &elementBox,GPE_MAIN_THEME->Main_Border_Color,true);
     }
 }
 
@@ -3361,19 +3539,19 @@ GPE_PopUpMenu_Option::GPE_PopUpMenu_Option(std::string name, int id, bool select
     kbShortCut2 = kbS2;
     kbShortCut3 = kbS3;
     shortcutString = "";
-    if( kbShortCut1 >=0 && kbShortCut1 < userInput->key_count )
+    if( kbShortCut1 >=0 && kbShortCut1 < input->key_count )
     {
-        shortcutString = userInput->binding_name[kbShortCut1];
-        if( kbShortCut2 >=0 && kbShortCut2 < userInput->key_count )
+        shortcutString = input->binding_name[kbShortCut1];
+        if( kbShortCut2 >=0 && kbShortCut2 < input->key_count )
         {
-            shortcutString += "+"+userInput->binding_name[kbShortCut2];
-            if( kbShortCut3 >=0 && kbShortCut3 < userInput->key_count )
+            shortcutString += "+"+input->binding_name[kbShortCut2];
+            if( kbShortCut3 >=0 && kbShortCut3 < input->key_count )
             {
-                shortcutString += "+"+userInput->binding_name[kbShortCut3];
+                shortcutString += "+"+input->binding_name[kbShortCut3];
             }
         }
     }
-    //barColor = GPE_MAIN_TEMPLATE->PopUp_Box_Color;
+    //barColor = GPE_MAIN_THEME->PopUp_Box_Color;
     renderWhite = false;
     isResourceOption = false;
     sectionBottom = false;
@@ -3386,7 +3564,7 @@ GPE_PopUpMenu_Option::GPE_PopUpMenu_Option(std::string name, int id, bool select
 
     int textW = 0;
     int textH = 0;
-    if( (int)opName.size()>0)
+    if( (int)opName.size()>0 )
     {
         textW = 0;
         textH = 0;
@@ -3414,7 +3592,7 @@ GPE_PopUpMenu_Option::GPE_PopUpMenu_Option(std::string name, int id, bool select
     optionBox.x = 0;
     optionBox.y = 0;
     optionBox.w = 0;
-    optionBox.h = GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING;
+    optionBox.h = GPE_AVERAGE_LINE_HEIGHT;
     isSelectable = selectable;
     showShortCuts = seeShortCut;
     subMenuStartPos= 0;
@@ -3767,13 +3945,13 @@ void GPE_PopUpMenu_Option::set_id(int newId)
     opId = newId;
 }
 
-GPE_PopUpMenu_Option * GPE_PopUpMenu_Option::add_menu_option( std::string name, int id, GPE_Texture * gTexture, int spriteImgNumb,GPE_Sprite * gSprite, bool endsSection, bool selectable, bool isResource, int kbS1, int kbS2 , int kbS3 )
+GPE_PopUpMenu_Option * GPE_PopUpMenu_Option::add_menu_option( std::string name, int id, GPE_Texture * gTexture, int spriteImgNumb,GPE_Animation * gSprite, bool endsSection, bool selectable, bool isResource, int kbS1, int kbS2 , int kbS3 )
 {
-    maxOptionsToView = SCREEN_HEIGHT/GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING;
-    selfDistanceToBottom = (SCREEN_HEIGHT-optionBox.y-optionBox.h)/GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING;
+    maxOptionsToView = SCREEN_HEIGHT/GPE_AVERAGE_LINE_HEIGHT;
+    selfDistanceToBottom = (SCREEN_HEIGHT-optionBox.y-optionBox.h)/GPE_AVERAGE_LINE_HEIGHT;
 
     GPE_PopUpMenu_Option * newOp = new GPE_PopUpMenu_Option(name,id,selectable,showShortCuts,false, kbS1, kbS2, kbS3);
-    newOp->optionBox.h = GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING;
+    newOp->optionBox.h = GPE_AVERAGE_LINE_HEIGHT;
     newOp->isTopOfMenu = false;
     newOp->sectionBottom = endsSection;
     newOp->subMenuIsOpen = false;
@@ -3781,7 +3959,7 @@ GPE_PopUpMenu_Option * GPE_PopUpMenu_Option::add_menu_option( std::string name, 
 
     GPE_PopUpMenu_Option * tempFOption = NULL;
     int i = 0;
-    if( id<0)
+    if( id<0 )
     {
         //newOp->set_id( (int)subOptions.size() *-1);
         newOp->set_id(  -1 );
@@ -3793,30 +3971,30 @@ GPE_PopUpMenu_Option * GPE_PopUpMenu_Option::add_menu_option( std::string name, 
     {
         if( menuCountSize > selfDistanceToBottom)
         {
-            newOp->set_position(optionBox.x ,optionBox.y+(menuCountSize-selfDistanceToBottom)*GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING);
+            newOp->set_position(optionBox.x ,optionBox.y+(menuCountSize-selfDistanceToBottom)*GPE_AVERAGE_LINE_HEIGHT);
         }
         else
         {
-            newOp->set_position(optionBox.x ,optionBox.y+menuCountSize*GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING );
+            newOp->set_position(optionBox.x ,optionBox.y+menuCountSize*GPE_AVERAGE_LINE_HEIGHT );
         }
-        //newOp->barColor = GPE_MAIN_TEMPLATE->PopUp_Box_Color;
-        newOp->set_width(optionWidthSpace);
+        //newOp->barColor = GPE_MAIN_THEME->PopUp_Box_Color;
+        newOp->set_width(subOptionWidthSpace);
     }
     else if( isTopOfMenu)
     {
-        newOp->set_position(optionBox.x ,optionBox.y+optionBox.h+ menuCountSize*GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING );
-        //newOp->barColor = GPE_MAIN_TEMPLATE->PopUp_Box_Color;
-        newOp->set_width(optionWidthSpace);
+        newOp->set_position(optionBox.x ,optionBox.y+optionBox.h+ menuCountSize*GPE_AVERAGE_LINE_HEIGHT );
+        //newOp->barColor = GPE_MAIN_THEME->PopUp_Box_Color;
+        newOp->set_width(subOptionWidthSpace);
     }
     else
     {
         if( menuCountSize > selfDistanceToBottom)
         {
-            newOp->set_position(optionBox.x+optionBox.w ,optionBox.y+(menuCountSize-selfDistanceToBottom)*GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING );
+            newOp->set_position(optionBox.x+optionBox.w ,optionBox.y+(menuCountSize-selfDistanceToBottom)*GPE_AVERAGE_LINE_HEIGHT );
         }
         else
         {
-            newOp->set_position(optionBox.x+optionBox.w ,optionBox.y+menuCountSize*GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING );
+            newOp->set_position(optionBox.x+optionBox.w ,optionBox.y+menuCountSize*GPE_AVERAGE_LINE_HEIGHT );
         }
         //newOp->barColor = barColor;
         newOp->set_width(subOptionWidthSpace);
@@ -3824,7 +4002,7 @@ GPE_PopUpMenu_Option * GPE_PopUpMenu_Option::add_menu_option( std::string name, 
     subOptions.push_back(newOp);
 
     //resizes submenu in the event that the new option is wider
-    if( newOp->get_width()>=widestOptionSpace)
+    if( newOp->get_width()>=widestOptionSpace )
     {
         widestOptionSpace = newOp->get_width();
         if( showShortCuts)
@@ -3840,14 +4018,14 @@ GPE_PopUpMenu_Option * GPE_PopUpMenu_Option::add_menu_option( std::string name, 
             optionWidthSpace = subOptionWidthSpace;
         }
         tempFOption = NULL;
-        for( i=0; i<(int)subOptions.size(); i++)
+        for( i=0; i< (int)subOptions.size(); i++ )
         {
             tempFOption = subOptions[i];
-            if( isContext || isTopOfMenu)
+            //if( isTopOfMenu)
             {
                 tempFOption->set_width(optionWidthSpace);
             }
-            else
+            //else
             {
                 tempFOption->set_width(subOptionWidthSpace);
             }
@@ -3856,13 +4034,13 @@ GPE_PopUpMenu_Option * GPE_PopUpMenu_Option::add_menu_option( std::string name, 
     return newOp;
 }
 
-void GPE_PopUpMenu_Option::prerender_self( GPE_Renderer * cRender)
+void GPE_PopUpMenu_Option::prerender_self(  )
 {
     /*GPE_PopUpMenu_Option * tempOption = NULL;
     for( int i = 0; i < (int)subOptions.size(); i++)
     {
         tempOption = subOptions[i];
-        tempOption->prerender_self(cRender);
+        tempOption->prerender_self( );
     }*/
 }
 
@@ -3870,7 +4048,7 @@ int GPE_PopUpMenu_Option::process_menu_option()
 {
     int barAction = -1;
     int returnAction = -1;
-    if( userInput->check_mouse_released(1) || userInput->check_mouse_released(2) || WINDOW_WAS_JUST_RESIZED || userInput->released[kb_esc])
+    if( input->check_mouse_released(1) || input->check_mouse_released(2) || WINDOW_WAS_JUST_RESIZED || input->released[kb_esc])
     {
         returnAction = -2;
     }
@@ -3880,7 +4058,7 @@ int GPE_PopUpMenu_Option::process_menu_option()
         {
             if( isContext )
             {
-                if( userInput->down[kb_up] && userInput->pressed[kb_up]==false && userInput->released[kb_up]==false )
+                if( input->down[kb_up] && input->pressed[kb_up]==false && input->released[kb_up]==false )
                 {
                     upDelay+=0.5;
                 }
@@ -3889,7 +4067,7 @@ int GPE_PopUpMenu_Option::process_menu_option()
                     upDelay = -1;
                 }
 
-                if( userInput->down[kb_down] && userInput->pressed[kb_down]==false && userInput->released[kb_down]==false )
+                if( input->down[kb_down] && input->pressed[kb_down]==false && input->released[kb_down]==false )
                 {
                     downDelay+=0.5;
                 }
@@ -3898,7 +4076,7 @@ int GPE_PopUpMenu_Option::process_menu_option()
                     downDelay = -1;
                 }
 
-                if( userInput->down[kb_left] && userInput->pressed[kb_left]==false && userInput->released[kb_left]==false )
+                if( input->down[kb_left] && input->pressed[kb_left]==false && input->released[kb_left]==false )
                 {
                     leftDelay+=0.5;
                 }
@@ -3907,7 +4085,7 @@ int GPE_PopUpMenu_Option::process_menu_option()
                     leftDelay = -1;
                 }
 
-                if( userInput->down[kb_right] && userInput->pressed[kb_right]==false && userInput->released[kb_right]==false )
+                if( input->down[kb_right] && input->pressed[kb_right]==false && input->released[kb_right]==false )
                 {
                     rightDelay+=0.5;
                 }
@@ -3924,8 +4102,8 @@ int GPE_PopUpMenu_Option::process_menu_option()
                 rightDelay = -1;
             }
             int subPosX = optionBox.x;
-            maxOptionsToView = SCREEN_HEIGHT/GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING;
-            selfDistanceToBottom = (SCREEN_HEIGHT-optionBox.y-optionBox.h)/GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING;
+            maxOptionsToView = SCREEN_HEIGHT/GPE_AVERAGE_LINE_HEIGHT;
+            selfDistanceToBottom = (SCREEN_HEIGHT-optionBox.y-optionBox.h)/GPE_AVERAGE_LINE_HEIGHT;
             GPE_PopUpMenu_Option * fOption = NULL;
             int menuCountSize = (int)subOptions.size() ;
             int extraRenderSpace = 0;
@@ -3938,14 +4116,14 @@ int GPE_PopUpMenu_Option::process_menu_option()
 
             if( menuCountSize > maxOptionsToView)
             {
-                if( point_between(userInput->mouse_x,userInput->mouse_y,optionBox.x+extraRenderSpace,0,optionBox.x+extraRenderSpace+subOptionsCurrWidth,SCREEN_HEIGHT) )
+                if( point_between(input->mouse_x,input->mouse_y,optionBox.x+extraRenderSpace,0,optionBox.x+extraRenderSpace+subOptionsCurrWidth,SCREEN_HEIGHT) )
                 {
-                    if( userInput->mouseScrollingUp )
+                    if( input->mouseScrollingUp )
                     {
                         subMenuStartPos-=maxOptionsToView/8;
                     }
 
-                    else if( userInput->mouseScrollingDown)
+                    else if( input->mouseScrollingDown)
                     {
                         subMenuStartPos+=maxOptionsToView/8;
                     }
@@ -3981,32 +4159,32 @@ int GPE_PopUpMenu_Option::process_menu_option()
                     fOption = subOptions[hoverOption];
                 }*/
 
-                if( leftDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !userInput->pressed[kb_left] && userInput->released[kb_left] ) )
+                if( leftDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !input->pressed[kb_left] && input->released[kb_left] ) )
                 {
                     leftDelay = -1;
                     push_left();
                     keyActivityHappend = true;
                 }
-                else if( rightDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !userInput->pressed[kb_right] && userInput->released[kb_right] ) )
+                else if( rightDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !input->pressed[kb_right] && input->released[kb_right] ) )
                 {
                     push_right();
                     rightDelay = -1;
                     keyActivityHappend = true;
 
                 }
-                else if( upDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !userInput->pressed[kb_up] && userInput->released[kb_up] ) )
+                else if( upDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !input->pressed[kb_up] && input->released[kb_up] ) )
                 {
                     push_up();
                     upDelay = -1;
                     keyActivityHappend = true;
                 }
-                else if( downDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !userInput->pressed[kb_down] && userInput->released[kb_down] ) )
+                else if( downDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !input->pressed[kb_down] && input->released[kb_down] ) )
                 {
                     push_down();
                     downDelay = -1;
                     keyActivityHappend = true;
                 }
-                else if( userInput->released[kb_enter] || userInput->released[kb_space] && subMenuIsOpen  )
+                else if( input->released[kb_enter] || input->released[kb_space] && subMenuIsOpen  )
                 {
                     returnAction = activate_hovered();
                     hoverOption = -1;
@@ -4048,28 +4226,28 @@ int GPE_PopUpMenu_Option::process_menu_option()
                                 if( menuCountSize > maxOptionsToView)
                                 {
                                     //scroller will be required here
-                                    fOption->set_position(subPosX,(i-subMenuStartPos)*GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING );
+                                    fOption->set_position(subPosX,(i-subMenuStartPos)*GPE_AVERAGE_LINE_HEIGHT );
                                 }
                                 else
                                 {
                                     //offset box, no scroller needed
-                                    fOption->set_position(subPosX ,optionBox.y+(i-(menuCountSize-selfDistanceToBottom) )*GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING );
+                                    fOption->set_position(subPosX ,optionBox.y+(i-(menuCountSize-selfDistanceToBottom) )*GPE_AVERAGE_LINE_HEIGHT );
                                 }
                             }
                             else
                             {
-                                fOption->set_position(subPosX ,optionBox.y+i*GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING);
+                                fOption->set_position(subPosX ,optionBox.y+i*GPE_AVERAGE_LINE_HEIGHT);
                             }
                         }
                         else if( isTopOfMenu)
                         {
-                            fOption->set_position(optionBox.x+extraRenderSpace ,optionBox.y+optionBox.h+i*GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING);
+                            fOption->set_position(optionBox.x+extraRenderSpace ,optionBox.y+optionBox.h+i*GPE_AVERAGE_LINE_HEIGHT);
                         }
 
                         barAction = fOption->process_menu_option();
-                        if( userInput->mouseMovementInputReceivedInFrame )
+                        if( input->mouseMovementInputReceivedInFrame )
                         {
-                            if( point_between(userInput->mouse_x, userInput->mouse_y,fOption->optionBox.x,fOption->optionBox.y,fOption->optionBox.x+fOption->optionBox.w,fOption->optionBox.y+fOption->optionBox.h) )
+                            if( point_between(input->mouse_x, input->mouse_y,fOption->optionBox.x,fOption->optionBox.y,fOption->optionBox.x+fOption->optionBox.w,fOption->optionBox.y+fOption->optionBox.h) )
                             {
                                 reset_suboptions();
                                 hoverOption = i;
@@ -4093,11 +4271,11 @@ int GPE_PopUpMenu_Option::process_menu_option()
             rightDelay = -1;
         }
 
-        if(  isTopOfMenu==false && point_between(userInput->mouse_x, userInput->mouse_y,optionBox.x+1,optionBox.y+1,optionBox.x+optionBox.w-1,optionBox.y+optionBox.h-1) )
+        if(  isTopOfMenu==false && point_between(input->mouse_x, input->mouse_y,optionBox.x+1,optionBox.y+1,optionBox.x+optionBox.w-1,optionBox.y+optionBox.h-1) )
         {
             if( (int)subOptions.size()>0)
             {
-                if( userInput->mouseMovementInputReceivedInFrame )
+                if( input->mouseMovementInputReceivedInFrame )
                 {
                     reset_suboptions();
                     subMenuIsOpen = true;
@@ -4112,7 +4290,7 @@ int GPE_PopUpMenu_Option::process_menu_option()
                     }
                 }
             }
-            else if( userInput->check_mouse_released(0) || userInput->released[kb_enter] )
+            else if( input->check_mouse_released(0) || input->released[kb_enter] )
             {
                 //actual action happened...
                 if(isSelectable)
@@ -4163,7 +4341,7 @@ void GPE_PopUpMenu_Option::reset_suboptions()
     hoverOption = -1;*/
 }
 
-void GPE_PopUpMenu_Option::set_image_data(GPE_Sprite * newSprite,int newId)
+void GPE_PopUpMenu_Option::set_image_data(GPE_Animation * newSprite,int newId)
 {
     opSprite = newSprite;
     spriteFrameNumber = newId;
@@ -4186,7 +4364,7 @@ void GPE_PopUpMenu_Option::set_position(int xPos, int yPos)
         cOption = subOptions[i];
         if(cOption!=NULL)
         {
-            cOption->set_position(optionBox.x+optionBox.w,optionBox.y+i*GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING);
+            cOption->set_position(optionBox.x+optionBox.w,optionBox.y+i*GPE_AVERAGE_LINE_HEIGHT);
         }
     }
 }
@@ -4208,7 +4386,7 @@ void GPE_PopUpMenu_Option::set_width(int newWidth)
             cOption = subOptions[i];
             if(cOption!=NULL)
             {
-                cOption->set_position(optionBox.x+optionBox.w,optionBox.y+i*GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING);
+                cOption->set_position(optionBox.x+optionBox.w,optionBox.y+i*GPE_AVERAGE_LINE_HEIGHT);
                 if( isContext)
                 {
                     cOption->set_position(optionBox.x+subOptionWidthSpace,-1);
@@ -4219,14 +4397,14 @@ void GPE_PopUpMenu_Option::set_width(int newWidth)
     }
 }
 
-void GPE_PopUpMenu_Option::render_self(GPE_Renderer * cRender, GPE_Rect *cam, bool forceRedraw)
+void GPE_PopUpMenu_Option::render_self( GPE_Rect *cam, bool forceRedraw)
 {
     if( forceRedraw )
     {
         int i = 0;
         if(sectionBottom )
         {
-            render_line(cRender,optionBox.x,optionBox.y+optionBox.h,optionBox.x+optionBox.w,optionBox.y+optionBox.h,c_dkgray);
+            gpe->render_line( optionBox.x,optionBox.y+optionBox.h,optionBox.x+optionBox.w,optionBox.y+optionBox.h,c_dkgray);
         }
         if( (int)opName.size()>0 )
         {
@@ -4237,7 +4415,7 @@ void GPE_PopUpMenu_Option::render_self(GPE_Renderer * cRender, GPE_Rect *cam, bo
                     GPE_PopUpMenu_Option * fOption = NULL;
                     int menuCountSize = (int)subOptions.size();
                     int subRenderYPos = optionBox.y;
-                    int subRenderHeight = (int)subOptions.size()*GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING;
+                    int subRenderHeight = (int)subOptions.size()*GPE_AVERAGE_LINE_HEIGHT;
                     if( menuCountSize > selfDistanceToBottom)
                     {
                         if( menuCountSize > maxOptionsToView)
@@ -4255,7 +4433,7 @@ void GPE_PopUpMenu_Option::render_self(GPE_Renderer * cRender, GPE_Rect *cam, bo
                             }
                             else
                             {
-                                subRenderYPos = optionBox.y- ( abs(menuCountSize-selfDistanceToBottom) *GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING);
+                                subRenderYPos = optionBox.y- ( abs(menuCountSize-selfDistanceToBottom) *GPE_AVERAGE_LINE_HEIGHT);
                             }
                         }
                     }
@@ -4275,11 +4453,11 @@ void GPE_PopUpMenu_Option::render_self(GPE_Renderer * cRender, GPE_Rect *cam, bo
                     {
                         if( isContext)
                         {
-                            render_rectangle(cRender,optionBox.x,subRenderYPos,optionBox.x+optionBox.w,subRenderYPos+subRenderHeight,GPE_MAIN_TEMPLATE->PopUp_Box_Color, false);
+                            gpe->render_rectangle( optionBox.x,subRenderYPos,optionBox.x+optionBox.w,subRenderYPos+subRenderHeight,GPE_MAIN_THEME->PopUp_Box_Color, false);
                         }
                         else
                         {
-                            render_rectangle(cRender,optionBox.x,subRenderYPos,optionBox.x+optionWidthSpace,subRenderYPos+subRenderHeight,GPE_MAIN_TEMPLATE->Program_Color, false);
+                            gpe->render_rectangle( optionBox.x,subRenderYPos,optionBox.x+optionWidthSpace,subRenderYPos+subRenderHeight,GPE_MAIN_THEME->Program_Color, false);
                         }
                         for( i=subMenuStartPos; i<(int)subOptions.size() && i < subMenuStartPos+maxOptionsToView; i++)
                         {
@@ -4288,93 +4466,98 @@ void GPE_PopUpMenu_Option::render_self(GPE_Renderer * cRender, GPE_Rect *cam, bo
                             {
                                 if( hoverOption == i && hoverOption>=0)
                                 {
-                                    render_rect(cRender,&fOption->optionBox,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Color, false);
+                                    gpe->render_rect( &fOption->optionBox,GPE_MAIN_THEME->PopUp_Box_Highlight_Color, false);
                                 }
-                                fOption->render_self(cRender,cam, true);
+                                fOption->render_self( cam, true);
                             }
                         }
                         if( isContext)
                         {
-                            render_rectangle(cRender,optionBox.x,subRenderYPos,optionBox.x+optionBox.w,subRenderYPos+subRenderHeight,GPE_MAIN_TEMPLATE->PopUp_Box_Border_Color, true);
+                            gpe->render_rectangle( optionBox.x,subRenderYPos,optionBox.x+optionBox.w,subRenderYPos+subRenderHeight,GPE_MAIN_THEME->PopUp_Box_Border_Color, true);
                         }
                         else
                         {
-                            render_rectangle(cRender,optionBox.x,subRenderYPos,optionBox.x+subOptionWidthSpace,subRenderYPos+subRenderHeight,GPE_MAIN_TEMPLATE->Main_Border_Color, true);
+                            gpe->render_rectangle( optionBox.x,subRenderYPos,optionBox.x+subOptionWidthSpace,subRenderYPos+subRenderHeight,GPE_MAIN_THEME->Main_Border_Color, true);
                         }
                     }
                     else
                     {
-                        render_rectangle(cRender,optionBox.x+optionBox.w,subRenderYPos,optionBox.x+optionBox.w+subOptionWidthSpace,subRenderYPos+subRenderHeight,GPE_MAIN_TEMPLATE->PopUp_Box_Color, false);
+                        gpe->render_rectangle( optionBox.x+optionBox.w,subRenderYPos,optionBox.x+optionBox.w+subOptionWidthSpace,subRenderYPos+subRenderHeight,GPE_MAIN_THEME->PopUp_Box_Color, false);
                         for( i=subMenuStartPos; i<(int)subOptions.size() && i < subMenuStartPos+maxOptionsToView; i++)
                         {
                             fOption = subOptions[i];
                             if( hoverOption == i  && hoverOption>=0)
                             {
-                                render_rect(cRender,&fOption->optionBox,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Color, false);
+                                gpe->render_rect( &fOption->optionBox,GPE_MAIN_THEME->PopUp_Box_Highlight_Color, false);
                             }
-                            fOption->render_self(cRender, cam,true);
+                            fOption->render_self(  cam,true);
                         }
-                        render_rectangle(cRender,optionBox.x+optionBox.w,subRenderYPos,optionBox.x+optionBox.w+subOptionWidthSpace,subRenderYPos+subRenderHeight,GPE_MAIN_TEMPLATE->PopUp_Box_Border_Color, true);
-                        render_rectangle(cRender,optionBox.x,optionBox.y,optionBox.x+optionBox.w,optionBox.y+optionBox.h,GPE_MAIN_TEMPLATE->PopUp_Box_Color, false);
+                        gpe->render_rectangle( optionBox.x+optionBox.w,subRenderYPos,optionBox.x+optionBox.w+subOptionWidthSpace,subRenderYPos+subRenderHeight,GPE_MAIN_THEME->PopUp_Box_Border_Color, true);
+                        gpe->render_rectangle( optionBox.x,optionBox.y,optionBox.x+optionBox.w,optionBox.y+optionBox.h,GPE_MAIN_THEME->PopUp_Box_Color, false);
                      }
                 }
                 if( !isTopOfMenu)
                 {
-                    render_new_text(cRender,optionBox.x+optionBox.w-GENERAL_GPE_PADDING,optionBox.y+16,">",GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,FONT_TOOLBAR,FA_RIGHT,FA_MIDDLE);
+                    render_new_text( optionBox.x+optionBox.w-GENERAL_GPE_PADDING,optionBox.y+optionBox.h/2,">",GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TOOLBAR,FA_RIGHT,FA_MIDDLE);
                 }
             }
 
             if( isTopOfMenu )
             {
-                render_new_text(cRender,optionBox.x+4,optionBox.y+4,opName,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_TOOLBAR,FA_LEFT,FA_TOP);
+                render_new_text( optionBox.x+4,optionBox.y,opName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TOOLBAR,FA_LEFT,FA_TOP);
             }
             else
             {
                 if(subMenuIsOpen  )
                 {
-                    render_rectangle(cRender,optionBox.x,optionBox.y,optionBox.x+optionBox.w,optionBox.y+optionBox.h,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Color, false);
-                    render_new_text(cRender,optionBox.x+GENERAL_ICON_WIDTH_AND_PADDING,optionBox.y+GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING/2,opName,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Font_Color,FONT_TOOLBAR,FA_LEFT,FA_MIDDLE);
+                    gpe->render_rectangle( optionBox.x,optionBox.y,optionBox.x+optionBox.w,optionBox.y+optionBox.h,GPE_MAIN_THEME->PopUp_Box_Highlight_Color, false);
+                    render_new_text( optionBox.x+GENERAL_ICON_WIDTH_AND_PADDING,optionBox.y+GPE_AVERAGE_LINE_HEIGHT/2,opName,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,FONT_TOOLBAR,FA_LEFT,FA_MIDDLE);
                 }
                 /*else if( )
                 {
-                    render_new_text(cRender,optionBox.x+GENERAL_ICON_WIDTH_AND_PADDING,optionBox.y+GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING/2,opName,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Font_Color,FONT_TOOLBAR,FA_LEFT,FA_MIDDLE);
+                    render_new_text( optionBox.x+GENERAL_ICON_WIDTH_AND_PADDING,optionBox.y+GPE_AVERAGE_LINE_HEIGHT/2,opName,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,FONT_TOOLBAR,FA_LEFT,FA_MIDDLE);
 
                 }*/
                 else
                 {
-                    render_new_text(cRender,optionBox.x+GENERAL_ICON_WIDTH_AND_PADDING,optionBox.y+GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING/2,opName,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,FONT_TOOLBAR,FA_LEFT,FA_MIDDLE);
-                    //opTexture->render_tex(cRender,optionBox.x+GENERAL_ICON_WIDTH_AND_PADDING, optionBox.y+16-(opTexture->get_height()/2),NULL,NULL);
+                    render_new_text( optionBox.x+GENERAL_ICON_WIDTH_AND_PADDING,optionBox.y+GPE_AVERAGE_LINE_HEIGHT/2,opName,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TOOLBAR,FA_LEFT,FA_MIDDLE);
+                    //opTexture->render_tex( optionBox.x+GENERAL_ICON_WIDTH_AND_PADDING, optionBox.y+16-(opTexture->get_height()/2),NULL);
                 }
-                if ( opSprite!=NULL && opSprite->spriteTexture!=NULL )
+                if ( opSprite!=NULL && opSprite->animationTexture!=NULL )
                 {
-                    render_sprite_resized(cRender,opSprite,spriteFrameNumber,optionBox.x+GENERAL_GPE_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2);
+                    render_animation_resized( opSprite,spriteFrameNumber,optionBox.x+GENERAL_GPE_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2);
                 }
                 else if( opTexture!=NULL)
                 {
                     if( isFolderOption)
                     {
-                        render_texture_resized(cRender,opTexture,optionBox.x+GENERAL_GPE_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2,NULL,NULL,FA_LEFT,FA_TOP,GPE_MAIN_TEMPLATE->Main_Folder_Color );
+                        render_texture_resized( opTexture,optionBox.x+GENERAL_GPE_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2,NULL,FA_LEFT,FA_TOP,GPE_MAIN_THEME->Main_Folder_Color );
                     }
-                    else if( isResourceOption || renderWhite)
+                    else if( isResourceOption || renderWhite )
                     {
-                        render_texture_resized(cRender,opTexture,optionBox.x+GENERAL_GPE_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2,NULL,NULL,FA_LEFT,FA_TOP, c_white );
+                        render_texture_resized( opTexture,optionBox.x+GENERAL_GPE_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2,NULL,FA_LEFT,FA_TOP, c_white );
                     }
                     else
                     {
-                        render_texture_resized(cRender,opTexture,optionBox.x+GENERAL_GPE_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2,NULL,NULL,FA_LEFT,FA_TOP, GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color  );
+                        render_texture_resized( opTexture,optionBox.x+GENERAL_GPE_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2,NULL,FA_LEFT,FA_TOP, GPE_MAIN_THEME->PopUp_Box_Font_Color  );
                     }
                 }
                 if( (int)shortcutString.size()>0 )
                 {
-                    render_new_text(cRender,optionBox.x+optionBox.w-GENERAL_GPE_PADDING,optionBox.y+16,shortcutString,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,FONT_TOOLBAR,FA_RIGHT,FA_MIDDLE);
+                    render_new_text( optionBox.x+optionBox.w-GENERAL_GPE_PADDING,optionBox.y+optionBox.h/2,shortcutString,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TOOLBAR,FA_RIGHT,FA_MIDDLE);
                 }
             }
         }
         else
         {
-            render_new_text(cRender,optionBox.x+GENERAL_ICON_WIDTH_AND_PADDING,optionBox.y+optionBox.h/2,"null",GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,FONT_TOOLBAR,FA_LEFT,FA_MIDDLE);
+            render_new_text( optionBox.x+GENERAL_ICON_WIDTH_AND_PADDING,optionBox.y+optionBox.h/2,"null",GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TOOLBAR,FA_LEFT,FA_MIDDLE);
         }
     }
+}
+
+void GPE_PopUpMenu_Option::resize_self()
+{
+    set_width( subOptionWidthSpace );
 }
 
 void GPE_PopUpMenu_Option::update_selectability( bool selectable )
@@ -4391,13 +4574,13 @@ GPE_Toolbar::GPE_Toolbar(std::string bName,GPE_Rect bRect)
     downDelay = 0;
     leftDelay = 0;
     rightDelay = 0;
-    barBox.x = 0;
-    barBox.y = 0;
-    barBox.w = SCREEN_WIDTH;
-    barBox.h = 24;
+    elementBox.x = 0;
+    elementBox.y = 0;
+    elementBox.w = SCREEN_WIDTH;
+    elementBox.h = 16;
     guiListTypeName = "toolbar";
     opName = bName;
-    bRect = barBox;
+    bRect = elementBox;
     barWidthTotal = 0;
     hoverOption = -1;
     selectedOption = -1;
@@ -4408,10 +4591,10 @@ GPE_Toolbar::GPE_Toolbar()
 {
     guiListTypeName = "toolbar";
     opName = "untitled";
-    barBox.x = 0;
-    barBox.y = 0;
-    barBox.w = SCREEN_WIDTH;
-    barBox.h = 24;
+    elementBox.x = 0;
+    elementBox.y = 0;
+    elementBox.w = SCREEN_WIDTH;
+    elementBox.h = 16;
 
     barWidthTotal = 0;
     hoverOption = -1;
@@ -4452,8 +4635,8 @@ GPE_PopUpMenu_Option * GPE_Toolbar::add_menu_option( std::string name, int id)
     {
         newOp->set_id( (int)barOptions.size() );
     }
-    newOp->set_position(barWidthTotal,barBox.y);
-    newOp->optionBox.h = barBox.h;
+    newOp->set_position(barWidthTotal,elementBox.y);
+    newOp->optionBox.h = elementBox.h;
     barOptions.push_back(newOp);
     barWidthTotal+=newOp->get_width()+TOOLKEY_OPTION_PADDING;
     return newOp;
@@ -4461,7 +4644,7 @@ GPE_PopUpMenu_Option * GPE_Toolbar::add_menu_option( std::string name, int id)
 
 void GPE_Toolbar::set_width(int newWid)
 {
-    barBox.w = newWid;
+    elementBox.w = newWid;
 }
 
 void GPE_Toolbar::reset_options()
@@ -4486,13 +4669,13 @@ void GPE_Toolbar::open_toolbar()
     }
 }
 
-void GPE_Toolbar::prerender_self( GPE_Renderer * cRender)
+void GPE_Toolbar::prerender_self(  )
 {
     GPE_PopUpMenu_Option * tempOption = NULL;
     for( int i = 0; i < (int)barOptions.size(); i++)
     {
         tempOption = barOptions[i];
-        tempOption->prerender_self(cRender);
+        tempOption->prerender_self();
     }
 }
 
@@ -4504,7 +4687,7 @@ void GPE_Toolbar::process_toolbar()
     int barAction = -1;
 
     update_popup_info(); //resets the popup option to process
-    if( userInput->windowEventHappendInFrame == true)
+    if( input->windowEventHappendInFrame == true)
     {
         hoverOption = -1;
         selectedOption = -1;
@@ -4513,7 +4696,7 @@ void GPE_Toolbar::process_toolbar()
     }
 
     GPE_PopUpMenu_Option * fOption = NULL;
-    if( userInput->released[kb_alt] & userInput->down[kb_ctrl]==false && userInput->down[kb_shift]==false )
+    if( input->check_keyboard_only_released(kb_alt) )
     {
         if( toolBarIsOpen)
         {
@@ -4559,18 +4742,18 @@ void GPE_Toolbar::process_toolbar()
     if( barOptions.size()>0)
     {
         /*
-        if( point_between_rect(userInput->mouse_x, userInput->mouse_y,&barBox) )
+        if( point_between_rect(input->mouse_x, input->mouse_y,&elementBox) )
         {
-            if( userInput->check_mouse_released(0) )
+            if( input->check_mouse_released(0) )
             {
                 close_toolbar();
             }
         }*/
 
-        drawXPos = barBox.x;
+        drawXPos = elementBox.x;
         if( toolBarIsOpen )
         {
-            if( userInput->down[kb_up] && userInput->pressed[kb_up]==false && userInput->released[kb_up]==false )
+            if( input->down[kb_up] && input->pressed[kb_up]==false && input->released[kb_up]==false )
             {
                 upDelay+=0.5;
             }
@@ -4579,7 +4762,7 @@ void GPE_Toolbar::process_toolbar()
                 upDelay = -1;
             }
 
-            if( userInput->down[kb_down] && userInput->pressed[kb_down]==false && userInput->released[kb_down]==false )
+            if( input->down[kb_down] && input->pressed[kb_down]==false && input->released[kb_down]==false )
             {
                 downDelay+=0.5;
             }
@@ -4588,7 +4771,7 @@ void GPE_Toolbar::process_toolbar()
                 downDelay = -1;
             }
 
-            if( userInput->down[kb_left] && userInput->pressed[kb_left]==false && userInput->released[kb_left]==false )
+            if( input->down[kb_left] && input->pressed[kb_left]==false && input->released[kb_left]==false )
             {
                 leftDelay+=0.5;
             }
@@ -4597,7 +4780,7 @@ void GPE_Toolbar::process_toolbar()
                 leftDelay = -1;
             }
 
-            if( userInput->down[kb_right] && userInput->pressed[kb_right]==false && userInput->released[kb_right]==false )
+            if( input->down[kb_right] && input->pressed[kb_right]==false && input->released[kb_right]==false )
             {
                 rightDelay+=0.5;
             }
@@ -4629,7 +4812,7 @@ void GPE_Toolbar::process_toolbar()
         bool toolBarActionHappened = false;
         if( toolBarIsOpen )
         {
-            if( leftDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !userInput->pressed[kb_left] && userInput->released[kb_left] ) )
+            if( leftDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !input->pressed[kb_left] && input->released[kb_left] ) )
             {
                 leftDelay = -1;
                 toolBarActionHappened = true;
@@ -4659,7 +4842,7 @@ void GPE_Toolbar::process_toolbar()
                     }
                 }
             }
-            else if( rightDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !userInput->pressed[kb_right] && userInput->released[kb_right] ) )
+            else if( rightDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !input->pressed[kb_right] && input->released[kb_right] ) )
             {
                 toolBarActionHappened = true;
                 rightDelay = -1;
@@ -4685,7 +4868,7 @@ void GPE_Toolbar::process_toolbar()
                     }
                 }
             }
-            else if( upDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !userInput->pressed[kb_up] && userInput->released[kb_up] ) )
+            else if( upDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !input->pressed[kb_up] && input->released[kb_up] ) )
             {
                 toolBarActionHappened = true;
                 if( fOption!=NULL)
@@ -4696,7 +4879,7 @@ void GPE_Toolbar::process_toolbar()
                 }
                 upDelay = -1;
             }
-            else if( downDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !userInput->pressed[kb_down] && userInput->released[kb_down] ) )
+            else if( downDelay >= (MAIN_GUI_SETTINGS->normalInputDelayTime+3)*FPS_RATIO  || ( !input->pressed[kb_down] && input->released[kb_down] ) )
             {
                 toolBarActionHappened = true;
                 if( fOption!=NULL)
@@ -4708,7 +4891,7 @@ void GPE_Toolbar::process_toolbar()
                 }
                 downDelay = -1;
             }
-            else if( userInput->released[kb_enter] || userInput->released[kb_space] && toolBarIsOpen  )
+            else if( input->released[kb_enter] || input->released[kb_space] && toolBarIsOpen  )
             {
                 toolBarActionHappened = true;
                 if( fOption!=NULL)
@@ -4730,13 +4913,13 @@ void GPE_Toolbar::process_toolbar()
             for(i=0; i<(int)barOptions.size(); i++)
             {
                 fOption = barOptions[i];
-                if( point_between(userInput->mouse_x, userInput->mouse_y,drawXPos,barBox.y,drawXPos+fOption->get_width()+TOOLKEY_OPTION_PADDING,barBox.y+barBox.h) )
+                if( point_between(input->mouse_x, input->mouse_y,drawXPos,elementBox.y,drawXPos+fOption->get_width()+TOOLKEY_OPTION_PADDING,elementBox.y+elementBox.h) )
                 {
-                    if( userInput->mouseMovementInputReceivedInFrame || hoverOption < 0 )
+                    if( input->mouseMovementInputReceivedInFrame || hoverOption < 0 )
                     {
                         hoverOption = i;
                     }
-                    if( selectedOption>=0 && toolBarIsOpen && userInput->mouseMovementInputReceivedInFrame )
+                    if( selectedOption>=0 && toolBarIsOpen && input->mouseMovementInputReceivedInFrame )
                     {
                         reset_options();
                         hoverOption = i;
@@ -4747,7 +4930,7 @@ void GPE_Toolbar::process_toolbar()
                         actionHappened = 2;
                         open_toolbar();
                     }
-                    else if( userInput->check_mouse_released(0) )
+                    else if( input->check_mouse_released(0) )
                     {
                         //resets the bar options
                         reset_options();
@@ -4767,7 +4950,7 @@ void GPE_Toolbar::process_toolbar()
                 drawXPos+=fOption->get_width()+TOOLKEY_OPTION_PADDING;
             }
 
-            if( userInput->check_mouse_released(0) )
+            if( input->check_mouse_released(0) )
             {
                 //resets the toolbar if the user clicks on the far right side of it.
                 if(actionHappened==false || actionHappened==1)
@@ -4778,7 +4961,7 @@ void GPE_Toolbar::process_toolbar()
         }
     }
 
-    if( userInput->check_mouse_released(1) || userInput->check_keyboard_released(kb_esc) )
+    if( input->check_mouse_released(1) || input->check_keyboard_released(kb_esc) )
     {
         close_toolbar();
     }
@@ -4786,55 +4969,50 @@ void GPE_Toolbar::process_toolbar()
     if((int)GPE_Action_Message.size() > 0 )
     {
         close_toolbar();
-        userInput->reset_all_input();
+        input->reset_all_input();
     }
 }
 
-void GPE_Toolbar::render_toolbar(GPE_Renderer *rendTarget, GPE_Rect *renderCam, bool forceRedraw)
+void GPE_Toolbar::render_toolbar(GPE_Rect *renderCam, bool forceRedraw)
 {
-    if( rendTarget==NULL)
-    {
-        rendTarget = MAIN_RENDERER;
-    }
-
     if( forceRedraw)
     {
         if( toolBarIsOpen)
         {
-            MAIN_OVERLAY->render_frozen_screenshot(rendTarget);
+            MAIN_OVERLAY->render_frozen_screenshot();
         }
-        render_rect(rendTarget,&barBox,GPE_MAIN_TEMPLATE->Program_Header_Color,false);
+        gpe->render_rect(&elementBox,GPE_MAIN_THEME->Program_Header_Color,false);
         if( barOptions.size()==0)
         {
-            render_new_text(rendTarget,barBox.x+4,barBox.y+8,"Empty Toolbar();",GPE_MAIN_TEMPLATE->Main_Box_Font_Color,NULL,FA_LEFT,FA_TOP);
+            render_new_text( elementBox.x+4,elementBox.y+8,"Empty Toolbar();",GPE_MAIN_THEME->Main_Box_Font_Color,NULL,FA_LEFT,FA_TOP);
         }
         else
         {
             GPE_PopUpMenu_Option * fOption = NULL;
             int drawXPos = 0;
-            int y2 = barBox.y+barBox.h;
+            int y2 = elementBox.y+elementBox.h;
             for(int i=0; i<(int)barOptions.size(); i++)
             {
                 fOption = barOptions[i];
                 if(fOption->subMenuIsOpen || hoverOption==i)
                 {
-                    render_rectangle(rendTarget,drawXPos,barBox.y,drawXPos+fOption->get_width()+TOOLKEY_OPTION_PADDING,y2,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Color, false);
+                    gpe->render_rectangle( drawXPos,elementBox.y,drawXPos+fOption->get_width()+TOOLKEY_OPTION_PADDING,y2,GPE_MAIN_THEME->PopUp_Box_Highlight_Color, false);
                 }
-                fOption->render_self(rendTarget,NULL,true);
+                fOption->render_self(NULL,true);
                 drawXPos+=fOption->get_width()+TOOLKEY_OPTION_PADDING;
             }
         }
     }
 }
 
-GPE_DropDown_Menu::GPE_DropDown_Menu(int xPos, int yPos,std::string name, bool justOptions)
+GPE_DropDown_Menu::GPE_DropDown_Menu( std::string name, bool justOptions)
 {
     guiListTypeName = "dropdown";
-    barBox.x = xPos;
-    barBox.y = yPos;
-    barBox.w = 228;
+    elementBox.x = 0;
+    elementBox.y = 0;
+    elementBox.w = 228;
     //int nameMinSize = name.size()*
-    barBox.h = 32;
+    elementBox.h = 32;
     dropdownName = opName = name;
     opId = -1;
     selectedId = -1;
@@ -5096,7 +5274,7 @@ void GPE_DropDown_Menu::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     {
         hasArrowkeyControl = false;
     }
-    if( isInUse &&( userInput->check_keyboard_down( kb_enter ) || userInput->check_keyboard_down( kb_space )  ) )
+    if( isInUse &&( input->check_keyboard_down( kb_enter ) || input->check_keyboard_down( kb_space )  ) )
     {
         isClicked = true;
     }
@@ -5108,8 +5286,8 @@ void GPE_DropDown_Menu::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
             if( MAIN_CONTEXT_MENU->subMenuIsOpen == false)
             {
                 isOpen = true;
-                GPE_open_context_menu(viewedSpace->x+barBox.x-cam->x, viewedSpace->y+barBox.y+barBox.h-cam->y);
-                MAIN_CONTEXT_MENU->set_width(barBox.w);
+                GPE_open_context_menu(viewedSpace->x+elementBox.x-cam->x, viewedSpace->y+elementBox.y+elementBox.h-cam->y);
+                MAIN_CONTEXT_MENU->set_width(elementBox.w);
                 GPE_KeyPair * kp = NULL;
                 if( (int)subOptions.size() > 0)
                 {
@@ -5151,63 +5329,79 @@ void GPE_DropDown_Menu::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     }
     else if( hasArrowkeyControl)
     {
-        if( userInput->check_keyboard_down(kb_up) && selectedId > 0)
+        if( input->check_keyboard_down(kb_up) && selectedId > 0)
         {
             selectedId--;
         }
-        else if( userInput->check_keyboard_down(kb_down) && selectedId < (int)subOptions.size()-1)
+        else if( input->check_keyboard_down(kb_down) && selectedId < (int)subOptions.size()-1)
         {
             selectedId++;
         }
     }
 }
 
-void GPE_DropDown_Menu::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
+void GPE_DropDown_Menu::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( forceRedraw && cam!=NULL && viewedSpace!=NULL)
     {
-        render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Input_Color,false);
+        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Input_Color,false);
 
         if( selectedId >= 0)
         {
             if( selectedId < (int)subOptions.size() )
             {
                 GPE_KeyPair * kp = subOptions[selectedId];
-                render_new_text_ext(cRender,barBox.x+GENERAL_GPE_PADDING-cam->x,barBox.y+GENERAL_GPE_PADDING-cam->y,kp->keyString,GPE_MAIN_TEMPLATE->Input_Font_Color,FONT_POPUP,FA_LEFT,FA_TOP,barBox.w-barBox.h-12,-1);
+                render_new_text_ext( elementBox.x+GENERAL_GPE_PADDING-cam->x,elementBox.y+GENERAL_GPE_PADDING-cam->y,kp->keyString,GPE_MAIN_THEME->Input_Font_Color,FONT_POPUP,FA_LEFT,FA_TOP,elementBox.w-elementBox.h-12,-1);
             }
             else
             {
-                render_new_text_ext(cRender,barBox.x+GENERAL_GPE_PADDING-cam->x,barBox.y+GENERAL_GPE_PADDING-cam->y,opName,GPE_MAIN_TEMPLATE->Input_Font_Color,FONT_POPUP,FA_LEFT,FA_TOP,barBox.w-barBox.h-12,-1);
+                render_new_text_ext( elementBox.x+GENERAL_GPE_PADDING-cam->x,elementBox.y+GENERAL_GPE_PADDING-cam->y,opName,GPE_MAIN_THEME->Input_Font_Color,FONT_POPUP,FA_LEFT,FA_TOP,elementBox.w-elementBox.h-12,-1);
                 selectedId = 0;
             }
         }
         else
         {
-            render_new_text_ext(cRender,barBox.x+GENERAL_GPE_PADDING-cam->x,barBox.y+GENERAL_GPE_PADDING-cam->y,opName,GPE_MAIN_TEMPLATE->Input_Font_Color,FONT_POPUP,FA_LEFT,FA_TOP,barBox.w-barBox.h-12,-1);
+            render_new_text_ext( elementBox.x+GENERAL_GPE_PADDING-cam->x,elementBox.y+GENERAL_GPE_PADDING-cam->y,opName,GPE_MAIN_THEME->Input_Font_Color,FONT_POPUP,FA_LEFT,FA_TOP,elementBox.w-elementBox.h-12,-1);
         }
         if( isInUse)
         {
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Input_Highlight_Outline_Color,true);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Input_Highlight_Outline_Color,true);
         }
         else if( isHovered)
         {
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Input_Highlight_Alt_Color,true);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Input_Highlight_Alt_Color,true);
         }
         else
         {
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Input_Outline_Color,true);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Input_Outline_Color,true);
         }
 
-        render_rectangle(cRender,barBox.x+barBox.w-barBox.h*3/4-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Input_Outline_Color ,false);
-        render_sprite_ext(cRender,GPE_TRIANGLE,3,barBox.x+barBox.w-barBox.h/2-cam->x,barBox.y+barBox.h/3 - cam->y,barBox.h/3,barBox.h/3,GPE_MAIN_TEMPLATE->Input_Color );
+        gpe->render_rectangle( elementBox.x+elementBox.w-elementBox.h*3/4-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Input_Outline_Color ,false);
+        render_animation_ext( GPE_TRIANGLE,3,elementBox.x+elementBox.w-elementBox.h/2-cam->x,elementBox.y+elementBox.h/3 - cam->y,elementBox.h/3,elementBox.h/3,GPE_MAIN_THEME->Input_Color );
     }
 }
 
 void GPE_DropDown_Menu::set_id(int newId)
 {
     set_selection(newId);
+}
+
+void GPE_DropDown_Menu::set_option(std::string newSelectedOptionName )
+{
+    GPE_KeyPair * tOption = NULL;
+    for( int i = (int)subOptions.size()-1; i>=0; i--)
+    {
+        tOption = subOptions[i];
+        if( tOption!=NULL )
+        {
+            if( tOption->keyString==newSelectedOptionName)
+            {
+                set_selection(  i );
+            }
+        }
+    }
 }
 
 void GPE_DropDown_Menu::set_selection(int newId, bool autoCorrect)
@@ -5273,18 +5467,24 @@ void GPE_DropDown_Menu::show_just_options(bool justOptions)
     showJustOptions = justOptions;
 }
 
-GPE_ToolIconButton::GPE_ToolIconButton(int buttonX, int buttonY,std::string buttonImgFile,std::string name, int id, int buttonSize, bool lastInCol)
+GPE_ToolIconButton::GPE_ToolIconButton( std::string buttonImgFile,std::string name, int id, int buttonSize, bool lastInCol)
 {
+    webUrl = "";
+    wasClicked = false;
     guiListTypeName = "iconbutton";
     endsSection = lastInCol;
     opName = name;
     descriptionText = name;
     opId = id;
-    buttonTexture = rsm->texture_add(buttonImgFile);
-    barBox.x = buttonX;
-    barBox.y = buttonY;
-    barBox.w = buttonSize;
-    barBox.h = buttonSize;
+    buttonTexture = rsm->texture_add( buttonImgFile );
+    if( buttonTexture == NULL)
+    {
+        record_error("Unable to add texture with img ["+buttonImgFile+"]..." );
+    }
+    elementBox.x = 0;
+    elementBox.y = 0;
+    elementBox.w = buttonSize;
+    elementBox.h = buttonSize;
     isTabbed = false;
     usesTabs = false;
 }
@@ -5294,15 +5494,20 @@ GPE_ToolIconButton::~GPE_ToolIconButton()
 
 }
 
+void GPE_ToolIconButton::change_texture( GPE_Texture * newTexture)
+{
+    buttonTexture = newTexture;
+}
+
 std::string GPE_ToolIconButton::get_data()
 {
     if( buttonTexture!=NULL)
     {
-        return guiListTypeName+":"+opName+"==|||=="+int_to_string(barBox.w)+","+buttonTexture->get_filename()+",,,"+int_to_string(barBox.w)+","+int_to_string(barBox.h)+","+int_to_string(opId);
+        return guiListTypeName+":"+opName+"==|||=="+int_to_string(elementBox.w)+","+buttonTexture->get_filename()+",,,"+int_to_string(elementBox.w)+","+int_to_string(elementBox.h)+","+int_to_string(opId);
     }
     else
     {
-        return guiListTypeName+":"+opName+"==|||=="+int_to_string(barBox.w)+",0,,,0,0,"+int_to_string(opId);
+        return guiListTypeName+":"+opName+"==|||=="+int_to_string(elementBox.w)+",0,,,0,0,"+int_to_string(opId);
     }
 }
 
@@ -5311,14 +5516,14 @@ void GPE_ToolIconButton::load_data(std::string dataString)
     int buttonSize = split_first_int(dataString,',');
     if( buttonSize <=0)
     {
-        barBox.w = buttonSize;
-        barBox.h = buttonSize;
+        elementBox.w = buttonSize;
+        elementBox.h = buttonSize;
     }
     std::string textureFileName = split_first_string(dataString,",,,");
     int spriteWidth = split_first_int(dataString,',');
     int spriteHeight = split_first_int(dataString,',');
-    barBox.w = spriteWidth;
-    barBox.h = spriteHeight;
+    elementBox.w = spriteWidth;
+    elementBox.h = spriteHeight;
     opId = split_first_int(dataString,',');
     buttonTexture = rsm->texture_add(textureFileName);
 }
@@ -5335,9 +5540,9 @@ int GPE_ToolIconButton::get_id()
 
 void GPE_ToolIconButton::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 {
-    isClicked = false;
+    set_clicked( false );
     GPE_GeneralGuiElement::process_self(viewedSpace,cam);
-    if( isInUse &&( userInput->check_keyboard_down( kb_enter ) || userInput->check_keyboard_down( kb_space )  ) )
+    if( isInUse &&( input->check_keyboard_down( kb_enter ) || input->check_keyboard_down( kb_space )  ) )
     {
         isClicked = true;
     }
@@ -5349,6 +5554,11 @@ void GPE_ToolIconButton::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     {
         isTabbed = true;
     }
+
+    if( isClicked && (int)webUrl.size() > 3)
+    {
+         GPE_OpenURL(webUrl);
+    }
 }
 
 void GPE_ToolIconButton::set_id(int newId)
@@ -5358,56 +5568,60 @@ void GPE_ToolIconButton::set_id(int newId)
 
 void GPE_ToolIconButton::set_image( std::string buttonImgFile)
 {
-    if( buttonTexture!=NULL)
+    /*if( buttonTexture!=NULL )
     {
-        buttonTexture->load_new_texture(MAIN_RENDERER,buttonImgFile,-1,true);
+        buttonTexture->load_new_texture(buttonImgFile,-1,true);
     }
     else
     {
-        buttonTexture = rsm->texture_add(buttonImgFile);
-    }
+        */buttonTexture = rsm->texture_add(buttonImgFile);
+    //}
 }
 
-void GPE_ToolIconButton::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
+void GPE_ToolIconButton::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( cRender==NULL)
-    {
-        cRender = MAIN_RENDERER;
-    }
+
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
     if( forceRedraw && cam!=NULL && viewedSpace!=NULL)
     {
         if( buttonTexture!=NULL)
         {
-            GPE_Color * renderColor = GPE_MAIN_TEMPLATE->Icon_Font_Color;
+            GPE_Color * renderColor = GPE_MAIN_THEME->Icon_Font_Color;
             if( isInUse)
             {
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Icon_Box_Highlighted_Color,false);
-                renderColor = GPE_MAIN_TEMPLATE->Icon_Font_Highlighted_Color;
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Icon_Box_Highlighted_Color,false);
+                renderColor = GPE_MAIN_THEME->Icon_Font_Highlighted_Color;
             }
             else if(isHovered)
             {
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Icon_Box_Highlighted_Color,false);
-                renderColor = GPE_MAIN_TEMPLATE->Icon_Font_Highlighted_Color;
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Icon_Box_Highlighted_Color,false);
+                renderColor = GPE_MAIN_THEME->Icon_Font_Highlighted_Color;
             }
             else if(isTabbed)
             {
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Icon_Box_Selected_Color,false);
-                renderColor = GPE_MAIN_TEMPLATE->Icon_Font_Selected_Color;
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Icon_Box_Selected_Color,false);
+                renderColor = GPE_MAIN_THEME->Icon_Font_Selected_Color;
             }
-            render_texture_resized(cRender,buttonTexture,barBox.x-cam->x,barBox.y-cam->y,barBox.w,barBox.h,NULL,NULL,FA_LEFT,FA_TOP,renderColor);
+            render_texture_resized( buttonTexture,elementBox.x-cam->x,elementBox.y-cam->y,elementBox.w,elementBox.h,NULL,FA_LEFT,FA_TOP,renderColor);
         }
         if( endsSection)
         {
-            render_rectangle(cRender,barBox.x+barBox.w-cam->x,barBox.y-cam->y,barBox.x+barBox.w+4-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Icon_Font_Color);
+            //gpe->render_rectangle( elementBox.x+elementBox.w-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w+1-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Icon_Font_Color);
         }
     }
 }
 
-GPE_ToolIconButtonBar::GPE_ToolIconButtonBar(int xPos, int yPos,int buttonSize,bool useTabs)
+void GPE_ToolIconButton::set_website(std::string urlIn)
+{
+    webUrl = urlIn;
+    wasClicked = false;
+    prerender_self();
+}
+
+GPE_ToolIconButtonBar::GPE_ToolIconButtonBar( int buttonSize,bool useTabs)
 {
     guiListTypeName = "iconbuttonbar";
     if( buttonSize<=0)
@@ -5416,12 +5630,12 @@ GPE_ToolIconButtonBar::GPE_ToolIconButtonBar(int xPos, int yPos,int buttonSize,b
     }
 
     hoverOption = 0;
-    barBox.x = xPos;
-    barBox.y = yPos;
-    barBox.w = 32;
-    barBox.h = buttonSize;
+    elementBox.x = 0;
+    elementBox.y = 0;
+    elementBox.w = 32;
+    elementBox.h = buttonSize;
     barPadding = 8;
-    xPadding = 4;
+    xPadding = GENERAL_GPE_PADDING;
     newButtonXPos = barPadding;
     isTabBar = useTabs;
     tabPosition = 0;
@@ -5457,19 +5671,19 @@ void GPE_ToolIconButtonBar::limit_width( bool isLimited)
     widthIsLimited = isLimited;
     if( widthIsLimited)
     {
-        barBox.w = xPadding*3+( (int)barOptions.size() )*(xPadding+barBox.h);
+        elementBox.w = xPadding*3+( (int)barOptions.size() )*(xPadding+elementBox.h);
     }
 }
 
 void GPE_ToolIconButtonBar::set_width(int newWid)
 {
-    barBox.w = newWid;
+    elementBox.w = newWid;
 }
 
 GPE_ToolIconButton * GPE_ToolIconButtonBar::add_option( std::string buttonImgFile,std::string name, int id, bool endsSection)
 {
     int barSize = (int)barOptions.size();
-    GPE_ToolIconButton * newOp = new GPE_ToolIconButton( barBox.x+newButtonXPos, barBox.y,buttonImgFile,name,id,barBox.h, endsSection);
+    GPE_ToolIconButton * newOp = new GPE_ToolIconButton(  buttonImgFile,name,id,elementBox.h, endsSection);
     newOp->descriptionText =  name;
     newOp->usesTabs = isTabBar;
     if( isTabBar && barSize==0)
@@ -5477,19 +5691,17 @@ GPE_ToolIconButton * GPE_ToolIconButtonBar::add_option( std::string buttonImgFil
         newOp->isTabbed = true;
         tabPosition = 0;
     }
-    if( id<0 )
-    {
-        newOp->set_id( barSize );
-    }
+
     barOptions.push_back(newOp);
-    newButtonXPos+= xPadding+barBox.h;
+
+    newButtonXPos+= xPadding+elementBox.h;
     if( endsSection)
     {
         newButtonXPos+=xPadding;
     }
     if( widthAutoResizes)
     {
-        barBox.w = barPadding*2+(xPadding+barBox.h)*( (int)barOptions.size() );
+        elementBox.w = barPadding*2+(xPadding+elementBox.h)*( (int)barOptions.size() );
     }
     return newOp;
 }
@@ -5546,6 +5758,7 @@ void GPE_ToolIconButtonBar::process_self(GPE_Rect * viewedSpace , GPE_Rect *cam)
         selectedOption = -1;
         hasArrowkeyControl = false;
     }
+    int newButtonXPos = elementBox.x;
     for(i=0; i<(int)barOptions.size(); i++)
     {
         cButton = barOptions[i];
@@ -5556,6 +5769,7 @@ void GPE_ToolIconButtonBar::process_self(GPE_Rect * viewedSpace , GPE_Rect *cam)
                 cButton->set_clicked(false);
                 cButton->switch_inuse(false);
             }
+            cButton->set_coords( newButtonXPos, elementBox.y );
             cButton->process_self(viewedSpace, cam);
             if( cButton->is_clicked()  )
             {
@@ -5578,17 +5792,18 @@ void GPE_ToolIconButtonBar::process_self(GPE_Rect * viewedSpace , GPE_Rect *cam)
             {
                 MAIN_OVERLAY->update_tooltip( cButton->get_name() );
             }
+            newButtonXPos+= xPadding+elementBox.h;
         }
     }
     if( isTabBar && hasArrowkeyControl)
     {
         bool tabMoved = false;
-        if( tabPosition > 0 && (userInput->check_keyboard_pressed(kb_left) || userInput->check_keyboard_pressed(kb_up) ) )
+        if( tabPosition > 0 && (input->check_keyboard_pressed(kb_left) || input->check_keyboard_pressed(kb_up) ) )
         {
             tabPosition--;
             tabMoved = true;
         }
-        else if(userInput->check_keyboard_pressed(kb_right) || userInput->check_keyboard_pressed(kb_down) )
+        else if(input->check_keyboard_pressed(kb_right) || input->check_keyboard_pressed(kb_down) )
         {
             if( tabPosition < (int)barOptions.size()-1 )
             {
@@ -5620,51 +5835,48 @@ void GPE_ToolIconButtonBar::process_self(GPE_Rect * viewedSpace , GPE_Rect *cam)
     }
 }
 
-void GPE_ToolIconButtonBar::render_self(GPE_Renderer *cRender,GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_ToolIconButtonBar::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( cRender==NULL)
+
+    if( forceRedraw && elementBox.h > 0)
     {
-        cRender = MAIN_RENDERER;
-    }
-    if( forceRedraw && barBox.h > 0)
-    {
-        //render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->PopUp_Box_Color,false);
+        //gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->PopUp_Box_Color,false);
         GPE_ToolIconButton * cButton = NULL;
-        for(int i=0; i<(int)barOptions.size(); i++)
+        for(int i=0; i< (int)barOptions.size(); i++)
         {
             cButton = barOptions[i];
             if(cButton!=NULL)
             {
-                cButton->render_self(cRender,viewedSpace, cam,forceRedraw);
+                cButton->render_self( viewedSpace, cam,forceRedraw);
             }
         }
         if( isInUse)
         {
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Box_Font_URL_Color,true);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Box_Font_URL_Color,true);
         }
-        //render_rectangle(rendTarget,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->PopUp_Box_Border_Color,true);
+        //gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
     }
 }
 
 void GPE_ToolIconButtonBar::set_coords(int newX, int newY)
 {
-    int pastX = barBox.x;
-    int pastY = barBox.y;
+    int pastX = elementBox.x;
+    int pastY = elementBox.y;
     GPE_GeneralGuiElement::set_coords(newX,newY);
-    if( barBox.x!=pastX || barBox.y!=pastY)
+    if( elementBox.x!=pastX || elementBox.y!=pastY)
     {
         GPE_ToolIconButton * cButton = NULL;
-        int xNewPos = barBox.x+barPadding;
+        int xNewPos = elementBox.x+barPadding;
         for( int i = 0; i < (int)barOptions.size(); i++)
         {
             cButton = barOptions[i];
             if( cButton!=NULL)
             {
-                cButton->set_coords(xNewPos, barBox.y);
-                cButton->set_height( barBox.h);
-                xNewPos+=xPadding+barBox.h;
+                cButton->set_coords(xNewPos, elementBox.y);
+                cButton->set_height( elementBox.h);
+                xNewPos+=xPadding+elementBox.h;
                 if( cButton->ends_section() )
                 {
                     xNewPos+=xPadding;
@@ -5674,17 +5886,17 @@ void GPE_ToolIconButtonBar::set_coords(int newX, int newY)
     }
     if( widthAutoResizes)
     {
-        barBox.w = barPadding*2+(xPadding+barBox.h)*( (int)barOptions.size() );
+        elementBox.w = barPadding*2+(xPadding+elementBox.h)*( (int)barOptions.size() );
     }
 }
 
 
 void GPE_ToolIconButtonBar::set_height(int newHeight)
 {
-    int pastH = barBox.h;
-    if( barBox.h!=newHeight)
+    int pastH = elementBox.h;
+    if( elementBox.h!=newHeight)
     {
-        barBox.h = newHeight;
+        elementBox.h = newHeight;
         newButtonXPos = xPadding;
         GPE_ToolIconButton * cButton = NULL;
         for( int i = 0; i < (int)barOptions.size(); i++)
@@ -5692,10 +5904,10 @@ void GPE_ToolIconButtonBar::set_height(int newHeight)
             cButton = barOptions[i];
             if( cButton!=NULL)
             {
-                cButton->set_coords(barBox.x+newButtonXPos,barBox.y);
+                cButton->set_coords(elementBox.x+newButtonXPos,elementBox.y);
                 cButton->set_width(newHeight);
                 cButton->set_height(newHeight);
-                newButtonXPos+=barBox.h;
+                newButtonXPos+=elementBox.h;
                 if( cButton->ends_section() )
                 {
                     newButtonXPos+=xPadding;
@@ -5704,7 +5916,7 @@ void GPE_ToolIconButtonBar::set_height(int newHeight)
         }
         if( widthAutoResizes)
         {
-            barBox.w = newButtonXPos;
+            elementBox.w = newButtonXPos;
         }
     }
 }
@@ -5737,19 +5949,19 @@ GPE_ToolLabelButton::GPE_ToolLabelButton(int buttonX, int buttonY,std::string na
     descriptionText = description;
     opId = -1;
 
-    barBox.x = buttonX;
-    barBox.y = buttonY;
-    barBox.w = 228;
-    barBox.h = buttonSize;
+    elementBox.x = buttonX;
+    elementBox.y = buttonY;
+    elementBox.w = 228;
+    elementBox.h = buttonSize;
     if( DEFAULT_FONT!=NULL)
     {
         int textW = 0;
         int textH = 0;
         DEFAULT_FONT->get_metrics(name,&textW, &textH);
-        //opStringTexture->loadFromRenderedText(MAIN_RENDERER,newName,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_POPUP);
-        if( textH > barBox.h)
+        //opStringTexture->loadFromRenderedText(MAIN_RENDERER,newName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_POPUP);
+        if( textH > elementBox.h)
         {
-            barBox.h=textH+GENERAL_GPE_PADDING*2;
+            elementBox.h=textH+GENERAL_GPE_PADDING*2;
         }
     }
     isEnabled = true;
@@ -5762,7 +5974,7 @@ GPE_ToolLabelButton::~GPE_ToolLabelButton()
 
 
 
-void GPE_ToolLabelButton::prerender_self(GPE_Renderer * cRender)
+void GPE_ToolLabelButton::prerender_self( )
 {
 
     if( DEFAULT_FONT!=NULL)
@@ -5771,8 +5983,8 @@ void GPE_ToolLabelButton::prerender_self(GPE_Renderer * cRender)
         int textW = 0;
         int textH = 0;
         DEFAULT_FONT->get_metrics(opName,&textW, &textH);
-        //barBox.w=textW+GENERAL_GPE_PADDING*2;
-        //opStringTexture->loadFromRenderedText(MAIN_RENDERER,newName,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_POPUP);
+        //elementBox.w=textW+GENERAL_GPE_PADDING*2;
+        //opStringTexture->loadFromRenderedText(MAIN_RENDERER,newName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_POPUP);
         */
     }
 }
@@ -5784,13 +5996,13 @@ void GPE_ToolLabelButton::process_self(GPE_Rect * viewedSpace, GPE_Rect  * cam )
     {
         GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
     }
-    if( isInUse &&( userInput->check_keyboard_down( kb_enter ) || userInput->check_keyboard_down( kb_space )  ) )
+    if( isInUse &&( input->check_keyboard_down( kb_enter ) || input->check_keyboard_down( kb_space )  ) )
     {
         isClicked = true;
     }
 }
 
-void GPE_ToolLabelButton::render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace, GPE_Rect  * cam,bool forceRedraw )
+void GPE_ToolLabelButton::render_self( GPE_Rect * viewedSpace, GPE_Rect  * cam,bool forceRedraw )
 {
     if( forceRedraw && isEnabled)
     {
@@ -5800,55 +6012,55 @@ void GPE_ToolLabelButton::render_self(GPE_Renderer * cRender, GPE_Rect * viewedS
         {
             if( isClicked)
             {
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Button_Box_Selected_Color,false);
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Button_Border_Selected_Color,true);
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Button_Box_Selected_Color,false);
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Button_Border_Selected_Color,true);
             }
             else if( isHovered)
             {
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Button_Box_Highlighted_Color,false);
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Button_Border_Highlighted_Color,true);
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Button_Box_Highlighted_Color,false);
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Button_Border_Highlighted_Color,true);
             }
             else
             {
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Button_Box_Color,false);
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Button_Box_Color,false);
             }
             if(DEFAULT_FONT!=NULL)
             {
                 if( isHovered)
                 {
-                    render_new_text(cRender,barBox.x-cam->x+barBox.w/2, barBox.y-cam->y+barBox.h/2,opName,GPE_MAIN_TEMPLATE->Button_Font_Highlighted_Color,DEFAULT_FONT,FA_CENTER,FA_MIDDLE);
+                    render_new_text( elementBox.x-cam->x+elementBox.w/2, elementBox.y-cam->y+elementBox.h/2,opName,GPE_MAIN_THEME->Button_Font_Highlighted_Color,DEFAULT_FONT,FA_CENTER,FA_MIDDLE);
                 }
                 else
                 {
-                    render_new_text(cRender,barBox.x-cam->x+barBox.w/2, barBox.y-cam->y+barBox.h/2,opName,GPE_MAIN_TEMPLATE->Button_Font_Color,DEFAULT_FONT,FA_CENTER,FA_MIDDLE);
+                    render_new_text( elementBox.x-cam->x+elementBox.w/2, elementBox.y-cam->y+elementBox.h/2,opName,GPE_MAIN_THEME->Button_Font_Color,DEFAULT_FONT,FA_CENTER,FA_MIDDLE);
                 }
-                /*if( barBox.w > opStringTexture->get_width()+GENERAL_GPE_PADDING*2 )
+                /*if( elementBox.w > opStringTexture->get_width()+GENERAL_GPE_PADDING*2 )
                 {
-                    opStringTexture->render_tex(cRender,barBox.x-cam->x+(barBox.w-opStringTexture->get_width() )/2,barBox.y-cam->y+GENERAL_GPE_PADDING,NULL,NULL);
+                    opStringTexture->render_tex( elementBox.x-cam->x+(elementBox.w-opStringTexture->get_width() )/2,elementBox.y-cam->y+GENERAL_GPE_PADDING,NULL);
                 }
                 else
                 {
-                    opStringTexture->render_tex(cRender,barBox.x-cam->x+GENERAL_GPE_PADDING,barBox.y-cam->y+GENERAL_GPE_PADDING,NULL,NULL);
+                    opStringTexture->render_tex( elementBox.x-cam->x+GENERAL_GPE_PADDING,elementBox.y-cam->y+GENERAL_GPE_PADDING,NULL);
                 }*/
             }
             /*
             if( isInUse)
             {
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Button_Border_Highlighted_Color,true);
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Button_Border_Highlighted_Color,true);
             }
             else if( isHovered)
             {
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Button_Border_Highlighted_Color,true);
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Button_Border_Highlighted_Color,true);
             }
             else
             {
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Border_Color,true);
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Border_Color,true);
             }
             */
 
             if( isInUse )
             {
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x-cam->x+barBox.w,barBox.y-cam->y+barBox.h,GPE_MAIN_TEMPLATE->Main_Border_Highlighted_Color,true);
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x-cam->x+elementBox.w,elementBox.y-cam->y+elementBox.h,GPE_MAIN_THEME->Main_Border_Highlighted_Color,true);
             }
         }
     }
@@ -5862,15 +6074,15 @@ void GPE_ToolLabelButton::set_name(std::string newName)
         int textW = 0;
         int textH = 0;
         DEFAULT_FONT->get_metrics(newName,&textW, &textH);
-        //opStringTexture->loadFromRenderedText(MAIN_RENDERER,newName,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,DEFAULT_FONT);
-        barBox.w=textW+GENERAL_GPE_PADDING*2;
-        barBox.h=textH+GENERAL_GPE_PADDING*2;
+        //opStringTexture->loadFromRenderedText(MAIN_RENDERER,newName,GPE_MAIN_THEME->Main_Box_Font_Color,DEFAULT_FONT);
+        elementBox.w=textW+GENERAL_GPE_PADDING*2;
+        elementBox.h=textH+GENERAL_GPE_PADDING*2;
     }
     opName = newName;
 }
 
 ///
-GPE_ToolPushButton::GPE_ToolPushButton(int buttonX, int buttonY,std::string imgLocation,std::string name, std::string description,int id, int buttonSize)
+GPE_ToolPushButton::GPE_ToolPushButton( std::string imgLocation,std::string name, std::string description,int id, int buttonSize)
 {
     guiListTypeName = "pushbutton";
     if( buttonSize <=0)
@@ -5882,34 +6094,34 @@ GPE_ToolPushButton::GPE_ToolPushButton(int buttonX, int buttonY,std::string imgL
     opId = -1;
     opTexture = rsm->texture_add(imgLocation);
     iconPadding = 8;
-    barBox.x = buttonX;
-    barBox.y = buttonY;
-    barBox.w = 228;
+    elementBox.x = 0;
+    elementBox.y = 0;
+    elementBox.w = 228;
     if(buttonSize <=0)
     {
-        barBox.h = 32;
+        elementBox.h = 32;
     }
     else
     {
-        barBox.h = buttonSize;
+        elementBox.h = buttonSize;
     }
     if( DEFAULT_FONT!=NULL)
     {
         int textW = 0;
         int textH = 0;
         DEFAULT_FONT->get_metrics(name,&textW, &textH);
-        if( textW + iconPadding*2 +barBox.h > barBox.w)
+        if( textW + iconPadding*2 +elementBox.h > elementBox.w)
         {
-            barBox.w = textW+iconPadding*2 + barBox.h;
+            elementBox.w = textW+iconPadding*2 + elementBox.h;
         }
-        //opStringTexture->loadFromRenderedText(MAIN_RENDERER,newName,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,DEFAULT_FONT);
+        //opStringTexture->loadFromRenderedText(newName,GPE_MAIN_THEME->Main_Box_Font_Color,DEFAULT_FONT);
     }
     isEnabled = true;
     wasClicked = false;
     webUrl = "";
     showBackground = true;
     showBorder = true;
-    prerender_self(MAIN_RENDERER);
+    prerender_self();
 }
 
 GPE_ToolPushButton::~GPE_ToolPushButton()
@@ -5927,7 +6139,7 @@ void GPE_ToolPushButton::enable_background( bool enableValue)
     if( showBackground!=enableValue)
     {
         showBackground = enableValue;
-        prerender_self(MAIN_RENDERER);
+        prerender_self();
     }
 }
 
@@ -5936,11 +6148,11 @@ void GPE_ToolPushButton::enable_border( bool enableValue)
     if( showBorder!=enableValue)
     {
         showBorder=enableValue;
-        prerender_self(MAIN_RENDERER);
+        prerender_self();
     }
 }
 
-void GPE_ToolPushButton::prerender_self(GPE_Renderer * cRender)
+void GPE_ToolPushButton::prerender_self( )
 {
     /*
     int prevWidth = 0;
@@ -5950,7 +6162,7 @@ void GPE_ToolPushButton::prerender_self(GPE_Renderer * cRender)
         int textW = 0;
         int textH = 0;
         DEFAULT_FONT->get_metrics(opName,&textW, &textH);
-        barBox.w = iconPadding*3+barBox.h+textW;
+        elementBox.w = iconPadding*3+elementBox.h+textW;
     }
     */
 }
@@ -5966,7 +6178,7 @@ void GPE_ToolPushButton::process_self(GPE_Rect * viewedSpace, GPE_Rect  * cam )
         {
             GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
         }
-        if( isInUse &&( userInput->check_keyboard_down( kb_enter ) || userInput->check_keyboard_down( kb_space )  ) )
+        if( isInUse &&( input->check_keyboard_down( kb_enter ) || input->check_keyboard_down( kb_space )  ) )
         {
             isClicked = true;
         }
@@ -5977,7 +6189,7 @@ void GPE_ToolPushButton::process_self(GPE_Rect * viewedSpace, GPE_Rect  * cam )
     }
 }
 
-void GPE_ToolPushButton::render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace, GPE_Rect  * cam,bool forceRedraw )
+void GPE_ToolPushButton::render_self( GPE_Rect * viewedSpace, GPE_Rect  * cam,bool forceRedraw )
 {
     if( forceRedraw && isEnabled)
     {
@@ -5989,11 +6201,11 @@ void GPE_ToolPushButton::render_self(GPE_Renderer * cRender, GPE_Rect * viewedSp
             {
                 if( showBackground)
                 {
-                    render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x-cam->x+barBox.w,barBox.y-cam->y+barBox.h,GPE_MAIN_TEMPLATE->Button_Box_Selected_Color,false);
+                    gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x-cam->x+elementBox.w,elementBox.y-cam->y+elementBox.h,GPE_MAIN_THEME->Button_Box_Selected_Color,false);
                 }
                 //if( showBorder)
                 {
-                    render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x-cam->x+barBox.w,barBox.y-cam->y+barBox.h,GPE_MAIN_TEMPLATE->Button_Box_Highlighted_Color,true);
+                    gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x-cam->x+elementBox.w,elementBox.y-cam->y+elementBox.h,GPE_MAIN_THEME->Button_Box_Highlighted_Color,true);
                 }
             }
             else
@@ -6002,62 +6214,62 @@ void GPE_ToolPushButton::render_self(GPE_Renderer * cRender, GPE_Rect * viewedSp
                 {
                     if( isHovered)
                     {
-                        render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x-cam->x+barBox.w,barBox.y-cam->y+barBox.h,GPE_MAIN_TEMPLATE->Button_Box_Highlighted_Color,false);
-                        render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x-cam->x+barBox.w,barBox.y-cam->y+barBox.h,GPE_MAIN_TEMPLATE->Button_Border_Highlighted_Color,true);
+                        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x-cam->x+elementBox.w,elementBox.y-cam->y+elementBox.h,GPE_MAIN_THEME->Button_Box_Highlighted_Color,false);
+                        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x-cam->x+elementBox.w,elementBox.y-cam->y+elementBox.h,GPE_MAIN_THEME->Button_Border_Highlighted_Color,true);
                     }
                     else
                     {
-                        render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x-cam->x+barBox.w,barBox.y-cam->y+barBox.h,GPE_MAIN_TEMPLATE->Button_Box_Color,false);
+                        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x-cam->x+elementBox.w,elementBox.y-cam->y+elementBox.h,GPE_MAIN_THEME->Button_Box_Color,false);
                     }
                 }
                 else if( isHovered)
                 {
-                    render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x-cam->x+barBox.w,barBox.y-cam->y+barBox.h,GPE_MAIN_TEMPLATE->Main_Border_Color,true);
+                    gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x-cam->x+elementBox.w,elementBox.y-cam->y+elementBox.h,GPE_MAIN_THEME->Main_Border_Color,true);
                 }
             }
             int iconSize = 0;
             if( showBackground)
             {
-                iconSize = std::min(barBox.w,barBox.h);
+                iconSize = std::min(elementBox.w,elementBox.h);
                 iconPadding = 0;
             }
             else
             {
-                iconSize = std::min(barBox.w,barBox.h);
+                iconSize = std::min(elementBox.w,elementBox.h);
                 iconPadding = 0;
             }
-            GPE_Color * renderColor = GPE_MAIN_TEMPLATE->Button_Font_Color;
+            GPE_Color * renderColor = GPE_MAIN_THEME->Button_Font_Color;
             if( isHovered)
             {
-                renderColor = GPE_MAIN_TEMPLATE->Button_Font_Highlighted_Color;
+                renderColor = GPE_MAIN_THEME->Button_Font_Highlighted_Color;
             }
             if( showBackground==false)
             {
                 if( wasClicked)
                 {
-                    renderColor = GPE_MAIN_TEMPLATE->Main_Box_Faded_Font_Color;
+                    renderColor = GPE_MAIN_THEME->Main_Box_Faded_Font_Color;
                 }
                 else
                 {
-                    renderColor = GPE_MAIN_TEMPLATE->Main_Box_Faded_Font_Color;
+                    renderColor = GPE_MAIN_THEME->Main_Box_Faded_Font_Color;
                 }
             }
             if( opTexture!=NULL)
             {
-                render_texture_resized(cRender,opTexture,barBox.x-cam->x+iconPadding*2, barBox.y-cam->y,iconSize,iconSize,NULL,NULL,FA_LEFT,FA_TOP,renderColor);
+                render_texture_resized( opTexture,elementBox.x-cam->x+iconPadding*2, elementBox.y-cam->y,iconSize,iconSize,NULL,FA_LEFT,FA_TOP,renderColor);
                 if( DEFAULT_FONT!=NULL)
                 {
-                    render_new_text(cRender,barBox.x-cam->x+iconSize+iconPadding*2, barBox.y-cam->y+barBox.h/2,opName,renderColor,DEFAULT_FONT,FA_LEFT,FA_MIDDLE);
+                    render_new_text( elementBox.x-cam->x+iconSize+iconPadding*2, elementBox.y-cam->y+elementBox.h/2,opName,renderColor,DEFAULT_FONT,FA_LEFT,FA_MIDDLE);
                 }
             }
             else if(DEFAULT_FONT!=NULL)
             {
-                render_new_text(cRender,barBox.x-cam->x+iconSize+iconPadding*2, barBox.y-cam->y+barBox.h/2,opName,renderColor,DEFAULT_FONT,FA_LEFT,FA_MIDDLE);
+                render_new_text( elementBox.x-cam->x+iconSize+iconPadding*2, elementBox.y-cam->y+elementBox.h/2,opName,renderColor,DEFAULT_FONT,FA_LEFT,FA_MIDDLE);
             }
 
             if( isInUse )
             {
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x-cam->x+barBox.w,barBox.y-cam->y+barBox.h,GPE_MAIN_TEMPLATE->Main_Border_Highlighted_Color,true);
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x-cam->x+elementBox.w,elementBox.y-cam->y+elementBox.h,GPE_MAIN_THEME->Main_Border_Highlighted_Color,true);
             }
         }
     }
@@ -6066,14 +6278,14 @@ void GPE_ToolPushButton::render_self(GPE_Renderer * cRender, GPE_Rect * viewedSp
 void GPE_ToolPushButton::set_name(std::string newName)
 {
     opName = newName;
-    prerender_self(MAIN_RENDERER);
+    prerender_self();
 }
 
 void GPE_ToolPushButton::set_website(std::string urlIn)
 {
     webUrl = urlIn;
     wasClicked = false;
-    prerender_self(MAIN_RENDERER);
+    prerender_self();
 }
 
 ///
@@ -6142,18 +6354,18 @@ GPE_ToolPushButtonMultiLine::GPE_ToolPushButtonMultiLine(int buttonX, int button
     opId = -1;
     opTexture = rsm->texture_add(imgLocation);
     iconPadding = 8;
-    barBox.x = buttonX;
-    barBox.y = buttonY;
-    barBox.w = 228;
+    elementBox.x = buttonX;
+    elementBox.y = buttonY;
+    elementBox.w = 228;
 
-    barBox.h = GENERAL_GPE_PADDING+( (int)buttonLines.size() *(lineHeight+GENERAL_GPE_PADDING) );
+    elementBox.h = GENERAL_GPE_PADDING+( (int)buttonLines.size() *(lineHeight+GENERAL_GPE_PADDING) );
 
     isEnabled = true;
     wasClicked = false;
     webUrl = "";
     showBackground = true;
     showBorder = true;
-    prerender_self(MAIN_RENDERER);
+    prerender_self();
 }
 
 GPE_ToolPushButtonMultiLine::~GPE_ToolPushButtonMultiLine()
@@ -6171,7 +6383,7 @@ void GPE_ToolPushButtonMultiLine::enable_background( bool enableValue)
     if( showBackground!=enableValue)
     {
         showBackground = enableValue;
-        prerender_self(MAIN_RENDERER);
+        prerender_self();
     }
 }
 
@@ -6180,11 +6392,11 @@ void GPE_ToolPushButtonMultiLine::enable_border( bool enableValue)
     if( showBorder!=enableValue)
     {
         showBorder=enableValue;
-        prerender_self(MAIN_RENDERER);
+        prerender_self();
     }
 }
 
-void GPE_ToolPushButtonMultiLine::prerender_self(GPE_Renderer * cRender)
+void GPE_ToolPushButtonMultiLine::prerender_self( )
 {
     /*
     int prevWidth = 0;
@@ -6194,7 +6406,7 @@ void GPE_ToolPushButtonMultiLine::prerender_self(GPE_Renderer * cRender)
         int textW = 0;
         int textH = 0;
         DEFAULT_FONT->get_metrics(opName,&textW, &textH);
-        barBox.w = iconPadding*3+barBox.h+textW;
+        elementBox.w = iconPadding*3+elementBox.h+textW;
     }
     */
 }
@@ -6210,7 +6422,7 @@ void GPE_ToolPushButtonMultiLine::process_self(GPE_Rect * viewedSpace, GPE_Rect 
         {
             GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
         }
-        if( isInUse &&( userInput->check_keyboard_down( kb_enter ) || userInput->check_keyboard_down( kb_space )  ) )
+        if( isInUse &&( input->check_keyboard_down( kb_enter ) || input->check_keyboard_down( kb_space )  ) )
         {
             isClicked = true;
         }
@@ -6221,7 +6433,7 @@ void GPE_ToolPushButtonMultiLine::process_self(GPE_Rect * viewedSpace, GPE_Rect 
     }
 }
 
-void GPE_ToolPushButtonMultiLine::render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace, GPE_Rect  * cam,bool forceRedraw )
+void GPE_ToolPushButtonMultiLine::render_self( GPE_Rect * viewedSpace, GPE_Rect  * cam,bool forceRedraw )
 {
     if( forceRedraw && isEnabled)
     {
@@ -6230,58 +6442,58 @@ void GPE_ToolPushButtonMultiLine::render_self(GPE_Renderer * cRender, GPE_Rect *
 
         if(viewedSpace!=NULL && cam!=NULL)
         {
-            GPE_Color * textRenderColor = GPE_MAIN_TEMPLATE->Button_Font_Color;
-            GPE_Color * bgRenderColor = GPE_MAIN_TEMPLATE->Button_Box_Color;
+            GPE_Color * textRenderColor = GPE_MAIN_THEME->Button_Font_Color;
+            GPE_Color * bgRenderColor = GPE_MAIN_THEME->Button_Box_Color;
             GPE_Color * textureRenderColor = c_white;
             if( isHovered || isInUse)
             {
-                textRenderColor = GPE_MAIN_TEMPLATE->Button_Font_Highlighted_Color;
+                textRenderColor = GPE_MAIN_THEME->Button_Font_Highlighted_Color;
             }
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x-cam->x+barBox.w+GENERAL_GPE_PADDING/2,barBox.y-cam->y+barBox.h+GENERAL_GPE_PADDING/2,c_black,false,64);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x-cam->x+elementBox.w+GENERAL_GPE_PADDING/2,elementBox.y-cam->y+elementBox.h+GENERAL_GPE_PADDING/2,c_black,false,64);
 
             if( showBackground)
             {
                 if( isClicked )
                 {
-                   bgRenderColor = GPE_MAIN_TEMPLATE->Button_Box_Selected_Color;
-                   textRenderColor= GPE_MAIN_TEMPLATE->Button_Font_Highlighted_Color;
+                   bgRenderColor = GPE_MAIN_THEME->Button_Box_Selected_Color;
+                   textRenderColor= GPE_MAIN_THEME->Button_Font_Highlighted_Color;
                 }
                 else if( isHovered)
                 {
-                    bgRenderColor = GPE_MAIN_TEMPLATE->Button_Box_Highlighted_Color;
-                    textRenderColor= GPE_MAIN_TEMPLATE->Button_Font_Highlighted_Color;
+                    bgRenderColor = GPE_MAIN_THEME->Button_Box_Highlighted_Color;
+                    textRenderColor= GPE_MAIN_THEME->Button_Font_Highlighted_Color;
                 }
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x-cam->x+barBox.w,barBox.y-cam->y+barBox.h,bgRenderColor,false);
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x-cam->x+elementBox.w,elementBox.y-cam->y+elementBox.h,bgRenderColor,false);
             }
             else
             {
-                textRenderColor= GPE_MAIN_TEMPLATE->Button_Box_Color;
+                textRenderColor= GPE_MAIN_THEME->Button_Box_Color;
                 if( isClicked )
                 {
-                   textRenderColor= GPE_MAIN_TEMPLATE->Button_Box_Selected_Color;
+                   textRenderColor= GPE_MAIN_THEME->Button_Box_Selected_Color;
                 }
                 else if( isHovered)
                 {
-                    textRenderColor= GPE_MAIN_TEMPLATE->Button_Box_Highlighted_Color;
+                    textRenderColor= GPE_MAIN_THEME->Button_Box_Highlighted_Color;
                 }
             }
             if(  isInUse )
             {
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x-cam->x+barBox.w,barBox.y-cam->y+barBox.h,GPE_MAIN_TEMPLATE->Button_Border_Selected_Color,true);
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x-cam->x+elementBox.w,elementBox.y-cam->y+elementBox.h,GPE_MAIN_THEME->Button_Border_Selected_Color,true);
             }
             else if(isHovered)
             {
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x-cam->x+barBox.w,barBox.y-cam->y+barBox.h,GPE_MAIN_TEMPLATE->Button_Border_Highlighted_Color,true);
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x-cam->x+elementBox.w,elementBox.y-cam->y+elementBox.h,GPE_MAIN_THEME->Button_Border_Highlighted_Color,true);
             }
             int iconSize = 0;
             if( showBackground)
             {
-                iconSize = std::min(barBox.w,barBox.h);
+                iconSize = std::min(elementBox.w,elementBox.h);
                 iconPadding = 0;
             }
             else
             {
-                iconSize = std::min(barBox.w,barBox.h);
+                iconSize = std::min(elementBox.w,elementBox.h);
                 iconPadding = 0;
             }
             if( opTexture!=NULL)
@@ -6291,14 +6503,14 @@ void GPE_ToolPushButtonMultiLine::render_self(GPE_Renderer * cRender, GPE_Rect *
                 {
                     if( wasClicked)
                     {
-                        renderColor = GPE_MAIN_TEMPLATE->Main_Box_Faded_Font_Color;
+                        renderColor = GPE_MAIN_THEME->Main_Box_Faded_Font_Color;
                     }
                     else
                     {
-                        renderColor = GPE_MAIN_TEMPLATE->Main_Box_Faded_Font_Color;
+                        renderColor = GPE_MAIN_THEME->Main_Box_Faded_Font_Color;
                     }
                 }*/
-                render_texture_resized(cRender,opTexture,barBox.x-cam->x+iconPadding*2, barBox.y-cam->y,iconSize,iconSize,NULL,NULL,FA_LEFT,FA_TOP,textureRenderColor );
+                render_texture_resized( opTexture,elementBox.x-cam->x+iconPadding*2, elementBox.y-cam->y,iconSize,iconSize,NULL,FA_LEFT,FA_TOP,textureRenderColor );
             }
 
 
@@ -6306,13 +6518,13 @@ void GPE_ToolPushButtonMultiLine::render_self(GPE_Renderer * cRender, GPE_Rect *
             {
                 for( int ipLine = 0; ipLine < (int)buttonLines.size(); ipLine++)
                 {
-                    render_new_text(cRender,barBox.x-cam->x+iconSize+iconPadding*2+GENERAL_GPE_PADDING, barBox.y-cam->y+GENERAL_GPE_PADDING*2+(ipLine * (GENERAL_GPE_PADDING+lineHeight) ),buttonLines[ipLine] ,textRenderColor,DEFAULT_FONT,FA_LEFT,FA_MIDDLE);
+                    render_new_text( elementBox.x-cam->x+iconSize+iconPadding*2+GENERAL_GPE_PADDING, elementBox.y-cam->y+GENERAL_GPE_PADDING*2+(ipLine * (GENERAL_GPE_PADDING+lineHeight) ),buttonLines[ipLine] ,textRenderColor,DEFAULT_FONT,FA_LEFT,FA_MIDDLE);
                 }
             }
 
             if( isInUse )
             {
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x-cam->x+barBox.w,barBox.y-cam->y+barBox.h,GPE_MAIN_TEMPLATE->Main_Border_Highlighted_Color,true);
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x-cam->x+elementBox.w,elementBox.y-cam->y+elementBox.h,GPE_MAIN_THEME->Main_Border_Highlighted_Color,true);
             }
         }
     }
@@ -6345,16 +6557,16 @@ void GPE_ToolPushButtonMultiLine::set_name(std::string newName)
             buttonLines.push_back(newName);
         }
     }
-    //barBox.h = GENERAL_GPE_PADDING*4+( (int)buttonLines.size() ) * (GENERAL_GPE_PADDING+lineHeight);
-    barBox.h = GENERAL_GPE_PADDING+( (int)buttonLines.size() *(lineHeight+GENERAL_GPE_PADDING) );
-    prerender_self(MAIN_RENDERER);
+    //elementBox.h = GENERAL_GPE_PADDING*4+( (int)buttonLines.size() ) * (GENERAL_GPE_PADDING+lineHeight);
+    elementBox.h = GENERAL_GPE_PADDING+( (int)buttonLines.size() *(lineHeight+GENERAL_GPE_PADDING) );
+    prerender_self();
 }
 
 void GPE_ToolPushButtonMultiLine::set_website(std::string urlIn)
 {
     webUrl = urlIn;
     wasClicked = false;
-    prerender_self(MAIN_RENDERER);
+    prerender_self();
 }
 
 GPE_SelectBoxBasic_Option::GPE_SelectBoxBasic_Option()
@@ -6375,32 +6587,32 @@ GPE_SelectBoxBasic_Option::~GPE_SelectBoxBasic_Option()
 }
 
 
-void GPE_SelectBoxBasic_Option::prerender_self(GPE_Renderer * cRender )
+void GPE_SelectBoxBasic_Option::prerender_self(  )
 {
-    if( cRender!=NULL)
-    {
-        //optionNameTexture->loadFromRenderedText(MAIN_RENDERER,optionName,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_CATEGORY_BAR);
-    }
+
 }
 
-GPE_SelectBoxBasic::GPE_SelectBoxBasic(int x, int y, std::string name)
+GPE_SelectBoxBasic::GPE_SelectBoxBasic( std::string name)
 {
     upDelay = 0;
     downDelay = 0;
     guiListTypeName = "selectbox";
-    barBox.x = x;
-    barBox.y = y;
-    barBox.w = 228;
-    barBox.h = GENERAL_GPE_PADDING;
+    elementBox.x = 0;
+    elementBox.y = 0;
+    elementBox.w = 228;
+    elementBox.h = GENERAL_GPE_PADDING;
     maxHeight = -1;
+    optionHeight = -1;
     opName = name;
+    intedPos = 0;
     pos = 0;
     startPos = 0;
     maxOptionsInView = 10;
     optionHeight = GPE_TITLE_BPADDING+GENERAL_GPE_PADDING*2;
     optionIconWidth = GPE_AVERAGE_LINE_HEIGHT;
     showCheckboxes = false;
-    showHideOthersCheckboxToggle= true;
+    showHideOthersCheckboxToggle = true;
+    optionsScroller = new GPE_ScrollBar_YAxis();
 }
 
 GPE_SelectBoxBasic::~GPE_SelectBoxBasic()
@@ -6416,6 +6628,49 @@ GPE_SelectBoxBasic::~GPE_SelectBoxBasic()
         }
     }
     subOptions.clear();
+
+    if( optionsScroller!=NULL )
+    {
+        delete optionsScroller;
+        optionsScroller = NULL;
+    }
+}
+
+void GPE_SelectBoxBasic::correct_camera()
+{
+    maxOptionsInView = floor( (double)elementBox.h / (double)optionHeight );
+    //checks if pos is no longer in view
+    if( pos < 0 )
+    {
+        pos = 0;
+    }
+    if( pos < startPos )
+    {
+        //startPos = pos-maxOptionsInView;
+    }
+    else if( pos >= startPos+maxOptionsInView )
+    {
+        //startPos = pos - maxOptionsInView-1;
+    }
+
+    if( startPos < 0)
+    {
+        startPos = 0;
+    }
+
+    //correctos the start pos if its out of view
+    if( startPos+maxOptionsInView > (double)subOptions.size() )
+    {
+        startPos = (double)subOptions.size() - maxOptionsInView;
+    }
+    if( startPos < 0)
+    {
+        startPos = 0;
+    }
+
+    update_rectangle(&optionsScroller->elementBox, elementBox.x+elementBox.w-16, elementBox.y, 16,elementBox.h);
+    update_rectangle(&optionsScroller->fullRect, 0, 0, 0,(double)subOptions.size() );
+    update_rectangle(&optionsScroller->contextRect, 0, (double)startPos,0, (double)maxOptionsInView );
 }
 
 std::string GPE_SelectBoxBasic::get_data()
@@ -6429,7 +6684,7 @@ void GPE_SelectBoxBasic::load_data(std::string dataString)
 }
 
 
-void GPE_SelectBoxBasic::add_option(std::string newOptionName, double newOpValue,GPE_Texture * evRepIcon, GPE_Sprite * evRepSprite, int subimageInIndex, bool selectNew, bool useGuiColor )
+void GPE_SelectBoxBasic::add_option(std::string newOptionName, double newOpValue,GPE_Texture * evRepIcon, GPE_Animation * evRepSprite, int subimageInIndex, bool selectNew, bool useGuiColor )
 {
     if( (int)newOptionName.size() > 0 || evRepIcon!=NULL || evRepSprite!=NULL )
     {
@@ -6439,19 +6694,20 @@ void GPE_SelectBoxBasic::add_option(std::string newOptionName, double newOpValue
         newOption->optionSprite = evRepSprite;
         newOption->optionTexture = evRepIcon;
         newOption->useGuiColor = useGuiColor;
-        //newOption->optionNameTexture->loadFromRenderedText(MAIN_RENDERER,newOptionName,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_CATEGORY_BAR);
+        //newOption->optionNameTexture->loadFromRenderedText(MAIN_RENDERER,newOptionName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_CATEGORY_BAR);
 
         newOption->subimageIndex = subimageInIndex;
 
         subOptions.push_back(newOption);
         if( maxHeight < 0)
         {
-            barBox.h+=optionHeight;
+            elementBox.h+=optionHeight;
         }
         if( selectNew)
         {
             set_selection( (int)subOptions.size() - 1 );
         }
+        startPos++;
     }
 }
 
@@ -6534,7 +6790,7 @@ int GPE_SelectBoxBasic::get_size()
     return (int)subOptions.size();
 }
 
-void GPE_SelectBoxBasic::insert_option(int optionId, std::string newOptionName, GPE_Texture * evRepIcon, GPE_Sprite * evRepSprite, int subimageInIndex, bool selectNew )
+void GPE_SelectBoxBasic::insert_option(int optionId, std::string newOptionName, GPE_Texture * evRepIcon, GPE_Animation * evRepSprite, int subimageInIndex, bool selectNew )
 {
     if( (int)newOptionName.size() > 0 || evRepIcon!=NULL || evRepSprite!=NULL )
     {
@@ -6547,6 +6803,7 @@ void GPE_SelectBoxBasic::insert_option(int optionId, std::string newOptionName, 
         if( optionId >=0 && optionId < (int)subOptions.size() )
         {
             subOptions.insert( subOptions.begin()+optionId ,newOption );
+            startPos++;
         }
         else
         {
@@ -6554,11 +6811,15 @@ void GPE_SelectBoxBasic::insert_option(int optionId, std::string newOptionName, 
         }
         if( maxHeight < 0)
         {
-            barBox.h+=optionHeight;
+            elementBox.h+=optionHeight;
         }
         if( selectNew)
         {
-            set_selection( optionId+1);
+            set_selection( optionId );
+        }
+        else if( pos <= optionId )
+        {
+            set_selection( pos -1 );
         }
     }
 }
@@ -6568,13 +6829,13 @@ void GPE_SelectBoxBasic::limit_height(int newH)
     if( newH >=0)
     {
         maxHeight = newH;
-        barBox.h = newH;
+        elementBox.h = newH;
     }
     else
     {
         maxHeight = -1;
     }
-    maxOptionsInView = ceil( (float)barBox.h / (float)optionHeight );
+    maxOptionsInView = floor( (float)elementBox.h / (float)optionHeight );
 }
 
 void GPE_SelectBoxBasic::alter_content( int optionId, bool sectionHasContent)
@@ -6592,7 +6853,7 @@ void GPE_SelectBoxBasic::alter_content_from_value( double valueId, bool sectionH
 {
     for( int i = (int)subOptions.size()-1; i >=0; i--)
     {
-        if( subOptions[i]!=NULL && subOptions[i]->optionValue==valueId)
+        if( subOptions[i]!=NULL && subOptions[i]->optionValue==valueId )
         {
             subOptions[i]->sectionHasContent = sectionHasContent;
             break;
@@ -6626,16 +6887,15 @@ bool GPE_SelectBoxBasic::move_up_space()
     return false;
 }
 
-void GPE_SelectBoxBasic::prerender_self(GPE_Renderer * cRender )
+void GPE_SelectBoxBasic::prerender_self(  )
 {
-
     GPE_SelectBoxBasic_Option * tOption = NULL;
     for( int i = 0; i < (int)subOptions.size() && i < (int)subOptions.size(); i++)
     {
         tOption = subOptions[i];
         if( tOption!=NULL)
         {
-            tOption->prerender_self(cRender);
+            tOption->prerender_self( );
         }
     }
 
@@ -6645,32 +6905,42 @@ void GPE_SelectBoxBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    maxOptionsInView = ceil( (float)barBox.h / (float)optionHeight );
 
+    correct_camera();
+
+    //only works if scrollbar is actually needed
+    if( maxOptionsInView <= (int)subOptions.size() )
+    {
+        optionsScroller->process_self( viewedSpace, cam );
+        startPos = (double)(optionsScroller->contextRect.y);
+    }
+
+    bool scrollHappened = false;
     if( isInUse)
     {
         hasArrowkeyControl = true;
         hasScrollControl = true;
-        if( userInput->released[kb_up] )
+        if( input->released[kb_up] )
         {
             pos-=1;
             if( pos < 0 )
             {
                 pos= 0;
             }
-            if( pos == startPos)
+            if( pos == startPos )
             {
                 startPos--;
             }
+            scrollHappened = true;
         }
-        else if( userInput->released[kb_down] )
+        else if( input->released[kb_down] )
         {
             pos+=1;
             if( pos >= (int)subOptions.size() )
             {
                 pos=(int)subOptions.size()-1;
             }
-            if( pos>=startPos+maxOptionsInView)
+            if( pos>=startPos+maxOptionsInView )
             {
                 startPos = pos;
                 if( startPos+maxOptionsInView >= (int)subOptions.size() )
@@ -6682,8 +6952,9 @@ void GPE_SelectBoxBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                     }
                 }
             }
+            scrollHappened = true;
         }
-        else if( userInput->check_keyboard_released(kb_space ) && showCheckboxes)
+        else if( input->check_keyboard_released(kb_space ) && showCheckboxes)
         {
             if( pos >=0 && pos < (int)subOptions.size() )
             {
@@ -6692,22 +6963,28 @@ void GPE_SelectBoxBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
             }
         }
     }
-
-    if( isInUse && hasScrollControl )
+    else
     {
-        if( userInput->mouseScrollingUp > 0)
+        hasArrowkeyControl = true;
+        hasScrollControl = true;
+    }
+    if( isInUse && hasScrollControl && optionsScroller->hasScrollControl==false )
+    {
+        if( input->mouseScrollingUp > 0)
         {
-            startPos-=1;
+            startPos--;
+            scrollHappened = true;
         }
-        if( userInput->mouseScrollingDown > 0)
+        if( input->mouseScrollingDown > 0)
         {
-            startPos+=1;
+            startPos++;
+            scrollHappened = true;
         }
     }
 
-    if( startPos >= (int)subOptions.size()-maxOptionsInView )
+    if( startPos >= (double)subOptions.size()-maxOptionsInView )
     {
-        startPos=(int)subOptions.size()-maxOptionsInView;
+        startPos = (double)subOptions.size()-maxOptionsInView;
     }
 
     if( startPos < 0 )
@@ -6716,7 +6993,7 @@ void GPE_SelectBoxBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     }
 
     GPE_GeneralGuiElement::process_self(viewedSpace,cam);
-    if( isClicked)
+    if( isClicked )
     {
         isInUse = true;
         int checkBoxWidth = optionHeight+GENERAL_GPE_PADDING;
@@ -6726,18 +7003,18 @@ void GPE_SelectBoxBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
             checkBoxWidth = 0;
             checkBoxHeight = 0;
         }
-        //if( userInput->check_mouse_released(0) )
+        //if( input->check_mouse_released(0) )
         {
-            int relativeOptionX = viewedSpace->x+barBox.x-cam->x;
-            int relativeOptionY = viewedSpace->y+barBox.y-cam->y;
+            int relativeOptionX = viewedSpace->x+elementBox.x-cam->x;
+            int relativeOptionY = viewedSpace->y+elementBox.y-cam->y;
             for( int i = 0; i <= maxOptionsInView && i < (int)subOptions.size(); i++)
             {
-                if( point_between(userInput->mouse_x,userInput->mouse_y,relativeOptionX,relativeOptionY+(i)*optionHeight,
-                                  relativeOptionX+barBox.w,relativeOptionY+(i+1)*optionHeight) )
+                if( point_between(input->mouse_x,input->mouse_y,relativeOptionX,relativeOptionY+(i)*optionHeight,
+                                  relativeOptionX+elementBox.w,relativeOptionY+(i+1)*optionHeight) )
                 {
                     if( showCheckboxes)
                     {
-                        if( point_between(userInput->mouse_x,userInput->mouse_y,relativeOptionX,relativeOptionY+(i)*optionHeight,
+                        if( point_between(input->mouse_x,input->mouse_y,relativeOptionX,relativeOptionY+(i)*optionHeight,
                                   relativeOptionX+checkBoxWidth,relativeOptionY+(i+1)*optionHeight) )
                         {
                             GPE_SelectBoxBasic_Option * tOp = NULL;
@@ -6770,28 +7047,46 @@ void GPE_SelectBoxBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
         hasScrollControl = false;
         hasArrowkeyControl = false;
     }
+
+    if( maxOptionsInView <= (int)subOptions.size() )
+    {
+        if( scrollHappened && optionsScroller!=NULL )
+        {
+            correct_camera();
+            optionsScroller->process_self(NULL,NULL );
+            startPos = optionsScroller->contextRect.y;
+        }
+    }
+    intedPos = (int)pos;
+    //record_error("Success on select box...");
 }
 
-void GPE_SelectBoxBasic::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
+void GPE_SelectBoxBasic::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( forceRedraw && cam!=NULL && viewedSpace!=NULL )
     {
-        int relativeOptionX = barBox.x-cam->x;
-        int relativeOptionY = barBox.y-cam->y;
-        int foundIconWidth = std::min( optionIconWidth,optionHeight );
-        render_rectangle(cRender,relativeOptionX,relativeOptionY,relativeOptionX+barBox.w,relativeOptionY+barBox.h,GPE_MAIN_TEMPLATE->PopUp_Box_Color, false);
-        if( pos>=startPos && pos <= startPos+maxOptionsInView )
+        intedPos = (int)pos;
+        int relativeOptionX = elementBox.x-cam->x;
+        int relativeOptionY = elementBox.y-cam->y;
+        int foundIconWidth = std::max( optionIconWidth,optionHeight )*3/4;
+        gpe->render_rectangle( relativeOptionX,relativeOptionY,relativeOptionX+elementBox.w,relativeOptionY+elementBox.h,GPE_MAIN_THEME->PopUp_Box_Color, false);
+
+        if( pos>=startPos && pos < startPos+maxOptionsInView )
         {
             if(pos==0 && (int)subOptions.size() > 0)
             {
-                render_rectangle(cRender,relativeOptionX,relativeOptionY+(pos-startPos)*optionHeight,relativeOptionX+barBox.w,relativeOptionY+(pos-startPos+1)*optionHeight,GPE_MAIN_TEMPLATE->Button_Border_Color,false);
+                gpe->render_rectangle( relativeOptionX,relativeOptionY+(pos-startPos)*optionHeight,relativeOptionX+elementBox.w,relativeOptionY+(pos-startPos+1)*optionHeight,GPE_MAIN_THEME->Button_Border_Color,false);
             }
             else if( pos > 0)
             {
-                render_rectangle(cRender,relativeOptionX,relativeOptionY+(pos-startPos)*optionHeight,relativeOptionX+barBox.w,relativeOptionY+(pos-startPos+1)*optionHeight,GPE_MAIN_TEMPLATE->Button_Border_Color,false);
+                gpe->render_rectangle( relativeOptionX,relativeOptionY+(pos-startPos)*optionHeight,relativeOptionX+elementBox.w,relativeOptionY+(pos-startPos+1)*optionHeight,GPE_MAIN_THEME->Button_Border_Color,false);
             }
+        }
+        else if( pos >= startPos+maxOptionsInView )
+        {
+            //pos = startPos+maxOptionsInView -1;
         }
         GPE_SelectBoxBasic_Option * tOption = NULL;
         int checkBoxWidth = optionHeight+GENERAL_GPE_PADDING;
@@ -6802,81 +7097,88 @@ void GPE_SelectBoxBasic::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpa
             checkBoxHeight = 0;
         }
 
-        GPE_Color * fontRenderColor = GPE_MAIN_TEMPLATE->Main_Box_Faded_Font_Color;
-        for( int i = startPos; i < startPos+maxOptionsInView &&  i < (int)subOptions.size(); i++)
+        GPE_Color * fontRenderColor = GPE_MAIN_THEME->Main_Box_Faded_Font_Color;
+        int iStartPos = (int)startPos;
+        for( int i = iStartPos; i < (int)(iStartPos+maxOptionsInView) &&  i < (int)subOptions.size(); i++)
         {
             tOption = subOptions.at( i );
             if( tOption!=NULL)
             {
-                if( !tOption->sectionHasContent && pos!=i)
+                if( !tOption->sectionHasContent && intedPos!=i)
                 {
-                    fontRenderColor = GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color;
-                    render_rectangle(cRender,relativeOptionX,relativeOptionY+(i-startPos)*optionHeight,relativeOptionX+barBox.w,relativeOptionY+(i-startPos+1)*optionHeight,GPE_MAIN_TEMPLATE->Program_Header_Color,false,228);
+                    fontRenderColor = GPE_MAIN_THEME->PopUp_Box_Font_Color;
+                    gpe->render_rectangle( relativeOptionX,relativeOptionY+(i-iStartPos)*optionHeight,relativeOptionX+elementBox.w,relativeOptionY+(i-iStartPos+1)*optionHeight,GPE_MAIN_THEME->Program_Header_Color,false,228);
                 }
-                else if( pos ==i )
+                else if( intedPos ==i )
                 {
-                    fontRenderColor = GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Font_Color;
+                    fontRenderColor = GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color;
                 }
                 else
                 {
-                    fontRenderColor = GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color;
+                    fontRenderColor = GPE_MAIN_THEME->PopUp_Box_Font_Color;
                 }
 
                 if( showCheckboxes)
                 {
-                    render_rectangle(cRender,relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING,relativeOptionY+1+(i-startPos)*optionHeight,relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING+optionHeight,relativeOptionY+(i-startPos+1)*optionHeight,GPE_MAIN_TEMPLATE->Button_Box_Color, false);
+                    gpe->render_rectangle( relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING+optionHeight/8,relativeOptionY+1+(i-iStartPos)*optionHeight+optionHeight/8,relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING+optionHeight/2+optionHeight/8,relativeOptionY+(i-iStartPos)*optionHeight+optionHeight*5/8,GPE_MAIN_THEME->Button_Box_Color, false);
                     if( tOption->isChecked)
                     {
-                        render_texture_resized(cRender, GPE_CHECKMARK_IMAGE, relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING,relativeOptionY+(i-startPos)*optionHeight,optionHeight,optionHeight,NULL,NULL,-1,-1,GPE_MAIN_TEMPLATE->Checkbox_Color );
+                        render_texture_resized(  GPE_CHECKMARK_IMAGE, relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING+optionHeight/8,relativeOptionY+(i-iStartPos)*optionHeight+optionHeight/8,optionHeight/2,optionHeight/2,NULL,-1,-1,GPE_MAIN_THEME->Checkbox_Color );
                     }
-                    render_rectangle(cRender,relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING,relativeOptionY+1+(i-startPos)*optionHeight,relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING+optionHeight,relativeOptionY+(i-startPos+1)*optionHeight,GPE_MAIN_TEMPLATE->Button_Box_Selected_Color, true);
-                    render_new_text(cRender,relativeOptionX+GENERAL_GPE_PADDING+checkBoxWidth,relativeOptionY+(i-startPos)*optionHeight+optionHeight/2,tOption->optionName,fontRenderColor,FONT_CATEGORY_BAR,FA_LEFT,FA_CENTER,255);
+                    //gpe->render_rectangle( relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING,relativeOptionY+1+(i-iStartPos)*optionHeight,relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING+optionHeight,relativeOptionY+(i-iStartPos+1)*optionHeight,GPE_MAIN_THEME->Button_Box_Selected_Color, true);
+                    gpe->render_rectangle( relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING+optionHeight/8,relativeOptionY+1+(i-iStartPos)*optionHeight+optionHeight/8,relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING+optionHeight/2+optionHeight/8,relativeOptionY+(i-iStartPos)*optionHeight+optionHeight*5/8,GPE_MAIN_THEME->Button_Box_Selected_Color, true);
+
+                    render_new_text( relativeOptionX+GENERAL_GPE_PADDING+checkBoxWidth,relativeOptionY+(i-iStartPos)*optionHeight+optionHeight/2,tOption->optionName,fontRenderColor,FONT_CATEGORY_BAR,FA_LEFT,FA_CENTER,255);
                 }
                 else
                 {
-                    render_new_text(cRender,relativeOptionX+optionIconWidth+GENERAL_GPE_PADDING*2+checkBoxWidth,relativeOptionY+(i-startPos)*optionHeight+optionHeight/2,tOption->optionName,fontRenderColor,FONT_CATEGORY_BAR,FA_LEFT,FA_CENTER,255);
+                    render_new_text( relativeOptionX+foundIconWidth+GENERAL_GPE_PADDING*2,relativeOptionY+(i-iStartPos)*optionHeight+optionHeight/2,tOption->optionName,fontRenderColor,FONT_CATEGORY_BAR,FA_LEFT,FA_MIDDLE,255);
                 }
                 if( tOption->optionTexture!=NULL)
                 {
                     if( tOption->useGuiColor)
                     {
-                        render_texture_resized(cRender,tOption->optionTexture,relativeOptionX+GENERAL_GPE_PADDING+checkBoxWidth,relativeOptionY+(i-startPos)*optionHeight+foundIconWidth/4,foundIconWidth,foundIconWidth,NULL,NULL,FA_LEFT,FA_TOP,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color );
+                        render_texture_resized( tOption->optionTexture,relativeOptionX+GENERAL_GPE_PADDING,relativeOptionY+(i-iStartPos)*optionHeight+(optionHeight)/2,foundIconWidth,foundIconWidth,NULL,FA_LEFT,FA_MIDDLE,GPE_MAIN_THEME->PopUp_Box_Font_Color );
                     }
                     else
                     {
-                        render_texture_resized(cRender,tOption->optionTexture,relativeOptionX+GENERAL_GPE_PADDING+checkBoxWidth,relativeOptionY+(i-startPos)*optionHeight+foundIconWidth/4,foundIconWidth,foundIconWidth );
+                        render_texture_resized( tOption->optionTexture,relativeOptionX+GENERAL_GPE_PADDING,relativeOptionY+(i-iStartPos)*optionHeight+(optionHeight)/2,foundIconWidth,foundIconWidth,NULL, FA_LEFT, FA_MIDDLE );
                     }
                 }
                 else if( tOption->optionSprite!=NULL)
                 {
                     if( tOption->useGuiColor)
                     {
-                        render_sprite_ext(cRender,tOption->optionSprite,tOption->subimageIndex,relativeOptionX+GENERAL_GPE_PADDING+checkBoxWidth,relativeOptionY+(i-startPos)*optionHeight +(optionHeight-foundIconWidth)/2,foundIconWidth,foundIconWidth,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,NULL,cam);
+                        render_animation_ext( tOption->optionSprite,tOption->subimageIndex,relativeOptionX+GENERAL_GPE_PADDING+checkBoxWidth,relativeOptionY+(i-iStartPos)*optionHeight +(optionHeight-foundIconWidth)/2,foundIconWidth,foundIconWidth,GPE_MAIN_THEME->Main_Box_Font_Color,cam);
                     }
                     else
                     {
-                        render_sprite_resized(cRender,tOption->optionSprite,tOption->subimageIndex,relativeOptionX+GENERAL_GPE_PADDING+checkBoxWidth,relativeOptionY+(i-startPos)*optionHeight +(optionHeight-foundIconWidth)/2,foundIconWidth,foundIconWidth,NULL,cam);
+                        render_animation_resized( tOption->optionSprite,tOption->subimageIndex,relativeOptionX+GENERAL_GPE_PADDING+checkBoxWidth,relativeOptionY+(i-iStartPos)*optionHeight +(optionHeight-foundIconWidth)/2,foundIconWidth,foundIconWidth,cam);
                     }
                 }
             }
         }
 
-        if( startPos > 0)
+        if( iStartPos > 0 )
         {
-            render_rectangle(cRender,relativeOptionX,relativeOptionY,relativeOptionX+barBox.w,relativeOptionY+4,GPE_MAIN_TEMPLATE->Button_Box_Selected_Color,false,228);
+            gpe->render_rectangle( relativeOptionX,relativeOptionY,relativeOptionX+elementBox.w,relativeOptionY+4,GPE_MAIN_THEME->Button_Box_Selected_Color,false,228);
         }
-        else if( startPos+maxOptionsInView < (int)subOptions.size() )
+        else if( iStartPos+maxOptionsInView < (int)subOptions.size() )
         {
-            render_rectangle(cRender,relativeOptionX,relativeOptionY+barBox.h-4,relativeOptionX+barBox.w,relativeOptionY+barBox.h,GPE_MAIN_TEMPLATE->Button_Box_Selected_Color,false,228);
+            gpe->render_rectangle( relativeOptionX,relativeOptionY+elementBox.h-4,relativeOptionX+elementBox.w,relativeOptionY+elementBox.h,GPE_MAIN_THEME->Button_Box_Selected_Color,false,228);
         }
         if( isInUse)
         {
-            render_rectangle(cRender,relativeOptionX,relativeOptionY,relativeOptionX+barBox.w,relativeOptionY+barBox.h,GPE_MAIN_TEMPLATE->Button_Box_Selected_Color, true);
+            gpe->render_rectangle( relativeOptionX,relativeOptionY,relativeOptionX+elementBox.w,relativeOptionY+elementBox.h,GPE_MAIN_THEME->Button_Box_Selected_Color, true);
         }
         else
         {
-            render_rectangle(cRender,relativeOptionX,relativeOptionY,relativeOptionX+barBox.w,relativeOptionY+barBox.h,GPE_MAIN_TEMPLATE->Main_Border_Color, true );
+            gpe->render_rectangle( relativeOptionX,relativeOptionY,relativeOptionX+elementBox.w,relativeOptionY+elementBox.h,GPE_MAIN_THEME->Main_Border_Color, true );
         }
+    }
+    if( maxOptionsInView < (int)subOptions.size() )
+    {
+        optionsScroller->render_self( viewedSpace, cam );
     }
 }
 
@@ -6913,7 +7215,7 @@ void GPE_SelectBoxBasic::set_option_height( int newOptionHeight)
     {
         optionHeight = newOptionHeight;
     }
-    maxOptionsInView = ceil( (float)barBox.h / (float)optionHeight );
+    maxOptionsInView = floor( (float)elementBox.h / (float)optionHeight );
 }
 
 void GPE_SelectBoxBasic::set_selected_option( std::string optionToSelect)
@@ -6940,7 +7242,7 @@ void GPE_SelectBoxBasic::set_selected_option( std::string optionToSelect)
     }
 }
 
-void GPE_SelectBoxBasic::set_selection( int selId)
+void GPE_SelectBoxBasic::set_selection( int selId )
 {
     if( selId >= (int)subOptions.size() )
     {
@@ -6953,11 +7255,7 @@ void GPE_SelectBoxBasic::set_selection( int selId)
     }
     pos = selId;
 
-    startPos = pos-maxOptionsInView;
-    if( startPos < 0)
-    {
-        startPos = 0;
-    }
+    correct_camera();
 }
 
 void GPE_SelectBoxBasic::toggle_others_checked()
@@ -6978,22 +7276,22 @@ void GPE_SelectBoxBasic::toggle_others_checked()
 }
 
 
-GPE_Input_Field_Color::GPE_Input_Field_Color(int newX, int newY, int boxW, int boxH,std::string startName,std::string placeHolderText)
+GPE_Input_Field_Color::GPE_Input_Field_Color( std::string startName,std::string placeHolderText)
 {
     opName = startName;
     guiListTypeName = "colorpicker";
     guiListTypeId = 2;
     storedColor = new GPE_Color();
-    barBox.x = 0;
-    barBox.y = 0;
-    barBox.w = 228;
-    barBox.h = 24;
-    fieldBarBox.x = barBox.x;
-    fieldBarBox.y = barBox.y;
-    fieldBarBox.w = barBox.w;
-    fieldBarBox.h = barBox.h;
-    prevBarBoxW = barBox.w;
-    prevBarBoxH = barBox.h;
+    elementBox.x = 0;
+    elementBox.y = 0;
+    elementBox.w = 256;
+    elementBox.h = 24;
+    fieldElementBox.x = elementBox.x;
+    fieldElementBox.y = elementBox.y;
+    fieldElementBox.w = elementBox.w;
+    fieldElementBox.h = elementBox.h;
+    prevelementBoxW = elementBox.w;
+    prevelementBoxH = elementBox.h;
 
     fontSizeH = 12;
     fontSizeW = 12;
@@ -7095,19 +7393,20 @@ void GPE_Input_Field_Color::set_label(std::string newLabel)
         inputLabel = newLabel;
         showLabel = true;
 
-        barBox.h=prevBarBoxH+fontSizeH;
-        barBox.w = std::max( prevBarBoxW, ( fontSizeW *(int)inputLabel.size()  ) );
-        fieldBarBox.x = barBox.x;
-        fieldBarBox.y = barBox.y+fontSizeH;
-        fieldBarBox.w = prevBarBoxW;
-        fieldBarBox.h = prevBarBoxH;
+        /*
+        elementBox.h=prevelementBoxH+fontSizeH;
+        elementBox.w = std::max( prevelementBoxW, ( fontSizeW *(int)inputLabel.size()  ) );
+        fieldElementBox.x = elementBox.x;
+        fieldElementBox.y = elementBox.y+fontSizeH;
+        fieldElementBox.w = prevelementBoxW;
+        fieldElementBox.h = prevelementBoxH;*/
     }
     else
     {
         /*if( showLabel==true)
         {
-            barBox.w = ;
-            barBox.h =
+            elementBox.w = ;
+            elementBox.h =
         }*/
         inputLabel = "";
         showLabel = false;
@@ -7118,7 +7417,7 @@ void GPE_Input_Field_Color::set_name(std::string newName)
 {
     if( (int)newName.size() > 0)
     {
-        if( opName == inputLabel)
+        if( opName == inputLabel )
         {
             set_label(newName);
         }
@@ -7133,10 +7432,10 @@ void GPE_Input_Field_Color::set_string(std::string newString)
 
 void GPE_Input_Field_Color::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
 {
-    fieldBarBox.x = barBox.x;
-    fieldBarBox.y = barBox.y;
-    fieldBarBox.w = prevBarBoxW;
-    fieldBarBox.h = prevBarBoxH;
+    fieldElementBox.x = elementBox.x+(elementBox.w-32);
+    fieldElementBox.y = elementBox.y;
+    fieldElementBox.w = 32;
+    fieldElementBox.h = prevelementBoxH;
     if( showLabel)
     {
         set_label(inputLabel);
@@ -7158,9 +7457,9 @@ void GPE_Input_Field_Color::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
         cam = GPE_find_camera(cam);
         if(viewedSpace!=NULL && cam!=NULL)
         {
-            if( point_between(userInput->mouse_x,userInput->mouse_y,viewedSpace->x,viewedSpace->y,viewedSpace->x+viewedSpace->w,viewedSpace->y+viewedSpace->h) )
+            if( point_between(input->mouse_x,input->mouse_y,viewedSpace->x,viewedSpace->y,viewedSpace->x+viewedSpace->w,viewedSpace->y+viewedSpace->h) )
             {
-                if (point_between(userInput->mouse_x,userInput->mouse_y,fieldBarBox.x+viewedSpace->x-cam->x,fieldBarBox.y+viewedSpace->y-cam->y,fieldBarBox.x+fieldBarBox.w+viewedSpace->x-cam->x,fieldBarBox.y+fieldBarBox.h+viewedSpace->y-cam->y) )
+                if (point_between(input->mouse_x,input->mouse_y,fieldElementBox.x+viewedSpace->x-cam->x,fieldElementBox.y+viewedSpace->y-cam->y,fieldElementBox.x+fieldElementBox.w+viewedSpace->x-cam->x,fieldElementBox.y+fieldElementBox.h+viewedSpace->y-cam->y) )
                 {
                     isHovered = true;
                     if( (int)descriptionText.size()>0 )
@@ -7171,17 +7470,17 @@ void GPE_Input_Field_Color::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                     {
                         MAIN_OVERLAY->update_tooltip(opName);
                     }
-                    if( userInput->check_mouse_released(0) )
+                    if( input->check_mouse_released(0) )
                     {
                         isClicked = true;
                     }
                 }
-                else if( userInput->check_mouse_released(-1) )
+                else if( input->check_mouse_released(-1) )
                 {
                     clickedOutside = true;
                 }
             }
-            else if( userInput->check_mouse_released(-1) )
+            else if( input->check_mouse_released(-1) )
             {
                 clickedOutside = true;
             }
@@ -7189,7 +7488,7 @@ void GPE_Input_Field_Color::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     }
 
     //
-    if( isInUse &&( userInput->check_keyboard_down( kb_enter ) || userInput->check_keyboard_down( kb_space )  ) )
+    if( isInUse &&( input->check_keyboard_down( kb_enter ) || input->check_keyboard_down( kb_space )  ) )
     {
         isClicked = true;
     }
@@ -7213,30 +7512,31 @@ void GPE_Input_Field_Color::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     }
 }
 
-void GPE_Input_Field_Color::render_self(GPE_Renderer * cRender ,GPE_Rect * viewedSpace , GPE_Rect *cam, bool forceRedraw)
+void GPE_Input_Field_Color::render_self( GPE_Rect * viewedSpace , GPE_Rect *cam, bool forceRedraw)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( forceRedraw && isEnabled && cam!=NULL)
     {
-        if( cRender->screen_was_cleared() || userInput->input_received() || forceRedraw)
+        if( MAIN_RENDERER->screen_was_cleared() || input->input_received() || forceRedraw)
         {
             if( showLabel && (int)inputLabel.size() > 0)
             {
-                render_new_text_ext(cRender,barBox.x-cam->x,barBox.y-cam->y,inputLabel,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP);
+                render_new_text_ext( elementBox.x-cam->x,elementBox.y-cam->y,inputLabel,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP);
             }
-            render_rectangle(cRender,fieldBarBox.x-cam->x,fieldBarBox.y-cam->y,fieldBarBox.x+fieldBarBox.w-cam->x,fieldBarBox.y+fieldBarBox.h-cam->y,storedColor,false);
+
+            gpe->render_rectangle( fieldElementBox.x-cam->x,fieldElementBox.y-cam->y,fieldElementBox.x+fieldElementBox.w-cam->x,fieldElementBox.y+fieldElementBox.h-cam->y,storedColor,false);
             if( isInUse)
             {
-                render_rectangle(cRender,fieldBarBox.x-cam->x,fieldBarBox.y-cam->y,fieldBarBox.x+fieldBarBox.w-cam->x,fieldBarBox.y+fieldBarBox.h-cam->y,GPE_MAIN_TEMPLATE->Button_Box_Highlighted_Color,true);
+                gpe->render_rectangle( fieldElementBox.x-cam->x,fieldElementBox.y-cam->y,fieldElementBox.x+fieldElementBox.w-cam->x,fieldElementBox.y+fieldElementBox.h-cam->y,GPE_MAIN_THEME->Button_Box_Highlighted_Color,true);
             }
             else if( isHovered )
             {
-                    render_rectangle(cRender,fieldBarBox.x-cam->x,fieldBarBox.y-cam->y,fieldBarBox.x+fieldBarBox.w-cam->x,fieldBarBox.y+fieldBarBox.h-cam->y,GPE_MAIN_TEMPLATE->Button_Box_Selected_Color,true);
+                    gpe->render_rectangle( fieldElementBox.x-cam->x,fieldElementBox.y-cam->y,fieldElementBox.x+fieldElementBox.w-cam->x,fieldElementBox.y+fieldElementBox.h-cam->y,GPE_MAIN_THEME->Button_Box_Selected_Color,true);
             }
             else
             {
-                    render_rectangle(cRender,fieldBarBox.x-cam->x,fieldBarBox.y-cam->y,fieldBarBox.x+fieldBarBox.w-cam->x,fieldBarBox.y+fieldBarBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Border_Color,true);
+                    gpe->render_rectangle( fieldElementBox.x-cam->x,fieldElementBox.y-cam->y,fieldElementBox.x+fieldElementBox.w-cam->x,fieldElementBox.y+fieldElementBox.h-cam->y,GPE_MAIN_THEME->Main_Border_Color,true);
             }
         }
     }
@@ -7361,28 +7661,32 @@ void GPE_Input_Field_Color::set_height(int newHeight)
 {
     if( showLabel)
     {
-        fieldBarBox.h = newHeight;
+        fieldElementBox.h = newHeight;
     }
     else
     {
-        barBox.h = newHeight;
-        fieldBarBox.h = newHeight;
+        elementBox.h = newHeight;
+        fieldElementBox.h = newHeight;
     }
-    prevBarBoxH = newHeight;
+    prevelementBoxH = newHeight;
 }
 
 void GPE_Input_Field_Color::set_width(int newWidth)
 {
+    if( newWidth < 192)
+    {
+        newWidth = 192;
+    }
     if( showLabel)
     {
-        fieldBarBox.w = newWidth;
+        fieldElementBox.w = newWidth;
     }
     else
     {
-        barBox.w = newWidth;
-        fieldBarBox.w = newWidth;
+        elementBox.w = newWidth;
+        fieldElementBox.w = newWidth;
     }
-    prevBarBoxW = newWidth;
+    prevelementBoxW = newWidth;
 }
 
 
@@ -7406,20 +7710,20 @@ GPE_TextInputBasic::GPE_TextInputBasic( std::string startName,std::string placeH
     inputLabel = "";
     if( (int)placeHolderText.size()>512)
     {
-        inputLabel = placeHolderText = placeHolderText.substr(0,512);
+         placeHolderText = placeHolderText.substr(0,512);
     }
     placeHolderString = placeHolderText;
-    barBox.x = 0;
-    barBox.y = 0;
-    barBox.w = 192;
-    barBox.h = 24;
+    elementBox.x = 0;
+    elementBox.y = 0;
+    elementBox.w = 192;
+    elementBox.h = 24;
 
     FONT_TEXTINPUT->get_metrics("A",&fontSizeW,&fontSizeH);
     if( fontSizeW<=0)
     {
         fontSizeW = 12;
     }
-    maxCharactersInView = barBox.w/fontSizeW;
+    maxCharactersInView = elementBox.w/fontSizeW;
 
     inputFieldPos = 0;
     hasValidInput = true;
@@ -7434,10 +7738,10 @@ GPE_TextInputBasic::GPE_TextInputBasic( std::string startName,std::string placeH
     bscDelay = 0;
     delDelay = 0;
     selectionCursorPos = selectionEndCursorPos = 0;
-    fieldBarBox.x = barBox.x;
-    fieldBarBox.y = barBox.y;
-    prevBarBoxW = fieldBarBox.w = barBox.w;
-    prevBarBoxH = fieldBarBox.h = barBox.h;
+    fieldElementBox.x = elementBox.x;
+    fieldElementBox.y = elementBox.y;
+    prevelementBoxW = fieldElementBox.w = elementBox.w;
+    prevelementBoxH = fieldElementBox.h = elementBox.h;
 }
 
 GPE_TextInputBasic::~GPE_TextInputBasic()
@@ -7499,7 +7803,7 @@ void GPE_TextInputBasic::get_cursor_from_mouse( GPE_Rect * viewedSpace, GPE_Rect
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    cursorPos = floor( startXPos+(userInput->mouse_x-viewedSpace->x-fieldBarBox.x)/fontSizeW);
+    cursorPos = floor( startXPos+(input->mouse_x-viewedSpace->x-fieldElementBox.x)/fontSizeW);
     if( cursorPos < 0)
     {
         cursorPos = 0;
@@ -7581,13 +7885,13 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     inputSubmitted = false;
     bool pasteCommandGiven = false;
     viewedSpace = GPE_find_camera(viewedSpace);
-    maxCharactersInView = barBox.w/fontSizeW;
+    maxCharactersInView = elementBox.w/fontSizeW;
     cam = GPE_find_camera(cam);
-    fieldBarBox.x = barBox.x;
-    fieldBarBox.y = barBox.y;
-    fieldBarBox.w = prevBarBoxW;
-    fieldBarBox.h = prevBarBoxH;
-    if( showLabel)
+    fieldElementBox.x = elementBox.x;
+    fieldElementBox.y = elementBox.y;
+    fieldElementBox.w = prevelementBoxW;
+    fieldElementBox.h = prevelementBoxH;
+    if( showLabel )
     {
         set_label(inputLabel);
     }
@@ -7608,9 +7912,9 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
         cam = GPE_find_camera(cam);
         if(viewedSpace!=NULL && cam!=NULL)
         {
-            if( point_between(userInput->mouse_x,userInput->mouse_y,viewedSpace->x,viewedSpace->y,viewedSpace->x+viewedSpace->w,viewedSpace->y+viewedSpace->h) )
+            if( point_between(input->mouse_x,input->mouse_y,viewedSpace->x,viewedSpace->y,viewedSpace->x+viewedSpace->w,viewedSpace->y+viewedSpace->h) )
             {
-                if (point_between(userInput->mouse_x,userInput->mouse_y,fieldBarBox.x+viewedSpace->x-cam->x,fieldBarBox.y+viewedSpace->y-cam->y,fieldBarBox.x+fieldBarBox.w+viewedSpace->x-cam->x,fieldBarBox.y+fieldBarBox.h+viewedSpace->y-cam->y) )
+                if (point_between(input->mouse_x,input->mouse_y,fieldElementBox.x+viewedSpace->x-cam->x,fieldElementBox.y+viewedSpace->y-cam->y,fieldElementBox.x+fieldElementBox.w+viewedSpace->x-cam->x,fieldElementBox.y+fieldElementBox.h+viewedSpace->y-cam->y) )
                 {
                     isHovered = true;
                     if( (int)descriptionText.size()>0 )
@@ -7621,21 +7925,21 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                     {
                         MAIN_OVERLAY->update_tooltip(opName);
                     }
-                    if( userInput->check_mouse_released(0) )
+                    if( input->check_mouse_released(0) )
                     {
                         isClicked = true;
                         hasArrowkeyControl = true;
                         hasScrollControl = false;
                     }
                 }
-                else if( userInput->check_mouse_released(-1) )
+                else if( input->check_mouse_released(-1) )
                 {
                     clickedOutside = true;
                     hasScrollControl = false;
                     hasArrowkeyControl = false;
                 }
             }
-            else if( userInput->check_mouse_released(-1) )
+            else if( input->check_mouse_released(-1) )
             {
                 clickedOutside = true;
                 hasScrollControl = false;
@@ -7649,7 +7953,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     {
         isInUse = true;
         inputFieldPos = 0;
-        userInput->inkeys = "";
+        input->inkeys = "";
         get_cursor_from_mouse(viewedSpace,cam);
     }
     if( isHovered)
@@ -7663,7 +7967,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     }
     if( isHovered)
     {
-        if( userInput->check_mouse_doubleclicked(0) )
+        if( input->check_mouse_doubleclicked(0) )
         {
             if( lastDoubleClickAction ==0)
             {
@@ -7759,24 +8063,23 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                 select_all();
                 lastDoubleClickAction = 0;
             }
-            userInput->reset_all_input();
+            input->reset_all_input();
 
         }
-        else if( userInput->check_mouse_pressed(0) && RESOURCE_TO_DRAG==NULL )
+        else if( input->check_mouse_pressed(0) && RESOURCE_TO_DRAG==NULL )
         {
             get_cursor_from_mouse(viewedSpace,cam);
             selectionCursorPos = cursorPos;
             selectionEndCursorPos = cursorPos;
         }
-        else if( userInput->check_mouse_down(0)  && RESOURCE_TO_DRAG==NULL )
+        else if( input->check_mouse_down(0)  && RESOURCE_TO_DRAG==NULL )
         {
             get_cursor_from_mouse(viewedSpace,cam);
             selectionEndCursorPos = cursorPos;
         }
-        else if( userInput->check_mouse_down(1) )
+        else if( input->check_mouse_down(1) )
         {
-            GPE_open_context_menu();
-            MAIN_CONTEXT_MENU->set_width(128);
+            GPE_open_context_menu(-1,-1,128);
             MAIN_CONTEXT_MENU->add_menu_option("Undo",0,rsm->texture_add(APP_DIRECTORY_NAME+"resources/buttons/backward.png"),-1,NULL,true,true);
             MAIN_CONTEXT_MENU->add_menu_option("Cut",1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/buttons/cut.png"),-1,NULL,false,true);
             MAIN_CONTEXT_MENU->add_menu_option("Copy",2,rsm->texture_add(APP_DIRECTORY_NAME+"resources/buttons/copy.png"),-1,NULL,false,true);
@@ -7812,7 +8115,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
         }
         else if( RESOURCE_TO_DRAG!=NULL )
         {
-            if( userInput->check_mouse_released(0) )
+            if( input->check_mouse_released(0) )
             {
                 GPE_change_cursor(SDL_SYSTEM_CURSOR_IBEAM);
                 get_cursor_from_mouse(viewedSpace, cam);
@@ -7840,7 +8143,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
         }
         //special control action happening
         //Process Input Field delay timers
-        if( userInput->down[kb_backspace]  && !userInput->pressed[kb_backspace]  )
+        if( input->down[kb_backspace]  && !input->pressed[kb_backspace]  )
         {
             bscDelay+=0.5;
         }
@@ -7848,7 +8151,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
         {
             bscDelay = -1;
         }
-        if( userInput->down[kb_delete] && !userInput->pressed[kb_delete] )
+        if( input->down[kb_delete] && !input->pressed[kb_delete] )
         {
             delDelay+=0.5;
         }
@@ -7856,7 +8159,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
         {
             delDelay = -1;
         }
-        if( userInput->down[kb_up] && !userInput->released[kb_up] && !userInput->pressed[kb_up] )
+        if( input->down[kb_up] && !input->released[kb_up] && !input->pressed[kb_up] )
         {
             upArrowDelay+=0.5;
         }
@@ -7864,7 +8167,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
         {
             upArrowDelay = -1;
         }
-        if( userInput->down[kb_down] && !userInput->released[kb_down] && !userInput->pressed[kb_down] )
+        if( input->down[kb_down] && !input->released[kb_down] && !input->pressed[kb_down] )
         {
             downArrowDelay+=0.5;
         }
@@ -7872,7 +8175,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
         {
             downArrowDelay = -1;
         }
-        if( userInput->down[kb_left] && !userInput->released[kb_left] && !userInput->pressed[kb_left] )
+        if( input->down[kb_left] && !input->released[kb_left] && !input->pressed[kb_left] )
         {
             leftArrowDelay+=0.5;
         }
@@ -7880,7 +8183,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
         {
             leftArrowDelay = -1;
         }
-        if( userInput->down[kb_right] && !userInput->released[kb_right] && !userInput->pressed[kb_right] )
+        if( input->down[kb_right] && !input->released[kb_right] && !input->pressed[kb_right] )
         {
             rightArrowDelay+=0.5;
         }
@@ -7888,7 +8191,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
         {
             rightArrowDelay = -1;
         }
-        if( userInput->down[kb_enter] && !userInput->released[kb_enter] && !userInput->pressed[kb_enter] )
+        if( input->down[kb_enter] && !input->released[kb_enter] && !input->pressed[kb_enter] )
         {
             enterDelay+=0.5;
         }
@@ -7896,47 +8199,47 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
         {
             enterDelay = -1;
         }
-        if( userInput->down[kb_ctrl]  )
+        if( input->down[kb_ctrl]  )
         {
-            if( userInput->down[kb_a])
+            if( input->down[kb_a])
             {
                 select_all();
                 showCursor = true;
                 cursorTimer = 0;
             }
-            else if( userInput->down[kb_c])
+            else if( input->down[kb_c])
             {
                 copy_selection();
                 showCursor = true;
                 cursorTimer = 0;
             }
-            else if( userInput->released[kb_v])
+            else if( input->released[kb_v])
             {
                 pasteCommandGiven = true;
                 showCursor = true;
                 cursorTimer = 0;
             }
-            else if( userInput->down[kb_x])
+            else if( input->down[kb_x])
             {
                 cut_selection();
                 showCursor = true;
                 cursorTimer = 0;
             }
-            else if( userInput->mouseScrollingUp > 0)
+            else if( input->mouseScrollingUp > 0)
             {
                 move_left(4);
                 showCursor = true;
                 cursorTimer = 0;
             }
-            else if( userInput->mouseScrollingDown > 0)
+            else if( input->mouseScrollingDown > 0)
             {
                 move_right(4);
                 showCursor = true;
                 cursorTimer = 0;
             }
-            else if( leftArrowDelay > (MAIN_GUI_SETTINGS->textInputDelayTime+1)*2*FPS_RATIO || ( userInput->pressed[kb_left]  && !userInput->released[kb_left]  ) )
+            else if( leftArrowDelay > (MAIN_GUI_SETTINGS->textInputDelayTime)*FPS_RATIO || ( input->pressed[kb_left]  && !input->released[kb_left]  ) )
             {
-                if( userInput->shiftKeyIsPressed)
+                if( input->shiftKeyIsPressed)
                 {
                     if( selectionCursorPos==selectionEndCursorPos )
                     {
@@ -7977,15 +8280,15 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                 //scroll_to_cursor();
                 showCursor = true;
                 cursorTimer = 0;
-                if( userInput->shiftKeyIsPressed)
+                if( input->shiftKeyIsPressed)
                 {
                     selectionEndCursorPos = cursorPos;
                 }
                 leftArrowDelay = 0;
             }
-            else if( rightArrowDelay > (MAIN_GUI_SETTINGS->textInputDelayTime+1)*2*FPS_RATIO || ( userInput->pressed[kb_right]  && !userInput->released[kb_right]  ) )
+            else if( rightArrowDelay > (MAIN_GUI_SETTINGS->textInputDelayTime)*FPS_RATIO || ( input->pressed[kb_right]  && !input->released[kb_right]  ) )
             {
-                if( userInput->shiftKeyIsPressed)
+                if( input->shiftKeyIsPressed)
                 {
                     if( selectionCursorPos==selectionEndCursorPos )
                     {
@@ -8026,32 +8329,32 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                 //scroll_to_cursor();
                 showCursor = true;
                 cursorTimer = 0;
-                if( userInput->shiftKeyIsPressed)
+                if( input->shiftKeyIsPressed)
                 {
                     selectionEndCursorPos = cursorPos;
                 }
                 rightArrowDelay = 0;
             }
         }
-        else if( userInput->mouseScrollingUp > 0)
+        else if( input->mouseScrollingUp > 0)
         {
             move_left(4);
             showCursor = true;
             cursorTimer = 0;
         }
-        else if( userInput->mouseScrollingDown > 0)
+        else if( input->mouseScrollingDown > 0)
         {
             move_right(4);
             showCursor = true;
             cursorTimer = 0;
         }
-        else if( userInput->down[kb_alt])
+        else if( input->down[kb_alt])
         {
             //special alt action
             showCursor = true;
             cursorTimer = 0;
         }
-        else if( bscDelay > (MAIN_GUI_SETTINGS->textInputDelayTime+1)*FPS_RATIO || ( userInput->pressed[kb_backspace]  && !userInput->released[kb_backspace] ) )
+        else if( bscDelay > (MAIN_GUI_SETTINGS->textInputDelayTime+1)*FPS_RATIO || ( input->pressed[kb_backspace]  && !input->released[kb_backspace] ) )
         {
             bscDelay = 0;
             if( selectionCursorPos!=selectionEndCursorPos)
@@ -8078,9 +8381,9 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
             showCursor = true;
             cursorTimer = 0;
             bscDelay = 0;
-            //userInput->reset_all_input();
+            //input->reset_all_input();
         }
-        else if( delDelay > (MAIN_GUI_SETTINGS->textInputDelayTime+1)*FPS_RATIO || ( userInput->pressed[kb_delete] && !userInput->released[kb_delete] ) )
+        else if( delDelay > (MAIN_GUI_SETTINGS->textInputDelayTime+1)*FPS_RATIO || ( input->pressed[kb_delete] && !input->released[kb_delete] ) )
         {
             if( selectionCursorPos!=selectionEndCursorPos)
             {
@@ -8102,12 +8405,12 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                     }
                 }
                 delDelay = 0;
-                userInput->released[kb_delete] = false;
+                input->released[kb_delete] = false;
             }
             showCursor = true;
             cursorTimer = 0;
         }
-        else if( leftArrowDelay > (MAIN_GUI_SETTINGS->textInputDelayTime+1)*FPS_RATIO || ( userInput->pressed[kb_left]  && !userInput->released[kb_left]  ) )
+        else if( leftArrowDelay > (MAIN_GUI_SETTINGS->textInputDelayTime+1)*FPS_RATIO || ( input->pressed[kb_left]  && !input->released[kb_left]  ) )
         {
             reset_selection();
             if( cursorPos > 0)
@@ -8124,7 +8427,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
             cursorTimer = 0;
             leftArrowDelay = 0;
         }
-        else if( rightArrowDelay > (MAIN_GUI_SETTINGS->textInputDelayTime+1)*FPS_RATIO || ( userInput->pressed[kb_right]  && !userInput->released[kb_right] ) )
+        else if( rightArrowDelay > (MAIN_GUI_SETTINGS->textInputDelayTime+1)*FPS_RATIO || ( input->pressed[kb_right]  && !input->released[kb_right] ) )
         {
             reset_selection(1);
             if( cursorPos < (int)textInputString.size() )
@@ -8141,7 +8444,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
             cursorTimer = 0;
             rightArrowDelay = 0;
         }
-        else if( (upArrowDelay > (MAIN_GUI_SETTINGS->textInputDelayTime+1)*FPS_RATIO || ( userInput->pressed[kb_up]  && !userInput->released[kb_up] ) ) && cursorHistoryPos >0 )
+        else if( (upArrowDelay > (MAIN_GUI_SETTINGS->textInputDelayTime+1)*FPS_RATIO || ( input->pressed[kb_up]  && !input->released[kb_up] ) ) && cursorHistoryPos >0 )
         {
             cursorHistoryPos--;
             cursorPos = 0;
@@ -8157,7 +8460,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
             cursorTimer = 0;
             upArrowDelay = 0;
         }
-        else if( downArrowDelay > (MAIN_GUI_SETTINGS->textInputDelayTime+1)*FPS_RATIO || ( userInput->pressed[kb_down]  )  )
+        else if( downArrowDelay > (MAIN_GUI_SETTINGS->textInputDelayTime+1)*FPS_RATIO || ( input->pressed[kb_down]  )  )
         {
             if( (int)listOfPastStrings.size() >0 && cursorHistoryPos>=-1 && cursorHistoryPos < (int)listOfPastStrings.size() -1 )
             {
@@ -8175,7 +8478,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
             cursorTimer = 0;
             downArrowDelay = 0;
         }
-        else if( userInput->pressed[kb_enter] )
+        else if( input->pressed[kb_enter] )
         {
             isInUse = resubmissionAllowed;
             inputSubmitted = true;
@@ -8186,12 +8489,12 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
         }
         else
         {
-            int moreStringSize = (int)userInput->inkeys.size();
+            int moreStringSize = (int)input->inkeys.size();
             if( moreStringSize > 0)
             {
                 delete_selection();
-                textInputString=get_substring(textInputString,0,cursorPos)+userInput->inkeys+get_substring(textInputString,cursorPos);
-                cursorPos+=(int)userInput->inkeys.size();
+                textInputString=get_substring(textInputString,0,cursorPos)+input->inkeys+get_substring(textInputString,cursorPos);
+                cursorPos+=(int)input->inkeys.size();
                 if( cursorPos>startXPos+maxCharactersInView)
                 {
                     startXPos+=moreStringSize;
@@ -8199,7 +8502,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                 showCursor = true;
                 cursorTimer = 0;
             }
-            userInput->inkeys = "";
+            input->inkeys = "";
         }
 
         if( pasteCommandGiven && SDL_HasClipboardText()==SDL_TRUE )
@@ -8256,7 +8559,7 @@ void GPE_TextInputBasic::record_string( std::string strToRecord)
     }
 }
 
-void GPE_TextInputBasic::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace , GPE_Rect * cam ,bool forceRedraw )
+void GPE_TextInputBasic::render_self(GPE_Rect * viewedSpace , GPE_Rect * cam ,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -8268,17 +8571,19 @@ void GPE_TextInputBasic::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpa
             {
                 if( hasValidInput )
                 {
-                    render_rectangle(cRender,fieldBarBox.x - cam->x,fieldBarBox.y - cam->y,fieldBarBox.x+fieldBarBox.w - cam->x,fieldBarBox.y+fieldBarBox.h - cam->y,GPE_MAIN_TEMPLATE->Input_Color,false);
+                    gpe->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Color,false, 128 );
                 }
                 else
                 {
-                    render_rectangle(cRender,fieldBarBox.x - cam->x,fieldBarBox.y - cam->y,fieldBarBox.x+fieldBarBox.w - cam->x,fieldBarBox.y+fieldBarBox.h - cam->y,GPE_MAIN_TEMPLATE->Input_Error_Box_Color,false);
+                    gpe->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Error_Box_Color,false, 128 );
                 }
             }
+
             if( showLabel && (int)inputLabel.size() > 0)
             {
-                render_new_text(cRender,barBox.x-cam->x,barBox.y-2-cam->y,inputLabel,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP);
+                render_new_text( elementBox.x-cam->x,elementBox.y-2-cam->y,inputLabel,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP);
             }
+
             if(selectionCursorPos!=selectionEndCursorPos )
             {
                 int minHighlightPos = std::min(selectionCursorPos, selectionEndCursorPos);
@@ -8293,12 +8598,12 @@ void GPE_TextInputBasic::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpa
                 }
                 maxHighlightPos = std::min(startXPos+maxCharactersInView,maxHighlightPos);
 
-                render_rectangle(cRender,
-                     fieldBarBox.x+(minHighlightPos-startXPos)*fontSizeW - cam->x,
-                     fieldBarBox.y+1 - cam->y,
-                     fieldBarBox.x+2+(maxHighlightPos-startXPos)*fontSizeW- cam->x,
-                     fieldBarBox.y+fieldBarBox.h-1 - cam->y,
-                     GPE_MAIN_TEMPLATE->Input_Selected_Color,false);
+                gpe->render_rectangle(
+                     fieldElementBox.x+(minHighlightPos-startXPos)*fontSizeW - cam->x,
+                     fieldElementBox.y+1 - cam->y,
+                     fieldElementBox.x+2+(maxHighlightPos-startXPos)*fontSizeW- cam->x,
+                     fieldElementBox.y+fieldElementBox.h-1 - cam->y,
+                     GPE_MAIN_THEME->Input_Selected_Color,false, 128 );
             }
             int subLength = 0;
             if( (int)textInputString.size() > maxCharactersInView)
@@ -8318,9 +8623,10 @@ void GPE_TextInputBasic::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpa
             {
                 subLength = 0;
             }
+
             if( (int)textInputString.size()>0)
             {
-                render_new_text(cRender,fieldBarBox.x+4-cam->x,fieldBarBox.y+fieldBarBox.h/2- cam->y,get_substring(textInputString,startXPos,subLength),GPE_MAIN_TEMPLATE->Input_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_MIDDLE,255);
+                render_new_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2- cam->y,get_substring(textInputString,startXPos,subLength),GPE_MAIN_THEME->Input_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_MIDDLE,255);
             }
             else if(showPlaceHolder && (int)placeHolderString.size() > 0 )
             {
@@ -8336,39 +8642,39 @@ void GPE_TextInputBasic::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpa
                 {
                     subLength =  (int)placeHolderString.size();
                 }
-                render_new_text(cRender,fieldBarBox.x+4-cam->x,fieldBarBox.y+fieldBarBox.h/2 - cam->y,get_substring(placeHolderString,0,subLength),GPE_MAIN_TEMPLATE->Input_Faded_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_MIDDLE);
+                render_new_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2 - cam->y,get_substring(placeHolderString,0,subLength),GPE_MAIN_THEME->Input_Faded_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_MIDDLE);
             }
             if(showBorderBox)
             {
                 if( isInUse )
                 {
-                    render_rectangle(cRender,fieldBarBox.x - cam->x,fieldBarBox.y - cam->y,fieldBarBox.x+fieldBarBox.w - cam->x,fieldBarBox.y+fieldBarBox.h - cam->y,GPE_MAIN_TEMPLATE->Input_Highlight_Outline_Color,true);
+                    gpe->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Highlight_Outline_Color,true);
                 }
                 else if( isHovered )
                 {
-                    render_rectangle(cRender,fieldBarBox.x - cam->x,fieldBarBox.y - cam->y,fieldBarBox.x+fieldBarBox.w - cam->x,fieldBarBox.y+fieldBarBox.h - cam->y,GPE_MAIN_TEMPLATE->Input_Highlight_Alt_Color,true);
+                    gpe->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Highlight_Alt_Color,true);
                 }
                 else
                 {
-                    render_rectangle(cRender,fieldBarBox.x - cam->x,fieldBarBox.y - cam->y,fieldBarBox.x+fieldBarBox.w - cam->x,fieldBarBox.y+fieldBarBox.h - cam->y,GPE_MAIN_TEMPLATE->Input_Outline_Color,true);
+                    gpe->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Outline_Color,true);
                 }
             }
         }
 
         if(isInUse && prevCursorPos!=cursorPos && prevCursorPos >=startXPos && prevCursorPos <= startXPos+maxCharactersInView )
         {
-            render_vertical_line_color(cRender,fieldBarBox.x+GENERAL_GPE_PADDING/2+(prevCursorPos-startXPos)*fontSizeW- cam->x,fieldBarBox.y - cam->y,fieldBarBox.y+fieldBarBox.h - cam->y,GPE_MAIN_TEMPLATE->Input_Color);
+            gpe->render_vertical_line_color( fieldElementBox.x+GENERAL_GPE_PADDING/2+(prevCursorPos-startXPos)*fontSizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Color);
         }
 
         if(isInUse && cursorPos >=startXPos && cursorPos <= startXPos+maxCharactersInView )
         {
             if(showCursor)
             {
-                render_vertical_line_color(cRender,fieldBarBox.x+GENERAL_GPE_PADDING/2+(cursorPos-startXPos)*fontSizeW- cam->x,fieldBarBox.y - cam->y,fieldBarBox.y+fieldBarBox.h - cam->y,GPE_MAIN_TEMPLATE->Input_Font_Color);
+                gpe->render_vertical_line_color( fieldElementBox.x+GENERAL_GPE_PADDING/2+(cursorPos-startXPos)*fontSizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Font_Color);
             }
             else
             {
-                render_vertical_line_color(cRender,fieldBarBox.x+GENERAL_GPE_PADDING/2+(cursorPos-startXPos)*fontSizeW- cam->x,fieldBarBox.y - cam->y,fieldBarBox.y+fieldBarBox.h - cam->y,GPE_MAIN_TEMPLATE->Input_Color);
+                gpe->render_vertical_line_color( fieldElementBox.x+GENERAL_GPE_PADDING/2+(cursorPos-startXPos)*fontSizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Color);
             }
         }
     }
@@ -8396,21 +8702,21 @@ void GPE_TextInputBasic::select_all()
     selectionCursorPos = 0;
     selectionEndCursorPos = textInputString.size();
     cursorPos = 0;
-    userInput->reset_all_input();
+    input->reset_all_input();
 }
 
 void GPE_TextInputBasic::set_height(int newHeight)
 {
     if( showLabel)
     {
-        fieldBarBox.h = newHeight;
+        fieldElementBox.h = newHeight;
     }
     else
     {
-        barBox.h = newHeight;
-        fieldBarBox.h = newHeight;
+        elementBox.h = newHeight;
+        fieldElementBox.h = newHeight;
     }
-    prevBarBoxH = newHeight;
+    prevelementBoxH = newHeight;
 }
 
 void GPE_TextInputBasic::set_label(std::string newLabel)
@@ -8420,12 +8726,12 @@ void GPE_TextInputBasic::set_label(std::string newLabel)
         inputLabel = newLabel;
         showLabel = true;
 
-        barBox.h=prevBarBoxH+fontSizeH;
-        barBox.w = std::max( prevBarBoxW, ( fontSizeW *(int)inputLabel.size()  ) );
-        fieldBarBox.x = barBox.x;
-        fieldBarBox.y = barBox.y+fontSizeH;
-        fieldBarBox.w = prevBarBoxW;
-        fieldBarBox.h = prevBarBoxH;
+        elementBox.h=prevelementBoxH+fontSizeH;
+        elementBox.w = std::max( prevelementBoxW, ( fontSizeW *(int)inputLabel.size()  ) );
+        fieldElementBox.x = elementBox.x;
+        fieldElementBox.y = elementBox.y+fontSizeH;
+        fieldElementBox.w = prevelementBoxW;
+        fieldElementBox.h = prevelementBoxH;
     }
     else
     {
@@ -8438,10 +8744,10 @@ void GPE_TextInputBasic::set_name(std::string newName)
 {
     if( (int)newName.size() > 0)
     {
-        if( opName == inputLabel)
+        /*if( opName == inputLabel )
         {
             set_label(newName);
-        }
+        }*/
         opName = newName;
     }
 }
@@ -8478,14 +8784,14 @@ void GPE_TextInputBasic::set_width(int newWidth)
 {
     if( showLabel)
     {
-        fieldBarBox.w = newWidth;
+        fieldElementBox.w = newWidth;
     }
     else
     {
-        barBox.w = newWidth;
-        fieldBarBox.w = newWidth;
+        elementBox.w = newWidth;
+        fieldElementBox.w = newWidth;
     }
-    prevBarBoxW = newWidth;
+    prevelementBoxW = newWidth;
 }
 
 void GPE_TextInputBasic::set_max_width( int nMW)
@@ -8493,11 +8799,11 @@ void GPE_TextInputBasic::set_max_width( int nMW)
     maxWidth = nMW;
     if( maxWidth > 0 )
     {
-        if( barBox.w > maxWidth || fieldBarBox.w > maxWidth)
+        if( elementBox.w > maxWidth || fieldElementBox.w > maxWidth)
         {
-            fieldBarBox.w = maxWidth;
-            barBox.w = maxWidth;
-            prevBarBoxW = maxWidth;
+            fieldElementBox.w = maxWidth;
+            elementBox.w = maxWidth;
+            prevelementBoxW = maxWidth;
         }
     }
 }
@@ -8505,9 +8811,9 @@ void GPE_TextInputBasic::set_max_width( int nMW)
 void GPE_TextInputBasic::set_max_height( int nMH)
 {
     maxHeight = nMH;
-    if( maxHeight > 0 && barBox.h > maxHeight)
+    if( maxHeight > 0 && elementBox.h > maxHeight)
     {
-        barBox.h = maxHeight;
+        elementBox.h = maxHeight;
     }
 }
 
@@ -8528,14 +8834,14 @@ GPE_TextInputNumber::GPE_TextInputNumber( std::string placeHolderText, bool only
     inputLabel = "";
     if( (int)placeHolderText.size()>512)
     {
-        inputLabel = placeHolderText = placeHolderText.substr(0,512);
+         placeHolderText = placeHolderText.substr(0,512);
     }
     placeHolderString = placeHolderText;
     showPlaceHolder = true;
-    barBox.x = 0;
-    barBox.y = 0;
-    barBox.w = 192;
-    barBox.h = 24;
+    elementBox.x = 0;
+    elementBox.y = 0;
+    elementBox.w = 192;
+    elementBox.h = 24;
 
     inputFieldPos = 0;
     onlyWholeNumbers = onlyWholeNums;
@@ -8551,7 +8857,7 @@ GPE_TextInputNumber::GPE_TextInputNumber( std::string placeHolderText, bool only
     {
         fontSizeW = 12;
     }
-    maxCharactersInView = barBox.w/fontSizeW;
+    maxCharactersInView = elementBox.w/fontSizeW;
 
     hasValidInput = true;
     heldNumber = 0;
@@ -8675,36 +8981,33 @@ std::string GPE_SyntaxLine::get_parsed_line(std::string sIn)
     return "";
 }
 
-void GPE_SyntaxLine::render_tokens(GPE_Renderer * cRender,GPE_Font * fontIn, std::string sIn,int xPos, int yPos, int lineStartPos, int lineMaxPos, GPE_Color * renderColor, bool isNumber)
+void GPE_SyntaxLine::render_tokens(GPE_Font * fontIn, std::string sIn,int xPos, int yPos, int lineStartPos, int lineMaxPos, GPE_Color * renderColor, bool isNumber)
 {
-    if( cRender!=NULL )
+    int maxParseSize = (int)foundParses.size();
+    if( maxParseSize > 0)
     {
-        int maxParseSize = (int)foundParses.size();
-        if( maxParseSize > 0)
+        std::string rString = "";
+        GPE_ParsedText* tempParseContent = NULL;
+        if( renderColor==NULL)
         {
-            std::string rString = "";
-            GPE_ParsedText* tempParseContent = NULL;
-            if( renderColor==NULL)
+            renderColor = GPE_MAIN_THEME->Text_Box_Font_Color;
+        }
+        int fontWidth = fontIn->get_mono_width();
+        for( int i = 0; i < maxParseSize; i++)
+        {
+            tempParseContent = foundParses[i];
+            if( tempParseContent!=NULL)
             {
-                renderColor = GPE_MAIN_TEMPLATE->Text_Box_Font_Color;
-            }
-            int fontWidth = fontIn->get_mono_width();
-            for( int i = 0; i < maxParseSize; i++)
-            {
-                tempParseContent = foundParses[i];
-                if( tempParseContent!=NULL)
+                if( tempParseContent->textEnd >= lineStartPos )
                 {
-                    if( tempParseContent->textEnd >= lineStartPos )
+                    rString = get_substring(sIn,tempParseContent->textStart,tempParseContent->textEnd-tempParseContent->textStart );
+                    if( isNumber)
                     {
-                        rString = get_substring(sIn,tempParseContent->textStart,tempParseContent->textEnd-tempParseContent->textStart );
-                        if( isNumber)
-                        {
-                            render_bitmap_text(cRender,xPos+fontWidth*(tempParseContent->textStart-lineStartPos),yPos, rString,renderColor,fontIn,FA_LEFT,FA_TOP );
-                        }
-                        else
-                        {
-                            render_new_text(cRender,xPos+fontWidth*(tempParseContent->textStart-lineStartPos),yPos, rString,renderColor,fontIn,FA_LEFT,FA_TOP );
-                        }
+                        render_bitmap_text( xPos+fontWidth*(tempParseContent->textStart-lineStartPos),yPos, rString,renderColor,fontIn,FA_LEFT,FA_TOP );
+                    }
+                    else
+                    {
+                        render_new_text( xPos+fontWidth*(tempParseContent->textStart-lineStartPos),yPos, rString,renderColor,fontIn,FA_LEFT,FA_TOP );
                     }
                 }
             }
@@ -8727,31 +9030,6 @@ void GPE_SyntaxLine::reset_self()
     lastPos = -1;
 }
 
-GPE_Label_Image::GPE_Label_Image(GPE_Texture * imgIn)
-{
-    autoResizes = false;
-    allowOverSize = false;
-    resizeAspect = 1;
-    guiListTypeName = "labelimage";
-    opName = "";
-    descriptionText = "";
-    wasClicked = false;
-    isHoldingCustomTexture = false;
-    webUrl = "";
-    imgSrc = imgIn;
-    if( imgSrc!=NULL )
-    {
-        barBox.w = imgSrc->get_width();
-        barBox.h = imgSrc->get_height();
-    }
-    else
-    {
-        barBox.w = 32;
-        barBox.h = 32;
-        imgSrc = NULL;
-    }
-}
-
 GPE_Label_Image::GPE_Label_Image(GPE_Texture * imgIn,std::string nameIn, std::string description, std::string urlIn)
 {
     allowOverSize = false;
@@ -8765,13 +9043,13 @@ GPE_Label_Image::GPE_Label_Image(GPE_Texture * imgIn,std::string nameIn, std::st
     imgSrc = imgIn;
     if( imgSrc!=NULL )
     {
-        barBox.w = imgSrc->get_width();
-        barBox.h = imgSrc->get_height();
+        elementBox.w = imgSrc->get_width();
+        elementBox.h = imgSrc->get_height();
     }
     else
     {
-        barBox.w = 32;
-        barBox.h = 32;
+        elementBox.w = 32;
+        elementBox.h = 32;
         imgSrc = NULL;
     }
 }
@@ -8797,9 +9075,9 @@ void GPE_Label_Image::load_label_image(std::string fileNameIn)
     }
     if( imgSrc!=NULL )
     {
-        imgSrc->load_new_texture(MAIN_RENDERER,fileNameIn);
-        barBox.w = imgSrc->get_width();
-        barBox.h = imgSrc->get_height();
+        imgSrc->load_new_texture(fileNameIn);
+        elementBox.w = imgSrc->get_width();
+        elementBox.h = imgSrc->get_height();
     }
 }
 
@@ -8809,6 +9087,10 @@ void GPE_Label_Image::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     if( isHovered && (int)webUrl.size() > 3)
     {
         GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
+    }
+    if( isInUse &&( input->check_keyboard_down( kb_enter ) || input->check_keyboard_down( kb_space )  ) )
+    {
+        isClicked = true;
     }
     if( isClicked )
     {
@@ -8820,22 +9102,22 @@ void GPE_Label_Image::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     }
 }
 
-void GPE_Label_Image::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_Label_Image::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( forceRedraw && imgSrc!=NULL && cam!=NULL )
     {
-        render_texture_resized(cRender,imgSrc,barBox.x-cam->x,barBox.y-cam->y,barBox.w ,barBox.h,NULL,NULL,FA_LEFT,FA_TOP);
+        render_texture_resized( imgSrc,elementBox.x-cam->x,elementBox.y-cam->y,elementBox.w ,elementBox.h,NULL,FA_LEFT,FA_TOP);
     }
     else
     {
-        render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,true);
+        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Box_Font_Color,true);
     }
 
     if( isInUse)
     {
-        render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Box_Font_URL_Color,true);
+        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Box_Font_URL_Color,true);
     }
 }
 
@@ -8844,14 +9126,14 @@ void GPE_Label_Image::set_image( GPE_Texture * imgIn )
     imgSrc = imgIn;
     if( imgSrc!=NULL )
     {
-        barBox.w = imgSrc->get_width();
-        barBox.h = imgSrc->get_height();
+        elementBox.w = imgSrc->get_width();
+        elementBox.h = imgSrc->get_height();
     }
 }
 
 void GPE_Label_Image::set_width( int newW)
 {
-    //if( newW!=barBox.w)
+    //if( newW!=elementBox.w)
     {
         if( newW > 0)
         {
@@ -8862,16 +9144,16 @@ void GPE_Label_Image::set_width( int newW)
                     newW = imgSrc->get_width();
                 }
             }
-            barBox.w = (float)newW*resizeAspect;
+            elementBox.w = (float)newW*resizeAspect;
             if( imgSrc!=NULL )
             {
-                barBox.h = ceil( (float)newW * (float)imgSrc->get_height()/(float)imgSrc->get_width() );
+                elementBox.h = ceil( (float)newW * (float)imgSrc->get_height()/(float)imgSrc->get_width() );
             }
         }
         else
         {
-            barBox.w = 0;
-            barBox.h = 0;
+            elementBox.w = 0;
+            elementBox.h = 0;
         }
     }
 }
@@ -8887,23 +9169,23 @@ void GPE_Label_Image::set_height( int newH)
                 newH = imgSrc->get_height();
             }
         }
-        barBox.h = (float)newH*resizeAspect;
+        elementBox.h = (float)newH*resizeAspect;
         if( imgSrc!=NULL )
         {
-            barBox.w = ceil( (float)newH * (float)imgSrc->get_width()/(float)imgSrc->get_height() );
+            elementBox.w = ceil( (float)newH * (float)imgSrc->get_width()/(float)imgSrc->get_height() );
         }
     }
     else
     {
-        barBox.w = 0;
-        barBox.h = 0;
+        elementBox.w = 0;
+        elementBox.h = 0;
     }
 }
 
 void GPE_Label_Image::set_size( int newW, int newH)
 {
-    barBox.w = newW;
-    barBox.h = newH;
+    elementBox.w = newW;
+    elementBox.h = newH;
 }
 
 void GPE_Label_Image::set_name(std::string nameIn)
@@ -8926,8 +9208,8 @@ GPE_Label_Text::GPE_Label_Text(std::string nameIn, std::string description)
         int bWid = 0;
         int bHgt = 0;
         FONT_LABEL->get_metrics(nameIn.c_str(), &bWid, &bHgt);
-        barBox.w = bWid;
-        barBox.h = bHgt;
+        elementBox.w = bWid;
+        elementBox.h = bHgt;
     }
     opName = nameIn;
     hasLineBreak = true;
@@ -8972,24 +9254,24 @@ void GPE_Label_Text::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     */
     if( isInUse)
     {
-        if( userInput->check_keyboard_down(kb_ctrl) && userInput->check_keyboard_released(kb_c) )
+        if( input->check_keyboard_down(kb_ctrl) && input->check_keyboard_released(kb_c) )
         {
             SDL_SetClipboardText(opName.c_str() );
         }
     }
 }
 
-void GPE_Label_Text::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_Label_Text::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( forceRedraw && (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
     {
-        render_new_text(cRender,barBox.x-cam->x,barBox.y-cam->y,opName,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_LABEL,FA_LEFT,FA_TOP);
+        render_new_text( elementBox.x-cam->x,elementBox.y-cam->y,opName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_LABEL,FA_LEFT,FA_TOP);
     }
     if( isInUse)
     {
-        render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Box_Font_URL_Color,true);
+        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Box_Font_URL_Color,true);
     }
 }
 
@@ -9000,8 +9282,8 @@ void GPE_Label_Text::set_name(std::string nameIn)
         int bWid = 0;
         int bHgt = 0;
         FONT_LABEL->get_metrics(nameIn.c_str(), &bWid, &bHgt);
-        barBox.w = bWid;
-        barBox.h = bHgt;
+        elementBox.w = bWid;
+        elementBox.h = bHgt;
     }
     opName = nameIn;
 }
@@ -9020,8 +9302,8 @@ GPE_Label_Error::GPE_Label_Error(std::string nameIn, std::string description)
         int bWid = 0;
         int bHgt = 0;
         FONT_LABEL->get_metrics(nameIn.c_str(), &bWid, &bHgt);
-        barBox.w = bWid;
-        barBox.h = bHgt;
+        elementBox.w = bWid;
+        elementBox.h = bHgt;
     }
     opName = nameIn;
     hasLineBreak = true;
@@ -9066,24 +9348,24 @@ void GPE_Label_Error::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     */
     if( isInUse)
     {
-        if( userInput->check_keyboard_down(kb_ctrl) && userInput->check_keyboard_released(kb_c) )
+        if( input->check_keyboard_down(kb_ctrl) && input->check_keyboard_released(kb_c) )
         {
             SDL_SetClipboardText(opName.c_str() );
         }
     }
 }
 
-void GPE_Label_Error::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_Label_Error::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( forceRedraw && (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
     {
-        render_new_text(cRender,barBox.x-cam->x,barBox.y-cam->y,opName,GPE_MAIN_TEMPLATE->Input_Error_Font_Color,FONT_LABEL,FA_LEFT,FA_TOP);
+        render_new_text( elementBox.x-cam->x,elementBox.y-cam->y,opName,GPE_MAIN_THEME->Input_Error_Font_Color,FONT_LABEL,FA_LEFT,FA_TOP);
     }
     if( isInUse)
     {
-        render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Box_Font_Highlight_Color,true);
+        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Box_Font_Highlight_Color,true);
     }
 }
 
@@ -9094,8 +9376,8 @@ void GPE_Label_Error::set_name(std::string nameIn)
         int bWid = 0;
         int bHgt = 0;
         FONT_LABEL->get_metrics(nameIn.c_str(), &bWid, &bHgt);
-        barBox.w = bWid;
-        barBox.h = bHgt;
+        elementBox.w = bWid;
+        elementBox.h = bHgt;
     }
     opName = nameIn;
 }
@@ -9113,8 +9395,8 @@ GPE_Label_90Degree::GPE_Label_90Degree(std::string nameIn, std::string descripti
         int bWid = 0;
         int bHgt = 0;
         FONT_LABEL->get_metrics(nameIn.c_str(), &bWid, &bHgt);
-        barBox.w = bHgt;
-        barBox.h = bWid;
+        elementBox.w = bHgt;
+        elementBox.h = bWid;
     }
     opName = nameIn;
     hasLineBreak = true;
@@ -9159,24 +9441,24 @@ void GPE_Label_90Degree::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     */
     if( isInUse)
     {
-        if( userInput->check_keyboard_down(kb_ctrl) && userInput->check_keyboard_released(kb_c) )
+        if( input->check_keyboard_down(kb_ctrl) && input->check_keyboard_released(kb_c) )
         {
             SDL_SetClipboardText(opName.c_str() );
         }
     }
 }
 
-void GPE_Label_90Degree::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_Label_90Degree::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( forceRedraw && (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
     {
-        render_new_text_rotated(cRender,barBox.x-cam->x,barBox.y-cam->y+barBox.h,opName,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_LABEL,90);
+        render_new_text_rotated( elementBox.x-cam->x,elementBox.y-cam->y+elementBox.h,opName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_LABEL,90);
     }
     if( isInUse)
     {
-        render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Box_Font_URL_Color,true);
+        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Box_Font_URL_Color,true);
     }
 }
 
@@ -9187,8 +9469,8 @@ void GPE_Label_90Degree::set_name(std::string nameIn)
         int bWid = 0;
         int bHgt = 0;
         FONT_LABEL->get_metrics(nameIn.c_str(), &bWid, &bHgt);
-        barBox.w = bHgt;
-        barBox.h = bWid;
+        elementBox.w = bHgt;
+        elementBox.h = bWid;
     }
     opName = nameIn;
 }
@@ -9222,7 +9504,7 @@ void GPE_Label_Paragraph::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 
 }
 
-void GPE_Label_Paragraph::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw )
+void GPE_Label_Paragraph::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -9230,12 +9512,12 @@ void GPE_Label_Paragraph::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSp
     {
         for( int i =0; i < (int)paragraphLines.size(); i++)
         {
-            render_new_text(cRender,barBox.x-cam->x,barBox.y-cam->y+(GENERAL_GPE_PADDING+defaultFontHeight)*i,paragraphLines[i],GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_PARAGRAGH,FA_LEFT,FA_TOP);
+            render_new_text( elementBox.x-cam->x,elementBox.y-cam->y+(GENERAL_GPE_PADDING+defaultFontHeight)*i,paragraphLines[i],GPE_MAIN_THEME->Main_Box_Font_Color,FONT_PARAGRAGH,FA_LEFT,FA_TOP);
         }
     }
     if( isInUse)
     {
-        render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Box_Font_URL_Color,true);
+        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Box_Font_URL_Color,true);
     }
 }
 
@@ -9246,43 +9528,43 @@ void GPE_Label_Paragraph::set_name(std::string nameIn)
 
 void GPE_Label_Paragraph::set_width(int newWidth)
 {
-    if( barBox.w!=newWidth)
+    if( elementBox.w!=newWidth)
     {
-        barBox.w = newWidth;
+        elementBox.w = newWidth;
         update_paragraph();
     }
 }
 
 void GPE_Label_Paragraph::set_height( int newHeight)
 {
-    if( barBox.h!=newHeight)
+    if( elementBox.h!=newHeight)
     {
-        barBox.h = newHeight;
+        elementBox.h = newHeight;
         update_paragraph();
     }
 }
 
 void GPE_Label_Paragraph::set_max_width( int nMW)
 {
-    if( barBox.w!=nMW)
+    if( elementBox.w!=nMW)
     {
-        barBox.w = nMW;
+        elementBox.w = nMW;
         update_paragraph();
     }
 }
 
 void GPE_Label_Paragraph::set_max_height( int nMH)
 {
-    if( barBox.h!=nMH)
+    if( elementBox.h!=nMH)
     {
-        barBox.h = nMH;
+        elementBox.h = nMH;
         update_paragraph();
     }
 }
 
 void GPE_Label_Paragraph::update_paragraph()
 {
-    if( barBox.w > 0 )
+    if( elementBox.w > 0 )
     {
         clear_all_lines();
         if( (int)paragraphText.size() > 0)
@@ -9302,7 +9584,7 @@ void GPE_Label_Paragraph::update_paragraph()
 
             if( defaultFontWidth > 0 && defaultFontHeight > 0)
             {
-                maxMessageWidth = ( barBox.w -GENERAL_GPE_PADDING)/ defaultFontWidth;
+                maxMessageWidth = ( elementBox.w -GENERAL_GPE_PADDING)/ defaultFontWidth;
 
                 if( (int)paragraphText.size() > 0)
                 {
@@ -9313,7 +9595,7 @@ void GPE_Label_Paragraph::update_paragraph()
                 if( messageSubTitles.size() <= 0)
                 {
                     add_line("");
-                    barBox.h = 0;
+                    elementBox.h = 0;
                 }
                 else
                 {
@@ -9321,7 +9603,7 @@ void GPE_Label_Paragraph::update_paragraph()
                     {
                         add_line( messageSubTitles.at(iSubMessage) );
                     }
-                    barBox.h = ( (int)messageSubTitles.size() ) *(GENERAL_GPE_PADDING+defaultFontHeight);
+                    elementBox.h = ( (int)messageSubTitles.size() ) *(GENERAL_GPE_PADDING+defaultFontHeight);
                 }
             }
         }
@@ -9343,8 +9625,8 @@ GPE_Label_Title::GPE_Label_Title(std::string nameIn, std::string description)
         int bWid = 0;
         int bHgt = 0;
         FONT_LABEL_TITLE->get_metrics(nameIn.c_str(), &bWid, &bHgt);
-        barBox.w = bWid;
-        barBox.h = bHgt;
+        elementBox.w = bWid;
+        elementBox.h = bHgt;
     }
     opName = nameIn;
     hasLineBreak = true;
@@ -9375,7 +9657,7 @@ void GPE_Label_Title::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     GPE_GeneralGuiElement::process_self(viewedSpace,cam);
     if( isInUse)
     {
-        if( userInput->check_keyboard_down(kb_ctrl) && userInput->check_keyboard_released(kb_c) )
+        if( input->check_keyboard_down(kb_ctrl) && input->check_keyboard_released(kb_c) )
         {
             SDL_SetClipboardText(opName.c_str() );
         }
@@ -9396,17 +9678,17 @@ void GPE_Label_Title::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     */
 }
 
-void GPE_Label_Title::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_Label_Title::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( forceRedraw && (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
     {
-        render_new_text(cRender,barBox.x-cam->x,barBox.y+barBox.h/2-cam->y,opName,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_LABEL_TITLE,FA_LEFT,FA_MIDDLE);
+        render_new_text( elementBox.x-cam->x,elementBox.y+elementBox.h/2-cam->y,opName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_LABEL_TITLE,FA_LEFT,FA_MIDDLE);
     }
     if( isInUse)
     {
-        render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Box_Font_URL_Color,true);
+        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Box_Font_URL_Color,true);
     }
 }
 
@@ -9418,8 +9700,8 @@ void GPE_Label_Title::set_name(std::string nameIn)
         int bWid = 0;
         int bHgt = 0;
         FONT_LABEL_TITLE->get_metrics(nameIn.c_str(), &bWid, &bHgt);
-        barBox.w = bWid;
-        barBox.h = bHgt;
+        elementBox.w = bWid;
+        elementBox.h = bHgt;
     }
     opName = nameIn;
 }
@@ -9439,8 +9721,8 @@ GPE_TextURL::GPE_TextURL(std::string nameIn, std::string description, std::strin
         int bWid = 0;
         int bHgt = 0;
         DEFAULT_FONT->get_metrics(nameIn, &bWid, &bHgt);
-        barBox.w = bWid;
-        barBox.h = bHgt;
+        elementBox.w = bWid;
+        elementBox.h = bHgt;
     }
 }
 
@@ -9472,7 +9754,7 @@ void GPE_TextURL::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     {
         GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
     }
-    if( isInUse &&( userInput->check_keyboard_down( kb_enter ) || userInput->check_keyboard_down( kb_space )  ) )
+    if( isInUse &&( input->check_keyboard_down( kb_enter ) || input->check_keyboard_down( kb_space )  ) )
     {
         isClicked = true;
     }
@@ -9486,23 +9768,23 @@ void GPE_TextURL::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     }
 }
 
-void GPE_TextURL::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_TextURL::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
 {
     if( forceRedraw && (int)opName.size() > 0)
     {
         if( wasClicked)
         {
-            render_new_text(cRender,barBox.x-cam->x,barBox.y-cam->y,opName,GPE_MAIN_TEMPLATE->Main_Box_Font_URL_Visited_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
-            render_horizontal_line_color(cRender,barBox.y+barBox.h-cam->y,barBox.x-cam->x,barBox.x+barBox.w-cam->x,GPE_MAIN_TEMPLATE->Main_Box_Font_URL_Visited_Color);
+            render_new_text( elementBox.x-cam->x,elementBox.y-cam->y,opName,GPE_MAIN_THEME->Main_Box_Font_URL_Visited_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
+            gpe->render_horizontal_line_color( elementBox.y+elementBox.h-cam->y,elementBox.x-cam->x,elementBox.x+elementBox.w-cam->x,GPE_MAIN_THEME->Main_Box_Font_URL_Visited_Color);
         }
         else
         {
-            render_new_text(cRender,barBox.x-cam->x,barBox.y-cam->y,opName,GPE_MAIN_TEMPLATE->Main_Box_Font_URL_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
-            render_horizontal_line_color(cRender,barBox.y+barBox.h-cam->y,barBox.x-cam->x,barBox.x+barBox.w-cam->x,GPE_MAIN_TEMPLATE->Main_Box_Font_URL_Color);
+            render_new_text( elementBox.x-cam->x,elementBox.y-cam->y,opName,GPE_MAIN_THEME->Main_Box_Font_URL_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
+            gpe->render_horizontal_line_color( elementBox.y+elementBox.h-cam->y,elementBox.x-cam->x,elementBox.x+elementBox.w-cam->x,GPE_MAIN_THEME->Main_Box_Font_URL_Color);
         }
         if( isInUse)
         {
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Box_Font_URL_Color,true);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Box_Font_URL_Color,true);
         }
     }
 }
@@ -9514,8 +9796,8 @@ void GPE_TextURL::set_name(std::string nameIn)
         int bWid = 0;
         int bHgt = 0;
         DEFAULT_FONT->get_metrics(nameIn, &bWid, &bHgt);
-        barBox.w = bWid;
-        barBox.h = bHgt;
+        elementBox.w = bWid;
+        elementBox.h = bHgt;
     }
     opName = nameIn;
 }
@@ -9528,16 +9810,16 @@ GPE_CheckBoxBasic::GPE_CheckBoxBasic(std::string name, std::string descriptor, i
     opName = name;
     descriptionText = descriptor;
 
-    barBox.x = xx;
-    barBox.y = yy;
-    barBox.w = clickBoxW = 24;
-    barBox.h = clickBoxH = 24;
+    elementBox.x = xx;
+    elementBox.y = yy;
+    elementBox.w = clickBoxW = 16;
+    elementBox.h = clickBoxH = 16;
     labelBoxW = 0;
     labelBoxH = 0;
     if( (int)opName.size()>0)
     {
         DEFAULT_FONT->get_metrics(opName,&labelBoxW, &labelBoxH);
-        barBox.w+= labelBoxW;
+        elementBox.w+= labelBoxW;
     }
 
     isClicked = isChecked;
@@ -9559,10 +9841,10 @@ void GPE_CheckBoxBasic::load_data(std::string dataString)
 }
 
 
-void GPE_CheckBoxBasic::prerender_self(GPE_Renderer * cRender )
+void GPE_CheckBoxBasic::prerender_self(  )
 {
-    //barBox.w = clickBoxW;
-    //barBox.h = clickBoxH;
+    //elementBox.w = clickBoxW;
+    //elementBox.h = clickBoxH;
 }
 
 void GPE_CheckBoxBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
@@ -9572,31 +9854,31 @@ void GPE_CheckBoxBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
     isHovered = false;
     if(viewedSpace!=NULL && cam!=NULL)
     {
-        if( point_between(userInput->mouse_x,userInput->mouse_y,viewedSpace->x,viewedSpace->y,viewedSpace->x+viewedSpace->w,viewedSpace->y+viewedSpace->h) )
+        if( point_between(input->mouse_x,input->mouse_y,viewedSpace->x,viewedSpace->y,viewedSpace->x+viewedSpace->w,viewedSpace->y+viewedSpace->h) )
         {
-            if (point_between(userInput->mouse_x,userInput->mouse_y,barBox.x+viewedSpace->x-cam->x,barBox.y+viewedSpace->y-cam->y,barBox.x+barBox.w+viewedSpace->x-cam->x,barBox.y+barBox.h+viewedSpace->y-cam->y) )
+            if (point_between(input->mouse_x,input->mouse_y,elementBox.x+viewedSpace->x-cam->x,elementBox.y+viewedSpace->y-cam->y,elementBox.x+elementBox.w+viewedSpace->x-cam->x,elementBox.y+elementBox.h+viewedSpace->y-cam->y) )
             {
                 isHovered = true;
                 if( isHovered)
                 {
                     MAIN_OVERLAY->update_tooltip(descriptionText);
-                    if( userInput->check_mouse_released(0) )
+                    if( input->check_mouse_released(0) )
                     {
                         isClicked = !isClicked;
                         isInUse = true;
                     }
                 }
             }
-            else if( userInput->check_mouse_released(-1) )
+            else if( input->check_mouse_released(-1) )
             {
                 isInUse = false;
             }
         }
-        else if( userInput->check_mouse_released(-1) )
+        else if( input->check_mouse_released(-1) )
         {
             isInUse = false;
         }
-        if( (isInUse || isHovered ) &&( userInput->check_keyboard_pressed( kb_enter ) || userInput->check_keyboard_pressed( kb_space )  ) )
+        if( (isInUse || isHovered ) &&( input->check_keyboard_pressed( kb_enter ) || input->check_keyboard_pressed( kb_space )  ) )
         {
             isClicked = !isClicked;
         }
@@ -9604,7 +9886,7 @@ void GPE_CheckBoxBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
     }
 }
 
-void GPE_CheckBoxBasic::render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw )
+void GPE_CheckBoxBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -9612,32 +9894,32 @@ void GPE_CheckBoxBasic::render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpa
     {
         if( isInUse)
         {
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+clickBoxW-cam->x,barBox.y+clickBoxH-cam->y,GPE_MAIN_TEMPLATE->Button_Box_Highlighted_Color,false);
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+clickBoxW-cam->x,barBox.y+clickBoxH-cam->y,GPE_MAIN_TEMPLATE->Button_Border_Highlighted_Color,true);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+clickBoxW-cam->x,elementBox.y+clickBoxH-cam->y,GPE_MAIN_THEME->Button_Box_Highlighted_Color,false);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+clickBoxW-cam->x,elementBox.y+clickBoxH-cam->y,GPE_MAIN_THEME->Button_Border_Highlighted_Color,true);
         }
         else if( isHovered)
         {
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+clickBoxW-cam->x,barBox.y+clickBoxH-cam->y,GPE_MAIN_TEMPLATE->Button_Box_Selected_Color,false);
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+clickBoxW-cam->x,barBox.y+clickBoxH-cam->y,GPE_MAIN_TEMPLATE->Button_Border_Highlighted_Color,true);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+clickBoxW-cam->x,elementBox.y+clickBoxH-cam->y,GPE_MAIN_THEME->Button_Box_Selected_Color,false);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+clickBoxW-cam->x,elementBox.y+clickBoxH-cam->y,GPE_MAIN_THEME->Button_Border_Highlighted_Color,true);
         }
         else
         {
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+clickBoxW-cam->x,barBox.y+clickBoxH-cam->y,GPE_MAIN_TEMPLATE->Main_Border_Color,false);
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+clickBoxW-cam->x,barBox.y+clickBoxH-cam->y,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,true);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+clickBoxW-cam->x,elementBox.y+clickBoxH-cam->y,GPE_MAIN_THEME->Main_Border_Color,false);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+clickBoxW-cam->x,elementBox.y+clickBoxH-cam->y,GPE_MAIN_THEME->Main_Box_Font_Color,true);
         }
         if( isClicked)
         {
-            render_texture_resized(cRender, GPE_CHECKMARK_IMAGE, barBox.x-cam->x,barBox.y-cam->y,clickBoxW,clickBoxH,NULL,NULL,-1,-1,GPE_MAIN_TEMPLATE->Checkbox_Color);
+            render_texture_resized(  GPE_CHECKMARK_IMAGE, elementBox.x-cam->x+clickBoxW/8,elementBox.y-cam->y+clickBoxW/8,clickBoxW*3/4,clickBoxH*3/4,NULL,-1,-1,GPE_MAIN_THEME->Checkbox_Color);
         }
-        render_new_text(cRender,barBox.x+clickBoxW+GENERAL_GPE_PADDING-cam->x,barBox.y+barBox.h-cam->y,opName,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_CHECKBOX,FA_LEFT,FA_BOTTOM,255);
+        render_new_text( elementBox.x+clickBoxW+GENERAL_GPE_PADDING-cam->x,elementBox.y+elementBox.h-cam->y,opName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_CHECKBOX,FA_LEFT,FA_BOTTOM,255);
     }
 }
 
-void GPE_CheckBoxBasic::set_checkbox_size(int nBoxSize, bool resizeBarBox)
+void GPE_CheckBoxBasic::set_checkbox_size(int nBoxSize, bool resizeelementBox)
 {
-    if( resizeBarBox)
+    if( resizeelementBox)
     {
-        barBox.w = nBoxSize+labelBoxW;
+        elementBox.w = nBoxSize+labelBoxW;
     }
     labelBoxW = labelBoxH = nBoxSize;
 }
@@ -9649,12 +9931,12 @@ GPE_RadioButtonControllerBasic::GPE_RadioButtonControllerBasic(std::string cName
     hoveredOption = -1;
     selectedId = 0;
     opName = cName;
-    barBox.x = cX;
-    barBox.y = cY;
-    barBox.w = 0;
-    barBox.h = 32;
-    opWidth = barBox.w;
-    opHeight = barBox.h;
+    elementBox.x = cX;
+    elementBox.y = cY;
+    elementBox.w = 0;
+    elementBox.h = 32;
+    opWidth = elementBox.w;
+    opHeight = elementBox.h;
 
     if( (int)opName.size()>0)
     {
@@ -9662,9 +9944,9 @@ GPE_RadioButtonControllerBasic::GPE_RadioButtonControllerBasic(std::string cName
         int textH = 0;
         DEFAULT_FONT->get_metrics(opName,&textW, &textH);
         opWidth = textW;
-        if( barBox.w < textW )
+        if( elementBox.w < textW )
         {
-            barBox.w = textW+GENERAL_GPE_PADDING*2;
+            elementBox.w = textW+GENERAL_GPE_PADDING*2;
         }
     }
     allowDuplicates = false;
@@ -9795,8 +10077,8 @@ void GPE_RadioButtonControllerBasic::add_opton(std::string newOption)
         if( opWidth < textW )
         {
             opWidth = textW;
-            barBox.w = textW+GENERAL_GPE_PADDING*2;
-            //newTex->loadFromRenderedText(MAIN_RENDERER,newOption,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,DEFAULT_FONT);
+            elementBox.w = textW+GENERAL_GPE_PADDING*2;
+            //newTex->loadFromRenderedText(MAIN_RENDERER,newOption,GPE_MAIN_THEME->Main_Box_Font_Color,DEFAULT_FONT);
         }
         GPE_KeyPair * kp = NULL;
         GPE_KeyPair * newOptionPair = new GPE_KeyPair(-1,newOption,newOption);
@@ -9822,7 +10104,7 @@ void GPE_RadioButtonControllerBasic::add_opton(std::string newOption)
             }
         }
         subOptions.push_back(newOptionPair);
-        barBox.h +=32;
+        elementBox.h +=32;
         organize_options();
     }
 }
@@ -9837,8 +10119,8 @@ void GPE_RadioButtonControllerBasic::add_menu_option(std::string optionName, std
         if( opWidth < textW )
         {
             opWidth = textW;
-            barBox.w = textW+GENERAL_GPE_PADDING*2;
-            //newTex->loadFromRenderedText(MAIN_RENDERER,optionName,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,DEFAULT_FONT);
+            elementBox.w = textW+GENERAL_GPE_PADDING*2;
+            //newTex->loadFromRenderedText(MAIN_RENDERER,optionName,GPE_MAIN_THEME->Main_Box_Font_Color,DEFAULT_FONT);
         }
         bool optionExists = false;
         GPE_KeyPair * tOption = NULL;
@@ -9862,7 +10144,7 @@ void GPE_RadioButtonControllerBasic::add_menu_option(std::string optionName, std
             {
                 set_selection( (int)subOptions.size()-1 );
             }
-            barBox.h +=32;
+            elementBox.h +=32;
             organize_options();
         }
     }
@@ -9925,8 +10207,8 @@ int GPE_RadioButtonControllerBasic::get_selected_value()
 
 void GPE_RadioButtonControllerBasic::organize_options()
 {
-    barBox.w = GENERAL_GPE_PADDING*2;
-    barBox.h = 32;
+    elementBox.w = GENERAL_GPE_PADDING*2;
+    elementBox.h = 32;
     int maxWidthText = 0;
     int textW = 0;
     int textH = 0;
@@ -9937,7 +10219,7 @@ void GPE_RadioButtonControllerBasic::organize_options()
         DEFAULT_FONT->get_metrics(opName,&textW, &textH);
         opWidth = textW;
         maxWidthText = textW;
-        barBox.w += maxWidthText;
+        elementBox.w += maxWidthText;
     }
 
     std::string opStr = "";
@@ -9960,10 +10242,10 @@ void GPE_RadioButtonControllerBasic::organize_options()
                         maxWidthText = textW;
                     }
                 }
-                barBox.h+=32;
+                elementBox.h+=32;
             }
         }
-        barBox.w+=maxWidthText;
+        elementBox.w+=maxWidthText;
     }
 }
 
@@ -9992,7 +10274,7 @@ void GPE_RadioButtonControllerBasic::remove_option(std::string optionToCut)
                         selectedId-=1;
                     }
                     removePos = i;
-                    barBox.h -=32;
+                    elementBox.h -=32;
                 }
             }
         }
@@ -10020,7 +10302,7 @@ void GPE_RadioButtonControllerBasic::remove_option_id(int optionToCut)
             {
                 selectedId-=1;
             }
-            barBox.h -=32;
+            elementBox.h -=32;
         }
     }
 }
@@ -10068,7 +10350,7 @@ void GPE_RadioButtonControllerBasic::set_value(int valueToSelect)
     }
 }
 
-void GPE_RadioButtonControllerBasic::prerender_self(GPE_Renderer * cRender )
+void GPE_RadioButtonControllerBasic::prerender_self(  )
 {
 
 }
@@ -10079,8 +10361,8 @@ void GPE_RadioButtonControllerBasic::process_self(GPE_Rect * viewedSpace, GPE_Re
     viewedSpace = GPE_find_camera(viewedSpace);
     if( cam!=NULL && viewedSpace!=NULL)
     {
-        int buttonXPos = barBox.x+viewedSpace->x+16-cam->x;
-        int buttonYPos = barBox.y+viewedSpace->y+32-cam->y;
+        int buttonXPos = elementBox.x+viewedSpace->x+16-cam->x;
+        int buttonYPos = elementBox.y+viewedSpace->y+32-cam->y;
         GPE_GeneralGuiElement::process_self(viewedSpace,cam);
         bool selectionClicked = false;
         if( isInUse)
@@ -10096,10 +10378,10 @@ void GPE_RadioButtonControllerBasic::process_self(GPE_Rect * viewedSpace, GPE_Re
         {
             for(int i = 0; i  < (int)subOptions.size(); i++)
             {
-                if(point_between( userInput->mouse_x,userInput->mouse_y,buttonXPos,buttonYPos,buttonXPos+32,buttonYPos+32) )
+                if(point_between( input->mouse_x,input->mouse_y,buttonXPos,buttonYPos,buttonXPos+32,buttonYPos+32) )
                 {
                     hoveredOption = i;
-                    if( userInput->check_mouse_released(0) )
+                    if( input->check_mouse_released(0) )
                     {
                         selectedId = i;
                         selectionClicked = true;
@@ -10109,11 +10391,11 @@ void GPE_RadioButtonControllerBasic::process_self(GPE_Rect * viewedSpace, GPE_Re
             }
             if( hasArrowkeyControl && isInUse )
             {
-                if( userInput->check_keyboard_down(kb_left) || userInput->check_keyboard_down(kb_up) )
+                if( input->check_keyboard_down(kb_left) || input->check_keyboard_down(kb_up) )
                 {
                     selectedId--;
                 }
-                if( userInput->check_keyboard_down(kb_right) || userInput->check_keyboard_down(kb_down) )
+                if( input->check_keyboard_down(kb_right) || input->check_keyboard_down(kb_down) )
                 {
                     selectedId++;
                 }
@@ -10138,7 +10420,7 @@ void GPE_RadioButtonControllerBasic::process_self(GPE_Rect * viewedSpace, GPE_Re
     }
 }
 
-void GPE_RadioButtonControllerBasic::render_self(GPE_Renderer * cRender , GPE_Rect * viewedSpace, GPE_Rect * cam ,bool forceRedraw )
+void GPE_RadioButtonControllerBasic::render_self(  GPE_Rect * viewedSpace, GPE_Rect * cam ,bool forceRedraw )
 {
     if( forceRedraw )
     {
@@ -10146,24 +10428,24 @@ void GPE_RadioButtonControllerBasic::render_self(GPE_Renderer * cRender , GPE_Re
         cam = GPE_find_camera(cam);
         if( viewedSpace!=NULL && cam!=NULL)
         {
-            int buttonXPos = barBox.x-cam->x;
-            int buttonYPos = barBox.y-cam->y;
+            int buttonXPos = elementBox.x-cam->x;
+            int buttonYPos = elementBox.y-cam->y;
             if(showBorderBox)
             {
                 if((int)opName.size()>0 )
                 {
-                    render_line(cRender,buttonXPos,buttonYPos+GPE_TITLE_BPADDING,buttonXPos+GPE_TITLE_BPADDING,buttonYPos+GPE_TITLE_BPADDING,GPE_MAIN_TEMPLATE->Button_Box_Color,255);
-                    render_line(cRender,buttonXPos+GPE_TITLE_BPADDING*2+opWidth,buttonYPos+GPE_TITLE_BPADDING,
-                                buttonXPos+barBox.w,buttonYPos+GPE_TITLE_BPADDING,GPE_MAIN_TEMPLATE->Button_Box_Color,255);
+                    gpe->render_line( buttonXPos,buttonYPos+GPE_TITLE_BPADDING,buttonXPos+GPE_TITLE_BPADDING,buttonYPos+GPE_TITLE_BPADDING,GPE_MAIN_THEME->Button_Box_Color,255);
+                    gpe->render_line( buttonXPos+GPE_TITLE_BPADDING*2+opWidth,buttonYPos+GPE_TITLE_BPADDING,
+                                buttonXPos+elementBox.w,buttonYPos+GPE_TITLE_BPADDING,GPE_MAIN_THEME->Button_Box_Color,255);
 
-                    render_line(cRender,buttonXPos,buttonYPos+GPE_TITLE_BPADDING,buttonXPos,buttonYPos+barBox.h,GPE_MAIN_TEMPLATE->Button_Box_Color,255);
-                    render_line(cRender,buttonXPos,buttonYPos+barBox.h,buttonXPos+barBox.w,buttonYPos+barBox.h,GPE_MAIN_TEMPLATE->Button_Box_Color,255);
-                    render_line(cRender,buttonXPos+barBox.w,buttonYPos+GPE_TITLE_BPADDING,buttonXPos+barBox.w,buttonYPos+barBox.h,GPE_MAIN_TEMPLATE->Button_Box_Color,255);
-                    render_new_text(cRender, buttonXPos+GPE_TITLE_BPADDING*1.5,buttonYPos+GPE_TITLE_BPADDING/2,opName,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP,255);
+                    gpe->render_line( buttonXPos,buttonYPos+GPE_TITLE_BPADDING,buttonXPos,buttonYPos+elementBox.h,GPE_MAIN_THEME->Button_Box_Color,255);
+                    gpe->render_line( buttonXPos,buttonYPos+elementBox.h,buttonXPos+elementBox.w,buttonYPos+elementBox.h,GPE_MAIN_THEME->Button_Box_Color,255);
+                    gpe->render_line( buttonXPos+elementBox.w,buttonYPos+GPE_TITLE_BPADDING,buttonXPos+elementBox.w,buttonYPos+elementBox.h,GPE_MAIN_THEME->Button_Box_Color,255);
+                    render_new_text(  buttonXPos+GPE_TITLE_BPADDING*1.5,buttonYPos+GPE_TITLE_BPADDING/2,opName,GPE_MAIN_THEME->Main_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP,255);
                 }
                 else
                 {
-                    render_rectangle(cRender,buttonXPos,buttonYPos,buttonXPos+barBox.w,buttonYPos+barBox.h,GPE_MAIN_TEMPLATE->Button_Box_Color,255);
+                    gpe->render_rectangle( buttonXPos,buttonYPos,buttonXPos+elementBox.w,buttonYPos+elementBox.h,GPE_MAIN_THEME->Button_Box_Color,255);
                 }
                 buttonXPos += 16;
                 buttonYPos += 32;
@@ -10174,20 +10456,20 @@ void GPE_RadioButtonControllerBasic::render_self(GPE_Renderer * cRender , GPE_Re
                 {
                     if( i == hoveredOption )
                     {
-                        render_sprite_resized(cRender, GPE_RadioButton_GFX,1, buttonXPos,buttonYPos, 16,16,NULL,NULL);
+                        render_animation_resized(  GPE_RadioButton_GFX,1, buttonXPos,buttonYPos, 16,16,NULL );
                     }
                     else
                     {
-                        render_sprite_resized(cRender, GPE_RadioButton_GFX, 0,buttonXPos,buttonYPos, 16,16,NULL,NULL);
+                        render_animation_resized(  GPE_RadioButton_GFX, 0,buttonXPos,buttonYPos, 16,16,NULL );
                     }
                     if( i == selectedId )
                     {
-                        render_sprite_resized(cRender, GPE_RadioButton_GFX, 2, buttonXPos,buttonYPos, 16,16,NULL,NULL);
+                        render_animation_resized(  GPE_RadioButton_GFX, 2, buttonXPos,buttonYPos, 16,16,NULL );
                     }
                     kp = subOptions[i];
                     if( kp!=NULL)
                     {
-                        render_new_text(cRender, buttonXPos+32,buttonYPos,kp->keyString,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP,255);
+                        render_new_text(  buttonXPos+32,buttonYPos,kp->keyString,GPE_MAIN_THEME->Main_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP,255);
                     }
                     buttonYPos+=32;
                     renderedInCol+=1;
@@ -10198,7 +10480,7 @@ void GPE_RadioButtonControllerBasic::render_self(GPE_Renderer * cRender , GPE_Re
                         {
                             renderedInCol = 0;
                             buttonXPos+=160; //will be changed later from constant
-                            buttonYPos = barBox.y+32;
+                            buttonYPos = elementBox.y+32;
                         }
                     }
                     */
@@ -10206,27 +10488,38 @@ void GPE_RadioButtonControllerBasic::render_self(GPE_Renderer * cRender , GPE_Re
             }
             if( isInUse)
             {
-                render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Main_Box_Font_URL_Color,true);
+                gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Box_Font_URL_Color,true);
             }
         }
     }
 }
 
-void GPE_open_context_menu(int menuXPos,int menuYPos)
+void GPE_open_context_menu(int menuXPos,int menuYPos, int newWidth )
 {
     if( menuXPos<0)
     {
-        menuXPos = userInput->mouse_x;
+        menuXPos = input->mouse_x;
     }
     if( menuYPos<0)
     {
-        menuYPos = userInput->mouse_y;
+        menuYPos = input->mouse_y;
     }
     if( MAIN_CONTEXT_MENU!=NULL)
     {
         MAIN_CONTEXT_MENU->clear_menu();
         MAIN_CONTEXT_MENU->subMenuIsOpen = true;
         MAIN_CONTEXT_MENU->set_position(menuXPos, menuYPos);
+        if( newWidth > 0)
+        {
+            MAIN_CONTEXT_MENU->set_width(newWidth);
+        }
+        else
+        {
+            if( MAIN_CONTEXT_MENU->get_width() < 128 )
+            {
+                MAIN_CONTEXT_MENU->set_width(128);
+            }
+        }
     }
 }
 
@@ -10236,36 +10529,47 @@ void GPE_close_context_menu()
     {
         MAIN_CONTEXT_MENU->clear_menu();
         MAIN_CONTEXT_MENU->subMenuIsOpen = false;
-        userInput->reset_all_input();
+        input->reset_all_input();
         if( MAIN_OVERLAY!=NULL)
         {
-            MAIN_OVERLAY->render_frozen_screenshot(MAIN_RENDERER);
+            MAIN_OVERLAY->render_frozen_screenshot();
         }
     }
 }
 
-int get_popupmenu_result(GPE_Rect * cam, bool redrawScreen)
+int get_popupmenu_result(GPE_Rect * cam, bool redrawScreen, bool autoResize )
 {
     //RESOURCE_TO_DRAG = NULL;
     GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
     MAIN_OVERLAY->process_cursor();
-    MAIN_OVERLAY->take_frozen_screenshot(MAIN_RENDERER);
-    userInput->reset_all_input();
+    MAIN_OVERLAY->take_frozen_screenshot();
+    input->reset_all_input();
     int returnValue = -1;
     bool exitOperation = false;
     if( MAIN_CONTEXT_MENU!=NULL)
     {
         MAIN_CONTEXT_MENU->hoverOption = MAIN_CONTEXT_MENU->selectedOption = 0;
+        if( autoResize )
+        {
+            //Resize popup 1st layer
+            MAIN_CONTEXT_MENU->resize_self();
+        }
     }
+    else
+    {
+        return -1;
+    }
+    bool firstFrame = true;
     while(exitOperation==false)
     {
         GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
         //Start the frame timer
-        capTimer->start();
+        GPE_TIMER_CAP->start();
         //gets user input
-        userInput->handle(true,true);
-
-        if( userInput->windowEventHappendInFrame)
+        if( !firstFrame)
+        input->handle(true,true);
+        //record_error("Viewing context menu...");
+        if( input->windowEventHappendInFrame)
         {
             exitOperation = true;
             returnValue = -1;
@@ -10277,8 +10581,21 @@ int get_popupmenu_result(GPE_Rect * cam, bool redrawScreen)
                 if( MAIN_CONTEXT_MENU->is_open() )
                 {
                     returnValue = POPUP_MENU_VALUE = MAIN_CONTEXT_MENU->process_menu_option();
-                    if( userInput->check_mouse_released(kb_anykey) || WINDOW_WAS_JUST_RESIZED || userInput->released[kb_esc] || userInput->released[kb_enter] )
+                    if( input->check_mouse_released(kb_anykey)  )
                     {
+                        record_error("Releasing due to mouse input...");
+                        GPE_close_context_menu();
+                        exitOperation = true;
+                    }
+                    else if( WINDOW_WAS_JUST_RESIZED  )
+                    {
+                        record_error("Releasing due to WINDOW_WAS_JUST_RESIZED...");
+                        GPE_close_context_menu();
+                        exitOperation = true;
+                    }
+                    else if( input->released[kb_esc] || input->released[kb_enter] )
+                    {
+                        record_error("Releasing due esc/enter...");
                         GPE_close_context_menu();
                         exitOperation = true;
                     }
@@ -10290,12 +10607,13 @@ int get_popupmenu_result(GPE_Rect * cam, bool redrawScreen)
                 calculate_avg_fps();
                 if( !WINDOW_WAS_JUST_RESIZED)
                 {
+                    MAIN_RENDERER->set_viewpoint( NULL );
                     //if( redrawScreen)
                     {
-                        MAIN_OVERLAY->render_frozen_screenshot(MAIN_RENDERER);
+                        MAIN_OVERLAY->render_frozen_screenshot( );
                     }
                     //Update screen
-                    MAIN_CONTEXT_MENU->render_self(MAIN_RENDERER,cam);
+                    MAIN_CONTEXT_MENU->render_self(cam, true);
                     MAIN_RENDERER->update_renderer();
                 }
                 cap_fps();
@@ -10307,9 +10625,10 @@ int get_popupmenu_result(GPE_Rect * cam, bool redrawScreen)
             }
         }
         MAIN_OVERLAY->process_cursor();
+        firstFrame = false;
     }
     GPE_close_context_menu();
-    userInput->reset_all_input();
+    input->reset_all_input();
     return returnValue;
 }
 
@@ -10381,14 +10700,14 @@ int get_tab_space_count()
 
 void display_user_messaage()
 {
-    //if( userInput->input_received() )
+    //if( input->input_received() )
     {
         //Update screen
-        render_rectangle(MAIN_RENDERER,0,0,256,96,GPE_MAIN_TEMPLATE->PopUp_Box_Color,false);
-        render_rectangle(MAIN_RENDERER,0,0,256,96,GPE_MAIN_TEMPLATE->PopUp_Box_Border_Color,true);
-        render_new_text(MAIN_RENDERER,GENERAL_GPE_PADDING,GENERAL_GPE_PADDING,displayMessageTitle,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
-        render_new_text(MAIN_RENDERER,GENERAL_GPE_PADDING,GENERAL_GPE_PADDING*2+GPE_AVERAGE_LINE_HEIGHT,displayMessageSubtitle,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
-        render_new_text(MAIN_RENDERER,GENERAL_GPE_PADDING,GENERAL_GPE_PADDING*3+GPE_AVERAGE_LINE_HEIGHT*2,displayMessageString,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
+        gpe->render_rectangle( 0,0,256,96,GPE_MAIN_THEME->PopUp_Box_Color,false);
+        gpe->render_rectangle( 0,0,256,96,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
+        render_new_text( GENERAL_GPE_PADDING,GENERAL_GPE_PADDING,displayMessageTitle,GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
+        render_new_text( GENERAL_GPE_PADDING,GENERAL_GPE_PADDING*2+GPE_AVERAGE_LINE_HEIGHT,displayMessageSubtitle,GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
+        render_new_text( GENERAL_GPE_PADDING,GENERAL_GPE_PADDING*3+GPE_AVERAGE_LINE_HEIGHT*2,displayMessageString,GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
         MAIN_RENDERER->update_renderer();
     }
 
@@ -10401,17 +10720,17 @@ void display_user_alert(std::string messageTitle, std::string messageContent, in
     MAIN_OVERLAY->process_cursor();
     //GPE_MAIN_GUI->reset_gui_info();
     MAIN_OVERLAY->update_tooltip("");
-    MAIN_OVERLAY->take_frozen_screenshot(MAIN_RENDERER);
-    userInput->reset_all_input();
+    MAIN_OVERLAY->take_frozen_screenshot( );
+    input->reset_all_input();
     bool exitOperation = false;
     bool windowBeingDragged = false;
 
-    GPE_Rect barBox;
+    GPE_Rect elementBox;
 
-    barBox.w = SCREEN_WIDTH*3/4 -128 - GENERAL_GPE_PADDING*4;
-    barBox.h = SCREEN_HEIGHT*3/4 - 64 - GENERAL_GPE_PADDING*4;
-    barBox.x = SCREEN_WIDTH - barBox.w;
-    barBox.y = SCREEN_HEIGHT - barBox.h;
+    elementBox.w = SCREEN_WIDTH*3/4 -128 - GENERAL_GPE_PADDING*4;
+    elementBox.h = SCREEN_HEIGHT*3/4 - 64 - GENERAL_GPE_PADDING*4;
+    elementBox.x = SCREEN_WIDTH - elementBox.w;
+    elementBox.y = SCREEN_HEIGHT - elementBox.h;
     int maxMessageWidth = 0;
     int maxMessageHeight = 0;
     int defaultFontWidth = 0;;
@@ -10427,8 +10746,8 @@ void display_user_alert(std::string messageTitle, std::string messageContent, in
     GPE_ToolLabelButton * okButton = new GPE_ToolLabelButton(0,0,"Okay","");
     if( defaultFontWidth > 0 && defaultFontHeight > 0)
     {
-        maxMessageWidth = (barBox.w-64) / defaultFontWidth;
-        maxMessageHeight = (barBox.h-64) / (defaultFontHeight+GENERAL_GPE_PADDING);
+        maxMessageWidth = (elementBox.w-64) / defaultFontWidth;
+        maxMessageHeight = (elementBox.h-64) / (defaultFontHeight+GENERAL_GPE_PADDING);
         if( (int)messageTitle.size() > 0)
         {
             if((int)messageTitle.size() > maxMessageWidth )
@@ -10453,13 +10772,13 @@ void display_user_alert(std::string messageTitle, std::string messageContent, in
 
         if( (int) messageSubTitles.size() < maxMessageHeight )
         {
-            barBox.h = messageSubTitles.size()*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
-            barBox.y = (SCREEN_HEIGHT - barBox.h)/2;
+            elementBox.h = messageSubTitles.size()*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
+            elementBox.y = (SCREEN_HEIGHT - elementBox.h)/2;
         }
         else
         {
-            barBox.h = maxMessageHeight*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
-            barBox.y = (SCREEN_HEIGHT - barBox.h)/2;
+            elementBox.h = maxMessageHeight*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
+            elementBox.y = (SCREEN_HEIGHT - elementBox.h)/2;
         }
 
         maxMessageWidth = (int)messageTitle.size();
@@ -10471,63 +10790,63 @@ void display_user_alert(std::string messageTitle, std::string messageContent, in
             }
         }
 
-        barBox.w = (maxMessageWidth*defaultFontWidth)+128 + GENERAL_GPE_PADDING*4;
-        barBox.x = (SCREEN_WIDTH - barBox.w)/2;
+        elementBox.w = (maxMessageWidth*defaultFontWidth)+128 + GENERAL_GPE_PADDING*4;
+        elementBox.x = (SCREEN_WIDTH - elementBox.w)/2;
 
         while(exitOperation==false)
         {
             GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
             //Start the frame timer
-            capTimer->start();
+            GPE_TIMER_CAP->start();
             //gets user input
-            userInput->handle(true,true);
+            input->handle(true,true);
             //GPE_MAIN_GUI->reset_gui_info();
 
             if( windowBeingDragged )
             {
                 GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZEALL);
-                if( userInput->check_mouse_down(0) )
+                if( input->check_mouse_down(0) )
                 {
-                    barBox.x = userInput->mouse_x-barBox.w/2;
-                    barBox.y = userInput->mouse_y;
+                    elementBox.x = input->mouse_x-elementBox.w/2;
+                    elementBox.y = input->mouse_y;
                 }
                 else
                 {
                     windowBeingDragged = false;
                 }
 
-                if( barBox.x+barBox.w > SCREEN_WIDTH )
+                if( elementBox.x+elementBox.w > SCREEN_WIDTH )
                 {
-                    barBox.x = SCREEN_WIDTH - barBox.w;
+                    elementBox.x = SCREEN_WIDTH - elementBox.w;
                 }
 
-                if( barBox.y+barBox.h > SCREEN_HEIGHT )
+                if( elementBox.y+elementBox.h > SCREEN_HEIGHT )
                 {
-                    barBox.y = SCREEN_HEIGHT - barBox.h;
+                    elementBox.y = SCREEN_HEIGHT - elementBox.h;
                 }
 
-                if( barBox.x < 0)
+                if( elementBox.x < 0)
                 {
-                    barBox.x = 0;
+                    elementBox.x = 0;
                 }
 
-                if( barBox.y < 0)
+                if( elementBox.y < 0)
                 {
-                    barBox.y = 0;
+                    elementBox.y = 0;
                 }
             }
             else
             {
-                if( userInput->check_mouse_released(0) )
+                if( input->check_mouse_released(0) )
                 {
-                    if( point_between(userInput->mouse_x,userInput->mouse_y,barBox.x+barBox.w-32,barBox.y,barBox.x+barBox.w,barBox.y+30) )
+                    if( point_between(input->mouse_x,input->mouse_y,elementBox.x+elementBox.w-32,elementBox.y,elementBox.x+elementBox.w,elementBox.y+30) )
                     {
                         exitOperation = true;
                     }
                 }
-                else if( userInput->check_mouse_down(0) )
+                else if( input->check_mouse_down(0) )
                 {
-                    if( point_between(userInput->mouse_x,userInput->mouse_y,barBox.x,barBox.y,barBox.x+barBox.w-32,barBox.y+32) )
+                    if( point_between(input->mouse_x,input->mouse_y,elementBox.x,elementBox.y,elementBox.x+elementBox.w-32,elementBox.y+32) )
                     {
                         windowBeingDragged = true;
                     }
@@ -10535,14 +10854,14 @@ void display_user_alert(std::string messageTitle, std::string messageContent, in
             }
             if( okButton!=NULL)
             {
-                okButton->set_coords(barBox.x+( barBox.w-okButton->get_width() )/2,barBox.y+barBox.h-GENERAL_GPE_PADDING-okButton->get_height() );
+                okButton->set_coords(elementBox.x+( elementBox.w-okButton->get_width() )/2,elementBox.y+elementBox.h-GENERAL_GPE_PADDING-okButton->get_height() );
                 okButton->process_self( NULL, NULL);
                 if( okButton->is_clicked() && !windowBeingDragged )
                 {
                     exitOperation = true;
                 }
             }
-            if( userInput->check_keyboard_released(kb_esc) || userInput->check_keyboard_released(kb_space) || userInput->check_keyboard_released(kb_enter) || WINDOW_WAS_JUST_RESIZED)
+            if( input->check_keyboard_released(kb_esc) || input->check_keyboard_released(kb_space) || input->check_keyboard_released(kb_enter) || WINDOW_WAS_JUST_RESIZED)
             {
                 exitOperation = true;
             }
@@ -10551,32 +10870,32 @@ void display_user_alert(std::string messageTitle, std::string messageContent, in
             MAIN_RENDERER->reset_viewpoint();
             //if( WINDOW_WAS_JUST_RESIZED )
             {
-                render_rectangle(MAIN_RENDERER,0,0,SCREEN_WIDTH,SCREEN_HEIGHT,GPE_MAIN_TEMPLATE->Program_Color, false, 255);
-                MAIN_OVERLAY->render_frozen_screenshot(MAIN_RENDERER);
+                gpe->render_rectangle( 0,0,SCREEN_WIDTH,SCREEN_HEIGHT,GPE_MAIN_THEME->Program_Color, false, 255);
+                MAIN_OVERLAY->render_frozen_screenshot( );
             }
             //Update screen
-            render_rect(MAIN_RENDERER,&barBox,GPE_MAIN_TEMPLATE->PopUp_Box_Color,false);
+            gpe->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Color,false);
 
-            render_rectangle(MAIN_RENDERER,barBox.x,barBox.y,barBox.x+barBox.w,barBox.y+32,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Color,false);
+            gpe->render_rectangle( elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+32,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
 
-            render_new_text(MAIN_RENDERER,barBox.x+barBox.w/2,barBox.y+GENERAL_GPE_PADDING,messageTitle,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Font_Color,DEFAULT_FONT,FA_CENTER,FA_TOP);
-            render_new_text(MAIN_RENDERER,barBox.x+barBox.w-GENERAL_GPE_PADDING,barBox.y+GENERAL_GPE_PADDING,"X",GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Font_Color,DEFAULT_FONT,FA_RIGHT,FA_TOP);
+            render_new_text( elementBox.x+elementBox.w/2,elementBox.y+GENERAL_GPE_PADDING,messageTitle,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,DEFAULT_FONT,FA_CENTER,FA_TOP);
+            render_new_text( elementBox.x+elementBox.w-GENERAL_GPE_PADDING,elementBox.y+GENERAL_GPE_PADDING,"X",GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,DEFAULT_FONT,FA_RIGHT,FA_TOP);
 
             for( iSubMessage = 0; iSubMessage < (int)messageSubTitles.size(); iSubMessage++)
             {
-                render_new_text(MAIN_RENDERER,barBox.x+32,barBox.y+GENERAL_GPE_PADDING+32+iSubMessage*(defaultFontHeight+GENERAL_GPE_PADDING),messageSubTitles.at(iSubMessage),GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
+                render_new_text( elementBox.x+32,elementBox.y+GENERAL_GPE_PADDING+32+iSubMessage*(defaultFontHeight+GENERAL_GPE_PADDING),messageSubTitles.at(iSubMessage),GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
             }
             if( okButton!=NULL)
             {
-                okButton->render_self(MAIN_RENDERER, NULL, NULL, true);
+                okButton->render_self(  NULL, NULL, true);
             }
-            if( point_within_rect(userInput->mouse_x,userInput->mouse_y,&barBox) )
+            if( point_within_rect(input->mouse_x,input->mouse_y,&elementBox) )
             {
-                render_rect(MAIN_RENDERER,&barBox,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Alt_Color,true);
+                gpe->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Highlight_Alt_Color,true);
             }
             else
             {
-                render_rect(MAIN_RENDERER,&barBox,GPE_MAIN_TEMPLATE->PopUp_Box_Border_Color,true);
+                gpe->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
             }
             MAIN_OVERLAY->process_cursor();
             MAIN_RENDERER->update_renderer();
@@ -10589,7 +10908,7 @@ void display_user_alert(std::string messageTitle, std::string messageContent, in
         delete okButton;
         okButton = NULL;
     }
-    userInput->reset_all_input();
+    input->reset_all_input();
 }
 
 int display_get_prompt(std::string messageTitle, std::string messageContent, bool showCancelButton )
@@ -10603,8 +10922,8 @@ int display_get_prompt(std::string messageTitle, std::string messageContent, boo
     int iSubMessage = 0;
     GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
     MAIN_OVERLAY->process_cursor();
-    MAIN_OVERLAY->take_frozen_screenshot(MAIN_RENDERER);
-    userInput->reset_all_input();
+    MAIN_OVERLAY->take_frozen_screenshot( );
+    input->reset_all_input();
     bool exitOperation = false;
     int returnVal = DISPLAY_QUERY_CANCEL;
     GPE_ToolLabelButton * yesButton = new GPE_ToolLabelButton(0,32,"Yes[ENTER]","");
@@ -10633,23 +10952,23 @@ int display_get_prompt(std::string messageTitle, std::string messageContent, boo
         FONT_DEFAULT_PROMPT->get_metrics("A",&defaultFontWidth, &defaultFontHeight);
     }
 
-    GPE_Rect barBox;
-    barBox.w = 528;
-    barBox.h = 320;
-    barBox.x = (SCREEN_WIDTH - barBox.w)/2;
-    barBox.y = 72;
-    barBox.x = (SCREEN_WIDTH - barBox.w)/2;
-    barBox.y = 72;
-    maxMessageWidth = (barBox.w-32) / defaultFontWidth;
-    maxMessageHeight = (barBox.h-64) / (defaultFontHeight+GENERAL_GPE_PADDING);
-    int newBarX2Pos = barBox.x+barBox.w;
-    int newBarY2Pos = barBox.w+barBox.h;
-    MAIN_OVERLAY->render_frozen_screenshot(MAIN_RENDERER);
+    GPE_Rect elementBox;
+    elementBox.w = 528;
+    elementBox.h = 320;
+    elementBox.x = (SCREEN_WIDTH - elementBox.w)/2;
+    elementBox.y = 72;
+    elementBox.x = (SCREEN_WIDTH - elementBox.w)/2;
+    elementBox.y = 72;
+    maxMessageWidth = (elementBox.w-32) / defaultFontWidth;
+    maxMessageHeight = (elementBox.h-64) / (defaultFontHeight+GENERAL_GPE_PADDING);
+    int newBarX2Pos = elementBox.x+elementBox.w;
+    int newBarY2Pos = elementBox.w+elementBox.h;
+    MAIN_OVERLAY->render_frozen_screenshot( );
 
     if( defaultFontWidth > 0 && defaultFontHeight > 0)
     {
-        maxMessageWidth = (barBox.w-32) / defaultFontWidth;
-        maxMessageHeight = (barBox.h-64) / (defaultFontHeight+GENERAL_GPE_PADDING);
+        maxMessageWidth = (elementBox.w-32) / defaultFontWidth;
+        maxMessageHeight = (elementBox.h-64) / (defaultFontHeight+GENERAL_GPE_PADDING);
 
         messageSubTitles.clear();
         if( (int)messageTitle.size() > 0)
@@ -10676,11 +10995,11 @@ int display_get_prompt(std::string messageTitle, std::string messageContent, boo
 
         if( (int) messageSubTitles.size() < maxMessageHeight )
         {
-            barBox.h = messageSubTitles.size()*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
+            elementBox.h = messageSubTitles.size()*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
         }
         else
         {
-            barBox.h = maxMessageHeight*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
+            elementBox.h = maxMessageHeight*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
         }
 
         maxMessageWidth = (int)messageTitle.size();
@@ -10692,104 +11011,104 @@ int display_get_prompt(std::string messageTitle, std::string messageContent, boo
             }
         }
 
-        barBox.x = (SCREEN_WIDTH-barBox.w)/2;
-        newBarX2Pos = barBox.x+barBox.w;
-        newBarY2Pos = barBox.w+barBox.h;
-        int barBoxMinWidth = 64;
-        int barBoxMinHeight = barBox.h;
+        elementBox.x = (SCREEN_WIDTH-elementBox.w)/2;
+        newBarX2Pos = elementBox.x+elementBox.w;
+        newBarY2Pos = elementBox.w+elementBox.h;
+        int elementBoxMinWidth = 64;
+        int elementBoxMinHeight = elementBox.h;
 
         while(exitOperation==false )
         {
             GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
             //Start the frame timer
-            capTimer->start();
+            GPE_TIMER_CAP->start();
             //gets user input
-            userInput->handle(true,true);
+            input->handle(true,true);
             //GPE_MAIN_GUI->reset_gui_info();
 
-            if( userInput->check_mouse_down(0) && !userInput->check_mouse_pressed(0) )
+            if( input->check_mouse_down(0) && !input->check_mouse_pressed(0) )
             {
                 if( boxIsMoving)
                 {
                     GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZEALL);
-                    barBox.x = userInput->mouse_x-barBox.w/2;
-                    barBox.y = userInput->mouse_y;
+                    elementBox.x = input->mouse_x-elementBox.w/2;
+                    elementBox.y = input->mouse_y;
                 }
                 else if( boxBeingResized)
                 {
                     GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZENWSE);
-                    newBarX2Pos = userInput->mouse_x;
-                    if( newBarX2Pos > barBox.x+barBoxMinWidth && newBarX2Pos < SCREEN_WIDTH-32 && newBarX2Pos> 0 )
+                    newBarX2Pos = input->mouse_x;
+                    if( newBarX2Pos > elementBox.x+elementBoxMinWidth && newBarX2Pos < SCREEN_WIDTH-32 && newBarX2Pos> 0 )
                     {
-                        barBox.w = newBarX2Pos-barBox.x;
+                        elementBox.w = newBarX2Pos-elementBox.x;
                         boxWasResized = true;
                     }
-                    newBarY2Pos = userInput->mouse_y;
-                    if( newBarY2Pos > barBox.y+barBoxMinHeight && newBarY2Pos < SCREEN_HEIGHT-32 && newBarY2Pos > 0 )
+                    newBarY2Pos = input->mouse_y;
+                    if( newBarY2Pos > elementBox.y+elementBoxMinHeight && newBarY2Pos < SCREEN_HEIGHT-32 && newBarY2Pos > 0 )
                     {
-                        barBox.h = newBarY2Pos-barBox.y;
+                        elementBox.h = newBarY2Pos-elementBox.y;
                         boxWasResized = true;
                     }
                 }
             }
 
-            if( point_between(userInput->mouse_x,userInput->mouse_y,barBox.x,barBox.y,barBox.x+barBox.w,barBox.y+32) )
+            if( point_between(input->mouse_x,input->mouse_y,elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+32) )
             {
                 GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZEALL);
-                if( userInput->check_mouse_pressed(0) )
+                if( input->check_mouse_pressed(0) )
                 {
                     boxIsMoving = true;
                 }
             }
-            else if( point_between(userInput->mouse_x,userInput->mouse_y,barBox.x+barBox.w-32,barBox.y+barBox.h-32,barBox.x+barBox.w,barBox.y+barBox.h) )
+            else if( point_between(input->mouse_x,input->mouse_y,elementBox.x+elementBox.w-32,elementBox.y+elementBox.h-32,elementBox.x+elementBox.w,elementBox.y+elementBox.h) )
             {
                 GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZENWSE);
-                if( userInput->check_mouse_pressed(0) )
+                if( input->check_mouse_pressed(0) )
                 {
                     boxBeingResized = true;
                 }
             }
 
-            if( userInput->check_mouse_released(-1) )
+            if( input->check_mouse_released(-1) )
             {
                 boxIsMoving = false;
                 boxBeingResized = false;
                 GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
             }
-            if( barBox.w < barBoxMinWidth)
+            if( elementBox.w < elementBoxMinWidth)
             {
-                barBox.w = barBoxMinWidth;
+                elementBox.w = elementBoxMinWidth;
             }
-            if( barBox.h < barBoxMinHeight)
+            if( elementBox.h < elementBoxMinHeight)
             {
-                barBox.h = barBoxMinHeight;
+                elementBox.h = elementBoxMinHeight;
             }
-            if(  barBox.x+barBox.w > SCREEN_WIDTH)
+            if(  elementBox.x+elementBox.w > SCREEN_WIDTH)
             {
-                barBox.x = SCREEN_WIDTH-barBox.w;
+                elementBox.x = SCREEN_WIDTH-elementBox.w;
                 boxWasResized = true;
             }
-            if( barBox.x < 0 )
+            if( elementBox.x < 0 )
             {
-                barBox.x = 0;
+                elementBox.x = 0;
                 boxWasResized = true;
             }
 
-            if(  barBox.y+barBox.h > SCREEN_HEIGHT )
+            if(  elementBox.y+elementBox.h > SCREEN_HEIGHT )
             {
-                barBox.y = SCREEN_HEIGHT-barBox.h;
+                elementBox.y = SCREEN_HEIGHT-elementBox.h;
                 boxWasResized = true;
             }
-            if( barBox.y < 0 )
+            if( elementBox.y < 0 )
             {
-                barBox.y = 0;
+                elementBox.y = 0;
                 boxWasResized = true;
             }
 
             if( boxWasResized)
             {
-                maxMessageWidth = (barBox.w-32) / defaultFontWidth;
-                maxMessageHeight = (barBox.h-64) / (defaultFontHeight+GENERAL_GPE_PADDING);
+                maxMessageWidth = (elementBox.w-32) / defaultFontWidth;
+                maxMessageHeight = (elementBox.h-64) / (defaultFontHeight+GENERAL_GPE_PADDING);
 
                 messageSubTitles.clear();
                 /*if( (int)messageTitle.size() > 0)
@@ -10815,11 +11134,11 @@ int display_get_prompt(std::string messageTitle, std::string messageContent, boo
                 }
                 /*if( (int) messageSubTitles.size() < maxMessageHeight )
                 {
-                    barBox.h = messageSubTitles.size()*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
+                    elementBox.h = messageSubTitles.size()*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
                 }
                 else
                 {
-                    barBox.h = maxMessageHeight*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
+                    elementBox.h = maxMessageHeight*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
                 }*/
 
                 maxMessageWidth = (int)messageTitle.size();
@@ -10833,18 +11152,18 @@ int display_get_prompt(std::string messageTitle, std::string messageContent, boo
                 boxWasResized = false;
             }
 
-            yesButton->set_coords( GENERAL_GPE_PADDING+64,barBox.h-32);
+            yesButton->set_coords( GENERAL_GPE_PADDING+64,elementBox.h-32);
             noButon->set_coords(yesButton->get_xpos()+yesButton->get_width()+GENERAL_GPE_PADDING,yesButton->get_ypos() );
             if( cancelButton!=NULL)
             {
                 cancelButton->set_coords( noButon->get_xpos()+noButon->get_width()+GENERAL_GPE_PADDING,noButon->get_ypos() );
-                cancelButton->process_self(&barBox,&GPE_DEFAULT_CAMERA);
+                cancelButton->process_self(&elementBox,&GPE_DEFAULT_CAMERA);
             }
-            yesButton->process_self(&barBox,&GPE_DEFAULT_CAMERA);
-            noButon->process_self(&barBox,&GPE_DEFAULT_CAMERA) ;
+            yesButton->process_self(&elementBox,&GPE_DEFAULT_CAMERA);
+            noButon->process_self(&elementBox,&GPE_DEFAULT_CAMERA) ;
 
 
-            if( userInput->check_keyboard_released(kb_esc) || MAIN_RENDERER->windowClosed )
+            if( input->check_keyboard_released(kb_esc) || MAIN_RENDERER->windowClosed )
             {
                 if( cancelButton!=NULL)
                 {
@@ -10857,7 +11176,7 @@ int display_get_prompt(std::string messageTitle, std::string messageContent, boo
                     returnVal = DISPLAY_QUERY_NO;
                 }
             }
-            else if( userInput->check_keyboard_released(kb_n) )
+            else if( input->check_keyboard_released(kb_n) )
             {
                 exitOperation = true;
                 returnVal = DISPLAY_QUERY_NO;
@@ -10872,7 +11191,7 @@ int display_get_prompt(std::string messageTitle, std::string messageContent, boo
                 exitOperation = true;
                 returnVal = DISPLAY_QUERY_CANCEL;
             }
-            else if( userInput->check_keyboard_released(kb_enter) || yesButton->is_clicked() )
+            else if( input->check_keyboard_released(kb_enter) || yesButton->is_clicked() )
             {
                 exitOperation = true;
                 returnVal = DISPLAY_QUERY_YES;
@@ -10882,30 +11201,30 @@ int display_get_prompt(std::string messageTitle, std::string messageContent, boo
             {
                 MAIN_RENDERER->reset_viewpoint();
                 //Update screen
-                //if( userInput->windowEventHappendInFrame )
+                //if( input->windowEventHappendInFrame )
                 {
-                    MAIN_OVERLAY->render_frozen_screenshot(MAIN_RENDERER);
+                    MAIN_OVERLAY->render_frozen_screenshot( );
                 }
-                MAIN_RENDERER->set_viewpoint( &barBox);
+                MAIN_RENDERER->set_viewpoint( &elementBox);
 
-                render_rectangle(MAIN_RENDERER,0,0,barBox.w,barBox.h,GPE_MAIN_TEMPLATE->PopUp_Box_Color,false);
-                render_rectangle(MAIN_RENDERER,0,0,barBox.w,32,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Color,false);
+                gpe->render_rectangle( 0,0,elementBox.w,elementBox.h,GPE_MAIN_THEME->PopUp_Box_Color,false);
+                gpe->render_rectangle( 0,0,elementBox.w,32,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
 
-                render_new_text(MAIN_RENDERER,GENERAL_GPE_PADDING*2,GENERAL_GPE_PADDING,messageTitle,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
-                //render_new_text(MAIN_RENDERER,barBox.x+GENERAL_GPE_PADDING+32,barBox.y+64,messageContent,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
+                render_new_text( GENERAL_GPE_PADDING*2,GENERAL_GPE_PADDING,messageTitle,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
+                //render_new_text( elementBox.x+GENERAL_GPE_PADDING+32,elementBox.y+64,messageContent,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
                 for( iSubMessage = 0; iSubMessage < (int)messageSubTitles.size(); iSubMessage++)
                 {
-                    render_new_text(MAIN_RENDERER,32,GENERAL_GPE_PADDING+32+iSubMessage*(defaultFontHeight+GENERAL_GPE_PADDING),messageSubTitles.at(iSubMessage),GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
+                    render_new_text( 32,GENERAL_GPE_PADDING+32+iSubMessage*(defaultFontHeight+GENERAL_GPE_PADDING),messageSubTitles.at(iSubMessage),GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
                 }
 
-                yesButton->render_self(MAIN_RENDERER,&barBox,&GPE_DEFAULT_CAMERA);
-                noButon->render_self(MAIN_RENDERER,&barBox,&GPE_DEFAULT_CAMERA);
+                yesButton->render_self( &elementBox,&GPE_DEFAULT_CAMERA);
+                noButon->render_self( &elementBox,&GPE_DEFAULT_CAMERA);
                 if( cancelButton!=NULL)
                 {
-                    cancelButton->render_self(MAIN_RENDERER,&barBox,&GPE_DEFAULT_CAMERA);
+                    cancelButton->render_self( &elementBox,&GPE_DEFAULT_CAMERA);
                 }
-                render_rectangle(MAIN_RENDERER,1,1,barBox.w-1,barBox.h-1,GPE_MAIN_TEMPLATE->PopUp_Box_Border_Color,true);
-                render_rectangle(MAIN_RENDERER,0,0,barBox.w,barBox.h,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Color,true);
+                gpe->render_rectangle( 1,1,elementBox.w-1,elementBox.h-1,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
+                gpe->render_rectangle( 0,0,elementBox.w,elementBox.h,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,true);
                 //GPE_MAIN_GUI-render_gui_info(MAIN_RENDERER, true);
                 MAIN_OVERLAY->process_cursor();
                 MAIN_RENDERER->update_renderer();
@@ -10934,7 +11253,7 @@ int display_get_prompt(std::string messageTitle, std::string messageContent, boo
         delete cancelButton;
         cancelButton = NULL;
     }
-    userInput->reset_all_input();
+    input->reset_all_input();
     messageSubTitles.clear();
     return returnVal;
 }
@@ -10945,8 +11264,8 @@ std::string get_string_from_popup(std::string messageTitle, std::string messageC
     MAIN_OVERLAY->update_tooltip("");
     GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
     MAIN_OVERLAY->process_cursor();
-    MAIN_OVERLAY->take_frozen_screenshot(MAIN_RENDERER);
-    userInput->reset_all_input();
+    MAIN_OVERLAY->take_frozen_screenshot( );
+    input->reset_all_input();
     bool exitOperation = false;
     int frame = 0;
     int TEXTBOX_FONT_SIZE_WIDTH = 12;
@@ -10970,41 +11289,41 @@ std::string get_string_from_popup(std::string messageTitle, std::string messageC
         promptBoxWidth =biggestStringWidth;
     }
     promptBoxWidth+=GENERAL_GPE_PADDING*3;
-    GPE_Rect barBox;
-    barBox.x = (SCREEN_WIDTH-promptBoxWidth)/2-GENERAL_GPE_PADDING;
-    barBox.y = SCREEN_HEIGHT/2-64-GENERAL_GPE_PADDING;
-    barBox.w = promptBoxWidth+128;
-    barBox.h = 192;
-    MAIN_OVERLAY->render_frozen_screenshot(MAIN_RENDERER);
+    GPE_Rect elementBox;
+    elementBox.x = (SCREEN_WIDTH-promptBoxWidth)/2-GENERAL_GPE_PADDING;
+    elementBox.y = SCREEN_HEIGHT/2-64-GENERAL_GPE_PADDING;
+    elementBox.w = promptBoxWidth+128;
+    elementBox.h = 192;
+    MAIN_OVERLAY->render_frozen_screenshot( );
     while(exitOperation==false)
     {
         GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
         //Start the frame timer
-        capTimer->start();
+        GPE_TIMER_CAP->start();
         //gets user input
-        userInput->handle(true,true);
+        input->handle(true,true);
 
         //GPE_MAIN_GUI->reset_gui_info();
 
-        barBox.x = (SCREEN_WIDTH-promptBoxWidth)/2-GENERAL_GPE_PADDING;
-        barBox.y = SCREEN_HEIGHT/2-64-GENERAL_GPE_PADDING;
+        elementBox.x = (SCREEN_WIDTH-promptBoxWidth)/2-GENERAL_GPE_PADDING;
+        elementBox.y = SCREEN_HEIGHT/2-64-GENERAL_GPE_PADDING;
 
-        newStringBox->set_coords( barBox.x+GENERAL_GPE_PADDING,barBox.y+64);
-        newStringBox->set_width(barBox.w - 64);
+        newStringBox->set_coords( elementBox.x+GENERAL_GPE_PADDING,elementBox.y+64);
+        newStringBox->set_width(elementBox.w - 64);
 
-        yesButton->set_coords( barBox.x+GENERAL_GPE_PADDING,newStringBox->get_ypos()+newStringBox->get_height() + GENERAL_GPE_PADDING);
+        yesButton->set_coords( elementBox.x+GENERAL_GPE_PADDING,newStringBox->get_ypos()+newStringBox->get_height() + GENERAL_GPE_PADDING);
         cancelButton->set_coords( yesButton->get_xpos()+yesButton->get_width()+GENERAL_GPE_PADDING,yesButton->get_ypos() );
 
         newStringBox->process_self(&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
         yesButton->process_self(&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
         cancelButton->process_self(&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
 
-        if( userInput->check_keyboard_released(kb_esc) || cancelButton->is_clicked() )
+        if( input->check_keyboard_released(kb_esc) || cancelButton->is_clicked() )
         {
             exitOperation = true;
             returnVal = "";
         }
-        else if( userInput->check_keyboard_released(kb_enter) || yesButton->is_clicked() )
+        else if( input->check_keyboard_released(kb_enter) || yesButton->is_clicked() )
         {
             exitOperation = true;
             if( newStringBox!=NULL)
@@ -11016,19 +11335,19 @@ std::string get_string_from_popup(std::string messageTitle, std::string messageC
         calculate_avg_fps();
 
         //Update screen
-        //if( userInput->windowEventHappendInFrame )
+        //if( input->windowEventHappendInFrame )
         {
-            MAIN_OVERLAY->render_frozen_screenshot(MAIN_RENDERER);
+            MAIN_OVERLAY->render_frozen_screenshot( );
         }
-        render_rect(MAIN_RENDERER,&barBox,GPE_MAIN_TEMPLATE->PopUp_Box_Color,false);
-        render_rectangle(MAIN_RENDERER,barBox.x,barBox.y,barBox.x+barBox.w,barBox.y+32,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Color,false);
+        gpe->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Color,false);
+        gpe->render_rectangle( elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+32,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
 
-        render_new_text(MAIN_RENDERER,(SCREEN_WIDTH-promptBoxWidth)/2+GENERAL_GPE_PADDING,SCREEN_HEIGHT/2-64,messageTitle,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
-        render_new_text(MAIN_RENDERER,(SCREEN_WIDTH-promptBoxWidth)/2+GENERAL_GPE_PADDING,SCREEN_HEIGHT/2-32,messageContent,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
-        yesButton->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-        cancelButton->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-        newStringBox->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
-        render_rect(MAIN_RENDERER,&barBox,GPE_MAIN_TEMPLATE->PopUp_Box_Border_Color,true);
+        render_new_text( (SCREEN_WIDTH-promptBoxWidth)/2+GENERAL_GPE_PADDING,SCREEN_HEIGHT/2-64,messageTitle,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
+        render_new_text( (SCREEN_WIDTH-promptBoxWidth)/2+GENERAL_GPE_PADDING,SCREEN_HEIGHT/2-32,messageContent,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
+        yesButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+        cancelButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+        newStringBox->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
+        gpe->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
         //GPE_MAIN_GUI-render_gui_info(MAIN_RENDERER, true);
         MAIN_OVERLAY->process_cursor();
         //GPE_MAIN_GUI->render_gui_info(MAIN_RENDERER, true);
@@ -11052,7 +11371,7 @@ std::string get_string_from_popup(std::string messageTitle, std::string messageC
         newStringBox = NULL;
     }
 
-    userInput->reset_all_input();
+    input->reset_all_input();
     return returnVal;
 }
 
@@ -11061,10 +11380,10 @@ std::string get_string_from_popup(std::string messageTitle, std::string messageC
     {
         MAIN_CONTEXT_MENU->clear_menu();
         MAIN_CONTEXT_MENU->subMenuIsOpen = false;
-        userInput->reset_all_input();
+        input->reset_all_input();
         if( GPE_MAIN_GUI!=NULL)
         {
-            MAIN_OVERLAY->render_frozen_screenshot(MAIN_RENDERER);
+            MAIN_OVERLAY->render_frozen_screenshot( );
         }
     }
 }

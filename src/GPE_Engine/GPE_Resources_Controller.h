@@ -3,10 +3,10 @@ GPE_Resources_Controller.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -47,7 +47,7 @@ SOFTWARE.
 #include "GPE_Color_Manager.h"
 #include "GPE_Color_Master.h"
 
-#include "GPE_Sprite.h"
+#include "GPE_Animation.h"
 #include "GPE_Functions.h"
 #include "GPE_String_Ex.h"
 
@@ -80,11 +80,11 @@ class generalGameResource
         virtual void integrate_into_syntax();
         virtual void open_code(int lineNumb, int colNumb, std::string codeTitle = "");
         virtual void preprocess_self(std::string alternatePath = "");
-        virtual void prerender_self(GPE_Renderer * cRender);
+        virtual void prerender_self( );
         virtual void process_resource(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
         virtual void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        virtual void render_resource(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
-        virtual void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        virtual void render_resource(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        virtual void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         virtual void save_resource(std::string alternatePath = "", int backupId = -1);
         virtual void set_global_rid(int newRId);
         virtual void set_name(std::string newName);
@@ -103,8 +103,9 @@ class ResourceController
     private:
         bool randomVariableOn; //random private variable for testing purposes
     public:
-        std::vector<GPE_Sprite*> rSprites; //vector of every game sprite
+        std::vector<GPE_Animation*> rSprites; //vector of every game sprite
         std::vector<GPE_Texture*> rTextures; //vector of every game texture
+        std::vector<GPE_Tilesheet*> rTilesheets; //vector of every game tilesheet
         std::vector<Mix_Chunk *> rSounds; //vector of every game sound
         std::vector<Mix_Music *> rMusic; //vector of every game music
 
@@ -113,17 +114,17 @@ class ResourceController
         ~ResourceController();  //deconstructor
         //adds a sprite with only one row of subimages
 
-        GPE_Sprite* sprite_add(std::string spriteFileName,int imgnumb,bool transparent=true,int xorig=0,int yorig=0, bool addMirror=false);
-        GPE_Sprite* sprite_add_collision(std::string spriteFileName,int imgnumb,bool transparent=true,int xorig=0,int yorig=0, int cx=0, int cy=0, int cw=-1, int ch=-1, bool addMirror=false);
-        //GPE_Sprite* sprite_add_centered(std::string filename,int imgnumb,bool transparent,int xorig,int yorig, bool addMirror);
-        GPE_Sprite* sprite_addsheet(std::string spriteFileName, bool transparent, int width, int height);
-        GPE_Sprite* sprite_addsheet_ext(std::string spriteFileName, bool transparent, unsigned short imgnumb, unsigned short imgPerRow, unsigned short width, unsigned short height, unsigned short cellOffX, unsigned short cellOffY, unsigned short pixelOffX, unsigned short pixOffY, unsigned short hSep, unsigned short vSep);
+        GPE_Animation* sprite_add(std::string spriteFileName,int imgnumb,bool transparent=true,int xorig=0,int yorig=0, bool addMirror=false);
+        GPE_Animation* sprite_add_collision(std::string spriteFileName,int imgnumb,bool transparent=true,int xorig=0,int yorig=0, int cx=0, int cy=0, int cw=-1, int ch=-1, bool addMirror=false);
+        //GPE_Animation* sprite_add_centered(std::string filename,int imgnumb,bool transparent,int xorig,int yorig, bool addMirror);
+        GPE_Animation* sprite_addsheet(std::string spriteFileName, bool transparent, int width, int height);
+        GPE_Animation* sprite_addsheet_ext(std::string spriteFileName, bool transparent, unsigned short imgnumb, unsigned short imgPerRow, unsigned short width, unsigned short height, unsigned short cellOffX, unsigned short cellOffY, unsigned short pixelOffX, unsigned short pixOffY, unsigned short hSep, unsigned short vSep);
         GPE_Texture * texture_add(std::string textureFileName);
-        void edit_collision_box(GPE_Sprite *spriteIn, int cx, int cy, int cw, int ch);
+        void edit_collision_box(GPE_Animation *spriteIn, int cx, int cy, int cw, int ch);
 
         //gets the sprite based on it's name
-        GPE_Sprite * get_sprite(int idIn);
-        GPE_Sprite * get_sprite(std::string nameIn);
+        GPE_Animation * get_sprite(int idIn);
+        GPE_Animation * get_sprite(std::string nameIn);
         GPE_Texture * get_texture(std::string textureFileName);
         int get_sound(int idIn);
         int get_sound(std::string nameIn);

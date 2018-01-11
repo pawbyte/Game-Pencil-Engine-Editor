@@ -8,7 +8,7 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.13
+Version=2
 Name=Hello_World
 Count=1003
 ProjectLanguage=JS
@@ -30,6 +30,8 @@ ProjectIcon=hello_world_photo.png
     [/SuperFolder]
     [SuperFolder=Objects]
         GameObject=obj_controller,1001,
+    [/SuperFolder]
+    [SuperFolder=Classes]
     [/SuperFolder]
     [SuperFolder=Scenes]
         scene=newScene1,1002,

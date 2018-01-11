@@ -3,10 +3,10 @@ GPE_Texture.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -42,10 +42,15 @@ SOFTWARE.
 #include "GPE_String_Ex.h"
 #include "GPE_Functions.h"
 
+const int blend_mode_none = 0;
+const int blend_mode_add = 1;
+const int blend_mode_blend = 2;
+const int blend_mode_mod = 3;
+
 class GPE_Texture
 {
     private:
-        SDL_Texture *texImg;
+        SDL_Texture * texImg;
         int texWid, texHeight;
         std::string fileLocation;
         std::string name;
@@ -64,11 +69,12 @@ class GPE_Texture
         int get_height();
         int get_id();
         SDL_Texture * get_sdl_texture();
-        void load_new_texture(GPE_Renderer * cRenderer, std::string fileName, short id = -1, bool transparent = true);
-        //bool loadFromRenderedText( GPE_Renderer * cRenderer,std::string textureText, GPE_Color * textColor, GPE_Font * textFont=NULL);
-        void render_tex( GPE_Renderer * cRenderer, int x, int y,GPE_Rect* clip = NULL, GPE_Texture* destination= NULL );
-        void render_tex_resized( GPE_Renderer * cRenderer, int x, int y,int newWidth, int newHeight, GPE_Rect* clip = NULL, GPE_Texture* destination = NULL, GPE_Color * rendColor = NULL);
-        void render_tex_rotated( GPE_Renderer * cRenderer, int x, int y, double renderAngle, int newWidth = -1, int newHeight = -1, GPE_Rect* clip = NULL, GPE_Texture* destination= NULL );
+        void load_new_texture( std::string fileName, short id = -1, bool transparent = true);
+        //bool loadFromRenderedText( std::string textureText, GPE_Color * textColor, GPE_Font * textFont=NULL);
+        void render_tex(  int x, int y,GPE_Rect* clip = NULL );
+        void render_tex_resized(  int x, int y,int newWidth, int newHeight, GPE_Rect* clip = NULL, GPE_Color * rendColor = NULL);
+        void render_tex_rotated(  int x, int y, double renderAngle, int newWidth = -1, int newHeight = -1, GPE_Rect* clip = NULL );
+        void set_blend_mode( int newBlendMode);
 };
 
 class GPE_Tilesheet
@@ -85,8 +91,8 @@ class GPE_Tilesheet
         ~GPE_Tilesheet();
         void organize_tilesheet();
 };
-void render_texture(GPE_Renderer * cRenderer, GPE_Texture * texIn, int x, int y,GPE_Rect* clip = NULL, GPE_Texture* destination= NULL, int hAlign = -1, int vAlign = -1 );
-void render_texture_resized(GPE_Renderer * cRenderer, GPE_Texture * texIn, int x, int y,int newWidth, int newHeight,GPE_Rect* clip = NULL, GPE_Texture* destination= NULL, int hAlign = -1, int vAlign = -1, GPE_Color * renderColor=NULL );
-void render_texture_rotated(GPE_Renderer * cRenderer, GPE_Texture * texIn, int x, int y,double newAngle,int newWidth, int newHeight,GPE_Rect* clip = NULL, GPE_Texture* destination= NULL );
+void render_texture( GPE_Texture * texIn, int x, int y,GPE_Rect* clip = NULL, int hAlign = -1, int vAlign = -1 );
+void render_texture_resized( GPE_Texture * texIn, int x, int y,int newWidth, int newHeight,GPE_Rect* clip = NULL, int hAlign = -1, int vAlign = -1, GPE_Color * renderColor=NULL );
+void render_texture_rotated( GPE_Texture * texIn, int x, int y,double newAngle,int newWidth, int newHeight,GPE_Rect* clip = NULL );
 
 #endif

@@ -3,10 +3,10 @@ fontResource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -65,8 +65,7 @@ fontResource::fontResource(GPE_ResourceContainer * pFolder)
     saveResourceButton->set_width( loadResourceButton->get_width() );
     fontFamilyName = "";
 
-    openExternalEditorButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/rocket.png","Use External Editor","Opens Audio In External Editor");
-    openExternalEditorButton->set_width(loadResourceButton->get_width() );
+    openExternalEditorButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/rocket.png","Use External Editor" );
 }
 
 fontResource::~fontResource()
@@ -88,7 +87,7 @@ fontResource::~fontResource()
     }
     if( fontInEditor!=NULL)
     {
-        GPE_CloseFont(fontInEditor);
+        gpe->close_font(fontInEditor);
         fontInEditor= NULL;
     }
     if( openExternalEditorButton!=NULL)
@@ -239,14 +238,14 @@ void fontResource::load_font(std::string newFileName, int newFontSize )
         {
             if( fontInEditor!=NULL)
             {
-                GPE_CloseFont(fontInEditor);
+                gpe->close_font(fontInEditor);
                 fontInEditor = NULL;
             }
             fontInEditorFileName = getShortFileName(newFileName,true);
             std::string copyDestinationStr = fileToDir(parentProjectName)+"/gpe_project/resources/fonts/"+ fontInEditorFileName;
             copy_file(newFileName.c_str(),copyDestinationStr );
 
-            fontInEditor = GPE_OpenFont(copyDestinationStr.c_str(),newFontSize,false,"Custom Font");
+            fontInEditor = gpe->open_font(copyDestinationStr.c_str(),newFontSize,false,"Custom Font");
             fontFamilyName =fontInEditor->get_family_name();
             if( fontInEditor==NULL)
             {
@@ -356,7 +355,7 @@ void fontResource::preprocess_self(std::string alternatePath)
                             }
                         }
                     }
-                    else if( foundFileVersion < 2)
+                    else if( foundFileVersion <= 2)
                     {
                         //Begin processing the file.
                         if(!currLineToBeProcessed.empty() )
@@ -408,12 +407,12 @@ void fontResource::preprocess_self(std::string alternatePath)
     }
 }
 
-void fontResource::prerender_self(GPE_Renderer * cRender)
+void fontResource::prerender_self( )
 {
-    standardEditableGameResource::prerender_self(cRender);
+    standardEditableGameResource::prerender_self( );
     if( fontTypeButtonController!=NULL)
     {
-        fontTypeButtonController->prerender_self(cRender);
+        fontTypeButtonController->prerender_self( );
     }
 }
 
@@ -430,13 +429,13 @@ void fontResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         editorPaneList->barXMargin  = GENERAL_GPE_PADDING;
 
         editorPaneList->clear_list();
-        editorPaneList->add_gui_element(exportResourceButton,true);
         editorPaneList->add_gui_element(renameBox,true);
-        editorPaneList->add_gui_element(loadResourceButton,true);
+        editorPaneList->add_gui_element(loadResourceButton,false);
+        editorPaneList->add_gui_element(exportResourceButton,false);
+        editorPaneList->add_gui_element(openExternalEditorButton,true);
 
         editorPaneList->add_gui_element(fontSizeField,true);
         editorPaneList->add_gui_element(fontPreviewTextField,true);
-        editorPaneList->add_gui_element(openExternalEditorButton,true);
         editorPaneList->add_gui_element(fontTypeButtonController,true);
         editorPaneList->add_gui_element(confirmResourceButton,true);
         editorPaneList->add_gui_element(cancelResourceButton,true);
@@ -460,8 +459,7 @@ void fontResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
                 }
                 if( hasFileToOpen )
                 {
-                    GPE_open_context_menu();
-                    MAIN_CONTEXT_MENU->set_width( 400 );
+                    GPE_open_context_menu(-1,-1,400);
                     for( ii = 0; ii < FONT_FILE_TYPES; ii++)
                     {
                         if( (int)storedFontFileNames[ii].size() > 0)
@@ -514,43 +512,38 @@ void fontResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
     }
 }
 
-void fontResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw )
+void fontResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if(cam!=NULL && viewedSpace!=NULL && editorPaneList!=NULL)
     {
         int fontPreviewXPos = 256;
-        if( forceRedraw)
-        {
-            render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
-        }
-
-        editorPaneList->render_self(cRender,viewedSpace,cam,forceRedraw);
+        editorPaneList->render_self( viewedSpace,cam,forceRedraw);
         if( forceRedraw)
         {
             if(fontTypeButtonController!=NULL)
             {
-                render_vertical_line_color(cRender,fontPreviewXPos,0,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Header_Color );
+                gpe->render_vertical_line_color( fontPreviewXPos,0,viewedSpace->h,GPE_MAIN_THEME->Program_Header_Color );
             }
             if( fontInEditor!=NULL)
             {
-                render_new_text(cRender,fontPreviewXPos+GENERAL_GPE_PADDING,GENERAL_GPE_PADDING,"Font Preview: "+getShortFileName(storedFontFileNames[FONT_TTF],true)+" | "+fontFamilyName ,GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_CATEGORY_BAR,FA_LEFT,FA_TOP);
-                render_new_text(cRender,fontPreviewXPos+GENERAL_GPE_PADDING,GENERAL_GPE_PADDING+32,fontPreviewTextField->get_string(),GPE_MAIN_TEMPLATE->Main_Box_Font_Color,fontInEditor,FA_LEFT,FA_TOP);
+                render_new_text( fontPreviewXPos+GENERAL_GPE_PADDING,GENERAL_GPE_PADDING,"Font Preview: "+getShortFileName(storedFontFileNames[FONT_TTF],true)+" | "+fontFamilyName ,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_CATEGORY_BAR,FA_LEFT,FA_TOP);
+                render_new_text( fontPreviewXPos+GENERAL_GPE_PADDING,GENERAL_GPE_PADDING+32,fontPreviewTextField->get_string(),GPE_MAIN_THEME->Main_Box_Font_Color,fontInEditor,FA_LEFT,FA_TOP);
             }
             else
             {
-                render_new_text(cRender,fontPreviewXPos+GENERAL_GPE_PADDING,GENERAL_GPE_PADDING,"Please Select A Font",GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_CATEGORY_BAR,FA_LEFT,FA_TOP);
+                render_new_text( fontPreviewXPos+GENERAL_GPE_PADDING,GENERAL_GPE_PADDING,"Please Select A Font",GPE_MAIN_THEME->Main_Box_Font_Color,FONT_CATEGORY_BAR,FA_LEFT,FA_TOP);
             }
             for( int i = FONT_FILE_TYPES-1; i >=0; i--)
             {
                 if( storedFontFileNames[i].size()> 3)
                 {
-                    render_new_text(cRender,viewedSpace->w-GENERAL_GPE_PADDING*2,viewedSpace->h-GENERAL_GPE_PADDING-GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_FONT_EXT[i]+" is used",GPE_MAIN_TEMPLATE->Main_Suggestion_Font_Color,DEFAULT_FONT,FA_RIGHT,FA_BOTTOM);
+                    render_new_text( viewedSpace->w-GENERAL_GPE_PADDING*2,viewedSpace->h-GENERAL_GPE_PADDING-GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_FONT_EXT[i]+" is used",GPE_MAIN_THEME->Main_Suggestion_Font_Color,DEFAULT_FONT,FA_RIGHT,FA_BOTTOM);
                 }
                 else
                 {
-                    render_new_text(cRender,viewedSpace->w-GENERAL_GPE_PADDING*2,viewedSpace->h-GENERAL_GPE_PADDING-GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_FONT_EXT[i]+" not used",GPE_MAIN_TEMPLATE->Main_Error_Font_Color,DEFAULT_FONT,FA_RIGHT,FA_BOTTOM);
+                    render_new_text( viewedSpace->w-GENERAL_GPE_PADDING*2,viewedSpace->h-GENERAL_GPE_PADDING-GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_FONT_EXT[i]+" not used",GPE_MAIN_THEME->Main_Error_Font_Color,DEFAULT_FONT,FA_RIGHT,FA_BOTTOM);
                 }
             }
         }
@@ -584,18 +577,7 @@ void fontResource::save_resource(std::string alternatePath, int backupId)
         //makes sure the file is open
         if (newSaveDataFile.is_open())
         {
-            newSaveDataFile << "#    --------------------------------------------------  # \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#    Game Pencil Engine Project Font DataFile \n";
-            newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
-            newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#    --------------------------------------------------  # \n";
-            newSaveDataFile << "Version=" << GPE_VERSION_DOUBLE_NUMBER << "\n";
-            newSaveDataFile << "#     \n";
+            write_header_on_file(&newSaveDataFile);
             if( fontSizeField!=NULL)
             {
                 newSaveDataFile << "FontSize=" << std::max(8,fontSizeField->get_held_number() )<< "\n";

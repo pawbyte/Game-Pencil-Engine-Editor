@@ -3,10 +3,10 @@ gamesceneresource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -481,7 +481,7 @@ void GPE_SceneGameObject::reset_components()
 
 gameSceneResource::gameSceneResource(GPE_ResourceContainer * pFolder)
 {
-    sceneZoomLevel = new GPE_DropDown_Menu(0,0,"",true);
+    sceneZoomLevel = new GPE_DropDown_Menu( "",true);
     sceneZoomLevel->add_menu_option("10%","10",10,false);
     sceneZoomLevel->add_menu_option("25%","25",25,false);
     sceneZoomLevel->add_menu_option("33%","33",33,false);
@@ -503,13 +503,13 @@ gameSceneResource::gameSceneResource(GPE_ResourceContainer * pFolder)
     sceneZoomLevel->set_width(96);
     sceneZoomLevel->set_height(24);
 
-    sceneZoomAmount = 1;
+    zoomValue = 1;
     defaultObjectLayer = NULL;
     defaultBackgroundLayer = NULL;
     currentLayer = NULL;
     layerPaneList = new GPE_GuiElementList();
     isDraggingObject = false;
-    sceneAreaScrollable = false;
+    areaIsScrollable = false;
     scnPostProcessed = true;
     projectParentFolder = pFolder;
     editorMode = 0;
@@ -526,10 +526,10 @@ gameSceneResource::gameSceneResource(GPE_ResourceContainer * pFolder)
     sceneRect.y =0;
     sceneRect.w = 4096;
     sceneRect.h = 4096;
-    sceneEditorViewRect.x = 0;
-    sceneEditorViewRect.y = 0;
-    sceneEditorViewRect.w = 640;
-    sceneEditorViewRect.h = 480;
+    editorCameraRect.x = 0;
+    editorCameraRect.y = 0;
+    editorCameraRect.w = 640;
+    editorCameraRect.h = 480;
     showTileLines = true;
     tileToPlaceX1 = 0;
     tileToPlaceY1 = 0;
@@ -543,15 +543,16 @@ gameSceneResource::gameSceneResource(GPE_ResourceContainer * pFolder)
     showObjLines = true;
     sceneMouseXPos = 0;
     sceneMouseYPos = 0;
-    saveButton = new GPE_ToolIconButton(0,0, "resources/gfx/buttons/save.png","Save Changes",-1,24);
+    saveButton = new GPE_ToolIconButton( "resources/gfx/buttons/save.png","Save Changes",-1,24);
     sceneEditorSubTitle = new GPE_Label_Title("Settings");
-    editorButtonBar = new GPE_ToolIconButtonBar(editorPane.x,editorPane.y,32, true);
+    editorButtonBar = new GPE_ToolIconButtonBar(32, true);
+    editorButtonBar->set_coords( editorPane.x,editorPane.y );
     editorButtonBar->barPadding = 0;
     editorButtonBar->xPadding = 0;
     editorButtonBar->set_height(24);
     editorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/dashboard.png","Settings",-1,false);
-    editorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/object-group.png","Layers",-1,false);
-    //editorButtonBar->add_option("resources/gfx/buttons/percent.png","Statistics",-1,false);
+    editorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/object-group.png","Layers",-1,true);
+    editorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/percent.png","Statistics",-1,false);
 
     confirmResourceButton->enable_self();
     confirmResourceButton->set_name("Confirm Changes");
@@ -596,13 +597,10 @@ gameSceneResource::gameSceneResource(GPE_ResourceContainer * pFolder)
     if( projectParentFolder!=NULL)
     {
         musicAudioDropDown = new GPE_DropDown_Resouce_Menu(GENERAL_GPE_PADDING+32,GENERAL_GPE_PADDING+288,"BG Music",projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_AUDIO]),-1,true);
-        musicAudioDropDown->set_width(128);
 
         startAudioDropDown = new GPE_DropDown_Resouce_Menu(GENERAL_GPE_PADDING+32,GENERAL_GPE_PADDING+288,"Start Audio",projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_AUDIO]),-1,true);
-        startAudioDropDown->set_width(128);
 
         endAudioDropDown = new GPE_DropDown_Resouce_Menu(GENERAL_GPE_PADDING+32,GENERAL_GPE_PADDING+288,"End Audio",projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_AUDIO]),-1,true);
-        endAudioDropDown->set_width(128);
 
         //
         northSceneDropDown = new GPE_DropDown_Resouce_Menu(GENERAL_GPE_PADDING+32,GENERAL_GPE_PADDING+288,"North",projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_SCENE]+"s"),-1,true);
@@ -623,12 +621,13 @@ gameSceneResource::gameSceneResource(GPE_ResourceContainer * pFolder)
     checkBoxIsContinuous = new GPE_CheckBoxBasic("Continuous Scene","Scene Data & Objects are stored throughout game[Reccommended: Keep unchecked for most scenes]",GENERAL_GPE_PADDING+96,160,false);
     sceneBackgroundColor = new GPE_Input_Field_Color();
     sceneBackgroundColor->set_rgb(0,0,0);
-    sceneBackgroundColor->set_label("Scene Background Color");
+    sceneBackgroundColor->set_label("Background Color");
+    sceneBackgroundColor->set_width(128);
     //end Variables for settings Tab
 
     //variables for the backgrounds tab
     bgIdInEdit = 0;
-    backgroundToSelect = new GPE_SelectBoxBasic(GENERAL_GPE_PADDING,64,"Backgrounds");
+    backgroundToSelect = new GPE_SelectBoxBasic("Backgrounds");
     backgroundToSelect->showCheckboxes = true;
     //variables for the objects tab
     layerInEdit = -1;
@@ -636,7 +635,7 @@ gameSceneResource::gameSceneResource(GPE_ResourceContainer * pFolder)
     tilesToPlacePerRow = 0;
     if( projectParentFolder!=NULL)
     {
-        addNewComponentDropDown = new GPE_DropDown_Menu(0,0,"Add Component",false);
+        addNewComponentDropDown = new GPE_DropDown_Menu( "Add Component",false);
         addNewComponentDropDown->add_menu_option("Check-Box","checkbox",1,false);
         addNewComponentDropDown->add_menu_option("Color-Picker","colorpicker",2,false);
         addNewComponentDropDown->add_menu_option("Drop-Down","dropdown",3,false);
@@ -682,33 +681,33 @@ gameSceneResource::gameSceneResource(GPE_ResourceContainer * pFolder)
         resetComponentsButton->set_width(forceSnapButton->get_width());
         resetComponentsButton->set_width(forceSnapButton->get_width());
 
-        objCustomVariableSettingsButtton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/edit.png","Edit Variable");
-        objCustomVariableAddButtton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/plus.png","Add Variable");
-        objCustomVariableRemoveButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/minus.png", "Remove Variable" );
-        objCustomVariableRefeshButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/refresh.png","Refresh Object Default Variables");
+        objCustomVariableSettingsButtton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/edit.png","Edit Variable");
+        objCustomVariableAddButtton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/plus.png","Add Variable");
+        objCustomVariableRemoveButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/minus.png", "Remove Variable" );
+        objCustomVariableRefeshButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/refresh.png","Refresh Object Default Variables");
 
         //variables for the tiled tab
-        update_rect(&tsRenderRect,0,0,0,0);
+        update_rect(&tsCameraRect,0,0,0,0);
         update_rect(&tsPlacementArea,0,0,0,0);
-        layerMenu = new GPE_SelectBoxBasic(0,0,"");
+        layerMenu = new GPE_SelectBoxBasic( "");
         layerMenu->set_width(224);
         layerMenu->limit_height(120);
         layerMenu->showCheckboxes = true;
 
         layerErrorMessage = new GPE_Label_Text("Error invalid layer type given...","ERROR");
-        layerSettingsButtton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/cogs.png","Layer Settings",-1,32);
-        layerAddButtton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/plus.png","Add Layer",-1,32);
-        layerRemoveButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/remove.png", "Remove Layer",-1,32 );
-        layerMoveUpButtton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/arrow-up.png", "Move Layer Up",-1,32);
-        layerMoveDownButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/arrow-down.png","Move Layer Down",-1,32 );
-        layerToggleHideButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/adjust.png","Hide/Unhide Other Layers",-1,32 );
+        layerSettingsButtton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/cogs.png","Layer Settings",-1,32);
+        layerAddButtton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/plus.png","Add Layer",-1,32);
+        layerRemoveButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/remove.png", "Remove Layer",-1,32 );
+        layerMoveUpButtton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/arrow-up.png", "Move Layer Up",-1,32);
+        layerMoveDownButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/arrow-down.png","Move Layer Down",-1,32 );
+        layerToggleHideButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/adjust.png","Hide/Unhide Other Layers",-1,32 );
 
-        layerBackgroundSettingsButtton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/cogs.png","Backgrounds Settings",-1,32);
-        layerBackgroundAddButtton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/plus.png","Add Background",-1,32);
-        layerBackgroundRemoveButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/remove.png", "Remove Background",-1,32 );
-        layerBackgroundMoveUpButtton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/arrow-up.png", "Move Background Up",-1,32);
-        layerBackgroundMoveDownButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/arrow-down.png","Move Background Down",-1,32 );
-        //layerBackgroundToggleHideButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/adjust.png","Hide/Unhide Other Backgrounds",-1,32 );
+        layerBackgroundSettingsButtton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/cogs.png","Backgrounds Settings",-1,32);
+        layerBackgroundAddButtton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/plus.png","Add Background",-1,32);
+        layerBackgroundRemoveButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/remove.png", "Remove Background",-1,32 );
+        layerBackgroundMoveUpButtton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/arrow-up.png", "Move Background Up",-1,32);
+        layerBackgroundMoveDownButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/arrow-down.png","Move Background Down",-1,32 );
+        //layerBackgroundToggleHideButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/adjust.png","Hide/Unhide Other Backgrounds",-1,32 );
 
         tilesheetDropDown = new GPE_DropDown_Resouce_Menu(GENERAL_GPE_PADDING,layerAddButtton->get_y2pos()+GENERAL_GPE_PADDING,"Tilesheet",projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_TILESHEET]+"s"),-1,true);
         tSPreviewer = new tilesheetPreviewer();
@@ -1384,14 +1383,14 @@ bool gameSceneResource::get_mouse_coords(GPE_Rect * viewedSpace, GPE_Rect * cam)
     sceneMouseYPos = 0;
     if( viewedSpace!=NULL)
     {
-        if( point_within(userInput->mouse_x,userInput->mouse_y,
-                         editorView.x+viewedSpace->x,
-                         editorView.y+viewedSpace->y,
-                         editorView.x+viewedSpace->x+editorView.w,
-                         editorView.y+viewedSpace->y+editorView.h ) )
+        if( point_within(input->mouse_x,input->mouse_y,
+                         editorView.x,
+                         editorView.y,
+                         editorView.x+editorView.w,
+                         editorView.y+editorView.h ) )
         {
-            sceneMouseXPos = (userInput->mouse_x-editorView.x-viewedSpace->x)/sceneZoomAmount +sceneEditorViewRect.x;
-            sceneMouseYPos = (userInput->mouse_y-editorView.y-viewedSpace->y)/sceneZoomAmount +sceneEditorViewRect.y;
+            sceneMouseXPos = (input->mouse_x-editorView.x)/zoomValue +editorCameraRect.x;
+            sceneMouseYPos = (input->mouse_y-editorView.y)/zoomValue +editorCameraRect.y;
             return true;
         }
     }
@@ -1402,80 +1401,81 @@ void gameSceneResource::handle_scrolling()
 {
     bool xScrollHappened = false;
     bool yScrollHappened = false;
-    if( sceneAreaScrollable && editorPaneList->hasScrollControl==false && ( editorMode!=LEDITOR_MODE_LAYERS || (  editorMode==LEDITOR_MODE_LAYERS/* && tSPreviewer->hasScrollControl==false*/)  ) )
+    if( areaIsScrollable && editorPaneList->hasScrollControl==false && ( editorMode!=LEDITOR_MODE_LAYERS || (  editorMode==LEDITOR_MODE_LAYERS/* && tSPreviewer->hasScrollControl==false*/)  ) )
     {
-        if( userInput->check_keyboard_down(kb_ctrl) && sceneZoomLevel!=NULL )
+        if( input->check_keyboard_down(kb_ctrl) && sceneZoomLevel!=NULL )
         {
             //Zoom In
-            if( userInput->mouseScrollingDown > 0 )
+            if( input->mouseScrollingDown > 0 )
             {
                 sceneZoomLevel->set_selection(sceneZoomLevel->get_selected_id()-1 );
             }
-            else if( userInput->mouseScrollingUp)
+            else if( input->mouseScrollingUp)
             {
                 //zoom out
                 sceneZoomLevel->set_selection(sceneZoomLevel->get_selected_id()+1 );
             }
 
         }
-        else if( userInput->shiftKeyIsPressed)
+        else if( input->shiftKeyIsPressed)
         {
-            if( userInput->mouseScrollingUp > 0 )
+            if( input->mouseScrollingUp > 0 )
             {
+                //moves camera left
                 xScrollHappened = true;
-                sceneEditorViewRect.x-=(sceneEditorViewRect.w/16)*sceneZoomAmount;
+                editorCameraRect.x-=(editorCameraRect.w/16)*zoomValue;
             }
-            else if( userInput->mouseScrollingDown)
+            else if( input->mouseScrollingDown)
             {
-                //zoom out
+                //moves camera right
                 xScrollHappened = true;
-                sceneEditorViewRect.x+=(sceneEditorViewRect.w/16)*sceneZoomAmount;
+                editorCameraRect.x+=(editorCameraRect.w/16)*zoomValue;
             }
         }
         else
         {
-            if( userInput->mouseScrollingUp )
+            if( input->mouseScrollingUp )
             {
                 yScrollHappened = true;
-                sceneEditorViewRect.y-=(sceneEditorViewRect.h/16)*sceneZoomAmount;
+                editorCameraRect.y-=(editorCameraRect.h/16)*zoomValue;
             }
-            else if( userInput->mouseScrollingDown)
+            else if( input->mouseScrollingDown)
             {
                 yScrollHappened = true;
-                sceneEditorViewRect.y+=(sceneEditorViewRect.h/16)*sceneZoomAmount;
+                editorCameraRect.y+=(editorCameraRect.h/16)*zoomValue;
             }
             else if( editorPaneList->isInUse==false )
             {
                 //arrow scrolling
-                if( userInput->check_keyboard_down(kb_up) )
+                if( input->check_keyboard_down(kb_up) )
                 {
                     yScrollHappened = true;
-                    sceneEditorViewRect.y-=(sceneEditorViewRect.h/32)*sceneZoomAmount;
+                    editorCameraRect.y-=(editorCameraRect.h/32)*zoomValue;
                 }
-                else if( userInput->check_keyboard_down(kb_down) )
+                else if( input->check_keyboard_down(kb_down) )
                 {
                     yScrollHappened = true;
-                    sceneEditorViewRect.y+=(sceneEditorViewRect.h/32)*sceneZoomAmount;
+                    editorCameraRect.y+=(editorCameraRect.h/32)*zoomValue;
                 }
-                if( userInput->check_keyboard_down(kb_left) )
+                if( input->check_keyboard_down(kb_left) )
                 {
-                    if( sceneEditorViewRect.x > (sceneEditorViewRect.w/32)*sceneZoomAmount )
+                    if( editorCameraRect.x > (editorCameraRect.w/32)*zoomValue )
                     {
                         xScrollHappened = true;
-                        sceneEditorViewRect.x-=(sceneEditorViewRect.w/32)*sceneZoomAmount;
+                        editorCameraRect.x-=(editorCameraRect.w/32)*zoomValue;
                     }
                     else
                     {
-                        sceneEditorViewRect.x = 0;
+                        editorCameraRect.x = 0;
                         xScrollHappened = true;
                     }
                 }
-                else if( userInput->check_keyboard_down(kb_right) )
+                else if( input->check_keyboard_down(kb_right) )
                 {
-                    if( (sceneEditorViewRect.x +sceneEditorViewRect.w/32)*sceneZoomAmount < sceneRect.w*sceneZoomAmount )
+                    if( (editorCameraRect.x +editorCameraRect.w/32)*zoomValue < sceneRect.w*zoomValue )
                     {
                         xScrollHappened = true;
-                        sceneEditorViewRect.x+=(sceneEditorViewRect.w/32)*sceneZoomAmount;
+                        editorCameraRect.x+=(editorCameraRect.w/32)*zoomValue;
                     }
                 }
             }
@@ -1484,85 +1484,85 @@ void gameSceneResource::handle_scrolling()
 
 
 
-    if( sceneEditorViewRect.x+sceneEditorViewRect.w/sceneZoomAmount > sceneRect.w )
+    if( editorCameraRect.x+editorCameraRect.w/zoomValue > sceneRect.w )
     {
         xScrollHappened = true;
-        sceneEditorViewRect.x = sceneRect.w-sceneEditorViewRect.w/sceneZoomAmount;
+        editorCameraRect.x = sceneRect.w-editorCameraRect.w/zoomValue;
     }
 
-    if( sceneEditorViewRect.y+sceneEditorViewRect.h/sceneZoomAmount > sceneRect.h )
+    if( editorCameraRect.y+editorCameraRect.h/zoomValue > sceneRect.h )
     {
         yScrollHappened = true;
-        sceneEditorViewRect.y = sceneRect.h-sceneEditorViewRect.h/sceneZoomAmount;
+        editorCameraRect.y = sceneRect.h-editorCameraRect.h/zoomValue;
     }
 
-    if( sceneEditorViewRect.x <= 0)
+    if( editorCameraRect.x <= 0)
     {
         xScrollHappened = true;
-        sceneEditorViewRect.x = 0;
+        editorCameraRect.x = 0;
     }
 
-    if( sceneEditorViewRect.y <= 0)
+    if( editorCameraRect.y <= 0)
     {
         yScrollHappened = true;
-        sceneEditorViewRect.y = 0;
+        editorCameraRect.y = 0;
     }
 
     if( xScrollHappened)
     {
-        sceneXScroll->contextRect.x = sceneEditorViewRect.x;
-        sceneXScroll->process_self(NULL,NULL,true);
+        sceneXScroll->contextRect.x = editorCameraRect.x;
+        sceneXScroll->process_self(NULL,NULL);
     }
     if( yScrollHappened)
     {
-        sceneXScroll->contextRect.y = sceneEditorViewRect.y;
-        sceneYScroll->process_self(NULL,NULL,true);
+        sceneYScroll->contextRect.y = editorCameraRect.y;
+        sceneYScroll->process_self(NULL,NULL);
     }
 }
 
-void gameSceneResource::prerender_self(GPE_Renderer * cRender )
+void gameSceneResource::prerender_self(  )
 {
-	standardEditableGameResource::prerender_self( cRender);
+	standardEditableGameResource::prerender_self();
 	if( preloadCheckBox!=NULL)
     {
-        preloadCheckBox->prerender_self(cRender);
+        preloadCheckBox->prerender_self( );
     }
 
     if( isometricCheckBox!=NULL)
     {
-        isometricCheckBox->prerender_self(cRender);
+        isometricCheckBox->prerender_self( );
     }
     if( checkBoxIsContinuous!=NULL)
     {
-        checkBoxIsContinuous->prerender_self(cRender);
+        checkBoxIsContinuous->prerender_self( );
     }
     /*for( int i = 0; i < MAX_BACKGROUND_NUMBER; i++)
     {
         if( checkForeground[i]!=NULL)
         {
-            checkForeground[i]->prerender_self(cRender);
+            checkForeground[i]->prerender_self( );
         }
         if( checkTileHori[i]!=NULL)
         {
-            checkTileHori[i]->prerender_self(cRender);
+            checkTileHori[i]->prerender_self( );
         }
         if( checkTileVert[i]!=NULL)
         {
-            checkTileVert[i]->prerender_self(cRender);
+            checkTileVert[i]->prerender_self( );
         }
         if( checkStretch[i]!=NULL)
         {
-            checkStretch[i]->prerender_self(cRender);
+            checkStretch[i]->prerender_self( );
         }
     }
     */
     if( useObjGridCheckBox!=NULL)
     {
-        useObjGridCheckBox->prerender_self(cRender);
+        useObjGridCheckBox->prerender_self( );
     }
     if( forceSnapButton!=NULL)
     {
-        forceSnapButton->prerender_self(cRender);
+        forceSnapButton->prerender_self( );
     }
 }
 
@@ -1570,10 +1570,10 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
 {
     if( scnPostProcessed ==false || file_exists(alternatePath) )
     {
-        sceneEditorViewRect.x = 0;
-        sceneEditorViewRect.y = 0;
-        sceneEditorViewRect.w = 640;
-        sceneEditorViewRect.h = 480;
+        editorCameraRect.x = 0;
+        editorCameraRect.y = 0;
+        editorCameraRect.w = 640;
+        editorCameraRect.h = 480;
         displayMessageTitle = "Processing GameScene";
         displayMessageSubtitle = resourceName;
         displayMessageString = "...";
@@ -1689,7 +1689,7 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
                             }
                         }
                     }
-                    else if( foundFileVersion < 2)
+                    else if( foundFileVersion <= 2)
                     {
                         //Begin processing the file.
                         if(!currLineToBeProcessed.empty() )
@@ -1987,7 +1987,7 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
                                 }
                                 if( newsceneLayer!=NULL)
                                 {
-                                    if( keyString=="GPEBackground" || keyString=="GPE_Background" && newsceneLayer->layerType==LAYER_TYPE_BACKGROUND )
+                                    if( ( keyString=="GPEBackground" || keyString=="GPE_Background" ) && newsceneLayer->layerType==LAYER_TYPE_BACKGROUND )
                                     {
                                         foundBgName = split_first_string(valString,',');
                                         newSceneBg = new GPE_SceneTexture(projectParentFolder);
@@ -2010,7 +2010,7 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
                                         newSceneBg->process_background_data();//ReturnToLater
                                         newsceneLayer->add_background(newSceneBg);
                                     }
-                                    else if( keyString=="GPEObject" || keyString=="GPE_Object" && newsceneLayer->layerType == LAYER_TYPE_OBJECTS )
+                                    else if( ( keyString=="GPEObject" || keyString=="GPE_Object" ) && newsceneLayer->layerType == LAYER_TYPE_OBJECTS )
                                     {
                                         foundObjName = split_first_string(valString,',');
                                         newGameObject = new GPE_SceneGameObject();
@@ -2328,7 +2328,7 @@ void gameSceneResource::manage_components(GPE_Rect * viewedSpace ,GPE_Rect * cam
                         }
                     }
                     addNewComponentDropDown->set_selection(-1,false);
-                    userInput->reset_all_input();
+                    input->reset_all_input();
                     //calls recursive call
                     manage_components( viewedSpace, cam);
                 }
@@ -2353,21 +2353,24 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
         editorPane.w = 256;
         editorPane.h = viewedSpace->h;
 
-        editorView.x = editorPane.x+editorPane.w;
-        editorView.y = 0;
+        editorView.x = viewedSpace->x+editorPane.x+editorPane.w;
+        editorView.y = viewedSpace->y;
 
         if( editorButtonBar!=NULL)
         {
+
             if( RESOURCE_TO_DRAG!=NULL)
             {
                 if( RESOURCE_TO_DRAG->is_folder()==false && (RESOURCE_TO_DRAG->get_resource_type()==RESOURCE_TYPE_OBJECT || RESOURCE_TO_DRAG->get_resource_type()==RESOURCE_TYPE_TEXTURE || RESOURCE_TO_DRAG->get_resource_type()==RESOURCE_TYPE_TILESHEET ) && RESOURCE_TO_DRAG->projectParentFileName.compare(CURRENT_PROJECT_NAME)==0 )
                 {
-                    if( get_mouse_coords(viewedSpace, cam) && userInput->check_mouse_released(0) )
+                    if( get_mouse_coords(viewedSpace, cam) && input->check_mouse_released(0) )
                     {
                         editorButtonBar->set_selection(LEDITOR_MODE_LAYERS);
                     }
                 }
             }
+
+
             editorButtonBar->set_coords(editorPane.x,editorPane.y);
             editorButtonBar->set_width(96);
             if( CURRENT_PROJECT!=NULL && CURRENT_PROJECT->RESC_PROJECT_SETTINGS!=NULL )
@@ -2386,7 +2389,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
             }
 
             editorButtonBar->set_coords(editorPane.x,editorPane.y);
-            editorButtonBar->set_width(64);
+            editorButtonBar->set_width(96);
             //editorButtonBar->set_width(editorPane.w);
             int prevEditorMode = editorButtonBar->get_tab_pos();
             editorButtonBar->process_self(viewedSpace,cam);
@@ -2398,7 +2401,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
             //If the editor mode changed reset the panels and such
             if( prevEditorMode!=editorMode)
             {
-                userInput->reset_all_input();
+                input->reset_all_input();
                 if( unselect_object() )
                 {
                     layerPaneList->process_self(viewedSpace,cam);
@@ -2416,25 +2419,18 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
             {
                 sceneZoomLevel->set_coords(editorButtonBar->get_x2pos(),editorPane.y);
                 sceneZoomLevel->process_self(viewedSpace,cam);
-                sceneZoomAmount = sceneZoomLevel->get_selected_value();
-                if( sceneZoomAmount < 0)
+                zoomValue = sceneZoomLevel->get_selected_value();
+                if( zoomValue < 0)
                 {
-                    sceneZoomAmount = 1;
+                    zoomValue = 1;
                     sceneZoomLevel->set_value(100);
                 }
-                sceneZoomAmount/=100;
+                zoomValue/=100;
             }
             else
             {
-                sceneZoomAmount = 1;
+                zoomValue = 1;
             }
-
-            //Sets the coordinates for the comment pane on the bottom of the editor
-            editorCommentPane.x = editorView.x;
-            editorCommentPane.y = editorView.y+editorView.h+16;
-            editorCommentPane.w = viewedSpace->w-editorView.x;
-            editorCommentPane.h = 32;
-
             if( editorMode==LEDITOR_MODE_SETTINGS)
             {
                 editorPaneList->set_height(viewedSpace->h-editorPaneList->get_ypos() );
@@ -2442,16 +2438,16 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                 layerPaneList->set_coords( 0, editorPaneList->get_y2pos() );
                 layerPaneList->set_width( editorPaneList->get_width() );
                 layerPaneList->set_height( viewedSpace->h-layerPaneList->get_ypos() );
-                sceneEditorViewRect.w = editorView.w = (int)(viewedSpace->w-editorView.x-sceneYScroll->get_box_width() )-16; //xcroll = 16px height
+                editorCameraRect.w = editorView.w = (int)(viewedSpace->w-editorView.x-sceneYScroll->get_box_width() )-16; //xcroll = 16px height
             }
             else
             {
                 editorPaneList->set_height(160);
                 if( paneMode==1)
                 {
-                    sceneEditorViewRect.w = editorView.w = (int)(viewedSpace->w-editorView.x-rightPaneWidth-sceneYScroll->get_box_width() )-16; //xcroll = 16px height
+                    editorCameraRect.w = editorView.w = (int)(viewedSpace->w-editorView.x-rightPaneWidth-sceneYScroll->get_box_width() )-16; //xcroll = 16px height
 
-                    rightEditorPane.x =  editorView.x+editorView.w+sceneYScroll->barBox.w;
+                    rightEditorPane.x =  editorView.x+editorView.w+sceneYScroll->elementBox.w;
                     rightEditorPane.y = 0;
                     rightEditorPane.w = viewedSpace->w-rightEditorPane.x;
                     rightEditorPane.h = viewedSpace->h;
@@ -2467,11 +2463,11 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                     layerPaneList->set_coords( 0, editorPaneList->get_y2pos() );
                     layerPaneList->set_width( editorPaneList->get_width() );
                     layerPaneList->set_height( viewedSpace->h-layerPaneList->get_ypos() );
-                    sceneEditorViewRect.w = editorView.w = (int)(viewedSpace->w-editorView.x-sceneYScroll->get_box_width() )-16; //xcroll = 16px height
+                    editorCameraRect.w = editorView.w = (int)(viewedSpace->w-editorView.x-sceneYScroll->get_box_width() )-16; //xcroll = 16px height
                 }
             }
 
-            sceneEditorViewRect.h = editorView.h = viewedSpace->h-64; //Comment pane = 32, yscroll = 16 height
+            editorCameraRect.h = editorView.h = viewedSpace->h-16; //Comment pane = 32, yscroll = 16 height
             editorPaneList->set_coords(0,editorButtonBar->get_y2pos() );
             editorPaneList->barXPadding = 0;
             editorPaneList->barYPadding = 0;
@@ -2517,7 +2513,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                 }
                 editorPaneList->add_gui_element(confirmResourceButton,true);
                 editorPaneList->add_gui_element(cancelResourceButton,true);
-                editorPaneList->set_maxed_out_width();
+                //editorPaneList->set_maxed_out_width();
                 editorPaneList->process_self(viewedSpace,cam);
                 //Scene and Tile Dimensions
                 int prevLvlWidth = sceneRect.w;
@@ -2593,8 +2589,8 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                     tempTileLayer->resize_tilemap(lvlTileAmountX,lvlTileAmountY);
                                 }
                             }
-                            sceneEditorViewRect.x = 0;
-                            sceneEditorViewRect.y = 0;
+                            editorCameraRect.x = 0;
+                            editorCameraRect.y = 0;
                         }
                         else
                         {
@@ -2668,8 +2664,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                         {
                             if( layerAddButtton!=NULL && layerAddButtton->is_clicked() )
                             {
-                                GPE_open_context_menu();
-                                MAIN_CONTEXT_MENU->set_width(256);
+                                GPE_open_context_menu(-1,-1,256);
                                 GPE_PopUpMenu_Option * tileLayerOption = MAIN_CONTEXT_MENU->add_menu_option("Add Tile Layer",LAYER_TYPE_TILES,NULL,-1,NULL,false,true);
                                 int foundNewLayerType = 0;
                                 for( availI =0; availI < (int)(availableLayerIds.size() ); availI++)
@@ -2917,20 +2912,20 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                         {
                                             if( tsRes->tilesheetInEditor->tsImage!=NULL)
                                             {
-                                                tsRenderRect.w =tsRes->tilesheetInEditor->tsImage->get_width();
-                                                tsRenderRect.h = tsRes->tilesheetInEditor->tsImage->get_height();
+                                                tsCameraRect.w = tsRes->tilesheetInEditor->tsImage->get_width();
+                                                tsCameraRect.h = tsRes->tilesheetInEditor->tsImage->get_height();
                                                 if( tsRes->tilesheetInEditor->tsImage->get_width() > editorPane.w-tilesheetRenderXPos-16)
                                                 {
-                                                    tsRenderRect.w = editorPane.w-tilesheetRenderXPos-16;
+                                                    tsCameraRect.w = editorPane.w-tilesheetRenderXPos-16;
                                                 }
                                                 if( tsRes->tilesheetInEditor->tsImage->get_height() > editorPane.h-tilesheetRenderYPos-16)
                                                 {
-                                                    tsRenderRect.h = editorPane.h-tilesheetRenderYPos-16;
+                                                    tsCameraRect.h = editorPane.h-tilesheetRenderYPos-16;
                                                 }
                                                 tSPreviewer->set_coords(rightEditorPane.x,tilesheetRenderYPos);
                                                 tSPreviewer->set_width(editorPane.w);
                                                 tSPreviewer->set_height(editorPane.h-tilesheetRenderYPos);
-                                                tSPreviewer->tileSheetToPreview =tsRes->tilesheetInEditor;
+                                                tSPreviewer->tileSheetToPreview = tsRes->tilesheetInEditor;
                                                 tSPreviewer->process_self(viewedSpace,cam);
 
                                                 //select tiles to place / place tiles / add tiles
@@ -2940,7 +2935,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                                 {
                                                     if( (int)tSPreviewer->tilesIdsInPreview.size()>0 && layerInEdit>=0 && layerInEdit < (int)sceneLayers.size() )
                                                     {
-                                                        if( userInput->check_mouse_down(0) )
+                                                        if( input->check_mouse_down(0) )
                                                         {
                                                             sceneLayer* cLayerToPlaceOn = sceneLayers.at(layerInEdit);
                                                             GPE_SceneTile* fSceneTileToEdit = NULL;
@@ -2994,7 +2989,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                             //Remove Tiles / Delete Tiles
                             if( get_mouse_coords(viewedSpace,cam) && sceneXScroll->is_scrolling()==false && sceneYScroll->is_scrolling()==false )
                             {
-                                if( userInput->check_mouse_down(1) && layerInEdit >=0 && (int)sceneLayers.size() > 0 )
+                                if( input->check_mouse_down(1) && layerInEdit >=0 && (int)sceneLayers.size() > 0 )
                                 {
                                     sceneLayer* cLayerToPlaceOn = sceneLayers.at(layerInEdit);
                                     GPE_SceneTile* fSceneTileToEdit = NULL;
@@ -3104,8 +3099,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                         {
                                             if( tempCustomComponent->get_gear()->is_clicked() )
                                             {
-                                                GPE_open_context_menu();
-                                                MAIN_CONTEXT_MENU->set_width(256);
+                                                GPE_open_context_menu(-1,-1,256);
                                                 MAIN_CONTEXT_MENU->add_menu_option("Rename Component",0,NULL,-1,NULL,true,true);
                                                 MAIN_CONTEXT_MENU->add_menu_option("Delete Component",1,NULL,-1,NULL,false,true);
                                                 if( tempCustomComponent->get_type()=="dropdown" || tempCustomComponent->get_type()=="selectbox")
@@ -3184,7 +3178,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                                     }
                                                 }
                                                 //Rests input and manages the object's components where needed
-                                                userInput->reset_all_input();
+                                                input->reset_all_input();
                                                 manage_components(viewedSpace, cam);
                                                 break;
                                             }
@@ -3206,7 +3200,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                     }
                                     if( selectedSceneObject->isBeingMoved)
                                     {
-                                        if( userInput->check_mouse_released(0) )
+                                        if( input->check_mouse_released(0) )
                                         {
                                             isDraggingObject = false;
                                             selectedSceneObject->isBeingMoved = false;
@@ -3221,7 +3215,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                             selectedSceneObject->isBeingMoved = true;
                                         }
                                     }
-                                    else if( userInput->check_mouse_down(0) )
+                                    else if( input->check_mouse_down(0) )
                                     {
                                         if( point_within_rect(sceneMouseXPos,sceneMouseYPos,&selectedSceneObject->objRect) )
                                         {
@@ -3375,7 +3369,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                     if( !isDraggingObject)
                                     {
                                         //delete objscts
-                                        if( userInput->check_mouse_down(1)  && sceneXScroll->is_scrolling()==false && sceneYScroll->is_scrolling()==false)
+                                        if( input->check_mouse_down(1)  && sceneXScroll->is_scrolling()==false && sceneYScroll->is_scrolling()==false)
                                         {
                                             objectLeftClickModeButton->set_clicked(false);
                                             GPE_SceneGameObject * tempObjToRemove = NULL;
@@ -3384,7 +3378,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                             GPE_ResourceContainer * allSprsFolder = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_SPRITE]+"s");
                                             GPE_ResourceContainer * tempSprTypeContainer = NULL;
                                             gameObjectResource * tempObjPointer = NULL;
-                                            spriteResource * tempSprPointer = NULL;
+                                            animationResource * tempSprPointer = NULL;
                                             int tempSpriteId;
                                             bool foundValidSprite = false;
                                             for( int objRemoveItr = (int)currentLayer->layerObjects.size()-1; objRemoveItr >=0; objRemoveItr--)
@@ -3410,7 +3404,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                                                     tempSprTypeContainer = allSprsFolder->find_resource_from_id(tempSpriteId);
                                                                     if( tempSprTypeContainer!=NULL)
                                                                     {
-                                                                        tempSprPointer = (spriteResource*)tempSprTypeContainer->get_held_resource();
+                                                                        tempSprPointer = (animationResource*)tempSprTypeContainer->get_held_resource();
                                                                         if( tempSprPointer!=NULL)
                                                                         {
                                                                             if( tempSprPointer->spriteInEditor!=NULL)
@@ -3450,7 +3444,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                         {
                                             if( RESOURCE_TO_DRAG->is_folder()==false && RESOURCE_TO_DRAG->get_resource_type()==RESOURCE_TYPE_OBJECT && RESOURCE_TO_DRAG->projectParentFileName.compare(CURRENT_PROJECT_NAME)==0 )
                                             {
-                                                if( userInput->check_mouse_released(0) )
+                                                if( input->check_mouse_released(0) )
                                                 {
                                                     MAIN_OVERLAY->update_tooltip("Placing Object");
                                                     GPE_SceneGameObject * newPlacedObject = new GPE_SceneGameObject();
@@ -3503,14 +3497,14 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                         }
                                         else if( objectLeftClickModeButton->is_clicked() || objTypeBeingPlaced<0 )
                                         {
-                                            if( userInput->check_mouse_down(0) && sceneXScroll->is_scrolling()==false && sceneYScroll->is_scrolling()==false )
+                                            if( input->check_mouse_down(0) && sceneXScroll->is_scrolling()==false && sceneYScroll->is_scrolling()==false )
                                             {
                                                 GPE_ResourceContainer * allObjsFolder = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_OBJECT]+"s");
                                                 GPE_ResourceContainer * tempObjTypeContainer = NULL;
                                                 GPE_ResourceContainer * allSprsFolder = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_SPRITE]+"s");
                                                 GPE_ResourceContainer * tempSprTypeContainer = NULL;
                                                 gameObjectResource * tempObjPointer = NULL;
-                                                spriteResource * tempSprPointer = NULL;
+                                                animationResource * tempSprPointer = NULL;
                                                 int tempSpriteId;
                                                 bool foundValidSprite = false;
                                                 GPE_SceneGameObject * tempObjToSelect = NULL;
@@ -3536,7 +3530,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                                                         tempSprTypeContainer = allSprsFolder->find_resource_from_id(tempSpriteId);
                                                                         if( tempSprTypeContainer!=NULL)
                                                                         {
-                                                                            tempSprPointer = (spriteResource*)tempSprTypeContainer->get_held_resource();
+                                                                            tempSprPointer = (animationResource*)tempSprTypeContainer->get_held_resource();
                                                                             if( tempSprPointer!=NULL)
                                                                             {
                                                                                 if( tempSprPointer->spriteInEditor!=NULL)
@@ -3608,7 +3602,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                                     sceneMouseYPos = sceneObjMouseY * objSnapY;
                                                 }
                                             }
-                                            if( userInput->check_mouse_down(0) )
+                                            if( input->check_mouse_down(0) )
                                             {
                                                 if( (lastCreatedObjXPos < 0 || lastCreatedObjYPos < 0 || lastCreatedObjTypeId < 0) || sceneMouseXPos!=lastCreatedObjXPos && lastCreatedObjXPos|| sceneMouseYPos!=lastCreatedObjYPos || lastCreatedObjTypeId!=objTypeBeingPlaced )
                                                 {
@@ -3755,8 +3749,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 
                                 if( objCustomVariableSettingsButtton!=NULL && objCustomVariableSettingsButtton->is_clicked() )
                                 {
-                                        GPE_open_context_menu();
-                                        MAIN_CONTEXT_MENU->set_width(256);
+                                        GPE_open_context_menu(-1,-1,256);
                                         MAIN_CONTEXT_MENU->add_menu_option("Clear Object Properties",0,NULL,-1,NULL,true,true);
                                         MAIN_CONTEXT_MENU->add_menu_option("Load Object Properties",1,NULL,-1,NULL,false,true);
                                         MAIN_CONTEXT_MENU->add_menu_option("Save Object Properties",1,NULL,-1,NULL,false,true);
@@ -3765,7 +3758,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                                         int menuSelection = get_popupmenu_result();
                                 }
 
-                                if( userInput->check_keyboard_released(kb_esc) )
+                                if( input->check_keyboard_released(kb_esc) )
                                 {
                                     if( unselect_object() )
                                     {
@@ -3793,86 +3786,94 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
         //if( editorPaneList->hasScrollControl==false && layerPaneList->hasScrollControl==false )
         {
             //Horizontal scrolling
-            update_rectangle(&sceneXScroll->barBox,editorView.x,editorView.y+editorView.h,editorView.w,16);
+            update_rectangle(&sceneXScroll->elementBox,editorPane.w,editorView.h,editorView.w,16);
             update_rectangle(&sceneXScroll->fullRect,0,0,(double)sceneRect.w, (double)sceneRect.h );
-            update_rectangle(&sceneXScroll->contextRect,(double)sceneEditorViewRect.x,(double)sceneEditorViewRect.y, (double)sceneEditorViewRect.w/sceneZoomAmount, (double)sceneEditorViewRect.h/sceneZoomAmount );
-            sceneXScroll->process_self(viewedSpace,cam, true );
+            update_rectangle(&sceneXScroll->contextRect,(double)editorCameraRect.x,(double)editorCameraRect.y, (double)editorCameraRect.w/zoomValue, (double)editorCameraRect.h/zoomValue );
+            sceneXScroll->process_self(viewedSpace,cam );
             //if( sceneXScroll->has_moved() )
             {
-                sceneEditorViewRect.x = (double)(sceneXScroll->contextRect.x);
+                editorCameraRect.x = (double)(sceneXScroll->contextRect.x);
             }
 
             //Vertical Scrolling
-            update_rectangle(&sceneYScroll->barBox,editorView.x+editorView.w,editorView.y,16,editorView.h);
+            update_rectangle(&sceneYScroll->elementBox,editorView.x+editorView.w,0,16,editorView.h);
             update_rectangle(&sceneYScroll->fullRect,0,0,(double)sceneRect.w, (double)sceneRect.h );
-            update_rectangle(&sceneYScroll->contextRect,(double)sceneEditorViewRect.x,(double)sceneEditorViewRect.y, (double)sceneEditorViewRect.w/sceneZoomAmount, (double)sceneEditorViewRect.h/sceneZoomAmount );
+            update_rectangle(&sceneYScroll->contextRect,(double)editorCameraRect.x,(double)editorCameraRect.y, (double)editorCameraRect.w/zoomValue, (double)editorCameraRect.h/zoomValue );
             //sceneYScroll->contextRect.h = editorView.h;
-            sceneYScroll->process_self(viewedSpace,cam, true );
+            sceneYScroll->process_self(viewedSpace,cam );
             //if( sceneYScroll->has_moved() )
             {
-                sceneEditorViewRect.y = double(sceneYScroll->contextRect.y);
+                editorCameraRect.y = double(sceneYScroll->contextRect.y);
             }
         }
 
-        //if( userInput->input_received() )
+        //if( input->input_received() )
         {
             get_mouse_coords(viewedSpace,cam);
         }
-        //if( userInput->check_mouse_pressed(0) ||  userInput->check_mouse_pressed(1) || userInput->check_mouse_pressed(2) )
+        //if( input->check_mouse_pressed(0) ||  input->check_mouse_pressed(1) || input->check_mouse_pressed(2) )
         {
             if( get_mouse_coords(viewedSpace,cam) )
             {
-                sceneAreaScrollable = true;
+                areaIsScrollable = true;
                 editorPaneList->hasScrollControl = false;
             }
             else
             {
-                sceneAreaScrollable = false;
+                areaIsScrollable = false;
             }
         }
 
-        if( userInput->check_mouse_down(0) )
+        if( input->check_mouse_down(0) )
         {
             if( get_mouse_coords(viewedSpace,cam) )
             {
-                if( sceneMouseXPos-sceneEditorViewRect.x < 0 )
+                if( sceneMouseXPos-editorCameraRect.x < 0 )
                 {
-                    sceneEditorViewRect.x = 0;
+                    editorCameraRect.x = 0;
                 }
 
-                if( sceneMouseYPos-sceneEditorViewRect.y < 0 )
+                if( sceneMouseYPos-editorCameraRect.y < 0 )
                 {
-                    sceneEditorViewRect.y = 0;
+                    editorCameraRect.y = 0;
                 }
             }
             /*if(sceneYScroll->is_held() )
             {
-                sceneEditorViewRect.x+=16;
+                editorCameraRect.x+=16;
             }
             if(sceneXScroll->is_held() )
             {
-                //sceneEditorViewRect.y+=16;
+                //editorCameraRect.y+=16;
             }*/
         }
         handle_scrolling();
+
+        if( GPE_Main_Statusbar!=NULL)
+        {
+            GPE_Main_Statusbar->set_codestring( "Mouse( "+int_to_string(sceneMouseXPos )+" , "+int_to_string(sceneMouseYPos)+")"+
+                        "Camera( "+double_to_string(editorCameraRect.x )+" , "+double_to_string(editorCameraRect.y)+") Zoom:"+double_to_string(zoomValue) );
+        }
     }
 }
 
-void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam, GPE_Rect * renderZone, GPE_Rect * sceneCamera,double renderScale, bool showEditorPreviews,  bool checkListDependent, bool forceRedraw )
+void gameSceneResource::render_scene_layers(GPE_Rect * viewedSpace, GPE_Rect * cam, GPE_Rect * renderZone, GPE_Rect * sceneCamera,double renderScale, bool showEditorPreviews,  bool checkListDependent, bool forceRedraw )
 {
     if( forceRedraw)
     {
         if( renderScale <=0 )
         {
-            renderScale = sceneZoomAmount;
+            renderScale = zoomValue;
         }
         if( renderZone==NULL)
         {
             renderZone = &editorView;
         }
+        MAIN_RENDERER->reset_viewpoint();
+        MAIN_RENDERER->set_viewpoint( renderZone );
         if( sceneCamera==NULL)
         {
-            sceneCamera = &sceneEditorViewRect;
+            sceneCamera = &editorCameraRect;
         }
         GPE_ResourceContainer * allTilesheetsFolder = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_TILESHEET]+"s");
         int iItr = 0, jItr = 0;
@@ -3898,7 +3899,7 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,GPE_Rect * vi
         GPE_ResourceContainer * sprTypeContainer = NULL;
         GPE_ResourceContainer * allSpritesFolder = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_SPRITE]+"s");
         gameObjectResource * tempGameObj = NULL;
-        spriteResource * tempGameSpr = NULL;
+        animationResource * tempGameSpr = NULL;
         bool objectSpriteRender = false;
         double fObjAngle = 0;
 
@@ -3919,9 +3920,9 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,GPE_Rect * vi
         int tileYEndPos = std::min((int)lvlTileAmountY,2+(int)(ceil( (sceneCamera->h/renderScale)/lvlTileHeight) ) );
         tileYEndPos = std::max(0, tileYEndPos)+tileYStartPos;
 
-        /*if( userInput->check_keyboard_down(kb_ctrl) )
+        /*if( input->check_keyboard_down(kb_ctrl) )
         {
-            if( userInput->check_keyboard_released(kb_r) )
+            if( input->check_keyboard_released(kb_r) )
             {
                 record_error("Editor View:("+int_to_string(sceneCamera->x)+","+int_to_string(sceneCamera->y)+","+int_to_string(sceneCamera->x+sceneCamera.w)+","+int_to_string(sceneCamera->y+sceneCamera.h)+")");
                 record_error("Tiles View:("+int_to_string(tileXStartPos)+","+int_to_string(tileYStartPos)+","+int_to_string(tileXEndPos)+","+int_to_string(tileYEndPos)+")");
@@ -3949,8 +3950,8 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,GPE_Rect * vi
                         {
                             for(  k = tileYStartPos; k>=0 && k <= tileYEndPos && k < lvlTileAmountY; k++)
                             {
-                                cTileXPos = floor( (j*lvlTileWidth*renderScale )+renderZone->x-sceneCamera->x*renderScale );
-                                cTileYPos = floor( (k*lvlTileHeight*renderScale)+renderZone->y-sceneCamera->y*renderScale );
+                                cTileXPos = floor( (j*lvlTileWidth*renderScale )-sceneCamera->x*renderScale );
+                                cTileYPos = floor( (k*lvlTileHeight*renderScale)-sceneCamera->y*renderScale );
 
                                 fSceneTile = cTempLayer->get_tile_at(j,k);
                                 if( fSceneTile!=NULL)
@@ -3966,9 +3967,9 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,GPE_Rect * vi
                                                 if( foundHeldTSRes->tilesheetInEditor->tsImage!=NULL && fSceneTile->tileIndexId < (int)foundHeldTSRes->tilesheetInEditor->tsRects.size() )
                                                 {
                                                     foundTsRect = foundHeldTSRes->tilesheetInEditor->tsRects.at(fSceneTile->tileIndexId );
-                                                    //if( check_collision(sceneEditorViewRect,cTileXPos,cTileYPos,foundTsRect.w,foundTsRect.h) )
+                                                    //if( check_collision(editorCameraRect,cTileXPos,cTileYPos,foundTsRect.w,foundTsRect.h) )
                                                     {
-                                                        foundHeldTSRes->tilesheetInEditor->tsImage->render_tex_resized(cRender,cTileXPos,cTileYPos, ceil( (double)foundTsRect.w*renderScale),ceil( (double)foundTsRect.h*renderScale ),&foundTsRect );
+                                                        foundHeldTSRes->tilesheetInEditor->tsImage->render_tex_resized( cTileXPos,cTileYPos, ceil( (double)foundTsRect.w*renderScale),ceil( (double)foundTsRect.h*renderScale ),&foundTsRect );
                                                     }
                                                 }
                                             }
@@ -3993,8 +3994,8 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,GPE_Rect * vi
                                         texTypeContainer = allTexturesFolder->find_resource_from_id(currBg->textureId );
                                         if( texTypeContainer!=NULL)
                                         {
-                                            tempBgRect.x = floor( (currBg->bgRect.x*renderScale)+renderZone->x-sceneCamera->x );
-                                            tempBgRect.y = floor( (currBg->bgRect.y*renderScale)+renderZone->y-sceneCamera->y );
+                                            tempBgRect.x = floor( (currBg->bgRect.x*renderScale)-sceneCamera->x );
+                                            tempBgRect.y = floor( (currBg->bgRect.y*renderScale)-sceneCamera->y );
                                             texRes = (textureResource*) texTypeContainer->get_held_resource();
                                             if( texRes!=NULL)
                                             {
@@ -4002,26 +4003,26 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,GPE_Rect * vi
                                                 {
                                                     if( texRes->textureInEditor->get_width() >0 && texRes->textureInEditor->get_height() >0 )
                                                     {
-                                                        tempBgRect.x = floor( (currBg->bgRect.x*renderScale)+renderZone->x-sceneCamera->x );
-                                                        tempBgRect.y = floor( (currBg->bgRect.y*renderScale)+renderZone->y-sceneCamera->y );
+                                                        tempBgRect.x = floor( (currBg->bgRect.x*renderScale)-sceneCamera->x );
+                                                        tempBgRect.y = floor( (currBg->bgRect.y*renderScale)-sceneCamera->y );
                                                         if( currBg->stretchBG)
                                                         {
-                                                            texRes->textureInEditor->render_tex_resized(cRender,renderZone->x-sceneCamera->x,renderZone->y-sceneCamera->y,sceneRect.w-(renderZone->x),sceneRect.h-(renderZone->y));
+                                                            texRes->textureInEditor->render_tex_resized( sceneCamera->x, sceneCamera->y,sceneRect.w,sceneRect.h );
                                                         }
                                                         else if(currBg->tileHori  )
                                                         {
-                                                            for(i = tempBgRect.x; i <=(sceneRect.w)*renderScale+renderZone->x; i+=texRes->textureInEditor->get_width()*renderScale )
+                                                            for(i = tempBgRect.x; i <=(sceneRect.w)*renderScale; i+=texRes->textureInEditor->get_width()*renderScale )
                                                             {
                                                                 if( currBg->tileVert)
                                                                 {
-                                                                    for(j =tempBgRect.y; j <= (sceneRect.h)*renderScale+renderZone->y; j+=texRes->textureInEditor->get_height()*renderScale )
+                                                                    for(j =tempBgRect.y; j <= (sceneRect.h)*renderScale; j+=texRes->textureInEditor->get_height()*renderScale )
                                                                     {
-                                                                        texRes->textureInEditor->render_tex_resized(cRender,floor(i),floor(j), ceil( texRes->textureInEditor->get_width()*renderScale ),ceil( texRes->textureInEditor->get_height()*renderScale ) );
+                                                                        texRes->textureInEditor->render_tex_resized( floor(i),floor(j), ceil( texRes->textureInEditor->get_width()*renderScale ),ceil( texRes->textureInEditor->get_height()*renderScale ) );
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                    texRes->textureInEditor->render_tex_resized(cRender,floor(i),floor(tempBgRect.y), ceil( texRes->textureInEditor->get_width()*renderScale ), ceil( texRes->textureInEditor->get_height()*renderScale ) );
+                                                                    texRes->textureInEditor->render_tex_resized( floor(i),floor(tempBgRect.y), ceil( texRes->textureInEditor->get_width()*renderScale ), ceil( texRes->textureInEditor->get_height()*renderScale ) );
                                                                 }
                                                             }
                                                         }
@@ -4029,12 +4030,12 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,GPE_Rect * vi
                                                         {
                                                             for(j = tempBgRect.y; j <=(sceneRect.h)*renderScale+editorView.y; j+=texRes->textureInEditor->get_height()*renderScale )
                                                             {
-                                                                texRes->textureInEditor->render_tex_resized(cRender,floor(tempBgRect.x),floor(j), ceil( texRes->textureInEditor->get_width()*renderScale ),ceil( texRes->textureInEditor->get_height()*renderScale ) );
+                                                                texRes->textureInEditor->render_tex_resized( floor(tempBgRect.x),floor(j), ceil( texRes->textureInEditor->get_width()*renderScale ),ceil( texRes->textureInEditor->get_height()*renderScale ) );
                                                             }
                                                         }
                                                         else
                                                         {
-                                                            texRes->textureInEditor->render_tex_resized(cRender,floor(tempBgRect.x),floor(tempBgRect.y), ceil( texRes->textureInEditor->get_width()*renderScale ), ceil( texRes->textureInEditor->get_height()*renderScale ) );
+                                                            texRes->textureInEditor->render_tex_resized( floor(tempBgRect.x),floor(tempBgRect.y), ceil( texRes->textureInEditor->get_width()*renderScale ), ceil( texRes->textureInEditor->get_height()*renderScale ) );
                                                         }
                                                     }
                                                 }
@@ -4078,8 +4079,8 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,GPE_Rect * vi
                             if( cGGO!=NULL)
                             {
                                 objectSpriteRender = false;
-                                tempObjRect.x = floor( (cGGO->objRect.x*renderScale+renderZone->x-sceneCamera->x*renderScale) );
-                                tempObjRect.y = floor( (cGGO->objRect.y*renderScale+renderZone->y-sceneCamera->y*renderScale) );
+                                tempObjRect.x = floor( (cGGO->objRect.x*renderScale-sceneCamera->x*renderScale) );
+                                tempObjRect.y = floor( (cGGO->objRect.y*renderScale-sceneCamera->y*renderScale) );
                                 if( cGGO->objTypeId > 0)
                                 {
                                     //renders the object's sprite
@@ -4095,10 +4096,10 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,GPE_Rect * vi
                                                 sprTypeContainer = tempGameObj->spriteField->get_selected_container();
                                                 if( sprTypeContainer!=NULL)
                                                 {
-                                                    tempGameSpr = (spriteResource*) sprTypeContainer->get_held_resource();
+                                                    tempGameSpr = (animationResource*) sprTypeContainer->get_held_resource();
                                                     if( tempGameSpr!=NULL && tempGameSpr->spriteInEditor!=NULL)
                                                     {
-                                                        render_sprite_resized(cRender,tempGameSpr->spriteInEditor,tempGameSpr->get_preview_frame(),tempObjRect.x,tempObjRect.y, ceil(tempGameSpr->spriteInEditor->width*renderScale) ,ceil( tempGameSpr->spriteInEditor->height*renderScale) );
+                                                        render_animation_resized( tempGameSpr->spriteInEditor,tempGameSpr->get_preview_frame(),tempObjRect.x,tempObjRect.y, ceil(tempGameSpr->spriteInEditor->width*renderScale) ,ceil( tempGameSpr->spriteInEditor->height*renderScale) );
                                                         objectSpriteRender = true;
                                                     }
                                                 }
@@ -4106,20 +4107,20 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,GPE_Rect * vi
                                         }
                                         if( !objectSpriteRender )
                                         {
-                                            objTypeContainer->render_image(cRender,tempObjRect.x,tempObjRect.y,ceil( (double)tempObjRect.w*renderScale),ceil( (double)tempObjRect.h*renderScale ),viewedSpace,cam);
+                                            objTypeContainer->render_image( tempObjRect.x,tempObjRect.y,ceil( (double)tempObjRect.w*renderScale),ceil( (double)tempObjRect.h*renderScale ),viewedSpace,cam);
                                         }
                                     }
                                     else
                                     {
-                                        render_rectangle(cRender,tempObjRect.x,tempObjRect.y,tempObjRect.x+tempObjRect.w*renderScale,tempObjRect.y+tempObjRect.h*renderScale,c_maroon,false);
-                                        render_new_text(cRender, tempObjRect.x, tempObjRect.y,"Unknown Game Id["+int_to_string( cGGO->objTypeId )+"]", c_red,DEFAULT_FONT,FA_LEFT,FA_TOP);
+                                        gpe->render_rectangle( tempObjRect.x,tempObjRect.y,tempObjRect.x+tempObjRect.w*renderScale,tempObjRect.y+tempObjRect.h*renderScale,c_maroon,false);
+                                        render_new_text(  tempObjRect.x, tempObjRect.y,"Unknown Game Id["+int_to_string( cGGO->objTypeId )+"]", c_red,DEFAULT_FONT,FA_LEFT,FA_TOP);
 
                                     }
                                 }
                                 else
                                 {
-                                    render_rectangle(cRender,tempObjRect.x,tempObjRect.y,tempObjRect.x+tempObjRect.w*renderScale,tempObjRect.y+tempObjRect.h*renderScale,c_maroon,false);
-                                    render_new_text(cRender, tempObjRect.x, tempObjRect.y,"Unknown Game Object", c_red,DEFAULT_FONT,FA_LEFT,FA_TOP);
+                                    gpe->render_rectangle( tempObjRect.x,tempObjRect.y,tempObjRect.x+tempObjRect.w*renderScale,tempObjRect.y+tempObjRect.h*renderScale,c_maroon,false);
+                                    render_new_text(  tempObjRect.x, tempObjRect.y,"Unknown Game Object", c_red,DEFAULT_FONT,FA_LEFT,FA_TOP);
                                 }
                             }
                             else
@@ -4156,31 +4157,29 @@ void gameSceneResource::render_scene_layers(GPE_Renderer * cRender,GPE_Rect * vi
                             sceneTileMouseY = sceneMouseYPos/lvlTileHeight;
                             sceneTileMouseY = (sceneTileMouseY * lvlTileHeight);
                         }
-                        sceneTileMouseX = floor( (sceneTileMouseX*renderScale+renderZone->x-sceneCamera->x*renderScale) );
-                        sceneTileMouseY = floor( (sceneTileMouseY*renderScale+renderZone->y-sceneCamera->y*renderScale) );
+                        sceneTileMouseX = floor( (sceneTileMouseX*renderScale-sceneCamera->x*renderScale) );
+                        sceneTileMouseY = floor( (sceneTileMouseY*renderScale-sceneCamera->y*renderScale) );
                         if( sceneMouseXPos < 0 || sceneMouseYPos < 0 || sceneMouseXPos > sceneRect.w || sceneMouseYPos > sceneRect.h )
                         {
-                            tSPreviewer->render_selection(cRender,sceneTileMouseX,sceneTileMouseY,viewedSpace,cam,forceRedraw,renderScale, c_red );
+                            tSPreviewer->render_selection( sceneTileMouseX,sceneTileMouseY,viewedSpace,cam,forceRedraw,renderScale, c_red );
                         }
                         else
                         {
-                            tSPreviewer->render_selection(cRender,sceneTileMouseX,sceneTileMouseY,viewedSpace,cam,forceRedraw,renderScale,c_white);
+                            tSPreviewer->render_selection( sceneTileMouseX,sceneTileMouseY,viewedSpace,cam,forceRedraw,renderScale,c_white);
                         }
                     }
                 }
             }
         }
+        MAIN_RENDERER->reset_viewpoint();
+        MAIN_RENDERER->set_viewpoint( viewedSpace );
     }
 }
 
-void gameSceneResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
+void gameSceneResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( forceRedraw )
-    {
-        render_rect(cRender,viewedSpace,GPE_MAIN_TEMPLATE->Program_Color,false);
-    }
     double i = 0, j = 0, k = 0;
     int gridX1 = 0;
     int gridX2 = 0;
@@ -4206,7 +4205,7 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpac
             GPE_Color * bgRenderColor = sceneBackgroundColor->get_color();
             if( bgRenderColor!=NULL)
             {
-                render_rectangle(cRender,editorView.x,editorView.y,editorView.x+editorView.w,editorView.y+editorView.h,bgRenderColor,false);
+                //gpe->render_rectangle( editorView.x,editorView.y,editorView.x+editorView.w,editorView.y+editorView.h,bgRenderColor,false);
                 delete bgRenderColor;
                 bgRenderColor = NULL;
             }
@@ -4221,31 +4220,33 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpac
                 {
                     for(int jPV= editorView.y; jPV<= editorView.y+editorView.h; jPV+=GPE_TEXTURE_TRANSPARENT_BG->get_height() )
                     {
-                        GPE_TEXTURE_TRANSPARENT_BG->render_tex(cRender,iPV-editorView.x,jPV-editorView.y,NULL,NULL);
+                        //GPE_TEXTURE_TRANSPARENT_BG->render_tex( iPV-editorView.x,jPV-editorView.y,NULL);
                     }
                 }
             }
         }
 
         //Renders the scene layers( tiles, backgrounds, objects, etc)
-        render_scene_layers(cRender,viewedSpace,cam);
+        render_scene_layers( viewedSpace, cam, &editorView, &editorCameraRect,zoomValue,false, false, forceRedraw);
 
+        MAIN_RENDERER->reset_viewpoint();
+        MAIN_RENDERER->set_viewpoint( &editorView );
         //Renders the selected scene object above the scene at mouse coordinates
-        if( selectedSceneObject!=NULL)
+        if( selectedSceneObject!=NULL && forceRedraw)
         {
-            tempObjRect.x = sceneZoomAmount*(selectedSceneObject->objRect.x-2)+editorView.x-sceneEditorViewRect.x;
-            tempObjRect.y = sceneZoomAmount*(selectedSceneObject->objRect.y-2)+editorView.y-sceneEditorViewRect.y;
-            tempObjRect.w = sceneZoomAmount*(selectedSceneObject->objRect.w+2);
-            tempObjRect.h = sceneZoomAmount*(selectedSceneObject->objRect.h+2);
-            render_rect(cRender,&tempObjRect,c_blue,false,96);
+            tempObjRect.x = zoomValue*(selectedSceneObject->objRect.x-2) - editorCameraRect.x;
+            tempObjRect.y = zoomValue*(selectedSceneObject->objRect.y-2) -editorCameraRect.y;
+            tempObjRect.w = zoomValue*(selectedSceneObject->objRect.w+2);
+            tempObjRect.h = zoomValue*(selectedSceneObject->objRect.h+2);
+            gpe->render_rect( &tempObjRect,c_blue,false,96);
 
-            render_rect(cRender,&tempObjRect,c_white,true);
+            gpe->render_rect( &tempObjRect,c_white,true);
             /*
             tempObjRect.x-=2;
             tempObjRect.y-=2;
             tempObjRect.w+=2;
             tempObjRect.h+=2;
-            render_rect(cRender,&tempObjRect,c_blue,true);*/
+            gpe->render_rect( &tempObjRect,c_blue,true);*/
         }
 
         //Chooses  the grid lines for objects/tiles(depending on current layer)
@@ -4258,6 +4259,8 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpac
         {
             gridLineColor = c_olive;
         }
+
+        //Begins to render grids where applicable
         if(currentLayer!=NULL && editorMode == LEDITOR_MODE_LAYERS )
         {
             if( currentLayer->layerType==LAYER_TYPE_OBJECTS)
@@ -4265,42 +4268,42 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpac
                 if( showObjLines && objSnapX>=8 && objSnapY>=8 )
                 {
                     /*
-                    for( i = 0; i <= sceneRect.w/sceneZoomAmount; i+=objSnapX*sceneZoomAmount )
+                    for( i = 0; i <= sceneRect.w/zoomValue; i+=objSnapX*zoomValue )
                     {
-                        render_vertical_line_color(cRender,i+editorView.x-sceneEditorViewRect.x,editorView.y-sceneEditorViewRect.y,editorView.y-sceneEditorViewRect.y+sceneRect.h,c_maroon,255);
+                        gpe->render_vertical_line_color( i+ editorCameraRect.x, -editorCameraRect.y, -editorCameraRect.y+sceneRect.h,c_maroon,255);
                     }
-                    for( j =0; j <= sceneRect.h/sceneZoomAmount; j+=objSnapY*sceneZoomAmount )
+                    for( j =0; j <= sceneRect.h/zoomValue; j+=objSnapY*zoomValue )
                     {
-                        render_horizontal_line_color(cRender,j+editorView.y-sceneEditorViewRect.y,editorView.x-sceneEditorViewRect.x,editorView.x-sceneEditorViewRect.x+sceneRect.w,c_maroon,255);
+                        gpe->render_horizontal_line_color( j+ - editorCameraRect.y, - editorCameraRect.x, -editorCameraRect.x+sceneRect.w,c_maroon,255);
                     }
                     */
-                    gridY1 = editorView.y;
-                    if( sceneZoomAmount <=1)
+                    gridY1 = 0;
+                    if( zoomValue <=1)
                     {
-                        gridY2 = editorView.y+std::min( (int)(sceneRect.h),(int)(sceneEditorViewRect.h/sceneZoomAmount) )*sceneZoomAmount;
+                        gridY2 = std::min( (int)(sceneRect.h),(int)(editorCameraRect.h/zoomValue) )*zoomValue;
                     }
                     else
                     {
-                        gridY2 = editorView.y+std::max( (int)(sceneRect.h),(int)(sceneEditorViewRect.h*sceneZoomAmount) );
+                        gridY2 = std::max( (int)(sceneRect.h),(int)(editorCameraRect.h*zoomValue) );
                     }
-                    for( i = ( (int)sceneEditorViewRect.x/objSnapX)*objSnapX; i <= std::min( (int)sceneRect.w, (int)( sceneEditorViewRect.x+(sceneEditorViewRect.w+objSnapX)/sceneZoomAmount) ); i+=objSnapX )
+                    for( i = ( (int)editorCameraRect.x/objSnapX)*objSnapX; i <= std::min( (int)sceneRect.w, (int)( editorCameraRect.x+(editorCameraRect.w+objSnapX)/zoomValue) ); i+=objSnapX )
                     {
-                        gridX1 = floor( (i*sceneZoomAmount+editorView.x-sceneEditorViewRect.x*sceneZoomAmount) );
-                        render_vertical_line_color(cRender,gridX1,gridY1,gridY2,gridLineColor);
+                        gridX1 = floor( (i*zoomValue - editorCameraRect.x*zoomValue) );
+                        gpe->render_vertical_line_color( gridX1,gridY1,gridY2,gridLineColor);
                     }
-                    gridX1 = editorView.x;
-                    if( sceneZoomAmount <=1)
+                    gridX1 = 0;
+                    if( zoomValue <=1)
                     {
-                        gridX2 = editorView.x+std::min( (int)(sceneRect.w),(int)(sceneEditorViewRect.w/sceneZoomAmount) )*sceneZoomAmount;
+                        gridX2 =  std::min( (int)(sceneRect.w),(int)(editorCameraRect.w/zoomValue) )*zoomValue;
                     }
                     else
                     {
-                        gridX2 = editorView.x+std::max( (int)(sceneRect.w),(int)(sceneEditorViewRect.w*sceneZoomAmount) );
+                        gridX2 =  std::max( (int)(sceneRect.w),(int)(editorCameraRect.w*zoomValue) );
                     }
-                    for( j = ( (int)sceneEditorViewRect.y/objSnapY)*objSnapY; j <= std::min( (int)sceneRect.h, (int)( sceneEditorViewRect.y+(sceneEditorViewRect.h+objSnapY)/sceneZoomAmount) ); j+=objSnapY )
+                    for( j = ( (int)editorCameraRect.y/objSnapY)*objSnapY; j <= std::min( (int)sceneRect.h, (int)( editorCameraRect.y+(editorCameraRect.h+objSnapY)/zoomValue) ); j+=objSnapY )
                     {
-                        gridY1 = floor( (j*sceneZoomAmount+editorView.y-sceneEditorViewRect.y*sceneZoomAmount) );
-                        render_horizontal_line_color(cRender,gridY1,gridX1,gridX2,gridLineColor);
+                        gridY1 = floor( (j*zoomValue - editorCameraRect.y*zoomValue) );
+                        gpe->render_horizontal_line_color( gridY1,gridX1,gridX2,gridLineColor);
                     }
                 }
 
@@ -4316,32 +4319,32 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpac
                     sceneObjMouseY = sceneMouseYPos/objSnapY;
                     sceneObjMouseY = (sceneObjMouseY * objSnapY);
                 }
-                sceneObjMouseX = floor( (sceneObjMouseX*sceneZoomAmount+editorView.x-sceneEditorViewRect.x*sceneZoomAmount) );
-                sceneObjMouseY = floor( (sceneObjMouseY*sceneZoomAmount+editorView.y-sceneEditorViewRect.y*sceneZoomAmount) );
+                sceneObjMouseX = floor( (sceneObjMouseX*zoomValue - editorCameraRect.x*zoomValue) );
+                sceneObjMouseY = floor( (sceneObjMouseY*zoomValue - editorCameraRect.y*zoomValue) );
                 if( objectLeftClickModeButton->is_clicked()==false && hObj!=NULL && hObj->get_held_resource() )
                 {
                     gameObjectResource * actualHGameObject= (gameObjectResource*) hObj->get_held_resource();
                     if( actualHGameObject!=NULL)
                     {
-                        double renderWSize = 32*sceneZoomAmount;
-                        double renderHSize = 32*sceneZoomAmount;
+                        double renderWSize = 32*zoomValue;
+                        double renderHSize = 32*zoomValue;
                         if( actualHGameObject->spriteField!=NULL && actualHGameObject->spriteField->get_selected_container()!=NULL )
                         {
                             GPE_ResourceContainer * tempSpriteContainer = actualHGameObject->spriteField->get_selected_container();
                             if( tempSpriteContainer!=NULL && tempSpriteContainer->get_held_resource() )
                             {
-                                spriteResource * tempSpriteObj = (spriteResource * )tempSpriteContainer->get_held_resource();
+                                animationResource * tempSpriteObj = (animationResource * )tempSpriteContainer->get_held_resource();
                                 if( tempSpriteObj!=NULL )
                                 {
                                     if( tempSpriteObj->spriteInEditor!=NULL )
                                     {
-                                        renderWSize = ceil(tempSpriteObj->spriteInEditor->width*sceneZoomAmount);
-                                        renderHSize = ceil(tempSpriteObj->spriteInEditor->height*sceneZoomAmount);
+                                        renderWSize = ceil(tempSpriteObj->spriteInEditor->width*zoomValue);
+                                        renderHSize = ceil(tempSpriteObj->spriteInEditor->height*zoomValue);
                                     }
                                 }
                             }
                         }
-                        hObj->render_image(cRender,sceneObjMouseX,sceneObjMouseY,renderWSize, renderHSize, viewedSpace,cam, c_gray );
+                        hObj->render_image( sceneObjMouseX,sceneObjMouseY,renderWSize, renderHSize, viewedSpace,cam, c_gray );
                     }
                 }
             }
@@ -4352,104 +4355,95 @@ void gameSceneResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpac
                     /*
                     for( i = 0; i <= sceneRect.w ;i+=lvlTileWidth )
                     {
-                        render_vertical_line_color(cRender,i+editorView.x-sceneEditorViewRect.x,editorView.y-sceneEditorViewRect.y,editorView.y-sceneEditorViewRect.y+sceneRect.h,c_blue,255);
+                        gpe->render_vertical_line_color( i - editorCameraRect.x, - editorCameraRect.y, -editorCameraRect.y+sceneRect.h,c_blue,255);
                     }
                     for( j =0; j <= sceneRect.h ;j+=lvlTileHeight )
                     {
-                        render_horizontal_line_color(cRender,j+editorView.y-sceneEditorViewRect.y,editorView.x-sceneEditorViewRect.x,editorView.x-sceneEditorViewRect.x+sceneRect.w,c_blue,255);
+                        gpe->render_horizontal_line_color( j- editorCameraRect.y,- editorCameraRect.x,- editorCameraRect.x+sceneRect.w,c_blue,255);
                     }
                     */
-                    gridY1 = editorView.y;
-                    if( sceneZoomAmount <=1)
+                    gridY1 = 0;
+                    if( zoomValue <=1)
                     {
-                        gridY2 = editorView.y+std::min( (int)(sceneRect.h),(int)(sceneEditorViewRect.h/sceneZoomAmount) )*sceneZoomAmount;
+                        gridY2 = std::min( (int)(sceneRect.h),(int)(editorCameraRect.h/zoomValue) )*zoomValue;
                     }
                     else
                     {
-                        gridY2 = editorView.y+std::max( (int)(sceneRect.h),(int)(sceneEditorViewRect.h*sceneZoomAmount) );
+                        gridY2 = std::max( (int)(sceneRect.h),(int)(editorCameraRect.h*zoomValue) );
                     }
-                    for( i = ( (int)sceneEditorViewRect.x/lvlTileWidth)*lvlTileWidth; i <= std::min( (int)sceneRect.w, (int)( sceneEditorViewRect.x+sceneEditorViewRect.w/sceneZoomAmount) ); i+=lvlTileWidth )
+                    for( i = ( (int)editorCameraRect.x/lvlTileWidth)*lvlTileWidth; i <= std::min( (int)sceneRect.w, (int)( editorCameraRect.x+editorCameraRect.w/zoomValue) ); i+=lvlTileWidth )
                     {
-                        gridX1 = floor( editorView.x+i*sceneZoomAmount-sceneEditorViewRect.x*sceneZoomAmount );
-                        render_vertical_line_color(cRender,gridX1,gridY1,gridY2,gridLineColor);
+                        gridX1 = floor( i*zoomValue-editorCameraRect.x*zoomValue );
+                        gpe->render_vertical_line_color( gridX1,gridY1,gridY2,gridLineColor);
                     }
-                    gridX1 = editorView.x;
-                    if( sceneZoomAmount <=1)
+                    gridX1 = 0;
+                    if( zoomValue <=1)
                     {
-                        gridX2 = editorView.x+std::min( (int)(sceneRect.w),(int)(sceneEditorViewRect.w/sceneZoomAmount) )*sceneZoomAmount;
+                        gridX2 = std::min( (int)(sceneRect.w),(int)(editorCameraRect.w/zoomValue) )*zoomValue;
                     }
                     else
                     {
-                        gridX2 = editorView.x+std::max( (int)(sceneRect.w),(int)(sceneEditorViewRect.w*sceneZoomAmount) );
+                        gridX2 = std::max( (int)(sceneRect.w),(int)(editorCameraRect.w*zoomValue) );
                     }
-                    for( j =(int)(sceneEditorViewRect.y/lvlTileHeight)*lvlTileHeight; j <= std::min( (int)sceneRect.h, (int)( sceneEditorViewRect.y+sceneEditorViewRect.h/sceneZoomAmount) ); j+=lvlTileHeight )
+                    for( j =(int)(editorCameraRect.y/lvlTileHeight)*lvlTileHeight; j <= std::min( (int)sceneRect.h, (int)( editorCameraRect.y+editorCameraRect.h/zoomValue) ); j+=lvlTileHeight )
                     {
-                        gridY1 = floor( editorView.y+j*sceneZoomAmount-sceneEditorViewRect.y*sceneZoomAmount );
-                        render_horizontal_line_color(cRender,gridY1,gridX1,gridX2,gridLineColor);
+                        gridY1 = floor( j*zoomValue-editorCameraRect.y*zoomValue );
+                        gpe->render_horizontal_line_color( gridY1,gridX1,gridX2,gridLineColor);
                     }
                 }
             }
         }
 
-        //Clears the editor pane
-        if( forceRedraw)
-        render_rect(cRender,&editorPane,GPE_MAIN_TEMPLATE->Program_Color,false);
+        MAIN_RENDERER->reset_viewpoint();
+        MAIN_RENDERER->set_viewpoint( viewedSpace );
+        //Clears the editor pane then renders panel and scrollbars
 
-        if( editorButtonBar!=NULL)
-        {
-            editorButtonBar->render_self(cRender,viewedSpace,cam);
-        }
+        //"Editor View:("+int_to_string(editorCameraRect.x)+","+int_to_string(editorCameraRect.y)+","+int_to_string(editorCameraRect.w)+","+int_to_string(editorCameraRect.h)+")",
+        gpe->render_rectangle( sceneYScroll->elementBox.x+sceneYScroll->elementBox.w,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_THEME->Program_Color,false);
+        gpe->render_rectangle( sceneXScroll->elementBox.x,sceneXScroll->elementBox.y,viewedSpace->w,viewedSpace->h,GPE_MAIN_THEME->Program_Color,false);
 
-        if( sceneZoomLevel!=NULL)
-        {
-            sceneZoomLevel->render_self(cRender,viewedSpace,cam);
-        }
-
-        if( CURRENT_PROJECT!=NULL && CURRENT_PROJECT->RESC_PROJECT_SETTINGS!=NULL )
-        {
-            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource();
-            if( tProjectProps!=NULL && tProjectProps->sceneEditorPaneMode!=NULL)
-            {
-                tProjectProps->sceneEditorPaneMode->render_self(cRender,viewedSpace,cam);
-            }
-        }
-    }
-
-    if( forceRedraw )
-    {
-        //"Editor View:("+int_to_string(sceneEditorViewRect.x)+","+int_to_string(sceneEditorViewRect.y)+","+int_to_string(sceneEditorViewRect.w)+","+int_to_string(sceneEditorViewRect.h)+")",
-
-        render_rect(cRender,&editorCommentPane,GPE_MAIN_TEMPLATE->Program_Color,false);
-        render_rectangle(cRender,sceneYScroll->barBox.x+sceneYScroll->barBox.w,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
-        render_rectangle(cRender,sceneXScroll->barBox.x,sceneXScroll->barBox.y,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
-
-        render_bitmap_text(cRender,editorCommentPane.x+GENERAL_GPE_PADDING,editorCommentPane.y+editorCommentPane.h/2,
-                        "Mouse( "+int_to_string(sceneMouseXPos )+" , "+int_to_string(sceneMouseYPos)+")"+
-                        "Camera( "+double_to_string(sceneEditorViewRect.x )+" , "+double_to_string(sceneEditorViewRect.y)+") Zoom:"+double_to_string(sceneZoomAmount),
-                        GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_MIDDLE);
         if( sceneXScroll!=NULL)
         {
-            sceneXScroll->render_self(cRender,viewedSpace,cam);
+            sceneXScroll->render_self( viewedSpace,cam);
         }
         if( sceneYScroll!=NULL)
         {
-            sceneYScroll->render_self(cRender,viewedSpace,cam);
+            sceneYScroll->render_self( viewedSpace,cam);
         }
     }
 
-    editorPaneList->render_self(cRender,viewedSpace,cam,forceRedraw);
+    editorPaneList->render_self( viewedSpace,cam,forceRedraw);
     if( currentLayer!=NULL && editorMode==LEDITOR_MODE_LAYERS )
     {
         if( currentLayer->layerType==LAYER_TYPE_TILES )
         {
-            tSPreviewer->render_self(cRender,viewedSpace,cam, forceRedraw);
+            tSPreviewer->render_self( viewedSpace,cam, forceRedraw);
         }
 
-        render_rectangle(cRender,layerPaneList->get_xpos(), layerPaneList->get_ypos(), layerPaneList->get_x2pos(), layerPaneList->get_y2pos(),GPE_MAIN_TEMPLATE->Program_Color,false);
-        layerPaneList->render_self(cRender,viewedSpace,cam,forceRedraw);
+        if( forceRedraw)
+        {
+            //gpe->render_rectangle( layerPaneList->get_xpos(), layerPaneList->get_ypos(), layerPaneList->get_x2pos(), layerPaneList->get_y2pos(),GPE_MAIN_THEME->Program_Color,false);
+        }
+        layerPaneList->render_self( viewedSpace,cam,forceRedraw);
+    }
+    if( editorButtonBar!=NULL)
+    {
+        editorButtonBar->render_self( viewedSpace,cam);
     }
 
-    //render_rect(cRender,&editorPane,GPE_MAIN_TEMPLATE->Main_Border_Color,true);
+    if( sceneZoomLevel!=NULL)
+    {
+        sceneZoomLevel->render_self( viewedSpace,cam);
+    }
+    if( CURRENT_PROJECT!=NULL && CURRENT_PROJECT->RESC_PROJECT_SETTINGS!=NULL )
+    {
+        projectPropertiesResource * tProjectProps = (projectPropertiesResource *)CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource();
+        if( tProjectProps!=NULL && tProjectProps->sceneEditorPaneMode!=NULL)
+        {
+            tProjectProps->sceneEditorPaneMode->render_self( viewedSpace,cam);
+        }
+    }
+    gpe->render_rect( &editorPane,GPE_MAIN_THEME->Main_Border_Color,true);
 }
 
 void gameSceneResource::reset_placement_info()
@@ -4493,18 +4487,7 @@ void gameSceneResource::save_resource(std::string alternatePath, int backupId)
             GPE_SceneTexture * tSceneBg = NULL;
             GPE_ResourceContainer * allObjsFolder = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_OBJECT]+"s");
             GPE_ResourceContainer * fObj = NULL;
-            newSceneFile << "#    --------------------------------------------------  # \n";
-            newSceneFile << "#     \n";
-            newSceneFile << "#     \n";
-            newSceneFile << "#    Game Pencil Engine Project GameScene File \n";
-            newSceneFile << "#    Created automatically via the Game Pencil Engine Editor \n";
-            newSceneFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSceneFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
-            newSceneFile << "#     \n";
-            newSceneFile << "#     \n";
-            newSceneFile << "#    --------------------------------------------------  # \n";
-            newSceneFile << "Version=" << GPE_VERSION_DOUBLE_NUMBER << "\n";
-            newSceneFile << "ResourceName=" << resourceName << "\n";
+            write_header_on_file(&newSceneFile);
             if( levelTitleField!=NULL)
             {
                 if( (int)levelTitleField->get_string().size() > 0)

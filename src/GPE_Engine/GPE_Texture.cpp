@@ -3,10 +3,10 @@ GPE_Texture.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -124,7 +124,7 @@ SDL_Texture * GPE_Texture::get_sdl_texture()
     return texImg;
 }
 
-void GPE_Texture::load_new_texture(GPE_Renderer * cRenderer, std::string fileName, short id, bool transparent)
+void GPE_Texture::load_new_texture( std::string fileName, short id, bool transparent)
 {
     if(texImg!=NULL)
     {
@@ -146,7 +146,7 @@ void GPE_Texture::load_new_texture(GPE_Renderer * cRenderer, std::string fileNam
         {
             //Create an optimized surface
 
-            texImg = SDL_CreateTextureFromSurface(cRenderer->get_renderer(),loadedImage);
+            texImg = SDL_CreateTextureFromSurface(MAIN_RENDERER->get_renderer(),loadedImage);
             fileLocation = fileName;
             texWid = loadedImage->w;
             texHeight = loadedImage->h;
@@ -179,18 +179,10 @@ void GPE_Texture::load_new_texture(GPE_Renderer * cRenderer, std::string fileNam
     }
 }
 
-void GPE_Texture::render_tex( GPE_Renderer * cRenderer, int x, int y,GPE_Rect* clip, GPE_Texture* destination)
+void GPE_Texture::render_tex(  int x, int y,GPE_Rect* clip)
 {
     if(texImg!=NULL)
     {
-        if( destination!=NULL)
-        {
-            SDL_SetRenderTarget( cRenderer->gpeRender, destination->texImg );
-        }
-        else
-        {
-            //SDL_SetRenderTarget( cRenderer->gpeRender, NULL);
-        }
         SDL_Rect renderRect = { x, y, texWid, texHeight };
 
         SDL_SetTextureColorMod( texImg, 255,255,255 );
@@ -207,34 +199,26 @@ void GPE_Texture::render_tex( GPE_Renderer * cRenderer, int x, int y,GPE_Rect* c
             renderRect.w = clip->w;
             renderRect.h = clip->h;
 
-            SDL_RenderCopy(cRenderer->gpeRender,texImg,&sdlClip, &renderRect);
+            SDL_RenderCopy( CURRENT_RENDERER->gpeRender,texImg,&sdlClip, &renderRect);
         }
         else
         {
-            SDL_RenderCopy(cRenderer->gpeRender,texImg,NULL, &renderRect);
+            SDL_RenderCopy( CURRENT_RENDERER->gpeRender,texImg,NULL, &renderRect);
         }
 
 
     }
 }
 
-void GPE_Texture::render_tex_resized( GPE_Renderer * cRenderer, int x, int y, int newWidth, int newHeight, GPE_Rect* clip, GPE_Texture* destination, GPE_Color * renderColor)
+void GPE_Texture::render_tex_resized(  int x, int y, int newWidth, int newHeight, GPE_Rect* clip, GPE_Color * renderColor)
 {
     if(texImg!=NULL)
     {
-        if( destination!=NULL)
-        {
-            SDL_SetRenderTarget( cRenderer->gpeRender, destination->texImg );
-        }
-        else
-        {
-            //SDL_SetRenderTarget( cRenderer->gpeRender, NULL);
-        }
-        if( newWidth <=0)
+        if( newWidth <=0 )
         {
             newWidth = texWid;
         }
-        if( newHeight<=0)
+        if( newHeight<=0 )
         {
             newHeight = texHeight;
         }
@@ -256,27 +240,49 @@ void GPE_Texture::render_tex_resized( GPE_Renderer * cRenderer, int x, int y, in
             sdlClip.w = clip->w;
             sdlClip.h = clip->h;
 
-            SDL_RenderCopy(cRenderer->gpeRender,texImg,&sdlClip, &renderRect);
+            if( sdlClip.x > texWid)
+            {
+                sdlClip.x = 0;
+            }
+
+            if( sdlClip.y > texHeight )
+            {
+                sdlClip.y = 0;
+            }
+
+            if( sdlClip.w > texWid)
+            {
+                sdlClip.w = texWid;
+            }
+
+            if( sdlClip.h > texHeight )
+            {
+                sdlClip.h = texHeight;
+            }
+
+            if( sdlClip.x+sdlClip.w > texWid )
+            {
+                sdlClip.w = texWid - sdlClip.x;
+            }
+
+            if( sdlClip.y+sdlClip.h > texHeight )
+            {
+                sdlClip.h = texHeight - sdlClip.y;
+            }
+
+            SDL_RenderCopy( CURRENT_RENDERER->gpeRender,texImg,&sdlClip, &renderRect);
         }
         else
         {
-            SDL_RenderCopy(cRenderer->gpeRender,texImg,NULL, &renderRect);
+            SDL_RenderCopy( CURRENT_RENDERER->gpeRender,texImg,NULL, &renderRect);
         }
     }
 }
 
-void GPE_Texture::render_tex_rotated( GPE_Renderer * cRenderer, int x, int y, double renderAngle, int newWidth, int newHeight, GPE_Rect* clip, GPE_Texture* destination)
+void GPE_Texture::render_tex_rotated(  int x, int y, double renderAngle, int newWidth, int newHeight, GPE_Rect* clip )
 {
     if(texImg!=NULL)
     {
-        if( destination!=NULL)
-        {
-            SDL_SetRenderTarget( cRenderer->gpeRender, destination->texImg );
-        }
-        else
-        {
-            SDL_SetRenderTarget( cRenderer->gpeRender, NULL);
-        }
         if( newWidth <=0)
         {
             newWidth = texWid;
@@ -296,17 +302,46 @@ void GPE_Texture::render_tex_rotated( GPE_Renderer * cRenderer, int x, int y, do
             sdlClip.w = clip->w;
             sdlClip.h = clip->h;
 
-            SDL_RenderCopyEx(cRenderer->gpeRender,texImg,&sdlClip, &renderRect, renderAngle,NULL,SDL_FLIP_NONE);
+            SDL_RenderCopyEx( CURRENT_RENDERER->gpeRender,texImg,&sdlClip, &renderRect, renderAngle,NULL,SDL_FLIP_NONE);
         }
         else
         {
-            SDL_RenderCopy(cRenderer->gpeRender,texImg,NULL, &renderRect);
-            SDL_RenderCopyEx(cRenderer->gpeRender,texImg,NULL, &renderRect, renderAngle,NULL,SDL_FLIP_NONE);
+            SDL_RenderCopy( CURRENT_RENDERER->gpeRender,texImg,NULL, &renderRect);
+            SDL_RenderCopyEx( CURRENT_RENDERER->gpeRender,texImg,NULL, &renderRect, renderAngle,NULL,SDL_FLIP_NONE);
         }
     }
 }
 
-void render_texture(GPE_Renderer * cRenderer, GPE_Texture * texIn, int x, int y,GPE_Rect* clip , GPE_Texture* destination,int hAlign, int vAlign)
+void GPE_Texture::set_blend_mode( int newBlendMode)
+{
+    if( texImg!=NULL)
+    {
+        switch( newBlendMode)
+        {
+            case blend_mode_none:
+                SDL_SetTextureBlendMode(texImg,SDL_BLENDMODE_NONE );
+            break;
+
+            case blend_mode_add:
+                SDL_SetTextureBlendMode(texImg,SDL_BLENDMODE_ADD );
+            break;
+
+            case blend_mode_blend:
+                SDL_SetTextureBlendMode(texImg,SDL_BLENDMODE_BLEND );
+            break;
+
+            case blend_mode_mod:
+                SDL_SetTextureBlendMode(texImg,SDL_BLENDMODE_MOD );
+            break;
+
+            default:
+
+            break;
+        }
+    }
+}
+
+void render_texture( GPE_Texture * texIn, int x, int y,GPE_Rect* clip , int hAlign, int vAlign)
 {
     if( texIn!=NULL)
     {
@@ -327,11 +362,11 @@ void render_texture(GPE_Renderer * cRenderer, GPE_Texture * texIn, int x, int y,
         {
             y-= texIn->get_height();
         }
-        texIn->render_tex(cRenderer,x,y,clip,destination);
+        texIn->render_tex( x,y,clip);
     }
 }
 
-void render_texture_resized(GPE_Renderer * cRenderer, GPE_Texture * texIn, int x, int y, int newWidth, int newHeight, GPE_Rect* clip , GPE_Texture* destination, int hAlign, int vAlign, GPE_Color * renderColor )
+void render_texture_resized( GPE_Texture * texIn, int x, int y, int newWidth, int newHeight, GPE_Rect* clip , int hAlign, int vAlign, GPE_Color * renderColor )
 {
     if( texIn!=NULL)
     {
@@ -353,11 +388,11 @@ void render_texture_resized(GPE_Renderer * cRenderer, GPE_Texture * texIn, int x
             y-= newHeight;
         }
 
-        texIn->render_tex_resized(cRenderer,x,y,newWidth, newHeight,clip,destination, renderColor);
+        texIn->render_tex_resized( x,y,newWidth, newHeight,clip, renderColor);
     }
 }
 
-void render_texture_rotated(GPE_Renderer * cRenderer, GPE_Texture * texIn, int x, int y, double newAngle, int newWidth, int newHeight, GPE_Rect* clip , GPE_Texture* destination )
+void render_texture_rotated( GPE_Texture * texIn, int x, int y, double newAngle, int newWidth, int newHeight, GPE_Rect* clip  )
 {
     if( texIn!=NULL)
     {
@@ -379,7 +414,7 @@ void render_texture_rotated(GPE_Renderer * cRenderer, GPE_Texture * texIn, int x
         {
             y-= newHeight;
         }*/
-        texIn->render_tex_rotated(cRenderer,x,y,newAngle,newWidth, newHeight,clip,destination);
+        texIn->render_tex_rotated( x,y,newAngle,newWidth, newHeight,clip);
     }
 }
 

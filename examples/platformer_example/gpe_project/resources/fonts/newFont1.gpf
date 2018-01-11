@@ -1,14 +1,15 @@
 #    --------------------------------------------------  # 
 #     
 #     
-#    Game Pencil Engine Project Font DataFile 
+#    Game Pencil Engine Project Game Font DataFile 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
 #    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.13
+Version=2
+ResourceName=newFont1
 #     
 FontSize=12
 FontType=0

@@ -3,10 +3,10 @@ giant_popup_menus.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -40,18 +40,18 @@ GPE_Color * GPE_Get_Color_PopUp(std::string popUpCaption ,GPE_Color * currColor)
     {
         popUpCaption = "Select a Color";
     }
-    MAIN_OVERLAY->take_frozen_screenshot(MAIN_RENDERER);
+    MAIN_OVERLAY->take_frozen_screenshot( );
 
     int promptBoxWidth = 500;
     int promptBoxHeight = 400;
-    GPE_Rect barBox;
+    GPE_Rect elementBox;
     GPE_Rect colorShadeBox;
     colorShadeBox.w = 32;
     colorShadeBox.h = 200;
 
     bool exitOperation = false;
     bool operationCancelled = false;
-    userInput->reset_all_input();
+    input->reset_all_input();
     GPE_Color * returnedColor = NULL, *colorShadeTempColor = NULL;
     colorShadeTempColor = new GPE_Color();
     int rV = 0,  gV = 0,  bV = 0;
@@ -96,30 +96,30 @@ GPE_Color * GPE_Get_Color_PopUp(std::string popUpCaption ,GPE_Color * currColor)
     GPE_ToolLabelButton * yesButton = new GPE_ToolLabelButton(0,16,"Okay","Confirm Color Change");
     GPE_ToolLabelButton * cancelButton = new GPE_ToolLabelButton(0,16,"Cancel","Cancel Color Request");
 
-    MAIN_OVERLAY->render_frozen_screenshot(MAIN_RENDERER);
+    MAIN_OVERLAY->render_frozen_screenshot( );
     //currentState->render();
     MAIN_RENDERER->update_renderer();
     while(exitOperation==false)
     {
         //Start the frame timer
-        capTimer->start();
+        GPE_TIMER_CAP->start();
         //gets user input
-        userInput->handle(true,true);
+        input->handle(true,true);
         GPE_MAIN_GUI->reset_gui_info();
 
-        barBox.x = (SCREEN_WIDTH-promptBoxWidth)/2;
-        barBox.y = (SCREEN_HEIGHT-promptBoxHeight)/2;
-        barBox.w = promptBoxWidth;
-        barBox.h = promptBoxHeight;
+        elementBox.x = (SCREEN_WIDTH-promptBoxWidth)/2;
+        elementBox.y = (SCREEN_HEIGHT-promptBoxHeight)/2;
+        elementBox.w = promptBoxWidth;
+        elementBox.h = promptBoxHeight;
 
-        colorShadeBox.x = barBox.x+GENERAL_GPE_PADDING*2+200;
-        colorShadeBox.y = barBox.y+GENERAL_GPE_PADDING+32;
+        colorShadeBox.x = elementBox.x+GENERAL_GPE_PADDING*2+200;
+        colorShadeBox.y = elementBox.y+GENERAL_GPE_PADDING+32;
 
         GPE_MAIN_GUI->reset_gui_info();
-        yesButton->set_coords( barBox.x+GENERAL_GPE_PADDING, barBox.y+barBox.h-32);
+        yesButton->set_coords( elementBox.x+GENERAL_GPE_PADDING, elementBox.y+elementBox.h-32);
         cancelButton->set_coords( yesButton->get_xpos()+yesButton->get_width()+GENERAL_GPE_PADDING,yesButton->get_ypos() );
 
-        newColorRValue->set_coords(colorShadeBox.x+colorShadeBox.w+GENERAL_GPE_PADDING,barBox.y+GENERAL_GPE_PADDING+48);
+        newColorRValue->set_coords(colorShadeBox.x+colorShadeBox.w+GENERAL_GPE_PADDING,elementBox.y+GENERAL_GPE_PADDING+48);
         newColorRValue->set_width(128);
 
         newColorGValue->set_coords(colorShadeBox.x+colorShadeBox.w+GENERAL_GPE_PADDING,newColorRValue->get_ypos()+newColorRValue->get_height()+GENERAL_GPE_PADDING);
@@ -152,24 +152,24 @@ GPE_Color * GPE_Get_Color_PopUp(std::string popUpCaption ,GPE_Color * currColor)
             returnedColor->change_rgba(newColorRValue->get_held_number(),newColorGValue->get_held_number(),newColorBValue->get_held_number(),255 );
             //newColorHexValue->set_string( RGBtoHEX(currColor->get_r(),currColor->get_g(),currColor->get_b() ) ); //Convert RGB to Hex here
         }
-        if( userInput->check_keyboard_released(kb_esc) || cancelButton->is_clicked() || WINDOW_WAS_JUST_RESIZED )
+        if( input->check_keyboard_released(kb_esc) || cancelButton->is_clicked() || WINDOW_WAS_JUST_RESIZED )
         {
             exitOperation = true;
             operationCancelled = true;
         }
-        else if( userInput->check_keyboard_released(kb_enter) || yesButton->is_clicked() )
+        else if( input->check_keyboard_released(kb_enter) || yesButton->is_clicked() )
         {
             exitOperation = true;
         }
-        else if( userInput->check_mouse_down(0) )
+        else if( input->check_mouse_down(0) )
         {
-            if( point_within(userInput->mouse_x,userInput->mouse_y,
-                             barBox.x+GENERAL_GPE_PADDING,barBox.y+032+GENERAL_GPE_PADDING,
-                             barBox.x+200+GENERAL_GPE_PADDING,barBox.y+232+GENERAL_GPE_PADDING) )
+            if( point_within(input->mouse_x,input->mouse_y,
+                             elementBox.x+GENERAL_GPE_PADDING,elementBox.y+032+GENERAL_GPE_PADDING,
+                             elementBox.x+200+GENERAL_GPE_PADDING,elementBox.y+232+GENERAL_GPE_PADDING) )
             {
                 //Gets "clicked color"
-                foundColorPickerX = userInput->mouse_x-barBox.x-GENERAL_GPE_PADDING;
-                foundColorPickerY = userInput->mouse_y-barBox.y-32-GENERAL_GPE_PADDING;
+                foundColorPickerX = input->mouse_x-elementBox.x-GENERAL_GPE_PADDING;
+                foundColorPickerY = input->mouse_y-elementBox.y-32-GENERAL_GPE_PADDING;
                 foundPixelColor = get_pixel32(GPE_SURFACE_COLOR_PICKER_GRADIENT,foundColorPickerX , foundColorPickerY );
 
                 SDL_GetRGB(foundPixelColor,GPE_SURFACE_COLOR_PICKER_GRADIENT->format,&rU8,&gU8,&bU8);
@@ -195,11 +195,11 @@ GPE_Color * GPE_Get_Color_PopUp(std::string popUpCaption ,GPE_Color * currColor)
             }
 
         }
-        else if( userInput->check_mouse_released(0) )
+        else if( input->check_mouse_released(0) )
         {
-            if( point_within_rect(userInput->mouse_x,userInput->mouse_y,&colorShadeBox) )
+            if( point_within_rect(input->mouse_x,input->mouse_y,&colorShadeBox) )
             {
-                selectedColorShade = userInput->mouse_y - colorShadeBox.y;
+                selectedColorShade = input->mouse_y - colorShadeBox.y;
 
                 colorShadeDivision = (float)selectedColorShade/(float)colorShadeBox.h;
 
@@ -216,19 +216,19 @@ GPE_Color * GPE_Get_Color_PopUp(std::string popUpCaption ,GPE_Color * currColor)
         calculate_avg_fps();
         if( !WINDOW_WAS_JUST_RESIZED)
         {
-            MAIN_OVERLAY->render_frozen_screenshot(MAIN_RENDERER);
+            MAIN_OVERLAY->render_frozen_screenshot( );
 
             //Update screen
-            render_rect(MAIN_RENDERER,&barBox,GPE_MAIN_TEMPLATE->PopUp_Box_Color,false);
-            render_rect(MAIN_RENDERER,&barBox,GPE_MAIN_TEMPLATE->PopUp_Box_Border_Color,true);
+            gpe->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Color,false);
+            gpe->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
             if( GPE_TEXTURE_COLOR_PICKER_GRADIENT!=NULL)
             {
-                render_texture_resized(MAIN_RENDERER,GPE_TEXTURE_COLOR_PICKER_GRADIENT,barBox.x+GENERAL_GPE_PADDING,barBox.y+32+GENERAL_GPE_PADDING,200,200);
+                render_texture_resized(GPE_TEXTURE_COLOR_PICKER_GRADIENT,elementBox.x+GENERAL_GPE_PADDING,elementBox.y+32+GENERAL_GPE_PADDING,200,200);
             }
             int preiewColorYPos = yesButton->get_ypos()-GENERAL_GPE_PADDING-64;
 
-            render_rect(MAIN_RENDERER,&colorShadeBox,GPE_MAIN_TEMPLATE->Program_Color,false);
-            render_rect(MAIN_RENDERER,&colorShadeBox,GPE_MAIN_TEMPLATE->Main_Border_Color,true);
+            gpe->render_rect( &colorShadeBox,GPE_MAIN_THEME->Program_Color,false);
+            gpe->render_rect( &colorShadeBox,GPE_MAIN_THEME->Main_Border_Color,true);
 
             for( colorPickerShaderI = 0; colorPickerShaderI <= colorShadeBox.h; colorPickerShaderI++)
             {
@@ -237,39 +237,39 @@ GPE_Color * GPE_Get_Color_PopUp(std::string popUpCaption ,GPE_Color * currColor)
                 colorShadeTempColor->change_g( merge_channel(returnedColor->get_g() ,(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
                 colorShadeTempColor->change_b( merge_channel(returnedColor->get_b() ,(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
 
-                render_horizontal_line_color(MAIN_RENDERER,colorShadeBox.y+colorPickerShaderI,colorShadeBox.x,colorShadeBox.x+colorShadeBox.w,colorShadeTempColor);
+                gpe->render_horizontal_line_color( colorShadeBox.y+colorPickerShaderI,colorShadeBox.x,colorShadeBox.x+colorShadeBox.w,colorShadeTempColor);
             }
-            render_horizontal_line_color(MAIN_RENDERER,colorShadeBox.y+selectedColorShade,colorShadeBox.x-4,colorShadeBox.x+colorShadeBox.w+4,GPE_MAIN_TEMPLATE->Main_Border_Color );
+            gpe->render_horizontal_line_color( colorShadeBox.y+selectedColorShade,colorShadeBox.x-4,colorShadeBox.x+colorShadeBox.w+4,GPE_MAIN_THEME->Main_Border_Color );
 
 
             if( currColor!=NULL)
             {
                 preiewColorYPos = yesButton->get_ypos()-GENERAL_GPE_PADDING-40;
-                render_new_text(MAIN_RENDERER,barBox.x+GENERAL_GPE_PADDING,preiewColorYPos,"Older Color:",GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
-                render_rectangle(MAIN_RENDERER,barBox.x+128,preiewColorYPos,barBox.x+256,preiewColorYPos+32,currColor,false);
+                render_new_text( elementBox.x+GENERAL_GPE_PADDING,preiewColorYPos,"Older Color:",GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
+                gpe->render_rectangle( elementBox.x+128,preiewColorYPos,elementBox.x+256,preiewColorYPos+32,currColor,false);
 
                 preiewColorYPos = yesButton->get_ypos()-GENERAL_GPE_PADDING-80;
-                render_new_text(MAIN_RENDERER,barBox.x+GENERAL_GPE_PADDING,preiewColorYPos,"New Color:",GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
-                render_rectangle(MAIN_RENDERER,barBox.x+128,preiewColorYPos,barBox.x+256,preiewColorYPos+32,returnedColor,false);
+                render_new_text( elementBox.x+GENERAL_GPE_PADDING,preiewColorYPos,"New Color:",GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
+                gpe->render_rectangle( elementBox.x+128,preiewColorYPos,elementBox.x+256,preiewColorYPos+32,returnedColor,false);
             }
             else
             {
                 preiewColorYPos = yesButton->get_ypos()-GENERAL_GPE_PADDING-40;
-                render_new_text(MAIN_RENDERER,barBox.x+GENERAL_GPE_PADDING,preiewColorYPos,"New Color:",GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
-                render_rectangle(MAIN_RENDERER,barBox.x+128,preiewColorYPos,barBox.x+256,preiewColorYPos+32,returnedColor,false);
+                render_new_text( elementBox.x+GENERAL_GPE_PADDING,preiewColorYPos,"New Color:",GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
+                gpe->render_rectangle( elementBox.x+128,preiewColorYPos,elementBox.x+256,preiewColorYPos+32,returnedColor,false);
             }
-            render_rectangle(MAIN_RENDERER,barBox.x,barBox.y,barBox.x+barBox.w,barBox.y+32,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Color,false);
-            render_rect(MAIN_RENDERER,&barBox,GPE_MAIN_TEMPLATE->PopUp_Box_Border_Color,true);
-            render_new_text(MAIN_RENDERER,barBox.x+barBox.w/2,barBox.y+GENERAL_GPE_PADDING,popUpCaption,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Font_Color,DEFAULT_FONT,FA_CENTER,FA_TOP);
-            yesButton->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-            cancelButton->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-            newColorRValue->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
-            newColorGValue->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
-            newColorBValue->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
-            newColorHexValue->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
+            gpe->render_rectangle( elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+32,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
+            gpe->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
+            render_new_text( elementBox.x+elementBox.w/2,elementBox.y+GENERAL_GPE_PADDING,popUpCaption,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,DEFAULT_FONT,FA_CENTER,FA_TOP);
+            yesButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+            cancelButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+            newColorRValue->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
+            newColorGValue->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
+            newColorBValue->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
+            newColorHexValue->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
             //GPE_MAIN_GUI->render_tooltip(MAIN_RENDERER);
             MAIN_OVERLAY->process_cursor();
-            GPE_MAIN_GUI->render_gui_info(MAIN_RENDERER, true);
+            GPE_MAIN_GUI->render_gui_info(  true);
             MAIN_RENDERER->update_renderer();
         }
         cap_fps();
@@ -315,13 +315,16 @@ GPE_Color * GPE_Get_Color_PopUp(std::string popUpCaption ,GPE_Color * currColor)
         {
             delete returnedColor;
             returnedColor = NULL;
+            input->reset_all_input();
             return NULL;
         }
     }
     else
     {
+        input->reset_all_input();
         return returnedColor;
     }
+    input->reset_all_input();
     return NULL;
 }
 
@@ -335,14 +338,14 @@ void GPE_Show_Tip_Of_Day()
         GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
         MAIN_OVERLAY->process_cursor();
         GPE_MAIN_GUI->reset_gui_info();
-        MAIN_OVERLAY->take_frozen_screenshot(MAIN_RENDERER);
+        MAIN_OVERLAY->take_frozen_screenshot( );
 
         int promptBoxWidth = 544;
         int promptBoxHeight = 384;
-        GPE_Rect barBox;
+        GPE_Rect elementBox;
 
         bool exitOperation = false;
-        userInput->reset_all_input();
+        input->reset_all_input();
         int currentTipId = GPE_MAIN_GUI->get_random_tip();
         if( currentTipId < 0 || currentTipId > GPE_MAIN_GUI->get_tip_count() )
         {
@@ -364,25 +367,25 @@ void GPE_Show_Tip_Of_Day()
         tipParagraph->set_string(currentTipString);
         tipParagraph->set_width(512-GENERAL_GPE_PADDING*2);
         tipParagraph->set_height(96);
-        SDL_RenderSetViewport(MAIN_RENDERER->get_renderer() ,NULL);
+        MAIN_RENDERER->set_viewpoint( NULL);
         MAIN_RENDERER->reset_viewpoint();
-        //MAIN_OVERLAY->render_frozen_screenshot(MAIN_RENDERER);
+        //MAIN_OVERLAY->render_frozen_screenshot( );
         while(exitOperation==false)
         {
             GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
             //record_error("Processing tip of the day");
             //Start the frame timer
-            capTimer->start();
+            GPE_TIMER_CAP->start();
             //gets user input
-            userInput->handle(true,true);
+            input->handle(true,true);
 
-            barBox.x = (SCREEN_WIDTH-promptBoxWidth)/2;
-            barBox.y = (SCREEN_HEIGHT-promptBoxHeight)/2;
-            barBox.w = promptBoxWidth;
-            barBox.h = promptBoxHeight;
-            showTipList->set_coords(barBox.x, barBox.y+32);
-            showTipList->set_width(barBox.w);
-            showTipList->set_height(barBox.h-32);
+            elementBox.x = (SCREEN_WIDTH-promptBoxWidth)/2;
+            elementBox.y = (SCREEN_HEIGHT-promptBoxHeight)/2;
+            elementBox.w = promptBoxWidth;
+            elementBox.h = promptBoxHeight;
+            showTipList->set_coords(elementBox.x, elementBox.y+32);
+            showTipList->set_width(elementBox.w);
+            showTipList->set_height(elementBox.h-32);
             showTipList->barXMargin = GENERAL_GPE_PADDING;
             showTipList->barYMargin = GENERAL_GPE_PADDING;
             showTipList->barXPadding = GENERAL_GPE_PADDING*2;
@@ -398,7 +401,7 @@ void GPE_Show_Tip_Of_Day()
             showTipList->add_gui_element(randomTipButton,false);
             showTipList->add_gui_element(closeButton,false);
             showTipList->process_self(&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-            if( userInput->check_keyboard_released(kb_esc) || closeButton->is_clicked() || WINDOW_WAS_JUST_RESIZED )
+            if( input->check_keyboard_released(kb_esc) || closeButton->is_clicked() || WINDOW_WAS_JUST_RESIZED )
             {
                 exitOperation = true;
             }
@@ -426,22 +429,22 @@ void GPE_Show_Tip_Of_Day()
             MAIN_RENDERER->reset_viewpoint();
             if( !WINDOW_WAS_JUST_RESIZED)
             {
-                //if( userInput->windowEventHappendInFrame )
+                //if( input->windowEventHappendInFrame )
                 {
-                    MAIN_OVERLAY->render_frozen_screenshot(MAIN_RENDERER);
+                    MAIN_OVERLAY->render_frozen_screenshot( );
                 }
                 //Update screen
-                render_rect(MAIN_RENDERER,&barBox,GPE_MAIN_TEMPLATE->PopUp_Box_Color,false);
+                gpe->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Color,false);
 
-                render_rectangle(MAIN_RENDERER,barBox.x,barBox.y,barBox.x+barBox.w,barBox.y+32,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Color,false);
-                render_rect(MAIN_RENDERER,&barBox,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Color,true);
-                render_new_text(MAIN_RENDERER,barBox.x+barBox.w/2,barBox.y+GENERAL_GPE_PADDING,popUpCaption,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Font_Color,DEFAULT_FONT,FA_CENTER,FA_TOP);
-                showTipList->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
-                //GPE_MAIN_GUI-render_gui_info(MAIN_RENDERER, true);
+                gpe->render_rectangle( elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+32,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
+                gpe->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,true);
+                render_new_text( elementBox.x+elementBox.w/2,elementBox.y+GENERAL_GPE_PADDING,popUpCaption,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,DEFAULT_FONT,FA_CENTER,FA_TOP);
+                showTipList->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
+                //GPE_MAIN_GUI-render_gui_info(  true);
 
-                render_rect(MAIN_RENDERER,&barBox,GPE_MAIN_TEMPLATE->PopUp_Box_Border_Color,true);
+                gpe->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
                 MAIN_OVERLAY->process_cursor();
-                GPE_MAIN_GUI->render_gui_info(MAIN_RENDERER, true);
+                GPE_MAIN_GUI->render_gui_info(  true);
                 MAIN_RENDERER->update_renderer();
             }
             cap_fps();
@@ -490,8 +493,8 @@ void GPE_Show_Tip_Of_Day()
             tipParagraph = NULL;
         }
     }
-    userInput->reset_all_input();
-    MAIN_OVERLAY->render_frozen_screenshot(MAIN_RENDERER);
+    input->reset_all_input();
+    MAIN_OVERLAY->render_frozen_screenshot( );
     MAIN_RENDERER->update_renderer();
 }
 
@@ -572,7 +575,7 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
     }
     if( (int)currentDirectoryInView.size()>0 && currentDirectory!=NULL)
 	{
-	    MAIN_OVERLAY->take_frozen_screenshot(MAIN_RENDERER);
+	    MAIN_OVERLAY->take_frozen_screenshot( );
 	    int fontSizeH = 12;
         int fontSizeW = 12;
         FONT_TEXTINPUT->get_metrics("A",&fontSizeW,&fontSizeH);
@@ -590,7 +593,7 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
         {
             shorterCurrentDirectoryInView = currentDirectoryInView.substr(0,32);
         }
-        userInput->reset_all_input();
+        input->reset_all_input();
 
         int iFile = 0;
         int filesProcessedCount = 0;
@@ -622,7 +625,7 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
         fileRenderName[1] = "";
         fileRenderName[2] = "";
         std::vector <std::string> mountedDriversList;
-        GPE_DropDown_Menu * fileTypeDropDown = new GPE_DropDown_Menu(0,0,"All types(*.*)",false);
+        GPE_DropDown_Menu * fileTypeDropDown = new GPE_DropDown_Menu( "All types(*.*)",false);
         osFileFilterString = parse_file_types(allowedFileTypes,fileFilterTypes);
         std::string tempFileType = "";
         for( int fDT = 0; fDT < (int)fileFilterTypes.size(); fDT++)
@@ -642,34 +645,34 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
             yesButton = new GPE_ToolLabelButton(0,32,"Open","");
         }
 
-        GPE_Sprite * mainFilesSprite = NULL;
-        GPE_Sprite * mainMenuSprite = NULL;
+        GPE_Animation * mainFilesSprite = NULL;
+        GPE_Animation * mainMenuSprite = NULL;
 
 
-        GPE_ToolIconButtonBar * fileBrowserModeBar = new GPE_ToolIconButtonBar(0,0,32,true);
+        GPE_ToolIconButtonBar * fileBrowserModeBar = new GPE_ToolIconButtonBar( 32,true);
         fileBrowserModeBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/table.png","Thumbnailed View",1,false);
         fileBrowserModeBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/list-alt.png","Tiled View",1,false);
         fileBrowserModeBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/list.png","Detailed View",1,false);
         int pastFileBrowserMode = 0;
-        GPE_ToolPushButton * mycomputerButton = new GPE_ToolPushButton(0,32,APP_DIRECTORY_NAME+"resources/gfx/buttons/archive.png","Computer","My Computer");
-        GPE_ToolPushButton * homeButton = new GPE_ToolPushButton(0,32,APP_DIRECTORY_NAME+"resources/gfx/buttons/home.png","Home","View Home Disk Drives");
-        GPE_ToolPushButton * desktopButton = new GPE_ToolPushButton(0,32,APP_DIRECTORY_NAME+"resources/gfx/buttons/desktop.png","Desktop","Opens the Desktop folder");
-        GPE_ToolPushButton * documentsButton = new GPE_ToolPushButton(0,32,APP_DIRECTORY_NAME+"resources/gfx/buttons/suitcase.png","Documents","Opens the Documents folder");
-        GPE_ToolPushButton * downloadsButton = new GPE_ToolPushButton(0,32,APP_DIRECTORY_NAME+"resources/gfx/buttons/download.png","Downloads","Opens the Downloads folder");
-        GPE_ToolPushButton * picturesButton = new GPE_ToolPushButton(0,32,APP_DIRECTORY_NAME+"resources/gfx/buttons/image.png","Pictures","Opens the Pictures folder");
-        GPE_ToolPushButton * musicButton = new GPE_ToolPushButton(0,32,APP_DIRECTORY_NAME+"resources/gfx/buttons/music.png","Music","Opens the Music folder");
-        GPE_ToolPushButton * videoButtons = new GPE_ToolPushButton(0,32,APP_DIRECTORY_NAME+"resources/gfx/buttons/film.png","Videos","Opens the Videos folder");
+        GPE_ToolPushButton * mycomputerButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/archive.png","Computer","My Computer");
+        GPE_ToolPushButton * homeButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/home.png","Home","View Home Disk Drives");
+        GPE_ToolPushButton * desktopButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/desktop.png","Desktop","Opens the Desktop folder");
+        GPE_ToolPushButton * documentsButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/suitcase.png","Documents","Opens the Documents folder");
+        GPE_ToolPushButton * downloadsButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/download.png","Downloads","Opens the Downloads folder");
+        GPE_ToolPushButton * picturesButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/image.png","Pictures","Opens the Pictures folder");
+        GPE_ToolPushButton * musicButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/music.png","Music","Opens the Music folder");
+        GPE_ToolPushButton * videoButtons = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/film.png","Videos","Opens the Videos folder");
 
-        GPE_ToolPushButton * backButton = new GPE_ToolPushButton(0,32,APP_DIRECTORY_NAME+"resources/gfx/buttons/backward.png","Up Dir...","Traverses up one directory");
-        GPE_ToolPushButton * appDirectoryButton = new GPE_ToolPushButton(0,32,APP_DIRECTORY_NAME+"resources/gfx/buttons/pencil.png","GPE Folder","Opens the drive to GPE IDE");
-        GPE_ToolPushButton * examplesDirectoryButton = new GPE_ToolPushButton(0,32,APP_DIRECTORY_NAME+"resources/gfx/buttons/leanpub.png","Examples","Examples of Key and simple features");
-        //GPE_ToolPushButton * tutorialsDirectoryButton = new GPE_ToolPushButton(0,32,APP_DIRECTORY_NAME+"resources/gfx/buttons/institution.png","Tutorials","Tutorials on using GPE");
+        GPE_ToolPushButton * backButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/backward.png","Up Dir...","Traverses up one directory");
+        GPE_ToolPushButton * appDirectoryButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/pencil.png","GPE Folder","Opens the drive to GPE IDE");
+        GPE_ToolPushButton * examplesDirectoryButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/leanpub.png","Examples","Examples of Key and simple features");
+        //GPE_ToolPushButton * tutorialsDirectoryButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/institution.png","Tutorials","Tutorials on using GPE");
 
         GPE_ToolLabelButton * cancelButton = new GPE_ToolLabelButton(0,32,"Cancel","");
         GPE_TextInputBasic * newStringBox = new GPE_TextInputBasic("");
         GPE_TextInputBasic * directoryViewBox = new GPE_TextInputBasic("Directory");
         directoryViewBox->set_string("Home");
-        GPE_ToolIconButton * refreshButton = new GPE_ToolIconButton(32,32,"resources/gfx/buttons/refresh.png","Refresh");
+        GPE_ToolIconButton * refreshButton = new GPE_ToolIconButton( "resources/gfx/buttons/refresh.png","Refresh");
 
         GPE_ScrollBar_YAxis * fileDirYScroll = new GPE_ScrollBar_YAxis();
         int maxFilesInColumn = 0;
@@ -694,29 +697,29 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
         newStringBox->switch_inuse(true);
         int buttonsWidth = yesButton->get_width()+cancelButton->get_width()+GENERAL_GPE_PADDING*2;
 
-        GPE_Rect barBox;
-        barBox.x = 0;
-        barBox.y = 0;
-        barBox.w = 512;
-        barBox.h = 416;
+        GPE_Rect elementBox;
+        elementBox.x = 0;
+        elementBox.y = 0;
+        elementBox.w = 512;
+        elementBox.h = 416;
 
         GPE_Rect fileBrowserBox;
         fileBrowserBox.x = 160;
         fileBrowserBox.y = 64;
         fileBrowserBox.w = 512-32;
-        fileBrowserBox.h = barBox.h -384;
+        fileBrowserBox.h = elementBox.h -384;
 
         GPE_Rect filePreviewBox;
-        filePreviewBox.x = SCREEN_WIDTH-(barBox.x+barBox.w);
+        filePreviewBox.x = SCREEN_WIDTH-(elementBox.x+elementBox.w);
         filePreviewBox.y = 64;
         filePreviewBox.w = SCREEN_WIDTH-filePreviewBox.x;
-        filePreviewBox.h = barBox.h -384;
+        filePreviewBox.h = elementBox.h -384;
 
         GPE_Rect fileShortcutTab;
         fileShortcutTab.x = 0;
         fileShortcutTab.y = 64;
         fileShortcutTab.w = 144;
-        fileShortcutTab.h = barBox.h -384;
+        fileShortcutTab.h = elementBox.h -384;
 
         GPE_Rect currFileRect;
         currFileRect.x = 0;
@@ -727,7 +730,7 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
         int jContentRow = 0;
 
         MAIN_RENDERER->reset_viewpoint();
-        MAIN_OVERLAY->render_frozen_screenshot(MAIN_RENDERER);
+        MAIN_OVERLAY->render_frozen_screenshot( );
         record_error("Attempting to open file selection menu...");
         //The lovely file selector loop
         nextDirectoryToView = currentDirectoryInView;
@@ -787,7 +790,7 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
         {
             GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
             MAIN_RENDERER->reset_viewpoint();
-            if( !point_within(userInput->mouse_x,userInput->mouse_y,
+            if( !point_within(input->mouse_x,input->mouse_y,
                               fileBrowserBox.x,fileBrowserBox.y,
                               fileBrowserBox.x+fileBrowserBox.w,
                               fileBrowserBox.y+fileBrowserBox.h) )
@@ -871,40 +874,40 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
 
             ///
             //Start the frame timer
-            capTimer->start();
+            GPE_TIMER_CAP->start();
             //gets user input
             GPE_MAIN_GUI->reset_gui_info();
-            userInput->handle(true,true);
+            input->handle(true,true);
 
-            barBox.x = 0;
-            barBox.y = 0;
+            elementBox.x = 0;
+            elementBox.y = 0;
             if( SCREEN_WIDTH > 1024)
             {
-                barBox.w = SCREEN_WIDTH*2/3;
+                elementBox.w = SCREEN_WIDTH*2/3;
             }
             else
             {
-                barBox.w = SCREEN_WIDTH-128;
+                elementBox.w = SCREEN_WIDTH-128;
             }
 
             //if( SCREEN_HEIGHT >= 600)
             {
-                barBox.h = SCREEN_HEIGHT*4/5;
+                elementBox.h = SCREEN_HEIGHT*4/5;
             }/*
             else
             {
-                barBox.h = SCREEN_HEIGHT;
+                elementBox.h = SCREEN_HEIGHT;
             }*/
 
-            fileBrowserBox.w = barBox.w-16-fileBrowserBox.x;
-            fileBrowserBox.h = barBox.h - 192;
+            fileBrowserBox.w = elementBox.w-16-fileBrowserBox.x;
+            fileBrowserBox.h = elementBox.h - 192;
 
-            filePreviewBox.x = barBox.x+barBox.w;
+            filePreviewBox.x = elementBox.x+elementBox.w;
             filePreviewBox.y = fileBrowserBox.y;
             filePreviewBox.w = SCREEN_WIDTH-filePreviewBox.x-(GENERAL_GPE_PADDING*2);
             filePreviewBox.h = fileBrowserBox.h;
 
-            fileShortcutTab.h = barBox.h - fileShortcutTab.y;
+            fileShortcutTab.h = elementBox.h - fileShortcutTab.y;
             fileBrowserModeBar->process_self(&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
             if( fileBrowserModeBar->is_clicked() || pastFileBrowserMode!=fileBrowserModeBar->get_tab_pos() )
             {
@@ -977,7 +980,7 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
                 shorterCurrentDirectoryInView = "/..."+currentDirectoryInView.substr(currentDirectoryInView.size()-maxCharsToView);
             }
 
-            refreshButton->set_coords(GENERAL_GPE_PADDING,barBox.y+32);
+            refreshButton->set_coords(GENERAL_GPE_PADDING,elementBox.y+32);
             newStringBox->set_coords( fileBrowserBox.x+GENERAL_GPE_PADDING,fileBrowserBox.y+fileBrowserBox.h+GENERAL_GPE_PADDING);
             newStringBox->set_width(fileBrowserBox.w-128 );
 
@@ -985,8 +988,8 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
             fileTypeDropDown->set_width(fileBrowserBox.w-128 );
 
 
-            directoryViewBox->set_coords( barBox.x+GENERAL_GPE_PADDING+32,barBox.y+32);
-            directoryViewBox->set_width(barBox.w - 192);
+            directoryViewBox->set_coords( elementBox.x+GENERAL_GPE_PADDING+32,elementBox.y+32);
+            directoryViewBox->set_width(elementBox.w - 192);
 
             fileBrowserModeBar->set_coords(directoryViewBox->get_x2pos(),directoryViewBox->get_ypos() );
             fileBrowserModeBar->set_width(128);
@@ -1004,8 +1007,8 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
             examplesDirectoryButton->set_width(128);
             //tutorialsDirectoryButton->set_width(128);
 
-            yesButton->set_coords(  barBox.x+barBox.w-buttonsWidth,barBox.h-48);
-            cancelButton->set_coords( barBox.x+yesButton->get_x2pos()+GENERAL_GPE_PADDING,barBox.h-48);
+            yesButton->set_coords(  elementBox.x+elementBox.w-buttonsWidth,elementBox.h-48);
+            cancelButton->set_coords( elementBox.x+yesButton->get_x2pos()+GENERAL_GPE_PADDING,elementBox.h-48);
 
             if( shortCutGList!=NULL)
             {
@@ -1081,7 +1084,7 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
 
             if( newStringBox->is_inuse()==false && directoryViewBox->is_inuse()==false )
             {
-                if( userInput->check_keyboard_released(kb_backspace) )
+                if( input->check_keyboard_released(kb_backspace) )
                 {
                     nextDirectoryToView = get_path_from_file(currentDirectoryInView);
                     if( nextDirectoryToView.size()<=1 )
@@ -1271,12 +1274,12 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
                 nextDirectoryToView = APP_DIRECTORY_NAME+"tutorials";
             }*/
 
-            if( userInput->check_keyboard_released(kb_esc) || cancelButton->is_clicked() )
+            if( input->check_keyboard_released(kb_esc) || cancelButton->is_clicked() )
             {
                 exitOperation = true;
                 returnVal = "";
             }
-            else if( userInput->check_keyboard_released(kb_enter) || yesButton->is_clicked() )
+            else if( input->check_keyboard_released(kb_enter) || yesButton->is_clicked() )
             {
                 if( newStringBox!=NULL)
                 {
@@ -1326,10 +1329,10 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
             {
                 if( (int)mountedDriversList.size() > maxContentInView)
                 {
-                    fileDirYScroll->barBox.x = fileBrowserBox.x+fileBrowserBox.w-16;
-                    fileDirYScroll->barBox.y = fileBrowserBox.y;
-                    fileDirYScroll->barBox.w = 16;
-                    fileDirYScroll->barBox.h = fileBrowserBox.h;
+                    fileDirYScroll->elementBox.x = fileBrowserBox.x+fileBrowserBox.w-16;
+                    fileDirYScroll->elementBox.y = fileBrowserBox.y;
+                    fileDirYScroll->elementBox.w = 16;
+                    fileDirYScroll->elementBox.h = fileBrowserBox.h;
 
                     fileDirYScroll->fullRect.x = 0;
                     fileDirYScroll->fullRect.y = 0;
@@ -1337,13 +1340,13 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
                     fileDirYScroll->fullRect.h = (int)mountedDriversList.size();
                     //if( directoryViewBox->is_inuse()==false && newStringBox->is_inuse()==false && shortCutGList->hasScrollControl==false)
                     //{
-                    if( point_between_rect(userInput->mouse_x,userInput->mouse_y,&fileBrowserBox ) )
+                    if( point_between_rect(input->mouse_x,input->mouse_y,&fileBrowserBox ) )
                     {
-                        if( userInput->mouseScrollingUp || userInput->check_keyboard_down(kb_page_up))
+                        if( input->mouseScrollingUp || input->check_keyboard_down(kb_page_up))
                         {
                             iDirectoryXPos-=maxContentInView/2;
                         }
-                        else if( userInput->mouseScrollingDown || userInput->check_keyboard_down(kb_page_down) )
+                        else if( input->mouseScrollingDown || input->check_keyboard_down(kb_page_down) )
                         {
                             iDirectoryXPos+=maxContentInView/2;
                         }
@@ -1356,7 +1359,7 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
                     fileDirYScroll->process_self();
                     if( fileDirYScroll->has_moved() )
                     {
-                        iDirectoryXPos = ceil( ( (float)mountedDriversList.size() ) * ( (float)fileDirYScroll->scrollYPos/(float)fileDirYScroll->barBox.h ) );
+                        iDirectoryXPos = ceil( ( (float)mountedDriversList.size() ) * ( (float)fileDirYScroll->scrollYPos/(float)fileDirYScroll->elementBox.h ) );
                     }
                 }
                 else
@@ -1372,10 +1375,10 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
             {
                 if( filesAndDirectoryPassedFilterCount > maxContentInView)
                 {
-                    fileDirYScroll->barBox.x = fileBrowserBox.x+fileBrowserBox.w-16;
-                    fileDirYScroll->barBox.y = fileBrowserBox.y;
-                    fileDirYScroll->barBox.w = 16;
-                    fileDirYScroll->barBox.h = fileBrowserBox.h;
+                    fileDirYScroll->elementBox.x = fileBrowserBox.x+fileBrowserBox.w-16;
+                    fileDirYScroll->elementBox.y = fileBrowserBox.y;
+                    fileDirYScroll->elementBox.w = 16;
+                    fileDirYScroll->elementBox.h = fileBrowserBox.h;
 
                     fileDirYScroll->fullRect.x = 0;
                     fileDirYScroll->fullRect.y = 0;
@@ -1388,25 +1391,25 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
                     }
                     scrollAmount = */
                     //if( directoryViewBox->is_inuse()==false && newStringBox->is_inuse()==false && shortCutGList->hasScrollControl==false)
-                    if( point_between_rect(userInput->mouse_x,userInput->mouse_y,&fileBrowserBox ) )
+                    if( point_between_rect(input->mouse_x,input->mouse_y,&fileBrowserBox ) )
                     {
 
-                        if( userInput->mouseScrollingUp)
+                        if( input->mouseScrollingUp)
                         {
                             iFileXPos-=maxFilesInRows;
                         }
-                        else if( userInput->mouseScrollingDown)
+                        else if( input->mouseScrollingDown)
                         {
                             iFileXPos+=maxFilesInRows;
                         }
                     }
                     if( directoryViewBox->is_inuse()==false && newStringBox->is_inuse()==false && shortCutGList->hasScrollControl==false )
                     {
-                        if( userInput->check_keyboard_down(kb_up) )
+                        if( input->check_keyboard_down(kb_up) )
                         {
                             iFileXPos-=maxFilesInRows;
                         }
-                        else if( userInput->check_keyboard_down(kb_down) )
+                        else if( input->check_keyboard_down(kb_down) )
                         {
                             iFileXPos+=maxFilesInRows;
                         }
@@ -1420,7 +1423,7 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
 
                     if( fileDirYScroll->has_moved() )
                     {
-                        iFileXPos = ceil( ( (float)filesAndDirectoryPassedFilterCount ) * ( (float)fileDirYScroll->scrollYPos/(float)fileDirYScroll->barBox.h ) );
+                        iFileXPos = ceil( ( (float)filesAndDirectoryPassedFilterCount ) * ( (float)fileDirYScroll->scrollYPos/(float)fileDirYScroll->elementBox.h ) );
                     }
                 }
                 else
@@ -1437,37 +1440,37 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
             calculate_avg_fps();
             if( !WINDOW_WAS_JUST_RESIZED)
             {
-                //if( userInput->windowEventHappendInFrame )
+                //if( input->windowEventHappendInFrame )
                 {
-                    MAIN_OVERLAY->render_frozen_screenshot(MAIN_RENDERER);
+                    MAIN_OVERLAY->render_frozen_screenshot( );
                     //currentState->render();
                     //MAIN_RENDERER->update_renderer();
                 }
                 //Update screen
-                render_rect(MAIN_RENDERER,&barBox,GPE_MAIN_TEMPLATE->Program_Header_Color,false);
+                gpe->render_rect( &elementBox,GPE_MAIN_THEME->Program_Header_Color,false);
 
-                render_rectangle(MAIN_RENDERER,barBox.x,barBox.y,barBox.x+barBox.w,barBox.y+32,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Color,false);
+                gpe->render_rectangle( elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+32,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
 
-                render_new_text(MAIN_RENDERER,barBox.x+barBox.w/2,barBox.y+16,prompt,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Font_Color,DEFAULT_FONT,FA_CENTER,FA_MIDDLE);
+                render_new_text( elementBox.x+elementBox.w/2,elementBox.y+16,prompt,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,DEFAULT_FONT,FA_CENTER,FA_MIDDLE);
                 if( enterMyComputerMode)
                 {
-                    //render_new_text(MAIN_RENDERER,barBox.x+32,barBox.y+48,"My Computer",GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_MIDDLE);
+                    //render_new_text( elementBox.x+32,elementBox.y+48,"My Computer",GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_MIDDLE);
                 }
                 else
                 {
-                    //render_new_text(MAIN_RENDERER,barBox.x+32,barBox.y+48,"Viewing "+shorterCurrentDirectoryInView,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_MIDDLE);
+                    //render_new_text( elementBox.x+32,elementBox.y+48,"Viewing "+shorterCurrentDirectoryInView,GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_MIDDLE);
                 }
 
-                render_rect(MAIN_RENDERER,&fileShortcutTab,GPE_MAIN_TEMPLATE->Text_Box_Color,false);
-                render_rect(MAIN_RENDERER,&fileShortcutTab,GPE_MAIN_TEMPLATE->Text_Box_Highlight_Color,true);
+                gpe->render_rect( &fileShortcutTab,GPE_MAIN_THEME->Text_Box_Color,false);
+                gpe->render_rect( &fileShortcutTab,GPE_MAIN_THEME->Text_Box_Highlight_Color,true);
 
-                render_rect(MAIN_RENDERER,&fileBrowserBox,GPE_MAIN_TEMPLATE->Text_Box_Color,false);
-                render_rect(MAIN_RENDERER,&fileBrowserBox,GPE_MAIN_TEMPLATE->Text_Box_Highlight_Color,true);
+                gpe->render_rect( &fileBrowserBox,GPE_MAIN_THEME->Text_Box_Color,false);
+                gpe->render_rect( &fileBrowserBox,GPE_MAIN_THEME->Text_Box_Highlight_Color,true);
 
                 iContentCol = 0;
                 jContentRow = 0;
                 MAIN_RENDERER->set_viewpoint( &fileBrowserBox);
-                mouseIsInBrowserBox = point_between_rect(userInput->mouse_x,userInput->mouse_y,&fileBrowserBox);
+                mouseIsInBrowserBox = point_between_rect(input->mouse_x,input->mouse_y,&fileBrowserBox);
 
                 if( enterMyComputerMode==true)
                 {
@@ -1477,16 +1480,16 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
                         currFileRect.x = fileBrowserBox.x+GENERAL_GPE_PADDING;
                         currFileRect.y = fileBrowserBox.y+jContentRow*(GENERAL_THUMBNAIL_SIZE+GENERAL_GPE_PADDING);
 
-                        if( mouseIsInBrowserBox && point_between_rect(userInput->mouse_x,userInput->mouse_y,&currFileRect) )
+                        if( mouseIsInBrowserBox && point_between_rect(input->mouse_x,input->mouse_y,&currFileRect) )
                         {
                             fileHoverNumber = iDirectory;
-                            if( userInput->check_mouse_doubleclicked(0) )
+                            if( input->check_mouse_doubleclicked(0) )
                             {
                                 nextDirectoryToView = mountedDriversList[iDirectory];
                                 fileHoverNumber = -1;
                                 fileSelectedNumber = -1;
                             }
-                            else if( userInput->check_mouse_released(0) )
+                            else if( input->check_mouse_released(0) )
                             {
                                 fileSelectedNumber = iDirectory;
                                 fileHoverNumber = -1;
@@ -1498,14 +1501,14 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
 
                         if( fileSelectedNumber ==iDirectory)
                         {
-                            render_rect(MAIN_RENDERER,&currFileRect,GPE_MAIN_TEMPLATE->Main_Box_Font_Highlight_Color,false);
+                            gpe->render_rect( &currFileRect,GPE_MAIN_THEME->Main_Box_Font_Highlight_Color,false);
                         }
                         else if( fileHoverNumber ==iDirectory)
                         {
-                            render_rect(MAIN_RENDERER,&currFileRect,GPE_MAIN_TEMPLATE->Main_Border_Color,false);
+                            gpe->render_rect( &currFileRect,GPE_MAIN_THEME->Main_Border_Color,false);
                         }
-                        render_texture_resized(MAIN_RENDERER,textRepHarddrive,currFileRect.x,currFileRect.y,GENERAL_THUMBNAIL_SIZE,GENERAL_THUMBNAIL_SIZE,NULL,NULL,FA_LEFT, FA_TOP, GPE_MAIN_TEMPLATE->Main_Folder_Color );
-                        render_new_text(MAIN_RENDERER,currFileRect.x+GENERAL_THUMBNAIL_SIZE+GENERAL_GPE_PADDING,currFileRect.y+GENERAL_THUMBNAIL_SIZE/2,mountedDriversList[iDirectory],GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_CATEGORY_BAR,FA_LEFT,FA_MIDDLE);
+                        render_texture_resized( textRepHarddrive,currFileRect.x,currFileRect.y,GENERAL_THUMBNAIL_SIZE,GENERAL_THUMBNAIL_SIZE,NULL,FA_LEFT, FA_TOP, GPE_MAIN_THEME->Main_Folder_Color );
+                        render_new_text( currFileRect.x+GENERAL_THUMBNAIL_SIZE+GENERAL_GPE_PADDING,currFileRect.y+GENERAL_THUMBNAIL_SIZE/2,mountedDriversList[iDirectory],GPE_MAIN_THEME->Main_Box_Font_Color,FONT_CATEGORY_BAR,FA_LEFT,FA_MIDDLE);
 
                         jContentRow += 1;
                     }
@@ -1536,10 +1539,10 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
                             {
                                 currFileRect.x = fileBrowserBox.x+iContentCol*(currFileRect.w);
                                 currFileRect.y = fileBrowserBox.y+jContentRow*(currFileRect.h);
-                                if( mouseIsInBrowserBox && point_between_rect(userInput->mouse_x,userInput->mouse_y,&currFileRect) )
+                                if( mouseIsInBrowserBox && point_between_rect(input->mouse_x,input->mouse_y,&currFileRect) )
                                 {
                                     fileHoverNumber = iFile;
-                                    if( userInput->check_mouse_doubleclicked(0) )
+                                    if( input->check_mouse_doubleclicked(0) )
                                     {
                                         if( currentFile->is_directory() )
                                         {
@@ -1580,7 +1583,7 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
                                         fileHoverNumber = -1;
                                         fileSelectedNumber = -1;
                                     }
-                                    else if( userInput->check_mouse_released(0) )
+                                    else if( input->check_mouse_released(0) )
                                     {
                                         fileSelectedNumber = iFile;
                                         fileHoverNumber = -1;
@@ -1593,7 +1596,7 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
                                                 {
                                                     if( currentFileExt=="bmp" || currentFileExt=="gif" || currentFileExt=="jpg" || currentFileExt=="jpeg"  || currentFileExt=="png" )
                                                     {
-                                                        previewedImageTexture->load_new_texture(MAIN_RENDERER,currentDirectoryInView+"/"+fileToClick);
+                                                        previewedImageTexture->load_new_texture( currentDirectoryInView+"/"+fileToClick);
                                                         if( previewedImageTexture!=NULL)
                                                         {
                                                             if( previewedImageTexture->get_width() < 1 || previewedImageTexture->get_height() < 1 || previewedImageTexture->get_width() > 4096 || previewedImageTexture->get_height() > 4096)
@@ -1627,11 +1630,11 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
                                 currFileRect.y = jContentRow*(currFileRect.h);
                                 if( fileSelectedNumber ==iFile)
                                 {
-                                    render_rect(MAIN_RENDERER,&currFileRect,GPE_MAIN_TEMPLATE->Button_Box_Selected_Color,false);
+                                    gpe->render_rect( &currFileRect,GPE_MAIN_THEME->Button_Box_Selected_Color,false);
                                 }
                                 else if( fileHoverNumber ==iFile)
                                 {
-                                    render_rect(MAIN_RENDERER,&currFileRect,GPE_MAIN_TEMPLATE->Button_Box_Highlighted_Color,false);
+                                    gpe->render_rect( &currFileRect,GPE_MAIN_THEME->Button_Box_Highlighted_Color,false);
                                 }
                                 currentFIleTexture = NULL;
                                 if( currentFile->is_directory() )
@@ -1640,11 +1643,11 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
                                     //mainFilesSprite
                                     if( fileSelectedNumber ==iFile)
                                     {
-                                        fileIconColor = GPE_MAIN_TEMPLATE->Main_Folder_Highlighted_Color;
+                                        fileIconColor = GPE_MAIN_THEME->Main_Folder_Highlighted_Color;
                                     }
                                     else
                                     {
-                                        fileIconColor = GPE_MAIN_TEMPLATE->Main_Folder_Color;
+                                        fileIconColor = GPE_MAIN_THEME->Main_Folder_Color;
                                     }
                                     currentFIleTexture = textRepFolder;
                                 }
@@ -1695,11 +1698,11 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
 
                                     if( fileSelectedNumber ==iFile)
                                     {
-                                       fileIconColor = GPE_MAIN_TEMPLATE->Main_Box_Font_Highlight_Color;
+                                       fileIconColor = GPE_MAIN_THEME->Main_Box_Font_Highlight_Color;
                                     }
                                     else
                                     {
-                                       fileIconColor  = GPE_MAIN_TEMPLATE->Main_Box_Font_Color;
+                                       fileIconColor  = GPE_MAIN_THEME->Main_Box_Font_Color;
                                     }
                                 }
 
@@ -1730,27 +1733,27 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
                                 {
                                     if( currentFile->fileThumbnail!=NULL )
                                     {
-                                        render_texture_resized(MAIN_RENDERER,currentFile->fileThumbnail,
+                                        render_texture_resized( currentFile->fileThumbnail,
                                                                currFileRect.x+(currFileRect.w-GENERAL_THUMBNAIL_SIZE)/2,currFileRect.y,GENERAL_THUMBNAIL_SIZE,GENERAL_THUMBNAIL_SIZE);
                                     }
                                     else if( currentFIleTexture!=NULL)
                                     {
-                                        render_texture_resized(MAIN_RENDERER,currentFIleTexture,currFileRect.x+(currFileRect.w-GENERAL_THUMBNAIL_SIZE)/2,currFileRect.y,GENERAL_THUMBNAIL_SIZE,GENERAL_THUMBNAIL_SIZE,NULL,NULL,FA_LEFT,FA_TOP,fileIconColor );
+                                        render_texture_resized( currentFIleTexture,currFileRect.x+(currFileRect.w-GENERAL_THUMBNAIL_SIZE)/2,currFileRect.y,GENERAL_THUMBNAIL_SIZE,GENERAL_THUMBNAIL_SIZE,NULL,FA_LEFT,FA_TOP,fileIconColor );
                                     }
-                                    render_new_text(MAIN_RENDERER,currFileRect.x+currFileRect.w/2,currFileRect.y+GENERAL_THUMBNAIL_SIZE,fileRenderName[0],GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_TEXTINPUT,FA_CENTER,FA_TOP);
-                                    render_new_text(MAIN_RENDERER,currFileRect.x+currFileRect.w/2,currFileRect.y+GENERAL_THUMBNAIL_SIZE+TEXTBOX_FONT_SIZE_HEIGHT,fileRenderName[1],GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_TEXTINPUT,FA_CENTER,FA_TOP);
-                                    render_new_text(MAIN_RENDERER,currFileRect.x+currFileRect.w/2,currFileRect.y+GENERAL_THUMBNAIL_SIZE+TEXTBOX_FONT_SIZE_HEIGHT*2,fileRenderName[2],GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_TEXTINPUT,FA_CENTER,FA_TOP);
+                                    render_new_text( currFileRect.x+currFileRect.w/2,currFileRect.y+GENERAL_THUMBNAIL_SIZE,fileRenderName[0],GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TEXTINPUT,FA_CENTER,FA_TOP);
+                                    render_new_text( currFileRect.x+currFileRect.w/2,currFileRect.y+GENERAL_THUMBNAIL_SIZE+TEXTBOX_FONT_SIZE_HEIGHT,fileRenderName[1],GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TEXTINPUT,FA_CENTER,FA_TOP);
+                                    render_new_text( currFileRect.x+currFileRect.w/2,currFileRect.y+GENERAL_THUMBNAIL_SIZE+TEXTBOX_FONT_SIZE_HEIGHT*2,fileRenderName[2],GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TEXTINPUT,FA_CENTER,FA_TOP);
                                 }
                                 else
                                 {
                                     //Renders listed icon
                                     if( currentFIleTexture!=NULL)
                                     {
-                                        render_texture_resized(MAIN_RENDERER,currentFIleTexture,
+                                        render_texture_resized( currentFIleTexture,
                                                                currFileRect.x,currFileRect.y+(currFileRect.h-GENERAL_ICON_WIDTH)/2,
-                                                               GENERAL_ICON_WIDTH,GENERAL_ICON_WIDTH,NULL,NULL,FA_LEFT,FA_TOP,fileIconColor );
+                                                               GENERAL_ICON_WIDTH,GENERAL_ICON_WIDTH,NULL,FA_LEFT,FA_TOP,fileIconColor );
                                     }
-                                    render_new_text(MAIN_RENDERER,currFileRect.x+GENERAL_ICON_WIDTH,currFileRect.y+currFileRect.h/2,fileRenderName[0],GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_MIDDLE );
+                                    render_new_text( currFileRect.x+GENERAL_ICON_WIDTH,currFileRect.y+currFileRect.h/2,fileRenderName[0],GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_MIDDLE );
                                 }
 
                                 filesProcessedCount++;
@@ -1768,52 +1771,52 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
                 MAIN_RENDERER->reset_viewpoint();
                 if( filesAndDirectoryPassedFilterCount > maxContentInView)
                 {
-                    fileDirYScroll->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
+                    fileDirYScroll->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
                 }
                 /*
-                appDirectoryButton->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-                backButton->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-                desktopButton->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-                documentsButton->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-                downloadsButton->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-                homeButton->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-                musicButton->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-                mycomputerButton->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);*/
-                shortCutGList->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+                appDirectoryButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+                backButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+                desktopButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+                documentsButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+                downloadsButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+                homeButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+                musicButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+                mycomputerButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);*/
+                shortCutGList->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
 
-                refreshButton->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+                refreshButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
 
-                yesButton->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-                cancelButton->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-                directoryViewBox->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA,true);
-                fileBrowserModeBar->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA,true);
-                newStringBox->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA,true);
+                yesButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+                cancelButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+                directoryViewBox->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA,true);
+                fileBrowserModeBar->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA,true);
+                newStringBox->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA,true);
                 if( !isDirectorySearch)
                 {
-                    fileTypeDropDown->render_self(MAIN_RENDERER,&GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA,true);
+                    fileTypeDropDown->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA,true);
                 }
                 if( previewedImageTexture!=NULL && enterMyComputerMode==false && filePreviewBox.w!=0 && filePreviewBox.h!=0)
                 {
                     if( filePreviewBox.w > previewedImageTexture->get_width()&& filePreviewBox.h> previewedImageTexture->get_height() )
                     {
-                        previewedImageTexture->render_tex(MAIN_RENDERER,filePreviewBox.x,filePreviewBox.y);
+                        previewedImageTexture->render_tex( filePreviewBox.x,filePreviewBox.y);
                     }
                     else
                     {
                         imagePreviewScaleSize = std::max((float)previewedImageTexture->get_width()/ (float)(filePreviewBox.w), (float)previewedImageTexture->get_height()/(float)(filePreviewBox.h) );
                         if( imagePreviewScaleSize > 1)
                         {
-                            previewedImageTexture->render_tex_resized(MAIN_RENDERER,filePreviewBox.x,filePreviewBox.y,(float)previewedImageTexture->get_width()/imagePreviewScaleSize,(float)previewedImageTexture->get_height()/imagePreviewScaleSize);
+                            previewedImageTexture->render_tex_resized( filePreviewBox.x,filePreviewBox.y,(float)previewedImageTexture->get_width()/imagePreviewScaleSize,(float)previewedImageTexture->get_height()/imagePreviewScaleSize);
                         }
                         else
                         {
-                            previewedImageTexture->render_tex_resized(MAIN_RENDERER,filePreviewBox.x,filePreviewBox.y,previewedImageTexture->get_width()*imagePreviewScaleSize,previewedImageTexture->get_height()*imagePreviewScaleSize);
+                            previewedImageTexture->render_tex_resized( filePreviewBox.x,filePreviewBox.y,previewedImageTexture->get_width()*imagePreviewScaleSize,previewedImageTexture->get_height()*imagePreviewScaleSize);
                         }
                     }
                 }
-                render_rect(MAIN_RENDERER,&barBox,GPE_MAIN_TEMPLATE->Main_Border_Color,true);
+                gpe->render_rect( &elementBox,GPE_MAIN_THEME->Main_Border_Color,true);
                 MAIN_OVERLAY->process_cursor();
-                GPE_MAIN_GUI->render_gui_info(MAIN_RENDERER, true);
+                GPE_MAIN_GUI->render_gui_info(  true);
                 MAIN_RENDERER->update_renderer();
             }
         }
@@ -1930,11 +1933,11 @@ std::string GPE_GetPlainFileName( const std::string & prompt, std::string allowe
             delete shortCutGList;
             shortCutGList = NULL;
         }
-        userInput->reset_all_input();
+        input->reset_all_input();
         previousDirectory = currentDirectoryInView;
         return returnFile;
     }
-    userInput->reset_all_input();
+    input->reset_all_input();
 	return returnFile;
 }
 

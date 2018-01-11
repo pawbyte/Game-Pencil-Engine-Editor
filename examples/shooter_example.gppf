@@ -8,9 +8,9 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.14
+Version=2
 Name=shooter_example
-Count=1030
+Count=1031
 ProjectLanguage=JS
 ProjectIcon=icon.png
 [Project=shooter_example]
@@ -20,7 +20,7 @@ ProjectIcon=icon.png
     [SuperFolder=Tilesheets]
         Tilesheet=newTilesheet1,1005,
     [/SuperFolder]
-    [SuperFolder=Sprites]
+    [SuperFolder=Animations]
         Sprite=spr_block,1017,
         Sprite=spr_enemy,1015,
         Sprite=spr_bullet,1009,
@@ -38,6 +38,7 @@ ProjectIcon=icon.png
         Function=newFunction1,1022,
     [/SuperFolder]
     [SuperFolder=Paths]
+        Path=newPath1,1031,
     [/SuperFolder]
     [SuperFolder=Objects]
         GameObject=obj_block,1018,

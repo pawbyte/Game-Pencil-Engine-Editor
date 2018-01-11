@@ -3,10 +3,10 @@ video_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -53,8 +53,8 @@ videoResource::videoResource(GPE_ResourceContainer * pFolder)
     defaultVolume->set_string("100");
     defaultVolume->set_label("Default Volume:");
 
-    openExternalEditorButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/rocket.png","Use External Editor","Opens Audio In External Editor");
-    refreshResourceDataButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/refresh.png","Refresh","Refreshes this resource's media files");
+    openExternalEditorButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/rocket.png","Opens Audio In External Editor");
+    refreshResourceDataButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/refresh.png","Refreshes this resource's media files");
 }
 
 videoResource::~videoResource()
@@ -250,7 +250,7 @@ void videoResource::preprocess_self(std::string alternatePath)
                             }
                         }
                     }
-                    else if( foundFileVersion < 2)
+                    else if( foundFileVersion <= 2)
                     {
                         //Begin processing the file.
                         if(!currLineToBeProcessed.empty() )
@@ -304,9 +304,9 @@ void videoResource::preprocess_self(std::string alternatePath)
     }
 }
 
-void videoResource::prerender_self(GPE_Renderer * cRender)
+void videoResource::prerender_self()
 {
-    standardEditableGameResource::prerender_self(cRender);
+    standardEditableGameResource::prerender_self();
 }
 
 void videoResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
@@ -325,14 +325,15 @@ void videoResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         editorPaneList->add_gui_element(videoEditorMainNote,true);
         editorPaneList->add_gui_element(renameBox,true);
 
-        editorPaneList->add_gui_element(refreshResourceDataButton,true);
-        editorPaneList->add_gui_element(loadResourceButton,true);
+        editorPaneList->add_gui_element(refreshResourceDataButton,false );
+        editorPaneList->add_gui_element(loadResourceButton,false );
+        editorPaneList->add_gui_element(openExternalEditorButton,true);
+
         editorPaneList->add_gui_element(videoGroupName, true);
         editorPaneList->add_gui_element(defaultVolume,true);
-        editorPaneList->add_gui_element(openExternalEditorButton,true);
         editorPaneList->add_gui_element(confirmResourceButton,true);
         editorPaneList->add_gui_element(cancelResourceButton,true);
-        editorPaneList->set_maxed_out_width();
+        //editorPaneList->set_maxed_out_width();
         editorPaneList->process_self(viewedSpace,cam);
         if( loadResourceButton!=NULL)
         {
@@ -359,7 +360,7 @@ void videoResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
                 }
                 if( hasFileToOpen )
                 {
-                    GPE_open_context_menu();
+                    GPE_open_context_menu(-1,-1,256);
                     MAIN_CONTEXT_MENU->set_width(openExternalEditorButton->get_width() );
                     for( ii = 0; ii < SUPPORTED_VIDEO_FORMAT_COUNT; ii++)
                     {
@@ -403,29 +404,28 @@ void videoResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
     }
 }
 
-void videoResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw )
+void videoResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if(cam!=NULL && viewedSpace!=NULL && editorPaneList!=NULL)
     {
-        if( forceRedraw )
+        if( forceRedraw)
         {
-            render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
             for( int i = 0; i < SUPPORTED_VIDEO_FORMAT_COUNT; i++)
             {
                 if( videoFileName[i].size()> 0)
                 {
-                    render_new_text(cRender,viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_VIDEO_EXT[i]+" is attatched",GPE_MAIN_TEMPLATE->Main_Box_Font_Highlight_Color,DEFAULT_FONT,FA_RIGHT,FA_TOP);
+                    render_new_text( viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_VIDEO_EXT[i]+" is attatched",GPE_MAIN_THEME->Main_Box_Font_Highlight_Color,DEFAULT_FONT,FA_RIGHT,FA_TOP);
                 }
                 else
                 {
-                    render_new_text(cRender,viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_VIDEO_EXT[i]+" not attatched",GPE_MAIN_TEMPLATE->Main_Box_Font_Color,DEFAULT_FONT,FA_RIGHT,FA_TOP);
+                    render_new_text( viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_VIDEO_EXT[i]+" not attatched",GPE_MAIN_THEME->Main_Box_Font_Color,DEFAULT_FONT,FA_RIGHT,FA_TOP);
                 }
             }
         }
 
-        editorPaneList->render_self(cRender,viewedSpace,cam, forceRedraw);
+        editorPaneList->render_self( viewedSpace,cam, forceRedraw);
     }
     //
 }
@@ -456,18 +456,7 @@ void videoResource::save_resource(std::string alternatePath, int backupId)
         //makes sure the file is open
         if (newSaveDataFile.is_open())
         {
-            newSaveDataFile << "#    --------------------------------------------------  # \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#    Game Pencil Engine Project Game Video DataFile \n";
-            newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
-            newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#    --------------------------------------------------  # \n";
-            newSaveDataFile << "Version=" << GPE_VERSION_DOUBLE_NUMBER << "\n";
-            newSaveDataFile << "ResourceName=" << resourceName << "\n";
+            write_header_on_file(&newSaveDataFile);
 
             std::string resFileLocation = "";
             std::string resFileCopySrc;

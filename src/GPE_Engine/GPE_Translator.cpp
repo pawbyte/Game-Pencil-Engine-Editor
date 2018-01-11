@@ -3,10 +3,10 @@ GPE_Translator.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -69,8 +69,8 @@ std::string GPE_Translator::get_language( )
 
 std::string GPE_Translator::get_str(std::string message)
 {
-    std::string foundTranslation = myTranslations[message];
-	if (foundTranslation == "") foundTranslation = message;
+    //std::string foundTranslation = myTranslations[message];
+	//if (foundTranslation == "") foundTranslation = message;
 	return message;
 }
 

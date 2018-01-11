@@ -1,0 +1,76 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project Game Path DataFile 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=2
+ResourceName=newPath1
+#     
+#     
+RelevantScene=
+PathIsClosed=0
+LineColor=0,0,255,
+PointColor=255,165,0,
+Point=320,178,1,
+Point=103,115,1,
+Point=207,45,1,
+Point=596,130,1,
+Point=761,57,1,
+Point=841,312,1,
+Point=88,317,1,
+Point=82,229,1,
+Point=87,118,1,
+Point=86,69,1,
+Point=137,34,1,
+Point=343,33,1,
+Point=409,380,1,
+Point=309,453,1,
+Point=167,444,1,
+Point=80,426,1,
+Point=593,370,1,
+Point=1002,208,1,
+Point=1092,133,1,
+Point=1185,119,1,
+Point=1271,330,1,
+Point=1110,342,1,
+Point=1003,104,1,
+Point=919,173,1,
+Point=926,54,1,
+Point=1171,52,1,
+Point=1292,181,1,
+Point=1311,380,1,
+Point=1132,436,1,
+Point=983,311,1,
+Point=877,192,1,
+Point=859,92,1,
+Point=1102,87,1,
+Point=1143,249,1,
+Point=679,306,1,
+Point=596,123,1,
+Point=295,318,1,
+Point=676,564,1,
+Point=443,453,1,
+Point=597,383,1,
+Point=852,398,1,
+Point=871,291,1,
+Point=811,516,1,
+Point=216,163,1,
+Point=149,278,1,
+Point=411,117,1,
+Point=414,104,1,
+Point=331,80,1,
+Point=212,136,1,
+Point=129,253,1,
+Point=142,390,1,
+Point=214,392,1,
+Point=371,213,1,
+Point=543,39,1,
+Point=740,136,1,
+Point=795,241,1,
+Point=724,354,1,
+Point=198,102,1,

@@ -8,9 +8,9 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.13
+Version=2
 Name=platformer_example
-Count=1033
+Count=1035
 ProjectLanguage=JS
 ProjectIcon=icon.png
 [Project=platformer_example]
@@ -21,28 +21,22 @@ ProjectIcon=icon.png
     [SuperFolder=Tilesheets]
         Tilesheet=ts_map,1021,
     [/SuperFolder]
-    [SuperFolder=Sprites]
-        [Folder=Enemy Sprites,1001]
-            Sprite=spr_slime,1002,
-        [/Folder]
-        [Folder=Scenary Sprites,1006]
-            Sprite=spr_block,1007,
-        [/Folder]
-        [Folder=Player Sprites,1009]
-            Sprite=spr_player,1011,
-        [/Folder]
-        [Folder=Item Sprites,1012]
-            Sprite=spr_heartpiece,1013,
-            Sprite=spr_coin,1015,
-        [/Folder]
+    [SuperFolder=Animations]
+        Sprite=spr_slime,1002,
+        Sprite=spr_block,1007,
+        Sprite=spr_player,1011,
+        Sprite=spr_heartpiece,1013,
+        Sprite=spr_coin,1015,
     [/SuperFolder]
     [SuperFolder=Audio]
+        audio=newAudio1,1034,
     [/SuperFolder]
     [SuperFolder=Videos]
     [/SuperFolder]
     [SuperFolder=Functions]
     [/SuperFolder]
     [SuperFolder=Paths]
+        Path=newPath1,1035,
     [/SuperFolder]
     [SuperFolder=Objects]
         GameObject=obj_slime,1003,
@@ -51,6 +45,8 @@ ProjectIcon=icon.png
         GameObject=obj_player,1010,
         GameObject=obj_coin,1016,
         GameObject=obj_player2,1032,
+    [/SuperFolder]
+    [SuperFolder=Classes]
     [/SuperFolder]
     [SuperFolder=Scenes]
         scene=newScene1,1004,

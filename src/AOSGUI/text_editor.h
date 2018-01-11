@@ -3,10 +3,10 @@ text_editor.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -47,11 +47,11 @@ const int TEXTAREA_OPTION_PASTE = 7;
 const int TEXTAREA_OPTION_TEXTINFO = 8;
 const int TEXTAREA_OPTION_MAX_OPTIONS = 9;
 
-
-
 class GPE_TextAreaInputBasic: public GPE_GeneralGuiElement
 {
     protected:
+        float editorZoomLevel;
+        float defaultLineHeight;
         bool undoableActionOccurred;
         time_t lastUndoableActionTime;
         int lastDoubleClickAction;
@@ -209,8 +209,8 @@ class GPE_TextAreaInputBasic: public GPE_GeneralGuiElement
         void redo_edit();
         void reset_selection(int resetDirection = 0);
         void reset_self();
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = false);
-        void render_code(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = false);
+        void render_code( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
 
         int replace_all_found(std::string strToReplace, std::string newString);
         void revise_edit(int editId = -1);
@@ -238,7 +238,7 @@ class GPE_WrappedTextArea: public GPE_GeneralGuiElement
         GPE_WrappedTextArea();
         ~GPE_WrappedTextArea();
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
         void set_string( std::string strIn);
         void set_width(int newWidth);
         void set_height( int newHeight);
@@ -268,6 +268,7 @@ class GPE_LogManager: public GPE_GeneralGuiElement
         GPE_ScrollBar_YAxis * yScroll;
         bool showXLogScroll, showLogYScroll;
     public:
+        int minLogHeight;
         bool isVisible;
         bool menuResized;
         bool beingResized;
@@ -277,7 +278,7 @@ class GPE_LogManager: public GPE_GeneralGuiElement
         ~GPE_LogManager();
         void clear_search_anchors();
         void process_self(GPE_Rect * viewedSpace=NULL, GPE_Rect *cam=NULL);
-        void render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace=NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace=NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         bool being_resized();
         void clear_all_logs();
         void clear_debug_log();

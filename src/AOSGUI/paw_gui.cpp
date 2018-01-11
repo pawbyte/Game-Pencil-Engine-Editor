@@ -3,10 +3,10 @@ ambitious_gui_library.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -34,6 +34,15 @@ SOFTWARE.
 
 bool PAW_GUI_START()
 {
+    if( PAW_GUI_LOAD_FONTS() )
+    {
+        record_error("IDE properly added all GPE Editor Fonts... \n");
+    }
+    else
+    {
+        record_error("Unable to load GPE Editor Fonts!\n");
+        return false;
+    }
     MAIN_GUI_SETTINGS = new GPE_GUI_Settings();
     MAIN_OVERLAY = new GPE_Overlay_System();
     MAIN_SEARCH_CONTROLLER = new PAW_GUI_SEARCH_CONTROLLER();
@@ -46,6 +55,7 @@ bool PAW_GUI_START()
 
 bool PAW_GUI_END()
 {
+    record_error("Deleting PAW_GUI ....");
     if( MAIN_OVERLAY !=NULL)
     {
         delete MAIN_OVERLAY;

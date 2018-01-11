@@ -3,10 +3,10 @@ ambitious_gui_library.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -64,12 +64,11 @@ extern std::string displayMessageTitle;
 extern std::string displayMessageSubtitle;
 extern std::string displayMessageString;
 
-
 class GPE_GUI_Settings
 {
     public:
         GPE_Rect textAreaFindBox;
-
+        bool useShortProjectNames;
         //Text Editor Related Settings [ BEGIN ]
         float textInputDelayTime;
         float normalInputDelayTime;
@@ -132,7 +131,7 @@ class GPE_SyntaxLine
         GPE_SyntaxLine();
         ~GPE_SyntaxLine();
         std::string get_parsed_line(std::string sIn);
-        void render_tokens(GPE_Renderer * cRender,GPE_Font * fontIn,std::string sIn, int xPos, int yPos, int lineStartPos, int lineMaxPos, GPE_Color * renderColor = NULL, bool isNumber = false);
+        void render_tokens(GPE_Font * fontIn,std::string sIn, int xPos, int yPos, int lineStartPos, int lineMaxPos, GPE_Color * renderColor = NULL, bool isNumber = false);
         void reset_self();
 };
 
@@ -140,11 +139,18 @@ void update_action_message(std::string newMessage);
 
 void update_popup_info(std::string newMessage="", int selectedOpId=-1, bool popIsContext = false);
 
-class GPE_Template
+class GPE_Theme
 {
+    private:
+        std::vector<GPE_Color * > themeColors;
+        bool nonDefaultTheme;
     public:
-        std::string templateLocalLocation;
-        GPE_Sprite * Main_Menu_Sprite;
+        std::string themeName;
+        std::string themeLocalLocation;
+        std::string themeBgFileLocation;
+        GPE_Texture * themeBgTexture;
+
+        GPE_Animation * Main_Menu_Sprite;
 
         //main bg colors ( defaults everywhere)
         GPE_Color * Program_Color;
@@ -242,35 +248,37 @@ class GPE_Template
         GPE_Color * Main_Error_Font_Color;
         GPE_Color * Main_Warning_Font_Color;
         GPE_Color * Main_Suggestion_Font_Color;
-        GPE_Template();
-        ~GPE_Template();
-        void load_theme(std::string themeLocationIn);
+        GPE_Theme(std::string name, bool isCustomTheme = false );
+        ~GPE_Theme();
+        GPE_Color * add_color(std::string name,Uint8 r, Uint8 g, Uint8 b);
+        GPE_Color * add_color(std::string name, GPE_Color * savedColor );
+        bool change_color(std::string name,Uint8 r, Uint8 g, Uint8 b);
+        GPE_Color * find_color(std::string name);
+        GPE_Color * get_color(int pos);
+        int get_color_count();
+        bool is_custom_theme();
+        bool load_background( std::string bgTextureLocation);
+        bool load_theme(std::string themeLocationIn);
+        bool render_background(GPE_Rect * viewedSpace,GPE_Rect * cam );
+        bool save_theme();
+        bool save_theme_as(std::string themeLocationOut);
 };
 
-extern GPE_Template * GPE_CUSTOM_TEMPLATE;
-extern GPE_Template * GPE_DARK_TEMPLATE;
-extern GPE_Template * GPE_DEFAULT_TEMPLATE;
-extern GPE_Template * GPE_LIGHT_TEMPLATE;
-extern GPE_Template * GPE_RED_TEMPLATE;
-extern GPE_Template * GPE_GREEN_TEMPLATE;
-extern GPE_Template * GPE_BLUE_TEMPLATE;
-
-extern GPE_Template * GPE_MAIN_TEMPLATE;
-
+extern GPE_Theme * GPE_DEFAULT_TEMPLATE;
+extern GPE_Theme * GPE_MAIN_THEME;
 
 extern GPE_Texture * GPE_LOGO;
 extern GPE_Texture * GPE_TEXTURE_TRANSPARENT_BG;
 extern SDL_Surface * GPE_SURFACE_COLOR_PICKER_GRADIENT;
 extern GPE_Texture * GPE_TEXTURE_COLOR_PICKER_GRADIENT;
 extern GPE_Texture * GPE_CHECKMARK_IMAGE;
-extern GPE_Sprite  * GPE_TRIANGLE;
+extern GPE_Animation  * GPE_TRIANGLE;
 
 extern SDL_Cursor * GPE_Cursor;
 extern SDL_SystemCursor GPE_PreviousCursor;
 extern SDL_SystemCursor GPE_CurrentCursor;
 extern SDL_Cursor * GPE_LoadingCursor;
 extern SDL_Cursor * GPE_HoverCursor;
-extern bool GPE_IS_LOADING;
 
 
 //The font that's going to be used
@@ -308,7 +316,7 @@ extern GPE_Font * FONT_TOOLTIP;
 extern GPE_Font * FONT_STATUSBAR;
 
 void GPE_change_cursor(SDL_SystemCursor id);
-bool load_fonts();
+bool PAW_GUI_LOAD_FONTS();
 void cleanup_fonts();
 
 class GPE_Overlay_System
@@ -333,71 +341,21 @@ class GPE_Overlay_System
         void process_cursor();
 
         void update_tooltip(std::string newTip);
-        void render_frozen_screenshot(GPE_Renderer * renderTarget = NULL);
-        void render_temporary_message(GPE_Renderer * renderTarget = NULL);
-        void render_tooltip(GPE_Renderer * renderTarget = NULL,int xPos = -1, int yPos = -1 );
-        void take_frozen_screenshot(GPE_Renderer * renderTarget = NULL);
+        void render_frozen_screenshot();
+        void render_temporary_message();
+        void render_tooltip(int xPos = -1, int yPos = -1 );
+        void take_frozen_screenshot();
         void update_temporary_message(std::string mTitle="", std::string mSubTitle="", std::string mText="", float messDuration = 3, bool topLeftMessage = true );
 
 };
 
 extern GPE_Overlay_System * MAIN_OVERLAY;
 
-class GPE_ScrollBar_XAxis
-{
-    protected:
-        bool isHeldOn;
-        bool isOnScrollBox;
-        double mouseXScrolPos;
-        bool hasMoved;
-    public:
-        GPE_Rect barBox;
-        GPE_Rect contextRect;
-        GPE_Rect fullRect;
-        double scrollWidth, scrollPercent, scrollPixels, scrollXPos, scrollDisplayPixels;
-        bool isNeeded;
-        GPE_ScrollBar_XAxis();
-        ~GPE_ScrollBar_XAxis();
-        int get_box_width();
-        int get_box_height();
-        bool has_moved();
-        bool is_held();
-        bool is_scrolling();
-        void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool autoCorrect = true);
-        void render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void reset_scroller();
-};
-
-class GPE_ScrollBar_YAxis
-{
-    protected:
-        bool isHeldOn;
-        bool isOnScrollBox;
-        double mouseYScrolPos;
-        bool hasMoved;
-    public:
-        bool documentActions;
-        GPE_Rect barBox;
-        GPE_Rect contextRect;
-        GPE_Rect fullRect;
-        double scrollHeight, scrollPercent, scrollYPos, scrollDisplayPixels;
-        bool isNeeded;
-        GPE_ScrollBar_YAxis();
-        ~GPE_ScrollBar_YAxis();
-        int get_box_width();
-        int get_box_height();
-        bool has_moved();
-        bool is_held();
-        bool is_scrolling();
-        void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool autoCorrect = true);
-        void render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void reset_scroller();
-};
 
 class GPE_GeneralGuiElement
 {
     protected:
-        GPE_Rect barBox;
+        GPE_Rect elementBox;
         bool clickedOutside;
         bool isClicked;
         bool isRightClicked;
@@ -449,9 +407,11 @@ class GPE_GeneralGuiElement
         void set_hovered(bool hoverVal);
         virtual void set_width(int newWidth);
         virtual void set_coords(int newX = -1, int newY = -1);
-        virtual void prerender_self(GPE_Renderer * cRender = NULL);
+        virtual void prerender_self( );
         virtual void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect *cam = NULL);
-        virtual void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        virtual void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void scale_height(double scaleH);
+        void scale_width(double scaleW);
         virtual void set_name(std::string newName);
         virtual void set_max_width( int nMW);
         virtual void set_max_height( int nMH);
@@ -462,9 +422,87 @@ class GPE_GeneralGuiElement
         void update_paragraph(int foundMaxWidth = -1 );
 };
 
+class GPE_ScrollBar_XAxis: public GPE_GeneralGuiElement
+{
+    protected:
+        bool isHeldOn;
+        bool isOnScrollBox;
+        double mouseXScrolPos;
+        bool hasMoved;
+    public:
+        bool autoCorrect;
+        GPE_Rect elementBox;
+        GPE_Rect contextRect;
+        GPE_Rect fullRect;
+        double scrollWidth, scrollPercent, scrollPixels, scrollXPos, scrollDisplayPixels;
+        bool isNeeded;
+        GPE_ScrollBar_XAxis();
+        ~GPE_ScrollBar_XAxis();
+        bool calculate_sizing();
+        int get_box_width();
+        int get_box_height();
+        bool has_moved();
+        bool is_held();
+        bool is_scrolling();
+        void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
+        void reset_scroller();
+};
+
+class GPE_ScrollBar_YAxis: public GPE_GeneralGuiElement
+{
+    protected:
+        bool isHeldOn;
+        bool isOnScrollBox;
+        double mouseYScrolPos;
+        bool hasMoved;
+    public:
+        bool autoCorrect;
+        bool documentActions;
+        GPE_Rect elementBox;
+        GPE_Rect contextRect;
+        GPE_Rect fullRect;
+        double scrollHeight, scrollPercent, scrollYPos, scrollDisplayPixels;
+        bool isNeeded;
+        GPE_ScrollBar_YAxis();
+        ~GPE_ScrollBar_YAxis();
+        bool calculate_sizing();
+        int get_box_width();
+        int get_box_height();
+        bool has_moved();
+        bool is_held();
+        bool is_scrolling();
+        void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
+        void reset_scroller();
+};
+
+class GPE_GuiElementRow: public GPE_GeneralGuiElement
+{
+    public:
+        bool inDebugMode;
+        int hAlign, vAlign;
+        int outterWidth, outterHeight;
+        int barXPadding, barYPadding;
+        std::vector < GPE_GeneralGuiElement * > subOptions;
+        GPE_GuiElementRow();
+        ~GPE_GuiElementRow();
+        void add_gui_element(GPE_GeneralGuiElement *  newElement );
+        void clear_list();
+        void set_coords(int newX = -1, int newY = -1);
+        void set_full_width();
+        void set_full_width( int maxRowWidth );
+        void set_horizontal_align(int hValue);
+        void set_vertical_align(int vValue);
+        void set_maxed_out_width();
+        void set_maxed_out_height();
+
+};
+
 class GPE_GuiElementList: public GPE_GeneralGuiElement
 {
     public:
+        bool inDebugMode;
         float tabDelay;
         float leserKeyDelay;
         float greaterKeyDelay;
@@ -476,7 +514,10 @@ class GPE_GuiElementList: public GPE_GeneralGuiElement
         GPE_ScrollBar_XAxis * xScroll;
         GPE_ScrollBar_YAxis * yScroll;
         int hAlign, vAlign;
-        std::vector < GPE_GeneralGuiElement * > subOptions;
+        GPE_GuiElementRow * selectedRow;
+        std::vector < GPE_GuiElementRow * > subRows;
+        std::vector < GPE_GeneralGuiElement * > allElements;
+        bool newRowRequested;
         bool isInUse;
         bool hideXScroll;
         bool hideYScroll;
@@ -484,6 +525,7 @@ class GPE_GuiElementList: public GPE_GeneralGuiElement
         bool subElementsIsScrolling;
         int barXPadding, barYPadding;
         int barXMargin, barYMargin;
+        int rowWithViewId;
         int optionWithViewId;
         GPE_GuiElementList();
         ~GPE_GuiElementList();
@@ -494,7 +536,7 @@ class GPE_GuiElementList: public GPE_GeneralGuiElement
         void scroll_down(int yToMove );
         void scroll_up(int yToMove );
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void reset_self();
         void set_horizontal_align(int hValue);
         void set_full_width();
@@ -502,50 +544,56 @@ class GPE_GuiElementList: public GPE_GeneralGuiElement
         void set_maxed_out_height();
 };
 
-class GPE_Scroller_X: public GPE_GeneralGuiElement
+class GPE_Slider_XAxis: public GPE_GeneralGuiElement
 {
     protected:
         bool isOnScrollBox;
         int mouseXScrolPos;
         bool hasMoved;
+        bool isHeldOn;
+        int myValue;
+        int minValue;
+        int maxValue;
+        int currentSliderXPos;
+        int scrollDisplayPixels;
     public:
-        GPE_Rect barBox;
-        GPE_Rect contextRect;
-        GPE_Rect fullRect;
-        double scrollWidth, scrollPercent, scrollPixels, scrollXPos, scrollDisplayPixels;
         bool isNeeded;
-        GPE_Scroller_X();
-        ~GPE_Scroller_X();
-        int get_box_width();
-        int get_box_height();
+        GPE_Slider_XAxis( int sVal  = 50, int sMin = 0, int sMax = 100 );
+        ~GPE_Slider_XAxis();
+        int get_value();
         bool has_moved();
+        bool is_held();
         bool is_scrolling();
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
         void reset_scroller();
+        void set_data( int sVal  = 50, int sMin = 0, int sMax = 100 );
+        bool set_value( int sVal );
 };
 
-class GPE_Scroller_Y: public GPE_GeneralGuiElement
+class GPE_Slider_YAxis: public GPE_GeneralGuiElement
 {
     protected:
         bool isOnScrollBox;
         int mouseYScrolPos;
         bool hasMoved;
+        bool isHeldOn;
+        int scrollDisplayPixels;
     public:
-        GPE_Rect barBox;
-        GPE_Rect contextRect;
-        GPE_Rect fullRect;
-        double scrollHeight, scrollPercent, scrollYPos, scrollDisplayPixels;
         bool isNeeded;
-        GPE_Scroller_Y();
-        ~GPE_Scroller_Y();
+        GPE_Slider_YAxis( int sVal  = 50, int sMin = 0, int sMax = 100 );
+        ~GPE_Slider_YAxis();
+        int get_value();
         int get_box_width();
         int get_box_height();
         bool has_moved();
+        bool is_held();
         bool is_scrolling();
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
         void reset_scroller();
+        void set_data( int sVal  = 50, int sMin = 0, int sMax = 100 );
+        bool set_value( int sVal );
 };
 
 class GPE_TabManager: public GPE_GeneralGuiElement
@@ -584,7 +632,7 @@ class GPE_TabManager: public GPE_GeneralGuiElement
         void close_all_tabs();
         void move_to_tab(int newTabId);
         void process_tabbar();
-        void render_tabbar(GPE_Renderer * rendTarget, GPE_Rect * cam = NULL,bool forceRedraw = true);
+        void render_tabbar( GPE_Rect * cam = NULL,bool forceRedraw = true);
         int search_for_string(std::string needle);
         int search_and_replace_string(std::string needle, std::string newStr = "");
         void set_coords(int newX, int newY);
@@ -621,7 +669,7 @@ class GPE_TabBar: public GPE_GeneralGuiElement
         void open_tab(std::string tabName);
         std::string get_selected_name();
         void process_self(GPE_Rect * viewedSpace=NULL, GPE_Rect *cam = NULL);
-        void render_self(GPE_Renderer * rendTarget, GPE_Rect * viewedSpace=NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace=NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
 };
 
 class GPE_StatusBar: public GPE_GeneralGuiElement
@@ -633,7 +681,7 @@ class GPE_StatusBar: public GPE_GeneralGuiElement
         GPE_StatusBar();
         ~GPE_StatusBar();
         void process_self(GPE_Rect * viewedSpace=NULL, GPE_Rect *cam=NULL);
-        void render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace=NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace=NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void reset_statusbar();
         void set_codestring(std::string newCodeString);
         void set_insertmode(std::string newInsertMode);
@@ -660,7 +708,7 @@ class GPE_PopUpMenu_Option
         bool showShortCuts;
         std::string opName;
         int opId;
-        GPE_Sprite * opSprite;
+        GPE_Animation * opSprite;
         GPE_Texture * opTexture;
         int spriteFrameNumber;
         int startYPos;
@@ -695,6 +743,7 @@ class GPE_PopUpMenu_Option
         std::string shortcutString;
         GPE_PopUpMenu_Option(std::string name = "", int id = -1,bool selectable = true, bool seeShortCut = true, bool makeContext = false, int kbS1 = -1, int kbS2 = -1, int kbS3 = -1 );
         ~GPE_PopUpMenu_Option();
+        GPE_PopUpMenu_Option * add_menu_option( std::string name, int id = -1, GPE_Texture * gTexture = NULL,int spriteImgNumb = -1,GPE_Animation * gSprite=NULL, bool endsSection=false, bool selectable = true, bool isResource = false, int kbS1 = -1, int kbS2 = -1, int kbS3 = -1 );
         int activate_hovered();
         void clear_menu();
         int get_width();
@@ -708,23 +757,23 @@ class GPE_PopUpMenu_Option
         bool push_down();
         void reset_suboptions();
         void set_id(int newId);
-        void set_image_data(GPE_Sprite * newSprite,int newId);
+        void set_image_data(GPE_Animation * newSprite,int newId);
         void set_position(int xPos = -1, int yPos = -1);
         void set_width(int newWidth);
         void set_texture(GPE_Texture * newTexture);
-        GPE_PopUpMenu_Option * add_menu_option( std::string name, int id = -1, GPE_Texture * gTexture = NULL,int spriteImgNumb = -1,GPE_Sprite * gSprite=NULL, bool endsSection=false, bool selectable = true, bool isResource = false, int kbS1 = -1, int kbS2 = -1, int kbS3 = -1 );
         void open_menu();
-        void prerender_self( GPE_Renderer * cRender = NULL);
+        void prerender_self(  );
         int process_menu_option();
+        void resize_self();
         void update_selectability(bool selectable);
-        void render_self(GPE_Renderer * cRender, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * cam = NULL, bool forceRedraw = true);
 };
 
 extern GPE_PopUpMenu_Option * MAIN_CONTEXT_MENU;
 
-void GPE_open_context_menu(int menuXPos=-1,int menuYPos=-1);
+void GPE_open_context_menu(int menuXPos=-1,int menuYPos=-1, int newWidth = 128);
 void GPE_close_context_menu();
-int get_popupmenu_result(GPE_Rect * camera = NULL, bool redrawScreen = false);
+int get_popupmenu_result(GPE_Rect * camera = NULL, bool redrawScreen = false, bool autoResize = true);
 
 class GPE_Toolbar: public GPE_GeneralGuiElement
 {
@@ -749,9 +798,9 @@ class GPE_Toolbar: public GPE_GeneralGuiElement
         void set_width(int newWid);
         GPE_PopUpMenu_Option * add_menu_option( std::string name, int id = -1);
         void open_toolbar();
-        void prerender_self( GPE_Renderer * cRender = NULL);
+        void prerender_self(  );
         void process_toolbar();
-        void render_toolbar(GPE_Renderer *rendTarget=NULL, GPE_Rect *renderCam = NULL, bool forceRedraw = false);
+        void render_toolbar( GPE_Rect *renderCam = NULL, bool forceRedraw = false);
 };
 
 class GPE_DropDown_Menu: public GPE_GeneralGuiElement
@@ -770,7 +819,7 @@ class GPE_DropDown_Menu: public GPE_GeneralGuiElement
     public:
         bool subMenuIsOpen;
         GPE_Color *barColor;
-        GPE_DropDown_Menu(int xPos = 0, int yPos = 0,std::string name = "", bool justOptions = false);
+        GPE_DropDown_Menu( std::string name = "", bool justOptions = false);
         ~GPE_DropDown_Menu();
 
         std::string get_data();
@@ -791,10 +840,11 @@ class GPE_DropDown_Menu: public GPE_GeneralGuiElement
         void remove_option(std::string optionToRemove);
         void reset_suboptions();
         void set_id(int newId);
+        void set_option( std::string newSelectedOptionName );
         void set_value(int valueToFind);
         void show_just_options(bool justOptions);
         void process_self(GPE_Rect * viewedSpace=NULL, GPE_Rect *cam=NULL);
-        void render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace=NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace=NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void set_name(std::string newName);
         void set_selection(int newId, bool autoCorrect = true);
 };
@@ -805,19 +855,23 @@ class GPE_ToolIconButton: public GPE_GeneralGuiElement
         bool endsSection;
         int opId;
         GPE_Texture * buttonTexture;
+        std::string webUrl;
+        bool wasClicked;
     public:
         bool isTabbed;
         bool usesTabs;
-        GPE_ToolIconButton(int buttonX = 0, int buttonY = 0,std::string buttonImgFile="",std::string name="", int id = -1, int buttonSize = 32, bool lastInCol = false);
+        GPE_ToolIconButton(std::string buttonImgFile="",std::string name="", int id = -1, int buttonSize = 32, bool lastInCol = false);
         ~GPE_ToolIconButton();
         std::string get_data();
+        void change_texture( GPE_Texture * newTexture);
         void load_data(std::string dataString);
         bool ends_section();
         int get_id();
         void set_id(int newId);
         void process_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
         void set_image( std::string buttonImgFile);
-        void render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void set_website(std::string urlIn);
 };
 
 class GPE_ToolIconButtonBar: public GPE_GeneralGuiElement
@@ -834,7 +888,7 @@ class GPE_ToolIconButtonBar: public GPE_GeneralGuiElement
         int barPadding;
         int xPadding;
         bool widthAutoResizes;
-        GPE_ToolIconButtonBar(int xPos, int yPos,int buttonSize = 32, bool useTabs = false);
+        GPE_ToolIconButtonBar( int buttonSize = 32, bool useTabs = false);
         ~GPE_ToolIconButtonBar();
         std::string get_data();
         void load_data(std::string dataString);
@@ -844,7 +898,7 @@ class GPE_ToolIconButtonBar: public GPE_GeneralGuiElement
         void set_width(int newWid);
         GPE_ToolIconButton * add_option( std::string buttonImgFile,std::string name, int id = -1, bool endsSection = false);
         void process_self(GPE_Rect * viewedSpace =NULL, GPE_Rect *renderCam = NULL);
-        void render_self(GPE_Renderer *cRender=NULL, GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
         void set_coords(int newX = -1, int newY = -1);
         void set_height(int newXH);
         void set_selection(int newSelection);
@@ -857,11 +911,11 @@ class GPE_ToolLabelButton: public GPE_GeneralGuiElement
     public:
         GPE_ToolLabelButton(int buttonX, int buttonY,std::string name, std::string description,int id = -1, int buttonSize = 24);
         ~GPE_ToolLabelButton();
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void process_self(GPE_Rect * viewedSpace =NULL, GPE_Rect *renderCam = NULL);
         void set_id(int newId);
         void set_name(std::string newName);
-        void render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
 };
 
 class GPE_ToolPushButton: public GPE_GeneralGuiElement
@@ -874,7 +928,7 @@ class GPE_ToolPushButton: public GPE_GeneralGuiElement
         std::string webUrl;
         bool showBackground, showBorder;
     public:
-        GPE_ToolPushButton(int buttonX, int buttonY,std::string imgLocation,std::string name, std::string description,int id = -1, int buttonSize = 24);
+        GPE_ToolPushButton( std::string imgLocation,std::string name, std::string description = "",int id = -1, int buttonSize = 24);
         ~GPE_ToolPushButton();
         void change_texture( GPE_Texture * newTexture);
         void enable_background( bool enableValue);
@@ -882,9 +936,9 @@ class GPE_ToolPushButton: public GPE_GeneralGuiElement
         void set_id(int newId);
         void set_name(std::string newName);
         void set_website(std::string urlIn);
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void process_self(GPE_Rect * viewedSpace =NULL, GPE_Rect *renderCam = NULL);
-        void render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
 };
 
 class GPE_ToolPushButtonMultiLine: public GPE_GeneralGuiElement
@@ -908,9 +962,9 @@ class GPE_ToolPushButtonMultiLine: public GPE_GeneralGuiElement
         void set_id(int newId);
         void set_name(std::string newName);
         void set_website(std::string urlIn);
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void process_self(GPE_Rect * viewedSpace =NULL, GPE_Rect *renderCam = NULL);
-        void render_self(GPE_Renderer * cRender, GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
 };
 
 class GPE_SelectBoxBasic_Option
@@ -921,34 +975,37 @@ class GPE_SelectBoxBasic_Option
         bool isChecked;
         std::string optionName;
         GPE_Texture * optionTexture;
-        GPE_Sprite * optionSprite;
+        GPE_Animation * optionSprite;
         int subimageIndex;
         double optionValue;
         GPE_SelectBoxBasic_Option();
         ~GPE_SelectBoxBasic_Option();
-        void prerender_self(GPE_Renderer * cRender = NULL);
+        void prerender_self( );
 };
 
 class GPE_SelectBoxBasic: public GPE_GeneralGuiElement
 {
     private:
         std::vector <GPE_SelectBoxBasic_Option * > subOptions;
-        int pos;
-        int startPos;
-        int maxOptionsInView;
+        int intedPos;
+        double pos;
+        double startPos;
+        double maxOptionsInView;
         int maxHeight;
         int optionHeight;
         bool showHideOthersCheckboxToggle;
+        GPE_ScrollBar_YAxis * optionsScroller;
     public:
         int downDelay;
         int upDelay;
         bool showCheckboxes;
         int optionIconWidth;
-        GPE_SelectBoxBasic(int x = 0, int y = 0, std::string name = "");
+        GPE_SelectBoxBasic(std::string name = "");
         ~GPE_SelectBoxBasic();
         std::string get_data();
         void load_data(std::string dataString);
-        void add_option(std::string newOptionName, double newOpValue = -1,GPE_Texture * evRepIcon = NULL, GPE_Sprite * evRepSprite=NULL, int subimageInIndex = 0, bool selectNew = false, bool useGuiColor = true);
+        void add_option(std::string newOptionName, double newOpValue = -1,GPE_Texture * evRepIcon = NULL, GPE_Animation * evRepSprite=NULL, int subimageInIndex = 0, bool selectNew = false, bool useGuiColor = true);
+        void correct_camera();
         void clear_list();
         std::string get_selected_name();
         double get_selected_value();
@@ -956,15 +1013,15 @@ class GPE_SelectBoxBasic: public GPE_GeneralGuiElement
         int get_size();
         GPE_SelectBoxBasic_Option * get_option(int optionId);
         std::string get_option_name(int optionId);
-        void insert_option(int optionId, std::string newName, GPE_Texture * evRepIcon = NULL, GPE_Sprite * evRepSprite=NULL, int subimageInIndex = 0,bool selectNew = false);
+        void insert_option(int optionId, std::string newName, GPE_Texture * evRepIcon = NULL, GPE_Animation * evRepSprite=NULL, int subimageInIndex = 0,bool selectNew = false);
         void limit_height(int newH);
         void alter_content( int optionId, bool sectionHasContent);
         void alter_content_from_value( double valueId, bool sectionHasContent);
         bool move_down_space();
         bool move_up_space();
-        void prerender_self(GPE_Renderer * cRender = NULL);
+        void prerender_self( );
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
         void rename_option(int optionId, std::string newName);
         void remove_option(int optionId);
         void set_option_height( int newOptionHeight);
@@ -976,14 +1033,14 @@ class GPE_SelectBoxBasic: public GPE_GeneralGuiElement
 class GPE_Input_Field_Color: public GPE_GeneralGuiElement
 {
     protected:
-        int prevBarBoxW, prevBarBoxH;
+        int prevelementBoxW, prevelementBoxH;
         GPE_Color * storedColor;
         int fontSizeW, fontSizeH;
     public:
-        GPE_Rect fieldBarBox;
+        GPE_Rect fieldElementBox;
         std::string inputLabel;
         bool showLabel;
-        GPE_Input_Field_Color(int newX = 0, int newY = 0, int boxW=-1, int boxH=-1,std::string startName="",std::string placeHolderText="");
+        GPE_Input_Field_Color(std::string startName="",std::string placeHolderText="");
         ~GPE_Input_Field_Color();
         std::string get_data();
         void load_data(std::string dataString);
@@ -998,7 +1055,7 @@ class GPE_Input_Field_Color: public GPE_GeneralGuiElement
         void set_name(std::string newName);
         void set_string(std::string newString);
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
         void set_color_from_rgb(GPE_Color *newColor);
         void set_color_from_rgb(std::string newColorStr);
         void set_color_from_hex(std::string newColorStr);
@@ -1014,7 +1071,7 @@ const int MAX_STORED_TEXT_PREVIOUS_ENTRIES = 32;
 class GPE_TextInputBasic: public GPE_GeneralGuiElement
 {
     protected:
-        int prevBarBoxW, prevBarBoxH;
+        int prevelementBoxW, prevelementBoxH;
         std::string textInputString;
         std::string placeHolderString;
         int displayMode;
@@ -1037,7 +1094,7 @@ class GPE_TextInputBasic: public GPE_GeneralGuiElement
         bool hasValidInput;
         int cursorHistoryPos;
         std::vector< std::string> listOfPastStrings;
-        GPE_Rect fieldBarBox;
+        GPE_Rect fieldElementBox;
     public:
         bool inputSubmitted;
         bool resubmissionAllowed;
@@ -1064,7 +1121,7 @@ class GPE_TextInputBasic: public GPE_GeneralGuiElement
         void move_right(int xToMove = 1);
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
         void record_string( std::string strToRecord);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
         void reset_selection(int resetDirection = 0);
         void select_all();
         void set_height(int newHeight);
@@ -1113,7 +1170,7 @@ class GPE_TextAnchor: public GPE_GeneralGuiElement
         GPE_TextAnchor(int lineN, int charN, std::string messageIn, std::string alertInfo, int anchorType = 0);
         ~GPE_TextAnchor();
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
 
 };
 
@@ -1127,12 +1184,11 @@ class GPE_Label_Image: public GPE_GeneralGuiElement
         float resizeAspect;
         bool wasClicked;
         std::string webUrl;
-        GPE_Label_Image(GPE_Texture * imgIn = NULL);
-        GPE_Label_Image(GPE_Texture * imgIn,std::string nameIn, std::string description, std::string urlIn);
+        GPE_Label_Image(GPE_Texture * imgIn = NULL ,std::string nameIn = "", std::string description = "", std::string urlIn = "");
         ~GPE_Label_Image();
         void load_label_image(std::string fileNameIn);
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
         void set_name(std::string nameIn);
         void set_image( GPE_Texture * imgIn);
         void set_width( int newW);
@@ -1149,7 +1205,7 @@ class GPE_Label_Text: public GPE_GeneralGuiElement
         std::string get_plain_string();
         void load_data(std::string dataString);
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
         void set_name(std::string nameIn);
 };
 
@@ -1162,7 +1218,7 @@ class GPE_Label_Error: public GPE_GeneralGuiElement
         std::string get_plain_string();
         void load_data(std::string dataString);
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
         void set_name(std::string nameIn);
 };
 
@@ -1175,7 +1231,7 @@ class GPE_Label_90Degree: public GPE_GeneralGuiElement
         std::string get_plain_string();
         void load_data(std::string dataString);
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
         void set_name(std::string nameIn);
 };
 
@@ -1192,7 +1248,7 @@ class GPE_Label_Paragraph: public GPE_GeneralGuiElement
         void add_line(std::string newLine);
         void clear_all_lines();
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
         void set_name(std::string nameIn);
         void set_width(int newWidth);
         void set_height(int newHeight);
@@ -1210,7 +1266,7 @@ class GPE_Label_Title: public GPE_GeneralGuiElement
         std::string get_plain_string();
         void load_data(std::string dataString);
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
         void set_name(std::string nameIn);
 };
 
@@ -1226,7 +1282,7 @@ class GPE_TextURL: public GPE_GeneralGuiElement
         std::string get_plain_string();
         void load_data(std::string dataString);
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
         void set_name(std::string nameIn);
 };
 
@@ -1241,10 +1297,10 @@ class GPE_CheckBoxBasic: public GPE_GeneralGuiElement
         ~GPE_CheckBoxBasic();
         std::string get_data();
         void load_data(std::string dataString);
-        void prerender_self(GPE_Renderer * cRender = NULL);
+        void prerender_self( );
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
-        void set_checkbox_size(int nBoxSize, bool resizeBarBox = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void set_checkbox_size(int nBoxSize, bool resizeelementBox = true);
 };
 
 class GPE_CheckBoxBasicList: public GPE_GeneralGuiElement
@@ -1266,11 +1322,11 @@ class GPE_CheckBoxBasicList: public GPE_GeneralGuiElement
         void remove_opton(std::string optionToCut);
         void remove_opton_id(int optionToCut);
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
 
 };
 
-extern GPE_Sprite * GPE_RadioButton_GFX;
+extern GPE_Animation * GPE_RadioButton_GFX;
 
 class GPE_RadioButtonControllerBasic: public GPE_GeneralGuiElement
 {
@@ -1305,9 +1361,9 @@ class GPE_RadioButtonControllerBasic: public GPE_GeneralGuiElement
         void set_selection( int newSelection);
         bool set_from_tag(std::string newSelectedTag);
         void set_value( int valueToSelect);
-        void prerender_self(GPE_Renderer * cRender = NULL);
+        void prerender_self( );
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
 };
 
 
@@ -1324,7 +1380,7 @@ class GPE_ResourceContainer
         int resourceType;
         bool isFolder, isSuperFolder, isSuperProjectFolder;
         bool subMenuIsOpen;
-        GPE_Sprite * containerSprite;
+        GPE_Animation * containerSprite;
         GPE_Texture * containerTexture;
         int spriteFrameNumber;
         generalGameResource * heldResource;
@@ -1362,7 +1418,7 @@ class GPE_ResourceContainer
         std::string get_project_name();
         int get_resource_count();
         int get_resource_image_frame();
-        GPE_Sprite * get_resource_sprite();
+        GPE_Animation * get_resource_sprite();
         GPE_Texture * get_resource_texture();
         int get_size();
         int get_options_width();
@@ -1375,7 +1431,7 @@ class GPE_ResourceContainer
         int matches(GPE_ResourceContainer * otherContainer);
         void open_folder();
         void preprocess_container(std::string alternatePath = "", int backupId = -1);
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         int process_container(int xPos, int yPos, int selectedId = -1, GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool mouseInRange = false);
         bool read_data_from_projectfile(std::ofstream * fileTarget);
         void remove_resource(GPE_ResourceContainer * otherContainer, bool deleteResource = true);
@@ -1388,13 +1444,14 @@ class GPE_ResourceContainer
         void set_held_resource(generalGameResource * newGenResource);
         void set_name(std::string newName);
         void set_project_parent_name(std::string newParentName);
-        void render_contained_object(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_option(GPE_Renderer * cRender, int xPos, int yPos, int selectedIdNumber=-1,GPE_Rect * viewedSpace = NULL ,GPE_Rect * cam = NULL, bool renderSubOptions = true, bool renderAutomatically = false);
-        void render_image(GPE_Renderer * cRender, int xPos, int yPos, int rWidth = -1, int rHeight = -1,GPE_Rect * viewedSpace = NULL ,GPE_Rect * cam = NULL, GPE_Color * renderColor = NULL);
+        void render_contained_object(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
+        void render_option( int xPos, int yPos, int selectedIdNumber=-1,GPE_Rect * viewedSpace = NULL ,GPE_Rect * cam = NULL, bool renderSubOptions = true, bool renderAutomatically = false);
+        void render_image( int xPos, int yPos, int rWidth = -1, int rHeight = -1,GPE_Rect * viewedSpace = NULL ,GPE_Rect * cam = NULL, GPE_Color * renderColor = NULL);
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 
 const int RESOURCE_TYPE_PROJECT_SETTINGS = 1;
+const int RESOURCE_TYPE_ANIMATION = 2;
 const int RESOURCE_TYPE_SPRITE = 2;
 const int RESOURCE_TYPE_TEXTURE = 3;
 const int RESOURCE_TYPE_TILESHEET = 4;
@@ -1403,18 +1460,18 @@ const int RESOURCE_TYPE_VIDEO = 6;
 const int RESOURCE_TYPE_FUNCTION = 7;
 const int RESOURCE_TYPE_OBJECT = 8;
 const int RESOURCE_TYPE_SCENE = 9;
-const int RESOURCE_TYPE_ACHIEVEMENT = 10;
+const int RESOURCE_TYPE_CLASS = 10;
 const int RESOURCE_TYPE_PATH = 11;
 const int RESOURCE_TYPE_FONT = 12;
-const int RESOURCE_TYPE_PLUGIN = 13;
 
+//13 thru 17 not looked yet
+const int RESOURCE_TYPE_PLUGIN = 13;
 const int RESOURCE_TYPE_DICTIONARY = 13;
 const int RESOURCE_TYPE_SPREADSHEET = 14;
-
 const int RESOURCE_TYPE_EVENT = 15;
 const int RESOURCE_TYPE_QUEST = 16;
+const int RESOURCE_TYPE_ACHIEVEMENT = 17;
 
-const int RESOURCE_TYPE_CLASS = 17;
 
 
 extern GPE_ResourceContainer * RESOURCE_TO_DRAG;

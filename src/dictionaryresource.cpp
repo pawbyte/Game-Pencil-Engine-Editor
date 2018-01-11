@@ -3,10 +3,10 @@ dictionaryresource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,7 +39,7 @@ definitionResource::definitionResource(std::string key, std::string value)
     myValue = value;
     keyField = new GPE_TextInputBasic(myKey);
     valueField = new GPE_TextInputBasic(myValue);
-    removeSelfButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/remove.png","Remove Definition",-1,32 );
+    removeSelfButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/remove.png","Remove Definition",-1,32 );
 }
 
 definitionResource::~definitionResource()
@@ -66,8 +66,8 @@ definitionResource::~definitionResource()
 dictionaryResource::dictionaryResource(GPE_ResourceContainer * pFolder )
 {
     projectParentFolder = pFolder;
-    addDefinitionButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/plus-circle.png","Add Definition","Adds a new definition to dictionary");
-    clearDictionaryButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/eraser.png","Clear Dictionary","Clears the entire dictionary");
+    addDefinitionButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/plus-circle.png","Add Definition","Adds a new definition to dictionary");
+    clearDictionaryButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/eraser.png","Clear Dictionary","Clears the entire dictionary");
 }
 
 dictionaryResource::~dictionaryResource()
@@ -123,7 +123,7 @@ void dictionaryResource::open_code(int lineNumb, int colNumb, std::string codeTi
 
 }
 
-void dictionaryResource::prerender_self(GPE_Renderer * cRender)
+void dictionaryResource::prerender_self( )
 {
 
 }
@@ -200,7 +200,7 @@ void dictionaryResource::preprocess_self(std::string alternatePath )
                             }
                         }
                     }
-                    else if( foundFileVersion < 2)
+                    else if( foundFileVersion <= 2)
                     {
                         //Begin processing the file.
                         if(!currLineToBeProcessed.empty() )
@@ -323,20 +323,15 @@ void dictionaryResource::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
     }
 }
 
-void dictionaryResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam , bool forceRedraw )
+void dictionaryResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam , bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( cam!=NULL && viewedSpace!=NULL )
     {
-        if( forceRedraw)
-        {
-            render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
-        }
-
         if( editorPaneList!=NULL )
         {
-            editorPaneList->render_self( cRender,viewedSpace, cam, forceRedraw );
+            editorPaneList->render_self(  viewedSpace, cam, forceRedraw );
         }
     }
 }
@@ -368,17 +363,7 @@ void dictionaryResource::save_resource(std::string alternatePath, int backupId )
         //makes sure the file is open
         if (newSaveDataFile.is_open())
         {
-            newSaveDataFile << "#    --------------------------------------------------  # \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#    Game Pencil Engine Project Dictionary DataFile \n";
-            newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
-            newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#    --------------------------------------------------  # \n";
-            newSaveDataFile << "Version=" << GPE_VERSION_DOUBLE_NUMBER << "\n";
+            write_header_on_file(&newSaveDataFile);
             newSaveDataFile << "#     \n";
 
             std::string resFileLocation = "";

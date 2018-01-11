@@ -3,10 +3,10 @@ gpe_editor.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,6 +35,8 @@ SOFTWARE.
 #define GPE_EDITOR_H
 
 #include "AOSGUI/paw_gui.h"
+
+
 
 const int GPE_MAINICON_SPRCOUNT = 74;
 
@@ -96,8 +98,8 @@ extern std::string GPE_BUILD_NAMES[GPE_BUILD_OPTIONS];
 
 
 const int PROJECT_LANGUAGE_JS = 0;
-const int PROJECT_LANGUAGE_CS = 1;
-const int PROJECT_LANGUAGE_CPP = 2;
+const int PROJECT_LANGUAGE_CPP = 1;
+const int PROJECT_LANGUAGE_CS = 2;
 const int PROJECT_LANGUAGE_TST = 3;
 const int PROJECT_LANGUAGE_LUA = 4;
 const int PROJECT_LANGUAGE_MAX = 5;
@@ -119,6 +121,7 @@ class GPE_ProjectFolder
         std::string projectIconName;
         int myProjectLanguage;
         GPE_ResourceContainer * RESC_PROJECT_FOLDER;
+        GPE_ResourceContainer * RESC_ANIMATIONS;
         GPE_ResourceContainer * RESC_SPRITES;
         GPE_ResourceContainer * RESC_TEXTURES;
         GPE_ResourceContainer * RESC_TILESHEETS;
@@ -177,6 +180,7 @@ class GPE_ProjectFolder
         GPE_ResourceContainer * create_blank_texture( GPE_ResourceContainer * folderContainer = NULL, std::string newName="", int newResId = -1);
         GPE_ResourceContainer * create_blank_tilesheet( GPE_ResourceContainer * folderContainer = NULL, std::string newName="", int newResId = -1);
         bool export_and_play_native(bool launchProgram = true);
+        bool export_project_cpp(std::string projectBuildDirectory = "", int buildMetaTemplate = -1, bool runGameOnCompile = false, bool inDebugMode = false);
         bool export_project_html5(std::string projectBuildDirectory = "", int buildMetaTemplate = -1, bool runGameOnCompile = false, bool inDebugMode = false);
         bool export_project_wiiu( bool inDebugMode = false);
         bool export_project_windows(std::string projectBuildDirectory = "",int buildBits = 32, bool runGameOnCompile = false, bool inDebugMode = false, int nativeBuildType = true);
@@ -219,7 +223,7 @@ class GPE_DropDown_Resouce_Menu: public GPE_GeneralGuiElement
         GPE_PopUpMenu_Option * subOptions;
         std::string dropdownName;
         std::string displayedResult;
-        GPE_Sprite * selectedSprite;
+        GPE_Animation * selectedSprite;
         GPE_Texture *selectedImage;
         int opId;
         bool isSelectable;
@@ -242,7 +246,7 @@ class GPE_DropDown_Resouce_Menu: public GPE_GeneralGuiElement
         //std::string get_name();
         void process_self(GPE_Rect * viewedSpace=NULL, GPE_Rect *cam=NULL);
         void add_folder_contents(GPE_ResourceContainer * fFolder = NULL, GPE_PopUpMenu_Option * fOptionFolder = NULL);
-        void render_self(GPE_Renderer * cRender=NULL,GPE_Rect * viewedSpace=NULL, GPE_Rect *cam=NULL, bool forceRedraw = true);
+        void render_self( GPE_Rect * viewedSpace=NULL, GPE_Rect *cam=NULL, bool forceRedraw = true);
         void set_name(std::string newName);
         void set_selected_target(std::string newName);
         void set_selection(int newId);
@@ -277,9 +281,9 @@ class GPE_ResourceManagementBar: public GPE_GeneralGuiElement
         GPE_ResourceContainer * add_project_folder(int resourceType, std::string projFolderName,std::string resourceTypeName);
         void delete_project_resources(std::string projectFileName );
         bool is_visible();
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void process_managementbar( );
-        void render_resourcebar(GPE_Renderer * cRender, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_resourcebar( GPE_Rect * cam = NULL, bool forceRedraw = true);
         void remove_project_resources(std::string projectFileName );
         void set_height(int newHeight);
         void toggle_self();
@@ -300,6 +304,7 @@ class GPE_Gui_Engine
         std::vector<std::string> gpeRecentProjects;
         std::vector<std::string> gpeTips;
     public:
+        std::vector< GPE_Theme *> gpeThemes;
         bool includeNintendoWiiUExport;
         bool includeNintendoSwitchExport;
         bool includePlaystation4Export;
@@ -321,6 +326,7 @@ class GPE_Gui_Engine
         GPE_ResourceManagementBar * mainResourceBar;
         GPE_Gui_Engine();
         ~GPE_Gui_Engine();
+        GPE_Theme * add_theme(std::string themeName, bool customTheme = false );
         void add_to_recent_project_list(std::string newProjectFileName, bool saveData = false);
         void apply_logic();
         void clean_current_project_build_folder(int buildMetaTemplate);
@@ -330,6 +336,7 @@ class GPE_Gui_Engine
         GPE_ProjectFolder * find_project_from_filename(std::string projectFileName);
         int find_project_id_from_name(std::string projectName, int ignoreId = -1);
         int find_project_id_from_filename(std::string projectFileName, int ignoreId = -1);
+        GPE_Theme * find_theme(std::string themeName );
         int get_recent_project_list_size();
         int get_tip_count();
         int get_random_tip();
@@ -348,12 +355,12 @@ class GPE_Gui_Engine
         GPE_ToolIconButtonBar * get_main_buttonbar();
         void open_project(std::string projName);
         void open_new_project();
-        void prerender_gui(GPE_Renderer * cRender);
+        void prerender_gui( );
         void process_overlay_message();
         void process_window_title();
 
-        void render_foreground_engine(GPE_Renderer * renderTarget = NULL, bool forceRedraw = true);
-        void render_gui_info(GPE_Renderer * renderTarget = NULL, bool forceRedraw = true);
+        void render_foreground_engine( bool forceRedraw = true);
+        void render_gui_info( bool forceRedraw = true);
         void remove_project(std::string projectFileName );
         void reset_gui_info();
         void reset_settings();
@@ -367,7 +374,7 @@ class GPE_Gui_Engine
         void set_main_toolbar(GPE_Toolbar * newToolbar);
         void setup_project_directory(std::string newProjectDir);
         std::string setup_build_folder(std::string buildDirectory, int buildType = GPE_BUILD_WINDOWS, int buildBits = 32, bool inDebugMode = false, int nativeBuildType = Native_None );
-        void take_live_screenshor(GPE_Renderer * renderTarget = NULL);
+        void take_live_screenshor();
         void update_recent_project_list(bool saveData);
 };
 
@@ -381,4 +388,6 @@ std::string get_user_settings_folder();
 std::string get_user_temp_folder();
 std::string get_user_screenshot_folder();
 
+bool GPE_Editor_Init();
+bool GPE_Editor_Quit();
 #endif

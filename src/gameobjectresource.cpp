@@ -3,10 +3,10 @@ gameobjectresource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -111,7 +111,7 @@ bool objectResParentChainLink::is_inchain(int chainId)
 GPE_ObjectComponent::GPE_ObjectComponent()
 {
     component = NULL;
-    settingsGear = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/cogs.png","settings" );
+    settingsGear = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/cogs.png","settings" );
 }
 
 GPE_ObjectComponent::~GPE_ObjectComponent()
@@ -243,7 +243,7 @@ gameObjectResource::gameObjectResource(GPE_ResourceContainer * pFolder)
     spriteIndex = -1;
     spriteInEditor = NULL;
 
-    editorButtonBar = new GPE_ToolIconButtonBar(0,0,32, true);
+    editorButtonBar = new GPE_ToolIconButtonBar( 32, true);
     editorButtonBar->widthAutoResizes = true;
     editorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/tags.png","Object Components",OBJ_EDITOR_MODE_COMPONENTS,false );
     editorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/star.png","Basic Functions",OBJ_EDITOR_MODE_BASIC,false );
@@ -261,7 +261,7 @@ gameObjectResource::gameObjectResource(GPE_ResourceContainer * pFolder)
         saveResourceButton->disable_self();
     }
 
-    basicFunctionsSelector = new GPE_SelectBoxBasic(0,0,"Object Functions");
+    basicFunctionsSelector = new GPE_SelectBoxBasic("Object Functions");
     basicFunctionsSelector->set_width(editorButtonBar->get_width() );
 
     classDeclarationBox = new GPE_TextAreaInputBasic(true);
@@ -285,7 +285,7 @@ gameObjectResource::gameObjectResource(GPE_ResourceContainer * pFolder)
     basicFunctionsSelector->add_option(DEFAULT_OBJECT_FUNCTIONS_NAMES[8],8,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/paint-brush.png"),NULL,0,false,true);
     basicFunctionsSelector->add_option(DEFAULT_OBJECT_FUNCTIONS_NAMES[9],9,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/paint-brush.png"),NULL,0,false,true);
 
-    timedFunctionsSelector = new GPE_SelectBoxBasic(GENERAL_GPE_PADDING,editorButtonBar->get_width(),"Timed Functions");
+    timedFunctionsSelector = new GPE_SelectBoxBasic("Timed Functions");
     timedFunctionsSelector->set_width(editorButtonBar->get_width() );
     for( i= 0 ; i < DEFAULT_OBJECT_TIMED_FUNCTIONS_COUNT; i++)
     {
@@ -293,37 +293,37 @@ gameObjectResource::gameObjectResource(GPE_ResourceContainer * pFolder)
         timedObjectFunctions[i] = new GPE_TextAreaInputBasic(true);
     }
 
-    specialFunctionsSelector = new GPE_SelectBoxBasic(0,0,"Render Functions");
+    specialFunctionsSelector = new GPE_SelectBoxBasic("Render Functions");
     specialFunctionsSelector->set_width(editorButtonBar->get_width() );
     for( i= 0 ; i < DEFAULT_SPECIAL_FUNCTIONS_COUNT; i++)
     {
-        specialFunctionsSelector->add_option(DEFAULT_OBJECT_SPECIALS_NAMES[i] );
+        specialFunctionsSelector->add_option(DEFAULT_OBJECT_SPECIALS_NAMES[i], i );
         specialObjectFunctions[i] = new GPE_TextAreaInputBasic(true);
     }
 
-    colliderFunctionsSelector = new GPE_SelectBoxBasic(0,0,"Collision Functions");
+    colliderFunctionsSelector = new GPE_SelectBoxBasic("Collision Functions");
     colliderFunctionsSelector->set_width(editorButtonBar->get_width() );
 
-    customFunctionsSelector = new GPE_SelectBoxBasic(0,0,"Custom Functions");
+    customFunctionsSelector = new GPE_SelectBoxBasic("Custom Functions");
     customFunctionsSelector->set_width(editorButtonBar->get_width() );
 
     confirmResourceButton->enable_self();
     cancelResourceButton->disable_self();
 
-    if( projectParentFolder!=NULL)
+    if( projectParentFolder!=NULL )
     {
-        spriteField = new GPE_DropDown_Resouce_Menu(GENERAL_GPE_PADDING,48,"Object Sprite",projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_SPRITE]+"s") );
+        spriteField = new GPE_DropDown_Resouce_Menu(GENERAL_GPE_PADDING,48,"Default Animation",projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_ANIMATION]+"s") );
         loadResourceButton->set_width(spriteField->get_width() );
         confirmResourceButton->set_width(spriteField->get_width() );
         parentObjectField = new GPE_DropDown_Resouce_Menu(GENERAL_GPE_PADDING,96,"Parent Object",projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_OBJECT]+"s" ) );
         newObjectToCollideDropDown = new GPE_DropDown_Resouce_Menu(GENERAL_GPE_PADDING,96,"Add Collision",projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_OBJECT]+"s" ) );
         changeObjectToCollideDropDown = new GPE_DropDown_Resouce_Menu(GENERAL_GPE_PADDING,96,"Change Collision Object",projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_OBJECT]+"s" ) );
-        removeCollideFunctionButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/minus.png","Remove Collision","Removes Selected Collision function");
+        removeCollideFunctionButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/minus.png","Remove Collision","Removes Selected Collision function");
 
         //Custom Fucntions Buttons
-        newCustomObjectFunctionSettingsButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/cogs.png","Function Settings");
-        newCustomObjectFunctionButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/plus.png","Add Custom Function");
-        removeCustomObjectFunctionButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/minus.png", "Remove Custom Function" );
+        newCustomObjectFunctionSettingsButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/cogs.png","Function Settings");
+        newCustomObjectFunctionButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/plus.png","Add Custom Function");
+        removeCustomObjectFunctionButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/minus.png", "Remove Custom Function" );
     }
     else
     {
@@ -341,9 +341,9 @@ gameObjectResource::gameObjectResource(GPE_ResourceContainer * pFolder)
     customComponentsGuiList = new GPE_GuiElementList();
     componentsMainGuiLabel = new GPE_Label_Text("Custom Components","Custom components, useful for scene editor");
     componentsGuiLabel = new GPE_Label_Text("Custom Components","Custom components, useful for scene editor");
-    inheritParentComponentButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/users.png","Inherit Components","Inherit components from parent object class");
-    resetComponentsButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/trash.png","Reset Components","Clears all components form this object class");
-    addNewComponentDropDown = new GPE_DropDown_Menu(0,0,"Add Component",false);
+    inheritParentComponentButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/users.png","Inherit Components","Inherit components from parent object class");
+    resetComponentsButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/trash.png","Reset Components","Clears all components form this object class");
+    addNewComponentDropDown = new GPE_DropDown_Menu( "Add Component",false);
     addNewComponentDropDown->add_menu_option("Check-Box","checkbox",1,false);
     addNewComponentDropDown->add_menu_option("Color-Picker","colorpicker",2,false);
     addNewComponentDropDown->add_menu_option("Drop-Down","dropdown",3,false);
@@ -363,9 +363,9 @@ gameObjectResource::gameObjectResource(GPE_ResourceContainer * pFolder)
     addNewComponentDropDown->add_menu_option("Font","Fonts-resourcedropdown",58,false);
     addNewComponentDropDown->set_width(224);
 
-    removeComponentButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/minus.png","Remove Component");
-    editCompnentButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/edit.png","Edit Component");
-    componentSettingsButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/trash.png","Component Settings");
+    removeComponentButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/minus.png","Remove Component");
+    editCompnentButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/edit.png","Edit Component");
+    componentSettingsButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/trash.png","Component Settings");
 
     checkBoxIsVisible = new GPE_CheckBoxBasic("Visible","The actor is rendered on screen",GENERAL_GPE_PADDING,128+GENERAL_GPE_PADDING,true);
     checkBoxNeedsCamera = new GPE_CheckBoxBasic("Needs Camera","Object will only perform logic if in view of any camera [Highly recommended for most objects]",GENERAL_GPE_PADDING+96,128+GENERAL_GPE_PADDING,true);
@@ -690,7 +690,7 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
                         GPE_Main_Logs->log_build_error(get_name()+"'s "+DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[iFunc]+" function: "+objectFunctions[iFunc]->foundSyntaxErrors[iErrorLine] );
                     }
                     buildSuccessful = false;
-                    if( MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked() )
+                    if( GPE_JS_COMPILER_SETTINGS->stopCompileOnError->is_clicked() )
                     {
                         break;
                     }
@@ -729,7 +729,7 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
                         GPE_Main_Logs->log_build_error(get_name()+"'s timedFunction["+int_to_string(iFunc)+"]: "+timedObjectFunctions[iFunc]->foundSyntaxErrors[iErrorLine] );
                     }
                     buildSuccessful = false;
-                    if( MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked() )
+                    if( GPE_JS_COMPILER_SETTINGS->stopCompileOnError->is_clicked() )
                     {
                         break;
                     }
@@ -766,7 +766,7 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
                         GPE_Main_Logs->log_build_error(get_name()+"'s "+DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[iFunc]+" function: "+timedObjectFunctions[iFunc]->foundSyntaxErrors[iErrorLine] );
                     }
                     buildSuccessful = false;
-                    if( MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked() )
+                    if( GPE_JS_COMPILER_SETTINGS->stopCompileOnError->is_clicked() )
                     {
                         break;
                     }
@@ -805,7 +805,7 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
                                 GPE_Main_Logs->log_build_error( get_name()+"'s Collision Function["+otherObjResContainer->get_name()+"]: "+cColContainer->textEditor->foundSyntaxErrors[iErrorLine] );
                             }
                             buildSuccessful = false;
-                            if( MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked() )
+                            if( GPE_JS_COMPILER_SETTINGS->stopCompileOnError->is_clicked() )
                             {
                                 break;
                             }
@@ -862,7 +862,7 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
                                 GPE_Main_Logs->log_build_error("[Build Error] [ "+resourceName+"] object custom ["+cFuncContainer->functionName+"] function parameters: "+GPE_MAIN_HIGHLIGHTER->functionParameterErrors[iErrorLine] );
                             }
                             buildSuccessful = false;
-                            if( MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked() )
+                            if( GPE_JS_COMPILER_SETTINGS->stopCompileOnError->is_clicked() )
                             {
                                 break;
                             }
@@ -878,7 +878,7 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
                                 GPE_Main_Logs->log_build_error( get_name()+"'s Custom Function["+cFuncContainer->functionName+"]: "+cFuncContainer->textEditor->foundSyntaxErrors[iErrorLine] );
                             }
                             buildSuccessful = false;
-                            if( MAIN_EDITOR_SETTINGS->stopCompileOnError->is_clicked() )
+                            if( GPE_JS_COMPILER_SETTINGS->stopCompileOnError->is_clicked() )
                             {
                                 break;
                             }
@@ -1174,9 +1174,9 @@ void gameObjectResource::manage_components(GPE_Rect * viewedSpace, GPE_Rect * ca
     cam = GPE_find_camera(cam);
     if(cam!=NULL && viewedSpace!=NULL && editorPaneList!=NULL && renameBox!=NULL)
     {
-        customComponentsGuiList->set_coords(objEventManagebarBox.x,objEventManagebarBox.y);
-        customComponentsGuiList->set_width(viewedSpace->w-objEventManagebarBox.x);
-        customComponentsGuiList->set_height(viewedSpace->h- objEventManagebarBox.y );
+        customComponentsGuiList->set_coords(rightPanelBox.x,rightPanelBox.y);
+        customComponentsGuiList->set_width(viewedSpace->w-rightPanelBox.x);
+        customComponentsGuiList->set_height(viewedSpace->h- rightPanelBox.y );
         customComponentsGuiList->barXPadding = GENERAL_GPE_PADDING;
         customComponentsGuiList->barXMargin = 0;
 
@@ -1277,29 +1277,29 @@ void gameObjectResource::open_code(int lineNumb, int colNumb, std::string codeTi
     }
 }
 
-void gameObjectResource::prerender_self(GPE_Renderer * cRender )
+void gameObjectResource::prerender_self(  )
 {
-	standardEditableGameResource::prerender_self( cRender);
+	standardEditableGameResource::prerender_self();
 	if( removeCollideFunctionButton!=NULL)
     {
-        removeCollideFunctionButton->prerender_self(cRender);
+        removeCollideFunctionButton->prerender_self( );
     }
 
     if( checkBoxNeedsCamera!=NULL)
     {
-        checkBoxNeedsCamera->prerender_self(cRender);
+        checkBoxNeedsCamera->prerender_self( );
     }
     if( checkBoxIsMoveable!=NULL)
     {
-        checkBoxIsMoveable->prerender_self(cRender);
+        checkBoxIsMoveable->prerender_self( );
     }
     if( checkBoxIsVisible!=NULL)
     {
-        checkBoxIsVisible->prerender_self(cRender);
+        checkBoxIsVisible->prerender_self( );
     }
     if( checkBoxIsContinuous!=NULL)
     {
-        checkBoxIsContinuous->prerender_self(cRender);
+        checkBoxIsContinuous->prerender_self( );
     }
 }
 
@@ -1376,7 +1376,7 @@ void gameObjectResource::preprocess_self(std::string alternatePath)
                             }
                         }
                     }
-                    else if( foundFileVersion < 2)
+                    else if( foundFileVersion <= 2)
                     {
                         //Begin processing the file.
                         if(!currLineToBeProcessed.empty() )
@@ -1475,7 +1475,7 @@ void gameObjectResource::preprocess_self(std::string alternatePath)
                                     {
                                         renameBox->set_string(valString);
                                     }
-                                    else if( keyString=="SpriteId")
+                                    else if( keyString=="SpriteId" || keyString=="Animation" )
                                     {
                                         spriteIndex = -1;
                                         if( spriteField!=NULL)
@@ -1593,21 +1593,20 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     preprocess_self();
-    if(cam!=NULL && viewedSpace!=NULL && editorPaneList!=NULL && renameBox!=NULL)
+    if(cam!=NULL && viewedSpace!=NULL && editorPaneList!=NULL && editorButtonBar!=NULL )
     {
         if( editorButtonBar!=NULL)
         {
-            editorButtonBar->enable_self();
+            //editorButtonBar->enable_self();
             //editorButtonBar->set_width(192);
             codeSection = editorButtonBar->get_tab_id();
         }
-
+        else
+        {
+            return;
+        }
         int functionI = 0;
 
-        objEventManagebarBox.x = 0;
-        objEventManagebarBox.y = 0;
-        objEventManagebarBox.w = 0;
-        objEventManagebarBox.h = 0;
 
 
 
@@ -1619,16 +1618,18 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
         editorPaneList->barYPadding = GENERAL_GPE_PADDING;
         editorPaneList->barXMargin = 0;
         editorPaneList->barYMargin = 0;
-
         editorPaneList->clear_list();
 
-        objEventManagebarBox.x = editorPaneList->get_x2pos()+GENERAL_GPE_PADDING;
-        objEventManagebarBox.y = editorPaneList->get_ypos()+GENERAL_GPE_PADDING;
+        rightPanelBox.x = editorPaneList->get_x2pos()+GENERAL_GPE_PADDING;
+        rightPanelBox.y = editorPaneList->get_ypos()+GENERAL_GPE_PADDING;
+        rightPanelBox.w = viewedSpace->w- rightPanelBox.x;
+        rightPanelBox.h = viewedSpace->h;
+
         GPE_TextAreaInputBasic *  fTextArea = NULL;
 
         if(resourceNameLabel!=NULL)
         {
-            if( renameBox->get_string()!=resourceName)
+            if( renameBox!=NULL && renameBox->get_string()!=resourceName)
             {
                 resourceNameLabel->set_name(renameBox->get_string()+"*");
             }
@@ -1668,8 +1669,7 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                     {
                         if( tempCustomComponent->get_gear()->is_clicked() )
                         {
-                            GPE_open_context_menu();
-                            MAIN_CONTEXT_MENU->set_width(256);
+                            GPE_open_context_menu(-1,-1,256);
                             MAIN_CONTEXT_MENU->add_menu_option("Rename Component",0,NULL,-1,NULL,true,true);
                             MAIN_CONTEXT_MENU->add_menu_option("Delete Component",1,NULL,-1,NULL,false,true);
                             if( tempCustomComponent->get_type()=="dropdown" || tempCustomComponent->get_type()=="selectbox")
@@ -1791,15 +1791,19 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
         }
         else
         {
-            editorPaneList->clear_list();
+            //editorPaneList->clear_list();
+            //record_error("Unknown code section found "+int_to_string(codeSection) );
         }
+
         editorPaneList->add_gui_element(confirmResourceButton,false);
+        //record_error("Attempting to process with code section found "+int_to_string(codeSection) );
         editorPaneList->process_self(viewedSpace,cam);
-        if( confirmResourceButton->is_clicked() || (userInput->check_keyboard_down(kb_ctrl) && userInput->check_keyboard_released(kb_s) ) )
+        //record_error("Process successful..." );
+
+        if( confirmResourceButton->is_clicked() || (input->check_keyboard_down(kb_ctrl) && input->check_keyboard_released(kb_s) ) )
         {
             save_resource();
         }
-
 
         //
         if( codeSection == OBJ_EDITOR_MODE_COMPONENTS)
@@ -2008,7 +2012,7 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                 }
             }
         }
-        else if(codeSection==OBJ_EDITOR_MODE_BASIC)
+        else if(codeSection == OBJ_EDITOR_MODE_BASIC)
         {
             if(basicFunctionsSelector!=NULL)
             {
@@ -2038,9 +2042,9 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                         basicFunctionsSelector->alter_content_from_value(functionI,false);
                     }
                 }
-                if(  basicFunctionsSelector->get_selected_value() >= 0 && basicFunctionsSelector->get_selected_value() < DEFAULT_OBJECT_FUNCTIONS_COUNT)
+                if(  basicFunctionsSelector->get_selection() >= 0 && basicFunctionsSelector->get_selection() < DEFAULT_OBJECT_FUNCTIONS_COUNT)
                 {
-                    fTextArea = objectFunctions [ (int)basicFunctionsSelector->get_selected_value() ];
+                    fTextArea = objectFunctions [ (int)basicFunctionsSelector->get_selection() ];
                 }
                 else
                 {
@@ -2050,8 +2054,8 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 
                 if( fTextArea!=NULL)
                 {
-                    fTextArea->set_coords(objEventManagebarBox.x,0);
-                    fTextArea->set_width(viewedSpace->w-objEventManagebarBox.x );
+                    fTextArea->set_coords(rightPanelBox.x,0);
+                    fTextArea->set_width(viewedSpace->w-rightPanelBox.x );
                     fTextArea->set_height(viewedSpace->h);
                     /*if( basicFunctionsSelector->is_clicked() )
                     {
@@ -2061,7 +2065,7 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                 }
             }
         }
-        else if( codeSection==OBJ_EDITOR_MODE_TIMED)
+        else if( codeSection == OBJ_EDITOR_MODE_TIMED)
         {
             if(timedFunctionsSelector!=NULL)
             {
@@ -2089,8 +2093,8 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                     fTextArea = timedObjectFunctions [timedFunctionsSelector->get_selection() ];
                     if(fTextArea!=NULL)
                     {
-                        fTextArea->set_coords(objEventManagebarBox.x,0);
-                        fTextArea->set_width(viewedSpace->w-objEventManagebarBox.x );
+                        fTextArea->set_coords(rightPanelBox.x,0);
+                        fTextArea->set_width(viewedSpace->w-rightPanelBox.x );
                         fTextArea->set_height(viewedSpace->h);
                         /*if( timedFunctionsSelector->is_clicked() )
                         {
@@ -2101,7 +2105,7 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                 }
             }
         }
-        else if(codeSection==OBJ_EDITOR_MODE_COLLISIONS)
+        else if(codeSection == OBJ_EDITOR_MODE_COLLISIONS)
         {
             if(colliderFunctionsSelector!=NULL)
             {
@@ -2209,8 +2213,8 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                     fTextArea = currentCollisionContainer->textEditor;
                     if(fTextArea!=NULL)
                     {
-                        fTextArea->set_coords(objEventManagebarBox.x,0);
-                        fTextArea->set_width(viewedSpace->w-objEventManagebarBox.x );
+                        fTextArea->set_coords(rightPanelBox.x,0);
+                        fTextArea->set_width(viewedSpace->w-rightPanelBox.x );
                         fTextArea->set_height(viewedSpace->h );
                         //if( !colliderFunctionsSelector->is_inuse() )
                         fTextArea->process_self(viewedSpace,cam);
@@ -2218,7 +2222,7 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                 }
             }
         }
-        else if( codeSection==OBJ_EDITOR_MODE_CUSTOM)
+        else if( codeSection == OBJ_EDITOR_MODE_CUSTOM)
         {
             if(customFunctionsSelector!=NULL)
             {
@@ -2248,11 +2252,11 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                     {
                         if( currentCustomFunctionContainer->returnTypeField!=NULL)
                         {
-                            currentCustomFunctionContainer->returnTypeField->set_coords(objEventManagebarBox.x,objEventManagebarBox.y);
+                            currentCustomFunctionContainer->returnTypeField->set_coords(rightPanelBox.x,rightPanelBox.y);
                             currentCustomFunctionContainer->returnTypeField->set_width(viewedSpace->w/8 );
                             currentCustomFunctionContainer->returnTypeField->process_self(viewedSpace,cam);
 
-                            currentCustomFunctionContainer->parametersField->set_coords(currentCustomFunctionContainer->returnTypeField->get_x2pos()+GENERAL_GPE_PADDING,objEventManagebarBox.y);
+                            currentCustomFunctionContainer->parametersField->set_coords(currentCustomFunctionContainer->returnTypeField->get_x2pos()+GENERAL_GPE_PADDING,rightPanelBox.y);
                             currentCustomFunctionContainer->parametersField->set_width(viewedSpace->w- currentCustomFunctionContainer->parametersField->get_xpos()-GENERAL_GPE_PADDING );
                             currentCustomFunctionContainer->parametersField->process_self(viewedSpace,cam);
 
@@ -2273,8 +2277,7 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                 {
                     if( newCustomObjectFunctionSettingsButton->is_clicked() )
                     {
-                        GPE_open_context_menu();
-                        MAIN_CONTEXT_MENU->set_width(256);
+                        GPE_open_context_menu(-1,-1,256);
                         MAIN_CONTEXT_MENU->add_menu_option("Rename Function",0,NULL,-1,NULL,true,true);
                         MAIN_CONTEXT_MENU->add_menu_option("Exit Menu",4,NULL,-1,NULL,true,true);
                         int menuSelection = get_popupmenu_result();
@@ -2325,7 +2328,7 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                 }
             }
         }
-        else if( codeSection==OBJ_EDITOR_MODE_SPECIAL)
+        else if( codeSection == OBJ_EDITOR_MODE_SPECIAL)
         {
             //specialFunctionsSelector
             if(specialFunctionsSelector!=NULL)
@@ -2354,8 +2357,8 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                     fTextArea = specialObjectFunctions [ specialFunctionsSelector->get_selection()];
                     if(fTextArea!=NULL)
                     {
-                        fTextArea->set_coords(objEventManagebarBox.x,0);
-                        fTextArea->set_width(viewedSpace->w-objEventManagebarBox.x );
+                        fTextArea->set_coords(rightPanelBox.x,0);
+                        fTextArea->set_width(viewedSpace->w-rightPanelBox.x );
                         fTextArea->set_height(viewedSpace->h);
                         //if( !specialFunctionsSelector->is_inuse() )
                         fTextArea->process_self(viewedSpace,cam);
@@ -2364,33 +2367,31 @@ void gameObjectResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
             }
         }
 
-        if( codeSection !=editorButtonBar->get_tab_pos() )
+        if( codeSection !=editorButtonBar->get_tab_id() )
         {
-            userInput->reset_all_input();
-            process_self(viewedSpace,cam);
+            codeSection = editorButtonBar->get_tab_id();
+            input->reset_all_input();
+            //process_self( viewedSpace,cam );
+            return;
         }
     }
 }
 
-void gameObjectResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
+void gameObjectResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if(cam!=NULL && viewedSpace!=NULL && editorPaneList!=NULL)
     {
-        if( forceRedraw)
-        {
-            render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
-        }
         if( codeSection==OBJ_EDITOR_MODE_COMPONENTS )
         {
             if( customComponentsGuiList!=NULL)
             {
-                customComponentsGuiList->render_self(cRender,viewedSpace,cam,forceRedraw);
+                customComponentsGuiList->render_self( viewedSpace,cam,forceRedraw);
             }
             if( forceRedraw)
             {
-                render_rectangle(cRender,objEventManagebarBox.x-1,0,objEventManagebarBox.x+1,viewedSpace->h,GPE_MAIN_TEMPLATE->Main_Border_Color,false);
+                gpe->render_rectangle( rightPanelBox.x-1,0,rightPanelBox.x+1,viewedSpace->h,GPE_MAIN_THEME->Main_Border_Color,false);
             }
         }
         else
@@ -2400,12 +2401,12 @@ void gameObjectResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpa
             {
                 if(basicFunctionsSelector!=NULL)
                 {
-                    //render_new_text(cRender,basicFunctionsSelector->get_xpos()+basicFunctionsSelector->get_width()/2,basicFunctionsSelector->get_ypos(),"Object Functions",GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_CATEGORY_BAR,FA_CENTER,FA_BOTTOM);
+                    //render_new_text( basicFunctionsSelector->get_xpos()+basicFunctionsSelector->get_width()/2,basicFunctionsSelector->get_ypos(),"Object Functions",GPE_MAIN_THEME->Main_Box_Font_Color,FONT_CATEGORY_BAR,FA_CENTER,FA_BOTTOM);
                     if( objectFunctionInEdit[0] < DEFAULT_OBJECT_FUNCTIONS_COUNT)
                     {
-                        if(  basicFunctionsSelector->get_selected_value() >= 0 && basicFunctionsSelector->get_selected_value() < DEFAULT_OBJECT_FUNCTIONS_COUNT)
+                        if(  basicFunctionsSelector->get_selection() >= 0 && basicFunctionsSelector->get_selection() < DEFAULT_OBJECT_FUNCTIONS_COUNT)
                         {
-                            fTextArea = objectFunctions [ (int)basicFunctionsSelector->get_selected_value() ];
+                            fTextArea = objectFunctions [ (int)basicFunctionsSelector->get_selection() ];
                         }
                         else
                         {
@@ -2419,7 +2420,7 @@ void gameObjectResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpa
             {
                 if(timedFunctionsSelector!=NULL)
                 {
-                    if( objectFunctionInEdit[1] < DEFAULT_OBJECT_FUNCTIONS_COUNT)
+                    if( timedFunctionsSelector->get_selection()  >= 0 && timedFunctionsSelector->get_selection() < (int)collisionFunctions.size() )
                     {
                         fTextArea = timedObjectFunctions [timedFunctionsSelector->get_selection() ];
                     }
@@ -2447,11 +2448,11 @@ void gameObjectResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpa
                         {
                             if( currentCustomFunctionContainer->returnTypeField!=NULL)
                             {
-                                currentCustomFunctionContainer->returnTypeField->render_self(cRender,viewedSpace,cam,forceRedraw);
+                                currentCustomFunctionContainer->returnTypeField->render_self( viewedSpace,cam,forceRedraw);
                             }
                             if( currentCustomFunctionContainer->parametersField!=NULL)
                             {
-                                currentCustomFunctionContainer->parametersField->render_self(cRender,viewedSpace,cam,forceRedraw);
+                                currentCustomFunctionContainer->parametersField->render_self( viewedSpace,cam,forceRedraw);
                             }
                             fTextArea = currentCustomFunctionContainer->textEditor;
                         }
@@ -2462,7 +2463,7 @@ void gameObjectResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpa
             {
                 if(specialFunctionsSelector!=NULL)
                 {
-                    if( objectFunctionInEdit[3] < DEFAULT_SPECIAL_FUNCTIONS_COUNT)
+                    if( specialFunctionsSelector->get_selection() >= 0 && specialFunctionsSelector->get_selection() < (int)customFunctions.size() )
                     {
                         fTextArea = specialObjectFunctions [specialFunctionsSelector->get_selection() ];
                     }
@@ -2471,13 +2472,14 @@ void gameObjectResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpa
 
             if(fTextArea!=NULL)
             {
-                fTextArea->render_self(cRender,viewedSpace,cam,forceRedraw);
+                fTextArea->render_self( viewedSpace,cam,forceRedraw);
             }
         }
+
+        //Renders Panel List
         if( editorPaneList!=NULL)
         {
-
-            editorPaneList->render_self(cRender,viewedSpace,cam,forceRedraw);
+            editorPaneList->render_self( viewedSpace,cam,forceRedraw);
         }
     }
 }
@@ -2526,18 +2528,7 @@ void gameObjectResource::save_resource(std::string alternatePath, int backupId)
         //makes sure the file is open
         if (newGameObjFile.is_open())
         {
-            newGameObjFile << "#    --------------------------------------------------  # \n";
-            newGameObjFile << "#     \n";
-            newGameObjFile << "#     \n";
-            newGameObjFile << "#    Game Pencil Engine Project GameObject File \n";
-            newGameObjFile << "#    Created automatically via the Game Pencil Engine Editor \n";
-            newGameObjFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newGameObjFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
-            newGameObjFile << "#     \n";
-            newGameObjFile << "#     \n";
-            newGameObjFile << "#    --------------------------------------------------  # \n";
-            newGameObjFile << "Version=" << GPE_VERSION_DOUBLE_NUMBER << "\n";
-            newGameObjFile << "ResourceName=" << resourceName << "\n";
+            write_header_on_file(&newGameObjFile);
             if( spriteField!=NULL)
             {
                  newGameObjFile << "SpriteId=" << spriteField->get_selected_name() << "\n";

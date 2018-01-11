@@ -3,10 +3,10 @@ GPE_Renderer.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,6 +36,10 @@ SOFTWARE.
 #include "GPE_String_Ex.h"
 #include "GPE_Functions.h"
 
+
+int DEFAULT_WINDOW_MIN_WIDTH = 320;
+int DEFAULT_WINDOW_MIN_HEIGHT= 240;
+
 //The camera
 GPE_Rect GPE_DEFAULT_CAMERA;
 void reset_camera()
@@ -50,6 +54,8 @@ bool WINDOW_WAS_JUST_RESIZED = false;
 
 GPE_Renderer::GPE_Renderer(int wWidth, int wHeight,bool showBorder, bool fullScreen, bool maximized)
 {
+    minWindowWidth = 640;
+    minWindowHeight = 480;
     windowClosed = false;
     windowHasMouse= false;
     windowHasFocus = false;
@@ -60,6 +66,7 @@ GPE_Renderer::GPE_Renderer(int wWidth, int wHeight,bool showBorder, bool fullScr
     screenRenderedBefore = false;
     SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
     SDL_SetHint(SDL_HINT_FRAMEBUFFER_ACCELERATION, "1");
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
     gpeRender = NULL;
     screenClearedOnFrame = false;
     rWidth = wWidth;
@@ -124,13 +131,14 @@ GPE_Renderer::GPE_Renderer(int wWidth, int wHeight,bool showBorder, bool fullScr
         }
     }
     gpeWindow = SDL_CreateWindow("Game Pencil Engine",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,wWidth,wHeight,windowFlags);
-
+    windowIcon = load_surface_image(APP_DIRECTORY_NAME+"icon.png");
+    SDL_SetWindowIcon( gpeWindow, windowIcon);
     //SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS(1);
     //If there's an error
     if( gpeWindow!=NULL)
     {
         SDL_GetWindowPosition(gpeWindow,&windowPosX, &windowPosY);
-        gpeRender = SDL_CreateRenderer( gpeWindow, -1, SDL_RENDERER_ACCELERATED   );
+        gpeRender = SDL_CreateRenderer( gpeWindow, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE    );
     }
     else
     {
@@ -148,8 +156,7 @@ GPE_Renderer::GPE_Renderer(int wWidth, int wHeight,bool showBorder, bool fullScr
         windowOK = true;
         SDL_SetRenderTarget(gpeRender,NULL);
         SDL_SetRenderDrawBlendMode(gpeRender,SDL_BLENDMODE_BLEND);
-        SDL_SetWindowMinimumSize(gpeWindow,MIN_WINDOW_WIDTH,MIN_WINDOW_HEIGHT);
-
+        SDL_SetWindowMinimumSize( gpeWindow, DEFAULT_WINDOW_MIN_WIDTH, DEFAULT_WINDOW_MIN_HEIGHT );
         clear_renderer();
         update_renderer();
     }
@@ -157,6 +164,18 @@ GPE_Renderer::GPE_Renderer(int wWidth, int wHeight,bool showBorder, bool fullScr
     windowed = true;
 }
 
+GPE_Renderer::~GPE_Renderer()
+{
+    record_error("Deleting Window Icon....");
+    if( windowIcon!=NULL)
+    {
+        SDL_FreeSurface(windowIcon);
+        windowIcon = NULL;
+    }
+    record_error("Deleting Window...");
+    SDL_DestroyWindow( gpeWindow );
+
+}
 void GPE_Renderer::handle_events(SDL_Event& e)
 {
     recentResizeHappened = false;
@@ -326,6 +345,20 @@ void GPE_Renderer::set_viewpoint(GPE_Rect * newViewPoint)
 void GPE_Renderer::set_window_title(std::string newTitle)
 {
     SDL_SetWindowTitle(gpeWindow, newTitle.c_str() );
+}
+
+void GPE_Renderer::set_window_min_size( int w, int h)
+{
+    if( w > 0)
+    {
+        minWindowWidth = w;
+    }
+    if( h > 0)
+    {
+        minWindowHeight = h;
+    }
+
+    SDL_SetWindowMinimumSize( gpeWindow, minWindowWidth, minWindowHeight );
 }
 
 void GPE_Renderer::toggle_fullscreen()

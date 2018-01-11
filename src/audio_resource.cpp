@@ -3,10 +3,10 @@ audio_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -58,17 +58,17 @@ audioResource::audioResource(GPE_ResourceContainer * pFolder)
     {
         audioTypeButtonController->set_coords(-1,saveResourceButton->get_ypos()+saveResourceButton->get_height()+GENERAL_GPE_PADDING);
     }
-    openExternalEditorButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/rocket.png","Use External Editor","Opens Audio In External Editor");
-    openExternalEditorButton->set_width(loadResourceButton->get_width() );
-    refreshResourceDataButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/refresh.png","Refresh","Refreshes this resource's media files");
+    openExternalEditorButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/rocket.png","Use External Editor" );
+    refreshResourceDataButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/refresh.png"," Refreshes this resource's media files");
 
-    playButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png","Play","Play Audio");
-    playButton->set_width(loadResourceButton->get_width() );
+    playButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png","Play" );
     preloadCheckBox = new GPE_CheckBoxBasic("Preload Audio","Check to load audio at game open",GENERAL_GPE_PADDING,304,true);
-    defaultVolume = new GPE_TextInputNumber("Range 0 to 100",true,0,100);
+    volumeLabel = new GPE_Label_Text("Volume","Default Volume Level");
+    defaultVolume = new GPE_TextInputNumber("Range 0 to 100",true,0,200 );
     defaultVolume->set_string("100");
     defaultVolume->set_name("Default Volume:");
-    defaultVolume->set_label("Default Volume:");
+    defaultVolume->set_width(32);
+    volumeSlider = new GPE_Slider_XAxis(100,0,200);
 }
 
 audioResource::~audioResource()
@@ -77,6 +77,16 @@ audioResource::~audioResource()
     {
         delete audioEditorMainNote;
         audioEditorMainNote = NULL;
+    }
+    if(volumeLabel!=NULL)
+    {
+        delete volumeLabel;
+        volumeLabel = NULL;
+    }
+    if(volumeSlider!=NULL)
+    {
+        delete volumeSlider;
+        volumeSlider = NULL;
     }
     if(musicVal!=NULL)
     {
@@ -330,7 +340,7 @@ void audioResource::preprocess_self(std::string alternatePath )
                             }
                         }
                     }
-                    else if( foundFileVersion < 2)
+                    else if( foundFileVersion <= 2)
                     {
                         //Begin processing the file.
                         if(!currLineToBeProcessed.empty() )
@@ -394,24 +404,24 @@ void audioResource::preprocess_self(std::string alternatePath )
     }
 }
 
-void audioResource::prerender_self(GPE_Renderer * cRender)
+void audioResource::prerender_self( )
 {
-    standardEditableGameResource::prerender_self(cRender);
+    standardEditableGameResource::prerender_self( );
     if( playButton!=NULL)
     {
-        playButton->prerender_self(cRender);
+        playButton->prerender_self( );
     }
     if( openExternalEditorButton!=NULL)
     {
-        openExternalEditorButton->prerender_self(cRender);
+        openExternalEditorButton->prerender_self( );
     }
     if( preloadCheckBox!=NULL)
     {
-        preloadCheckBox->prerender_self(cRender);
+        preloadCheckBox->prerender_self( );
     }
     if( audioTypeButtonController!=NULL)
     {
-        audioTypeButtonController->prerender_self(cRender);
+        audioTypeButtonController->prerender_self( );
     }
 
 }
@@ -422,6 +432,8 @@ void audioResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
     cam = GPE_find_camera(cam);
     if(cam!=NULL && viewedSpace!=NULL && editorPaneList!=NULL)
     {
+        int prevVolumeSliderVal = volumeSlider->get_value();
+        int prevVolumeTypedVal = defaultVolume->get_held_number();
         editorPaneList->set_coords(0,0);
         editorPaneList->set_width(viewedSpace->w);
         editorPaneList->set_height(viewedSpace->h);
@@ -431,18 +443,23 @@ void audioResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         editorPaneList->clear_list();
 
         editorPaneList->add_gui_element(audioEditorMainNote,true);
-        editorPaneList->add_gui_element(renameBox,true);
-        editorPaneList->add_gui_element(refreshResourceDataButton,true);
-        editorPaneList->add_gui_element(loadResourceButton,true);
-        editorPaneList->add_gui_element(playButton,true);
-        editorPaneList->add_gui_element(audioTypeButtonController,true);
-        editorPaneList->add_gui_element(openExternalEditorButton,true);
+        editorPaneList->add_gui_element(renameBox,false);
         editorPaneList->add_gui_element(audioGroupName, true);
+
+        editorPaneList->add_gui_element(refreshResourceDataButton,false);
+        editorPaneList->add_gui_element(loadResourceButton,false);
+        editorPaneList->add_gui_element(playButton,false);
+        editorPaneList->add_gui_element(exportResourceButton,false);
+        editorPaneList->add_gui_element(openExternalEditorButton,true);
+
+        editorPaneList->add_gui_element(audioTypeButtonController,true);
+
+        editorPaneList->add_gui_element(volumeLabel, false);
+        editorPaneList->add_gui_element(volumeSlider, false);
         editorPaneList->add_gui_element(defaultVolume,true);
+
         editorPaneList->add_gui_element(confirmResourceButton,true);
         editorPaneList->add_gui_element(cancelResourceButton,true);
-        editorPaneList->add_gui_element(exportResourceButton,true);
-        editorPaneList->set_maxed_out_width();
         editorPaneList->process_self(viewedSpace,cam);
         if(audioTypeButtonController!=NULL)
         {
@@ -461,18 +478,27 @@ void audioResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
                         Mix_PlayChannel( -1, soundVal, 0 );
                         update_action_message("Playing Audio" );
                         playButton->set_name("Stop");
-                        playButton->change_texture( rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/stop.png") );
+                        playButton->set_image( APP_DIRECTORY_NAME+"resources/gfx/buttons/stop.png" );
                         playButton->descriptionText = "Push to Stop Audio";
                     }
                 }
                 else if( playButton->get_name()=="Stop")
                 {
                     playButton->set_name("Play");
-                    playButton->change_texture( rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png") );
-                    playButton->descriptionText = "Push to Play Audio";playButton->change_texture( rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png") );
+                    playButton->descriptionText = "Push to Play Audio";
+                    playButton->set_image( APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png" );
 
                 }
                 playButton->set_width(loadResourceButton->get_width() );
+            }
+            else if( playButton->get_name()=="Stop")
+            {
+                /*if( audio_is_play( )== false )
+                {
+                    playButton->set_name("Play");
+                    playButton->descriptionText = "Push to Play Audio";
+                    playButton->set_image( APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png" );
+                }*/
             }
         }
         if( loadResourceButton!=NULL)
@@ -541,12 +567,18 @@ void audioResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
                 preprocess_self();
             }
         }
-
-        defaultVolume->process_self(viewedSpace,cam);
+        if( defaultVolume->get_held_number() != prevVolumeTypedVal )
+        {
+            volumeSlider->set_value(  defaultVolume->get_held_number()  );
+        }
+        else if( volumeSlider->get_value() != prevVolumeSliderVal  )
+        {
+            defaultVolume->set_number(  volumeSlider->get_value()   );
+        }
     }
 }
 
-void audioResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw )
+void audioResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -554,20 +586,19 @@ void audioResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace,GP
     {
         if( forceRedraw)
         {
-            render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
             for( int i = 0; i < SUPPORTED_AUDIO_FORMAT_COUNT; i++)
             {
                 if( audioFileName[i].size()> 0)
                 {
-                    render_new_text(cRender,viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_AUDIO_EXT[i]+" attatched",GPE_MAIN_TEMPLATE->Main_Box_Font_Highlight_Color,DEFAULT_FONT,FA_RIGHT,FA_TOP);
+                    render_new_text( viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_AUDIO_EXT[i]+" attatched",GPE_MAIN_THEME->Main_Box_Font_Highlight_Color,DEFAULT_FONT,FA_RIGHT,FA_TOP);
                 }
                 else
                 {
-                    render_new_text(cRender,viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_AUDIO_EXT[i]+" not attatched",GPE_MAIN_TEMPLATE->Main_Box_Font_Color,DEFAULT_FONT,FA_RIGHT,FA_TOP);
+                    render_new_text( viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_AUDIO_EXT[i]+" not attatched",GPE_MAIN_THEME->Main_Box_Font_Color,DEFAULT_FONT,FA_RIGHT,FA_TOP);
                 }
             }
         }
-        editorPaneList->render_self(cRender,viewedSpace,cam, forceRedraw);
+        editorPaneList->render_self( viewedSpace,cam, forceRedraw);
     }
     //
 }
@@ -599,19 +630,6 @@ void audioResource::save_resource(std::string alternatePath, int backupId)
         //makes sure the file is open
         if (newSaveDataFile.is_open())
         {
-            newSaveDataFile << "#    --------------------------------------------------  # \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#    Game Pencil Engine Project Game Audio DataFile \n";
-            newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
-            newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#    --------------------------------------------------  # \n";
-            newSaveDataFile << "Version=" << GPE_VERSION_DOUBLE_NUMBER << "\n";
-            newSaveDataFile << "ResourceName=" << resourceName << "\n";
-
             std::string resFileLocation = "";
             std::string resFileCopySrc;
             std::string resFileCopyDest;

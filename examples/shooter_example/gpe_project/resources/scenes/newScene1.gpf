@@ -1,15 +1,16 @@
 #    --------------------------------------------------  # 
 #     
 #     
-#    Game Pencil Engine Project GameScene File 
+#    Game Pencil Engine Project Game Scene DataFile 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
 #    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.14
+Version=2
 ResourceName=newScene1
+#     
 SceneMusic=
 SceneStartAudio=
 SceneEndAudio=-1
@@ -29,7 +30,7 @@ DisplayObjectGrid=1
    GPE_Background=tex_grass,0,0,0,0,1,1,0,
 [/GPE_Layer]
 [GPE_Layer=2,1,]
-   GPEObject=obj_player,160,128,0,1,1,0,0,0,unnamed,,,[GPECustomFields][/GPECustomFields]
+   GPEObject=obj_player,192,128,0,1,1,0,0,0,unnamed,,,[GPECustomFields][/GPECustomFields]
    GPEObject=obj_enemy_basic,224,224,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
    GPEObject=obj_enemy_basic,416,160,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
    GPEObject=obj_enemy_basic,672,320,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]

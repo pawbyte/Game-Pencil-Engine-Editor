@@ -1,0 +1,38 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project GameScene File 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to debug@pawyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.0
+ResourceName=newScene1
+SceneMusic=-1
+SceneStartAudio=-1
+SceneEndAudio=-1
+LevelWidth=4096
+LevelHeight=4096
+TileWidth=32
+TileHeight=32
+ViewTileGrid=1
+Preload=1
+Isometric=0
+Continuous=0
+BGColor=0,0,0
+ObjectGridWidth=32
+ObjectGridHeight=32
+DisplayObjectGrid=1
+[SceneBackgrounds]
+	SceneBackground=0,-1,0,0,0,0,1,1,1,1,
+	SceneBackground=1,-1,0,0,0,0,1,1,1,1,
+	SceneBackground=2,-1,0,0,0,0,1,1,1,1,
+	SceneBackground=3,-1,0,0,0,0,1,1,1,1,
+	SceneBackground=4,-1,0,0,0,0,1,1,1,1,
+	SceneBackground=5,-1,0,0,0,0,1,1,1,1,
+	SceneBackground=6,-1,0,0,0,0,1,1,1,1,
+[/SceneBackgrounds]
+[SceneGameObjects]
+[/SceneGameObjects]

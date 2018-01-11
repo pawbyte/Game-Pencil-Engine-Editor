@@ -3,10 +3,10 @@ pathresource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -33,20 +33,10 @@ SOFTWARE.
 
 #include "pathresource.h"
 
-GPE_PathPoint::GPE_PathPoint(int pointX, int pointY, float speed)
-{
-    xPos = pointX;
-    yPos = pointY;
-    pointSpeed = speed;
-}
-
-GPE_PathPoint::~GPE_PathPoint()
-{
-
-}
 
 gamePathResource::gamePathResource(GPE_ResourceContainer * pFolder )
 {
+    bottomPaneList = new GPE_GuiElementList();
     projectParentFolder = pFolder;
 
     if( projectParentFolder!=NULL)
@@ -58,7 +48,7 @@ gamePathResource::gamePathResource(GPE_ResourceContainer * pFolder )
     {
         sceneToPreview = NULL;
     }
-    sceneZoomLevel = new GPE_DropDown_Menu(0,0,"",true);
+    sceneZoomLevel = new GPE_DropDown_Menu( "",true);
     sceneZoomLevel->add_menu_option("10%","10",10,false);
     sceneZoomLevel->add_menu_option("25%","25",25,false);
     sceneZoomLevel->add_menu_option("33%","33",33,false);
@@ -79,24 +69,22 @@ gamePathResource::gamePathResource(GPE_ResourceContainer * pFolder )
     sceneZoomLevel->add_menu_option("500%","500",500,false);
     sceneZoomLevel->set_width(96);
 
-    pathOptions = new GPE_SelectBoxBasic(0,0,"Path Points");
-    pathOptions->set_height(160);
-    pathOptions->limit_height(160);
+    pathOptions = new GPE_SelectBoxBasic( "Path Points");
+    pathOptions->set_width( 224 );
+    pathOptions->set_height(512);
+    pathOptions->limit_height(512);
 
-    pointSettingsButtton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/cogs.png","Path Settings",-1,32);
-    pointRemoveButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/remove.png", "Remove Point",-1,32 );
-    pointMoveUpButtton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/arrow-up.png", "Move Point Up",-1,32);
-    pointMoveDownButton = new GPE_ToolIconButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/arrow-down.png","Move Point Down",-1,32 );
+    pointSettingsButtton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/cogs.png","Path Settings",-1,32);
+    pointRemoveButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/remove.png", "Remove Point",-1,32 );
+    pointMoveUpButtton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/arrow-up.png", "Move Point Up",-1,32);
+    pointMoveDownButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/arrow-down.png","Move Point Down",-1,32 );
 
-    pathOpenType = new GPE_RadioButtonControllerBasic("Path Type",0,0);
-    pathOpenType->add_menu_option("Open Path","open",0,true);
-    pathOpenType->add_menu_option("Closed Path","closed",1,false);
-
+    pathTypeIsClosed = new GPE_CheckBoxBasic("Closed Path?","Check to close the path",0,0, false );
     pathShapeType = new GPE_RadioButtonControllerBasic("Path Shape",0,0);
     pathShapeType->add_menu_option("Lines","lines",0,true);
     pathShapeType->add_menu_option("Curves","curves",1,false);
 
-    sceneZoomAmount = 1;
+    zoomValue = 1;
     editorMode = 0;
     sceneEditorView.x = 128;
     sceneEditorView.y = 32;
@@ -114,7 +102,7 @@ gamePathResource::gamePathResource(GPE_ResourceContainer * pFolder )
     update_rectangle(&sceneXScroll->contextRect,0,0,640,480);
     sceneYScroll = new GPE_ScrollBar_YAxis();
     update_rectangle(&sceneYScroll->contextRect,0,0,640,480);
-    sceneAreaScrollable = false;
+    areaIsScrollable = false;
     sceneMouseXPos = 0;
     sceneMouseYPos = 0;
 
@@ -128,6 +116,11 @@ gamePathResource::gamePathResource(GPE_ResourceContainer * pFolder )
 
 gamePathResource::~gamePathResource()
 {
+    if( bottomPaneList!=NULL)
+    {
+        delete bottomPaneList;
+        bottomPaneList = NULL;
+    }
     if( sceneZoomLevel!=NULL)
     {
         delete sceneZoomLevel;
@@ -176,29 +169,33 @@ gamePathResource::~gamePathResource()
         delete sceneYScroll;
         sceneYScroll = NULL;
     }
+    if( pathTypeIsClosed!=NULL)
+    {
+        delete pathTypeIsClosed;
+        pathTypeIsClosed = NULL;
+    }
     clear_points();
 }
 
 GPE_PathPoint * gamePathResource::add_point( int pointX, int pointY, float pointSpeed )
 {
-    GPE_PathPoint * newPoint = new GPE_PathPoint(pointX, pointY, pointSpeed);
-    if( pointPos >=0 && pointPos < (int)pathPoints.size() )
+    if( pathOptions !=NULL )
     {
-        pathPoints.insert( pathPoints.begin()+pointPos+1,newPoint );
-        if( pathOptions!=NULL)
+        GPE_PathPoint * newPoint = new GPE_PathPoint(pointX, pointY, pointSpeed);
+        if( pointPos >=0 && pointPos < (int)pathPoints.size() )
         {
+            pathPoints.insert( pathPoints.begin()+pointPos+1,newPoint );
             pathOptions->insert_option(pointPos+1,"X:"+int_to_string(pointX)+" Y:"+int_to_string(pointY)+" Spd:"+float_to_string(pointSpeed),NULL,NULL,-1, true );
         }
-        pointPos++;
-    }
-    else
-    {
-        pathPoints.push_back( newPoint );
-        if( pathOptions!=NULL)
+        else
         {
-            pathOptions->add_option("X:"+int_to_string(pointX)+"Y:"+int_to_string(pointY)+"Spd:"+float_to_string(pointSpeed),pointPos+1,NULL,NULL,-1,true );
+            pathPoints.push_back( newPoint );
+            if( pathOptions!=NULL)
+            {
+                pathOptions->add_option("X:"+int_to_string(pointX)+"Y:"+int_to_string(pointY)+"Spd:"+float_to_string(pointSpeed),pointPos+1,NULL,NULL,-1,true );
+            }
         }
-        pointPos = (int)pathPoints.size();
+        pointPos =  pathOptions->get_selection();
     }
 }
 
@@ -210,7 +207,7 @@ bool gamePathResource::build_intohtml5_file(std::ofstream * fileTarget, int left
         std::string html5PathName = "_path_" + get_name();
 
         *fileTarget << nestedTabsStr << "var " + html5PathName + " =  GPE.add_path(";
-        if( pathOpenType!=NULL && pathOpenType->get_selected_tag()=="closed" )
+        if( pathTypeIsClosed!=NULL && pathTypeIsClosed->is_clicked() )
         {
             *fileTarget << int_to_string (html5BuildGlobalId ) +",true); \n";
         }
@@ -270,14 +267,14 @@ bool gamePathResource::get_mouse_coords(GPE_Rect * viewedSpace, GPE_Rect * cam)
     sceneMouseYPos = 0;
     if( viewedSpace!=NULL)
     {
-        if( point_within(userInput->mouse_x,userInput->mouse_y,
-                         sceneEditorView.x+viewedSpace->x,
-                         sceneEditorView.y+viewedSpace->y,
-                         sceneEditorView.x+viewedSpace->x+sceneEditorView.w,
-                         sceneEditorView.y+viewedSpace->y+sceneEditorView.h ) )
+        if( point_within(input->mouse_x,input->mouse_y,
+                         sceneEditorView.x,
+                         sceneEditorView.y,
+                         sceneEditorView.x+sceneEditorView.w,
+                         sceneEditorView.y+sceneEditorView.h ) )
         {
-            sceneMouseXPos = (userInput->mouse_x-sceneEditorView.x-viewedSpace->x)/sceneZoomAmount +scenePreviewRect.x;
-            sceneMouseYPos = (userInput->mouse_y-sceneEditorView.y-viewedSpace->y)/sceneZoomAmount +scenePreviewRect.y;
+            sceneMouseXPos = (input->mouse_x-sceneEditorView.x)/zoomValue +scenePreviewRect.x;
+            sceneMouseYPos = (input->mouse_y-sceneEditorView.y)/zoomValue +scenePreviewRect.y;
             MAIN_OVERLAY->update_tooltip( "Mouse( "+int_to_string(sceneMouseXPos )+" , "+int_to_string(sceneMouseYPos)+")" );
             return true;
         }
@@ -289,67 +286,67 @@ void gamePathResource::handle_scrolling()
 {
     bool xScrollHappened = false;
     bool yScrollHappened = false;
-    if( sceneAreaScrollable && editorPaneList->hasScrollControl==false )
+    if( areaIsScrollable && editorPaneList->hasScrollControl==false && editorPaneList->subElementsIsScrolling==false )
     {
-        if( userInput->check_keyboard_down(kb_ctrl) && sceneZoomLevel!=NULL )
+        if( input->check_keyboard_down(kb_ctrl) && sceneZoomLevel!=NULL )
         {
             //Zoom In
-            if( userInput->mouseScrollingDown > 0 )
+            if( input->mouseScrollingDown > 0 )
             {
                 sceneZoomLevel->set_selection(sceneZoomLevel->get_selected_id()-1 );
             }
-            else if( userInput->mouseScrollingUp)
+            else if( input->mouseScrollingUp)
             {
                 //zoom out
                 sceneZoomLevel->set_selection(sceneZoomLevel->get_selected_id()+1 );
             }
 
         }
-        else if( userInput->shiftKeyIsPressed)
+        else if( input->shiftKeyIsPressed)
         {
-            if( userInput->mouseScrollingUp > 0 )
+            if( input->mouseScrollingUp > 0 )
             {
                 xScrollHappened = true;
-                scenePreviewRect.x-=(scenePreviewRect.w/16)*sceneZoomAmount;
+                scenePreviewRect.x-=(scenePreviewRect.w/16)*zoomValue;
             }
-            else if( userInput->mouseScrollingDown)
+            else if( input->mouseScrollingDown)
             {
                 //zoom out
                 xScrollHappened = true;
-                scenePreviewRect.x+=(scenePreviewRect.w/16)*sceneZoomAmount;
+                scenePreviewRect.x+=(scenePreviewRect.w/16)*zoomValue;
             }
         }
         else
         {
-            if( userInput->mouseScrollingUp )
+            if( input->mouseScrollingUp )
             {
                 yScrollHappened = true;
-                scenePreviewRect.y-=(scenePreviewRect.h/16)*sceneZoomAmount;
+                scenePreviewRect.y-=(scenePreviewRect.h/16)*zoomValue;
             }
-            else if( userInput->mouseScrollingDown)
+            else if( input->mouseScrollingDown)
             {
                 yScrollHappened = true;
-                scenePreviewRect.y+=(scenePreviewRect.h/16)*sceneZoomAmount;
+                scenePreviewRect.y+=(scenePreviewRect.h/16)*zoomValue;
             }
             else if( editorPaneList->isInUse==false )
             {
                 //arrow scrolling
-                if( userInput->check_keyboard_down(kb_up) )
+                if( input->check_keyboard_down(kb_up) )
                 {
                     yScrollHappened = true;
-                    scenePreviewRect.y-=(scenePreviewRect.h/32)*sceneZoomAmount;
+                    scenePreviewRect.y-=(scenePreviewRect.h/32)*zoomValue;
                 }
-                else if( userInput->check_keyboard_down(kb_down) )
+                else if( input->check_keyboard_down(kb_down) )
                 {
                     yScrollHappened = true;
-                    scenePreviewRect.y+=(scenePreviewRect.h/32)*sceneZoomAmount;
+                    scenePreviewRect.y+=(scenePreviewRect.h/32)*zoomValue;
                 }
-                if( userInput->check_keyboard_down(kb_left) )
+                if( input->check_keyboard_down(kb_left) )
                 {
-                    if( scenePreviewRect.x > (scenePreviewRect.w/32)*sceneZoomAmount )
+                    if( scenePreviewRect.x > (scenePreviewRect.w/32)*zoomValue )
                     {
                         xScrollHappened = true;
-                        scenePreviewRect.x-=(scenePreviewRect.w/32)*sceneZoomAmount;
+                        scenePreviewRect.x-=(scenePreviewRect.w/32)*zoomValue;
                     }
                     else
                     {
@@ -357,12 +354,12 @@ void gamePathResource::handle_scrolling()
                         xScrollHappened = true;
                     }
                 }
-                else if( userInput->check_keyboard_down(kb_right) )
+                else if( input->check_keyboard_down(kb_right) )
                 {
-                    if( (scenePreviewRect.x +scenePreviewRect.w/32)*sceneZoomAmount < sceneRect.w*sceneZoomAmount )
+                    if( (scenePreviewRect.x +scenePreviewRect.w/32)*zoomValue < sceneRect.w*zoomValue )
                     {
                         xScrollHappened = true;
-                        scenePreviewRect.x+=(scenePreviewRect.w/32)*sceneZoomAmount;
+                        scenePreviewRect.x+=(scenePreviewRect.w/32)*zoomValue;
                     }
                 }
             }
@@ -371,16 +368,16 @@ void gamePathResource::handle_scrolling()
 
 
 
-    if( scenePreviewRect.x+scenePreviewRect.w/sceneZoomAmount > sceneRect.w )
+    if( scenePreviewRect.x+scenePreviewRect.w/zoomValue > sceneRect.w )
     {
         xScrollHappened = true;
-        scenePreviewRect.x = sceneRect.w-scenePreviewRect.w/sceneZoomAmount;
+        scenePreviewRect.x = sceneRect.w-scenePreviewRect.w/zoomValue;
     }
 
-    if( scenePreviewRect.y+scenePreviewRect.h/sceneZoomAmount > sceneRect.h )
+    if( scenePreviewRect.y+scenePreviewRect.h/zoomValue > sceneRect.h )
     {
         yScrollHappened = true;
-        scenePreviewRect.y = sceneRect.h-scenePreviewRect.h/sceneZoomAmount;
+        scenePreviewRect.y = sceneRect.h-scenePreviewRect.h/zoomValue;
     }
 
     if( scenePreviewRect.x <= 0)
@@ -398,12 +395,12 @@ void gamePathResource::handle_scrolling()
     if( xScrollHappened)
     {
         sceneXScroll->contextRect.x = scenePreviewRect.x;
-        sceneXScroll->process_self(NULL,NULL,true);
+        sceneXScroll->process_self(NULL,NULL);
     }
     if( yScrollHappened)
     {
         sceneXScroll->contextRect.y = scenePreviewRect.y;
-        sceneYScroll->process_self(NULL,NULL,true);
+        sceneYScroll->process_self(NULL,NULL);
     }
 }
 
@@ -417,7 +414,7 @@ void gamePathResource::open_code(int lineNumb, int colNumb, std::string codeTitl
 
 }
 
-void gamePathResource::prerender_self(GPE_Renderer * cRender)
+void gamePathResource::prerender_self( )
 {
 
 }
@@ -497,7 +494,7 @@ void gamePathResource::preprocess_self(std::string alternatePath )
                             }
                         }
                     }
-                    else if( foundFileVersion < 2)
+                    else if( foundFileVersion <= 2)
                     {
                         //Begin processing the file.
                         if(!currLineToBeProcessed.empty() )
@@ -521,9 +518,21 @@ void gamePathResource::preprocess_self(std::string alternatePath )
                                     foundWaiver = split_first_int(valString,',');
                                     add_point( foundX, foundY, foundSpeed );
                                 }
-                                else if ( keyString == "pathType")
+                                else if ( keyString == "PathIsClosed" && pathTypeIsClosed!=NULL )
                                 {
-                                    pathOpenType->set_from_tag( split_first_string(valString, ",") );
+                                    pathTypeIsClosed->set_clicked( is_bool(valString) );
+                                }
+                                else if ( keyString == "pathType" && pathTypeIsClosed!=NULL )
+                                {
+                                    //Processes old path type from previous version
+                                   if( split_first_string(valString, ",")=="Closed Path" )
+                                   {
+                                       pathTypeIsClosed->set_clicked( true );
+                                   }
+                                   else
+                                   {
+                                       pathTypeIsClosed->set_clicked( false);
+                                   }
                                 }
                                 else if ( keyString == "LineColor"|| keyString=="PathLineColor")
                                 {
@@ -567,18 +576,19 @@ void gamePathResource::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
     {
         editorPane.x = 0;
         editorPane.y = 0;
-        editorPane.w = 256;
+        editorPane.w = 288;
         editorPane.h = viewedSpace->h;
 
-        sceneEditorView.x = editorPane.x+editorPane.w;
-        sceneEditorView.y = 0;
+        sceneEditorView.x = viewedSpace->x+editorPane.x+editorPane.w;
+        sceneEditorView.y = viewedSpace->y;
         sceneEditorView.w = scenePreviewRect.w = (int)(viewedSpace->w-sceneEditorView.x-sceneYScroll->get_box_width() )-16; //xcroll = 16px height
-        sceneEditorView.h = scenePreviewRect.h = viewedSpace->h-64-sceneEditorView.y; //Comment pane = 32, yscroll = 16 height
+        sceneEditorView.h = scenePreviewRect.h = viewedSpace->h-64; //Comment pane = 64, yscroll = 16 height
 
-        sceneRect.x =0;
-        sceneRect.y =0;
-        sceneRect.w =8192;
-        sceneRect.h =8192;
+        sceneRect.x = 0;
+        sceneRect.y = 0;
+        sceneRect.w = 8192;
+        sceneRect.h = 8192;
+
         GPE_ResourceContainer * sceneTypeContainer =  sceneToPreview->get_selected_container();
         if( sceneTypeContainer!=NULL && sceneTypeContainer->get_held_resource()!=NULL )
         {
@@ -594,21 +604,44 @@ void gamePathResource::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
             }
         }
 
-        editorCommentPane.x = sceneEditorView.x;
-        editorCommentPane.y = sceneEditorView.y+sceneEditorView.h+16;
+        editorCommentPane.x = sceneEditorView.x - viewedSpace->x;
+        editorCommentPane.y = sceneEditorView.h+16;
         editorCommentPane.w = viewedSpace->w-sceneEditorView.x;
         editorCommentPane.h = 32;
+
+        if( pathOptions !=NULL )
+        {
+            pathOptions->set_height( viewedSpace->h - 160 );
+            pathOptions->limit_height( viewedSpace->h - 160 );
+        }
+
         if(cam!=NULL && viewedSpace!=NULL && editorPaneList!=NULL)
         {
-
             editorPaneList->set_coords(0,0);
-            editorPaneList->set_width(256);
-            editorPaneList->set_height(viewedSpace->h);
+            editorPaneList->set_width( editorPane.w  );
+            editorPaneList->set_height( editorPane.h );
             editorPaneList->barXPadding = GENERAL_GPE_PADDING;
             editorPaneList->barYPadding = GENERAL_GPE_PADDING;
             editorPaneList->barXMargin  = GENERAL_GPE_PADDING;
             editorPaneList->barYMargin  = 0;
             editorPaneList->clear_list();
+
+
+            //For bottom pane
+            bottomPaneList->clear_list();
+            bottomPaneList->set_coords( editorCommentPane.x , editorCommentPane.y );
+            bottomPaneList->set_width( viewedSpace->w-sceneEditorView.x);
+            bottomPaneList->set_height( viewedSpace->h - editorCommentPane.y );
+            bottomPaneList->hAlign = FA_LEFT;
+            bottomPaneList->vAlign = FA_MIDDLE;
+            bottomPaneList->barXPadding = GENERAL_GPE_PADDING;
+            bottomPaneList->barYPadding = 0;
+            bottomPaneList->barXMargin  = GENERAL_GPE_PADDING;
+            bottomPaneList->barYMargin  = GENERAL_GPE_PADDING;
+
+
+
+            //Now back to the editor pane
             editorPaneList->add_gui_element(renameBox,true);
             editorPaneList->add_gui_element(pathOptions,true);
             if( selectedPathPoint!=NULL)
@@ -621,12 +654,9 @@ void gamePathResource::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
             editorPaneList->add_gui_element(pointRemoveButton,false);
             editorPaneList->add_gui_element(pointMoveUpButtton,false);
             editorPaneList->add_gui_element(pointMoveDownButton,true);
-            editorPaneList->add_gui_element(pathOpenType,true);
             //editorPaneList->add_gui_element(pathShapeType,true);
 
 
-            editorPaneList->add_gui_element(exportResourceButton,true);
-            editorPaneList->add_gui_element(loadResourceButton,true);
             editorPaneList->add_gui_element(confirmResourceButton,true);
             editorPaneList->add_gui_element(cancelResourceButton,true);
             editorPaneList->process_self( viewedSpace, cam);
@@ -640,10 +670,10 @@ void gamePathResource::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
                     selectedPathPoint = NULL;
                 }
             }
+
             if( pointSettingsButtton!=NULL && pointSettingsButtton->is_clicked() )
             {
-                GPE_open_context_menu();
-                MAIN_CONTEXT_MENU->set_width(256);
+                GPE_open_context_menu(-1,-1,256);
 
                 MAIN_CONTEXT_MENU->add_menu_option("Change Points Color",1,NULL,-1,NULL,false,true);
                 MAIN_CONTEXT_MENU->add_menu_option("Change Lines Color",2,NULL,-1,NULL,false,true);
@@ -691,34 +721,25 @@ void gamePathResource::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
                 selectedPointPos = -1;
                 selectedPathPoint = NULL;
             }
-            if( sceneToPreview!=NULL)
-            {
-                sceneToPreview->set_coords(editorCommentPane.x+GENERAL_GPE_PADDING,editorCommentPane.y+GENERAL_GPE_PADDING );
-                sceneToPreview->process_self(viewedSpace,cam);
-            }
+
+            bottomPaneList->add_gui_element( sceneToPreview, false );
+            bottomPaneList->add_gui_element( sceneZoomLevel, false );
+            bottomPaneList->add_gui_element( pathTypeIsClosed, false );
+            bottomPaneList->process_self( viewedSpace, cam );
 
             if( sceneZoomLevel!=NULL)
             {
-                if( sceneToPreview!=NULL)
+                zoomValue = sceneZoomLevel->get_selected_value();
+                if( zoomValue < 0)
                 {
-                    sceneZoomLevel->set_coords(sceneToPreview->get_x2pos()+GENERAL_GPE_PADDING, editorCommentPane.y+GENERAL_GPE_PADDING );
-                }
-                else
-                {
-                    sceneZoomLevel->set_coords(editorCommentPane.x+GENERAL_GPE_PADDING, editorCommentPane.y+GENERAL_GPE_PADDING);
-                }
-                sceneZoomLevel->process_self(viewedSpace,cam);
-                sceneZoomAmount = sceneZoomLevel->get_selected_value();
-                if( sceneZoomAmount < 0)
-                {
-                    sceneZoomAmount = 1;
+                    zoomValue = 1;
                     sceneZoomLevel->set_value(100);
                 }
-                sceneZoomAmount/=100;
+                zoomValue/=100;
             }
             else
             {
-                sceneZoomAmount = 1;
+                zoomValue = 1;
             }
         }
 
@@ -726,49 +747,49 @@ void gamePathResource::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
         //if( editorPaneList->hasScrollControl==false && layerPaneList->hasScrollControl==false )
         {
             //Horizontal scrolling
-            update_rectangle(&sceneXScroll->barBox,sceneEditorView.x,sceneEditorView.y+sceneEditorView.h,sceneEditorView.w,16);
+            update_rectangle(&sceneXScroll->elementBox,editorPane.w,sceneEditorView.h,sceneEditorView.w,16);
             update_rectangle(&sceneXScroll->fullRect,0,0,(double)sceneRect.w, (double)sceneRect.h );
-            update_rectangle(&sceneXScroll->contextRect,(double)scenePreviewRect.x,(double)scenePreviewRect.y, (double)scenePreviewRect.w/sceneZoomAmount, (double)scenePreviewRect.h/sceneZoomAmount );
-            sceneXScroll->process_self(viewedSpace,cam, true );
+            update_rectangle(&sceneXScroll->contextRect,(double)scenePreviewRect.x,(double)scenePreviewRect.y, (double)scenePreviewRect.w/zoomValue, (double)scenePreviewRect.h/zoomValue );
+            sceneXScroll->process_self(viewedSpace,cam );
             //if( sceneXScroll->has_moved() )
             {
                 scenePreviewRect.x = (double)(sceneXScroll->contextRect.x);
             }
 
             //Vertical Scrolling
-            update_rectangle(&sceneYScroll->barBox,sceneEditorView.x+sceneEditorView.w,sceneEditorView.y,16,sceneEditorView.h);
+            update_rectangle(&sceneYScroll->elementBox,editorPane.w+sceneEditorView.w,0,16,sceneEditorView.h );
             update_rectangle(&sceneYScroll->fullRect,0,0,(double)sceneRect.w, (double)sceneRect.h );
-            update_rectangle(&sceneYScroll->contextRect,(double)scenePreviewRect.x,(double)scenePreviewRect.y, (double)scenePreviewRect.w/sceneZoomAmount, (double)scenePreviewRect.h/sceneZoomAmount );
+            update_rectangle(&sceneYScroll->contextRect,(double)scenePreviewRect.x,(double)scenePreviewRect.y, (double)scenePreviewRect.w/zoomValue, (double)scenePreviewRect.h/zoomValue );
             //sceneYScroll->contextRect.h = sceneEditorView.h;
-            sceneYScroll->process_self(viewedSpace,cam, true );
+            sceneYScroll->process_self(viewedSpace,cam );
             //if( sceneYScroll->has_moved() )
             {
                 scenePreviewRect.y = double(sceneYScroll->contextRect.y);
             }
         }
 
-        if( userInput->input_received() )
+        if( input->input_received() )
         {
             get_mouse_coords(viewedSpace,cam);
         }
-        //if( userInput->check_mouse_pressed(0) ||  userInput->check_mouse_pressed(1) || userInput->check_mouse_pressed(2) )
+        //if( input->check_mouse_pressed(0) ||  input->check_mouse_pressed(1) || input->check_mouse_pressed(2) )
         {
             if( get_mouse_coords(viewedSpace,cam) )
             {
-                sceneAreaScrollable = true;
+                areaIsScrollable = true;
                 editorPaneList->hasScrollControl = false;
             }
             else
             {
-                sceneAreaScrollable = false;
+                areaIsScrollable = false;
             }
         }
 
-        int pointSize = std::max( 1, (int)( 7*sceneZoomAmount) );
+        int pointSize = std::max( 1, (int)( 7*zoomValue) );
         GPE_PathPoint * tempPoint = NULL;
         bool foundPoint  = false;
         int i = 0;
-        if( userInput->check_mouse_down(0) )
+        if( input->check_mouse_down(0) )
         {
             if( get_mouse_coords(viewedSpace,cam) )
             {
@@ -784,14 +805,14 @@ void gamePathResource::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
             }
             /*if(sceneYScroll->is_held() )
             {
-                sceneEditorViewRect.x+=16;
+                editorCameraRect.x+=16;
             }
             if(sceneXScroll->is_held() )
             {
-                //sceneEditorViewRect.y+=16;
+                //editorCameraRect.y+=16;
             }*/
         }
-        else if( userInput->check_mouse_released(0) )
+        else if( input->check_mouse_released(0) )
         {
             //Adds, selects or moves a point
             if( get_mouse_coords(viewedSpace,cam) )
@@ -815,11 +836,13 @@ void gamePathResource::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
                 }
                 else
                 {
+                    //searches if the mouse overlaps with a point on the screen.
                     for( i = (int)pathPoints.size()-1; i >=0 && !foundPoint; i--)
                     {
                         tempPoint = pathPoints[i];
                         if( tempPoint!=NULL)
                         {
+                            // if found change its coordinates
                             if( point_between( (int)sceneMouseXPos,(int)sceneMouseYPos, tempPoint->xPos -pointSize ,tempPoint->yPos - pointSize,tempPoint->xPos +pointSize,tempPoint->yPos +pointSize) )
                             {
                                 foundPoint = true;
@@ -848,12 +871,13 @@ void gamePathResource::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
 
                     if( selectedPathPoint == NULL)
                     {
+                        pointPos = pathOptions->get_selection();
                         GPE_PathPoint * newPoint = add_point(sceneMouseXPos, sceneMouseYPos, 1);
                     }
                 }
             }
         }
-        else if( userInput->check_mouse_released(1) )
+        else if( input->check_mouse_released(1) )
         {
             //removes points
             if( get_mouse_coords(viewedSpace,cam) )
@@ -941,17 +965,12 @@ bool gamePathResource::remove_point( int pointId )
     return false;
 }
 
-void gamePathResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam , bool forceRedraw )
+void gamePathResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam , bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( cam!=NULL && viewedSpace!=NULL )
+    if( cam!=NULL && viewedSpace!=NULL && forceRedraw)
     {
-        if( forceRedraw)
-        {
-            render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
-        }
-
         GPE_ResourceContainer * sceneTypeContainer =  sceneToPreview->get_selected_container();
         if( sceneTypeContainer!=NULL && sceneTypeContainer->get_held_resource()!=NULL )
         {
@@ -961,14 +980,16 @@ void gamePathResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace
                 gameSceneResource * foundSceneObject = (gameSceneResource *)sceneGenObject;
                 if( foundSceneObject!=NULL)
                 {
-                    foundSceneObject->render_scene_layers(cRender,viewedSpace, cam, &sceneEditorView, &scenePreviewRect,sceneZoomAmount,false, false, forceRedraw);
+                    foundSceneObject->render_scene_layers( viewedSpace, cam, &sceneEditorView, &scenePreviewRect,zoomValue,false, false, forceRedraw);
                 }
             }
         }
 
-
+        //Draws the points and lines
         if( forceRedraw )
         {
+            MAIN_RENDERER->reset_viewpoint(  );
+            MAIN_RENDERER->set_viewpoint( &sceneEditorView );
             GPE_PathPoint * tempPoint = NULL;
             int tempXPoint = 0, tempYPoint = 0;
             int tempX2Point = 0, tempY2Point = 0;
@@ -979,25 +1000,25 @@ void gamePathResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace
                 tempPoint = pathPoints[pointI];
                 if( tempPoint!=NULL )
                 {
-                    tempXPoint = floor( tempPoint->xPos*sceneZoomAmount+sceneEditorView.x-scenePreviewRect.x*sceneZoomAmount );
-                    tempYPoint = floor( tempPoint->yPos*sceneZoomAmount+sceneEditorView.y-scenePreviewRect.y*sceneZoomAmount );
+                    tempXPoint = floor( tempPoint->xPos*zoomValue - scenePreviewRect.x*zoomValue );
+                    tempYPoint = floor( tempPoint->yPos*zoomValue - scenePreviewRect.y*zoomValue );
                     if( pointI >=1)
                     {
-                        render_line(cRender, tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathLineColor, 255);
+                        gpe->render_line(  tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathLineColor, 255);
                     }
                     tempX2Point = tempXPoint;
                     tempY2Point = tempYPoint;
                 }
             }
 
-            if( pathOpenType!=NULL && pointCount >2)
+            if( pathTypeIsClosed!=NULL && pointCount >2)
             {
                 tempPoint = pathPoints[0];
-                if( tempPoint!=NULL && pathOpenType->get_selected_tag()=="closed" )
+                if( tempPoint!=NULL && pathTypeIsClosed->is_clicked() )
                 {
-                    tempXPoint = floor( tempPoint->xPos*sceneZoomAmount+sceneEditorView.x-scenePreviewRect.x*sceneZoomAmount );
-                    tempYPoint = floor( tempPoint->yPos*sceneZoomAmount+sceneEditorView.y-scenePreviewRect.y*sceneZoomAmount );
-                    render_line(cRender, tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathLineColor, 255);
+                    tempXPoint = floor( tempPoint->xPos*zoomValue - scenePreviewRect.x*zoomValue );
+                    tempYPoint = floor( tempPoint->yPos*zoomValue - scenePreviewRect.y*zoomValue );
+                    gpe->render_line(  tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathLineColor, 255);
                 }
             }
 
@@ -1006,26 +1027,26 @@ void gamePathResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace
                 tempPoint = pathPoints[pointI];
                 if( tempPoint!=NULL )
                 {
-                    tempXPoint = floor( tempPoint->xPos*sceneZoomAmount+sceneEditorView.x-scenePreviewRect.x*sceneZoomAmount );
-                    tempYPoint = floor( tempPoint->yPos*sceneZoomAmount+sceneEditorView.y-scenePreviewRect.y*sceneZoomAmount );
-                    if( selectedPointPos==pointI)
+                    tempXPoint = floor( tempPoint->xPos*zoomValue - scenePreviewRect.x*zoomValue );
+                    tempYPoint = floor( tempPoint->yPos*zoomValue - scenePreviewRect.y*zoomValue );
+                    if( selectedPointPos == pointI)
                     {
-                        render_circle_filled_rgba(cRender,tempXPoint,tempYPoint, std::max( 1, (int)( 7*sceneZoomAmount) ),pathLineColor->get_r(),pathLineColor->get_g(),pathLineColor->get_b(), 255 );
+                        gpe->render_circle_filled_rgba( tempXPoint,tempYPoint, std::max( 1, (int)( 7*zoomValue) ),pathLineColor->get_r(),pathLineColor->get_g(),pathLineColor->get_b(), 255 );
                     }
                     else
                     {
-                        render_circle_filled_rgba(cRender,tempXPoint,tempYPoint, std::max( 1, (int)( 7*sceneZoomAmount) ),pathPointColor->get_r(),pathPointColor->get_g(),pathPointColor->get_b(), 255 );
+                        gpe->render_circle_filled_rgba( tempXPoint,tempYPoint, std::max( 1, (int)( 7*zoomValue) ),pathPointColor->get_r(),pathPointColor->get_g(),pathPointColor->get_b(), 255 );
                     }
-                    //render_rectangle(cRender,tempXPoint, tempYPoint, tempXPoint+4, tempYPoint+4,pathPointColor, false, 255);
+                    //gpe->render_rectangle( tempXPoint, tempYPoint, tempXPoint+4, tempYPoint+4,pathPointColor, false, 255);
                     //record_error("Rendering point ["+int_to_string(pointI)+"] at ("+int_to_string(tempXPoint)+","+int_to_string(tempYPoint)+")");
                 }
             }
 
             if( selectedPathPoint!=NULL)
             {
-                tempXPoint = floor( sceneMouseXPos*sceneZoomAmount+sceneEditorView.x-scenePreviewRect.x*sceneZoomAmount );
-                tempYPoint = floor( sceneMouseYPos*sceneZoomAmount+sceneEditorView.y-scenePreviewRect.y*sceneZoomAmount );
-                render_circle_filled_rgba(cRender,tempXPoint,tempYPoint, std::max( 1, (int)( 7*sceneZoomAmount) ),pathLineColor->get_r(),pathLineColor->get_g(),pathLineColor->get_b(), 128 );
+                tempXPoint = floor( sceneMouseXPos*zoomValue - scenePreviewRect.x*zoomValue );
+                tempYPoint = floor( sceneMouseYPos*zoomValue - scenePreviewRect.y*zoomValue );
+                gpe->render_circle_filled_rgba( tempXPoint,tempYPoint, std::max( 1, (int)( 7*zoomValue) ),pathLineColor->get_r(),pathLineColor->get_g(),pathLineColor->get_b(), 128 );
 
                 if( selectedPointPos >=0 && selectedPointPos < (int)pathPoints.size() && pointCount >=2 )
                 {
@@ -1034,19 +1055,19 @@ void gamePathResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace
                         tempPoint = pathPoints[1];
                         if( tempPoint!=NULL )
                         {
-                            tempX2Point = floor( tempPoint->xPos*sceneZoomAmount+sceneEditorView.x-scenePreviewRect.x*sceneZoomAmount );
-                            tempY2Point = floor( tempPoint->yPos*sceneZoomAmount+sceneEditorView.y-scenePreviewRect.y*sceneZoomAmount );
-                            render_line(cRender, tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathPointColor, 128);
+                            tempX2Point = floor( tempPoint->xPos*zoomValue - scenePreviewRect.x*zoomValue );
+                            tempY2Point = floor( tempPoint->yPos*zoomValue - scenePreviewRect.y*zoomValue );
+                            gpe->render_line(  tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathPointColor, 128);
                         }
 
-                        if( pathOpenType!=NULL && pathOpenType->get_selected_tag()=="closed"  && pointCount >=3 )
+                        if( pathTypeIsClosed!=NULL && pathTypeIsClosed->is_clicked()  && pointCount >=3 )
                         {
                             tempPoint = pathPoints[ pointCount - 1];
                             if( tempPoint!=NULL)
                             {
-                                tempX2Point = floor( tempPoint->xPos*sceneZoomAmount+sceneEditorView.x-scenePreviewRect.x*sceneZoomAmount );
-                                tempY2Point = floor( tempPoint->yPos*sceneZoomAmount+sceneEditorView.y-scenePreviewRect.y*sceneZoomAmount );
-                                render_line(cRender, tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathPointColor, 128);
+                                tempX2Point = floor( tempPoint->xPos*zoomValue - scenePreviewRect.x*zoomValue );
+                                tempY2Point = floor( tempPoint->yPos*zoomValue - scenePreviewRect.y*zoomValue );
+                                gpe->render_line(  tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathPointColor, 128);
                             }
                         }
                     }
@@ -1057,19 +1078,19 @@ void gamePathResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace
                             tempPoint = pathPoints[ selectedPointPos -1];
                             if( tempPoint!=NULL )
                             {
-                                tempX2Point = floor( tempPoint->xPos*sceneZoomAmount+sceneEditorView.x-scenePreviewRect.x*sceneZoomAmount );
-                                tempY2Point = floor( tempPoint->yPos*sceneZoomAmount+sceneEditorView.y-scenePreviewRect.y*sceneZoomAmount );
-                                render_line(cRender, tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathPointColor, 128);
+                                tempX2Point = floor( tempPoint->xPos*zoomValue - scenePreviewRect.x*zoomValue );
+                                tempY2Point = floor( tempPoint->yPos*zoomValue - scenePreviewRect.y*zoomValue );
+                                gpe->render_line(  tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathPointColor, 128);
                             }
 
-                            if( pathOpenType!=NULL && pathOpenType->get_selected_tag()=="closed"  && pointCount >=3 )
+                            if( pathTypeIsClosed!=NULL && pathTypeIsClosed->is_clicked()  && pointCount >=3 )
                             {
                                 tempPoint = pathPoints[ 0];
                                 if( tempPoint!=NULL)
                                 {
-                                    tempX2Point = floor( tempPoint->xPos*sceneZoomAmount+sceneEditorView.x-scenePreviewRect.x*sceneZoomAmount );
-                                    tempY2Point = floor( tempPoint->yPos*sceneZoomAmount+sceneEditorView.y-scenePreviewRect.y*sceneZoomAmount );
-                                    render_line(cRender, tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathPointColor, 128);
+                                    tempX2Point = floor( tempPoint->xPos*zoomValue - scenePreviewRect.x*zoomValue );
+                                    tempY2Point = floor( tempPoint->yPos*zoomValue - scenePreviewRect.y*zoomValue );
+                                    gpe->render_line(  tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathPointColor, 128);
                                 }
                             }
                         }
@@ -1079,50 +1100,47 @@ void gamePathResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace
                         tempPoint = pathPoints[ selectedPointPos-1];
                         if( tempPoint!=NULL)
                         {
-                            tempX2Point = floor( tempPoint->xPos*sceneZoomAmount+sceneEditorView.x-scenePreviewRect.x*sceneZoomAmount );
-                            tempY2Point = floor( tempPoint->yPos*sceneZoomAmount+sceneEditorView.y-scenePreviewRect.y*sceneZoomAmount );
-                            render_line(cRender, tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathPointColor, 128);
+                            tempX2Point = floor( tempPoint->xPos*zoomValue - scenePreviewRect.x*zoomValue );
+                            tempY2Point = floor( tempPoint->yPos*zoomValue - scenePreviewRect.y*zoomValue );
+                            gpe->render_line(  tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathPointColor, 128);
                         }
 
                         tempPoint = pathPoints[ selectedPointPos+1];
                         if( tempPoint!=NULL)
                         {
-                            tempX2Point = floor( tempPoint->xPos*sceneZoomAmount+sceneEditorView.x-scenePreviewRect.x*sceneZoomAmount );
-                            tempY2Point = floor( tempPoint->yPos*sceneZoomAmount+sceneEditorView.y-scenePreviewRect.y*sceneZoomAmount );
-                            render_line(cRender, tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathPointColor, 128);
+                            tempX2Point = floor( tempPoint->xPos*zoomValue - scenePreviewRect.x*zoomValue );
+                            tempY2Point = floor( tempPoint->yPos*zoomValue - scenePreviewRect.y*zoomValue );
+                            gpe->render_line(  tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathPointColor, 128);
                         }
                     }
                 }
             }
-            //"Editor View:("+int_to_string(sceneEditorViewRect.x)+","+int_to_string(sceneEditorViewRect.y)+","+int_to_string(sceneEditorViewRect.w)+","+int_to_string(sceneEditorViewRect.h)+")",
+            //"Editor View:("+int_to_string(editorCameraRect.x)+","+int_to_string(editorCameraRect.y)+","+int_to_string(editorCameraRect.w)+","+int_to_string(editorCameraRect.h)+")",
 
-            render_rect(cRender,&editorCommentPane,GPE_MAIN_TEMPLATE->Program_Color,false);
-            render_rectangle(cRender,sceneYScroll->barBox.x+sceneYScroll->barBox.w,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
-            render_rectangle(cRender,sceneXScroll->barBox.x,sceneXScroll->barBox.y,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
-            if( sceneXScroll!=NULL)
-            {
-                sceneXScroll->render_self(cRender,viewedSpace,cam);
-            }
-            if( sceneYScroll!=NULL)
-            {
-                sceneYScroll->render_self(cRender,viewedSpace,cam);
-            }
         }
 
-        render_rect(cRender,&editorPane,GPE_MAIN_TEMPLATE->Program_Color,false);
+        MAIN_RENDERER->reset_viewpoint(  );
+        MAIN_RENDERER->set_viewpoint( viewedSpace );
+        gpe->render_rect( &editorCommentPane,GPE_MAIN_THEME->Program_Color,false);
+        gpe->render_rectangle( sceneYScroll->elementBox.x+sceneYScroll->elementBox.w,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_THEME->Program_Color,false);
+        gpe->render_rectangle( sceneXScroll->elementBox.x,sceneXScroll->elementBox.y,viewedSpace->w,viewedSpace->h,GPE_MAIN_THEME->Program_Color,false);
+        if( sceneXScroll!=NULL)
+        {
+            sceneXScroll->render_self( viewedSpace,cam);
+        }
+        if( sceneYScroll!=NULL)
+        {
+            sceneYScroll->render_self( viewedSpace,cam);
+        }
+        //gpe->render_rect( &editorPane,GPE_MAIN_THEME->Program_Color,false);
         if( editorPaneList!=NULL )
         {
-            editorPaneList->render_self( cRender,viewedSpace, cam, forceRedraw );
-        }
-        render_rectangle(cRender, sceneEditorView.x,0,viewedSpace->w,sceneEditorView.y,GPE_MAIN_TEMPLATE->Program_Color,false);
-        if( sceneToPreview!=NULL )
-        {
-            sceneToPreview->render_self( cRender,viewedSpace, cam, forceRedraw );
+            editorPaneList->render_self(  viewedSpace, cam, forceRedraw );
         }
 
-        if( sceneZoomLevel!=NULL )
+        if( bottomPaneList!=NULL )
         {
-            sceneZoomLevel->render_self( cRender,viewedSpace, cam, forceRedraw );
+            bottomPaneList->render_self(  viewedSpace, cam, forceRedraw );
         }
     }
 }
@@ -1154,17 +1172,7 @@ void gamePathResource::save_resource(std::string alternatePath, int backupId )
         //makes sure the file is open
         if (newSaveDataFile.is_open())
         {
-            newSaveDataFile << "#    --------------------------------------------------  # \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#    Game Pencil Engine Project Path DataFile \n";
-            newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
-            newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#    --------------------------------------------------  # \n";
-            newSaveDataFile << "Version=" << GPE_VERSION_DOUBLE_NUMBER << "\n";
+            write_header_on_file(&newSaveDataFile);
             newSaveDataFile << "#     \n";
             if( sceneToPreview!=NULL)
             {
@@ -1175,9 +1183,9 @@ void gamePathResource::save_resource(std::string alternatePath, int backupId )
                 newSaveDataFile << "RelevantScene=-1\n";
             }
 
-            if( pathOpenType!=NULL)
+            if( pathTypeIsClosed!=NULL)
             {
-                newSaveDataFile << "pathType="+pathOpenType->get_selected_tag()+",\n";
+                newSaveDataFile << "PathIsClosed="+int_to_string( pathTypeIsClosed->is_clicked() )+"\n";
             }
 
             if( pathLineColor!=NULL)

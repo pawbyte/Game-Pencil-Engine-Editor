@@ -3,10 +3,10 @@ ambitious_gui_library.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,9 +39,9 @@ SOFTWARE.
 class standardEditableGameResource: public generalGameResource
 {
     protected:
-        GPE_ToolPushButton * loadResourceButton;
-        GPE_ToolPushButton * exportResourceButton;
-        GPE_ToolPushButton * saveResourceButton;
+        GPE_ToolIconButton * loadResourceButton;
+        GPE_ToolIconButton * exportResourceButton;
+        GPE_ToolIconButton * saveResourceButton;
         GPE_ToolPushButton * confirmResourceButton;
         GPE_ToolPushButton * cancelResourceButton;
         GPE_TextInputBasic * renameBox;
@@ -58,16 +58,17 @@ class standardEditableGameResource: public generalGameResource
         virtual void integrate_into_syntax();
         void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
         virtual void preprocess_self(std::string alternatePath = "" );
-        virtual void prerender_self(GPE_Renderer * cRender);
+        virtual void prerender_self( );
         virtual void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
         virtual void process_resource(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_resource(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
-        virtual void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_resource(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        virtual void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void seek_parent_name();
         void set_name(std::string newName);
         void set_parent_name(std::string newName);
         virtual int search_for_string(std::string needle);
         virtual int search_and_replace_string(std::string needle, std::string newStr = "");
+        bool write_header_on_file(std::ofstream * fileTarget);
 };
 
 const int aacFileName = 0;
@@ -87,14 +88,17 @@ class audioResource: public standardEditableGameResource
         int audioType;
         Mix_Chunk * soundVal;
         Mix_Music * musicVal;
-        GPE_ToolPushButton * playButton;
-        GPE_ToolPushButton * openExternalEditorButton;
-        GPE_ToolPushButton * refreshResourceDataButton;
+        GPE_ToolIconButton * playButton;
+        GPE_ToolIconButton * openExternalEditorButton;
+        GPE_ToolIconButton * refreshResourceDataButton;
         GPE_RadioButtonControllerBasic * audioTypeButtonController;
         std::string audioFileName[SUPPORTED_AUDIO_FORMAT_COUNT];
         GPE_CheckBoxBasic * preloadCheckBox;
         GPE_TextInputBasic * audioGroupName;
+
+        GPE_Label_Text * volumeLabel;
         GPE_TextInputNumber * defaultVolume;
+        GPE_Slider_XAxis * volumeSlider;
         GPE_Label_Text * audioEditorMainNote;
         audioResource(GPE_ResourceContainer * pFolder = NULL);
         ~audioResource();
@@ -102,9 +106,9 @@ class audioResource: public standardEditableGameResource
         bool copy_audio_source(std::string outDirectoryName);
         void load_audio(std::string newFileName);
         void preprocess_self(std::string alternatePath = "");
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
@@ -127,17 +131,17 @@ class videoResource: public standardEditableGameResource
         GPE_Label_Text * videoEditorMainNote;
         GPE_TextInputBasic * videoGroupName;
         GPE_TextInputNumber * defaultVolume;
-        GPE_ToolPushButton * openExternalEditorButton;
-        GPE_ToolPushButton * refreshResourceDataButton;
+        GPE_ToolIconButton * openExternalEditorButton;
+        GPE_ToolIconButton * refreshResourceDataButton;
         videoResource(GPE_ResourceContainer * pFolder = NULL);
         ~videoResource();
         bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
         bool copy_video_source(std::string outDirectoryName);
         void load_video(std::string newFileName);
         void preprocess_self(std::string alternatePath = "");
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
@@ -155,7 +159,7 @@ class fontResource: public standardEditableGameResource
 {
     private:
         GPE_RadioButtonControllerBasic * fontTypeButtonController;
-        GPE_ToolPushButton * openExternalEditorButton;
+        GPE_ToolIconButton * openExternalEditorButton;
         std::string fontInEditorFileName;
         std::string fontFamilyName;
         GPE_Font * fontInEditor;
@@ -174,9 +178,9 @@ class fontResource: public standardEditableGameResource
         bool build_css3_file(std::ofstream * fileTarget, int leftTabAmount);
         void load_font(std::string newFileName, int newFontSize = 12);
         void preprocess_self(std::string alternatePath = "");
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
@@ -194,9 +198,9 @@ class functionResource: public standardEditableGameResource
         void integrate_into_syntax();
         void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
         void preprocess_self(std::string alternatePath = "");
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         int search_for_string(std::string needle);
         int search_and_replace_string(std::string needle, std::string newStr = "");
@@ -216,9 +220,9 @@ class classResource: public standardEditableGameResource
         void integrate_into_syntax();
         void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
         void preprocess_self(std::string alternatePath = "");
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         int search_for_string(std::string needle);
         int search_and_replace_string(std::string needle, std::string newStr = "");
@@ -227,21 +231,41 @@ class classResource: public standardEditableGameResource
 
 const double ZOOM_LEVEL_MIN = 0.0625;
 const double ZOOM_LEVEL_MAX = 16;
-class spriteResource: public standardEditableGameResource
+class animationResource: public standardEditableGameResource
 {
     public:
+        bool areaIsScrollable;
+        double animationSpeed;
         bool isPreloaded;
-        double zoomLevel;
+        double editor0ZoomValue;
+        double editor1ZoomValue;
+        double minZoomValue;
+        double maxZoomValue;
         int autoAnimationPos;
-        GPE_Sprite * spriteInEditor;
+        GPE_Animation * spriteInEditor;
+
+        //
+        GPE_Rect animCameraRect;
+        GPE_Rect animRect;
+
+        GPE_ScrollBar_XAxis * animXScroll;
+        GPE_ScrollBar_YAxis * animYScroll;
+        //Right pane
+        GPE_Rect  * spritePreviewCam;
+        GPE_GuiElementList * rightPanel;
+        GPE_Label_Text * animationSpeedLabel;
+        GPE_Slider_XAxis * animationSpeedSlider;
+        GPE_CheckBoxBasic * previewZoomLevel;
+        GPE_CheckBoxBasic * previewSubImageNumbers;
+        //Left pane
         GPE_Label_Text * labelSpriteDimensions;
         GPE_Label_Text * labelFrameInfo;
         GPE_Label_Text * labelSpriteMessage;
-        GPE_ToolPushButton * editResourceButton;
-        GPE_ToolPushButton * transformResourceButton;
-        GPE_ToolPushButton * playPauseResourceButton;
-        GPE_ToolPushButton * openExternalEditorButton;
-        GPE_ToolPushButton * refreshResourceDataButton;
+        GPE_ToolIconButton * editResourceButton;
+        GPE_ToolIconButton * transformResourceButton;
+        GPE_ToolIconButton * playPauseResourceButton;
+        GPE_ToolIconButton * openExternalEditorButton;
+        GPE_ToolIconButton * refreshResourceDataButton;
         GPE_CheckBoxBasic * preloadCheckBox;
         GPE_CheckBoxBasic * showCollisionShapeCheckBox;
         GPE_CheckBoxBasic * showAnimationCheckBox;
@@ -266,19 +290,21 @@ class spriteResource: public standardEditableGameResource
         GPE_TextInputNumber * subImageNumberField;
         GPE_TextInputNumber * subImageEditorPreviewId;
         int subImagePreviewNumber;
-        int subImageMiniAnimationNumber;
+        double subImageMiniAnimationNumber;
 
-        spriteResource(GPE_ResourceContainer * pFolder = NULL);
-        ~spriteResource();
+        animationResource(GPE_ResourceContainer * pFolder = NULL);
+        ~animationResource();
         GPE_Label_Text * labelInfoMaxTextureSize;
         bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
+        bool get_mouse_coords(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
         int get_preview_frame();
+        void handle_scrolling();
         void load_image(std::string newFileName, bool autoProcess = false);
         void preprocess_self(std::string alternatePath = "");
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void process_data_fields(float versionToProcess = -1);
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         void update_box(int newX=-1, int newY=-1, int newW=-1, int newH=-1);
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
@@ -292,18 +318,18 @@ class textureResource: public standardEditableGameResource
         GPE_CheckBoxBasic * preloadCheckBox;
         GPE_Label_Text * labelImageDimensions;
         GPE_Label_Text * labelTextureMessage;
-        GPE_ToolPushButton * transformResourceButton;
-        GPE_ToolPushButton * openExternalEditorButton;
-        GPE_ToolPushButton * refreshResourceDataButton;
+        GPE_ToolIconButton * transformResourceButton;
+        GPE_ToolIconButton * openExternalEditorButton;
+        GPE_ToolIconButton * refreshResourceDataButton;
         textureResource(GPE_ResourceContainer * pFolder = NULL);
         ~textureResource();
         GPE_Label_Text * labelInfoMaxTextureSize;
         bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
         int load_image(std::string newFileName);
         void preprocess_self(std::string alternatePath = "");
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         void update_box(int newX=-1, int newY=-1, int newW=-1, int newH=-1);
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
@@ -312,16 +338,25 @@ class textureResource: public standardEditableGameResource
 class tilesheetPreviewer: public GPE_GeneralGuiElement
 {
     protected:
-        GPE_ScrollBar_XAxis * xTileScroll;
-        GPE_ScrollBar_YAxis * yTileScroll;
+        GPE_Rect tsEditorViewRect;
+        GPE_Rect tsCameraRect;
+        GPE_Rect tsImageCameraRect;
+        GPE_Rect tsRect;
+        GPE_Rect tsSelectedArea;
+        GPE_ScrollBar_XAxis * previewXScroll;
+        GPE_ScrollBar_YAxis * previewYScroll;
+        bool areaIsScrollable;
     public:
+        double zoomValue;
+        double minZoomValue;
+        double maxZoomValue;
+        double areaMouseXPos, areaMouseYPos;
+
         GPE_Label_Text * labelImageDimensions;
         GPE_Label_Text * labelFrameInfo;
         GPE_Label_Text * labelSpriteMessage;
         int tileToPrevX1,tileToPrevY1, tileToPrevX2,tileToPrevY2;
         int tilesToPlacePerRow;
-        GPE_Rect tsRenderRect;
-        GPE_Rect tsSelectedArea;
         GPE_Tilesheet * tileSheetToPreview;
         std::vector< int > tilesIdsInPreview;
         bool allowDuplicates;
@@ -329,9 +364,11 @@ class tilesheetPreviewer: public GPE_GeneralGuiElement
         tilesheetPreviewer();
         ~tilesheetPreviewer();
         GPE_Label_Text * labelInfoMaxTextureSize;
+        bool get_mouse_coords(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
+        void handle_scrolling();
         void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender = NULL,GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
-        void render_selection(GPE_Renderer * cRender = NULL,int xPos = 0, int yPos = 0, GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true, double scaleSize = 1, GPE_Color * fColor = NULL);
+        void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_selection( int xPos = 0, int yPos = 0, GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true, double scaleSize = 1, GPE_Color * fColor = NULL);
         void reset_preview(bool moveCamera);
 };
 
@@ -343,9 +380,9 @@ class tilesheetResource: public standardEditableGameResource
         GPE_Tilesheet * tilesheetInEditor;
         GPE_CheckBoxBasic * preloadCheckBox;
         GPE_Label_Text * tilesheetDimensionsStr;
-        GPE_ToolPushButton * transformResourceButton;
-        GPE_ToolPushButton * openExternalEditorButton;
-        GPE_ToolPushButton * refreshResourceDataButton;
+        GPE_ToolIconButton * transformResourceButton;
+        GPE_ToolIconButton * openExternalEditorButton;
+        GPE_ToolIconButton * refreshResourceDataButton;
         GPE_TextInputNumber * tsDataFields[TILESHEET_DATA_FIELD_COUNT];
         GPE_Label_Text * labelInfoMaxTextureSize;
         tilesheetResource(GPE_ResourceContainer * pFolder = NULL);
@@ -353,10 +390,10 @@ class tilesheetResource: public standardEditableGameResource
         bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
         void load_image( std::string newFileName);
         void preprocess_self(std::string alternatePath = "");
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void process_data_fields();
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         void update_box(int newX=-1, int newY=-1, int newW=-1, int newH=-1);
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
@@ -464,7 +501,7 @@ class gameObjectResource: public standardEditableGameResource
     public:
         GPE_Label_Title * resourceNameLabel;
         GPE_ToolIconButtonBar * editorButtonBar;
-        GPE_Rect objEventManagebarBox;
+        GPE_Rect rightPanelBox;
         GPE_SelectBoxBasic * basicFunctionsSelector;
         GPE_SelectBoxBasic * timedFunctionsSelector;
         GPE_SelectBoxBasic * colliderFunctionsSelector;
@@ -485,7 +522,7 @@ class gameObjectResource: public standardEditableGameResource
         int imageIndex;
         int codeSection;
         int parentObjectId;
-        GPE_Sprite * spriteInEditor;
+        GPE_Animation * spriteInEditor;
         GPE_DropDown_Resouce_Menu * spriteField;
         GPE_DropDown_Resouce_Menu * parentObjectField;
         GPE_DropDown_Resouce_Menu * newObjectToCollideDropDown;
@@ -518,10 +555,10 @@ class gameObjectResource: public standardEditableGameResource
         void integrate_into_syntax();
         void manage_components(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
         void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void preprocess_self(std::string alternatePath = "");
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         int search_for_string(std::string needle);
         int search_and_replace_string(std::string needle, std::string newStr = "");
@@ -637,9 +674,8 @@ class gameSceneResource: public standardEditableGameResource
         int rightPaneWidth;
         GPE_Rect editorPane;
         GPE_Rect rightEditorPane;
-        GPE_Rect editorCommentPane;
         GPE_Rect editorView;
-        GPE_Rect sceneEditorViewRect;
+        GPE_Rect editorCameraRect;
         GPE_ToolIconButtonBar * editorButtonBar;
         GPE_Label_Title * sceneEditorSubTitle;
         //used for the settings/options tab
@@ -673,7 +709,7 @@ class gameSceneResource: public standardEditableGameResource
 
         textureResource * texRes;
         GPE_DropDown_Menu * sceneZoomLevel;
-        double sceneZoomAmount;
+        double zoomValue;
         //used for the object placement tab
         GPE_ToolLabelButton * inheritParentComponentButton;
         GPE_ToolLabelButton * resetComponentsButton;
@@ -721,7 +757,7 @@ class gameSceneResource: public standardEditableGameResource
         float sceneMouseXPos, sceneMouseYPos;
         int lastCreatedObjXPos, lastCreatedObjYPos;
         int lastCreatedObjTypeId;
-        GPE_Rect tsRenderRect;
+        GPE_Rect tsCameraRect;
         tilesheetPreviewer * tSPreviewer;
         int tilesheetRenderXPos,tilesheetRenderYPos;
         tilesheetResource * tsRes;
@@ -743,7 +779,7 @@ class gameSceneResource: public standardEditableGameResource
         GPE_ToolIconButton * layerBackgroundMoveDownButton;
 
         GPE_Label_Text * layerErrorMessage;
-        bool sceneAreaScrollable;
+        bool areaIsScrollable;
         bool isDraggingObject;
     public:
         GPE_Rect sceneRect;
@@ -764,11 +800,11 @@ class gameSceneResource: public standardEditableGameResource
         void handle_scrolling();
         void inherit_components(GPE_SceneGameObject * objectToInherit,gameObjectResource * objParent);
         void manage_components(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void preprocess_self(std::string alternatePath = "");
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_scene_layers(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, GPE_Rect * renderZone = NULL, GPE_Rect * sceneCamera = NULL, double renderScale = -1,bool showEditorPreviews = true, bool checkListDependent = true,  bool forceRedraw = true);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_scene_layers(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, GPE_Rect * renderZone = NULL, GPE_Rect * sceneCamera = NULL, double renderScale = -1,bool showEditorPreviews = true, bool checkListDependent = true,  bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void reset_placement_info();
         void save_resource(std::string alternatePath = "", int backupId = -1);
         void select_object(GPE_SceneGameObject * objToSelect);
@@ -778,16 +814,6 @@ class gameSceneResource: public standardEditableGameResource
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 
-class GPE_PathPoint
-{
-    public:
-
-        float xPos;
-        float yPos;
-        float pointSpeed;
-        GPE_PathPoint(int pointX, int pointY, float speed = 1);
-        ~GPE_PathPoint();
-};
 
 class gamePathResource: public standardEditableGameResource
 {
@@ -805,7 +831,7 @@ class gamePathResource: public standardEditableGameResource
         GPE_Rect editorCommentPane;
         GPE_DropDown_Resouce_Menu * sceneToPreview;
         GPE_DropDown_Menu * sceneZoomLevel;
-        double sceneZoomAmount;
+        double zoomValue;
         std::vector <GPE_PathPoint * >  pathPoints;
         GPE_SelectBoxBasic * pathOptions;
         GPE_ToolIconButton * pointSettingsButtton;
@@ -815,13 +841,14 @@ class gamePathResource: public standardEditableGameResource
 
         GPE_Color * pathLineColor;
         GPE_Color * pathPointColor;
-        GPE_RadioButtonControllerBasic * pathOpenType;
+        GPE_CheckBoxBasic * pathTypeIsClosed;
         GPE_RadioButtonControllerBasic * pathShapeType;
         bool scnPostProcessed;
         GPE_ScrollBar_XAxis * sceneXScroll;
         GPE_ScrollBar_YAxis * sceneYScroll;
-        bool sceneAreaScrollable;
+        bool areaIsScrollable;
         float sceneMouseXPos, sceneMouseYPos;
+        GPE_GuiElementList * bottomPaneList;
         gamePathResource(GPE_ResourceContainer * pFolder = NULL);
         ~gamePathResource();
         GPE_PathPoint * add_point( int pointX, int pointY, float pointSpeed = 1);
@@ -832,11 +859,11 @@ class gamePathResource: public standardEditableGameResource
         void handle_scrolling();
         void integrate_into_syntax();
         void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void preprocess_self(std::string alternatePath = "");
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
         bool remove_point( int pointId );
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         int search_for_string(std::string needle);
         int search_and_replace_string(std::string needle, std::string newStr = "");
@@ -870,10 +897,10 @@ class dictionaryResource: public standardEditableGameResource
         bool get_mouse_coords(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
         void integrate_into_syntax();
         void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void preprocess_self(std::string alternatePath = "");
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         int search_for_string(std::string needle);
         int search_and_replace_string(std::string needle, std::string newStr = "");
@@ -881,56 +908,6 @@ class dictionaryResource: public standardEditableGameResource
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
         bool word_exists( std::string needleWord, int allowedPos = -1);
 };
-
-
-class spreadSheetResource: public standardEditableGameResource
-{
-    public:
-        int pointPos;
-        GPE_Rect sceneEditorView;
-        GPE_Rect scenePreviewRect;
-        GPE_Rect sceneRect;
-        GPE_Rect editorPane;
-        GPE_Rect editorCommentPane;
-        GPE_DropDown_Resouce_Menu * sceneToPreview;
-        GPE_DropDown_Menu * sceneZoomLevel;
-        double sceneZoomAmount;
-        std::vector <GPE_PathPoint * >  pathPoints;
-        GPE_SelectBoxBasic * pathOptions;
-        GPE_ToolIconButton * pointSettingsButtton;
-        GPE_ToolIconButton * pointRemoveButton;
-        GPE_ToolIconButton * pointMoveUpButtton;
-        GPE_ToolIconButton * pointMoveDownButton;
-
-        GPE_Color * pathLineColor;
-        GPE_Color * pathPointColor;
-        GPE_RadioButtonControllerBasic * pathOpenType;
-        GPE_RadioButtonControllerBasic * pathShapeType;
-        bool scnPostProcessed;
-        GPE_ScrollBar_XAxis * sceneXScroll;
-        GPE_ScrollBar_YAxis * sceneYScroll;
-        bool sceneAreaScrollable;
-        float sceneMouseXPos, sceneMouseYPos;
-        spreadSheetResource(GPE_ResourceContainer * pFolder = NULL);
-        ~spreadSheetResource();
-        GPE_PathPoint * add_point( int pointX, int pointY, float pointSpeed = 1);
-        void clear_points();
-        bool export_and_play_native( bool launchProgram = true);
-        bool get_mouse_coords(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void handle_scrolling();
-        void integrate_into_syntax();
-        void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
-        void prerender_self(GPE_Renderer * cRender);
-        void preprocess_self(std::string alternatePath = "");
-        void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
-        void save_resource(std::string alternatePath = "", int backupId = -1);
-        int search_for_string(std::string needle);
-        int search_and_replace_string(std::string needle, std::string newStr = "");
-        void update_project_layers();
-        bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
-};
-
 
 class projectPropertiesResource: public standardEditableGameResource
 {
@@ -1016,8 +993,8 @@ class projectPropertiesResource: public standardEditableGameResource
         GPE_Label_Text * projectSettingsFPSRateLabel;
         GPE_DropDown_Menu * projectSettingsFPSRate;
         //Publisher Setting
-        GPE_Label_Title * Title_Publisher;
-        GPE_Label_Title * Title_GameSettings;
+        GPE_Label_Title * sectionTitlePublisher;
+        GPE_Label_Title * sectionTitleGameSettings;
         GPE_TextInputBasic * projectGameTitleField;
         GPE_TextInputBasic * projectGameShortTitleField;
         GPE_TextInputBasic * projectGameDateField;
@@ -1030,6 +1007,7 @@ class projectPropertiesResource: public standardEditableGameResource
         GPE_CheckBoxBasic * checkBoxShowPublisherInfo;
 
         //Colors Tab
+        GPE_Label_Title * sectionTitleGameColors;
         GPE_Input_Field_Color * projectBorderColor;
         GPE_Input_Field_Color * projectGameBackgroundColor;
         GPE_Input_Field_Color * projectWebsiteBackgroundColor;
@@ -1058,10 +1036,10 @@ class projectPropertiesResource: public standardEditableGameResource
         bool export_and_play_native( bool launchProgram = true);
         void integrate_into_syntax();
         void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void preprocess_self(std::string alternatePath = "");
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         int search_for_string(std::string needle);
         int search_and_replace_string(std::string needle, std::string newStr = "");
@@ -1076,27 +1054,45 @@ const int GPE_EXTERNAL_EDITOR_AUD = 1;
 const int GPE_EXTERNAL_EDITOR_VID = 2;
 const int GPE_EXTERNAL_EDITOR_FONT = 3;
 
+class GPE_Theme_Holder
+{
+    public:
+        std::string themeName;
+        std::string templateFileName;
+        std::string templateBgFileName;
+        GPE_TextInputBasic * nameInEditor;
+        bool nonDefaultTheme;
+        std::vector < GPE_Input_Field_Color * > colorsInEditor;
+        GPE_Label_Image * themeIconImg;
+        GPE_TextInputBasic * themeBgFileLocation;
+        GPE_Theme_Holder( std::string tName, std::string tFileName, bool isCustomTheme = false  );
+        ~GPE_Theme_Holder();
+        void clear_colors();
+        bool copy_theme( GPE_Theme * systemTheme, bool copyToSelf = true );
+        bool load_background( std::string bgTextureLocation, bool allOrNothing = false);
+};
+
 class gamePencilEditorSettingsResource: public standardEditableGameResource
 {
     public:
         //Compiler Settings
-        GPE_CheckBoxBasic * stopCompileOnError;
         GPE_CheckBoxBasic * showShortProjectNames;
         //Added as of 1.13 [ BEGIN ]
         GPE_CheckBoxBasic * renderSceneBGColor;
-        GPE_CheckBoxBasic * minifyCode;
-        GPE_CheckBoxBasic * pluginConstantValues;
-        GPE_CheckBoxBasic * obfuscateCode;
-        GPE_TextInputBasic * googleClosureCompilerFile;
-        GPE_ToolIconButton * googleClosureCompilerLoadButton;
         //Added as of 1.13 [ END ]
+
         //General Editor Settings
         GPE_CheckBoxBasic * autoSaveScreenshots;
         GPE_CheckBoxBasic * makeMetaScreenshots;
+
+        //FPS Related Items
         GPE_Label_Title * editorGuiSettingsLabel;
-        GPE_Label_Text * ideSettingsFPSRateLabel;
+        GPE_Label_Title * ideSettingsFPSRateLabel;
         GPE_DropDown_Menu * ideSettingsFPSRate;
+        GPE_Label_Text * ideFPSRatioLabel;
         GPE_Label_Text *    ideButtonBarSizeLabel;
+        GPE_CheckBoxBasic * showFPSOnEditor;
+
         GPE_DropDown_Menu * ideButtonBarSize;
         GPE_RadioButtonControllerBasic * ideButtonBarAlignment;
         GPE_TextInputBasic * pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_MAX];
@@ -1119,12 +1115,27 @@ class gamePencilEditorSettingsResource: public standardEditableGameResource
         GPE_CheckBoxBasic * mouseAutoFindTabs;
         GPE_TextInputNumber * tabSpaceSize;
 
+        //Themes Section
+        GPE_Label_Title * themesLabel;
+        GPE_DropDown_Menu * themePicker;
+        GPE_ToolIconButton * themeLoadButton;
+        GPE_ToolIconButton * themeAddButton;
+        GPE_ToolIconButton * themeRemoveButton;
+        GPE_ToolLabelButton * themeSetDefaultButton;
+        GPE_TextURL * itchLinkForThemes;
+        std::vector< GPE_Theme_Holder * > themeHolders;
+        int defaultTemplateEndPos;
+        int currentThemeInEdit;
+
+        GPE_Label_Text * themeBgLabel;
+        GPE_ToolLabelButton * themeBgBrowseButton;
         //Advanced Section
         GPE_Label_Title * advancedAreaLabel;
         GPE_CheckBoxBasic * showHiddenFilesInBrowser;
         GPE_CheckBoxBasic * forceFrameRedraw;
         GPE_ToolPushButton * clearCacheButton;
 
+        //Editor Related variables
         GPE_Rect gpeLogoSpace;
         GPE_Rect subViewedSpace;
         GPE_TabBar * editorPageTabBar;
@@ -1132,15 +1143,80 @@ class gamePencilEditorSettingsResource: public standardEditableGameResource
         std::string projectFolderListLocation;
         gamePencilEditorSettingsResource(GPE_ResourceContainer * pFolder = NULL);
         ~gamePencilEditorSettingsResource();
-        void prerender_self(GPE_Renderer * cRender);
+        void load_themes_from_folder( std::string themeFolder );
+        void prerender_self( );
         void preprocess_self(std::string alternatePath = "");
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 
 extern gamePencilEditorSettingsResource * MAIN_EDITOR_SETTINGS;
+
+class gameJSCompilerSettingsResource: public standardEditableGameResource
+{
+    public:
+        //Compiler Settings
+        GPE_CheckBoxBasic * stopCompileOnError;
+        //Added as of 1.15 [ BEGIN ]
+        GPE_CheckBoxBasic * minifyCode;
+        GPE_CheckBoxBasic * pluginConstantValues;
+        GPE_CheckBoxBasic * obfuscateCode;
+        GPE_TextInputBasic * obfuscatorDirectoryField;
+        GPE_ToolIconButton * obfuscatorDirectoryLoadButton;
+        GPE_TextInputBasic * googleClosureCompilerFile;
+        GPE_ToolIconButton * googleClosureCompilerLoadButton;
+        //Added as of 1.15 [ END ]
+        GPE_Rect gpeLogoSpace;
+        GPE_Rect subViewedSpace;
+        GPE_TabBar * editorPageTabBar;
+        GPE_GuiElementList * editorPageList;
+        std::string projectFolderListLocation;
+        gameJSCompilerSettingsResource(GPE_ResourceContainer * pFolder = NULL);
+        ~gameJSCompilerSettingsResource();
+        void prerender_self( );
+        void preprocess_self(std::string alternatePath = "");
+        void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void save_resource(std::string alternatePath = "", int backupId = -1);
+        bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
+};
+
+extern gameJSCompilerSettingsResource * GPE_JS_COMPILER_SETTINGS;
+
+class cppCompilerManager
+{
+
+};
+
+class gameCPPCompilerSettingsResource: public standardEditableGameResource
+{
+    public:
+        //Compiler Settings
+        GPE_DropDown_Menu * compilerInUse;
+        GPE_ToolLabelButton * defaultCompilerButton;
+        GPE_ToolLabelButton * copyCompilerButton;
+        GPE_ToolLabelButton * renameCompilerButton;
+        GPE_ToolLabelButton * resetDefaultsCompilerButton;
+        GPE_CheckBoxBasic * stopCompileOnError;
+        GPE_Rect gpeLogoSpace;
+        GPE_Rect subViewedSpace;
+        GPE_TabBar * editorPageTabBar;
+        GPE_GuiElementList * editorPageList;
+        std::string projectFolderListLocation;
+        gameCPPCompilerSettingsResource(GPE_ResourceContainer * pFolder = NULL);
+        ~gameCPPCompilerSettingsResource();
+        void prerender_self( );
+        void preprocess_self(std::string alternatePath = "");
+        void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void save_resource(std::string alternatePath = "", int backupId = -1);
+        bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
+};
+
+extern gameCPPCompilerSettingsResource * GPE_CPP_COMPILER_SETTINGS;
+
 
 class gamePencilAboutPageResource: public standardEditableGameResource
 {
@@ -1156,10 +1232,10 @@ class gamePencilAboutPageResource: public standardEditableGameResource
         GPE_GuiElementList * aboutPageList;
         gamePencilAboutPageResource(GPE_ResourceContainer * pFolder = NULL);
         ~gamePencilAboutPageResource();
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void preprocess_self(std::string alternatePath = "");
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 
@@ -1176,7 +1252,7 @@ class gamePencilHelpPageResource: public standardEditableGameResource
         GPE_Label_Title * socialMediaTitle;
         std::vector< GPE_ToolPushButton * > helpfulButtons;
         std::vector< GPE_TextURL * > helpfulLinks;
-        std::vector< GPE_ToolPushButton * > socialMediaSites;
+        std::vector< GPE_ToolIconButton * > socialMediaSites;
 
         GPE_TextAreaInputBasic * pencilInformation;
         GPE_TextAreaInputBasic * pencilChangelog;
@@ -1189,11 +1265,11 @@ class gamePencilHelpPageResource: public standardEditableGameResource
         ~gamePencilHelpPageResource();
         void add_helpfulbutton(GPE_ToolPushButton * newButton);
         void add_helpfullink(GPE_TextURL * newLink);
-        void add_socialmedia_url(GPE_ToolPushButton * newLink);
-        void prerender_self(GPE_Renderer * cRender);
+        void add_socialmedia_url( GPE_ToolIconButton * newLink);
+        void prerender_self( );
         void preprocess_self(std::string alternatePath = "");
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 
@@ -1235,10 +1311,10 @@ class gamePencilStartPageResource: public standardEditableGameResource
         GPE_GuiElementList * startPageList;
         gamePencilStartPageResource(GPE_ResourceContainer * pFolder = NULL);
         ~gamePencilStartPageResource();
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void preprocess_self(std::string alternatePath = "");
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 
@@ -1290,10 +1366,10 @@ class gamePencilProjectBrowserResource: public standardEditableGameResource
         std::vector< GPE_ToolPushButtonMultiLine * > recentProjectsList;
         gamePencilProjectBrowserResource(GPE_ResourceContainer * pFolder = NULL);
         ~gamePencilProjectBrowserResource();
-        void prerender_self(GPE_Renderer * cRender);
+        void prerender_self( );
         void preprocess_self(std::string alternatePath = "");
         void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-        void render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
         void save_resource(std::string alternatePath = "", int backupId = -1);
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
         void load_example_projects_folder( );
@@ -1302,7 +1378,7 @@ class gamePencilProjectBrowserResource: public standardEditableGameResource
 
 extern gamePencilProjectBrowserResource * PROJECT_BROWSER_PAGE;
 
-class GPE_Editor_State : public ProgramState
+class GPE_Editor_State : public GPE_ProgramState
 {
     private:
         //Intro message

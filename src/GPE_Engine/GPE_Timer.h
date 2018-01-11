@@ -3,10 +3,10 @@ GPE_Timer.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -73,10 +73,10 @@ class Timer
 };
 
 //The frames per second timer
-extern Timer * fpsTimer;
+extern Timer * GPE_FPS_Timer;
 
 //The frames per second cap timer
-extern Timer * capTimer;
+extern Timer * GPE_TIMER_CAP;
 void set_fps( int newFPS);
 float calculate_avg_fps();
 void cap_fps();

@@ -3,10 +3,10 @@ GPE_Input.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,8 +37,242 @@ SOFTWARE.
 #include "GPE_String_Ex.h"
 #include "GPE_Input.h"
 
+GPE_InputManager_GameController::GPE_InputManager_GameController()
+{
+    controllerType = NULL;
+    controllerExtension = "";
+    isConnected = false;
+    mapping = 0;
+    timestamp = 0;
+    touch_mouse_x = 0;
+    touch_mouse_y = 0;
+    for(int but=0; but <button_count; but++)
+    {
+        prevHit[but] = false;
+        butIsDown[but] = false;
+        butIsPressed[but] = false;
+        butIsReleased[but] = false;
+        butIsLocked[but] = false;
+        buttonsMap[but] = but;
+    }
+
+    for (int tempAxes=0; tempAxes <axes_count; tempAxes++)
+    {
+        axesMap[ tempAxes ] = tempAxes;
+        axesValues[ tempAxes ] = 0;
+    }
+
+}
+
+GPE_InputManager_GameController::~GPE_InputManager_GameController()
+{
+
+}
+
+bool GPE_InputManager_GameController::check_connection()
+{
+	return isConnected;
+}
+
+int GPE_InputManager_GameController::check_button(int buttonId)
+{
+	if( isConnected )
+	{
+		if(  buttonId >=0 && buttonId < button_count)
+		{
+			return butIsDown[ buttonsMap[buttonId] ] > 0;
+		}
+		else if( buttonId == gc_anybutton )
+		{
+			for( int iAnyButton = button_count-1; iAnyButton >=0; iAnyButton-- )
+			{
+				if( butIsDown[ buttonsMap[iAnyButton] ] > 0 )
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		else if( buttonId == gc_nobutton )
+		{
+			for(int iNoButton = button_count-1; iNoButton >=0; iNoButton-- )
+			{
+				if( butIsDown[ buttonsMap[iNoButton] ] > 0 )
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
+int GPE_InputManager_GameController::check_button_pressed(int buttonId)
+{
+	if( isConnected )
+	{
+		if( buttonId >=0 && buttonId < button_count)
+		{
+			return butIsPressed[ buttonsMap[buttonId] ] > 0;
+		}
+		else if( buttonId == gc_anybutton )
+		{
+			for(int iAnyButton = button_count-1; iAnyButton >=0; iAnyButton-- )
+			{
+				if( butIsPressed[ buttonsMap[iAnyButton] ] > 0 )
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		else if( buttonId == gc_nobutton )
+		{
+			for( int iNoButton = button_count-1; iNoButton >=0; iNoButton-- )
+			{
+				if( butIsPressed[ buttonsMap[iNoButton] ] > 0 )
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
+int GPE_InputManager_GameController::check_button_released(int buttonId)
+{
+	if( isConnected )
+	{
+		if( buttonId >=0 && buttonId < button_count)
+		{
+			return butIsReleased[ buttonsMap[buttonId] ];
+		}
+		else if( buttonId == gc_anybutton )
+		{
+			for( int iAnyButton = button_count-1; iAnyButton >=0; iAnyButton-- )
+			{
+				if( butIsReleased[ buttonsMap[iAnyButton] ] > 0 )
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		else if( buttonId == gc_nobutton )
+		{
+			for( int iNoButton = button_count-1; iNoButton >=0; iNoButton-- )
+			{
+				if( butIsReleased[ buttonsMap[iNoButton] ] > 0 )
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
+int GPE_InputManager_GameController::gamepad_get_axes_count( )
+{
+	return system_axes_count;
+}
+
+int GPE_InputManager_GameController::find_gamepad_axes_mapping( int axesId )
+{
+	if(  axesId >=0 && axesId < axes_count )
+	{
+		return axesMap[axesId];
+	}
+	return -1;
+}
+
+int GPE_InputManager_GameController::find_gamepad_button_mapping( int buttonId )
+{
+	if(  buttonId >=0 && buttonId < button_count )
+	{
+		return axesMap[buttonId];
+	}
+	return -1;
+}
+
+bool GPE_InputManager_GameController::gamepad_map_axes(int axesId, int newAxesId )
+{
+	if(  axesId >=0 && axesId < axes_count)
+	{
+		if( newAxesId >=0 && newAxesId < axes_count )
+		{
+			buttonsMap[axesId] = newAxesId;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool GPE_InputManager_GameController::gamepad_map_button(int buttonId, int newButtonId)
+{
+	if(  buttonId >=0 && buttonId < button_count)
+	{
+		if(  newButtonId >=0 && newButtonId < button_count)
+		{
+			buttonsMap[buttonId] = newButtonId;
+			return true;
+		}
+	}
+	return false;
+}
+
+std::string GPE_InputManager_GameController::get_name( )
+{
+    return deviceName;
+}
+//GameController Input related functions/objects/variables as of Version 1.12 [ END ]
+
+void GPE_InputManager_GameController::pure_reset()
+{
+	for( int but=0; but<button_count; but++)
+	{
+		prevHit[ buttonsMap[but] ] = false;
+		butIsDown[ buttonsMap[but] ] = false;
+		butIsPressed[ buttonsMap[but] ] = false;
+		butIsReleased[ buttonsMap[but] ] = false;
+		butIsLocked[ buttonsMap[but] ] = false;
+	}
+	for (int tempAxes=0; tempAxes <axes_count; tempAxes++)
+	{
+		axesValues[ tempAxes ] = 0;
+	}
+}
+
+void GPE_InputManager_GameController::reset_controller()
+{
+	for(int but=0; but<button_count; but++)
+	{
+		butIsPressed[ buttonsMap[but] ] = butIsDown[ buttonsMap[but] ] && !prevHit[ buttonsMap[but] ];
+		butIsReleased[ buttonsMap[but] ] = !butIsDown[ buttonsMap[but] ] && prevHit[ buttonsMap[but] ];
+	}
+}
+
+void GPE_InputManager_GameController::set_connected( bool isNowConnected )
+{
+    isConnected = isNowConnected;
+}
+
+void GPE_InputManager_GameController::set_name( std::string newName)
+{
+    deviceName = newName;
+}
+
 GPE_InputManager::GPE_InputManager()
 {
+    //Creates the game controllers
+    for( int iController = 0; iController < max_controllers; iController++)
+    {
+         game_controllers[iController] = new GPE_InputManager_GameController();
+    }
     programStartTicks = 0;
     time(&lastTimeScreenResized);
     forceRedrawNeeded = true;
@@ -150,6 +384,7 @@ GPE_InputManager::GPE_InputManager()
 	mouseWheelInputReceivedInFrame = false;
 	windowEventHappendInFrame = false;
 	defaultQwertyKeyBindings();
+	detect_controllers();
 }
 
 GPE_InputManager::~GPE_InputManager()
@@ -355,8 +590,9 @@ void GPE_InputManager::handle(bool dump_event, bool isEmbedded)
     //SDL_StartTextInput();
     fileDroppedList.clear();
 	/* Check for events */
-    int frame_wait = 10 * FPS_RATIO; /* anything less than 16 ms is good */
-    unsigned tries = 500; /* use UINT_MAX for no effective limit */
+    int frame_wait = 2; /* anything less than 16 ms is good */
+    unsigned tries = 10; /* use UINT_MAX for no effective limit */
+
     if (SDL_WaitEventTimeout(&event, frame_wait))
     {
         do
@@ -489,23 +725,19 @@ void GPE_InputManager::handle(bool dump_event, bool isEmbedded)
                         case SDL_BUTTON_LEFT:
                             downMouseButton[0] = 1;
                             doubleClickedMouseButton[0] = event.button.clicks;
+                            releasedMouseButton[0] = false;
                         break;
                         case SDL_BUTTON_RIGHT:
                             downMouseButton[1] = 1;
                             doubleClickedMouseButton[1] = event.button.clicks;
+                            releasedMouseButton[1] = false;
                         break;
                         case SDL_BUTTON_MIDDLE:
                             downMouseButton[2] = 1;
                             doubleClickedMouseButton[2] = event.button.clicks;
+                            releasedMouseButton[2] = false;
                         break;
-                        case SDL_BUTTON_X1:
-                            downMouseButton[3] = 1;
-                            doubleClickedMouseButton[3] = event.button.clicks;
-                        break;
-                        case SDL_BUTTON_X2:
-                            downMouseButton[4] = 1;
-                            doubleClickedMouseButton[4] = event.button.clicks;
-                        break;
+
                         default:
 
                         break;
@@ -514,29 +746,34 @@ void GPE_InputManager::handle(bool dump_event, bool isEmbedded)
 
                 case SDL_MOUSEBUTTONUP:
                     inputHappenedInFrame = true;
-                    keyInputReceivedInFrame = true;
+                    keyInputReceivedInFrame = false;
                     forceRedrawNeeded = true;
                     switch(event.button.button)
                     {
                         case SDL_BUTTON_LEFT:
                             downMouseButton[0] = false;
-                            releasedMouseButton[0] = true;
+                            pressedMouseButton[0] = false;
+                            //releasedMouseButton[0] = true;
                         break;
                         case SDL_BUTTON_RIGHT:
                             downMouseButton[1] = false;
-                            releasedMouseButton[1] = true;
+                            pressedMouseButton[1] = false;
+                            //releasedMouseButton[1] = true;
                         break;
                         case SDL_BUTTON_MIDDLE:
                             downMouseButton[2] = false;
-                            releasedMouseButton[2] = true;
+                            pressedMouseButton[2] = false;
+                            //releasedMouseButton[2] = true;
                         break;
                         case SDL_BUTTON_X1:
                             downMouseButton[3] = false;
-                            releasedMouseButton[3] = true;
+                            pressedMouseButton[3] = false;
+                            //releasedMouseButton[3] = true;
                         break;
                         case SDL_BUTTON_X2:
                             downMouseButton[4] = false;
-                            releasedMouseButton[4] = true;
+                            pressedMouseButton[4] = false;
+                            //releasedMouseButton[4] = true;
                         break;
                         default:
 
@@ -589,7 +826,7 @@ void GPE_InputManager::handle(bool dump_event, bool isEmbedded)
                 default:
                 break;
             };
-        }while (tries-- && SDL_PollEvent(&event));
+        }while (SDL_PollEvent(&event));
     }
 
     SDL_GetMouseState(&mouse_x, &mouse_y);
@@ -631,6 +868,36 @@ void GPE_InputManager::handle(bool dump_event, bool isEmbedded)
     //SDL_StopTextInput();
 }
 
+bool GPE_InputManager::detect_controllers()
+{
+    int nJoysticks = SDL_NumJoysticks();
+    int nGameControllers = 0;
+    int currentControllerId = 0;
+    SDL_GameController * foundSDLController = NULL;
+    std::string foundControllerName = "";
+    for (int i = 0; i < nJoysticks; i++)
+    {
+        if (SDL_IsGameController(i))
+        {
+            foundSDLController = SDL_GameControllerOpen(i);
+            if( nGameControllers < max_controllers && foundSDLController!=NULL )
+            {
+                game_controllers[nGameControllers]->assignedSDLController = foundSDLController;
+                foundControllerName = SDL_GameControllerName(foundSDLController);
+                game_controllers[nGameControllers]->set_name( foundControllerName );
+                record_error("Game Controller found:    ["+foundControllerName+"].");
+            }
+            nGameControllers++;
+        }
+    }
+    if( nGameControllers > 0)
+    {
+        return true;
+    }
+    record_error("No Game Controllers found...");
+    return false;
+}
+
 bool GPE_InputManager::input_received()
 {
     if( programJustStarted || WINDOW_WAS_JUST_RESIZED)
@@ -669,6 +936,8 @@ void GPE_InputManager::reset_all_input()
     backSpaceIsPressed= false;
     shiftKeyIsPressed = false;
     inputHappenedInFrame = true;
+    windowEventHappendInFrame = false;
+    WINDOW_WAS_JUST_RESIZED = false;
 
 }
 
@@ -702,6 +971,58 @@ bool GPE_InputManager::check_mouse_doubleclicked(int buttonId)
     return false;
 }
 
+bool GPE_InputManager::check_keyboard_only_down(int buttonId  )
+{
+    if( buttonId>=0 && buttonId < key_count )
+    {
+        if( down[buttonId] )
+        {
+            for( int i = 0; i < key_count; i++ )
+            {
+                if( i!= buttonId )
+                {
+                    if( down[i] )
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
+bool GPE_InputManager::check_keyboard_only_released(int buttonId  )
+{
+    if( buttonId>=0 && buttonId < key_count )
+    {
+        if( released[buttonId] )
+        {
+            for( int i = 0; i < key_count; i++ )
+            {
+                if( i!= buttonId )
+                {
+                    if( down[i] == true )
+                    {
+                        return false;
+                    }
+                    else if( released[i] == true )
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        else
+        {
+            //record_error("Key "+int_to_string(buttonId)+"is not released...");
+        }
+    }
+    return false;
+}
+
 bool GPE_InputManager::check_keyboard_down(int buttonId)
 {
     if(buttonId>=0 && buttonId<key_count )
@@ -728,6 +1049,199 @@ bool GPE_InputManager::check_keyboard_released(int buttonId)
     }
     return false;
 }
+
+bool GPE_InputManager::gamepad_connected (int controllerPos)
+{
+    if( controllerPos >=0 && controllerPos < max_controllers )
+    {
+        return game_controllers[controllerPos]->check_connection();
+    }
+    return -1;
+};
+
+std::string GPE_InputManager::gamepad_detected_name(int controllerPos)
+{
+    if( controllerPos >=0 && controllerPos < max_controllers )
+    {
+        return game_controllers[controllerPos]->get_name();
+    }
+    return "";
+};
+
+
+std::string GPE_InputManager::gamepad_name (int controllerPos)
+{
+    if( controllerPos >=0 && controllerPos < max_controllers )
+    {
+        return game_controllers[controllerPos]->get_name();
+    }
+    return "";
+};
+
+GPE_InputManager_GameController * GPE_InputManager::gamepad_object (int controllerPos)
+{
+    if( controllerPos >=0 && controllerPos < max_controllers )
+    {
+        return game_controllers[controllerPos];
+    }
+    return NULL;
+};
+
+int GPE_InputManager::gamepad_get_axes_count ( int controllerPos )
+{
+    if( controllerPos >=0 && controllerPos < max_controllers )
+    {
+        return game_controllers[controllerPos]->gamepad_get_axes_count();;
+    }
+    return -1;
+};
+
+int GPE_InputManager::find_gamepad_mapping (int controllerPos, int buttonId)
+{
+    if( controllerPos >=0 && controllerPos < max_controllers )
+    {
+        return game_controllers[controllerPos]->find_gamepad_button_mapping( buttonId);
+    }
+    return -1;
+};
+
+int GPE_InputManager::check_gamepad (int controllerPos, int buttonId)
+{
+    if( controllerPos >=0 && controllerPos < max_controllers )
+    {
+        return game_controllers[controllerPos]->check_button(buttonId);
+    }
+    else if( controllerPos == gc_anycontroller )
+    {
+        for( int iConPos = max_controllers -1; iConPos >=0; iConPos-- )
+        {
+            if( game_controllers[iConPos]->check_button(buttonId) )
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+int GPE_InputManager::check_gamepad_down (int controllerPos, int buttonId)
+{
+    if( controllerPos >=0 && controllerPos < max_controllers )
+    {
+        return game_controllers[controllerPos]->check_button(buttonId);
+    }
+    else if( controllerPos == gc_anycontroller )
+    {
+        for( int iConPos = max_controllers -1; iConPos >=0; iConPos-- )
+        {
+            if( game_controllers[iConPos]->check_button(buttonId) )
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+int GPE_InputManager::check_gamepad_pressed (int controllerPos, int buttonId)
+{
+    if( controllerPos >=0 && controllerPos < max_controllers )
+    {
+        return game_controllers[controllerPos]->check_button_pressed(buttonId);
+    }
+    else if( controllerPos == gc_anycontroller )
+    {
+        for( int iConPos = max_controllers -1; iConPos >=0; iConPos-- )
+        {
+            if( game_controllers[iConPos]->check_button_pressed(buttonId) )
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+int GPE_InputManager::check_gamepad_released (int controllerPos, int buttonId)
+{
+    if( controllerPos >=0 && controllerPos < max_controllers )
+    {
+        return game_controllers[controllerPos]->check_button_released(buttonId);
+    }
+    else if( controllerPos == gc_anycontroller )
+    {
+        for( int iConPos = max_controllers -1; iConPos >=0; iConPos-- )
+        {
+            if( game_controllers[iConPos]->check_button_released(buttonId) )
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+int GPE_InputManager::find_gamepad_axes_mapping ( int controllerPos, int axesId)
+{
+    if( controllerPos >=0 && controllerPos < max_controllers )
+    {
+        return game_controllers[controllerPos]->find_gamepad_axes_mapping( axesId);
+    }
+    return NULL;
+};
+
+
+int GPE_InputManager::find_gamepad_button_mapping ( int controllerPos, int buttonId)
+{
+    if( controllerPos >=0 && controllerPos < max_controllers )
+    {
+        return game_controllers[controllerPos]->find_gamepad_button_mapping( buttonId);
+    }
+    return -1;
+};
+
+bool GPE_InputManager::gamepad_map_axes (int controllerPos, int axesId, int newAxesId)
+{
+    if( controllerPos >=0 && controllerPos < max_controllers )
+    {
+        return game_controllers[controllerPos]->gamepad_map_axes(  axesId, newAxesId);
+    }
+    else if( controllerPos == gc_anycontroller )
+    {
+        bool successfulMapping = false;
+        for( int iConPos = max_controllers -1; iConPos >=0; iConPos-- )
+        {
+            if( game_controllers[iConPos]->gamepad_map_axes(  axesId, newAxesId) )
+            {
+                successfulMapping = true;;
+            }
+        }
+        return successfulMapping;
+    }
+    return false;
+};
+
+
+bool GPE_InputManager::gamepad_map_button (int controllerPos, int buttonId, int newButtonId)
+{
+    if( controllerPos >=0 && controllerPos < max_controllers )
+    {
+        return game_controllers[controllerPos]->gamepad_map_button(  buttonId, newButtonId);
+    }
+    else if( controllerPos == gc_anycontroller )
+    {
+        bool successfulMapping = false;
+        for( int iConPos = max_controllers -1; iConPos >=0; iConPos-- )
+        {
+            if( game_controllers[iConPos]->gamepad_map_button(  buttonId, newButtonId) )
+            {
+                successfulMapping = true;;
+            }
+        }
+        return successfulMapping;
+    }
+    return false;
+};
 
 bool GPE_InputManager::check_mouse_down(int buttonId)
 {
@@ -775,22 +1289,19 @@ bool GPE_InputManager::check_mouse_pressed(int buttonId)
 
 bool GPE_InputManager::check_mouse_released(int buttonId)
 {
-    if(buttonId>=0 && buttonId<mouse_button_count )
+    if( buttonId>=0 && buttonId< mouse_button_count )
     {
         return releasedMouseButton[buttonId];
     }
     else
     {
-        bool resultFound = false;
         for(int i=0; i < mouse_button_count; i++)
         {
-            if(releasedMouseButton[i] )
+            if( releasedMouseButton[i] ==true )
             {
-                resultFound = true;
-                return resultFound;
+                return true;
             }
         }
-        return resultFound;
     }
     return false;
 }

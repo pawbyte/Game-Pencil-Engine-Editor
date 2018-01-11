@@ -3,10 +3,10 @@ gpe_editor_aboutpage.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,7 +39,7 @@ gamePencilAboutPageResource::gamePencilAboutPageResource(GPE_ResourceContainer *
     resourceName = "About Page";
     parentProjectName = "";
     parentProjectDirectory = "";
-    //GPE_Sprite * mainMenuSprite = rsm->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/gpe_main_icons_big.png",70,true,0,0,false);
+    //GPE_Animation * mainMenuSprite = rsm->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/gpe_main_icons_big.png",70,true,0,0,false);
     projectParentFolder = pFolder;
     renameBox->disable_self();
     confirmResourceButton->disable_self();
@@ -116,6 +116,7 @@ gamePencilAboutPageResource::gamePencilAboutPageResource(GPE_ResourceContainer *
     pencilCredits->add_line("     Keith Thomas");
     pencilCredits->add_line("     Noel Hurde");
     pencilCredits->add_line("     Thomas Ingham");
+    pencilCredits->add_line("     Roshin Varghese");
 
 
 
@@ -230,7 +231,7 @@ gamePencilAboutPageResource::gamePencilAboutPageResource(GPE_ResourceContainer *
     pencilInformation->add_line("SDL Version:                   "+int_to_string(SDL_MAJOR_VERSION)+"."+int_to_string(SDL_MINOR_VERSION)+"."+int_to_string(SDL_PATCHLEVEL)+"." );
     pencilInformation->add_line("PGUI Version:                  "+int_to_string(PGUI_MAJOR_VERSION)+"."+int_to_string(PGUI_MINOR_VERSION)+"."+int_to_string(PGUI_PATCHLEVEL)+"." );
     pencilInformation->add_line("GPE(runtime) Version:          "+int_to_string(GPR_MAJOR_VERSION)+"."+int_to_string(GPR_MINOR_VERSION)+"."+int_to_string(GPR_PATCHLEVEL)+"." );
-    pencilInformation->add_line("Release Date:                  10-18-2017");
+    pencilInformation->add_line("Release Date:                  01-05-2018");
     pencilInformation->add_line("Author:                        PawByte");
     pencilInformation->add_line("Lead Developer:                Nathan Hurde aka theweirdn8");
     pencilInformation->add_line("Email:                         help@pawbyte.com");
@@ -244,7 +245,7 @@ gamePencilAboutPageResource::gamePencilAboutPageResource(GPE_ResourceContainer *
     pencilLicense->isCodeEditor = false;
 
     //pencilLicense->set_read_only();
-    pencilLicense->add_line("Copyright (c) 2016 PawByte, Nathan Hurde. All rights reserved..");
+    pencilLicense->add_line("Copyright (c) 2016-2018 PawByte, Nathan Hurde. All rights reserved..");
     pencilLicense->add_line(".");
     pencilLicense->add_line("Redistribution and use in source and binary forms, with or without");
     pencilLicense->add_line("modification, are permitted provided that the following conditions are");
@@ -299,7 +300,7 @@ gamePencilAboutPageResource::~gamePencilAboutPageResource()
     }
 }
 
-void gamePencilAboutPageResource::prerender_self(GPE_Renderer * cRender)
+void gamePencilAboutPageResource::prerender_self( )
 {
 
 }
@@ -368,42 +369,38 @@ void gamePencilAboutPageResource::process_self(GPE_Rect * viewedSpace , GPE_Rect
     }
 }
 
-void gamePencilAboutPageResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+void gamePencilAboutPageResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( viewedSpace!=NULL && aboutPageList!=NULL)
     {
-//        render_gradient_vertical(cRender,&gpeLogoSpace,GPE_MAIN_TEMPLATE->Button_Box_Highlighted_Color);
-        if( forceRedraw)
-        {
-            render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
-        }
+//        gpe->render_gradient_vertical( &gpeLogoSpace,GPE_MAIN_THEME->Button_Box_Highlighted_Color);
         if( aboutPageTabBar->get_selected_name()=="Credits")
         {
-            pencilCredits->render_self(cRender,viewedSpace,cam,forceRedraw);
+            pencilCredits->render_self( viewedSpace,cam,forceRedraw);
         }
         if( aboutPageTabBar->get_selected_name()=="Description")
         {
-            pencilDescription->render_self(cRender,viewedSpace,cam,forceRedraw);
+            pencilDescription->render_self( viewedSpace,cam,forceRedraw);
         }
         else if( aboutPageTabBar->get_selected_name()=="Information" )
         {
-            pencilInformation->render_self(cRender,viewedSpace,cam,forceRedraw);
+            pencilInformation->render_self( viewedSpace,cam,forceRedraw);
         }
         else if( aboutPageTabBar->get_selected_name()=="License" )
         {
-            pencilLicense->render_self(cRender,viewedSpace,cam,forceRedraw);
+            pencilLicense->render_self( viewedSpace,cam,forceRedraw);
         }
         else
         {
-            aboutPageList->render_self(cRender,viewedSpace,cam,forceRedraw);
+            aboutPageList->render_self( viewedSpace,cam,forceRedraw);
         }
 
-        //render_new_text(cRender,gpeLogoSpace.x,gpeLogoSpace.y+gpeLogoSpace.h-GENERAL_GPE_PADDING,"PUBLIC[BETA] - Version 0.2 | Copyright (c)2016 PawByte | make.pawbyte.com",GPE_MAIN_TEMPLATE->Main_Box_Faded_Font_Color,DEFAULT_FONT,FA_LEFT,FA_BOTTOM);
+        //render_new_text( gpeLogoSpace.x,gpeLogoSpace.y+gpeLogoSpace.h-GENERAL_GPE_PADDING,"PUBLIC[BETA] - Version 0.2 | Copyright (c)2016 PawByte | make.pawbyte.com",GPE_MAIN_THEME->Main_Box_Faded_Font_Color,DEFAULT_FONT,FA_LEFT,FA_BOTTOM);
 
-        //render_new_text(cRender,subViewedSpace.x+GENERAL_GPE_PADDING,subViewedSpace.y+GENERAL_GPE_PADDING,"Recent Projects",GPE_MAIN_TEMPLATE->Main_Box_Font_Color,textboxFont,FA_LEFT,FA_TOP);
-        aboutPageTabBar->render_self(cRender,viewedSpace,cam,forceRedraw);
+        //render_new_text( subViewedSpace.x+GENERAL_GPE_PADDING,subViewedSpace.y+GENERAL_GPE_PADDING,"Recent Projects",GPE_MAIN_THEME->Main_Box_Font_Color,textboxFont,FA_LEFT,FA_TOP);
+        aboutPageTabBar->render_self( viewedSpace,cam,forceRedraw);
     }
 }
 

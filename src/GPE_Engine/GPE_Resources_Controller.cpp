@@ -3,10 +3,10 @@ GPE_Resources_Controller.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -118,7 +118,7 @@ void generalGameResource::preprocess_self(std::string alternatePath)
 
 }
 
-void generalGameResource::prerender_self(GPE_Renderer * cRender)
+void generalGameResource::prerender_self( )
 {
 
 }
@@ -133,12 +133,12 @@ void generalGameResource::process_self(GPE_Rect * viewedSpace,GPE_Rect *cam)
 
 }
 
-void generalGameResource::render_resource(GPE_Renderer * cRender,GPE_Rect * viewedSpace,GPE_Rect *cam, bool forceRedraw)
+void generalGameResource::render_resource(GPE_Rect * viewedSpace,GPE_Rect *cam, bool forceRedraw)
 {
 
 }
 
-void generalGameResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace,GPE_Rect *cam, bool forceRedraw)
+void generalGameResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam, bool forceRedraw)
 {
 
 }
@@ -287,9 +287,9 @@ ResourceController::~ResourceController()
 }
 
 //adds a new game sprite with one row
-GPE_Sprite* ResourceController::sprite_add(std::string spriteFileName,int imgnumb,bool transparent,int xorig,int yorig, bool addMirror)
+GPE_Animation* ResourceController::sprite_add(std::string spriteFileName,int imgnumb,bool transparent,int xorig,int yorig, bool addMirror)
 {
-    GPE_Sprite * newSprite = get_sprite(spriteFileName);
+    GPE_Animation * newSprite = get_sprite(spriteFileName);
     if(newSprite!=NULL)
         return newSprite;
     //makes sure the xorig and yorig is not negative
@@ -298,7 +298,7 @@ GPE_Sprite* ResourceController::sprite_add(std::string spriteFileName,int imgnum
         //record_error("Loading "+spriteFileName+" sprite with "+int_to_string(imgnumb)+" needed images.");
         //loads in the sprite's texture
         GPE_Texture * newSurface = new GPE_Texture();
-        newSurface->load_new_texture( MAIN_RENDERER,spriteFileName, -1,transparent );
+        newSurface->load_new_texture( spriteFileName, -1,transparent );
         if(newSurface!=NULL)
         {
             //gets the height and width of spritesheet
@@ -310,7 +310,7 @@ GPE_Sprite* ResourceController::sprite_add(std::string spriteFileName,int imgnum
                 {
                      imgnumb=1;
                 }
-                newSprite = new GPE_Sprite();
+                newSprite = new GPE_Animation();
                 newSprite->width = (nW-xorig)/imgnumb;
                 newSprite->height = nH-yorig;
                 newSprite->boundingBox = new GPE_Rect;
@@ -324,7 +324,7 @@ GPE_Sprite* ResourceController::sprite_add(std::string spriteFileName,int imgnum
                 newSprite->colBox->w=newSprite->width;
                 newSprite->colBox->h=newSprite->height;
 
-                newSprite->spriteTexture= newSurface;
+                newSprite->animationTexture= newSurface;
                 //newSprite->spriteColor = c_white;
                 //newSprite->spritePhase = 0;
                 if(addMirror)
@@ -391,9 +391,9 @@ GPE_Sprite* ResourceController::sprite_add(std::string spriteFileName,int imgnum
     }
 }
 
-GPE_Sprite* ResourceController::sprite_add_collision(std::string spriteFileName,int imgnumb,bool transparent,int xorig,int yorig, int cx, int cy, int cw, int ch, bool addMirror)
+GPE_Animation* ResourceController::sprite_add_collision(std::string spriteFileName,int imgnumb,bool transparent,int xorig,int yorig, int cx, int cy, int cw, int ch, bool addMirror)
 {
-    GPE_Sprite * newSprite = get_sprite(spriteFileName);
+    GPE_Animation * newSprite = get_sprite(spriteFileName);
     if(newSprite!=NULL)
         return newSprite;
     //makes sure the xorig and yorig is not negative
@@ -402,7 +402,7 @@ GPE_Sprite* ResourceController::sprite_add_collision(std::string spriteFileName,
         record_error("Loading" +spriteFileName+" sprite...");
         //loads in the sprite's texture
         GPE_Texture * newSurface = new GPE_Texture();
-        newSurface->load_new_texture( MAIN_RENDERER,spriteFileName, -1,transparent );
+        newSurface->load_new_texture( spriteFileName, -1,transparent );
         if(newSurface!=NULL)
         {
             //gets the height and width of spritesheet
@@ -414,7 +414,7 @@ GPE_Sprite* ResourceController::sprite_add_collision(std::string spriteFileName,
                 {
                      imgnumb=1;
                 }
-                newSprite = new GPE_Sprite();
+                newSprite = new GPE_Animation();
                 newSprite->width = (nW-xorig)/imgnumb;
                 newSprite->height = nH-yorig;
                 if(cx<=0 || cx>newSprite->width)
@@ -444,7 +444,7 @@ GPE_Sprite* ResourceController::sprite_add_collision(std::string spriteFileName,
                 newSprite->colBox->w=cw;
                 newSprite->colBox->h=ch;
 
-                newSprite->spriteTexture= newSurface;
+                newSprite->animationTexture= newSurface;
                 //newSprite->spriteColor = c_white;
                 //newSprite->spritePhase = 0;
 
@@ -506,22 +506,22 @@ GPE_Sprite* ResourceController::sprite_add_collision(std::string spriteFileName,
     }
 }
 
-GPE_Sprite* ResourceController::sprite_addsheet(std::string spriteFileName, bool transparent, int width, int height)
+GPE_Animation* ResourceController::sprite_addsheet(std::string spriteFileName, bool transparent, int width, int height)
 {
-    GPE_Sprite * newSprite = get_sprite(spriteFileName);
+    GPE_Animation * newSprite = get_sprite(spriteFileName);
     if(newSprite!=NULL)
         return newSprite;
     if(( height>0)&&(width>0) )
     {
         GPE_Texture * newSurface = new GPE_Texture();
-        newSurface->load_new_texture( MAIN_RENDERER,spriteFileName, -1,transparent );
+        newSurface->load_new_texture( spriteFileName, -1,transparent );
         if(newSurface!=NULL)
         {
             int nW = newSurface->get_width();
             int nH =  newSurface->get_height();
             if( (nH >= height )&&(nW  >=width) )
             {
-                newSprite = new GPE_Sprite();
+                newSprite = new GPE_Animation();
                 newSprite->width = width;
                 newSprite->height = height;
                 newSprite->boundingBox = new GPE_Rect();
@@ -534,7 +534,7 @@ GPE_Sprite* ResourceController::sprite_addsheet(std::string spriteFileName, bool
                 newSprite->colBox->y=0;
                 newSprite->colBox->w=width;
                 newSprite->colBox->h=height;
-                newSprite->spriteTexture= newSurface;
+                newSprite->animationTexture= newSurface;
                 newSprite->fileName=spriteFileName; //the name along with path
                 newSprite->name=getShortFileName(spriteFileName); //gets rid of path
                //newSprite->spriteColor = c_white;
@@ -605,22 +605,22 @@ GPE_Sprite* ResourceController::sprite_addsheet(std::string spriteFileName, bool
     }
 }
 
-GPE_Sprite* ResourceController::sprite_addsheet_ext(std::string spriteFileName, bool transparent, unsigned short imgnumb, unsigned short imgPerRow, unsigned short width, unsigned short height, unsigned short cellOffX, unsigned short cellOffY, unsigned short pixelOffX, unsigned short pixOffY, unsigned short hSep, unsigned short vSep)
+GPE_Animation* ResourceController::sprite_addsheet_ext(std::string spriteFileName, bool transparent, unsigned short imgnumb, unsigned short imgPerRow, unsigned short width, unsigned short height, unsigned short cellOffX, unsigned short cellOffY, unsigned short pixelOffX, unsigned short pixOffY, unsigned short hSep, unsigned short vSep)
 {
-    GPE_Sprite * newSprite = get_sprite(spriteFileName);
+    GPE_Animation * newSprite = get_sprite(spriteFileName);
     if(newSprite!=NULL)
         return newSprite;
     if(( height!=0)&&(width!=0) )
     {
         GPE_Texture * newSurface = new GPE_Texture();
-        newSurface->load_new_texture( MAIN_RENDERER,spriteFileName, -1,transparent );
+        newSurface->load_new_texture( spriteFileName, -1,transparent );
         if(newSurface!=NULL)
         {
             int nW = newSurface->get_width();
             int nH =  newSurface->get_height();
             if( (nH >= height )&&(nW  >=width) )
             {
-                newSprite = new GPE_Sprite();
+                newSprite = new GPE_Animation();
                 newSprite->width = width;
                 newSprite->height = height;
                 newSprite->boundingBox = new GPE_Rect();
@@ -635,7 +635,7 @@ GPE_Sprite* ResourceController::sprite_addsheet_ext(std::string spriteFileName, 
                 newSprite->colBox->h=height;
                 newSprite->fileName=spriteFileName; //the name along with path
                 newSprite->name=getShortFileName(spriteFileName); //gets rid of path
-                newSprite->spriteTexture= newSurface;
+                newSprite->animationTexture= newSurface;
                //newSprite->spriteColor = c_white;
                //newSprite->spritePhase = 0;
 
@@ -708,7 +708,7 @@ GPE_Sprite* ResourceController::sprite_addsheet_ext(std::string spriteFileName, 
 GPE_Texture* ResourceController::texture_add(std::string textureFileName)
 {
     GPE_Texture * newTexture = get_texture(textureFileName);
-    if(newTexture!=NULL)
+    if( newTexture!=NULL )
     {
         return newTexture;
     }
@@ -719,7 +719,7 @@ GPE_Texture* ResourceController::texture_add(std::string textureFileName)
         newTexture = new GPE_Texture();
         if( newTexture!=NULL)
         {
-            newTexture->load_new_texture( MAIN_RENDERER,textureFileName, -1,true );
+            newTexture->load_new_texture( textureFileName, -1,true );
             if(newTexture->get_sdl_texture()!=NULL)
             {
                 rTextures.push_back(newTexture);
@@ -735,7 +735,7 @@ GPE_Texture* ResourceController::texture_add(std::string textureFileName)
     return NULL;
 }
 
-void ResourceController::edit_collision_box(GPE_Sprite *spriteIn, int cx, int cy, int cw, int ch)
+void ResourceController::edit_collision_box(GPE_Animation *spriteIn, int cx, int cy, int cw, int ch)
 {
     if(spriteIn!=NULL)
     {
@@ -746,7 +746,7 @@ void ResourceController::edit_collision_box(GPE_Sprite *spriteIn, int cx, int cy
     }
 }
 
-GPE_Sprite * ResourceController::get_sprite(int idIn)
+GPE_Animation * ResourceController::get_sprite(int idIn)
 {
     if( rSprites.empty() )
         return NULL;
@@ -773,7 +773,7 @@ GPE_Sprite * ResourceController::get_sprite(int idIn)
     return NULL;
 }
 
-GPE_Sprite* ResourceController::get_sprite(std::string nameIn)
+GPE_Animation* ResourceController::get_sprite(std::string nameIn)
 {
     if( rSprites.empty() )
         return NULL;

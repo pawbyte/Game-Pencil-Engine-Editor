@@ -1,15 +1,16 @@
 #    --------------------------------------------------  # 
 #     
 #     
-#    Game Pencil Engine Project Game Sprite DataFile 
+#    Game Pencil Engine Project Game Animation DataFile 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
 #    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.13
+Version=2
 ResourceName=spr_slime
+#     
 SpriteData[0]=2
 SpriteData[1]=51
 SpriteData[2]=27
@@ -20,7 +21,7 @@ SpriteData[6]=0
 SubimageInView=0
 Preload=1
 EditorPreviewFrame=0
-PreviewCollisionShape=0
+PreviewCollisionShape=1
 CollisionShape=0
 CircleCollisionRegion=0,0,27
 RectangleCollisionBox=0,0,51,27

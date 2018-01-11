@@ -3,10 +3,10 @@ project_browser.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -108,6 +108,18 @@ bool quickProjectReader::review_project(std::string projectFileName)
                                 if (keyString== "Version")
                                 {
                                     detectedVersion = valString;
+                                    if( detectedVersion=="1")
+                                    {
+                                        detectedVersion = "1.00";
+                                    }
+                                    else if ( detectedVersion=="2")
+                                    {
+                                        detectedVersion = "2.00";
+                                    }
+                                    else if ( detectedVersion=="3")
+                                    {
+                                        detectedVersion = "3.00";
+                                    }
                                 }
                                 else if( keyString=="Count" || keyString=="ResourcesCount")
                                 {
@@ -213,16 +225,16 @@ gamePencilProjectBrowserResource::gamePencilProjectBrowserResource(GPE_ResourceC
     exampleProjectsTitle = new GPE_Label_Text("Example Projects","Example Projects");
     emptyProjectsListLabel = new GPE_Label_Text("No Recent projects","No Recent projects");
 
-    scanProjectFolderButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/search.png","Scan Folder","Scan Folder");
+    scanProjectFolderButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/search.png","Scan Folder","Scan Folder");
     scanProjectFolderButton->set_width(128);
 
-    newProjectButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/file.png","New Project","New Project");
+    newProjectButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/file.png","New Project","New Project");
     newProjectButton->set_width(128);
 
-    loadProjectButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/folder-open.png","Load Project","Load Project");
+    loadProjectButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/folder-open.png","Load Project","Load Project");
     loadProjectButton->set_width(128);
 
-    refreshButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/refresh.png","Refresh","Refresh Project Lists");
+    refreshButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/refresh.png","Refresh","Refresh Project Lists");
     refreshButton->set_width(96);
 
     quickProjectReader * qpr = new quickProjectReader();
@@ -323,7 +335,7 @@ gamePencilProjectBrowserResource::~gamePencilProjectBrowserResource()
     }
 }
 
-void gamePencilProjectBrowserResource::prerender_self(GPE_Renderer * cRender)
+void gamePencilProjectBrowserResource::prerender_self( )
 {
 
 }
@@ -515,7 +527,7 @@ void gamePencilProjectBrowserResource::process_self(GPE_Rect * viewedSpace,GPE_R
                 projectFolderLocationLabel = new GPE_Label_Text(favFolder,favFolder);
                 load_projecs_folder(favFolder);
             }
-            userInput->reset_all_input();
+            input->reset_all_input();
             load_example_projects_folder();
             process_self(viewedSpace,cam);
         }
@@ -534,7 +546,7 @@ void gamePencilProjectBrowserResource::process_self(GPE_Rect * viewedSpace,GPE_R
             if( path_exists(newPathToScan) )
             {
                 load_projecs_folder(newPathToScan);
-                userInput->reset_all_input();
+                input->reset_all_input();
                 process_self(viewedSpace,cam);
             }
         }
@@ -591,39 +603,29 @@ void gamePencilProjectBrowserResource::process_self(GPE_Rect * viewedSpace,GPE_R
     processedFirst = true;
 }
 
-void gamePencilProjectBrowserResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace,GPE_Rect *cam, bool forceRedraw )
+void gamePencilProjectBrowserResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam, bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    GPE_Rect wholeRect;
-    wholeRect.x = 0;
-    wholeRect.y = 0;
-    wholeRect.w = viewedSpace->w;
-    wholeRect.h = viewedSpace->h;
-    cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
-    if( cam!=NULL && projectBrowserList!=NULL && projectsCategoryTabs!=NULL && viewedSpace!=NULL)
+    if( cam!=NULL && projectBrowserList!=NULL && projectsCategoryTabs!=NULL && viewedSpace!=NULL && forceRedraw )
     {
-        if( forceRedraw)
-        {
-            render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
-        }
-        headerPageList->render_self(cRender,&headerViewedSpace,cam,forceRedraw);
+        headerPageList->render_self( &headerViewedSpace,cam,forceRedraw);
 
         if( forceRedraw)
         {
-            render_rectangle(cRender,projectsCategoryTabs->get_xpos(),projectsCategoryTabs->get_y2pos(),viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Header_Color,false);
+            gpe->render_rectangle( projectsCategoryTabs->get_xpos(),projectsCategoryTabs->get_y2pos(),viewedSpace->w,viewedSpace->h,GPE_MAIN_THEME->Program_Header_Color,false);
         }
-        cRender->reset_viewpoint();
-        cRender->set_viewpoint( &subViewedSpace );
-        projectBrowserList->render_self(cRender,&subViewedSpace,cam, forceRedraw);
+        MAIN_RENDERER->reset_viewpoint();
+        MAIN_RENDERER->set_viewpoint( &subViewedSpace );
+        projectBrowserList->render_self( &subViewedSpace,cam, forceRedraw);
         /*
         if(editorPageTabBar->get_selected_name()=="Platforms")
         {
-            exportSettingsBar->render_self(cRender,&subViewedSpace,cam,forceRedraw);
+            exportSettingsBar->render_self( &subViewedSpace,cam,forceRedraw);
         }*/
-        cRender->reset_viewpoint();
-        cRender->set_viewpoint( viewedSpace);
+        MAIN_RENDERER->reset_viewpoint();
+        MAIN_RENDERER->set_viewpoint( viewedSpace);
     }
 }
 
@@ -634,7 +636,7 @@ void gamePencilProjectBrowserResource::save_resource(std::string alternatePath ,
 
 bool gamePencilProjectBrowserResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn)
 {
-
+    return true;
 }
 
 void gamePencilProjectBrowserResource::load_example_projects_folder( )

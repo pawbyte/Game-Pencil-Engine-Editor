@@ -3,10 +3,10 @@ GPE_Renderer.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,26 +36,11 @@ SOFTWARE.
 
 //The headers
 #include "GPE_CIncludes.h"
+#include "GPE_Shapes.h"
 
-const int MIN_WINDOW_WIDTH = 800;
-const int MIN_WINDOW_HEIGHT = 600;
-
+extern int DEFAULT_WINDOW_MIN_WIDTH;
+extern int DEFAULT_WINDOW_MIN_HEIGHT;
 extern bool WINDOW_WAS_JUST_RESIZED;
-
-struct GPE_Rect
-{
-    double x;
-    double y;
-    double w;
-    double h;
-    GPE_Rect()
-    {
-        x = 0;
-        y = 0;
-        w = 0;
-        h = 0;
-    }
-};
 
 extern GPE_Rect GPE_DEFAULT_CAMERA;
 
@@ -67,6 +52,9 @@ GPE_Rect * GPE_find_camera(GPE_Rect * rectIn=NULL);
 class GPE_Renderer
 {
     private:
+        int minWindowWidth;
+        int minWindowHeight;
+        SDL_Surface * windowIcon;
         Uint32 windowFlags;
         //Whether the window is windowed or not
         bool screenClearedOnFrame;
@@ -117,6 +105,7 @@ class GPE_Renderer
         bool screen_was_cleared();
         void set_viewpoint(GPE_Rect * newViewPoint = NULL);
         void set_window_title(std::string newTitle);
+        void set_window_min_size( int w, int h);
         void update_renderer();
         std::string save_screenshot(std::string screenShotLocation = "");
 };

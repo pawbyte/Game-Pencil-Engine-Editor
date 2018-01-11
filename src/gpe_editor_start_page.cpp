@@ -3,10 +3,10 @@ gpe_editor_start_page.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -102,26 +102,26 @@ gamePencilStartPageResource::gamePencilStartPageResource(GPE_ResourceContainer *
     tTempUrl->hasLineBreak = true;
     helpfulWebLinks.push_back(tTempUrl);
 
-    projectBrowserButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/binoculars.png","Project Browser","",-1,64);
+    projectBrowserButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/binoculars.png","Project Browser","",-1,64);
     projectBrowserButton->enable_background(false);
     projectBrowserButton->enable_border(false);
 
-    forumPageButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/comments.png","Forums","",-1,64);
+    forumPageButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/comments.png","Forums","",-1,64);
     forumPageButton->enable_background(false);
     forumPageButton->set_website("http://community.pawbyte.com");
     forumPageButton->enable_border(false);
 
-    helpPageButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/question.png","Help","",-1,64);
+    helpPageButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/question.png","Help","",-1,64);
     helpPageButton->enable_background(false);
     helpPageButton->enable_border(false);
 
-    tipOfTheDayButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/info.png","Tip of the Day","",-1,64);
+    tipOfTheDayButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/info.png","Tip of the Day","",-1,64);
     tipOfTheDayButton->enable_background(false);
     tipOfTheDayButton->enable_border(false);
     std::string copyRightInfoString = "";
     if( GPE_VERSION_UPDATE_NUMBER==0)
     {
-        copyRightInfoString = float_to_string(GPE_VERSION_DOUBLE_NUMBER)+"0";
+        copyRightInfoString = float_to_string(GPE_VERSION_DOUBLE_NUMBER)+".0.0";
     }
     else
     {
@@ -140,7 +140,7 @@ gamePencilStartPageResource::gamePencilStartPageResource(GPE_ResourceContainer *
     }
 
     labelCopyrightInfo = new GPE_Label_Text("Game Pencil Engine - Version "+copyRightInfoString+".","");
-    labelVersionInfo = new GPE_Label_Text("Copyright (c) 2017 PawByte | make.pawbyte.com","");
+    labelVersionInfo = new GPE_Label_Text("Copyright (c) 2018 PawByte | make.pawbyte.com","");
     labelImgGPELogo = new GPE_Label_Image(GPE_LOGO);
     labelImgGPELogo->hasLineBreak = true;
     labelImgGPELogo->resizeAspect = 0.667;
@@ -216,7 +216,7 @@ gamePencilStartPageResource::~gamePencilStartPageResource()
     record_error("Startpage successfully deleted....");
 }
 
-void gamePencilStartPageResource::prerender_self(GPE_Renderer * cRender)
+void gamePencilStartPageResource::prerender_self( )
 {
 
 }
@@ -285,18 +285,17 @@ void gamePencilStartPageResource::process_self(GPE_Rect * viewedSpace , GPE_Rect
     }
 }
 
-void gamePencilStartPageResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+void gamePencilStartPageResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( viewedSpace!=NULL && startPageList!=NULL)
     {
-        //render_rect(cRender,&subViewedSpace,GPE_MAIN_TEMPLATE->Program_Header_Color,false);
-        //render_new_text(cRender,subViewedSpace.x+GENERAL_GPE_PADDING,subViewedSpace.y+GENERAL_GPE_PADDING,"Recent Projects",GPE_MAIN_TEMPLATE->Main_Box_Font_Color,textboxFont,FA_LEFT,FA_TOP);
+        //gpe->render_rect( &subViewedSpace,GPE_MAIN_THEME->Program_Header_Color,false);
+        //render_new_text( subViewedSpace.x+GENERAL_GPE_PADDING,subViewedSpace.y+GENERAL_GPE_PADDING,"Recent Projects",GPE_MAIN_THEME->Main_Box_Font_Color,textboxFont,FA_LEFT,FA_TOP);
         if( forceRedraw)
         {
-            render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
-            startPageList->render_self(cRender,viewedSpace,cam,forceRedraw);
+            startPageList->render_self( viewedSpace,cam,forceRedraw);
         }
     }
 }

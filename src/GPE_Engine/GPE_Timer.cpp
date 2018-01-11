@@ -3,10 +3,10 @@ GPE_Timer.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,10 +37,10 @@ float FPS_CAP = 60;
 float FPS_RATIO = 60/30;
 int SCREEN_TICK_PER_FRAME = 1000 / FPS_CAP;
 int countedFrames = 0;
-Timer * fpsTimer = NULL;
+Timer * GPE_FPS_Timer = NULL;
 
 //The frames per second cap timer
-Timer * capTimer = NULL;
+Timer * GPE_TIMER_CAP = NULL;
 
 Timer::Timer()
 {
@@ -143,37 +143,46 @@ bool Timer::is_paused()
 float calculate_avg_fps()
 {
     //Calculate and correct fps
-    float avgFPS = countedFrames / ( fpsTimer->get_ticks() / 1000.f );
+    float avgFPS = countedFrames / ( GPE_FPS_Timer->get_ticks() / 1000.f );
     if( avgFPS > 2000000 )
     {
         avgFPS = 0;
     }
+    return avgFPS;
 }
 
 void set_fps( int newFPS)
 {
+    //resets the timers and such since a new FPS cap has been set.
+    //if( newFPS!= FPS_CAP)
+    {
+        GPE_FPS_Timer->start();
+        GPE_TIMER_CAP->start();
+        countedFrames = 0;
+    }
     if( newFPS > 0 && newFPS <= 300)
     {
         FPS_CAP = newFPS;
-        SCREEN_TICK_PER_FRAME = 1000 / FPS_CAP;
     }
     else
     {
         //defaults to 30 fps for out of range FPSs given.
         FPS_CAP = 30;
-        SCREEN_TICK_PER_FRAME = 1000 / FPS_CAP;
     }
+    SCREEN_TICK_PER_FRAME = 1000 / FPS_CAP;
+
     FPS_RATIO = (float)FPS_CAP/30;
     if( FPS_RATIO < 0)
     {
         FPS_RATIO = 1;
     }
 }
+
 void cap_fps()
 {
     ++countedFrames;
     //If frame finished early
-    int frameTicks = capTimer->get_ticks();
+    int frameTicks = GPE_TIMER_CAP->get_ticks();
     if( frameTicks < SCREEN_TICK_PER_FRAME )
     {
         //Wait remaining time

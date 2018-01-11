@@ -3,10 +3,10 @@ GPE_Program_State.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,14 +37,15 @@ SOFTWARE.
 #include "GPE_CIncludes.h"
 
 //State variables
-extern int programStateId;
-extern int nextProgramState;
+extern int GPE_ProgramStateId;
+extern int GPE_NextProgramState;
 
 //Program states
 typedef enum
 {
     STATE_NULL,
     STATE_LOGO_DISPLAY,
+    STATE_GPE_EDITOR,
     STATE_INTRO,
     STATE_TITLE,
     STATE_MAINMENU,
@@ -55,7 +56,7 @@ typedef enum
     STATE_FLASHBACK,
     STATE_OPTIONS,
     STATE_EXIT
-}programStates;
+}GPE_ProgramStates;
 
 
 //State status manager
@@ -63,18 +64,20 @@ void set_next_state( int newState );
 
 //Program State base class
 
-class ProgramState
+class GPE_ProgramState
 {
+    protected:
+        std::string stateName;
     public:
         int randomVariable;
-        //ProgramState();
+        //GPE_ProgramState();
         virtual void process_input() = 0;
         virtual void apply_logic() = 0;
         virtual void render() = 0;
         virtual void clean_up() = 0;
-        virtual ~ProgramState(){};
-    protected:
-        ProgramState(){};
+        GPE_ProgramState();
+        virtual ~GPE_ProgramState(){};
+        std::string get_state_name();
 };
 
 #endif

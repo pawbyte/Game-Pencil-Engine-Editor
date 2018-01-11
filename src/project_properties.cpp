@@ -3,10 +3,10 @@ project_properties.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -101,7 +101,7 @@ projectPropertiesResource::projectPropertiesResource(GPE_ResourceContainer * pFo
     projectScaleSettings->add_opton("Full Scale");
 
     projectSettingsFPSRateLabel = new GPE_Label_Text("Frame Rate Cap","Sets the (max) framerate set for the game(Usually 30 or 60)");
-    projectSettingsFPSRate = new GPE_DropDown_Menu(0,0,"FPS Cap",true);
+    projectSettingsFPSRate = new GPE_DropDown_Menu( "FPS Cap",true);
     projectSettingsFPSRate->add_menu_option("15 FPS","",15);
     projectSettingsFPSRate->add_menu_option("20 FPS","",20);
     projectSettingsFPSRate->add_menu_option("24 FPS","",24);
@@ -111,8 +111,8 @@ projectPropertiesResource::projectPropertiesResource(GPE_ResourceContainer * pFo
     projectSettingsFPSRate->add_menu_option("Uncapped","",-1);
 
     //Publisher Section
-    Title_GameSettings = new GPE_Label_Title("Game Settings","Game Settings");
-    Title_Publisher = new GPE_Label_Title("Publishing","Publishing");
+    sectionTitleGameSettings = new GPE_Label_Title("Game Settings","Game Settings");
+    sectionTitlePublisher = new GPE_Label_Title("Publishing","Publishing");
     projectGameTitleField = new GPE_TextInputBasic();
     projectGameTitleField->set_label("Game Title");
 
@@ -128,7 +128,7 @@ projectPropertiesResource::projectPropertiesResource(GPE_ResourceContainer * pFo
     projectGameCopyrightField = new GPE_TextInputBasic();
     projectGameCopyrightField->set_label("Game Copyright Text");
 
-    projectGameDateField = new GPE_TextInputBasic("2016");
+    projectGameDateField = new GPE_TextInputBasic("2018");
     projectGameDateField->set_label("Game Copyright Date");
 
     projectGameDescriptionField = new GPE_TextInputBasic();
@@ -144,11 +144,12 @@ projectPropertiesResource::projectPropertiesResource(GPE_ResourceContainer * pFo
     checkBoxShowPublisherInfo->set_clicked(true);
 
     //Colors Tab
-    projectBorderColor= new GPE_Input_Field_Color();
+    sectionTitleGameColors = new GPE_Label_Title("Game Colors");
+    projectBorderColor = new GPE_Input_Field_Color();
     projectBorderColor->set_label("Border Color");
     projectBorderColor->set_rgb(16,16,16);
 
-    projectWebsiteBackgroundColor= new GPE_Input_Field_Color();
+    projectWebsiteBackgroundColor = new GPE_Input_Field_Color();
     projectWebsiteBackgroundColor->set_label("Website Background Color");
     projectWebsiteBackgroundColor->set_rgb(0,0,0);
 
@@ -188,14 +189,14 @@ projectPropertiesResource::projectPropertiesResource(GPE_ResourceContainer * pFo
     projectGameNotes->isCodeEditor = false;
 
     //Export Settings Tab
-    exportPushButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/cog.png","Build Project","Recompiles Project");
-    exportAndPlayPushButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png","Build & Play Project","Recompiles Project & Runs it");
+    exportPushButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/cog.png","Build Project","Recompiles Project");
+    exportAndPlayPushButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png","Build & Play Project","Recompiles Project & Runs it");
 
-    cleanBuildFolderPushButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png","Clean Build Folders","Removes files from the build folder matching the criteria above.");
-    cleanBuildAllFolderPushButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png","Clean ALL Build Folders","Removes files from all build folders of this project.");
-    playProgramPushButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png","Play Game","Runs game matching the criteria above");
+    cleanBuildFolderPushButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png","Clean Build Folders","Removes files from the build folder matching the criteria above.");
+    cleanBuildAllFolderPushButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png","Clean ALL Build Folders","Removes files from all build folders of this project.");
+    playProgramPushButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png","Play Game","Runs game matching the criteria above");
 
-    exportSettingsBar = new GPE_SelectBoxBasic(0,0,"Platforms");
+    exportSettingsBar = new GPE_SelectBoxBasic( "Platforms");
     exportSettingsBar->set_width(160);
     exportSettingsBar->set_option_height(64);
 
@@ -272,8 +273,8 @@ projectPropertiesResource::projectPropertiesResource(GPE_ResourceContainer * pFo
     switchNativeBuildTypeOptions->add_menu_option("Do not Export...","gpe_no_native",Native_None,false);
 
     //Extras Tab
-    transformImageDirectoryButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/magic.png","Transform IMG Folder","Transforms all Images in a given folder",-1);
-    GPE_Sprite * mainExportOptionsSprite = rsm->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/main_export_options_icons.png",12,true,0,0,false);
+    transformImageDirectoryButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/magic.png","Transform IMG Folder","Transforms all Images in a given folder",-1);
+    GPE_Animation * mainExportOptionsSprite = rsm->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/main_export_options_icons.png",12,true,0,0,false);
 
     GPE_Texture * desktopLogoTexture = rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/desktop.png");
     GPE_Texture * appleLogoTexture = rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/apple.png");
@@ -305,7 +306,7 @@ projectPropertiesResource::projectPropertiesResource(GPE_ResourceContainer * pFo
     exportSettingsBar->add_option("PC",GPE_BUILD_DESKTOP,desktopLogoTexture);
     exportSettingsBar->add_option("WiiU",GPE_BUILD_WIIU,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/nintendo_wiiu_logo.png"),NULL,2, false, false);
     /*
-    Most Recent 4/14/2017
+    Most Recent 4/14/2018
     exportSettingsBar->add_option("Switch",GPE_BUILD_SWITCH,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/nintendo_switch_logo.png"),NULL,-1, false, false );
     //exportSettingsBar->add_option("PS4",GPE_BUILD_PS4,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/playstation_4_logo.png"),NULL,-1, false, false );
     exportSettingsBar->add_option("PS4",GPE_BUILD_PS4,NULL,NULL,-1, false, false );
@@ -326,7 +327,7 @@ projectPropertiesResource::projectPropertiesResource(GPE_ResourceContainer * pFo
     exportSettingsBar->add_option("Tizen",NULL,mainExportOptionsSprite,10);
     exportSettingsBar->add_option("Raspberry Pi",NULL,mainExportOptionsSprite,11);
     */
-    sceneEditorPaneMode = new GPE_ToolIconButtonBar(0,0,32,true);
+    sceneEditorPaneMode = new GPE_ToolIconButtonBar(32,true);
     sceneEditorPaneMode->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/newspaper-o.png","Mode0 - 2 Panes",-1,false);
     sceneEditorPaneMode->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/map.png","Mode1 - 3 Panes",-1,false);
 
@@ -377,7 +378,7 @@ projectPropertiesResource::projectPropertiesResource(GPE_ResourceContainer * pFo
     resourcePostProcessed = false;
     projectSettingsList = new GPE_GuiElementList();
     projectSettingsList->barXPadding = GENERAL_GPE_PADDING;
-    projectSettingsList->barXMargin = 0;
+    projectSettingsList->barXMargin = GENERAL_GPE_PADDING;
     subViewedSpace.x = 0;
     subViewedSpace.y = 0;
     subViewedSpace.w = SCREEN_WIDTH;
@@ -410,15 +411,15 @@ projectPropertiesResource::~projectPropertiesResource()
     }
 
     //Publisher Tab
-    if( Title_GameSettings!=NULL)
+    if( sectionTitleGameSettings!=NULL)
     {
-        delete Title_GameSettings;
-        Title_GameSettings = NULL;
+        delete sectionTitleGameSettings;
+        sectionTitleGameSettings = NULL;
     }
-    if( Title_Publisher!=NULL)
+    if( sectionTitlePublisher!=NULL)
     {
-        delete Title_Publisher;
-        Title_Publisher = NULL;
+        delete sectionTitlePublisher;
+        sectionTitlePublisher = NULL;
     }
     if( projectGameTitleField!=NULL)
     {
@@ -505,6 +506,11 @@ projectPropertiesResource::~projectPropertiesResource()
 
 
     //Colors Tab
+    if( sectionTitleGameColors!=NULL )
+    {
+        delete sectionTitleGameColors;
+        sectionTitleGameColors = NULL;
+    }
     if(projectBorderColor!=NULL)
     {
         delete projectBorderColor;
@@ -940,12 +946,12 @@ void projectPropertiesResource::open_code(int lineNumb, int colNumb, std::string
     }
 }
 
-void projectPropertiesResource::prerender_self(GPE_Renderer * cRender )
+void projectPropertiesResource::prerender_self(  )
 {
-	standardEditableGameResource::prerender_self( cRender);
+	standardEditableGameResource::prerender_self();
 	if( checkBoxShowPublisherInfo!=NULL)
     {
-        checkBoxShowPublisherInfo->prerender_self(cRender);
+        checkBoxShowPublisherInfo->prerender_self( );
     }
 }
 
@@ -1022,7 +1028,7 @@ void projectPropertiesResource::preprocess_self(std::string alternatePath)
                             }
                         }
                     }
-                    else if( foundFileVersion < 2)
+                    else if( foundFileVersion <= 2)
                     {
                         //Begin processing the file.
                         if(!currLineToBeProcessed.empty() )
@@ -1262,25 +1268,25 @@ void projectPropertiesResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * 
         if( prevTab!=projectSettingsTabBar->tabInUse)
         {
             projectSettingsList->reset_self();
-            /*userInput->reset_all_input();
+            input->reset_all_input();
             process_self(viewedSpace,cam);
-            return;*/
+            return;
         }
         projectSettingsList->clear_list();
         projectSettingsList->set_coords(0,0);
         projectSettingsList->set_width(subViewedSpace.w);
         projectSettingsList->set_height(subViewedSpace.h );
         projectSettingsList->barXPadding = GENERAL_GPE_PADDING;
-        projectSettingsList->barYPadding = GENERAL_GPE_PADDING*2;
-        projectSettingsList->barXMargin = 0;
+        projectSettingsList->barYPadding = GENERAL_GPE_PADDING;
+        projectSettingsList->barXMargin = GENERAL_GPE_PADDING;
+        projectSettingsList->barYMargin = GENERAL_GPE_PADDING;
         if( projectSettingsTabBar->get_selected_name()=="Extras")
         {
             projectSettingsList->add_gui_element(transformImageDirectoryButton,true);
             projectSettingsList->process_self(&subViewedSpace,cam);
             if( transformImageDirectoryButton->is_clicked()  )
             {
-                GPE_open_context_menu();
-                MAIN_CONTEXT_MENU->set_width(256);
+                GPE_open_context_menu(-1,-1,256);
                 MAIN_CONTEXT_MENU->add_menu_option("Erase BG Color On All Images",0);
                 MAIN_CONTEXT_MENU->add_menu_option("Invert Colors On All Images",1);
                 MAIN_CONTEXT_MENU->add_menu_option("Make GrayScale On All Images",2);
@@ -1298,7 +1304,7 @@ void projectPropertiesResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * 
         {
             if( projectSettingsTabBar->get_selected_name()=="Settings")
             {
-                projectSettingsList->add_gui_element(Title_GameSettings,true);
+                projectSettingsList->add_gui_element(sectionTitleGameSettings,true);
                 projectSettingsList->add_gui_element(projectScreenWidthField,true);
                 projectSettingsList->add_gui_element(projectScreenHeightField,true);
                 projectSettingsList->add_gui_element(projectGameVersionField,true);
@@ -1312,7 +1318,7 @@ void projectPropertiesResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * 
                 projectSettingsList->add_gui_element(projectSettingsFPSRateLabel,true);
                 projectSettingsList->add_gui_element(projectSettingsFPSRate,true);
 
-                projectSettingsList->add_gui_element(Title_Publisher,true);
+                projectSettingsList->add_gui_element(sectionTitlePublisher,true);
                 projectSettingsList->add_gui_element(projectGameTitleField,true);
                 projectSettingsList->add_gui_element(projectGameShortTitleField,true);
                 projectSettingsList->add_gui_element(projectGamePublisherField,true);
@@ -1350,6 +1356,7 @@ void projectPropertiesResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * 
                         }
                     }
                 }
+
             }
             else if(projectSettingsTabBar->get_selected_name()=="Platforms")
             {
@@ -1607,6 +1614,7 @@ void projectPropertiesResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * 
             }
             else if( projectSettingsTabBar->get_selected_name()=="Colors")
             {
+                projectSettingsList->add_gui_element(sectionTitleGameColors,true);
                 projectSettingsList->add_gui_element(projectBorderColor,true);
                 projectSettingsList->add_gui_element(projectGameBackgroundColor,true);
                 ///
@@ -1714,7 +1722,7 @@ void projectPropertiesResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * 
                             CURRENT_PROJECT->projectLayerNames[iLayerVal] = newLayerName;
                             update_project_layers();
                         }
-                        userInput->reset_all_input();
+                        input->reset_all_input();
                     }
 
                 }
@@ -1755,29 +1763,29 @@ void projectPropertiesResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * 
     }
 }
 
-void projectPropertiesResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
+void projectPropertiesResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( cam!=NULL && projectSettingsList!=NULL && projectSettingsTabBar!=NULL && viewedSpace!=NULL)
     {
         //if( forceRedraw)
+        if( forceRedraw)
         {
-            render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
-            projectSettingsTabBar->render_self(cRender,viewedSpace,cam,true);
+            projectSettingsTabBar->render_self( viewedSpace,cam,true);
         }
-        cRender->reset_viewpoint();
-        cRender->set_viewpoint( viewedSpace);
+        MAIN_RENDERER->reset_viewpoint();
+        MAIN_RENDERER->set_viewpoint( viewedSpace);
 
-        projectSettingsList->render_self(cRender,&subViewedSpace,cam, true);
+        projectSettingsList->render_self( &subViewedSpace,cam, true);
 
         if(projectSettingsTabBar->get_selected_name()=="Platforms")
         {
-            exportSettingsBar->render_self(cRender,&subViewedSpace,cam,true);
+            exportSettingsBar->render_self( &subViewedSpace,cam,true);
         }
 
-        cRender->reset_viewpoint();
-        cRender->set_viewpoint( viewedSpace);
+        MAIN_RENDERER->reset_viewpoint();
+        MAIN_RENDERER->set_viewpoint( viewedSpace);
 
     }
 }
@@ -1793,17 +1801,7 @@ void projectPropertiesResource::save_resource(std::string alternatePath, int bac
         std::ofstream newSaveDataFile (projectSettingsFileName.c_str() );
         if (newSaveDataFile.is_open() )
         {
-            newSaveDataFile << "#    --------------------------------------------------  # \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#    Game Pencil Engine Project Settings DataFile \n";
-            newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
-            newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#    --------------------------------------------------  # \n";
-            newSaveDataFile << "Version=" << GPE_VERSION_DOUBLE_NUMBER << "\n";
+           write_header_on_file(&newSaveDataFile);
             //newSaveDataFile << "ResourceName=" << resourceName << "\n";
             newSaveDataFile << "#Project Settings     \n";
             newSaveDataFile << "ProjectIcon=" << get_local_from_global_file(iconFileName) << "\n";
@@ -1951,17 +1949,7 @@ void projectPropertiesResource::save_resource(std::string alternatePath, int bac
         std::ofstream projectCollisionMatrixFile (projectCollisionMatrixFileName.c_str() );
         if (projectCollisionMatrixFile.is_open() )
         {
-            projectCollisionMatrixFile << "#    --------------------------------------------------  # \n";
-            projectCollisionMatrixFile << "#     \n";
-            projectCollisionMatrixFile << "#     \n";
-            projectCollisionMatrixFile << "#    Game Pencil Engine Project Settings DataFile \n";
-            projectCollisionMatrixFile << "#    Created automatically via the Game Pencil Engine Editor \n";
-            projectCollisionMatrixFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            projectCollisionMatrixFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
-            projectCollisionMatrixFile << "#     \n";
-            projectCollisionMatrixFile << "#     \n";
-            projectCollisionMatrixFile << "#    --------------------------------------------------  # \n";
-            projectCollisionMatrixFile << "Version=" << GPE_VERSION_DOUBLE_NUMBER << "\n";
+            write_header_on_file(&projectCollisionMatrixFile);
             //newSaveDataFile << "ResourceName=" << resourceName << "\n";
             projectCollisionMatrixFile << "#Project Layer Collision Matrix Settings     \n";
             int jLayerCol = 0;

@@ -3,10 +3,10 @@ GPE_Constants.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,24 +36,34 @@ SOFTWARE.
 #include "GPE_CIncludes.h"
 
 //Version INFO VARIABLES
+
 //Game Pencil Runtime
 const int GPR_MAJOR_VERSION = 1;
-const int GPR_MINOR_VERSION =1;
-const int GPR_PATCHLEVEL = 4;
+const int GPR_MINOR_VERSION =2;
+const int GPR_PATCHLEVEL = 1;
+
 //Game Pencil Engine Editor
 const double GPE_VERSION_NUMBER = 1;
-const double GPE_VERSION_SUB_NUMBER = 1;
-const double GPE_VERSION_UPDATE_NUMBER = 4;
+const double GPE_VERSION_SUB_NUMBER = 2;
+const double GPE_VERSION_UPDATE_NUMBER = 1;
 const double GPE_VERSION_DOUBLE_NUMBER = GPE_VERSION_NUMBER + GPE_VERSION_SUB_NUMBER/10 + GPE_VERSION_UPDATE_NUMBER/100;
 const double GPE_VERSION_SIG_UPDATE1 = 1.04;
-//The screen attributes
 
-//STARTS INVENTORY RELATED CONSTANTS
-const int EMPTY=-1;
+const int GPE_LAYER_TYPE_TILES = 0;
+const int GPE_LAYER_TYPE_BACKGROUND = 1;
+const int GPE_LAYER_TYPE_OBJECTS = 2;
+const int GPE_LAYER_TYPE_MAX = 2;
 
-//The dimensions of the dot
-const int DOT_WIDTH = 20;
-const int DOT_HEIGHT = 20;
+const bool GPE_DRAW_OBJECT_BOXES = false;
+const double PI = 3.141592653589793;
+const double pi = 3.141592653589793;
+const double pie = 3.141592653589793;
+const double GPE_TO_RADIANS = 180/PI;
+const double degreesMultiple = -180/PI;
+const double radiansMultiple = -PI/180;
+
+const int IS_NULL =-1;
+const int isnull =-1;
 
 const int FA_LEFT=0;
 const int FA_CENTER=1;
@@ -95,8 +105,6 @@ const int GPE_IDE_WINDOWS = 1;
 const int GPE_IDE_MAC = 2;
 const int GPE_IDE_LINUX = 3;
 
-
-
 const int GENERAL_GPE_PADDING = 8;
 const int GPE_AVERAGE_LINE_HEIGHT = 20;
 const int GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING = 32;
@@ -109,7 +117,7 @@ const int GENERAL_PLUSMINUX_ICON_SIZE = 8;
 const int TOOLKEY_OPTION_PADDING = 16;
 const int TOOLKEY_ICON_X_PADDING = 4;
 const int GENERAL_NEAR_ICON_YPADDING = 8;
-const int RESOURCE_kb_AREA_HEIGHT = 14;
+const int RESOURCE_AREA_HEIGHT = 14;
 const int GPE_MAX_RECENT_PROJECT_LIST_SIZE = 15;
 
 const int sprFrameCount = 0;

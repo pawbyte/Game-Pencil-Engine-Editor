@@ -3,10 +3,10 @@ GPE_Globals.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -44,7 +44,9 @@ int SCREEN_HEIGHT =480;
 
 bool IN_DEBUG_MODE = false;
 float TIMER_TICKS = 0;
+double CURRENT_FPS = 0;
 float OLD_TIMER_TICKS=0;
+bool SHOW_FPS_COUNTER = false;
 //int mouse_x=0;
 //int mouse_y=0;
 
@@ -84,6 +86,7 @@ bool GLOBAL_WIN_RESIZABLE = true;
 bool GLOBAL_WIN_FULL_SCREEN = false;
 bool GLOBAL_WIN_NULL_DECLARE = true;
 GPE_Renderer * MAIN_RENDERER = NULL;
+GPE_Renderer * CURRENT_RENDERER = NULL;
 
 bool RENDER_RESOURCEBAR_LEFT = false;
 

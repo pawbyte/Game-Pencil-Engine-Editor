@@ -3,10 +3,10 @@ texturesource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -40,11 +40,11 @@ textureResource::textureResource(GPE_ResourceContainer * pFolder)
     textureInEditor = NULL;
     isPreloaded = true;
     preloadCheckBox = new GPE_CheckBoxBasic("Preload Texture","Check to load texture at game open",GENERAL_GPE_PADDING,256,true);
-    transformResourceButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/magic.png","Transform IMG","Transform the Image",-1);
+    transformResourceButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/magic.png","Transform the Image",-1);
     labelImageDimensions = new GPE_Label_Text("","");
     //labelTextureMessage = new GPE_Label_Text("","");
-    openExternalEditorButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/rocket.png","Use External Editor","Opens Texture Image In External Editor");
-    refreshResourceDataButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/refresh.png","Refresh","Refreshes the loaded texture image");
+    openExternalEditorButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/rocket.png","Opens Texture Image In External Editor");
+    refreshResourceDataButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/refresh.png","Refreshes the loaded texture image");
     labelInfoMaxTextureSize = new GPE_Label_Text("Max Image Size: 4096 X 4096px","Max Image Size: 4096 X 4096px");
 }
 
@@ -120,7 +120,7 @@ int textureResource::load_image(std::string newFileName)
                 delete textureInEditor;
             }
             textureInEditor = new GPE_Texture();
-            textureInEditor->load_new_texture(MAIN_RENDERER,newFileName,-1,false);
+            textureInEditor->load_new_texture( newFileName,-1,false);
             if( textureInEditor->get_width() <1 || textureInEditor->get_width()>4096 || textureInEditor->get_height() <1 || textureInEditor->get_height()>4096)
             {
                 display_user_alert("Unable to load image","Editor Error: Unable to load ["+newFileName+"] please check file and make sure it is between 1x1 and 4096x4096 pixels and is a valid image");
@@ -217,7 +217,7 @@ void textureResource::preprocess_self(std::string alternatePath)
                             }
                         }
                     }
-                    else if( foundFileVersion < 2)
+                    else if( foundFileVersion <= 2)
                     {
                         //Begin processing the file.
                         if(!currLineToBeProcessed.empty() )
@@ -258,12 +258,12 @@ void textureResource::preprocess_self(std::string alternatePath)
     }
 }
 
-void textureResource::prerender_self(GPE_Renderer * cRender )
+void textureResource::prerender_self(  )
 {
-	standardEditableGameResource::prerender_self( cRender);
+	standardEditableGameResource::prerender_self();
 	if( preloadCheckBox!=NULL)
     {
-        preloadCheckBox->prerender_self( cRender);
+        preloadCheckBox->prerender_self();
     }
 }
 
@@ -276,14 +276,14 @@ void textureResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         /*
         if( textureInEditor!=NULL)
             {
-                render_new_text(cRender,GENERAL_GPE_PADDING,GENERAL_GPE_PADDING*2+preloadCheckBox->get_ypos()+preloadCheckBox->get_height(),
+                render_new_text( GENERAL_GPE_PADDING,GENERAL_GPE_PADDING*2+preloadCheckBox->get_ypos()+preloadCheckBox->get_height(),
                 int_to_string(textureInEditor->get_width() )+" x "+int_to_string(textureInEditor->get_height() )+"px",
-                GPE_MAIN_TEMPLATE->Main_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
+                GPE_MAIN_THEME->Main_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
             }
             else
             {
-                render_new_text(cRender,GENERAL_GPE_PADDING,GENERAL_GPE_PADDING*2+preloadCheckBox->get_ypos()+preloadCheckBox->get_height(),
-                "Image not loaded",GPE_MAIN_TEMPLATE->Main_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
+                render_new_text( GENERAL_GPE_PADDING,GENERAL_GPE_PADDING*2+preloadCheckBox->get_ypos()+preloadCheckBox->get_height(),
+                "Image not loaded",GPE_MAIN_THEME->Main_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_TOP);
             }
         */
         int editorPaneW = 256;
@@ -297,13 +297,15 @@ void textureResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         editorPaneList->barYMargin = GENERAL_GPE_PADDING;
 
         editorPaneList->add_gui_element(renameBox,true);
-        editorPaneList->add_gui_element(refreshResourceDataButton,true);
-        editorPaneList->add_gui_element(loadResourceButton,true);
-        //editorPaneList->add_gui_element(saveResourceButton,true);
-        editorPaneList->add_gui_element(transformResourceButton,true);
+        editorPaneList->add_gui_element(refreshResourceDataButton,false);
+        editorPaneList->add_gui_element(loadResourceButton,false);
+        //editorPaneList->add_gui_element(saveResourceButton,false);
+        editorPaneList->add_gui_element(transformResourceButton,false);
+        editorPaneList->add_gui_element( openExternalEditorButton,true);
+
         if( textureInEditor!=NULL)
         {
-            labelImageDimensions->set_name(int_to_string(textureInEditor->get_width() )+" x "+int_to_string(textureInEditor->get_height() )+"px");
+            labelImageDimensions->set_name("Image Size: "+int_to_string(textureInEditor->get_width() )+" x "+int_to_string(textureInEditor->get_height() )+"px");
         }
         else
         {
@@ -313,10 +315,9 @@ void textureResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         editorPaneList->add_gui_element(labelInfoMaxTextureSize,true);
 
         editorPaneList->add_gui_element(preloadCheckBox,true);
-        editorPaneList->add_gui_element( openExternalEditorButton,true);
         editorPaneList->add_gui_element(confirmResourceButton,true);
         editorPaneList->add_gui_element(cancelResourceButton,true);
-        editorPaneList->set_maxed_out_width();
+        //editorPaneList->set_maxed_out_width();
         editorPaneList->process_self(viewedSpace,cam);
         if( editorMode==0)
         {
@@ -380,8 +381,7 @@ void textureResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
                 {
                     if( textureInEditor->get_width() > 0 && textureInEditor->get_height() > 0)
                     {
-                        GPE_open_context_menu();
-                        MAIN_CONTEXT_MENU->set_width(256);
+                        GPE_open_context_menu(-1,-1,256);
                         MAIN_CONTEXT_MENU->add_menu_option("Erase BG Color",0);
                         MAIN_CONTEXT_MENU->add_menu_option("Invert Colors",1);
                         MAIN_CONTEXT_MENU->add_menu_option("Make GrayScale",2);
@@ -463,30 +463,26 @@ void textureResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
     }
 }
 
-void textureResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw )
+void textureResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if(cam!=NULL && viewedSpace!=NULL && editorPaneList!=NULL)
     {
-        if( forceRedraw)
-        {
-            render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
-        }
         GPE_Rect texturePreviewCam;
         texturePreviewCam.x = viewedSpace->x+editorPaneList->get_x2pos()+GENERAL_GPE_PADDING;
         texturePreviewCam.y = viewedSpace->y+GENERAL_GPE_PADDING;
         texturePreviewCam.w = viewedSpace->x+viewedSpace->w-texturePreviewCam.x - GENERAL_GPE_PADDING;
-        texturePreviewCam.h = abs(viewedSpace->y+viewedSpace->h-GENERAL_GPE_PADDING-(GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING)*2- texturePreviewCam.y);
+        texturePreviewCam.h = abs(viewedSpace->y+viewedSpace->h- texturePreviewCam.y );
         //renders the right side of the area, mainly preview of tilesheet
-        cRender->set_viewpoint( &texturePreviewCam );
-        if( forceRedraw && GPE_TEXTURE_TRANSPARENT_BG!=NULL)
+        MAIN_RENDERER->set_viewpoint( &texturePreviewCam );
+        if( forceRedraw && GPE_TEXTURE_TRANSPARENT_BG!=NULL && GPE_MAIN_THEME->themeBgTexture==NULL )
         {
             for(int iPV= texturePreviewCam.x; iPV< texturePreviewCam.x+texturePreviewCam.w;iPV+=GPE_TEXTURE_TRANSPARENT_BG->get_width() )
             {
                 for(int jPV= texturePreviewCam.y; jPV< texturePreviewCam.y+texturePreviewCam.h; jPV+=GPE_TEXTURE_TRANSPARENT_BG->get_height() )
                 {
-                    GPE_TEXTURE_TRANSPARENT_BG->render_tex(cRender,iPV-texturePreviewCam.x,jPV-texturePreviewCam.y,NULL,NULL);
+                    GPE_TEXTURE_TRANSPARENT_BG->render_tex( iPV-texturePreviewCam.x,jPV-texturePreviewCam.y,NULL);
                 }
             }
         }
@@ -496,27 +492,24 @@ void textureResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace,
         {
             if( textureInEditor->get_width() <=texturePreviewCam.w && textureInEditor->get_height() <=texturePreviewCam.h )
             {
-                textureInEditor->render_tex(cRender,0, 0,NULL,NULL);
+                textureInEditor->render_tex( 0, 0,NULL);
             }
             else
             {
                 double neededTextureScale= (double)std::min( (double)texturePreviewCam.w/ (double)textureInEditor->get_width()  ,  (double)texturePreviewCam.h / (double)textureInEditor->get_height() );
-                textureInEditor->render_tex_resized(cRender,0, 0,textureInEditor->get_width()*neededTextureScale,textureInEditor->get_height()*neededTextureScale,NULL,NULL);
+                textureInEditor->render_tex_resized( 0, 0,textureInEditor->get_width()*neededTextureScale,textureInEditor->get_height()*neededTextureScale,NULL);
             }
         }
-        cRender->reset_viewpoint();
+        MAIN_RENDERER->reset_viewpoint();
         if(forceRedraw )
         {
-            render_rect(cRender,&texturePreviewCam,GPE_MAIN_TEMPLATE->Button_Box_Color,true);
+            gpe->render_rect( &texturePreviewCam,GPE_MAIN_THEME->Button_Box_Color,true);
 
-            render_horizontal_line_color(cRender,texturePreviewCam.y+texturePreviewCam.h+GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING,
-                                   texturePreviewCam.x-GENERAL_GPE_PADDING,viewedSpace->x+viewedSpace->w,GPE_MAIN_TEMPLATE->Text_Box_Color );
-
-            render_vertical_line_color(cRender,texturePreviewCam.x-GENERAL_GPE_PADDING,
-                                   viewedSpace->y,viewedSpace->y+viewedSpace->h,GPE_MAIN_TEMPLATE->Text_Box_Color );
+            gpe->render_vertical_line_color( texturePreviewCam.x-GENERAL_GPE_PADDING,
+                                   viewedSpace->y,viewedSpace->y+viewedSpace->h,GPE_MAIN_THEME->Text_Box_Color );
         }
-        cRender->set_viewpoint( viewedSpace );
-        editorPaneList->render_self(cRender,viewedSpace,cam,forceRedraw);
+        MAIN_RENDERER->set_viewpoint( viewedSpace );
+        editorPaneList->render_self( viewedSpace,cam,forceRedraw);
     }
 }
 
@@ -549,18 +542,7 @@ void textureResource::save_resource(std::string alternatePath, int backupId)
         //makes sure the file is open
         if (newSaveDataFile.is_open())
         {
-            newSaveDataFile << "#    --------------------------------------------------  # \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#    Game Pencil Engine Project Game Texture DataFile \n";
-            newSaveDataFile << "#    Created automatically via the Game Pencil Engine Editor \n";
-            newSaveDataFile << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
-            newSaveDataFile << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#     \n";
-            newSaveDataFile << "#    --------------------------------------------------  # \n";
-            newSaveDataFile << "Version=" << GPE_VERSION_DOUBLE_NUMBER << "\n";
-            newSaveDataFile << "ResourceName=" << resourceName << "\n";
+            write_header_on_file(&newSaveDataFile);
 
             if( textureInEditor!=NULL)
             {

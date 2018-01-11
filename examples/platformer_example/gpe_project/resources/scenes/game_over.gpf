@@ -1,15 +1,16 @@
 #    --------------------------------------------------  # 
 #     
 #     
-#    Game Pencil Engine Project GameScene File 
+#    Game Pencil Engine Project Game Scene DataFile 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
 #    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.13
+Version=2
 ResourceName=game_over
+#     
 SceneMusic=
 SceneStartAudio=
 SceneEndAudio=-1

@@ -3,10 +3,10 @@ gpe_syntax_handler.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -567,14 +567,10 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     newParametersString = "";
     parametersAreValid = false;
 
-    GPE_Gui_Engine_Language * CPPLang  = add_programming_language("C++","CPP",true,true,false );
-    CPPLang->macroCommentChar = "#";
+    /*GPE_Gui_Engine_Language * CPPLang  = add_programming_language("C++","CPP",true,true,false );
+    CPPLang->macroCommentChar = "#";*/
     GPE_Gui_Engine_Language * JSLang = defaultLanguage = add_programming_language("JavaScript","JS",true,true,true );
-    //JS constants
-    JSLang->add_language_constant("IS_NULL");
-    JSLang->add_language_constant("GPE_SETTINGS_ENTRY_LEVEL_LOCATION");
-    JSLang->add_language_constant("pi");
-    JSLang->add_language_constant("PI");
+
 
     //JS classes
     JSLang->add_language_class("activeObject");
@@ -627,26 +623,27 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_function("degree","Converts an angle in radians to degrees","x","float","gpe");
     JSLang->add_language_function("radian","Converts an angle in degrees to radians","x","float","gpe");
     JSLang->add_language_function("sign","Gets the sign of the variable","x","int","gpe");
+
     //input functions
+    JSLang->add_language_function("gamepad_connected","Checks if the gamepad is conected","controllerPos","bool","input");
+    JSLang->add_language_function("gamepad_name","Returns the gamepad's name","controllerPos,","string","input");
+    JSLang->add_language_function("gamepad_object","Returns the gamepad object","controllerPos,","GPE_GamePad","input");
+    JSLang->add_language_function("gamepad_mapping","Returns the gamepad's mapping","controllerPos","string","input");
+    JSLang->add_language_function("check_gamepad","Checks if the gamepad's button is down","controllerPos, buttonId","int","input");
+    JSLang->add_language_function("check_gamepad_down","Checks if the gamepad's buttonId is down","controllerPos, buttonId","int","input");
+    JSLang->add_language_function("check_gamepad_pressed","Checks if the gamepad's buttonId was pressed","controllerPos, buttonId","int","input");
+    JSLang->add_language_function("check_gamepad_released","Checks if the gamepad's buttonId was released","controllerPos, buttonId","int","input");
 
-    JSLang->add_language_function("gamepad_connected","Checks if the gamepad is conected","controllerPos","bool","gpe");
-    JSLang->add_language_function("gamepad_name","Returns the gamepad's name","controllerPos,","string","gpe");
-    JSLang->add_language_function("gamepad_object","Returns the gamepad object","controllerPos,","GPE_GamePad","gpe");
-    JSLang->add_language_function("gamepad_mapping","Returns the gamepad's mapping","controllerPos","string","gpe");
-    JSLang->add_language_function("check_gamepad","Checks if the gamepad's button is down","controllerPos, buttonId","int","gpe");
-    JSLang->add_language_function("check_gamepad_down","Checks if the gamepad's buttonId is down","controllerPos, buttonId","int","gpe");
-    JSLang->add_language_function("check_gamepad_pressed","Checks if the gamepad's buttonId was pressed","controllerPos, buttonId","int","gpe");
-    JSLang->add_language_function("check_gamepad_released","Checks if the gamepad's buttonId was released","controllerPos, buttonId","int","gpe");
+    JSLang->add_language_function("check_keyboard_down","Checks if the keyboard button is down","keyId","bool","input");
+    JSLang->add_language_function("check_keyboard_pressed","Checks if the keyboard button was pressed","keyId","bool","input");
+    JSLang->add_language_function("check_keyboard_released","Checks if the keyboard button was released","keyId","bool","input");
+    JSLang->add_language_function("check_keyboard","Checks if the keyboard button is down","keyId","bool","input");
 
-    JSLang->add_language_function("check_keyboard_down","Checks if the keyboard button is down","keyId","bool","gpe");
-    JSLang->add_language_function("check_keyboard_pressed","Checks if the keyboard button was pressed","keyId","bool","gpe");
-    JSLang->add_language_function("check_keyboard_released","Checks if the keyboard button was released","keyId","bool","gpe");
-    JSLang->add_language_function("check_keyboard","Checks if the keyboard button is down","keyId","bool","gpe");
+    JSLang->add_language_function("check_mouse_down","Checks if the mouse button is down","buttonId","bool","input");
+    JSLang->add_language_function("check_mouse_pressed","Checks if the mouse button is down","buttonId","bool","input");
+    JSLang->add_language_function("check_mouse_released","Checks if the mouse button is down","buttonId","bool","input");
+    JSLang->add_language_function("check_mouse","Checks if the keyboard mouse is down","buttonId","bool","input");
 
-    JSLang->add_language_function("check_mouse_down","Checks if the mouse button is down","buttonId","bool","gpe");
-    JSLang->add_language_function("check_mouse_pressed","Checks if the mouse button is down","buttonId","bool","gpe");
-    JSLang->add_language_function("check_mouse_released","Checks if the mouse button is down","buttonId","bool","gpe");
-    JSLang->add_language_function("check_mouse","Checks if the keyboard mouse is down","buttonId","bool","gpe");
     // JS processing functions
     JSLang->add_language_function("disable_camera","Disables a camera","cameraId","void","gpe");
     JSLang->add_language_function("disable_canvas","Disables a canvas","canvasId","void","gpe");
@@ -782,12 +779,12 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
 
     //rendering functions
     JSLang->add_language_function("render_circle","Renders a circle","x, y, radius, circleColor, isOutline, oulineWidth, renderImmediately","void","gpe");
-    JSLang->add_language_function("render_line","Renders a line","x1, y1, x2, y2, lineColor, lineWidth, renderImmediately","void","gpe");
+    JSLang->add_language_function("gpe->render_line","Renders a line","x1, y1, x2, y2, lineColor, lineWidth, renderImmediately","void","gpe");
     JSLang->add_language_function("render_rectangle","Renders a rectangle","x1, y1, x2, y2,rectColor, outline,rectLineWidth,renderImmediately","void","gpe");
     JSLang->add_language_function("render_self","Renders this object onto scene","","void","gpe");
-    JSLang->add_language_function("render_sprite_rotated","Renders a rotated sprite","spriteIdIn, frameNumb, xOn, yOn, rotationAngle,scaleX, scaleY","void","gpe");
+    JSLang->add_language_function("render_animation_rotated","Renders a rotated sprite","spriteIdIn, frameNumb, xOn, yOn, rotationAngle,scaleX, scaleY","void","gpe");
 
-    JSLang->add_language_function("render_sprite","Renders a sprite","spriteIdIn, frameNumb, xOn, yOn, scaleX, scaleY","void","gpe");
+    JSLang->add_language_function("render_animation","Renders a sprite","spriteIdIn, frameNumb, xOn, yOn, scaleX, scaleY","void","gpe");
     JSLang->add_language_function("render_square","Renders a square","xOn, yOn, squareSize,squareColor, outline,squareLineWidth,renderImmediately","void","gpe");
     JSLang->add_language_function("render_text","Renders text","fontIdIn, xOn, yOn, textToRender, fontRenderColor, fontHalign, fontValign","void","gpe");
     JSLang->add_language_function("render_texture_rotated","Renders a rotated texture","texureIdIn, xDraw, yDraw, width, height, angle","void","gpe");
@@ -866,265 +863,272 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_keyword("GPR");
     JSLang->add_language_keyword("if");
     JSLang->add_language_keyword("Infinity");
-    JSLang->add_language_keyword("isnull");
-    JSLang->add_language_keyword("is_null");
-    JSLang->add_language_keyword("IS_NULL");
-    JSLang->add_language_keyword("NaN");
+    JSLang->add_language_keyword("input");
+    JSLang->add_language_keyword("Input");
     JSLang->add_language_keyword("new");
-    JSLang->add_language_keyword("null");
-    JSLang->add_language_keyword("NULL");
+
     JSLang->add_language_keyword("other");
     JSLang->add_language_keyword("pencil");
     JSLang->add_language_keyword("return");
     JSLang->add_language_keyword("switch");
     JSLang->add_language_keyword("this");
-    JSLang->add_language_keyword("true");
-    JSLang->add_language_keyword("TRUE");
     JSLang->add_language_keyword("undefined");
-    JSLang->add_language_keyword("UNDEFINED");
+    JSLang->add_language_constant("UNDEFINED");
     JSLang->add_language_keyword("while");
 
+    //JS constants
+    JSLang->add_language_constant("IS_NULL");
+    JSLang->add_language_constant("GPE_SETTINGS_ENTRY_LEVEL_LOCATION");
+    JSLang->add_language_constant("pi");
+    JSLang->add_language_constant("PI");
+    JSLang->add_language_constant("isnull");
+    JSLang->add_language_constant("is_null");
+    JSLang->add_language_constant("IS_NULL");
+    JSLang->add_language_constant("NaN");
+    JSLang->add_language_constant("null");
+    JSLang->add_language_constant("NULL");
+    JSLang->add_language_constant("true");
+    JSLang->add_language_constant("TRUE");
     //JS Keyboard (kb_ ) constants
-    JSLang->add_language_keyword("kb_0");
-    JSLang->add_language_keyword("kb_1");
-    JSLang->add_language_keyword("kb_2");
-    JSLang->add_language_keyword("kb_3");
-    JSLang->add_language_keyword("kb_4");
-    JSLang->add_language_keyword("kb_5");
-    JSLang->add_language_keyword("kb_6");
-    JSLang->add_language_keyword("kb_7");
-    JSLang->add_language_keyword("kb_8");
-    JSLang->add_language_keyword("kb_9");
+    JSLang->add_language_constant("kb_0");
+    JSLang->add_language_constant("kb_1");
+    JSLang->add_language_constant("kb_2");
+    JSLang->add_language_constant("kb_3");
+    JSLang->add_language_constant("kb_4");
+    JSLang->add_language_constant("kb_5");
+    JSLang->add_language_constant("kb_6");
+    JSLang->add_language_constant("kb_7");
+    JSLang->add_language_constant("kb_8");
+    JSLang->add_language_constant("kb_9");
 
-    JSLang->add_language_keyword("kb_a");
-    JSLang->add_language_keyword("kb_b");
-    JSLang->add_language_keyword("kb_c");
-    JSLang->add_language_keyword("kb_d");
-    JSLang->add_language_keyword("kb_e");
-    JSLang->add_language_keyword("kb_f");
-    JSLang->add_language_keyword("kb_g");
-    JSLang->add_language_keyword("kb_h");
-    JSLang->add_language_keyword("kb_i");
-    JSLang->add_language_keyword("kb_j");
-    JSLang->add_language_keyword("kb_k");
-    JSLang->add_language_keyword("kb_l");
-    JSLang->add_language_keyword("kb_m");
-    JSLang->add_language_keyword("kb_n");
-    JSLang->add_language_keyword("kb_o");
-    JSLang->add_language_keyword("kb_p");
-    JSLang->add_language_keyword("kb_q");
-    JSLang->add_language_keyword("kb_r");
-    JSLang->add_language_keyword("kb_s");
-    JSLang->add_language_keyword("kb_t");
-    JSLang->add_language_keyword("kb_u");
-    JSLang->add_language_keyword("kb_v");
-    JSLang->add_language_keyword("kb_w");
-    JSLang->add_language_keyword("kb_x");
-    JSLang->add_language_keyword("kb_y");
-    JSLang->add_language_keyword("kb_z");
+    JSLang->add_language_constant("kb_a");
+    JSLang->add_language_constant("kb_b");
+    JSLang->add_language_constant("kb_c");
+    JSLang->add_language_constant("kb_d");
+    JSLang->add_language_constant("kb_e");
+    JSLang->add_language_constant("kb_f");
+    JSLang->add_language_constant("kb_g");
+    JSLang->add_language_constant("kb_h");
+    JSLang->add_language_constant("kb_i");
+    JSLang->add_language_constant("kb_j");
+    JSLang->add_language_constant("kb_k");
+    JSLang->add_language_constant("kb_l");
+    JSLang->add_language_constant("kb_m");
+    JSLang->add_language_constant("kb_n");
+    JSLang->add_language_constant("kb_o");
+    JSLang->add_language_constant("kb_p");
+    JSLang->add_language_constant("kb_q");
+    JSLang->add_language_constant("kb_r");
+    JSLang->add_language_constant("kb_s");
+    JSLang->add_language_constant("kb_t");
+    JSLang->add_language_constant("kb_u");
+    JSLang->add_language_constant("kb_v");
+    JSLang->add_language_constant("kb_w");
+    JSLang->add_language_constant("kb_x");
+    JSLang->add_language_constant("kb_y");
+    JSLang->add_language_constant("kb_z");
 
-    JSLang->add_language_keyword("kb_np0");
-    JSLang->add_language_keyword("kb_np1");
-    JSLang->add_language_keyword("kb_np2");
-    JSLang->add_language_keyword("kb_np3");
-    JSLang->add_language_keyword("kb_np4");
-    JSLang->add_language_keyword("kb_np5");
-    JSLang->add_language_keyword("kb_np6");
-    JSLang->add_language_keyword("kb_np7");
-    JSLang->add_language_keyword("kb_np8");
-    JSLang->add_language_keyword("kb_np9");
+    JSLang->add_language_constant("kb_np0");
+    JSLang->add_language_constant("kb_np1");
+    JSLang->add_language_constant("kb_np2");
+    JSLang->add_language_constant("kb_np3");
+    JSLang->add_language_constant("kb_np4");
+    JSLang->add_language_constant("kb_np5");
+    JSLang->add_language_constant("kb_np6");
+    JSLang->add_language_constant("kb_np7");
+    JSLang->add_language_constant("kb_np8");
+    JSLang->add_language_constant("kb_np9");
 
-    JSLang->add_language_keyword("kb_f1");
-    JSLang->add_language_keyword("kb_f2");
-    JSLang->add_language_keyword("kb_f3");
-    JSLang->add_language_keyword("kb_f4");
-    JSLang->add_language_keyword("kb_f5");
-    JSLang->add_language_keyword("kb_f6");
-    JSLang->add_language_keyword("kb_f7");
-    JSLang->add_language_keyword("kb_f8");
-    JSLang->add_language_keyword("kb_f9");
-    JSLang->add_language_keyword("kb_f10");
-    JSLang->add_language_keyword("kb_f11");
-    JSLang->add_language_keyword("kb_f12");
+    JSLang->add_language_constant("kb_f1");
+    JSLang->add_language_constant("kb_f2");
+    JSLang->add_language_constant("kb_f3");
+    JSLang->add_language_constant("kb_f4");
+    JSLang->add_language_constant("kb_f5");
+    JSLang->add_language_constant("kb_f6");
+    JSLang->add_language_constant("kb_f7");
+    JSLang->add_language_constant("kb_f8");
+    JSLang->add_language_constant("kb_f9");
+    JSLang->add_language_constant("kb_f10");
+    JSLang->add_language_constant("kb_f11");
+    JSLang->add_language_constant("kb_f12");
 
-    JSLang->add_language_keyword("kb_backspace");
-    JSLang->add_language_keyword("kb_tab");
-    JSLang->add_language_keyword("kb_enter");
-    JSLang->add_language_keyword("kb_pause");
-    JSLang->add_language_keyword("kb_caps");
-    JSLang->add_language_keyword("kb_esc");
-    JSLang->add_language_keyword("kb_space");
-    JSLang->add_language_keyword("kb_page_up");
-    JSLang->add_language_keyword("kb_page_down");
-    JSLang->add_language_keyword("kb_end");
-    JSLang->add_language_keyword("kb_home");
-    JSLang->add_language_keyword("kb_left");
-    JSLang->add_language_keyword("kb_up");
-    JSLang->add_language_keyword("kb_right");
-    JSLang->add_language_keyword("kb_down");
-    JSLang->add_language_keyword("kb_insert");
-    JSLang->add_language_keyword("kb_delete");
-    JSLang->add_language_keyword("kb_shift");
-    JSLang->add_language_keyword("kb_ctrl");
-    JSLang->add_language_keyword("kb_alt");
-    JSLang->add_language_keyword("kb_plus");
-    JSLang->add_language_keyword("kb_period");
-    JSLang->add_language_keyword("kb_minus");
-    JSLang->add_language_keyword("kb_period");
+    JSLang->add_language_constant("kb_backspace");
+    JSLang->add_language_constant("kb_tab");
+    JSLang->add_language_constant("kb_enter");
+    JSLang->add_language_constant("kb_pause");
+    JSLang->add_language_constant("kb_caps");
+    JSLang->add_language_constant("kb_esc");
+    JSLang->add_language_constant("kb_space");
+    JSLang->add_language_constant("kb_page_up");
+    JSLang->add_language_constant("kb_page_down");
+    JSLang->add_language_constant("kb_end");
+    JSLang->add_language_constant("kb_home");
+    JSLang->add_language_constant("kb_left");
+    JSLang->add_language_constant("kb_up");
+    JSLang->add_language_constant("kb_right");
+    JSLang->add_language_constant("kb_down");
+    JSLang->add_language_constant("kb_insert");
+    JSLang->add_language_constant("kb_delete");
+    JSLang->add_language_constant("kb_shift");
+    JSLang->add_language_constant("kb_ctrl");
+    JSLang->add_language_constant("kb_alt");
+    JSLang->add_language_constant("kb_plus");
+    JSLang->add_language_constant("kb_period");
+    JSLang->add_language_constant("kb_minus");
+    JSLang->add_language_constant("kb_period");
 
-    JSLang->add_language_keyword("kb_multiply");
-    JSLang->add_language_keyword("kb_add");
-    JSLang->add_language_keyword("kb_substract");
-    JSLang->add_language_keyword("kb_decimal");
-    JSLang->add_language_keyword("kb_divide");
-    JSLang->add_language_keyword("kb_fslash");
-    JSLang->add_language_keyword("kb_gaccent");
-    JSLang->add_language_keyword("kb_obracket");
-    JSLang->add_language_keyword("kb_bslash");
-    JSLang->add_language_keyword("kb_cbracket");
-    JSLang->add_language_keyword("kb_squote");
+    JSLang->add_language_constant("kb_multiply");
+    JSLang->add_language_constant("kb_add");
+    JSLang->add_language_constant("kb_substract");
+    JSLang->add_language_constant("kb_decimal");
+    JSLang->add_language_constant("kb_divide");
+    JSLang->add_language_constant("kb_fslash");
+    JSLang->add_language_constant("kb_gaccent");
+    JSLang->add_language_constant("kb_obracket");
+    JSLang->add_language_constant("kb_bslash");
+    JSLang->add_language_constant("kb_cbracket");
+    JSLang->add_language_constant("kb_squote");
 
     //JS Keyboard (gp_ ) constants
-    JSLang->add_language_keyword("gp_0");
-    JSLang->add_language_keyword("gp_1");
-    JSLang->add_language_keyword("gp_2");
-    JSLang->add_language_keyword("gp_3");
-    JSLang->add_language_keyword("gp_4");
-    JSLang->add_language_keyword("gp_5");
-    JSLang->add_language_keyword("gp_6");
-    JSLang->add_language_keyword("gp_7");
-    JSLang->add_language_keyword("gp_8");
-    JSLang->add_language_keyword("gp_9");
+    JSLang->add_language_constant("gp_0");
+    JSLang->add_language_constant("gp_1");
+    JSLang->add_language_constant("gp_2");
+    JSLang->add_language_constant("gp_3");
+    JSLang->add_language_constant("gp_4");
+    JSLang->add_language_constant("gp_5");
+    JSLang->add_language_constant("gp_6");
+    JSLang->add_language_constant("gp_7");
+    JSLang->add_language_constant("gp_8");
+    JSLang->add_language_constant("gp_9");
 
-    JSLang->add_language_keyword("gp_np0");
-    JSLang->add_language_keyword("gp_np1");
-    JSLang->add_language_keyword("gp_np2");
-    JSLang->add_language_keyword("gp_np3");
-    JSLang->add_language_keyword("gp_np4");
-    JSLang->add_language_keyword("gp_np5");
-    JSLang->add_language_keyword("gp_np6");
-    JSLang->add_language_keyword("gp_np7");
-    JSLang->add_language_keyword("gp_np8");
-    JSLang->add_language_keyword("gp_np9");
+    JSLang->add_language_constant("gp_np0");
+    JSLang->add_language_constant("gp_np1");
+    JSLang->add_language_constant("gp_np2");
+    JSLang->add_language_constant("gp_np3");
+    JSLang->add_language_constant("gp_np4");
+    JSLang->add_language_constant("gp_np5");
+    JSLang->add_language_constant("gp_np6");
+    JSLang->add_language_constant("gp_np7");
+    JSLang->add_language_constant("gp_np8");
+    JSLang->add_language_constant("gp_np9");
 
-    JSLang->add_language_keyword("gp_f1");
-    JSLang->add_language_keyword("gp_f2");
-    JSLang->add_language_keyword("gp_f3");
-    JSLang->add_language_keyword("gp_f4");
-    JSLang->add_language_keyword("gp_f5");
-    JSLang->add_language_keyword("gp_f6");
-    JSLang->add_language_keyword("gp_f7");
-    JSLang->add_language_keyword("gp_f8");
-    JSLang->add_language_keyword("gp_f9");
-    JSLang->add_language_keyword("gp_f10");
-    JSLang->add_language_keyword("gp_f11");
-    JSLang->add_language_keyword("gp_f12");
+    JSLang->add_language_constant("gp_f1");
+    JSLang->add_language_constant("gp_f2");
+    JSLang->add_language_constant("gp_f3");
+    JSLang->add_language_constant("gp_f4");
+    JSLang->add_language_constant("gp_f5");
+    JSLang->add_language_constant("gp_f6");
+    JSLang->add_language_constant("gp_f7");
+    JSLang->add_language_constant("gp_f8");
+    JSLang->add_language_constant("gp_f9");
+    JSLang->add_language_constant("gp_f10");
+    JSLang->add_language_constant("gp_f11");
+    JSLang->add_language_constant("gp_f12");
 
-    JSLang->add_language_keyword("gp_backspace");
-    JSLang->add_language_keyword("gp_tab");
-    JSLang->add_language_keyword("gp_enter");
-    JSLang->add_language_keyword("gp_pause");
-    JSLang->add_language_keyword("gp_caps");
-    JSLang->add_language_keyword("gp_esc");
-    JSLang->add_language_keyword("gp_space");
-    JSLang->add_language_keyword("gp_page_up");
-    JSLang->add_language_keyword("gp_page_down");
-    JSLang->add_language_keyword("gp_end");
-    JSLang->add_language_keyword("gp_home");
-    JSLang->add_language_keyword("gp_left");
-    JSLang->add_language_keyword("gp_up");
-    JSLang->add_language_keyword("gp_right");
-    JSLang->add_language_keyword("gp_down");
-    JSLang->add_language_keyword("gp_insert");
-    JSLang->add_language_keyword("gp_delete");
-    JSLang->add_language_keyword("gp_shift");
-    JSLang->add_language_keyword("gp_ctrl");
-    JSLang->add_language_keyword("gp_alt");
-    JSLang->add_language_keyword("gp_plus");
-    JSLang->add_language_keyword("gp_comma");
-    JSLang->add_language_keyword("gp_minus");
-    JSLang->add_language_keyword("gp_period");
+    JSLang->add_language_constant("gp_backspace");
+    JSLang->add_language_constant("gp_tab");
+    JSLang->add_language_constant("gp_enter");
+    JSLang->add_language_constant("gp_pause");
+    JSLang->add_language_constant("gp_caps");
+    JSLang->add_language_constant("gp_esc");
+    JSLang->add_language_constant("gp_space");
+    JSLang->add_language_constant("gp_page_up");
+    JSLang->add_language_constant("gp_page_down");
+    JSLang->add_language_constant("gp_end");
+    JSLang->add_language_constant("gp_home");
+    JSLang->add_language_constant("gp_left");
+    JSLang->add_language_constant("gp_up");
+    JSLang->add_language_constant("gp_right");
+    JSLang->add_language_constant("gp_down");
+    JSLang->add_language_constant("gp_insert");
+    JSLang->add_language_constant("gp_delete");
+    JSLang->add_language_constant("gp_shift");
+    JSLang->add_language_constant("gp_ctrl");
+    JSLang->add_language_constant("gp_alt");
+    JSLang->add_language_constant("gp_plus");
+    JSLang->add_language_constant("gp_comma");
+    JSLang->add_language_constant("gp_minus");
+    JSLang->add_language_constant("gp_period");
 
-    JSLang->add_language_keyword("gp_multiply");
-    JSLang->add_language_keyword("gp_add");
-    JSLang->add_language_keyword("gp_substract");
-    JSLang->add_language_keyword("gp_decimal");
-    JSLang->add_language_keyword("gp_divide");
-    JSLang->add_language_keyword("gp_fslash");
-    JSLang->add_language_keyword("gp_gaccent");
-    JSLang->add_language_keyword("gp_obracket");
-    JSLang->add_language_keyword("gp_bslash");
-    JSLang->add_language_keyword("gp_cbracket");
-    JSLang->add_language_keyword("gp_squote");
+    JSLang->add_language_constant("gp_multiply");
+    JSLang->add_language_constant("gp_add");
+    JSLang->add_language_constant("gp_substract");
+    JSLang->add_language_constant("gp_decimal");
+    JSLang->add_language_constant("gp_divide");
+    JSLang->add_language_constant("gp_fslash");
+    JSLang->add_language_constant("gp_gaccent");
+    JSLang->add_language_constant("gp_obracket");
+    JSLang->add_language_constant("gp_bslash");
+    JSLang->add_language_constant("gp_cbracket");
+    JSLang->add_language_constant("gp_squote");
 
     //JS Mouse Contants
-    JSLang->add_language_keyword("mb_center");
-    JSLang->add_language_keyword("mb_left");
-    JSLang->add_language_keyword("mb_middle");
-    JSLang->add_language_keyword("mb_right");
+    JSLang->add_language_constant("mb_center");
+    JSLang->add_language_constant("mb_left");
+    JSLang->add_language_constant("mb_middle");
+    JSLang->add_language_constant("mb_right");
 
     //JS GameController constants(gc_) [ BEGIN ]
-    JSLang->add_language_keyword("gc_anycontroller");
-    JSLang->add_language_keyword("gc_nocontroller");
-    JSLang->add_language_keyword("gc_anybutton");
-    JSLang->add_language_keyword("gc_nobutton");
+    JSLang->add_language_constant("gc_anycontroller");
+    JSLang->add_language_constant("gc_nocontroller");
+    JSLang->add_language_constant("gc_anybutton");
+    JSLang->add_language_constant("gc_nobutton");
 
-    JSLang->add_language_keyword("gc_joystick_left_x");
-    JSLang->add_language_keyword("gc_joystick_left_y");
-    JSLang->add_language_keyword("gc_joystick_right_x");
-    JSLang->add_language_keyword("gc_joystick_right_y");
-    JSLang->add_language_keyword("gc_joystick_dpad_x");
-    JSLang->add_language_keyword("gc_joystick_dpad_y");
+    JSLang->add_language_constant("gc_joystick_left_x");
+    JSLang->add_language_constant("gc_joystick_left_y");
+    JSLang->add_language_constant("gc_joystick_right_x");
+    JSLang->add_language_constant("gc_joystick_right_y");
+    JSLang->add_language_constant("gc_joystick_dpad_x");
+    JSLang->add_language_constant("gc_joystick_dpad_y");
 
-    JSLang->add_language_keyword("gc_left");
-    JSLang->add_language_keyword("gc_right");
-    JSLang->add_language_keyword("gc_up");
-    JSLang->add_language_keyword("gc_down");
-    JSLang->add_language_keyword("gkb_c0");
-    JSLang->add_language_keyword("gkb_c1");
-    JSLang->add_language_keyword("gkb_c2");
-    JSLang->add_language_keyword("gkb_c3");
-    JSLang->add_language_keyword("gc_l1");
-    JSLang->add_language_keyword("gc_l2");
-    JSLang->add_language_keyword("gc_l3");
-    JSLang->add_language_keyword("gc_r1");
-    JSLang->add_language_keyword("gc_r2");
-    JSLang->add_language_keyword("gc_r3");
+    JSLang->add_language_constant("gc_left");
+    JSLang->add_language_constant("gc_right");
+    JSLang->add_language_constant("gc_up");
+    JSLang->add_language_constant("gc_down");
+    JSLang->add_language_constant("gkb_c0");
+    JSLang->add_language_constant("gkb_c1");
+    JSLang->add_language_constant("gkb_c2");
+    JSLang->add_language_constant("gkb_c3");
+    JSLang->add_language_constant("gc_l1");
+    JSLang->add_language_constant("gc_l2");
+    JSLang->add_language_constant("gc_l3");
+    JSLang->add_language_constant("gc_r1");
+    JSLang->add_language_constant("gc_r2");
+    JSLang->add_language_constant("gc_r3");
 
-    JSLang->add_language_keyword("gc_home");
-    JSLang->add_language_keyword("gc_select");
-    JSLang->add_language_keyword("gc_share");
-    JSLang->add_language_keyword("gc_start");
+    JSLang->add_language_constant("gc_home");
+    JSLang->add_language_constant("gc_select");
+    JSLang->add_language_constant("gc_share");
+    JSLang->add_language_constant("gc_start");
     //GameController constants(gc_) [ END ]
 
     //Legacy Keyboard constants(gp_) [ BEGIN ]
-    JSLang->add_language_keyword("gp_a");
-    JSLang->add_language_keyword("gp_b");
-    JSLang->add_language_keyword("gp_c");
-    JSLang->add_language_keyword("gp_d");
-    JSLang->add_language_keyword("gp_e");
-    JSLang->add_language_keyword("gp_f");
-    JSLang->add_language_keyword("gp_g");
-    JSLang->add_language_keyword("gp_h");
-    JSLang->add_language_keyword("gp_i");
-    JSLang->add_language_keyword("gp_j");
-    JSLang->add_language_keyword("gp_k");
-    JSLang->add_language_keyword("gp_l");
-    JSLang->add_language_keyword("gp_m");
-    JSLang->add_language_keyword("gp_n");
-    JSLang->add_language_keyword("gp_o");
-    JSLang->add_language_keyword("gp_p");
-    JSLang->add_language_keyword("gp_q");
-    JSLang->add_language_keyword("gp_r");
-    JSLang->add_language_keyword("gp_s");
-    JSLang->add_language_keyword("gp_t");
-    JSLang->add_language_keyword("gp_u");
-    JSLang->add_language_keyword("gp_v");
-    JSLang->add_language_keyword("gp_w");
-    JSLang->add_language_keyword("gp_x");
-    JSLang->add_language_keyword("gp_y");
-    JSLang->add_language_keyword("gp_z");
-
+    JSLang->add_language_constant("gp_a");
+    JSLang->add_language_constant("gp_b");
+    JSLang->add_language_constant("gp_c");
+    JSLang->add_language_constant("gp_d");
+    JSLang->add_language_constant("gp_e");
+    JSLang->add_language_constant("gp_f");
+    JSLang->add_language_constant("gp_g");
+    JSLang->add_language_constant("gp_h");
+    JSLang->add_language_constant("gp_i");
+    JSLang->add_language_constant("gp_j");
+    JSLang->add_language_constant("gp_k");
+    JSLang->add_language_constant("gp_l");
+    JSLang->add_language_constant("gp_m");
+    JSLang->add_language_constant("gp_n");
+    JSLang->add_language_constant("gp_o");
+    JSLang->add_language_constant("gp_p");
+    JSLang->add_language_constant("gp_q");
+    JSLang->add_language_constant("gp_r");
+    JSLang->add_language_constant("gp_s");
+    JSLang->add_language_constant("gp_t");
+    JSLang->add_language_constant("gp_u");
+    JSLang->add_language_constant("gp_v");
+    JSLang->add_language_constant("gp_w");
+    JSLang->add_language_constant("gp_x");
+    JSLang->add_language_constant("gp_y");
+    JSLang->add_language_constant("gp_z");
     //Legacy Keyboard constants(gp_) [ END ]
 
     //javascript only words(allowed on html5 building)
@@ -1143,7 +1147,6 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_keyword("throw","","JavaScript Global");
     JSLang->add_language_keyword("try","","JavaScript Global");
     JSLang->add_language_keyword("typeof","","JavaScript Global");
-    JSLang->add_language_keyword("var","","JavaScript Global");
     JSLang->add_language_keyword("yield","","JavaScript Global");
 
     //Object key variables
@@ -1169,15 +1172,15 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_variable("GPE_SETTINGS_SHOW_FPS");
     JSLang->add_language_variable("GPE_SETTINGS_ENTRY_LEVEL_LOCATION");
 
-    JSLang->add_language_variable("programStates");
+    JSLang->add_language_variable("GPE_ProgramStates");
     JSLang->add_language_variable("canvas");
     JSLang->add_language_variable("context");
-    JSLang->add_language_variable("inputController");
+    JSLang->add_language_variable("input","Global object for handling input calls","global");
     JSLang->add_language_variable("maxViews");
     JSLang->add_language_variable("EXTRA_CANVASES");
     JSLang->add_language_variable("preGuiCamvas");
     JSLang->add_language_variable("fileReader");
-    JSLang->add_language_variable("programStateId");
+    JSLang->add_language_variable("GPE_ProgramStateId");
     JSLang->add_language_variable("currentState");
 
 	//actual datatypes used/allowed
@@ -1188,6 +1191,7 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_data_type("int");
     JSLang->add_language_data_type("string");
     JSLang->add_language_data_type("vector");
+    JSLang->add_language_data_type("var","","JavaScript Global");
 
     //Adds CSS language syntax and such
     GPE_Gui_Engine_Language * CSSLang = add_programming_language("CSS","CSS", true, false,false);
@@ -1658,20 +1662,13 @@ void GPE_Syntax_Highlighter::begin_compiling()
 }
 
 
-void GPE_Syntax_Highlighter::render_code_highlights(GPE_Renderer * renderTarget,bool forceRedraw)
+void GPE_Syntax_Highlighter::render_code_highlights( bool forceRedraw)
 {
     if( highlightedTerm!=NULL)
     {
-        if( renderTarget==NULL)
-        {
-            renderTarget = MAIN_RENDERER;
-        }
-        if( renderTarget==NULL)
-        {
-            return;
-        }
-        SDL_RenderSetViewport(renderTarget->get_renderer(),NULL);
-        renderTarget->reset_viewpoint();
+
+        MAIN_RENDERER->set_viewpoint( NULL);
+        MAIN_RENDERER->reset_viewpoint( );
         std::string fullPhraseToRender;
         std::string fullTermScope = GPE_MAIN_HIGHLIGHTER->highlightedTerm->termScope;
         if( (int)fullTermScope.size()>1 )
@@ -1703,18 +1700,18 @@ void GPE_Syntax_Highlighter::render_code_highlights(GPE_Renderer * renderTarget,
             GPE_MAIN_HIGHLIGHTER->highlightedTermXPos = 0;
         }
 
-        render_rectangle(renderTarget, GPE_MAIN_HIGHLIGHTER->highlightedTermXPos, GPE_MAIN_HIGHLIGHTER->highlightedTermYPos,
-                         GPE_MAIN_HIGHLIGHTER->highlightedTermXPos+highlightedTermWidth+64, GPE_MAIN_HIGHLIGHTER->highlightedTermYPos+(GPE_AVERAGE_LINE_HEIGHT*3),GPE_MAIN_TEMPLATE->PopUp_Box_Color,false);
+        gpe->render_rectangle(  GPE_MAIN_HIGHLIGHTER->highlightedTermXPos, GPE_MAIN_HIGHLIGHTER->highlightedTermYPos,
+                         GPE_MAIN_HIGHLIGHTER->highlightedTermXPos+highlightedTermWidth+64, GPE_MAIN_HIGHLIGHTER->highlightedTermYPos+(GPE_AVERAGE_LINE_HEIGHT*3),GPE_MAIN_THEME->PopUp_Box_Color,false);
 
-        render_new_text(renderTarget,GPE_MAIN_HIGHLIGHTER->highlightedTermXPos+32, GPE_MAIN_HIGHLIGHTER->highlightedTermYPos,fullPhraseToRender,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,FONT_TERM_NAME,FA_LEFT,FA_TOP,255 );
-        render_new_text(renderTarget,GPE_MAIN_HIGHLIGHTER->highlightedTermXPos+32, GPE_MAIN_HIGHLIGHTER->highlightedTermYPos+GPE_AVERAGE_LINE_HEIGHT,GPE_MAIN_HIGHLIGHTER->highlightedTerm->termDescription,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,FONT_TERM_DESCRIPTION,FA_LEFT,FA_TOP,255 );
+        render_new_text( GPE_MAIN_HIGHLIGHTER->highlightedTermXPos+32, GPE_MAIN_HIGHLIGHTER->highlightedTermYPos,fullPhraseToRender,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TERM_NAME,FA_LEFT,FA_TOP,255 );
+        render_new_text( GPE_MAIN_HIGHLIGHTER->highlightedTermXPos+32, GPE_MAIN_HIGHLIGHTER->highlightedTermYPos+GPE_AVERAGE_LINE_HEIGHT,GPE_MAIN_HIGHLIGHTER->highlightedTerm->termDescription,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TERM_DESCRIPTION,FA_LEFT,FA_TOP,255 );
 
         if( (int)fullTermScope.size()>1 )
         {
-            render_new_text(renderTarget,highlightedTermXPos+32, highlightedTermYPos+GPE_AVERAGE_LINE_HEIGHT*2,fullTermScope,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,FONT_TERM_SCOPE,FA_LEFT,FA_TOP,255 );
+            render_new_text( highlightedTermXPos+32, highlightedTermYPos+GPE_AVERAGE_LINE_HEIGHT*2,fullTermScope,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TERM_SCOPE,FA_LEFT,FA_TOP,255 );
         }
 
-        render_rectangle(renderTarget, highlightedTermXPos, highlightedTermYPos,
-                         highlightedTermXPos+highlightedTermWidth+64, highlightedTermYPos+GPE_AVERAGE_LINE_HEIGHT*3,GPE_MAIN_TEMPLATE->PopUp_Box_Border_Color,true);
+        gpe->render_rectangle(  highlightedTermXPos, highlightedTermYPos,
+                         highlightedTermXPos+highlightedTermWidth+64, highlightedTermYPos+GPE_AVERAGE_LINE_HEIGHT*3,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
     }
 }

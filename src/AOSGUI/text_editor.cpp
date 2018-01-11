@@ -3,10 +3,10 @@ text_editor.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,6 +36,8 @@ GPE_LogManager * GPE_Main_Logs = NULL;
 
 GPE_TextAreaInputBasic::GPE_TextAreaInputBasic(bool saveFirstEdit)
 {
+    editorZoomLevel= 1;
+    defaultLineHeight = 16; //px
     redrawDelay = 0;
     redrawDelayMax = 2;
     parseForErrorsTimerGoal = 60;
@@ -133,8 +135,8 @@ GPE_TextAreaInputBasic::GPE_TextAreaInputBasic(bool saveFirstEdit)
     symbolLineText = new GPE_SyntaxLine();
     clear_all_lines();
     listOfStrings.push_back("");
-    barBox.w = 640;
-    barBox.h = 480;
+    elementBox.w = 640;
+    elementBox.h = 480;
     if( saveFirstEdit)
     {
         save_edit();
@@ -143,6 +145,8 @@ GPE_TextAreaInputBasic::GPE_TextAreaInputBasic(bool saveFirstEdit)
 
 GPE_TextAreaInputBasic::GPE_TextAreaInputBasic(int newX, int newY, int boxW, int boxH,std::string startName,std::string placeHolderText, bool saveFirstEdit)
 {
+    editorZoomLevel= 1;
+    defaultLineHeight = 16; //px
     redrawDelay = 0;
     redrawDelayMax = 2;
     parseForErrorsTimerGoal = 60;
@@ -169,10 +173,10 @@ GPE_TextAreaInputBasic::GPE_TextAreaInputBasic(int newX, int newY, int boxW, int
     codeEditorType = 0;
     isReadOnly = false;
     isEnabled = true;
-    barBox.x = newX;
-    barBox.y = newY;
-    barBox.w = boxW;
-    barBox.h = boxH;
+    elementBox.x = newX;
+    elementBox.y = newY;
+    elementBox.w = boxW;
+    elementBox.h = boxH;
     textSpaceRect.x = newX;
     textSpaceRect.y = newY;
     textSpaceRect.w = boxW;
@@ -503,7 +507,8 @@ void GPE_TextAreaInputBasic::create_buttonbar()
         delete textEditorButtonBar;
         textEditorButtonBar = NULL;
     }
-    textEditorButtonBar = new GPE_ToolIconButtonBar(0, 0,24);
+    textEditorButtonBar = new GPE_ToolIconButtonBar( 16);
+    textEditorButtonBar->set_height(24);
     textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/plane.png","Export Text",TEXTAREA_OPTION_EXPORT,false );
     textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/file.png","Import Text",TEXTAREA_OPTION_IMPORT,true );
     textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/eraser.png","Clear Text ",TEXTAREA_OPTION_CLEAR );
@@ -975,9 +980,9 @@ void GPE_TextAreaInputBasic::find_mouse_cursor(int *mXCursor, int *mYCursor, GPE
     cam = GPE_find_camera(cam);
     if( viewedSpace!=NULL && cam!=NULL && (int)listOfStrings.size() > 0)
     {
-        if( point_within_rect(userInput->mouse_x,userInput->mouse_y,&textSpaceRect)  )
+        if( point_within_rect(input->mouse_x,input->mouse_y,&textSpaceRect)  )
         {
-            *mYCursor = (float)(userInput->mouse_y - viewedSpace->y-textEditorButtonBar->get_y2pos()+cam->y)/(float)GPE_AVERAGE_LINE_HEIGHT; //gets the barBox.y pos essentially
+            *mYCursor = (float)(input->mouse_y - viewedSpace->y-textEditorButtonBar->get_y2pos()+cam->y)/( defaultLineHeight * editorZoomLevel); //gets the elementBox.y pos essentially
             *mYCursor+=lineStartYPos;
             if( *mYCursor < lineStartYPos)
             {
@@ -998,11 +1003,11 @@ void GPE_TextAreaInputBasic::find_mouse_cursor(int *mXCursor, int *mYCursor, GPE
             }
             if( MAIN_GUI_SETTINGS->showTextEditorLineCount )
             {
-                *mXCursor = (float)(userInput->mouse_x - barBox.x-viewedSpace->x-lineCountBoxWidth+cam->x)/TEXTBOX_FONT_SIZE_WIDTH+lineStartXPos;
+                *mXCursor = (float)(input->mouse_x - elementBox.x-viewedSpace->x-lineCountBoxWidth+cam->x)/TEXTBOX_FONT_SIZE_WIDTH+lineStartXPos;
             }
             else
             {
-                *mXCursor = (float)(userInput->mouse_x - barBox.x-viewedSpace->x+cam->x)/TEXTBOX_FONT_SIZE_WIDTH+lineStartXPos;
+                *mXCursor = (float)(input->mouse_x - elementBox.x-viewedSpace->x+cam->x)/TEXTBOX_FONT_SIZE_WIDTH+lineStartXPos;
             }
             std::string newString = listOfStrings.at(*mYCursor);
             int maxCursorSpace = (int)newString.size();
@@ -1744,18 +1749,18 @@ int GPE_TextAreaInputBasic::get_ycursor()
 
 int GPE_TextAreaInputBasic::get_renderbox_height()
 {
-    int returnVal = barBox.h-textEditorButtonBar->get_height();
+    int returnVal = elementBox.h-textEditorButtonBar->get_height();
     /*switch(MAIN_SEARCH_CONTROLLER->textSearchMode)
     {
         case 1:
         case 2:
-            returnVal = barBox.h-textEditorButtonBar->get_height()-48;
+            returnVal = elementBox.h-textEditorButtonBar->get_height()-48;
         break;
         case 3:
-            returnVal = barBox.h-textEditorButtonBar->get_height()-80;
+            returnVal = elementBox.h-textEditorButtonBar->get_height()-80;
         break;
         default:
-           returnVal = barBox.h-textEditorButtonBar->get_height();
+           returnVal = elementBox.h-textEditorButtonBar->get_height();
         break;
     }*/
     if( showXScroll)
@@ -2313,7 +2318,7 @@ bool GPE_TextAreaInputBasic::parse_code_javascript()
                         */
                         else if (char_is_alpha(currStringToRender[currPosToParse],true,true) )
                         {
-                            //color = GPE_MAIN_TEMPLATE->Main_Box_Font_Color;
+                            //color = GPE_MAIN_THEME->Main_Box_Font_Color;
                             currPosToParse++;
                             while (currPosToParse < lineEnd && char_is_alnum(currStringToRender[currPosToParse],true,true) )
                             {
@@ -2322,7 +2327,7 @@ bool GPE_TextAreaInputBasic::parse_code_javascript()
                         }
                         else
                         {
-                            //color = GPE_MAIN_TEMPLATE->Main_Box_Font_Color;
+                            //color = GPE_MAIN_THEME->Main_Box_Font_Color;
                             //anything else is just regular text as well...
                             currPosToParse++;
                         }
@@ -2380,10 +2385,10 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
     {
         if( !isReadOnly )
         {
-            textEditorButtonBar->set_coords(barBox.x,barBox.y);
+            textEditorButtonBar->set_coords(elementBox.x,elementBox.y);
             //sets the buttonbar to the width of the text editor( minus width of yScroll width[16 ).
-            textEditorButtonBar->set_width(barBox.w);
-            textEditorButtonBar->set_height(32);
+            textEditorButtonBar->set_width(elementBox.w);
+            textEditorButtonBar->set_height(24);
             textEditorButtonBar->process_self(viewedSpace,cam);
 
             if( textEditorButtonBar->selectedOption>= 0 && textEditorButtonBar->selectedOption < TEXTAREA_OPTION_MAX_OPTIONS)
@@ -2459,11 +2464,11 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
             showYScroll = false;
             cursorTimer+=1;
 
-            if( cursorTimer > 15*FPS_RATIO )
+            if( cursorTimer > 15 )
             {
                 showCursor = true;
             }
-            if( cursorTimer > 30*FPS_RATIO )
+            if( cursorTimer > 30 )
             {
                 showCursor = false;
                 cursorTimer = 0;
@@ -2472,7 +2477,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
             {
                 isInUse = true;
                 //inputFieldPos = 0;
-                userInput->inkeys = "";
+                input->inkeys = "";
             }
             if( clickedOutside )
             {
@@ -2488,12 +2493,12 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
             }
             if( textEditorButtonBar!=NULL)
             {
-                textEditorButtonBar->set_coords(barBox.x,barBox.y);
+                textEditorButtonBar->set_coords(elementBox.x,elementBox.y);
                 //sets the buttonbar to the width of the text editor( minus width of yScroll width[16 ).
-                textEditorButtonBar->set_width(barBox.w);
+                textEditorButtonBar->set_width(elementBox.w);
                 if( !isReadOnly)
                 {
-                    textEditorButtonBar->set_height(32);
+                    textEditorButtonBar->set_height(24);
                     textEditorButtonBar->enable_self();
                 }
                 else
@@ -2502,16 +2507,16 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                     textEditorButtonBar->disable_self();
                 }
 
-                renderBox.x = barBox.x+lineCountBoxWidth;
+                renderBox.x = elementBox.x+lineCountBoxWidth;
                 renderBox.y = textEditorButtonBar->get_y2pos();
             }
 
-            renderBox.w = barBox.w-lineCountBoxWidth;
+            renderBox.w = elementBox.w-lineCountBoxWidth;
             renderBox.h = get_renderbox_height();
 
 
             charactersWithinView = (renderBox.w/TEXTBOX_FONT_SIZE_WIDTH)-2;
-            linesWithinView =( renderBox.h/GPE_AVERAGE_LINE_HEIGHT);
+            linesWithinView = renderBox.h/(defaultLineHeight*editorZoomLevel );
 
 
             if( linesWithinView < (int)listOfStrings.size() )
@@ -2528,17 +2533,17 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         linesWithinView-=1;
                     }
                     //int prevYPos = lineStartYPos;
-                    textXScroll->barBox.x = renderBox.x;
-                    textXScroll->barBox.y = renderBox.y+renderBox.h-16;
-                    textXScroll->barBox.w = barBox.w-lineCountBoxWidth;
-                    textXScroll->barBox.h = 16;
+                    textXScroll->elementBox.x = renderBox.x;
+                    textXScroll->elementBox.y = renderBox.y+renderBox.h-16;
+                    textXScroll->elementBox.w = elementBox.w-lineCountBoxWidth;
+                    textXScroll->elementBox.h = 16;
                     textXScroll->fullRect.x = 0;
                     textXScroll->fullRect.y = 0;
                     textXScroll->fullRect.w = get_most_characters_used();
                     textXScroll->fullRect.h = renderBox.h;
                     if(showYScroll)
                     {
-                        textXScroll->barBox.w-=textYScroll->barBox.w;
+                        textXScroll->elementBox.w-=textYScroll->elementBox.w;
                         charactersWithinView-=1;
                     }
 
@@ -2547,10 +2552,10 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                     textXScroll->contextRect.w = charactersWithinView;
                     textXScroll->contextRect.h = renderBox.h;
 
-                    textXScroll->process_self(viewedSpace,cam,true );
+                    textXScroll->process_self(viewedSpace,cam );
                     if( textXScroll->has_moved() || textXScroll->is_scrolling() )
                     {
-                        lineStartXPos = get_most_characters_used() * ( (float)textXScroll->scrollXPos/(float)textXScroll->barBox.w );
+                        lineStartXPos = get_most_characters_used() * ( (float)textXScroll->scrollXPos/(float)textXScroll->elementBox.w );
                     }
                 }
                 else
@@ -2564,10 +2569,10 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                 if( showYScroll )
                 {
                     //int prevYPos = lineStartYPos;
-                    textYScroll->barBox.x = barBox.x+barBox.w-16;
-                    textYScroll->barBox.y = textEditorButtonBar->get_y2pos();
-                    textYScroll->barBox.w = 16;
-                    textYScroll->barBox.h = barBox.h-textEditorButtonBar->get_height();
+                    textYScroll->elementBox.x = elementBox.x+elementBox.w-16;
+                    textYScroll->elementBox.y = textEditorButtonBar->get_y2pos();
+                    textYScroll->elementBox.w = 16;
+                    textYScroll->elementBox.h = elementBox.h-textEditorButtonBar->get_height();
 
                     textYScroll->fullRect.x = 0;
                     textYScroll->fullRect.y = 0;
@@ -2579,18 +2584,18 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                     textYScroll->contextRect.h = linesWithinView;
                     if(showXScroll)
                     {
-                        textYScroll->barBox.h-=textXScroll->barBox.h;
+                        textYScroll->elementBox.h-=textXScroll->elementBox.h;
                         //textYScroll->contextRect.h-=1;
                     }
-                    textYScroll->process_self(viewedSpace,cam,true );
+                    textYScroll->process_self(viewedSpace,cam );
                     if( textYScroll->has_moved() )
                     {
                         lineStartYPos =  round ( textYScroll->contextRect.y );
-                    //    lineStartYPos =  ceil( ( (float)listOfStrings.size() ) * ( (float)textYScroll->scrollYPos/(float)textYScroll->barBox.h ) );
+                    //    lineStartYPos =  ceil( ( (float)listOfStrings.size() ) * ( (float)textYScroll->scrollYPos/(float)textYScroll->elementBox.h ) );
                     }
 
                     //updates the buttonbar to appear less awkward
-                    textEditorButtonBar->set_width(barBox.w);
+                    textEditorButtonBar->set_width(elementBox.w);
                 }
                 else
                 {
@@ -2620,14 +2625,14 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                     {
                         textSpaceRect.x = renderBox.x;
                         textSpaceRect.y = renderBox.y;
-                        textSpaceRect.w = barBox.w-lineCountBoxWidth-16;
+                        textSpaceRect.w = elementBox.w-lineCountBoxWidth-16;
                         textSpaceRect.h = renderBox.h-16;
                     }
                     else
                     {
                         textSpaceRect.x = renderBox.x;
                         textSpaceRect.y = renderBox.y;
-                        textSpaceRect.w = barBox.w-lineCountBoxWidth-16;
+                        textSpaceRect.w = elementBox.w-lineCountBoxWidth-16;
                         textSpaceRect.h = renderBox.h;
                     }
                 }
@@ -2635,14 +2640,14 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                 {
                     textSpaceRect.x = renderBox.x;
                     textSpaceRect.y = renderBox.y;
-                    textSpaceRect.w = barBox.w-lineCountBoxWidth;
+                    textSpaceRect.w = elementBox.w-lineCountBoxWidth;
                     textSpaceRect.h = renderBox.h-16;
                 }
                 else
                 {
                     textSpaceRect.x = renderBox.x;
                     textSpaceRect.y = renderBox.y;
-                    textSpaceRect.w = barBox.w-lineCountBoxWidth;
+                    textSpaceRect.w = elementBox.w-lineCountBoxWidth;
                     textSpaceRect.h = renderBox.h;
                 }
             }
@@ -2680,14 +2685,14 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
             }
             if( isInUse && isEnabled && cam!=NULL && textEditorButtonBar!=NULL)
             {
-                if( point_within_rect(userInput->mouse_x,userInput->mouse_y,&textSpaceRect)  )
+                if( point_within_rect(input->mouse_x,input->mouse_y,&textSpaceRect)  )
                 {
                     mouseHoveringInTextArea = true;
                     GPE_change_cursor(SDL_SYSTEM_CURSOR_IBEAM);
                 }
                 if( mouseHoveringInTextArea && textXScroll->is_scrolling()==false && textYScroll->is_scrolling()==false )
                 {
-                    if( userInput->check_mouse_down(0) )
+                    if( input->check_mouse_down(0) )
                     {
                         update_cursor_to_mouse(viewedSpace, cam);
                         if( lineStartXPos < 0)
@@ -2700,7 +2705,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         }
                     }
                     //Handles the Mouse movements & buttons
-                    if( userInput->check_mouse_doubleclicked(0) && RESOURCE_TO_DRAG==NULL )
+                    if( input->check_mouse_doubleclicked(0) && RESOURCE_TO_DRAG==NULL )
                     {
                         update_cursor_to_mouse(viewedSpace, cam);
                         if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
@@ -2823,13 +2828,13 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                                     selectionCursorXPos = 0;
                                     selectionEndCursorXPos = 0;
                                 }
-                                userInput->reset_all_input();
+                                input->reset_all_input();
                                 codeBeingSuggested = false;
                                 find_documentation_description();
                             }
                         }
                     }
-                    else if( userInput->check_mouse_pressed(0) )
+                    else if( input->check_mouse_pressed(0) )
                     {
                         //if( lastDoubleClickAction==0)
                         {
@@ -2843,7 +2848,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         codeBeingSuggested = false;
                         find_documentation_description();
                     }
-                    else if( userInput->check_mouse_down(0) )
+                    else if( input->check_mouse_down(0) )
                     {
                         //if( lastDoubleClickAction==0)
                         {
@@ -2857,11 +2862,9 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         codeBeingSuggested = false;
                         find_documentation_description();
                     }
-                    else if( userInput->check_mouse_down(1) )
+                    else if( input->check_mouse_down(1) )
                     {
-                        GPE_open_context_menu();
-                        MAIN_CONTEXT_MENU->set_width(128);
-
+                        GPE_open_context_menu(-1,-1,128);
                         MAIN_CONTEXT_MENU->add_menu_option("Undo",0,rsm->texture_add(APP_DIRECTORY_NAME+"resources/buttons/backward.png"),-1,NULL,true,!isReadOnly && can_undo());
                         MAIN_CONTEXT_MENU->add_menu_option("Redo",1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/buttons/forward.png"),-1,NULL,true,!isReadOnly && can_redo() );
                         MAIN_CONTEXT_MENU->add_menu_option("Cut",2,rsm->texture_add(APP_DIRECTORY_NAME+"resources/buttons/cut.png"),-1,NULL,false,!isReadOnly);
@@ -2913,7 +2916,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         lastDoubleClickAction = 0;
                         GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
                     }
-                    else if( userInput->mouseMovementInputReceivedInFrame && RESOURCE_TO_DRAG==NULL )
+                    else if( input->mouseMovementInputReceivedInFrame && RESOURCE_TO_DRAG==NULL )
                     {
                         //Highlights documenation under mouse if found.
                         int tMouseX = 0, tMouseY = 0;
@@ -2925,9 +2928,9 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                     }
                     else if( RESOURCE_TO_DRAG!=NULL && !isReadOnly )
                     {
-                        if( userInput->check_mouse_released(0) )
+                        if( input->check_mouse_released(0) )
                         {
-                            if( point_within_rect(userInput->mouse_x,userInput->mouse_y,&textSpaceRect)  )
+                            if( point_within_rect(input->mouse_x,input->mouse_y,&textSpaceRect)  )
                             {
                                 mouseHoveringInTextArea = true;
                                 GPE_change_cursor(SDL_SYSTEM_CURSOR_IBEAM);
@@ -2950,10 +2953,10 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         }
                     }
                 }
-                else if( userInput->check_mouse_down(0) && textXScroll->is_scrolling()==false && textYScroll->is_scrolling()==false )
+                else if( input->check_mouse_down(0) && textXScroll->is_scrolling()==false && textYScroll->is_scrolling()==false )
                 {
                     //if( lastDoubleClickAction==0)
-                    if( userInput->mouse_x < textSpaceRect.x )
+                    if( input->mouse_x < textSpaceRect.x )
                     {
                         if( cursorXPos > 0)
                         {
@@ -2961,7 +2964,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         }
                         move_left(1);
                     }
-                    else if( userInput->mouse_x > textSpaceRect.x+textSpaceRect.w )
+                    else if( input->mouse_x > textSpaceRect.x+textSpaceRect.w )
                     {
                         lineToEdit = listOfStrings[cursorYPos];
                         if( cursorXPos > (int)lineToEdit.size()-1 )
@@ -2971,7 +2974,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         move_right(1);
                     }
 
-                    if( userInput->mouse_y > textSpaceRect.y && userInput->mouse_y < textSpaceRect.y+4 )
+                    if( input->mouse_y > textSpaceRect.y && input->mouse_y < textSpaceRect.y+4 )
                     {
                         if( cursorYPos > 0)
                         {
@@ -2979,7 +2982,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         }
                         move_up(1);
                     }
-                    else if( userInput->mouse_y > textSpaceRect.y+textSpaceRect.h-4 )
+                    else if( input->mouse_y > textSpaceRect.y+textSpaceRect.h-4 )
                     {
                         if( cursorYPos < (int)listOfStrings.size()-1 )
                         {
@@ -3005,7 +3008,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
             if(  MAIN_SEARCH_CONTROLLER->using_search()==false && isInUse && isEnabled && hasArrowkeyControl )
             {
                 //used to delay events from happening superfast
-                if( userInput->down[kb_backspace] && !userInput->pressed[kb_backspace] )
+                if( input->down[kb_backspace] && !input->pressed[kb_backspace] )
                 {
                     bscDelay +=1;
                 }
@@ -3013,7 +3016,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                 {
                     bscDelay = 0;
                 }
-                if( userInput->down[kb_delete] && !userInput->pressed[kb_delete] )
+                if( input->down[kb_delete] && !input->pressed[kb_delete] )
                 {
                     delDelay += 0.5;
                 }
@@ -3021,11 +3024,11 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                 {
                     delDelay = 0;
                 }
-                if( userInput->down[kb_tab]  && !userInput->pressed[kb_tab])
+                if( input->down[kb_tab]  && !input->pressed[kb_tab])
                 {
                     tabDelay += 0.5;
                 }
-                if(userInput->down[kb_enter] && !userInput->pressed[kb_enter])
+                if(input->down[kb_enter] && !input->pressed[kb_enter])
                 {
                     enterDelay+=0.5;
                 }
@@ -3033,7 +3036,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                 {
                     enterDelay = 0;
                 }
-                if( userInput->down[kb_left] && !userInput->pressed[kb_left] && !userInput->released[kb_left] )
+                if( input->down[kb_left] && !input->pressed[kb_left] && !input->released[kb_left] )
                 {
                     leftDelay+=1;
                 }
@@ -3042,7 +3045,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                     leftDelay = 0;
                 }
 
-                if( userInput->down[kb_right] && !userInput->pressed[kb_right] && !userInput->released[kb_right] )
+                if( input->down[kb_right] && !input->pressed[kb_right] && !input->released[kb_right] )
                 {
                     rightDelay+=1;
                 }
@@ -3051,7 +3054,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                     rightDelay = 0;
                 }
 
-                if(userInput->down[kb_up] && !userInput->pressed[kb_up] && !userInput->released[kb_up] )
+                if(input->down[kb_up] && !input->pressed[kb_up] && !input->released[kb_up] )
                 {
                     upDelay+=1;
                 }
@@ -3059,7 +3062,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                 {
                     upDelay = 0;
                 }
-                if(userInput->down[kb_down] && !userInput->pressed[kb_down] && !userInput->released[kb_down])
+                if(input->down[kb_down] && !input->pressed[kb_down] && !input->released[kb_down])
                 {
                     downDelay+=0.5;
                 }
@@ -3068,7 +3071,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                     downDelay = 0;
                 }
 
-                if(userInput->down[kb_d] && !userInput->pressed[kb_d] && !userInput->released[kb_d])
+                if(input->down[kb_d] && !input->pressed[kb_d] && !input->released[kb_d])
                 {
                     dKeyDelay+=0.5;
                 }
@@ -3077,22 +3080,22 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                     dKeyDelay = 0;
                 }
 
-                if( userInput->down[kb_ctrl]  )
+                if( input->down[kb_ctrl]  )
                 {
                     GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-                    if( userInput->released[kb_a])
+                    if( input->released[kb_a])
                     {
                        select_all();
                     }
-                    else if( userInput->released[kb_c])
+                    else if( input->released[kb_c])
                     {
                          copy_selection();
                     }
-                    else if( userInput->released[kb_f] ||  userInput->released[kb_h] )
+                    else if( input->released[kb_f] ||  input->released[kb_h] )
                     {
                          MAIN_SEARCH_CONTROLLER->findTextStringBox->set_string( get_short_hightlighted() );
                     }
-                    else if( dKeyDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*FPS_RATIO  || ( !userInput->pressed[kb_d] && userInput->released[kb_d] ) )
+                    else if( dKeyDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)  || ( !input->pressed[kb_d] && input->released[kb_d] ) )
                     {
                         if( !isReadOnly )
                         {
@@ -3100,50 +3103,50 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                             dKeyDelay = 0;
                         }
                     }
-                    else if( userInput->released[kb_v] && !isReadOnly)
+                    else if( input->released[kb_v] && !isReadOnly)
                     {
                         pasteCommandGiven = true;
                     }
-                    else if( userInput->released[kb_x] && !isReadOnly)
+                    else if( input->released[kb_x] && !isReadOnly)
                     {
                          cut_selection();
                          scroll_to_cursor();
                     }
-                    else if( userInput->released[kb_y] && !isReadOnly)
+                    else if( input->released[kb_y] && !isReadOnly)
                     {
                         if( can_redo() )
                         {
                             redo_edit();
-                            userInput->reset_all_input();
+                            input->reset_all_input();
                             process_self( viewedSpace,cam );
                         }
                     }
-                    else if( userInput->released[kb_z] && !isReadOnly)
+                    else if( input->released[kb_z] && !isReadOnly)
                     {
                         if( can_undo() )
                         {
                             undo_edit();
-                            userInput->reset_all_input();
+                            input->reset_all_input();
                             process_self( viewedSpace,cam );
                         }
                     }
-                    else if( upDelay >= (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*FPS_RATIO  || ( !userInput->pressed[kb_up] && userInput->released[kb_up] ) )
+                    else if( upDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime)  || ( !input->pressed[kb_up] && input->released[kb_up] ) )
                     {
                         lineStartYPos--;
                         upDelay = 0;
                         showCursor = true;
                         cursorTimer = 0;
                     }
-                    else if( downDelay >= (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*FPS_RATIO  || ( !userInput->pressed[kb_down] && userInput->released[kb_down] ) )
+                    else if( downDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime)  || ( !input->pressed[kb_down] && input->released[kb_down] ) )
                     {
                         lineStartYPos++;
                         downDelay = 0;
                         showCursor = true;
                         cursorTimer = 0;
                     }
-                    else if( leftDelay >= (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*FPS_RATIO  || ( !userInput->pressed[kb_left] && userInput->released[kb_left] ) )
+                    else if( leftDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime)  || ( !input->pressed[kb_left] && input->released[kb_left] ) )
                     {
-                        if( userInput->shiftKeyIsPressed)
+                        if( input->shiftKeyIsPressed)
                         {
                             if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
                             {
@@ -3202,16 +3205,16 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         scroll_to_cursor();
                         showCursor = true;
                         cursorTimer = 0;
-                        if( userInput->shiftKeyIsPressed)
+                        if( input->shiftKeyIsPressed)
                         {
                             selectionEndCursorXPos = cursorXPos;
                             selectionEndCursorYPos = cursorYPos;
                         }
                         leftDelay = 0;
                     }
-                    else if( rightDelay >= (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*FPS_RATIO  || ( !userInput->pressed[kb_right] && userInput->released[kb_right] ) )
+                    else if( rightDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime)  || ( !input->pressed[kb_right] && input->released[kb_right] ) )
                     {
-                        if( userInput->shiftKeyIsPressed)
+                        if( input->shiftKeyIsPressed)
                         {
                             if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
                             {
@@ -3254,7 +3257,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         scroll_to_cursor();
                         showCursor = true;
                         cursorTimer = 0;
-                        if( userInput->shiftKeyIsPressed)
+                        if( input->shiftKeyIsPressed)
                         {
                             selectionEndCursorXPos = cursorXPos;
                             selectionEndCursorYPos = cursorYPos;
@@ -3266,17 +3269,17 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                 else
                 {
                     dKeyDelay = 0;
-                    if( userInput->mouseScrollingUp > 0)
+                    if( input->mouseScrollingUp > 0)
                     {
                         //move_up( linesWithinView/4);
                         GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
                     }
-                    else if( mouseHoveringInTextArea && userInput->mouseScrollingDown > 0)
+                    else if( mouseHoveringInTextArea && input->mouseScrollingDown > 0)
                     {
                         //move_down( linesWithinView/4);
                         GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
                     }
-                    else if(  (enterDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*1.3*FPS_RATIO || ( !userInput->pressed[kb_enter] && userInput->released[kb_enter] )  )  && !isReadOnly )
+                    else if(  (enterDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*1.3 || ( !input->pressed[kb_enter] && input->released[kb_enter] )  )  && !isReadOnly )
                     {
                         if( codeBeingSuggested )
                         {
@@ -3305,7 +3308,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                             codeBeingSuggested = false;
                             suggestedCompilerTerms.clear();
                             enterDelay = 0;
-                            userInput->reset_all_input();
+                            input->reset_all_input();
                         }
                         else
                         {
@@ -3349,7 +3352,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                                     }
                                 }
                                 listOfStrings.insert(listOfStrings.begin()+cursorYPos+1,nextString);
-                                userInput->reset_all_input();
+                                input->reset_all_input();
                             }
                             else
                             {
@@ -3371,9 +3374,9 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
                         enterDelay = 0;
                     }
-                    else if( leftDelay >= (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*1.3*FPS_RATIO  || ( !userInput->released[kb_left] && userInput->pressed[kb_left] ) )
+                    else if( leftDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2  || ( !input->released[kb_left] && input->pressed[kb_left] ) )
                     {
-                        if( userInput->shiftKeyIsPressed )
+                        if( input->shiftKeyIsPressed )
                         {
                             if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
                             {
@@ -3425,7 +3428,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                             }
                             adjust_fortabs();
                         }
-                        if( userInput->shiftKeyIsPressed)
+                        if( input->shiftKeyIsPressed)
                         {
                             selectionEndCursorXPos = cursorXPos;
                             selectionEndCursorYPos = cursorYPos;
@@ -3435,10 +3438,10 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         codeBeingSuggested = false;
                         find_documentation_description();
                     }
-                    else if( rightDelay >= (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*1.3*FPS_RATIO  || ( !userInput->released[kb_right] && userInput->pressed[kb_right] ))
+                    else if( rightDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2  || ( !input->released[kb_right] && input->pressed[kb_right] ))
                     {
                         lineToEdit = listOfStrings[cursorYPos];
-                        if( userInput->shiftKeyIsPressed)
+                        if( input->shiftKeyIsPressed)
                         {
                             if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
                             {
@@ -3470,7 +3473,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         {
                             //adjust_fortabs();
                         }
-                        if( userInput->shiftKeyIsPressed)
+                        if( input->shiftKeyIsPressed)
                         {
                             selectionEndCursorXPos = cursorXPos;
                             selectionEndCursorYPos = cursorYPos;
@@ -3482,7 +3485,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         codeBeingSuggested = false;
                         find_documentation_description();
                     }
-                    else if( upDelay >= (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2*FPS_RATIO  || ( !userInput->released[kb_up] && userInput->pressed[kb_up] ) )
+                    else if( upDelay >= (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2  || ( !input->released[kb_up] && input->pressed[kb_up] ) )
                     {
                         GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
                         if( codeBeingSuggested )
@@ -3499,7 +3502,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         }
                         else
                         {
-                            if( userInput->shiftKeyIsPressed)
+                            if( input->shiftKeyIsPressed)
                             {
                                 if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
                                 {
@@ -3533,7 +3536,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                                     }
                                 }
                             }
-                            if( userInput->shiftKeyIsPressed)
+                            if( input->shiftKeyIsPressed)
                             {
                                 selectionEndCursorXPos = cursorXPos;
                                 selectionEndCursorYPos = cursorYPos;
@@ -3546,7 +3549,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                             find_documentation_description();
                         }
                     }
-                    else if( downDelay >= (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2*FPS_RATIO  || ( !userInput->released[kb_down] && userInput->pressed[kb_down] ) )
+                    else if( downDelay >= (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2  || ( !input->released[kb_down] && input->pressed[kb_down] ) )
                     {
                         GPE_MAIN_HIGHLIGHTER->highlightedTerm  = NULL;
                         if( codeBeingSuggested )
@@ -3571,7 +3574,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         }
                         else
                         {
-                            if( userInput->shiftKeyIsPressed)
+                            if( input->shiftKeyIsPressed)
                             {
                                 if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
                                 {
@@ -3605,7 +3608,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                                         }
                                     }
                                 }
-                                if( userInput->shiftKeyIsPressed)
+                                if( input->shiftKeyIsPressed)
                                 {
                                     selectionEndCursorXPos = cursorXPos;
                                     selectionEndCursorYPos = cursorYPos;
@@ -3618,7 +3621,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                                 find_documentation_description();
                             }
                     }
-                    else if( bscDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2*FPS_RATIO || ( userInput->pressed[kb_backspace] && !userInput->released[kb_backspace] ) )
+                    else if( bscDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2 || ( input->pressed[kb_backspace] && !input->released[kb_backspace] ) )
                     {
                         bscDelay = 0;
                         if( !isReadOnly)
@@ -3704,7 +3707,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         GPE_MAIN_HIGHLIGHTER->highlightedTerm  = NULL;
 
                     }
-                    else if( delDelay >= (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2*FPS_RATIO  || ( userInput->pressed[kb_delete] && !userInput->released[kb_delete] ) )
+                    else if( delDelay >= (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2  || ( input->pressed[kb_delete] && !input->released[kb_delete] ) )
                     {
                         delDelay = 0;
                         if(!isReadOnly)
@@ -3773,7 +3776,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         GPE_MAIN_HIGHLIGHTER->highlightedTerm  = NULL;
 
                     }
-                    else if( tabDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+1)*2*FPS_RATIO || ( !userInput->pressed[kb_tab] && userInput->released[kb_tab] ) )
+                    else if( tabDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+1)*2 || ( !input->pressed[kb_tab] && input->released[kb_tab] ) )
                     {
                         tabDelay = 0;
                         if( !isReadOnly)
@@ -3792,7 +3795,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                             }
 
                             int tabCharCount = get_tab_space_count();
-                            if( userInput->shiftKeyIsPressed)
+                            if( input->shiftKeyIsPressed)
                             {
                                 std::string strToUnTab = "";
                                 if( selectionCursorXPos!=selectionEndCursorXPos || selectionCursorYPos!=selectionEndCursorYPos )
@@ -3869,7 +3872,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                                     textInputString+=tabAddition;
                                     textInputString+=get_substring(lineToEdit,cursorXPos);
                                     cursorXPos+=tabCharCount;
-                                    userInput->inkeys = "";
+                                    input->inkeys = "";
                                     listOfStrings.erase(listOfStrings.begin()+cursorYPos);
                                     listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
                                     scroll_to_cursor();
@@ -3885,17 +3888,17 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
                         tabDelay= 0;
                     }
-                    else if( (int)userInput->inkeys.size()>0 && !isReadOnly )
+                    else if( (int)input->inkeys.size()>0 && !isReadOnly )
                     {
                         //Type input into textarea
                         delete_selection();
                         log_editable_action();
                         textInputString = get_substring(lineToEdit,0,cursorXPos);
                         std::string preInputString = string_replace_all(textInputString," ","");
-                        textInputString+=userInput->inkeys;
+                        textInputString+=input->inkeys;
                         listOfStrings.erase(listOfStrings.begin()+cursorYPos);
                         std::string restofLine = get_substring(lineToEdit,cursorXPos);
-                        if( userInput->inkeys=="{" && (int)restofLine.size()==0 && (int)preInputString.size()==0 )
+                        if( input->inkeys=="{" && (int)restofLine.size()==0 && (int)preInputString.size()==0 )
                         {
                             int numbOfSpaces =  get_leading_space_count(lineToEdit);
                             cursorXPos = 0;
@@ -3918,37 +3921,37 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                             listOfStrings.insert(listOfStrings.begin()+cursorYPos+2,bracketString);
                             cursorYPos+=1;
                             scroll_to_pos(cursorYPos+1,cursorXPos);
-                            userInput->inkeys = "";
+                            input->inkeys = "";
                             save_edit();
                         }
                         else
                         {
                             log_editable_action();
-                            cursorXPos+=(int)userInput->inkeys.size();
-                            if( userInput->inkeys=="[" )
+                            cursorXPos+=(int)input->inkeys.size();
+                            if( input->inkeys=="[" )
                             {
                                 textInputString+="]";
                             }
-                            else if( userInput->inkeys=="{" )
+                            else if( input->inkeys=="{" )
                             {
                                 textInputString+="}";
                             }
-                            else if( userInput->inkeys=="(" )
+                            else if( input->inkeys=="(" )
                             {
                                 textInputString+=")";
                             }
                             textInputString+=restofLine;
                             listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
 
-                            userInput->inkeys = "";
+                            input->inkeys = "";
                             if( isCodeEditor)
                             find_suggested_text();
                             scroll_to_cursor();
                             GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
                         }
-                        userInput->inkeys = "";
+                        input->inkeys = "";
                     }
-                    else if( userInput->check_keyboard_released(kb_esc) )
+                    else if( input->check_keyboard_released(kb_esc) )
                     {
                         MAIN_SEARCH_CONTROLLER->close_finder();
                         codeBeingSuggested = false;
@@ -3975,9 +3978,9 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
 
         if( isHovered)
         {
-            if( userInput->mouseScrollingUp > 0)
+            if( input->mouseScrollingUp > 0)
             {
-                if( userInput->down[kb_ctrl])
+                if( input->down[kb_ctrl])
                 {
                     move_left(charactersWithinView/8);
                     GPE_MAIN_HIGHLIGHTER->highlightedTerm  = NULL;
@@ -3988,9 +3991,9 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                     GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
                 }
             }
-            else if( userInput->mouseScrollingDown > 0)
+            else if( input->mouseScrollingDown > 0)
             {
-                if( userInput->down[kb_ctrl])
+                if( input->down[kb_ctrl])
                 {
                     move_right(charactersWithinView/8);
                     GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
@@ -4014,16 +4017,16 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
         }
     }
 
-    MAIN_GUI_SETTINGS->textAreaFindBox.x = barBox.x+lineCountBoxWidth;
+    MAIN_GUI_SETTINGS->textAreaFindBox.x = elementBox.x+lineCountBoxWidth;
     //if( showXScroll && textXScroll!=NULL)
     {
-        //MAIN_GUI_SETTINGS->textAreaFindBox.y = barBox.y+textEditorButtonBar->get_height()+renderBox.h+textXScroll->barBox.h;
+        //MAIN_GUI_SETTINGS->textAreaFindBox.y = elementBox.y+textEditorButtonBar->get_height()+renderBox.h+textXScroll->elementBox.h;
     }
     //else
     {
-        MAIN_GUI_SETTINGS->textAreaFindBox.y = barBox.y+textEditorButtonBar->get_height()+renderBox.h;
+        MAIN_GUI_SETTINGS->textAreaFindBox.y = elementBox.y+textEditorButtonBar->get_height()+renderBox.h;
     }
-    MAIN_GUI_SETTINGS->textAreaFindBox.w = barBox.w-lineCountBoxWidth;
+    MAIN_GUI_SETTINGS->textAreaFindBox.w = elementBox.w-lineCountBoxWidth;
 
     int findAllResult = 0;
     switch(MAIN_SEARCH_CONTROLLER->textSearchMode )
@@ -4175,7 +4178,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
         delete_selection();
         paste_clipboard();
         codeBeingSuggested = false;
-        userInput->reset_all_input();
+        input->reset_all_input();
         process_self( viewedSpace,cam );
     }
 
@@ -4208,21 +4211,21 @@ void GPE_TextAreaInputBasic::redo_edit()
     }
 }
 
-void GPE_TextAreaInputBasic::render_code(GPE_Renderer * cRender ,GPE_Rect * viewedSpace, GPE_Rect * cam )
+void GPE_TextAreaInputBasic::render_code( GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( viewedSpace!=NULL && cam!=NULL && textEditorButtonBar!=NULL && has_content() )
     {
-        renderBox.x = barBox.x-cam->x;
-        renderBox.y = barBox.y-cam->y+textEditorButtonBar->get_height();
-        renderBox.w = barBox.w;
+        renderBox.x = elementBox.x-cam->x;
+        renderBox.y = elementBox.y-cam->y+textEditorButtonBar->get_height();
+        renderBox.w = elementBox.w;
 
         if(showYScroll)
         {
             renderBox.w-=16;
         }
-        renderBox.h = barBox.h-textEditorButtonBar->get_height()-32;
+        renderBox.h = elementBox.h-textEditorButtonBar->get_height()-32;
 
         int mostCharactersOfText = get_most_characters_used();
         if( mostCharactersOfText > charactersWithinView && showYScroll )
@@ -4248,7 +4251,7 @@ void GPE_TextAreaInputBasic::render_code(GPE_Renderer * cRender ,GPE_Rect * view
         bool isInBlockCommentMode = false;
         bool isInDoubleQuoteMode = false;
         bool isInSingleQuoteMode = false;
-        int minLineToRender = std::max(lineStartYPos-20 ,0);
+        int minLineToRender = std::max(lineStartYPos-50 ,0);
         int maxLineToRender = std::min(lineStartYPos+linesWithinView ,(int)listOfStrings.size()-1);
         int endBlockCommentPos = 0;
         int endDQuoteCommentPos = 0;
@@ -4634,7 +4637,7 @@ void GPE_TextAreaInputBasic::render_code(GPE_Renderer * cRender ,GPE_Rect * view
                                             }
                                             else if (char_is_alpha(currStringToRender[currPosToParse],false,true) )
                                             {
-                                                //color = GPE_MAIN_TEMPLATE->Main_Box_Font_Color;
+                                                //color = GPE_MAIN_THEME->Main_Box_Font_Color;
                                                 tempParseTextToAdd->textStart = currPosToParse;
                                                 currPosToParse++;
                                                 while (currPosToParse < lineEnd && char_is_alnum(currStringToRender[currPosToParse],false,true) )
@@ -4649,7 +4652,7 @@ void GPE_TextAreaInputBasic::render_code(GPE_Renderer * cRender ,GPE_Rect * view
                                             {
                                                 if(currStringToRender[currPosToParse]!=' ')
                                                 {
-                                                    //color = GPE_MAIN_TEMPLATE->Main_Box_Font_Color;
+                                                    //color = GPE_MAIN_THEME->Main_Box_Font_Color;
                                                     //anything else is just regular text as well...
                                                     tempParseTextToAdd->textStart = currPosToParse;
                                                     tempParseTextToAdd->textEnd = currPosToParse+1;
@@ -4718,85 +4721,85 @@ void GPE_TextAreaInputBasic::render_code(GPE_Renderer * cRender ,GPE_Rect * view
             if ( i >=lineStartYPos  )
             {
                 textRenderXPos = renderBox.x+lineCountBoxWidth+2;
-                textRenderYPos = renderBox.y+(i-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4;
+                textRenderYPos = renderBox.y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight);
 
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_Color;
-                normalLineText->render_tokens(cRender,FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                color = GPE_MAIN_THEME->Text_Box_Font_Color;
+                normalLineText->render_tokens( FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_Number_Color;
-                numberLineText->render_tokens(cRender,FONT_TEXTINPUT_NUMBER,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color,true );
+                color = GPE_MAIN_THEME->Text_Box_Font_Number_Color;
+                numberLineText->render_tokens( FONT_TEXTINPUT_NUMBER,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color,true );
 
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_Symbols_Color;
-                symbolLineText->render_tokens(cRender,FONT_TEXTINPUT_SYMBOL,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
-
-                //
-                if( USE_COLORBLINDMODE)
-                {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Font_Function_Alt_Color;
-                }
-                else
-                {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Font_Function_Color;
-                }
-                functionLineText->render_tokens(cRender,FONT_TEXTINPUT_FUNCTION,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                color = GPE_MAIN_THEME->Text_Box_Font_Symbols_Color;
+                symbolLineText->render_tokens( FONT_TEXTINPUT_SYMBOL,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
                 //
                 if( USE_COLORBLINDMODE)
                 {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Font_Keyword_Alt_Color;
+                    color = GPE_MAIN_THEME->Text_Box_Font_Function_Alt_Color;
                 }
                 else
                 {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Font_Keyword_Color;
+                    color = GPE_MAIN_THEME->Text_Box_Font_Function_Color;
                 }
-                keywordLineText->render_tokens(cRender,FONT_TEXTINPUT_KEYWORD,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                functionLineText->render_tokens( FONT_TEXTINPUT_FUNCTION,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+
+                //
+                if( USE_COLORBLINDMODE)
+                {
+                    color = GPE_MAIN_THEME->Text_Box_Font_Keyword_Alt_Color;
+                }
+                else
+                {
+                    color = GPE_MAIN_THEME->Text_Box_Font_Keyword_Color;
+                }
+                keywordLineText->render_tokens( FONT_TEXTINPUT_KEYWORD,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
                 if( USE_COLORBLINDMODE)
                 {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Project_Keyword_Alt_Color;
+                    color = GPE_MAIN_THEME->Text_Box_Project_Keyword_Alt_Color;
                 }
                 else
                 {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Project_Keyword_Color;
+                    color = GPE_MAIN_THEME->Text_Box_Project_Keyword_Color;
                 }
-                projectKeywordLineText->render_tokens(cRender,FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                projectKeywordLineText->render_tokens( FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
                 if( USE_COLORBLINDMODE)
                 {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Project_Function_Alt_Color;
+                    color = GPE_MAIN_THEME->Text_Box_Project_Function_Alt_Color;
                 }
                 else
                 {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Project_Function_Color;
+                    color = GPE_MAIN_THEME->Text_Box_Project_Function_Color;
                 }
-                projectFunctionLineText->render_tokens(cRender,FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                projectFunctionLineText->render_tokens( FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
 
 
                 if( USE_COLORBLINDMODE)
                 {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Font_Variable_Alt_Color;
+                    color = GPE_MAIN_THEME->Text_Box_Font_Variable_Alt_Color;
                 }
                 else
                 {
-                    color = GPE_MAIN_TEMPLATE->Text_Box_Font_Variable_Color;
+                    color = GPE_MAIN_THEME->Text_Box_Font_Variable_Color;
                 }
-                variableLineText->render_tokens(cRender,FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                variableLineText->render_tokens( FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_DataType_Color;
-                datatypeLineText->render_tokens(cRender,FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                color = GPE_MAIN_THEME->Text_Box_Font_DataType_Color;
+                datatypeLineText->render_tokens( FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_DataType_Color;
-                datatypeLineText->render_tokens(cRender,FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                color = GPE_MAIN_THEME->Text_Box_Font_DataType_Color;
+                datatypeLineText->render_tokens( FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_SQuote_Color;
-                sQuoteLineText->render_tokens(cRender,FONT_TEXTINPUT_QUOTE,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                color = GPE_MAIN_THEME->Text_Box_Font_SQuote_Color;
+                sQuoteLineText->render_tokens( FONT_TEXTINPUT_QUOTE,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_DQuote_Color;
-                dQuoteLineText->render_tokens(cRender,FONT_TEXTINPUT_QUOTE,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                color = GPE_MAIN_THEME->Text_Box_Font_DQuote_Color;
+                dQuoteLineText->render_tokens( FONT_TEXTINPUT_QUOTE,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
-                color = GPE_MAIN_TEMPLATE->Text_Box_Font_Comment_Color;
-                commentLineText->render_tokens(cRender,FONT_TEXTINPUT_COMMENT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                color = GPE_MAIN_THEME->Text_Box_Font_Comment_Color;
+                commentLineText->render_tokens( FONT_TEXTINPUT_COMMENT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
             }
         }
 
@@ -4823,7 +4826,7 @@ void GPE_TextAreaInputBasic::render_code(GPE_Renderer * cRender ,GPE_Rect * view
     }
 }
 
-void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
+void GPE_TextAreaInputBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -4836,9 +4839,9 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
             listOfStrings.push_back("");
             reset_self();
         }
-        renderBox.x = barBox.x-cam->x;
-        renderBox.y = barBox.y-cam->y+textEditorButtonBar->get_height();
-        renderBox.w = barBox.w;
+        renderBox.x = elementBox.x-cam->x;
+        renderBox.y = elementBox.y-cam->y+textEditorButtonBar->get_height();
+        renderBox.w = elementBox.w;
 
         if(showYScroll)
         {
@@ -4861,7 +4864,7 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
             {
                 redrawDelay = 0;
             }
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Text_Box_Color,false);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Text_Box_Color,false);
 
             if( has_content() )
             {
@@ -4869,21 +4872,21 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                 find_connected_symbols();
                 if( symbolCursorXPos >= lineStartXPos && symbolCursorYPos >=lineStartYPos )
                 {
-                    render_rectangle(cRender,
+                    gpe->render_rectangle(
                                      renderBox.x+lineCountBoxWidth+2+( std::min(mostCharactersOfText,symbolCursorXPos)-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                                     renderBox.y+(symbolCursorYPos-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
+                                     renderBox.y+(symbolCursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
                                      renderBox.x+lineCountBoxWidth+2+( std::min(mostCharactersOfText,symbolCursorXPos)-lineStartXPos+1)*TEXTBOX_FONT_SIZE_WIDTH,
-                                     renderBox.y+(symbolCursorYPos-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
-                                     GPE_MAIN_TEMPLATE->Text_Box_Font_Comment_Color,false,64);
+                                     renderBox.y+(symbolCursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                                     GPE_MAIN_THEME->Text_Box_Font_Comment_Color,false,64);
                 }
                 if( symbolEndCursorXPos >= lineStartXPos && symbolEndCursorYPos >=lineStartYPos )
                 {
-                    render_rectangle(cRender,
+                    gpe->render_rectangle(
                                      renderBox.x+lineCountBoxWidth+2+( std::min(mostCharactersOfText,symbolEndCursorXPos)-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                                     renderBox.y+(symbolEndCursorYPos-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
+                                     renderBox.y+(symbolEndCursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
                                      renderBox.x+lineCountBoxWidth+2+( std::min(mostCharactersOfText,symbolEndCursorXPos)-lineStartXPos+1)*TEXTBOX_FONT_SIZE_WIDTH,
-                                     renderBox.y+(symbolEndCursorYPos-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
-                                     GPE_MAIN_TEMPLATE->Text_Box_Font_Comment_Color,false,64);
+                                     renderBox.y+(symbolEndCursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                                     GPE_MAIN_THEME->Text_Box_Font_Comment_Color,false,64);
                 }
 
                 //Renders the text highlights
@@ -4909,20 +4912,20 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                         {
                             if( (int)listOfStrings.at(minHighlightYPos).size() > lineStartXPos && ( minHighlightXPos <= lineStartXPos+charactersWithinView) )
                             {
-                                render_rectangle(cRender,
+                                gpe->render_rectangle(
                                                  renderBox.x+lineCountBoxWidth+2+std::max(0,minHighlightXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                                                 renderBox.y+(minHighlightYPos-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
+                                                 renderBox.y+(minHighlightYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
                                                  renderBox.x+lineCountBoxWidth+2+( std::min(mostCharactersOfText,(int)listOfStrings.at(minHighlightYPos).size() )-lineStartXPos+1)*TEXTBOX_FONT_SIZE_WIDTH,
-                                                 renderBox.y+(minHighlightYPos-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
-                                                 GPE_MAIN_TEMPLATE->Text_Box_Highlight_Color,false);
+                                                 renderBox.y+(minHighlightYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                                                 GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
                             }
                             else
                             {
-                                render_rectangle(cRender,
+                                gpe->render_rectangle(
                                 renderBox.x+lineCountBoxWidth+2,
-                                renderBox.y+(i-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
+                                renderBox.y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
                                 renderBox.x+lineCountBoxWidth+2+TEXTBOX_FONT_SIZE_WIDTH,
-                                renderBox.y+(i-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,GPE_MAIN_TEMPLATE->Text_Box_Highlight_Color,false);
+                                renderBox.y+(i-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
 
                             }
                         }
@@ -4935,19 +4938,19 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                                 {
                                     if( (int)listOfStrings[i].size() > lineStartXPos )
                                     {
-                                            render_rectangle(cRender,
+                                            gpe->render_rectangle(
                                                     renderBox.x+lineCountBoxWidth+2,
-                                                    renderBox.y+(i-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
+                                                    renderBox.y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
                                                     renderBox.x+lineCountBoxWidth+2+( std::min( mostCharactersOfText,(int)listOfStrings[i].size() )-lineStartXPos )*TEXTBOX_FONT_SIZE_WIDTH,
-                                                    renderBox.y+(i-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,GPE_MAIN_TEMPLATE->Text_Box_Highlight_Color,false);
+                                                    renderBox.y+(i-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
                                     }
                                     else
                                     {
-                                        render_rectangle(cRender,
+                                        gpe->render_rectangle(
                                                     renderBox.x+lineCountBoxWidth+2,
-                                                    renderBox.y+(i-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
+                                                    renderBox.y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
                                                     renderBox.x+lineCountBoxWidth+2+TEXTBOX_FONT_SIZE_WIDTH,
-                                                    renderBox.y+(i-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,GPE_MAIN_TEMPLATE->Text_Box_Highlight_Color,false);
+                                                    renderBox.y+(i-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
                                     }
                                 }
                             }
@@ -4958,20 +4961,20 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                             std::string lastStrToHighlight = listOfStrings.at(maxHighlightYPos);
                             if( (int)lastStrToHighlight.size() > lineStartXPos && maxHighlightXPos >= lineStartXPos )
                             {
-                                render_rectangle(cRender,
+                                gpe->render_rectangle(
                                                  renderBox.x+lineCountBoxWidth+2,
-                                                 renderBox.y+(maxHighlightYPos-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
+                                                 renderBox.y+(maxHighlightYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
                                                  renderBox.x+lineCountBoxWidth+2+( std::min(mostCharactersOfText,maxHighlightXPos)-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                                                 renderBox.y+(maxHighlightYPos-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
-                                                 GPE_MAIN_TEMPLATE->Text_Box_Highlight_Color,false);
+                                                 renderBox.y+(maxHighlightYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                                                 GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
                             }
                             else
                             {
-                                render_rectangle(cRender,
+                                gpe->render_rectangle(
                                             renderBox.x+lineCountBoxWidth+2,
-                                            renderBox.y+(i-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
+                                            renderBox.y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
                                             renderBox.x+lineCountBoxWidth+2+TEXTBOX_FONT_SIZE_WIDTH,
-                                            renderBox.y+(i-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,GPE_MAIN_TEMPLATE->Text_Box_Highlight_Color,false);
+                                            renderBox.y+(i-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
                             }
                         }
                     }
@@ -4984,12 +4987,12 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                         {
                             maxHighlightXPos++;
                         }
-                        render_rectangle(cRender,
+                        gpe->render_rectangle(
                                          renderBox.x+lineCountBoxWidth+2+( minHighlightXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                                         renderBox.y+(maxHighlightYPos-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
+                                         renderBox.y+(maxHighlightYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
                                          renderBox.x+lineCountBoxWidth+2+( maxHighlightXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                                         renderBox.y+(maxHighlightYPos-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
-                                         GPE_MAIN_TEMPLATE->Text_Box_Highlight_Color,false);
+                                         renderBox.y+(maxHighlightYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                                         GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
                     }
                 }
 
@@ -4998,11 +5001,11 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                 if( MAIN_GUI_SETTINGS->showTextEditorSyntaxHightlight && isCodeEditor)
                 {
                     //Codes
-                    render_code(cRender,viewedSpace,cam);
+                    render_code( viewedSpace,cam);
                 }
                 else
                 {
-                    GPE_Color * textColor = GPE_MAIN_TEMPLATE->Main_Box_Font_Color;
+                    GPE_Color * textColor = GPE_MAIN_THEME->Main_Box_Font_Color;
                     int foundSpecialLogPos = 0;
                     for( i=lineStartYPos; i <= lineStartYPos+linesWithinView && i < (int)listOfStrings.size(); i++)
                     {
@@ -5012,11 +5015,11 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                             subCopyStartPos = 0;
                             if( isTextLog)
                             {
-                                textColor = GPE_MAIN_TEMPLATE->Main_Box_Font_Color;;
+                                textColor = GPE_MAIN_THEME->Main_Box_Font_Color;;
                                 foundSpecialLogPos = currStringToRender.find("Error:");
                                 if( foundSpecialLogPos!=(int)std::string::npos)
                                 {
-                                    textColor = GPE_MAIN_TEMPLATE->Input_Error_Box_Color;
+                                    textColor = GPE_MAIN_THEME->Input_Error_Box_Color;
                                     subCopyStartPos =7;
                                 }
                                 else
@@ -5024,7 +5027,7 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                                     foundSpecialLogPos = currStringToRender.find("Warning:");
                                     if( foundSpecialLogPos!=(int)std::string::npos)
                                     {
-                                        textColor = GPE_MAIN_TEMPLATE->Text_Box_Font_Keyword_Color;
+                                        textColor = GPE_MAIN_THEME->Text_Box_Font_Keyword_Color;
                                         subCopyStartPos =8;
                                     }
                                     else
@@ -5032,7 +5035,7 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                                         foundSpecialLogPos = currStringToRender.find("Comment:");
                                         if( foundSpecialLogPos!=(int)std::string::npos)
                                         {
-                                            textColor = GPE_MAIN_TEMPLATE->Text_Box_Font_Comment_Color;
+                                            textColor = GPE_MAIN_THEME->Text_Box_Font_Comment_Color;
                                             subCopyStartPos =8;
                                         }
                                     }
@@ -5040,7 +5043,7 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                             }
                             currStringToRender = get_substring(currStringToRender,lineStartXPos,charactersWithinView );
 
-                            render_only_text(cRender,renderBox.x+lineCountBoxWidth+2,renderBox.y+4+(i-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
+                            render_only_text( renderBox.x+lineCountBoxWidth+2,renderBox.y+4+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
                                             currStringToRender,textColor,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
                         }
                     }
@@ -5049,11 +5052,11 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                 //Renders the scrollbars
                 if( showXScroll && textXScroll!=NULL)
                 {
-                    textXScroll->render_self(cRender,viewedSpace,cam);
+                    textXScroll->render_self( viewedSpace,cam);
                 }
                 if( showYScroll && textYScroll!=NULL)
                 {
-                    textYScroll->render_self(cRender,viewedSpace,cam);
+                    textYScroll->render_self( viewedSpace,cam);
                 }
 
                 //attempt to draw the cursor
@@ -5066,27 +5069,27 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
             //draws the line count box
             if( lineCountBoxWidth>0 && MAIN_GUI_SETTINGS->showTextEditorLineCount)
             {
-                render_rectangle(cRender,barBox.x-cam->x,renderBox.y,barBox.x+lineCountBoxWidth-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Text_Box_Outer_Color,false);
+                gpe->render_rectangle( elementBox.x-cam->x,renderBox.y,elementBox.x+lineCountBoxWidth-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Text_Box_Outer_Color,false);
                 for( i=lineStartYPos; i <= lineStartYPos+linesWithinView && i < (int)listOfStrings.size(); i++)
                 {
                     if( i == cursorYPos)
                     {
-                        render_rectangle(cRender,renderBox.x,renderBox.y+(i-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,renderBox.x+lineCountBoxWidth,renderBox.y+(i-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,GPE_MAIN_TEMPLATE->Text_Box_Highlight_Color,false);
+                        gpe->render_rectangle( renderBox.x,renderBox.y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),renderBox.x+lineCountBoxWidth,renderBox.y+(i-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
                     }
-                    render_bitmap_text(cRender,renderBox.x+lineCountBoxWidth/2,renderBox.y+(i-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,int_to_string(1+i),GPE_MAIN_TEMPLATE->Main_Box_Font_Color,FONT_TEXTINPUT,FA_CENTER,FA_TOP,255);
+                    render_bitmap_text( renderBox.x+lineCountBoxWidth/2,renderBox.y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),int_to_string(1+i),GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TEXTINPUT,FA_CENTER,FA_TOP,255);
                 }
-                render_rectangle(cRender,barBox.x-cam->x,renderBox.y,barBox.x+lineCountBoxWidth-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Text_Box_Outline_Color,true);
+                gpe->render_rectangle( elementBox.x-cam->x,renderBox.y,elementBox.x+lineCountBoxWidth-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Text_Box_Outline_Color,true);
             }
 
-            render_rectangle(cRender,renderBox.x,renderBox.y,renderBox.x+renderBox.w,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Text_Box_Outline_Color,true);
-            //render_horizontal_line_color(cRender,renderBox.y+renderBox.h+GENERAL_GPE_PADDING,renderBox.x+lineCountBoxWidth,renderBox.x+renderBox.w,GPE_MAIN_TEMPLATE->Main_Border_Color);
+            gpe->render_rectangle( renderBox.x,renderBox.y,renderBox.x+renderBox.w,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Text_Box_Outline_Color,true);
+            //gpe->render_horizontal_line_color( renderBox.y+renderBox.h+GENERAL_GPE_PADDING,renderBox.x+lineCountBoxWidth,renderBox.x+renderBox.w,GPE_MAIN_THEME->Main_Border_Color);
 
 
 
             if( !isReadOnly )
             {
-                render_rectangle(cRender,textEditorButtonBar->get_xpos()-cam->x,textEditorButtonBar->get_ypos()-cam->y,textEditorButtonBar->get_x2pos()-cam->x,textEditorButtonBar->get_y2pos()-cam->y,GPE_MAIN_TEMPLATE->Text_Box_Outer_Color,false);
-                textEditorButtonBar->render_self(cRender,viewedSpace,cam);
+                gpe->render_rectangle( textEditorButtonBar->get_xpos()-cam->x,textEditorButtonBar->get_ypos()-cam->y,textEditorButtonBar->get_x2pos()-cam->x,textEditorButtonBar->get_y2pos()-cam->y,GPE_MAIN_THEME->Text_Box_Outer_Color,false);
+                textEditorButtonBar->render_self( viewedSpace,cam);
             }
         }
 
@@ -5094,10 +5097,10 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
         {
             if( prevCursorXPos!=cursorXPos || prevCursorYPos!=cursorYPos )
             {
-                render_vertical_line_color(cRender,renderBox.x+lineCountBoxWidth+2+(prevCursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                        renderBox.y+(prevCursorYPos-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
-                        renderBox.y+(prevCursorYPos-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
-                        GPE_MAIN_TEMPLATE->Text_Box_Color);
+                gpe->render_vertical_line_color( renderBox.x+lineCountBoxWidth+2+(prevCursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
+                        renderBox.y+(prevCursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                        renderBox.y+(prevCursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                        GPE_MAIN_THEME->Text_Box_Color);
             }
         }
 
@@ -5106,23 +5109,23 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
         {
             if( showCursor)
             {
-                render_vertical_line_color(cRender,renderBox.x+lineCountBoxWidth+2+(cursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                    renderBox.y+(cursorYPos-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
-                    renderBox.y+(cursorYPos-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT-GENERAL_GPE_PADDING/4,
-                    GPE_MAIN_TEMPLATE->Main_Box_Font_Color);
+                gpe->render_vertical_line_color( renderBox.x+lineCountBoxWidth+2+(cursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
+                    renderBox.y+(cursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                    renderBox.y+(cursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                    GPE_MAIN_THEME->Main_Box_Font_Color);
             }
             else
             {
-                render_vertical_line_color(cRender,renderBox.x+lineCountBoxWidth+2+(cursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                        renderBox.y+(cursorYPos-lineStartYPos)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
-                        renderBox.y+(cursorYPos-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_PADDING/4,
-                        GPE_MAIN_TEMPLATE->Text_Box_Color);
+                gpe->render_vertical_line_color( renderBox.x+lineCountBoxWidth+2+(cursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
+                        renderBox.y+(cursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                        renderBox.y+(cursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                        GPE_MAIN_THEME->Text_Box_Color);
             }
         }
 
         if( isInUse)
         {
-            render_rectangle(cRender,barBox.x-cam->x,barBox.y-cam->y,barBox.x+barBox.w-cam->x,barBox.y+barBox.h-cam->y,GPE_MAIN_TEMPLATE->Input_Highlight_Outline_Color,true);
+            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Input_Highlight_Outline_Color,true);
             if( !isReadOnly)
             {
                 std::string editorFeedbackLine = "Line: "+int_to_string(cursorYPos+1)+", Column: "+int_to_string(cursorXPos+1);
@@ -5135,29 +5138,29 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
 
         if( forceRedraw)
         {
-            cRender->reset_viewpoint();
-            cRender->reset_viewpoint();
+            MAIN_RENDERER->reset_viewpoint();
+            MAIN_RENDERER->reset_viewpoint();
             int iRendSuggestion = 0;
             GPE_Compiler_Term * cTerm = NULL;
             std::string fullPhraseToRender = "";
             if( codeBeingSuggested && (int)suggestedCompilerTerms.size() > 0 )
             {
-                int suggestionRenderYPos = barBox.y+viewedSpace->y;
+                int suggestionRenderYPos = elementBox.y+viewedSpace->y;
                 if( cursorYPos >= lineStartYPos)
                 {
                     if( cursorYPos+suggestedTextMaxInViewCount <= lineStartYPos+linesWithinView && suggestedTextMaxInViewCount < linesWithinView )
                     {
-                        suggestionRenderYPos +=(cursorYPos-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT;
+                        suggestionRenderYPos +=(cursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight);
                         suggestionRenderYPos+=textEditorButtonBar->get_height();
                     }
                     else if( suggestedTextMaxInViewCount >= (int)suggestedCompilerTerms.size() )
                     {
-                        suggestionRenderYPos += (cursorYPos-lineStartYPos-suggestedTextMaxInViewCount)*GPE_AVERAGE_LINE_HEIGHT;
+                        suggestionRenderYPos += (cursorYPos-lineStartYPos-suggestedTextMaxInViewCount)*(editorZoomLevel*defaultLineHeight);
                         suggestionRenderYPos+=textEditorButtonBar->get_height();
                     }
                     else
                     {
-                        suggestionRenderYPos+=(cursorYPos-lineStartYPos-(int)suggestedCompilerTerms.size() )*GPE_AVERAGE_LINE_HEIGHT;
+                        suggestionRenderYPos+=(cursorYPos-lineStartYPos-(int)suggestedCompilerTerms.size() )*(editorZoomLevel*defaultLineHeight);
                         suggestionRenderYPos+=textEditorButtonBar->get_height();
                     }
 
@@ -5188,18 +5191,18 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                             }
                             if( iSuggestedEntry==iSuggestionPos)
                             {
-                                render_rectangle(cRender, barBox.x+viewedSpace->x, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*iRendSuggestion,barBox.x+viewedSpace->x+maxSuggestedTextWidth, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*(iRendSuggestion+1),GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Color,false);
-                                render_only_text(cRender,barBox.x+viewedSpace->x+32, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*iRendSuggestion,fullPhraseToRender,GPE_MAIN_TEMPLATE->PopUp_Box_Highlight_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
+                                gpe->render_rectangle(  elementBox.x+viewedSpace->x, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*iRendSuggestion,elementBox.x+viewedSpace->x+maxSuggestedTextWidth, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*(iRendSuggestion+1),GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
+                                render_only_text( elementBox.x+viewedSpace->x+32, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*iRendSuggestion,fullPhraseToRender,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
                             }
                             else
                             {
-                                render_rectangle(cRender, barBox.x+viewedSpace->x, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*iRendSuggestion,barBox.x+viewedSpace->x+maxSuggestedTextWidth, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*(iRendSuggestion+1),GPE_MAIN_TEMPLATE->PopUp_Box_Color,false);
-                                render_only_text(cRender,barBox.x+viewedSpace->x+32, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*iRendSuggestion,fullPhraseToRender,GPE_MAIN_TEMPLATE->PopUp_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
+                                gpe->render_rectangle(  elementBox.x+viewedSpace->x, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*iRendSuggestion,elementBox.x+viewedSpace->x+maxSuggestedTextWidth, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*(iRendSuggestion+1),GPE_MAIN_THEME->PopUp_Box_Color,false);
+                                render_only_text( elementBox.x+viewedSpace->x+32, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*iRendSuggestion,fullPhraseToRender,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
                             }
                             iRendSuggestion++;
                         }
                     }
-                    render_rectangle(cRender, barBox.x+viewedSpace->x, suggestionRenderYPos,barBox.x+viewedSpace->x+maxSuggestedTextWidth, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*(iRendSuggestion+1),GPE_MAIN_TEMPLATE->PopUp_Box_Border_Color,true);
+                    gpe->render_rectangle(  elementBox.x+viewedSpace->x, suggestionRenderYPos,elementBox.x+viewedSpace->x+maxSuggestedTextWidth, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*(iRendSuggestion+1),GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
 
                 }
                 else
@@ -5233,7 +5236,7 @@ void GPE_TextAreaInputBasic::render_self(GPE_Renderer * cRender ,GPE_Rect * view
                 }
                 GPE_MAIN_HIGHLIGHTER->highlightedTermYPos = renderBox.y+viewedSpace->y+suggestionRenderYPos;
             }
-            cRender->set_viewpoint( viewedSpace );
+            MAIN_RENDERER->set_viewpoint( viewedSpace );
         }
     }
 }
@@ -5564,7 +5567,7 @@ void GPE_TextAreaInputBasic::set_read_only()
 void GPE_TextAreaInputBasic::set_writeable()
 {
     isReadOnly = true;
-    textEditorButtonBar->set_height(32);
+    textEditorButtonBar->set_height( 24 );
 }
 
 void GPE_TextAreaInputBasic::set_string(std::string newString)
@@ -5746,8 +5749,8 @@ GPE_WrappedTextArea::GPE_WrappedTextArea()
     heldTextArea = new GPE_TextAreaInputBasic();
     heldTextArea->set_read_only();
     heldTextArea->isCodeEditor = false;
-    barBox.w = 640;
-    barBox.h = 480;
+    elementBox.w = 640;
+    elementBox.h = 480;
     paragraphText = "";
     hasLineBreak = true;
 }
@@ -5763,14 +5766,14 @@ GPE_WrappedTextArea::~GPE_WrappedTextArea()
 
 void GPE_WrappedTextArea::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
-    heldTextArea->set_coords(barBox.x,barBox.y);
+    heldTextArea->set_coords(elementBox.x,elementBox.y);
     heldTextArea->process_self(viewedSpace,cam);
 }
 
-void GPE_WrappedTextArea::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw )
+void GPE_WrappedTextArea::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw )
 {
-    heldTextArea->set_coords(barBox.x,barBox.y);
-    heldTextArea->render_self(cRender,viewedSpace,cam, forceRedraw);
+    heldTextArea->set_coords(elementBox.x,elementBox.y);
+    heldTextArea->render_self( viewedSpace,cam, forceRedraw);
 }
 
 void GPE_WrappedTextArea::set_string( std::string strIn)
@@ -5784,47 +5787,47 @@ void GPE_WrappedTextArea::set_string( std::string strIn)
 
 void GPE_WrappedTextArea::set_width(int newWidth)
 {
-    if( barBox.w!=newWidth)
+    if( elementBox.w!=newWidth)
     {
-        barBox.w = newWidth;
-        heldTextArea->set_width( barBox.w );
+        elementBox.w = newWidth;
+        heldTextArea->set_width( elementBox.w );
         update_paragraph();
     }
 }
 
 void GPE_WrappedTextArea::set_height( int newHeight)
 {
-    if( barBox.h!=newHeight)
+    if( elementBox.h!=newHeight)
     {
-        barBox.h = newHeight;
-        heldTextArea->set_height( barBox.h );
+        elementBox.h = newHeight;
+        heldTextArea->set_height( elementBox.h );
         update_paragraph();
     }
 }
 
 void GPE_WrappedTextArea::set_max_width( int nMW)
 {
-    if( barBox.w!=nMW )
+    if( elementBox.w!=nMW )
     {
-        barBox.w = nMW;
-        heldTextArea->set_width( barBox.w );
+        elementBox.w = nMW;
+        heldTextArea->set_width( elementBox.w );
         update_paragraph();
     }
 }
 
 void GPE_WrappedTextArea::set_max_height( int nMH)
 {
-    if( barBox.h!=nMH )
+    if( elementBox.h!=nMH )
     {
-        barBox.h = nMH;
-        heldTextArea->set_height( barBox.h );
+        elementBox.h = nMH;
+        heldTextArea->set_height( elementBox.h );
         update_paragraph();
     }
 }
 
 void GPE_WrappedTextArea::update_paragraph(int foundMaxWidth )
 {
-    if( heldTextArea!=NULL && barBox.w > 0 )
+    if( heldTextArea!=NULL && elementBox.w > 0 )
     {
         heldTextArea->reset_self();
         heldTextArea->clear_all_lines();
@@ -5845,7 +5848,7 @@ void GPE_WrappedTextArea::update_paragraph(int foundMaxWidth )
 
             if( defaultFontWidth > 0 && defaultFontHeight > 0)
             {
-                maxMessageWidth = ( barBox.w -GENERAL_GPE_PADDING)/ defaultFontWidth;
+                maxMessageWidth = ( elementBox.w -GENERAL_GPE_PADDING)/ defaultFontWidth;
 
                 if( (int)paragraphText.size() > 0)
                 {

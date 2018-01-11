@@ -8,8 +8,9 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.14
+Version=2
 ResourceName=newTilesheet1
+#     
 Preload=1
 TilesheetData[0]=0
 TilesheetData[1]=0

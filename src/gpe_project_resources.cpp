@@ -3,10 +3,10 @@ gpe_project_resources.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2017 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2017 PawByte.
-Copyright (c) 2014-2017 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2018 PawByte.
+Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -34,6 +34,8 @@ SOFTWARE.
 #include "gpe_project_resources.h"
 
 gamePencilEditorSettingsResource * MAIN_EDITOR_SETTINGS = NULL;
+gameJSCompilerSettingsResource * GPE_JS_COMPILER_SETTINGS = NULL;
+gameCPPCompilerSettingsResource * GPE_CPP_COMPILER_SETTINGS = NULL;
 gamePencilAboutPageResource * MAIN_ABOUT_PAGE = NULL;
 gamePencilHelpPageResource * MAIN_HELP_PAGE = NULL;
 gamePencilStartPageResource * MAIN_START_PAGE = NULL;
@@ -73,12 +75,12 @@ standardEditableGameResource::standardEditableGameResource(GPE_ResourceContainer
     renameBox = new GPE_TextInputBasic("","Name");
     renameBox->set_label("Name");
 
-    loadResourceButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/folder.png","Load Resource","Load Resource FROM File",-1);
-    exportResourceButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/plane.png","Export Resource","Export Resource TO File",-1);
-    saveResourceButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/save.png","Save Resource","Save Resource to File",-1);
+    loadResourceButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/folder.png","Load Resource",-1);
+    exportResourceButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/plane.png","Export Resource TO File",-1);
+    saveResourceButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/save.png","Save Resource to File",-1);
 
-    confirmResourceButton = new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/check.png","Confirm","Confirm and Save Changes");
-    cancelResourceButton =  new GPE_ToolPushButton(0,0,APP_DIRECTORY_NAME+"resources/gfx/buttons/times.png","Cancel","Cancel Changes and Revert to previous settings");
+    confirmResourceButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/check.png","Confirm Changes","Confirm and Save Changes");
+    cancelResourceButton =  new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/times.png","Cancel Changes","Cancel Changes and Revert to previous settings");
 
     int maxSize = std::max(confirmResourceButton->get_width(),cancelResourceButton->get_width() );
     //confirmResourceButton->set_width(maxSize);
@@ -163,13 +165,13 @@ GPE_GeneralGuiElement * standardEditableGameResource::add_gui_component(std::str
             }
             else if( newComponentType=="colorpicker")
             {
-                GPE_Input_Field_Color * newColorField = new GPE_Input_Field_Color(0,0,256,-1,newComponentName);
+                GPE_Input_Field_Color * newColorField = new GPE_Input_Field_Color( newComponentName);
                 newColorField->set_label(newComponentName);
                 newComponentField = newColorField;
             }
             else if( newComponentType=="dropdown")
             {
-                newComponentField = new GPE_DropDown_Menu(0,0,newComponentName,false);
+                newComponentField = new GPE_DropDown_Menu( newComponentName,false);
             }
             else if(newComponentType=="inputtext")
             {
@@ -218,27 +220,27 @@ GPE_GeneralGuiElement * standardEditableGameResource::add_gui_component(std::str
     return NULL;
 }
 
-void standardEditableGameResource::prerender_self(GPE_Renderer * cRender)
+void standardEditableGameResource::prerender_self( )
 {
     if( loadResourceButton!=NULL)
     {
-        loadResourceButton->prerender_self(cRender);
+        loadResourceButton->prerender_self( );
     }
     if( exportResourceButton!=NULL)
     {
-        exportResourceButton->prerender_self(cRender);
+        exportResourceButton->prerender_self( );
     }
     if( saveResourceButton!=NULL)
     {
-        saveResourceButton->prerender_self(cRender);
+        saveResourceButton->prerender_self( );
     }
     if( confirmResourceButton!=NULL)
     {
-        confirmResourceButton->prerender_self(cRender);
+        confirmResourceButton->prerender_self( );
     }
     if( cancelResourceButton!=NULL)
     {
-        cancelResourceButton->prerender_self(cRender);
+        cancelResourceButton->prerender_self( );
     }
 }
 
@@ -325,10 +327,10 @@ void standardEditableGameResource::process_export()
     {
         exportCalled = true;
     }
-    else if( userInput->check_keyboard_down(kb_ctrl) && userInput->check_keyboard_pressed(kb_e) )
+    else if( input->check_keyboard_down(kb_ctrl) && input->check_keyboard_pressed(kb_e) )
     {
         exportCalled = true;
-        userInput->reset_all_input();
+        input->reset_all_input();
     }
 
     if( exportCalled )
@@ -375,7 +377,7 @@ void standardEditableGameResource::process_self(GPE_Rect * viewedSpace ,GPE_Rect
 
 }
 
-void standardEditableGameResource::render_resource(GPE_Renderer * cRender,GPE_Rect * viewedSpace ,GPE_Rect *cam, bool forceRedraw )
+void standardEditableGameResource::render_resource(GPE_Rect * viewedSpace ,GPE_Rect *cam, bool forceRedraw )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -383,15 +385,16 @@ void standardEditableGameResource::render_resource(GPE_Renderer * cRender,GPE_Re
     {
         if( forceRedraw || justOpenedThisFrame )
         {
-            //render_rectangle(cRender,0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_TEMPLATE->Program_Color,false);
+            //gpe->render_rectangle( 0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_THEME->Program_Color,false);
             forceRedraw = true;
         }
-        render_self(cRender,viewedSpace,cam,forceRedraw);
+        render_self( viewedSpace,cam,forceRedraw);
     }
     justOpenedThisFrame = false;
 }
 
-void standardEditableGameResource::render_self(GPE_Renderer * cRender,GPE_Rect * viewedSpace ,GPE_Rect *cam,bool forceRedraw  )
+
+void standardEditableGameResource::render_self(GPE_Rect * viewedSpace ,GPE_Rect *cam,bool forceRedraw  )
 {
 
 }
@@ -426,4 +429,29 @@ int standardEditableGameResource::search_for_string(std::string needle)
 int standardEditableGameResource::search_and_replace_string(std::string needle, std::string newStr )
 {
     return 0;
+}
+
+bool standardEditableGameResource::write_header_on_file(std::ofstream * fileTarget)
+{
+    if( fileTarget!=NULL && fileTarget->is_open() )
+    {
+        *fileTarget << "#    --------------------------------------------------  # \n";
+        *fileTarget << "#     \n";
+        *fileTarget << "#     \n";
+        if( resourceType >=0 && resourceType < res_type_count)
+        {
+            *fileTarget << "#    Game Pencil Engine Project Game " << RESOURCE_TYPE_NAMES[resourceType] <<" DataFile \n";
+        }
+        *fileTarget << "#    Created automatically via the Game Pencil Engine Editor \n";
+        *fileTarget << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
+        *fileTarget << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
+        *fileTarget << "#     \n";
+        *fileTarget << "#     \n";
+        *fileTarget << "#    --------------------------------------------------  # \n";
+        *fileTarget << "Version=" << GPE_VERSION_DOUBLE_NUMBER << "\n";
+        *fileTarget << "ResourceName=" << resourceName << "\n";
+        *fileTarget << "#     \n";
+        return true;
+    }
+    return false;
 }

@@ -8,7 +8,8 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.13
+Version=2
 ResourceName=bg_death
+#     
 ImageLocation=gg_Screen_plat.png
 Preload=1

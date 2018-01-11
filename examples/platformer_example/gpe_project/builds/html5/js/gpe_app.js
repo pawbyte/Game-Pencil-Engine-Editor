@@ -3,7 +3,7 @@
 #       
 #       
 #  Game Pencil Engine Game File 
-#  Created automatically via the Game Pencil Engine Editor Version 1
+#  Created automatically via the Game Pencil Engine Editor Version 2
 #  Warning: Manually editing this file may cause unexpected bugs and errors. 
 #  If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
@@ -12,15 +12,15 @@
 */     
 
 'use strict';
-var bg_death =  gpe.rsm.add_texture(0,'resources/textures/gg_Screen_plat.png'); 
-var bg_sky =  gpe.rsm.add_texture(1,'resources/textures/bg.png'); 
-var ts_map =  gpe.rsm.add_tilesheet(0,'resources/tilesheets/grassmap.png',70,70,0,0,0,0); 
-var spr_slime =  gpe.rsm.add_sprite(0,2,'resources/sprites/enemy_walk.png',0,0,51,27,0,0,0,51,27);
-var spr_block =  gpe.rsm.add_sprite(1,1,'resources/sprites/spr_70x70_block.png',0,0,70,70,0,0,0,70,70);
-var spr_player =  gpe.rsm.add_sprite(2,11,'resources/sprites/player_walk.png',0,0,72,97,0,16,0,48,97);
-var spr_heartpiece =  gpe.rsm.add_sprite(3,1,'resources/sprites/spr_platformer_heart_piece.png',0,0,32,32,0,6,6,20,20);
-var spr_coin =  gpe.rsm.add_sprite(4,1,'resources/sprites/spr_coin.png',0,0,32,32,0,12,4,12,24);
-var newFont1 =  gpe.rsm.add_font(0,'Arial','','','','','',12,32,32,0);
+var bg_death =  GPE.rsm.add_texture(0,'resources/textures/gg_Screen_plat.png'); 
+var bg_sky =  GPE.rsm.add_texture(1,'resources/textures/bg.png'); 
+var ts_map =  GPE.rsm.add_tilesheet(0,'resources/tilesheets/grassmap.png',70,70,0,0,0,0); 
+var spr_slime =  GPE.rsm.add_sprite(0,2,'resources/sprites/enemy_walk.png',0,0,51,27,0,0,0,51,27);
+var spr_block =  GPE.rsm.add_sprite(1,1,'resources/sprites/spr_70x70_block.png',0,0,70,70,0,0,0,70,70);
+var spr_player =  GPE.rsm.add_sprite(2,11,'resources/sprites/player_walk.png',0,0,72,97,0,16,0,48,97);
+var spr_heartpiece =  GPE.rsm.add_sprite(3,1,'resources/sprites/spr_platformer_heart_piece.png',0,0,32,32,0,6,6,20,20);
+var spr_coin =  GPE.rsm.add_sprite(4,1,'resources/sprites/spr_coin.png',0,0,32,32,0,12,4,12,24);
+var newFont1 =  GPE.rsm.add_font(0,'Arial','','','','','',12,32,32,0);
 var obj_slime =  0; 
 var obj_block =  1; 
 var obj_heart_piece =  2; 
@@ -28,17 +28,18 @@ var obj_player =  3;
 var obj_coin =  4; 
 var obj_player2 =  5; 
 var newScene1 =  0; 
-var  _scn_newScene1 =  gpe.add_gamescene(0 , 'newScene1'); 
+var  _scn_newScene1 =  GPE.add_gamescene(0 , 'newScene1'); 
 var game_win =  1; 
-var  _scn_game_win =  gpe.add_gamescene(1 , 'game_win'); 
+var  _scn_game_win =  GPE.add_gamescene(1 , 'game_win'); 
 var game_over =  2; 
-var  _scn_game_over =  gpe.add_gamescene(2 , 'game_over'); 
+var  _scn_game_over =  GPE.add_gamescene(2 , 'game_over'); 
 
-gpe._obj_obj_slime =  (function (xPosIn, yPosIn,objectLayerId) 
+
+GPE._obj_obj_slime =  (function (xPosIn, yPosIn,objectLayerId) 
 { 
     function _obj_obj_slime (xPosIn, yPosIn,objectLayerId) 
     { 
-        gpe.GPE_GameObject.call(this,xPosIn, yPosIn,objectLayerId); 
+        GPE.GPE_GameObject.call(this,xPosIn, yPosIn,objectLayerId); 
         this.gpeObjectType =0; 
         this.init_sprite(0);
         this.isVisible = 1;
@@ -118,36 +119,36 @@ gpe._obj_obj_slime =  (function (xPosIn, yPosIn,objectLayerId)
         this.hasRenderFunction = true;
         this.gpeHasLogicFunction = true;
             
-        this.OBJECT_COLLISION_LIST = gpe.make_array_unique(this.OBJECT_COLLISION_LIST);
+        this.OBJECT_COLLISION_LIST = GPE.make_array_unique(this.OBJECT_COLLISION_LIST);
     } 
 
-    _obj_obj_slime.prototype = new gpe.GPE_GameObject(xPosIn, yPosIn); 
+    _obj_obj_slime.prototype = new GPE.GPE_GameObject(xPosIn, yPosIn); 
     return _obj_obj_slime; 
 }());
 
-gpe._obj_obj_block =  (function (xPosIn, yPosIn,objectLayerId) 
+GPE._obj_obj_block =  (function (xPosIn, yPosIn,objectLayerId) 
 { 
     function _obj_obj_block (xPosIn, yPosIn,objectLayerId) 
     { 
-        gpe.GPE_GameObject.call(this,xPosIn, yPosIn,objectLayerId); 
+        GPE.GPE_GameObject.call(this,xPosIn, yPosIn,objectLayerId); 
         this.gpeObjectType =1; 
         this.init_sprite(1);
         this.isVisible = 0;
         this.gpeIsContinuousObject = 0;
         this.isViewIndependent = 0;
             
-        this.OBJECT_COLLISION_LIST = gpe.make_array_unique(this.OBJECT_COLLISION_LIST);
+        this.OBJECT_COLLISION_LIST = GPE.make_array_unique(this.OBJECT_COLLISION_LIST);
     } 
 
-    _obj_obj_block.prototype = new gpe.GPE_GameObject(xPosIn, yPosIn); 
+    _obj_obj_block.prototype = new GPE.GPE_GameObject(xPosIn, yPosIn); 
     return _obj_obj_block; 
 }());
 
-gpe._obj_obj_heart_piece =  (function (xPosIn, yPosIn,objectLayerId) 
+GPE._obj_obj_heart_piece =  (function (xPosIn, yPosIn,objectLayerId) 
 { 
     function _obj_obj_heart_piece (xPosIn, yPosIn,objectLayerId) 
     { 
-        gpe.GPE_GameObject.call(this,xPosIn, yPosIn,objectLayerId); 
+        GPE.GPE_GameObject.call(this,xPosIn, yPosIn,objectLayerId); 
         this.gpeObjectType =2; 
         this.init_sprite(3);
         this.isVisible = 1;
@@ -156,18 +157,18 @@ gpe._obj_obj_heart_piece =  (function (xPosIn, yPosIn,objectLayerId)
         this.start_countdown(0,15);
         this.movementDirection = 0.25;
             
-        this.OBJECT_COLLISION_LIST = gpe.make_array_unique(this.OBJECT_COLLISION_LIST);
+        this.OBJECT_COLLISION_LIST = GPE.make_array_unique(this.OBJECT_COLLISION_LIST);
     } 
 
-    _obj_obj_heart_piece.prototype = new gpe.GPE_GameObject(xPosIn, yPosIn); 
+    _obj_obj_heart_piece.prototype = new GPE.GPE_GameObject(xPosIn, yPosIn); 
     return _obj_obj_heart_piece; 
 }());
 
-gpe._obj_obj_player =  (function (xPosIn, yPosIn,objectLayerId) 
+GPE._obj_obj_player =  (function (xPosIn, yPosIn,objectLayerId) 
 { 
     function _obj_obj_player (xPosIn, yPosIn,objectLayerId) 
     { 
-        gpe.GPE_GameObject.call(this,xPosIn, yPosIn,objectLayerId); 
+        GPE.GPE_GameObject.call(this,xPosIn, yPosIn,objectLayerId); 
         this.gpeObjectType =3; 
         this.init_sprite(2);
         this.isVisible = 1;
@@ -400,18 +401,18 @@ gpe._obj_obj_player =  (function (xPosIn, yPosIn,objectLayerId)
             this.OBJECT_COLLISION_LIST.push(2);
             this.OBJECT_COLLISION_LIST.push(0);
             this.OBJECT_COLLISION_LIST.push(4);
-        this.OBJECT_COLLISION_LIST = gpe.make_array_unique(this.OBJECT_COLLISION_LIST);
+        this.OBJECT_COLLISION_LIST = GPE.make_array_unique(this.OBJECT_COLLISION_LIST);
     } 
 
-    _obj_obj_player.prototype = new gpe.GPE_GameObject(xPosIn, yPosIn); 
+    _obj_obj_player.prototype = new GPE.GPE_GameObject(xPosIn, yPosIn); 
     return _obj_obj_player; 
 }());
 
-gpe._obj_obj_player2 =  (function (xPosIn, yPosIn,objectLayerId) 
+GPE._obj_obj_player2 =  (function (xPosIn, yPosIn,objectLayerId) 
 { 
     function _obj_obj_player2 (xPosIn, yPosIn,objectLayerId) 
     { 
-        gpe.GPE_GameObject.call(this,xPosIn, yPosIn,objectLayerId); 
+        GPE.GPE_GameObject.call(this,xPosIn, yPosIn,objectLayerId); 
         this.gpeObjectType =5; 
         this.init_sprite(2);
         this.isVisible = 1;
@@ -646,33 +647,33 @@ gpe._obj_obj_player2 =  (function (xPosIn, yPosIn,objectLayerId)
             this.OBJECT_COLLISION_LIST.push(2);
             this.OBJECT_COLLISION_LIST.push(0);
             this.OBJECT_COLLISION_LIST.push(4);
-        this.OBJECT_COLLISION_LIST = gpe.make_array_unique(this.OBJECT_COLLISION_LIST);
+        this.OBJECT_COLLISION_LIST = GPE.make_array_unique(this.OBJECT_COLLISION_LIST);
     } 
 
-    _obj_obj_player2.prototype = new gpe.GPE_GameObject(xPosIn, yPosIn); 
+    _obj_obj_player2.prototype = new GPE.GPE_GameObject(xPosIn, yPosIn); 
     return _obj_obj_player2; 
 }());
 
-gpe._obj_obj_coin =  (function (xPosIn, yPosIn,objectLayerId) 
+GPE._obj_obj_coin =  (function (xPosIn, yPosIn,objectLayerId) 
 { 
     function _obj_obj_coin (xPosIn, yPosIn,objectLayerId) 
     { 
-        gpe._obj_obj_heart_piece.call(this,xPosIn, yPosIn,objectLayerId); 
+        GPE._obj_obj_heart_piece.call(this,xPosIn, yPosIn,objectLayerId); 
         this.gpeObjectType =4; 
         this.init_sprite(4);
         this.isVisible = 1;
         this.gpeIsContinuousObject = 0;
         this.isViewIndependent = 0;
             
-        this.OBJECT_COLLISION_LIST = gpe.make_array_unique(this.OBJECT_COLLISION_LIST);
+        this.OBJECT_COLLISION_LIST = GPE.make_array_unique(this.OBJECT_COLLISION_LIST);
     } 
 
-    _obj_obj_coin.prototype = new gpe._obj_obj_heart_piece(xPosIn, yPosIn); 
+    _obj_obj_coin.prototype = new GPE._obj_obj_heart_piece(xPosIn, yPosIn); 
     return _obj_obj_coin; 
 }());
 
 
-gpe.activate_object_families= function()
+GPE.activate_object_families= function()
 {
   GPR.GAME_OBJECTS_FAMILIES = [];
   GPR.GAME_OBJECTS_FAMILIES[0] = [];
@@ -691,29 +692,29 @@ gpe.activate_object_families= function()
 }
 
 
-gpe.add_new_object = function(newObjType, newX, newY, objectLayerId )
+GPE.add_new_object = function(newObjType, newX, newY, objectLayerId )
 {
 if( typeof objectLayerId!="number"){objectLayerId = 1;}
      var newObjOut = IS_NULL;
      switch( newObjType )
      {
          case 0:
-             newObjOut = new gpe._obj_obj_slime(newX, newY, objectLayerId);
+             newObjOut = new GPE._obj_obj_slime(newX, newY, objectLayerId);
          break;
          case 1:
-             newObjOut = new gpe._obj_obj_block(newX, newY, objectLayerId);
+             newObjOut = new GPE._obj_obj_block(newX, newY, objectLayerId);
          break;
          case 2:
-             newObjOut = new gpe._obj_obj_heart_piece(newX, newY, objectLayerId);
+             newObjOut = new GPE._obj_obj_heart_piece(newX, newY, objectLayerId);
          break;
          case 3:
-             newObjOut = new gpe._obj_obj_player(newX, newY, objectLayerId);
+             newObjOut = new GPE._obj_obj_player(newX, newY, objectLayerId);
          break;
          case 5:
-             newObjOut = new gpe._obj_obj_player2(newX, newY, objectLayerId);
+             newObjOut = new GPE._obj_obj_player2(newX, newY, objectLayerId);
          break;
          case 4:
-             newObjOut = new gpe._obj_obj_coin( newX, newY,objectLayerId);
+             newObjOut = new GPE._obj_obj_coin( newX, newY,objectLayerId);
          break;
          default:
          break;
@@ -728,7 +729,7 @@ if( typeof objectLayerId!="number"){objectLayerId = 1;}
      }
      return IS_NULL;
 };
-gpe.rsm.audioIsReadyForLoading = true; 
+GPE.rsm.audioIsReadyForLoading = true; 
 var _scn_temp_layer = IS_NULL; 
 
 _scn_newScene1.sceneId = 0;
