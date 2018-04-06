@@ -15,13 +15,7 @@ and
 ![](https://avatars0.githubusercontent.com/u/1387910?v=4&s=100)
 
 
-Building Game Pencil From Source Code
-=====================================
-We have made a helpful guide on how to compile Game Pencil from source [here](http://gamepencil.pawbyte.com/building-source-code/)
 
-**This editor is coded completely in C/C++ and uses the SDL Library for display, input, output and audio.**
-
-Please note that using the .MP3 format is strongly not recommended due to licensing fees.
 
 Donate to make Game Pencil Engine greater
 =========================================
@@ -48,3 +42,11 @@ Become a member on our [forum](http://community.pawbyte.com/)!  Here, you can fi
 Download Newest Version
 =======================
 If you would like to download the newest version of the engine, go [here](http://gamepencil.pawbyte.com/get-game-pencil-engine/)
+
+Building Game Pencil From Source Code
+=====================================
+We have made a helpful guide on how to compile Game Pencil from source [here](http://gamepencil.pawbyte.com/building-source-code/)
+
+**This editor is coded completely in C/C++ and uses the SDL Library for display, input, output and audio.**
+
+Please note that using the .MP3 format is strongly not recommended due to licensing fees.
