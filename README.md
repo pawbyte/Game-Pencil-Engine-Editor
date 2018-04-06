@@ -6,16 +6,6 @@ If you have any questions or comments: feel free to email us at <help@pawbyte.co
 
 Additionally, please report all bugs in the [issues](https://github.com/pawbyte/Game-Pencil-Engine/issues) portion of the github page
 
-Developers
-----------
-[theweirdn8](https://github.com/theweirdn8)
-![](https://avatars0.githubusercontent.com/u/3193947?v=4&s=100)
-and
-[clee231](https://github.com/clee231)
-![](https://avatars0.githubusercontent.com/u/1387910?v=4&s=100)
-
-
-
 
 Donate to make Game Pencil Engine greater
 =========================================
@@ -50,3 +40,13 @@ We have made a helpful guide on how to compile Game Pencil from source [here](ht
 **This editor is coded completely in C/C++ and uses the SDL Library for display, input, output and audio.**
 
 Please note that using the .MP3 format is strongly not recommended due to licensing fees.
+
+Developers
+----------
+[theweirdn8](https://github.com/theweirdn8)
+![](https://avatars0.githubusercontent.com/u/3193947?v=4&s=100)
+and
+[clee231](https://github.com/clee231)
+![](https://avatars0.githubusercontent.com/u/1387910?v=4&s=100)
+
+
