@@ -25,7 +25,13 @@ Please note that using the .MP3 format is strongly not recommended due to licens
 
 Donate to make Game Pencil Engine greater
 =========================================
+Work on this engine is not possible without funding. The amount of time it takes to update the codebases, create examples, tutorials and more is quite expensive. Please consider either a one-time or monthly donation to keep this engine going and more frequently updated. 
+
 We have a [Patron Page](https://www.patreon.com/pawbyte?ty=h) that you can help fund future developments of Pencil Engine and to help us kickstart new projects!
+
+There is also a [PayPal](http://gamepencil.pawbyte.com/donate/) one time donation method as well. 
+
+I appreciate your generousity and moving this project forward. 
 
 Documentation
 =============
