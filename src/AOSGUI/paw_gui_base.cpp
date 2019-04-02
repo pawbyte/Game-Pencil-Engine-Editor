@@ -147,7 +147,7 @@ void GPE_GeneralGuiElement::switch_inuse(bool newUse)
     }
 }
 
-GPE_GeneralGuiElement::update_box( double nx, double ny, double nw, double nh)
+void GPE_GeneralGuiElement::update_box( double nx, double ny, double nw, double nh)
 {
     set_coords( nx, ny);
     set_width( nw);

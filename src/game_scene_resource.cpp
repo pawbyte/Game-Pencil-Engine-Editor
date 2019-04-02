@@ -857,7 +857,7 @@ GPE_SceneBasicClass *  gameSceneResource::add_new_resource_from_menu()
                 //If the above code to dedicate a layer for this call failed, we abort
                 if( selectedSceneBranch == NULL )
                 {
-                    return false;
+                    return NULL;
                 }
 
                 int newBranchXPos = editorCameraRect.x + editorCameraRect.w/2;

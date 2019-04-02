@@ -41,7 +41,6 @@ HEADERS = \
 	src/AOSGUI/text_editor.h \
 	src/audio_resource.h \
 	src/class_resource.h \
-	src/dictionaryresource.h \
 	src/fontResource.h \
 	src/font_resource.h \
 	src/function_resource.h \
@@ -65,7 +64,6 @@ HEADERS = \
 	src/GPE_Engine/GPE_Collisions.h \
 	src/GPE_Engine/GPE_Color.h \
 	src/GPE_Engine/GPE_Color_Manager.h \
-	src/GPE_Engine/GPE_Color_Master.h \
 	src/GPE_Engine/GPE_Constants.h \
 	src/GPE_Engine/GPE_Engine.h \
 	src/GPE_Engine/GPE_File_System.h \
@@ -120,7 +118,6 @@ OBJECTS = \
 	src/animation_resource.o \
 	src/AOSGUI/ambitious_gui_library.o \
 	src/AOSGUI/gpe_syntax_handler.o \
-	src/AOSGUI/pawi_gui_resource_dropdown.o \
 	src/AOSGUI/paw_gui.o \
 	src/AOSGUI/paw_gui_base.o \
 	src/AOSGUI/paw_gui_buttons.o \
@@ -148,8 +145,6 @@ OBJECTS = \
 	src/AOSGUI/text_editor.o \
 	src/audio_resource.o \
 	src/class_resource.o \
-	src/dictionaryresource.o \
-	src/fontResource.o \
 	src/font_resource.o \
 	src/function_resource.o \
 	src/game_object_resource.o \
@@ -168,12 +163,9 @@ OBJECTS = \
 	src/GPE_Engine/GPE_Backgrounds.o \
 	src/GPE_Engine/GPE_Basic_Object.o \
 	src/GPE_Engine/GPE_Camera.o \
-	src/GPE_Engine/GPE_CIncludes.o \
 	src/GPE_Engine/GPE_Collisions.o \
 	src/GPE_Engine/GPE_Color.o \
 	src/GPE_Engine/GPE_Color_Manager.o \
-	src/GPE_Engine/GPE_Color_Master.o \
-	src/GPE_Engine/GPE_Constants.o \
 	src/GPE_Engine/GPE_Engine.o \
 	src/GPE_Engine/GPE_File_System.o \
 	src/GPE_Engine/GPE_Fonts.o \
@@ -222,6 +214,7 @@ OBJECTS = \
 	src/texture_resource.o \
 	src/tilesheet_resource.o \
 	src/video_resource.o \
+	src/main.o \
 
 
 BINARIES = Game_Pencil_Engine_IDE

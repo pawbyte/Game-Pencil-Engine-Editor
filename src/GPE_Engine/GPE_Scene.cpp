@@ -328,12 +328,12 @@ void GPE_GameScene::set_scene_name(std::string inSceneName)
     sceneName = inSceneName;
 }
 
-GPE_GameScene::change_background( int newBG, int bgNumber)
+void GPE_GameScene::change_background( int newBG, int bgNumber)
 {
 
 }
 
-GPE_GameScene::change_foreground( int newBG, int bgNumber)
+void GPE_GameScene::change_foreground( int newBG, int bgNumber)
 {
 
 }

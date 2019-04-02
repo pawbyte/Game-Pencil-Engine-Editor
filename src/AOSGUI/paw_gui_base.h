@@ -185,7 +185,7 @@ public:
     bool is_inuse();
     bool is_modified();
     void switch_inuse(bool newUse);
-    update_box( double nx, double ny, double nw, double nh);
+    void update_box( double nx, double ny, double nw, double nh);
     void update_paragraph(int foundMaxWidth = -1 );
 };
 

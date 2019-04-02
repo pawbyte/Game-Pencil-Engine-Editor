@@ -102,8 +102,8 @@ public:
     void apply_postlogic();
     std::string get_scene_name();
     void set_scene_name(std::string inSceneName);
-    change_background( int newBG, int bgNumber);
-    change_foreground( int newBG, int bgNumber);
+    void change_background( int newBG, int bgNumber);
+    void change_foreground( int newBG, int bgNumber);
     int snap_xto_grid(int xPos);
     int snap_yto_grid(int yPos);
     void load_game_scene(std::string sceneFileName);
