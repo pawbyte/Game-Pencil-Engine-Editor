@@ -3,10 +3,10 @@ video_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -31,9 +31,12 @@ SOFTWARE.
 
 */
 
-#include "gpe_project_resources.h"
+#include "video_resource.h"
+#include "gpe_editor_settings.h"
 
-videoResource::videoResource(GPE_ResourceContainer * pFolder)
+std::string SUPPORTED_VIDEO_EXT[SUPPORTED_VIDEO_FORMAT_COUNT];
+
+videoResource::videoResource(GPE_GeneralResourceContainer * pFolder)
 {
     projectParentFolder = pFolder;
     resourceFileName = " ";
@@ -53,8 +56,8 @@ videoResource::videoResource(GPE_ResourceContainer * pFolder)
     defaultVolume->set_string("100");
     defaultVolume->set_label("Default Volume:");
 
-    openExternalEditorButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/rocket.png","Opens Audio In External Editor");
-    refreshResourceDataButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/refresh.png","Refreshes this resource's media files");
+    openExternalEditorButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens Audio In External Editor");
+    refreshResourceDataButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/refresh.png","Refreshes this resource's media files");
 }
 
 videoResource::~videoResource()
@@ -95,9 +98,9 @@ bool videoResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTab
         std::string html5SpShName = get_name();
 
         *fileTarget << nestedTabsStr << "var " + html5SpShName + " =  GPE.rsm.add_video(";
-        *fileTarget << int_to_string (html5BuildGlobalId ) + ",";
+        *fileTarget << int_to_string (exportBuildGlobalId ) + ",";
         *fileTarget << "'"+html5SpShName + "',";
-        for( int i = 0;i < SUPPORTED_VIDEO_FORMAT_COUNT; i++)
+        for( int i = 0; i < SUPPORTED_VIDEO_FORMAT_COUNT; i++)
         {
             if( (int)videoFileName[i].size() > 3)
             {
@@ -131,6 +134,17 @@ bool videoResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTab
     return false;
 }
 
+
+bool videoResource::build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount  )
+{
+    return true;
+}
+
+void videoResource::compile_cpp()
+{
+
+}
+
 bool videoResource::copy_video_source(std::string outDirectoryName)
 {
     std::string copyDestinationStr = "";
@@ -140,7 +154,7 @@ bool videoResource::copy_video_source(std::string outDirectoryName)
         if((int)videoFileName[i].size() > 0)
         {
             copyDestinationStr = outDirectoryName+"/"+ getShortFileName(videoFileName[i],true);
-            record_error(videoFileName[i]+" attempted to copy to "+copyDestinationStr);
+            GPE_Report(videoFileName[i]+" attempted to copy to "+copyDestinationStr);
             if( copy_file(videoFileName[i],copyDestinationStr )==false)
             {
                 copyErrorFound = true;
@@ -182,12 +196,13 @@ void videoResource::load_video(std::string newFileName)
 
 void videoResource::preprocess_self(std::string alternatePath)
 {
-    if( resourcePostProcessed ==false  || file_exists(alternatePath) )
+    if( resourcePostProcessed == false  || file_exists(alternatePath) )
     {
-        displayMessageTitle = "Processing Video";
-        displayMessageSubtitle = resourceName;
-        displayMessageString = "...";
-        display_user_messaage();
+        if( GPE_LOADER != NULL )
+        {
+            GPE_LOADER->update_submessages( "Processing Video",resourceName );
+        }
+
         std::string otherColContainerName = "";
 
         std::string newFileIn ="";
@@ -203,102 +218,107 @@ void videoResource::preprocess_self(std::string alternatePath)
         }
         std::ifstream gameResourceFileIn( newFileIn.c_str() );
 
-        record_error("Loading video - "+newFileIn);
+        GPE_Report("Loading video - "+newFileIn);
         //If the level file could be loaded
-        if( !gameResourceFileIn.fail() )
+        if( !gameResourceFileIn.fail() && gameResourceFileIn.is_open())
         {
-            //makes sure the file is open
-            if (gameResourceFileIn.is_open())
+            int equalPos = 0;
+            std::string firstChar="";
+            std::string keyString="";
+            std::string valString="";
+            std::string subValString="";
+            std::string currLine="";
+            std::string currLineToBeProcessed;
+            double foundFileVersion = 0;
+            std::string fFontFile = "";
+            while ( gameResourceFileIn.good() )
             {
-                int equalPos = 0;
-                std::string firstChar="";
-                std::string section="";
-                std::string cur_layer="";
-                std::string data_format="";
-                std::string keyString="";
-                std::string valString="";
-                std::string subValString="";
-                std::string currLine="";
-                std::string currLineToBeProcessed;
-                float foundFileVersion = 0;
-                std::string fFontFile = "";
-                while ( gameResourceFileIn.good() )
+                getline (gameResourceFileIn,currLine); //gets the next line of the file
+                currLineToBeProcessed = trim_left_inplace(currLine);
+                currLineToBeProcessed = trim_right_inplace(currLineToBeProcessed);
+                if( foundFileVersion <=0)
                 {
-                    getline (gameResourceFileIn,currLine); //gets the next line of the file
-                    currLineToBeProcessed = trim_left_inplace(currLine);
-                    currLineToBeProcessed = trim_right_inplace(currLineToBeProcessed);
-                    if( foundFileVersion <=0)
+                    //Empty Line skipping is only allowed at the top of the file
+                    if(!currLineToBeProcessed.empty() )
                     {
-                        //Empty Line skipping is only allowed at the top of the file
-                        if(!currLineToBeProcessed.empty() )
+                        //Comment skipping is only allowed at the top of the file
+                        if( currLineToBeProcessed[0]!= '#' && currLineToBeProcessed[0]!='/'  )
                         {
-                            //Comment skipping is only allowed at the top of the file
-                            if( currLineToBeProcessed[0]!= '#' && currLineToBeProcessed[0]!='/'  )
-                            {
-                                //searches for an equal character and parses through the variable
-                                equalPos=currLineToBeProcessed.find_first_of("=");
-                                if(equalPos!=(int)std::string::npos)
-                                {
-                                    //if the equalPos is present, then parse on through and carryon
-                                    keyString = currLineToBeProcessed.substr(0,equalPos);
-                                    valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                                    if( keyString=="Version")
-                                    {
-                                        foundFileVersion = string_to_double(valString);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else if( foundFileVersion <= 2)
-                    {
-                        //Begin processing the file.
-                        if(!currLineToBeProcessed.empty() )
-                        {
+                            //searches for an equal character and parses through the variable
                             equalPos=currLineToBeProcessed.find_first_of("=");
                             if(equalPos!=(int)std::string::npos)
                             {
                                 //if the equalPos is present, then parse on through and carryon
                                 keyString = currLineToBeProcessed.substr(0,equalPos);
                                 valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                if( keyString=="Version")
+                                {
+                                    foundFileVersion = string_to_double(valString);
+                                }
+                            }
+                        }
+                    }
+                }
+                else if( foundFileVersion <= 2)
+                {
+                    //Begin processing the file.
+                    if(!currLineToBeProcessed.empty() )
+                    {
+                        equalPos=currLineToBeProcessed.find_first_of("=");
+                        if(equalPos!=(int)std::string::npos)
+                        {
+                            //if the equalPos is present, then parse on through and carryon
+                            keyString = currLineToBeProcessed.substr(0,equalPos);
+                            valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
-                                if( keyString=="ResourceName")
+                            if( keyString=="ResourceName")
+                            {
+                                renameBox->set_string(valString);
+                            }
+                            else if( keyString=="videoFileLocation")
+                            {
+                                load_video( soughtDir+valString );
+                            }
+                            else if( keyString=="VideoGroup")
+                            {
+                                videoGroupName->set_string(valString);
+                            }
+                            else if( keyString=="DefaultVolume")
+                            {
+                                defaultVolume->set_number(string_to_int(valString,100));
+                            }
+                            else
+                            {
+                                for(int i = 0; i < SUPPORTED_VIDEO_FORMAT_COUNT; i++)
                                 {
-                                    renameBox->set_string(valString);
-                                }
-                                else if( keyString=="videoFileLocation")
-                                {
-                                    load_video( soughtDir+valString );
-                                }
-                                else if( keyString=="VideoGroup")
-                                {
-                                    videoGroupName->set_string(valString);
-                                }
-                                else if( keyString=="DefaultVolume")
-                                {
-                                    defaultVolume->set_number(string_to_int(valString,100));
-                                }
-                                else
-                                {
-                                    for(int i = 0; i < SUPPORTED_VIDEO_FORMAT_COUNT; i++)
+                                    if( keyString=="videoFile["+SUPPORTED_VIDEO_EXT[i]+"]")
                                     {
-                                        if( keyString=="videoFile["+SUPPORTED_VIDEO_EXT[i]+"]")
+                                        if( (int)valString.size() > 3)
                                         {
-                                            if( (int)valString.size() > 3)
-                                            {
-                                                load_video( soughtDir+valString );
-                                            }
+                                            load_video( soughtDir+valString );
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                    else
-                    {
-                        record_error("Invalid FoundFileVersion ="+double_to_string(foundFileVersion)+".");
-                    }
                 }
+                else
+                {
+                    GPE_Report("Invalid FoundFileVersion ="+double_to_string(foundFileVersion)+".");
+                }
+            }
+
+            if( GPE_LOADER != NULL )
+            {
+                GPE_LOADER->increment_and_update( "Video resource processed",resourceName );
+            }
+        }
+        else
+        {
+            if( GPE_LOADER != NULL )
+            {
+                GPE_LOADER->increment_and_update( "Video resource processingg error occurred",resourceName );
             }
         }
     }
@@ -313,94 +333,86 @@ void videoResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if(cam!=NULL && viewedSpace!=NULL && editorPaneList!=NULL)
+    if(cam!=NULL && viewedSpace!=NULL && PANEL_GENERAL_EDITOR!=NULL)
     {
-        editorPaneList->set_coords(0,0);
-        editorPaneList->set_width(viewedSpace->w);
-        editorPaneList->set_height(viewedSpace->h);
-        editorPaneList->barXPadding = GENERAL_GPE_PADDING;
-        editorPaneList->barXMargin = GENERAL_GPE_PADDING;
+        PANEL_GENERAL_EDITOR->clear_panel();
+        PANEL_GENERAL_EDITOR->add_gui_element(videoEditorMainNote,true);
+        PANEL_GENERAL_EDITOR->add_gui_element(renameBox,true);
 
-        editorPaneList->clear_list();
-        editorPaneList->add_gui_element(videoEditorMainNote,true);
-        editorPaneList->add_gui_element(renameBox,true);
+        PANEL_GENERAL_EDITOR->add_gui_element(refreshResourceDataButton,false );
+        PANEL_GENERAL_EDITOR->add_gui_element(loadResourceButton,false );
+        PANEL_GENERAL_EDITOR->add_gui_element(openExternalEditorButton,true);
 
-        editorPaneList->add_gui_element(refreshResourceDataButton,false );
-        editorPaneList->add_gui_element(loadResourceButton,false );
-        editorPaneList->add_gui_element(openExternalEditorButton,true);
+        PANEL_GENERAL_EDITOR->add_gui_element(videoGroupName, true);
+        PANEL_GENERAL_EDITOR->add_gui_element(defaultVolume,true);
+        PANEL_GENERAL_EDITOR->add_gui_element(confirmResourceButton,true);
+        PANEL_GENERAL_EDITOR->add_gui_element(cancelResourceButton,true);
+        //PANEL_GENERAL_EDITOR->set_maxed_out_width();
+        PANEL_GENERAL_EDITOR->process_self(NULL, NULL);
 
-        editorPaneList->add_gui_element(videoGroupName, true);
-        editorPaneList->add_gui_element(defaultVolume,true);
-        editorPaneList->add_gui_element(confirmResourceButton,true);
-        editorPaneList->add_gui_element(cancelResourceButton,true);
-        //editorPaneList->set_maxed_out_width();
-        editorPaneList->process_self(viewedSpace,cam);
-        if( loadResourceButton!=NULL)
+
+        if( loadResourceButton!=NULL && loadResourceButton->is_clicked() )
         {
-            if( loadResourceButton->is_clicked() )
-            {
-                std::string newFileName = GPE_GetOpenFileName("Load In an video File","Video",MAIN_GUI_SETTINGS->fileOpenVideoDir);
-                load_video(newFileName);
-            }
+            std::string newFileName = GPE_GetOpenFileName("Load In an video File","Video",MAIN_GUI_SETTINGS->fileOpenVideoDir);
+            load_video(newFileName);
         }
-
-        if( openExternalEditorButton!=NULL)
+        else if( confirmResourceButton!=NULL && confirmResourceButton->is_clicked() )
         {
-            if( openExternalEditorButton->is_clicked() )
+            save_resource();
+        }
+        else if( cancelResourceButton->is_clicked() )
+        {
+            resourcePostProcessed = false;
+            preprocess_self();
+        }
+        else if( openExternalEditorButton!=NULL &&  openExternalEditorButton->is_clicked() )
+        {
+            bool hasFileToOpen = false;
+            int ii = 0;
+            for( ii = 0; ii < SUPPORTED_VIDEO_FORMAT_COUNT; ii++)
             {
-                bool hasFileToOpen = false;
-                int ii = 0;
+                if( (int)videoFileName[ii].size() > 0)
+                {
+                    hasFileToOpen = true;
+                    break;
+                }
+            }
+            if( hasFileToOpen )
+            {
+                GPE_open_context_menu(-1,-1,256);
+                MAIN_CONTEXT_MENU->set_width(openExternalEditorButton->get_width() );
                 for( ii = 0; ii < SUPPORTED_VIDEO_FORMAT_COUNT; ii++)
                 {
                     if( (int)videoFileName[ii].size() > 0)
                     {
-                        hasFileToOpen = true;
-                        break;
+                        MAIN_CONTEXT_MENU->add_menu_option("Edit "+SUPPORTED_VIDEO_EXT[ii],ii);
                     }
                 }
-                if( hasFileToOpen )
+                int menuSelection = GPE_Get_Context_Result();
+                if( menuSelection >=0 && menuSelection < SUPPORTED_VIDEO_FORMAT_COUNT)
                 {
-                    GPE_open_context_menu(-1,-1,256);
-                    MAIN_CONTEXT_MENU->set_width(openExternalEditorButton->get_width() );
-                    for( ii = 0; ii < SUPPORTED_VIDEO_FORMAT_COUNT; ii++)
-                    {
-                        if( (int)videoFileName[ii].size() > 0)
-                        {
-                            MAIN_CONTEXT_MENU->add_menu_option("Edit "+SUPPORTED_VIDEO_EXT[ii],ii);
-                        }
-                    }
-                    int menuSelection = get_popupmenu_result();
-                    if( menuSelection >=0 && menuSelection < SUPPORTED_VIDEO_FORMAT_COUNT)
-                    {
-                        std::string fileToEdit = videoFileName[menuSelection];
+                    std::string fileToEdit = videoFileName[menuSelection];
 
-                        if( MAIN_EDITOR_SETTINGS!=NULL && MAIN_EDITOR_SETTINGS->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_VID]!=NULL)
-                        {
-                            GPE_OpenProgram(MAIN_EDITOR_SETTINGS->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_VID]->get_string(),fileToEdit, true );
-                        }
-                        else
-                        {
-                            GPE_OpenURL(fileToEdit);
-                        }
-                        /*
-                        fileToEdit = "\"C:/Program Files (x86)/Audacity/audacity.exe\" \""+fileToEdit+"\"";
-                        GPE_OpenURL(fileToEdit);*/
-                        appendToFile(get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+fileToEdit+"]...");
+                    if( MAIN_EDITOR_SETTINGS!=NULL && MAIN_EDITOR_SETTINGS->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_VID]!=NULL)
+                    {
+                        GPE_OpenProgram(MAIN_EDITOR_SETTINGS->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_VID]->get_string(),fileToEdit, true );
                     }
+                    else
+                    {
+                        GPE_OpenURL(fileToEdit);
+                    }
+                    /*
+                    fileToEdit = "\"C:/Program Files (x86)/Audacity/audacity.exe\" \""+fileToEdit+"\"";
+                    GPE_OpenURL(fileToEdit);*/
+                    appendToFile(get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+fileToEdit+"]...");
                 }
             }
         }
-
-        if( refreshResourceDataButton!=NULL )
+        else if( refreshResourceDataButton!=NULL &&  refreshResourceDataButton->is_clicked() )
         {
-            if( refreshResourceDataButton->is_clicked() )
-            {
-                resourcePostProcessed = false;
-                preprocess_self();
-            }
+            resourcePostProcessed = false;
+            preprocess_self();
         }
-
-        defaultVolume->process_self(viewedSpace,cam);
     }
 }
 
@@ -408,34 +420,31 @@ void videoResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceR
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if(cam!=NULL && viewedSpace!=NULL && editorPaneList!=NULL)
+    if( cam!=NULL && viewedSpace!=NULL && forceRedraw )
     {
-        if( forceRedraw)
+        for( int i = 0; i < SUPPORTED_VIDEO_FORMAT_COUNT; i++)
         {
-            for( int i = 0; i < SUPPORTED_VIDEO_FORMAT_COUNT; i++)
+            if( videoFileName[i].size()> 0)
             {
-                if( videoFileName[i].size()> 0)
-                {
-                    render_new_text( viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_VIDEO_EXT[i]+" is attatched",GPE_MAIN_THEME->Main_Box_Font_Highlight_Color,DEFAULT_FONT,FA_RIGHT,FA_TOP);
-                }
-                else
-                {
-                    render_new_text( viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_VIDEO_EXT[i]+" not attatched",GPE_MAIN_THEME->Main_Box_Font_Color,DEFAULT_FONT,FA_RIGHT,FA_TOP);
-                }
+                gfs->render_text( viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_VIDEO_EXT[i]+" is attatched",GPE_MAIN_THEME->Main_Box_Font_Highlight_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_TOP);
+            }
+            else
+            {
+                gfs->render_text( viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_VIDEO_EXT[i]+" not attatched",GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_TOP);
             }
         }
-
-        editorPaneList->render_self( viewedSpace,cam, forceRedraw);
+        gfs->render_text( viewedSpace->w/2, viewedSpace->h-32, "HTML5 Feature. Currently not supported in C++/Native runtime",GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT, FA_CENTER, FA_BOTTOM, 255);
     }
     //
 }
 
 void videoResource::save_resource(std::string alternatePath, int backupId)
 {
-    displayMessageTitle = "Saving Game video";
-    displayMessageSubtitle = resourceName;
-    displayMessageString = "...";
-    display_user_messaage();
+    if( GPE_LOADER != NULL )
+    {
+        GPE_LOADER->update_submessages( "Saving Game video", resourceName );
+    }
+
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = get_path_from_file(alternatePath);
@@ -451,63 +460,68 @@ void videoResource::save_resource(std::string alternatePath, int backupId)
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
     //If the scene file could be saved
-    if( !newSaveDataFile.fail() )
+    if( !newSaveDataFile.fail() && newSaveDataFile.is_open() )
     {
-        //makes sure the file is open
-        if (newSaveDataFile.is_open())
-        {
-            write_header_on_file(&newSaveDataFile);
+        write_header_on_file(&newSaveDataFile);
 
-            std::string resFileLocation = "";
-            std::string resFileCopySrc;
-            std::string resFileCopyDest;
-            for(int i = 0; i < SUPPORTED_VIDEO_FORMAT_COUNT; i++)
+        std::string resFileLocation = "";
+        std::string resFileCopySrc;
+        std::string resFileCopyDest;
+
+        for(int i = 0; i < SUPPORTED_VIDEO_FORMAT_COUNT; i++)
+        {
+            if( (int)videoFileName[i].size() > 3)
             {
-                if( (int)videoFileName[i].size() > 3)
+                resFileLocation = getShortFileName (videoFileName[i],true );
+                newSaveDataFile << "videoFile["+SUPPORTED_VIDEO_EXT[i]+"]="+resFileLocation+"\n";
+                if( (int)resFileLocation.size() > 0 && usingAltSaveSource )
                 {
-                    resFileLocation = getShortFileName (videoFileName[i],true );
-                    newSaveDataFile << "videoFile["+SUPPORTED_VIDEO_EXT[i]+"]="+resFileLocation+"\n";
-                    if( (int)resFileLocation.size() > 0 && usingAltSaveSource )
+                    resFileCopySrc = fileToDir(parentProjectName)+"/gpe_project/resources/video/"+resFileLocation;
+                    resFileCopyDest = soughtDir+resFileLocation;
+                    if( file_exists(resFileCopyDest) )
                     {
-                        resFileCopySrc = fileToDir(parentProjectName)+"/gpe_project/resources/video/"+resFileLocation;
-                        resFileCopyDest = soughtDir+resFileLocation;
-                        if( file_exists(resFileCopyDest) )
-                        {
-                            if( display_get_prompt("[WARNING]Video File Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] Video file? This action is irreversible!")==DISPLAY_QUERY_YES)
-                            {
-                                copy_file(resFileCopySrc,resFileCopyDest);
-                            }
-                        }
-                        else
+                        /*
+                        if( GPE_Display_Basic_Prompt("[WARNING]Video File Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] Video file? This action is irreversible!")==DISPLAY_QUERY_YES)
                         {
                             copy_file(resFileCopySrc,resFileCopyDest);
                         }
+                        */
+                    }
+                    else
+                    {
+                        copy_file(resFileCopySrc,resFileCopyDest);
                     }
                 }
             }
-            if( defaultVolume!=NULL)
-            {
-                newSaveDataFile << "DefaultVolume="+int_to_string(defaultVolume->get_held_number() )+"\n";
-            }
-            if( videoGroupName!=NULL)
-            {
-                newSaveDataFile << "VideoGroup="+videoGroupName->get_string()+"\n";
+        }
 
-            }
-            newSaveDataFile.close();
-            if( !usingAltSaveSource)
-            {
-                isModified = false;
-            }
-        }
-        else
+        if( defaultVolume!=NULL)
         {
-            GPE_Main_Logs->log_general_error("Unable to save to file ["+newFileOut+"]");
+            newSaveDataFile << "DefaultVolume="+int_to_string(defaultVolume->get_held_number() )+"\n";
         }
+
+        if( videoGroupName!=NULL)
+        {
+            newSaveDataFile << "VideoGroup="+videoGroupName->get_string()+"\n";
+
+        }
+
+        newSaveDataFile.close();
+        if( !usingAltSaveSource)
+        {
+            isModified = false;
+        }
+        if( GPE_LOADER != NULL )
+        {
+            GPE_LOADER->increment_and_update( "Video resource saved",resourceName );
+        }
+        return;
     }
-    else
+
+    GPE_Main_Logs->log_general_error("Unable to save file ["+newFileOut+"]");
+    if( GPE_LOADER != NULL )
     {
-        GPE_Main_Logs->log_general_error("Unable to save file ["+newFileOut+"]");
+        GPE_LOADER->increment_and_update( "Video resource unable to save",resourceName );
     }
 }
 

@@ -3,10 +3,10 @@ GPE_State_Manager.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -47,14 +47,14 @@ void change_state()
         {
             delete currentState;
         }
-         //Change the state
+        //Change the state
         switch( GPE_NextProgramState )
         {
-            case STATE_LOGO_DISPLAY:
+        case STATE_LOGO_DISPLAY:
             break;
-            default:
-         //       GPE_NextProgramState=STATE_GPE_EDITOR;
-         //       currentState = new GPE_Editor_State();
+        default:
+            //       GPE_NextProgramState=STATE_GPE_EDITOR;
+            //       currentState = new GPE_Editor_State();
             break;
         }
 

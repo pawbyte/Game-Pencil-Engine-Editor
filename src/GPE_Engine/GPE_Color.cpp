@@ -3,10 +3,10 @@ GPE_Color.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -32,15 +32,7 @@ SOFTWARE.
 */
 
 #include "GPE_Color.h"
-
-GPE_Color::GPE_Color()
-{
-    colorName = "white";
-    rVal=255;
-    gVal=255;
-    bVal=255;
-    aVal=255;
-}
+#include "GPE_Functions.h"
 
 GPE_Color::GPE_Color(std::string name, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
@@ -50,14 +42,14 @@ GPE_Color::GPE_Color(std::string name, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
     bVal=b;
     aVal=a;
 }
-
-GPE_Color::GPE_Color(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+GPE_Color::GPE_Color(int hexDec)
 {
-    colorName = "unnamed";
-    rVal=r;
-    gVal=g;
-    bVal=b;
-    aVal=a;
+    hexDecNumb = hexDec;
+}
+
+GPE_Color::~GPE_Color()
+{
+
 }
 
 bool GPE_Color::checkEquality(GPE_Color otherColor)
@@ -90,10 +82,7 @@ std::string GPE_Color::get_name()
     return colorName;
 }
 
-GPE_Color::GPE_Color(int hexDec)
-{
-    hexDecNumb = hexDec;
-}
+
 
 void GPE_Color::set_hex(int newHex)
 {
@@ -121,6 +110,11 @@ Uint8 GPE_Color::get_b()
     return bVal;
 }
 
+Uint8 GPE_Color::get_a()
+{
+    return aVal;
+}
+
 void GPE_Color::change_r(Uint8 r)
 {
     rVal=r;
@@ -135,6 +129,10 @@ void GPE_Color::change_b(Uint8 b)
 {
     bVal=b;
 }
+void GPE_Color::change_a(Uint8 a)
+{
+    aVal=a;
+}
 
 void GPE_Color::change_rgba(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
@@ -144,7 +142,12 @@ void GPE_Color::change_rgba(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
     aVal=a;
 }
 
-GPE_Color::~GPE_Color()
+void GPE_Color::change_and_verify_rgba(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-
+    rVal= bound_number(r, 0, 255 );
+    gVal= bound_number(g, 0, 255 );
+    bVal= bound_number(b, 0, 255 );
+    aVal= bound_number(a, 0, 255 );
 }
+
+

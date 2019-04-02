@@ -63,7 +63,7 @@ definitionResource::~definitionResource()
     }
 }
 
-dictionaryResource::dictionaryResource(GPE_ResourceContainer * pFolder )
+dictionaryResource::dictionaryResource(GPE_GeneralResourceContainer * pFolder )
 {
     projectParentFolder = pFolder;
     addDefinitionButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/plus-circle.png","Add Definition","Adds a new definition to dictionary");
@@ -151,7 +151,7 @@ void dictionaryResource::preprocess_self(std::string alternatePath )
         }
         std::ifstream gameResourceFileIn( newFileIn.c_str() );
 
-        record_error("Loading dictionary - "+newFileIn);
+        GPE_Report("Loading dictionary - "+newFileIn);
         //If the level file could be loaded
         if( !gameResourceFileIn.fail() )
         {
@@ -227,7 +227,7 @@ void dictionaryResource::preprocess_self(std::string alternatePath )
                     }
                     else
                     {
-                        record_error("Invalid FoundFileVersion ="+double_to_string(foundFileVersion)+".");
+                        GPE_Report("Invalid FoundFileVersion ="+double_to_string(foundFileVersion)+".");
                     }
                 }
             }
@@ -292,15 +292,15 @@ void dictionaryResource::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam )
         {
             std::string newWord = get_string_from_popup("Enter a new word","Enter a unique word","");
             newWord = trim_left_inplace(newWord);
-            record_error("Found "+newWord);
+            GPE_Report("Found "+newWord);
 
             if( (int)newWord.size() > 0 )
             {
                 if( word_exists( newWord) ==false )
                 {
-                    record_error("Adding definition["+newWord+"]...");
+                    GPE_Report("Adding definition["+newWord+"]...");
                     add_definition(newWord,"");
-                    record_error("Adding definition successful");
+                    GPE_Report("Adding definition successful");
                 }
                 else if( GPE_Main_Logs!=NULL )
                 {

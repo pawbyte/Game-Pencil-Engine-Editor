@@ -3,10 +3,10 @@ GPE_Shapes.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -33,175 +33,41 @@ SOFTWARE.
 
 #ifndef GPE_SHAPES_H
 #define GPE_SHAPES_H
+#include <stdio.h>
+#include <stdlib.h>
 
-struct GPE_Rect
+class GPE_Rect
 {
-    double x;
-    double y;
-    double xCenter;
-    double x2Pos;
-    double yMiddle;
-    double y2Pos;
-    double w;
-    double h;
-    GPE_Rect()
-    {
-        x = 0;
-        xCenter = 0;
-        y = 0;
-        x2Pos = 0;
-        yMiddle = 0;
-        y2Pos = 0;
-        w = 0;
-        h = 0;
-    }
-
-    void add_x( double xPlus)
-    {
-        x+=xPlus;
-        x2Pos+=xPlus;
-        xCenter+=xPlus;
-    }
-
-    void add_y( double yPlus)
-    {
-        y+=yPlus;
-        y2Pos+=yPlus;
-        yMiddle+=yPlus;
-    }
-
-    void copy_rect( GPE_Rect * otherRect )
-    {
-        x = otherRect->x;
-        y = otherRect->y;
-        x2Pos = otherRect->x2Pos;
-        y2Pos = otherRect->y2Pos;
-        w = otherRect->w;
-        h = otherRect->h;
-        xCenter = otherRect->xCenter;
-        yMiddle = otherRect->yMiddle;
-    };
-
-    double get_center()
-    {
-        return xCenter;
-    };
-
-    double get_height()
-    {
-        return h;
-    };
-
-    double get_middle()
-    {
-        return yMiddle;
-    };
-
-    double get_width()
-    {
-        return w;
-    };
-
-    double get_x()
-    {
-        return x;
-    };
-
-    double get_x2()
-    {
-        return x2Pos;
-    };
-
-    double get_y()
-    {
-        return y;
-    };
-
-    double get_y2()
-    {
-        return y2Pos;
-    };
-
-    void set_x( double newX)
-    {
-        x = newX;
-        x2Pos = x+w;
-        xCenter = newX+w/2;
-        xCenter = x+ w/2;
-    };
-
-    void set_y( double newY )
-    {
-        y = newY;
-        y2Pos = y+h;
-        yMiddle = y+h/2;
-    };
-
-    void update_position( double xNew, double yNew)
-    {
-        x = xNew;
-        y = yNew;
-        x2Pos = x+w;
-        y2Pos = y+h;
-        xCenter = x + w/2;
-        yMiddle = y+h/2;
-    };
-
-    void update_box( double xNew, double yNew, double widNew, double hgtNew)
-    {
-        update_shape(xNew, yNew, widNew, hgtNew );
-    }
-
-    void update_shape( double xNew, double yNew, double widNew, double hgtNew)
-    {
-        x = xNew;
-        y = yNew;
-        w = widNew;
-        h = hgtNew;
-
-        if( widNew < 0)
-        {
-            x = xNew-widNew;
-            w = abs(widNew);
-            /*if( GPE_SETTINGS_IS_DEBUGGING )
-            console.log( rectWidth);*/
-        }
-
-        if( hgtNew < 0)
-        {
-            y = yNew-hgtNew;
-            h =abs(hgtNew);
-            /*if( GPE_SETTINGS_IS_DEBUGGING )
-            console.log( rectHeigh);*/
-        }
-        x2Pos = x+w;
-        y2Pos = y+h;
-
-        xCenter = x+w/2;
-        yMiddle = y+h/2;
-    }
-
-    void update_size( double widNew, double hgtNew)
-    {
-        w = widNew;
-        h = hgtNew;
-        if( widNew < 0)
-        {
-            x = x-widNew;
-            w = abs(widNew);
-        }
-
-        if( hgtNew < 0)
-        {
-            y = y-hgtNew;
-            h = abs(hgtNew);
-        }
-
-        x2Pos = x+w;
-        y2Pos = y+h;
-        xCenter = x+w/2;
-        yMiddle = y+h/2;
-    };
+    public:
+        double x;
+        double y;
+        double xCenter;
+        double x2Pos;
+        double yMiddle;
+        double y2Pos;
+        double w;
+        double h;
+        GPE_Rect( double rX= 0, double rY= 0, double rW= 0, double rH = 0);
+        ~GPE_Rect();
+        void add_x( double xPlus);
+        void add_y( double yPlus);
+        void copy_rect( GPE_Rect * otherRect );
+        double get_center();
+        double get_height();
+        double get_middle();
+        double get_width();
+        double get_x();
+        double get_x2();
+        double get_y();
+        double get_y2();
+        void set_x( double newX );
+        void set_y( double newY );
+        void set_w( double newW );
+        void set_h( double newH );
+        void update_position( double xNew, double yNew);
+        void update_box( double xNew, double yNew, double widNew, double hgtNew);
+        void update_shape( double xNew, double yNew, double widNew, double hgtNew);
+        void update_size( double widNew, double hgtNew);
 };
 
 #endif

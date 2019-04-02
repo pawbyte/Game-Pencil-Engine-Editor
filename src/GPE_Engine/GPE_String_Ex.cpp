@@ -3,10 +3,10 @@ GPE_String_Ex.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -80,10 +80,33 @@ bool is_alnum(const std::string str, bool allowSpaces, bool allowUnderscores)
     return false;
 }
 
-bool string_starts(std::string hay, std::string needle)
+
+
+bool string_contains(const std::string& hay, const std::string& needle)
 {
+    int haySize = (int)needle.size();
     int needleSize = (int)needle.size();
-    if( (int)hay.size() > 0 && needle.size() > 0 && (int)hay.size() >= (int)needle.size() )
+    if( (int)hay.size() > 0 && needleSize > 0 && haySize >= needleSize )
+    {
+        return ( hay.find(needle ) != std::string::npos );
+    }
+    return false;
+}
+
+bool string_ends(const std::string& hay, const std::string& needle)
+{
+    if (hay.size() < needle.size() )
+    {
+        return false;
+    }
+    return std::equal(hay.begin() + hay.size() - needle.size(), hay.end(), needle.begin());
+}
+
+bool string_starts(const std::string& hay, const std::string& needle)
+{
+    int haySize = (int)hay.size();
+    int needleSize = (int)needle.size();
+    if(  needleSize > 0 && haySize >= needleSize )
     {
         for( int i = 0; i < needleSize; i++)
         {
@@ -97,46 +120,26 @@ bool string_starts(std::string hay, std::string needle)
     return false;
 }
 
-bool string_contains(std::string hay, std::string needle)
-{
-    int needleSize = (int)needle.size();
-    if( (int)hay.size() > 0 && needleSize > 0 && (int)hay.size() >= needleSize )
-    {
-
-    }
-    return false;
-}
-
-bool string_ends(std::string hay, std::string needle)
-{
-    int needleSize = (int)needle.size();
-    if( (int)hay.size() > 0 && needleSize > 0 && (int)hay.size() >= needleSize )
-    {
-
-    }
-    return false;
-}
-
 std::string int_to_string(int in)
 {
-       std::ostringstream converter;
-       converter << in;
-       return converter.str();
+    std::ostringstream converter;
+    converter << in;
+    return converter.str();
 }
 
-
-std::string float_to_string(float in)
-{
-       std::ostringstream converter;
-       converter << in;
-       return converter.str();
-}
 
 std::string double_to_string(double in)
 {
-       std::ostringstream converter;
-       converter << in;
-       return converter.str();
+    std::ostringstream converter;
+    converter << in;
+    return converter.str();
+}
+
+std::string float_to_string(float in)
+{
+    std::ostringstream converter;
+    converter << in;
+    return converter.str();
 }
 
 std::string get_substring(std::string strIn, int cStart, int cLength)
@@ -179,10 +182,10 @@ int get_leading_space_count(std::string strIn)
 
 int get_trailing_space_count( std::string strIn)
 {
-        if( (int)strIn.size() > 0)
+    if( (int)strIn.size() > 0)
     {
         int spacesCounted = 0;
-        for( int i = (int)strIn.size()-1; i>=0;i--)
+        for( int i = (int)strIn.size()-1; i>=0; i--)
         {
             if( strIn[i]==' ')
             {
@@ -198,64 +201,68 @@ int get_trailing_space_count( std::string strIn)
     return 0;
 }
 
-std::string string_replace_all(std::string str, std::string substr, std::string newstr)
+std::string string_replace_all(std::string str, std::string substring, std::string newstr)
 {
-    int substrLen = substr.length();
-    int position = str.find( substr ); // find first substr
+    int newStrLen = (int)newstr.size();
+    int substrLen = (int)substring.size();
+    int position = str.find( substring ); // find first substring
     //
     while ( position != (int)std::string::npos )
     {
         str.replace( position, substrLen, newstr );
-        if( (int)newstr.size()==0)
+        if( newStrLen ==0 )
         {
-            position = str.find( substr, position  );
+            position = str.find( substring, position  );
         }
         else
         {
-            position = str.find( substr, position + substrLen );
+            position = str.find( substring, position + newStrLen );
         }
     }
     return str;
 }
 
-int string_count(std::string str, std::string substrIn)
+int string_count(std::string str, std::string needle )
 {
-   int position = 0;
-   int returnCount=0;
-   //
-   if( (int)str.size() > 0 && (int)substrIn.size() > 0 )
-   {
-       position = str.find( substrIn, position+1 );
-       while ( position != (int)std::string::npos && position < (int)str.size() )
-       {
-          position = str.find( substrIn, position+(int)substrIn.size() );
-          returnCount++;
-       }
-   }
-   return returnCount;
+    int position = 0;
+    int returnCount=0;
+    //
+    int strSize = (int)str.size();
+    int needleSize = (int)needle.size();
+    if( strSize > 0 && needleSize > 0 )
+    {
+        position = str.find( needle, position+1 );
+        while ( position != (int)std::string::npos && position < strSize )
+        {
+            position = str.find( needle, position+needleSize );
+            returnCount++;
+        }
+    }
+    return returnCount;
 }
 
 std::string string_digits(std::string str)
 {
-            return str;
+    return str;
 }
 
 
 std::string string_letters(std::string str)
 {
-            return str;
+    return str;
 }
 
 
 std::string string_lower(std::string str)
 {
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower );
     return str;
 }
 
 
 std::string string_upper(std::string str)
 {
-            return str;
+    return str;
 }
 
 
@@ -276,48 +283,48 @@ std::string string_repeat(std::string str,int repeatCount )
 
 std::string string_lettersdigits(std::string str)
 {
-     return str;
+    return str;
 }
 
 
 std::vector <std::string> divideStringIntoLines(std::string stringIn,int numbLines)
 {
-     std::vector <std::string> returnVector;
-     /*
-     int wholeLength= stringIn.size();
-     if(numbLines>0)
-     {
-          int maxLengthForString = wholeLength/numbLines;
-          for(int ii=0;ii<numbLines;ii+=1)
-          {
+    std::vector <std::string> returnVector;
+    /*
+    int wholeLength= stringIn.size();
+    if(numbLines>0)
+    {
+         int maxLengthForString = wholeLength/numbLines;
+         for(int ii=0;ii<numbLines;ii+=1)
+         {
 
-               //divides the string into multiple two pieces
-               std::string line_text_xx=stringIn.substr((i*maxLengthForString),(i+1)*maxLengthForString);
-               std::string new_text_n=stringIn.substr((i*maxLengthForString),line_text_x.size()-(i*maxLengthForString));
-               //checks for the first character in the string of both old and new
-               std::string firstForNew=new_text_n.substr(0,1);
-               std::string firstForNew2 = string_letters(firstForNew);
-               std::string lastForOld = line_text_xx.substr(line_text_xx.size(),1);
-               std::string lastForOld2= string_letters(lastForOld);
-               //if a problem arises like the ending character not being empty, we add a dash to the string being inserted
-               if( (firstForNew.compare(" ")==0)&&(lastForOld.compare("")==0)&&(firstForNew.compare(firstForNew2) )&&(lastForOld.compare(lastForOld2) ))
-               {
-                    //adds a dash to the string and adds it to our vector
-                    returnVector.push_back(line_text_xx.append("-"));
-               }
-               else
-               {
-                    //lovely we have a space, thus we just add it as planned.
-                    returnVector.push_back(line_text_xx);
-               }
-          }
-     }
-     else
-     {
-         returnVector.push_back(stringIn);
-     }
-     */
-     return returnVector;
+              //divides the string into multiple two pieces
+              std::string line_text_xx=stringIn.substr((i*maxLengthForString),(i+1)*maxLengthForString);
+              std::string new_text_n=stringIn.substr((i*maxLengthForString),line_text_x.size()-(i*maxLengthForString));
+              //checks for the first character in the string of both old and new
+              std::string firstForNew=new_text_n.substr(0,1);
+              std::string firstForNew2 = string_letters(firstForNew);
+              std::string lastForOld = line_text_xx.substr(line_text_xx.size(),1);
+              std::string lastForOld2= string_letters(lastForOld);
+              //if a problem arises like the ending character not being empty, we add a dash to the string being inserted
+              if( (firstForNew.compare(" ")==0)&&(lastForOld.compare("")==0)&&(firstForNew.compare(firstForNew2) )&&(lastForOld.compare(lastForOld2) ))
+              {
+                   //adds a dash to the string and adds it to our vector
+                   returnVector.push_back(line_text_xx.append("-"));
+              }
+              else
+              {
+                   //lovely we have a space, thus we just add it as planned.
+                   returnVector.push_back(line_text_xx);
+              }
+         }
+    }
+    else
+    {
+        returnVector.push_back(stringIn);
+    }
+    */
+    return returnVector;
 }
 
 //returns the inputed value with 2 digits each time
@@ -372,20 +379,25 @@ std::string fileToDir(std::string fileNameIn)
 /**
  * trim: remove leading and trailing c from s
  */
-std::string trim_string(const std::string s, char c) {
-	if (s.length() == 0) return "";
+std::string trim_string(const std::string s, char c)
+{
+    if (s.length() == 0)
+        return "";
 
-	unsigned int first = 0;
-	unsigned int last = s.length()-1;
+    unsigned int first = 0;
+    unsigned int last = s.length()-1;
 
-	while (s.at(first) == c && first < s.length()-1) {
-		first++;
-	}
-	while (s.at(last) == c && last >= first && last > 0) {
-		last--;
-	}
-	if (first <= last) return s.substr(first,last-first+1);
-	return "";
+    while (s.at(first) == c && first < s.length()-1)
+    {
+        first++;
+    }
+    while (s.at(last) == c && last >= first && last > 0)
+    {
+        last--;
+    }
+    if (first <= last)
+        return s.substr(first,last-first+1);
+    return "";
 }
 
 /**
@@ -395,23 +407,27 @@ std::string trim_string(const std::string s, char c) {
  * This is basically a really lazy "split" replacement
  */
 
-int split_first_int(std::string &s, char separator) {
-	size_t seppos = s.find_first_of(separator);
-	if (seppos == std::string::npos) {
-		s = "";
-		return 0; // not found
-	}
-	int num = string_to_int(s.substr(0, seppos));
-	s = s.substr(seppos+1);
-	return num;
+int split_first_int(std::string &s, char separator)
+{
+    size_t seppos = s.find_first_of(separator);
+    if (seppos == std::string::npos)
+    {
+        s = "";
+        return 0; // not found
+    }
+    int num = string_to_int(s.substr(0, seppos));
+    s = s.substr(seppos+1);
+    return num;
 }
 
-std::string split_first_string(std::string &s, char separator) {
-	size_t seppos = s.find_first_of(separator);
-	if (seppos == std::string::npos) return ""; // not found
-	std::string outs = s.substr(0, seppos);
-	s = s.substr(seppos+1);
-	return outs;
+std::string split_first_string(std::string &s, char separator)
+{
+    size_t seppos = s.find_first_of(separator);
+    if (seppos == std::string::npos)
+        return ""; // not found
+    std::string outs = s.substr(0, seppos);
+    s = s.substr(seppos+1);
+    return outs;
 }
 
 
@@ -422,7 +438,8 @@ std::string split_first_string(std::string& s, std::string separator)
         if((int)separator.length()>=1)
         {
             size_t seppos = s.find(separator);
-            if (seppos == std::string::npos) return ""; // not found
+            if (seppos == std::string::npos)
+                return ""; // not found
             std::string outs = s.substr(0, seppos);
             s = s.substr(seppos+separator.length() );
             return outs;
@@ -433,8 +450,8 @@ std::string split_first_string(std::string& s, std::string separator)
 
 int string_to_int(const std::string& s, int default_value)
 {
-	int result = default_value;
-	if( (int)s.size() > 0)
+    int result = default_value;
+    if( (int)s.size() > 0)
     {
         char *endp;
 
@@ -448,7 +465,7 @@ int string_to_int(const std::string& s, int default_value)
             result = value;
         }
     }
-	return result;
+    return result;
 }
 
 double string_to_double( const std::string& s, double default_value )
@@ -470,41 +487,38 @@ double string_to_double( const std::string& s, double default_value )
 
 std::string trim_left_inplace(std::string       s,const std::string& delimiters)
 {
-  return s.erase( 0, s.find_first_not_of( delimiters ) );
+    return s.erase( 0, s.find_first_not_of( delimiters ) );
 }
 
 std::string trim_right_inplace(std::string s, const std::string& delimiters)
 {
-	return s.erase(s.find_last_not_of(delimiters) + 1);
+    return s.erase(s.find_last_not_of(delimiters) + 1);
 }
 
 std::string trim_string(std::string s, const std::string& delimiters)
 {
-	return trim_left_inplace(trim_right_inplace(s, delimiters), delimiters);
+    return trim_left_inplace(trim_right_inplace(s, delimiters), delimiters);
 }
 
-bool is_bool(int value)
+bool string_to_bool(std::string value)
 {
-    if(value==1)
-    {
+    trim_string(value,' ');
+
+    std::transform(value.begin(), value.end(), value.begin(), ::tolower);
+    if (value == "true")
         return true;
-    }
+    if (value == "yes")
+        return true;
+    if (value == "1")
+        return true;
+    if (value == "false")
+        return false;
+    if (value == "no")
+        return false;
+    if (value == "0")
+        return false;
+
     return false;
-}
-
-bool is_bool(std::string value)
-{
-	trim_string(value,' ');
-
-	std::transform(value.begin(), value.end(), value.begin(), ::tolower);
-	if (value == "true") return true;
-	if (value == "yes") return true;
-	if (value == "1") return true;
-	if (value == "false") return false;
-	if (value == "no") return false;
-	if (value == "0") return false;
-
-	return false;
 }
 
 bool wrap_string( std::string strIn,std::vector < std::string > &strVector, int lineWidth, int maxLines)
@@ -515,7 +529,7 @@ bool wrap_string( std::string strIn,std::vector < std::string > &strVector, int 
     }
 
     strVector.clear();
-    //record_error("Wrapping text [ "+strIn+" ] .");
+    //GPE_Report("Wrapping text [ "+strIn+" ] .");
     if( (int) strIn.size() >= lineWidth )
     {
         int prevSpacePos = 0;
@@ -531,14 +545,14 @@ bool wrap_string( std::string strIn,std::vector < std::string > &strVector, int 
                 {
                     if( prevSpacePos > prevSavedPos)
                     {
-                        //record_error("Wrapped text (1).");
+                        //GPE_Report("Wrapped text (1).");
                         strVector.push_back( strIn.substr(prevSavedPos,prevSpacePos - prevSavedPos )  );
                         prevSavedPos = prevSpacePos;
                         prevSpacePos++;
                     }
                     else
                     {
-                        //record_error("Wrapped text (2).");
+                        //GPE_Report("Wrapped text (2).");
                         strVector.push_back( strIn.substr(prevSavedPos,1 )  );
                         prevSpacePos = prevSavedPos+1;
                     }
@@ -546,14 +560,14 @@ bool wrap_string( std::string strIn,std::vector < std::string > &strVector, int 
                 }
                 else
                 {
-                    //record_error("Unable to find space @"+int_to_string(prevSpacePos)+" / "+int_to_string(spacePos) );
+                    //GPE_Report("Unable to find space @"+int_to_string(prevSpacePos)+" / "+int_to_string(spacePos) );
                     prevSpacePos = spacePos+1;
                 }
             }
             else
             {
                 strVector.push_back( strIn.substr(prevSavedPos,lineWidth)  );
-                //record_error("Wrapped text (3)"+strIn.substr(prevSavedPos,lineWidth)+".");
+                //GPE_Report("Wrapped text (3)"+strIn.substr(prevSavedPos,lineWidth)+".");
                 countedStrings++;
                 prevSpacePos = prevSavedPos+lineWidth+1;
                 prevSavedPos = prevSpacePos;

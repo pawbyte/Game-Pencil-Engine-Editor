@@ -3,10 +3,10 @@ GPE_Collisions.h.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -66,7 +66,7 @@ bool check_collision( GPE_Rect A, int recX, int recY, int recW, int recH )
     return check_collision(A,newB);
 }
 
-bool check_collision(  int recX, int recY, int recW, int recH ,GPE_Rect A)
+bool check_collision(  int recX, int recY, int recW, int recH,GPE_Rect A)
 {
     GPE_Rect newB;
     newB.x = (Sint16)recX;

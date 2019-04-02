@@ -3,10 +3,10 @@ GPE_Collisons.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -41,7 +41,7 @@ SOFTWARE.
 
 bool check_collision( GPE_Rect A, GPE_Rect B );
 bool check_collision( GPE_Rect A, int recX, int recY, int recW, int recH  );
-bool check_collision( int recX, int recY, int recW, int recH ,GPE_Rect A);
+bool check_collision( int recX, int recY, int recW, int recH,GPE_Rect A);
 bool check_collision( int rec1X, int rec1Y, int rec1W, int rec1H, int rec2X, int rec2Y, int rec2W, int rec2H);
 bool point_within(int pointX, int pointY,int mxmin,int mymin, int mxmax, int mymax);
 bool point_between(int pointX, int pointY,int mxmin,int mymin, int mxmax, int mymax);

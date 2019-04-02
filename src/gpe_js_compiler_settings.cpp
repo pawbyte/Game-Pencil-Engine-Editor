@@ -3,10 +3,10 @@ gpe_js_compiler_settings.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -31,14 +31,25 @@ SOFTWARE.
 
 */
 
-#include "gpe_editor_aboutpage.h"
+#include "gpe_js_compiler_settings.h"
 
-gameJSCompilerSettingsResource::gameJSCompilerSettingsResource(GPE_ResourceContainer * pFolder)
+gameJSCompilerSettingsResource * GPE_JS_COMPILER_SETTINGS = NULL;
+
+gameJSCompilerSettingsResource::gameJSCompilerSettingsResource(GPE_GeneralResourceContainer * pFolder)
 {
+    isFullScreenResource = true;
     resourceFileName = "";
     resourceName = "JS Compiler Settings";
     parentProjectName = "";
     parentProjectDirectory = "";
+
+    sideAreaPanel = new GPE_SelectBoxBasic("Mode");
+    sideAreaPanel->set_width(160);
+    sideAreaPanel->set_option_height(64);
+    sideAreaPanel->add_option("General",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/wrench.png"),NULL,2, false, false);
+    sideAreaPanel->add_option("Obfuscation",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/crosshairs.png"),NULL,2, false, false);
+
+    sidePanelRect = new GPE_Rect();
 
     editorPageList = new GPE_GuiElementList();
     editorPageList->barXPadding = GENERAL_GPE_PADDING;
@@ -57,19 +68,19 @@ gameJSCompilerSettingsResource::gameJSCompilerSettingsResource(GPE_ResourceConta
     subViewedSpace.w = SCREEN_WIDTH;
     subViewedSpace.h = SCREEN_HEIGHT;
 
-    stopCompileOnError = new GPE_CheckBoxBasic("Stop Compiling on first detected error","Exit build phase as soon as error is found",0,0,false);
+    stopCompileOnError = new GPE_CheckBoxBasic("Stop Compiling on first detected error","Exit build phase as soon as error is found", false);
 
     //Added as of 1.13 [ BEGIN ]
-    minifyCode = new GPE_CheckBoxBasic("Minify Code","Use to eliminate many linebreaks and un-needed spaces in code base",0,0,true);
-    pluginConstantValues = new GPE_CheckBoxBasic("Plugin Constant Values","Removes constants in codebase and replaces it with their values",0,0,true);
-    obfuscateCode = new GPE_CheckBoxBasic("Obfuscate Code","Obfuscate your games code as a layer of protection",0,0,true);
+    minifyCode = new GPE_CheckBoxBasic("Minify Code","Use to eliminate many linebreaks and un-needed spaces in code base", true);
+    pluginConstantValues = new GPE_CheckBoxBasic("Plugin Constant Values","Removes constants in codebase and replaces it with their values", true);
+    obfuscateCode = new GPE_CheckBoxBasic("Obfuscate Code","Obfuscate your games code as a layer of protection",true);
     obfuscatorDirectoryField = new GPE_TextInputBasic("","");
     obfuscatorDirectoryField->set_label("Obfuscator Directory");
-    obfuscatorDirectoryLoadButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/binoculars.png","Search Directory..",-1,32);
+    obfuscatorDirectoryLoadButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/binoculars.png","Search Directory..",-1,32);
 
     googleClosureCompilerFile = new GPE_TextInputBasic("","");
     googleClosureCompilerFile->set_label("Google Closure File Location");
-    googleClosureCompilerLoadButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/binoculars.png","Find Editor..",-1,32);
+    googleClosureCompilerLoadButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/binoculars.png","Find Editor..",-1,32);
 
     //Added as of 1.13 [ END ]
 }
@@ -139,17 +150,17 @@ void gameJSCompilerSettingsResource::prerender_self( )
 void gameJSCompilerSettingsResource::preprocess_self(std::string alternatePath)
 {
     //showStatupTipsBox->set_clicked( GPE_MAIN_GUI->showTipsAtStartUp );
-    displayMessageTitle = "Loading JS Compiler Settings";
-    displayMessageSubtitle = "Please Wait...";
-    displayMessageString = "...";
-    display_user_messaage();
+    if( GPE_LOADER != NULL )
+    {
+        GPE_LOADER->update_submessages( "Loading JS Compiler Settings","Please Wait..." );
+    }
 
     std::string otherColContainerName = "";
 
     std::string newFileIn = get_user_settings_folder()+"gpe_js_compiler_settings.txt";
     std::ifstream gameResourceFileIn( newFileIn.c_str() );
 
-    record_error("Loading Local settings - "+newFileIn);
+    GPE_Report("Loading Local settings - "+newFileIn);
     //If the level file could be loaded
     if( !gameResourceFileIn.fail() )
     {
@@ -158,16 +169,13 @@ void gameJSCompilerSettingsResource::preprocess_self(std::string alternatePath)
         {
             int equalPos = 0;
             std::string firstChar="";
-            std::string section="";
-            std::string cur_layer="";
-            std::string data_format="";
             std::string keyString="";
             std::string valString="";
             std::string subValString="";
             std::string currLine="";
             std::string currLineToBeProcessed;
             std::string colorThemeName;
-            float foundFileVersion = 0;
+            double foundFileVersion = 0;
             int textDelTime = 0;
             int foundFPSValue = FPS_CAP;
             while ( gameResourceFileIn.good() )
@@ -212,7 +220,7 @@ void gameJSCompilerSettingsResource::preprocess_self(std::string alternatePath)
                             valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
                             if( keyString=="ShowCompileAtFirstError")
                             {
-                                stopCompileOnError->set_clicked( is_bool( valString ) );
+                                stopCompileOnError->set_clicked( string_to_bool( valString ) );
                             }
                         }
                     }
@@ -222,39 +230,53 @@ void gameJSCompilerSettingsResource::preprocess_self(std::string alternatePath)
     }
 }
 
-void gameJSCompilerSettingsResource::process_self(GPE_Rect * viewedSpace ,GPE_Rect * cam)
+void gameJSCompilerSettingsResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam)
 {
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
     if( cam!=NULL && editorPageList!=NULL && editorPageTabBar!=NULL && viewedSpace!=NULL)
     {
-        /*std::string nExportOptionName = exportSettingsBar->get_selected_name();
-        std::string nExportOptionHtml5 = projectHTML5SettingsTabBar->get_selected_name();*/
-        subViewedSpace.x = editorPageTabBar->get_xpos()+viewedSpace->x;
-        subViewedSpace.y = editorPageTabBar->get_y2pos()+viewedSpace->y;
-        subViewedSpace.w = -editorPageTabBar->get_xpos()+viewedSpace->w;
-        subViewedSpace.h = -editorPageTabBar->get_y2pos()+viewedSpace->h;
-        int prevTab = editorPageTabBar->tabInUse;
-        editorPageTabBar->process_self(viewedSpace,cam);
-        if( prevTab!=editorPageTabBar->tabInUse)
+        int prevTab = sideAreaPanel->get_selection();
+        if( PANEL_GENERAL_EDITOR!=NULL )
+        {
+            subViewedSpace.x = 0;
+            subViewedSpace.y = 0;
+            subViewedSpace.w = viewedSpace->w;
+            subViewedSpace.h = viewedSpace->h;
+            PANEL_GENERAL_EDITOR->add_gui_element_fullsize( sideAreaPanel );
+            PANEL_GENERAL_EDITOR->process_self();
+
+        }
+        else
+        {
+            sideAreaPanel->set_coords(0, 0 );
+            sideAreaPanel->set_height( viewedSpace->h );
+            sideAreaPanel->process_self( viewedSpace, cam );
+            subViewedSpace.x = sideAreaPanel->get_x2pos();
+            subViewedSpace.y = 0;
+            subViewedSpace.w = viewedSpace->w - sideAreaPanel->get_width();
+            subViewedSpace.h = viewedSpace->h;
+        }
+
+        if( prevTab!=sideAreaPanel->get_selection() )
         {
             editorPageList->reset_self();
         }
         editorPageList->clear_list();
-        editorPageList->set_coords(0,0);
+        editorPageList->set_coords( subViewedSpace.x, subViewedSpace.y );
         editorPageList->set_width(subViewedSpace.w);
         editorPageList->set_height(subViewedSpace.h );
         editorPageList->barXPadding = GENERAL_GPE_PADDING;
         editorPageList->barXMargin = GENERAL_GPE_PADDING;
         int i = 0;
-        if(editorPageTabBar->get_selected_name()=="General")
+        if(sideAreaPanel->get_selected_name()=="General")
         {
             editorPageList->add_gui_element(stopCompileOnError,true);
 
             editorPageList->add_gui_element(confirmResourceButton,false);
             editorPageList->add_gui_element(cancelResourceButton,true);
         }
-        else if(editorPageTabBar->get_selected_name()=="Obfuscation")
+        else if(sideAreaPanel->get_selected_name()=="Obfuscation")
         {
             // To be used in future Versions hopefully...
             editorPageList->add_gui_element(obfuscatorDirectoryField,false);
@@ -267,7 +289,7 @@ void gameJSCompilerSettingsResource::process_self(GPE_Rect * viewedSpace ,GPE_Re
             editorPageList->add_gui_element(confirmResourceButton,false);
             editorPageList->add_gui_element(cancelResourceButton,true);
         }
-        editorPageList->process_self(&subViewedSpace,cam);
+        editorPageList->process_self( viewedSpace,cam);
         if( confirmResourceButton->is_clicked() )
         {
             save_resource();
@@ -279,31 +301,24 @@ void gameJSCompilerSettingsResource::process_self(GPE_Rect * viewedSpace ,GPE_Re
     }
 }
 
-void gameJSCompilerSettingsResource::render_self( GPE_Rect * viewedSpace , GPE_Rect * cam , bool forceRedraw )
+void gameJSCompilerSettingsResource::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
 {
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
-    if( cam!=NULL && editorPageList!=NULL && editorPageTabBar!=NULL && viewedSpace!=NULL)
+    if( cam!=NULL && viewedSpace!=NULL)
     {
-        if( forceRedraw)
+        if( forceRedraw && sideAreaPanel!=NULL && PANEL_GENERAL_EDITOR==NULL )
         {
-            editorPageTabBar->render_self( viewedSpace,cam,forceRedraw);
-            gpe->render_rectangle( editorPageTabBar->get_xpos(),editorPageTabBar->get_y2pos(),viewedSpace->w,viewedSpace->h,GPE_MAIN_THEME->Program_Header_Color,false);
+            sideAreaPanel->render_self( viewedSpace,cam, forceRedraw);
         }
-        MAIN_RENDERER->reset_viewpoint();
-        MAIN_RENDERER->set_viewpoint(&subViewedSpace);
-        editorPageList->render_self( &subViewedSpace,cam, forceRedraw);
-        /*
-        if(editorPageTabBar->get_selected_name()=="Platforms")
+        if( editorPageList!=NULL )
         {
-            exportSettingsBar->render_self( &subViewedSpace,cam,forceRedraw);
-        }*/
-        MAIN_RENDERER->reset_viewpoint();
-        MAIN_RENDERER->set_viewpoint( viewedSpace);
+            editorPageList->render_self( viewedSpace,cam, forceRedraw);
+        }
     }
 }
 
-void gameJSCompilerSettingsResource::save_resource(std::string alternatePath , int backupId )
+void gameJSCompilerSettingsResource::save_resource(std::string alternatePath, int backupId )
 {
     bool usingAltSaveSource = false;
     isModified = false;

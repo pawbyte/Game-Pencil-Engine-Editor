@@ -3,10 +3,10 @@ gpe_editor_aboutpage.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -33,28 +33,28 @@ SOFTWARE.
 
 #include "gpe_editor_aboutpage.h"
 
-gamePencilAboutPageResource::gamePencilAboutPageResource(GPE_ResourceContainer * pFolder)
+gamePencilAboutPageResource * MAIN_ABOUT_PAGE = NULL;
+
+gamePencilAboutPageResource::gamePencilAboutPageResource()
 {
+    isFullScreenResource = true;
     resourceFileName = "";
     resourceName = "About Page";
     parentProjectName = "";
     parentProjectDirectory = "";
-    //GPE_Animation * mainMenuSprite = rsm->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/gpe_main_icons_big.png",70,true,0,0,false);
-    projectParentFolder = pFolder;
-    renameBox->disable_self();
-    confirmResourceButton->disable_self();
-    cancelResourceButton->disable_self();
-    loadResourceButton->disable_self();
-    saveResourceButton->disable_self();
+    //GPE_Animation * mainMenuSprite = guiRCM->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/gpe_main_icons_big.png",70,true,0,0,false);
 
+    sideAreaPanel = new GPE_SelectBoxBasic("Mode");
+    sideAreaPanel->set_width(256);
+    sideAreaPanel->set_option_height(64);
+    sideAreaPanel->add_option("Credits",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/heart.png"),NULL,2, false, false);
+    sideAreaPanel->add_option("License",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/file-text.png"),NULL,2, false, false);
+    sideAreaPanel->add_option("3rd Party Licenses",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/group.png"),NULL,2, false, false);
+
+    sidePanelRect = new GPE_Rect();
 
     aboutPageList = new GPE_GuiElementList();
-    aboutPageTabBar = new GPE_TabBar();
-    aboutPageTabBar->add_new_tab("Description");
-    aboutPageTabBar->add_new_tab("Information");
-    aboutPageTabBar->add_new_tab("Credits");
-    aboutPageTabBar->add_new_tab("License");
-    aboutPageTabBar->open_tab(0);
+
     pencilCredits = new GPE_TextAreaInputBasic();
     pencilCredits->isCodeEditor = false;
     pencilCredits->set_read_only();
@@ -93,6 +93,8 @@ gamePencilAboutPageResource::gamePencilAboutPageResource(GPE_ResourceContainer *
     pencilCredits->add_line("The Font Awesome font is licensed under the SIL OFL 1.1:");
     pencilCredits->add_line("http://scripts.sil.org/OFL  ");
     pencilCredits->add_line("Font-Awesome-SVG-PNG is licensed under the MIT license  ");
+    pencilCredits->add_line("Rowan @greenturtwig:       Created wiiU white icon ");
+
 
     pencilCredits->add_line("");
     pencilCredits->add_line("");
@@ -111,13 +113,42 @@ gamePencilAboutPageResource::gamePencilAboutPageResource(GPE_ResourceContainer *
     pencilCredits->add_line("-----------------------------------");
     pencilCredits->add_line("     Feral Monk");
     pencilCredits->add_line("     James Thomas");
-    pencilCredits->add_line("     Jen Anderson");
+    pencilCredits->add_line("     James Thomas");
+    pencilCredits->add_line("     Joseph Yarrow");
     pencilCredits->add_line("     Mark Medrano");
     pencilCredits->add_line("     Keith Thomas");
     pencilCredits->add_line("     Noel Hurde");
     pencilCredits->add_line("     Thomas Ingham");
     pencilCredits->add_line("     Roshin Varghese");
 
+    pencilCredits->add_line("Itch.io Supporters (Ordered Alphabetically):");
+    pencilCredits->add_line("-----------------------------------");
+    pencilCredits->add_line("     Aisha Halim");
+    pencilCredits->add_line("     Alessandro Montoli ( funkygallo)");
+    pencilCredits->add_line("     _Auron_");
+    pencilCredits->add_line("     bojjenclon");
+    pencilCredits->add_line("     CammyGamesYT");
+    pencilCredits->add_line("     Chad Davis");
+    pencilCredits->add_line("     DarkLightGames");
+    pencilCredits->add_line("     Davey13");
+    pencilCredits->add_line("     evilemprzurg");
+    pencilCredits->add_line("     F. Keitz");
+    pencilCredits->add_line("     Florian Zwerina");
+    pencilCredits->add_line("     Goldenkitty");
+    pencilCredits->add_line("     Goldenxp");
+    pencilCredits->add_line("     jarrett9999");
+    pencilCredits->add_line("     Mark Henning");
+    pencilCredits->add_line("     microrutter");
+    pencilCredits->add_line("     M. Moy");
+    pencilCredits->add_line("     Kat Leopardess");
+    pencilCredits->add_line("     popcade");
+    pencilCredits->add_line("     raymond13557");
+    pencilCredits->add_line("     RookTKO");
+    pencilCredits->add_line("     Samson194");
+    pencilCredits->add_line("     TH");
+    pencilCredits->add_line("     Veron Hurde Jr.");
+    pencilCredits->add_line("     Woody Stanfield");
+    pencilCredits->add_line("     Zonemaster");
 
 
 
@@ -201,46 +232,11 @@ gamePencilAboutPageResource::gamePencilAboutPageResource(GPE_ResourceContainer *
     pencilDescription->import_text(APP_DIRECTORY_NAME+"editor_description.txt");
     pencilDescription->set_height(640);
 
-        //Information Tab
-    pencilInformation = new GPE_TextAreaInputBasic();
-    pencilInformation->set_read_only();
-    pencilInformation->isCodeEditor = false;
-    pencilInformation->clear_all_lines();
-    pencilInformation->add_line("Name:                          Game Pencil Engine");
-    std::string versionInfoLine = "";
-    if( GPE_VERSION_UPDATE_NUMBER==0)
-    {
-        versionInfoLine = "Version:                       "+float_to_string(GPE_VERSION_DOUBLE_NUMBER)+"0";
-    }
-    else
-    {
-        versionInfoLine = "Version:                       "+float_to_string(GPE_VERSION_DOUBLE_NUMBER);
-    }
-    if( GPE_MAIN_GUI!=NULL)
-    {
-        if( GPE_MAIN_GUI->editorReleaseType==RELEASE_TYPE_RC)
-        {
-            versionInfoLine+="[Release Candidate]";
-        }
-        else if( GPE_MAIN_GUI->editorReleaseType==RELEASE_TYPE_BETA)
-        {
-            versionInfoLine+="[Beta Version]";
-        }
-    }
-    pencilInformation->add_line( versionInfoLine+"." );
-    pencilInformation->add_line("SDL Version:                   "+int_to_string(SDL_MAJOR_VERSION)+"."+int_to_string(SDL_MINOR_VERSION)+"."+int_to_string(SDL_PATCHLEVEL)+"." );
-    pencilInformation->add_line("PGUI Version:                  "+int_to_string(PGUI_MAJOR_VERSION)+"."+int_to_string(PGUI_MINOR_VERSION)+"."+int_to_string(PGUI_PATCHLEVEL)+"." );
-    pencilInformation->add_line("GPE(runtime) Version:          "+int_to_string(GPR_MAJOR_VERSION)+"."+int_to_string(GPR_MINOR_VERSION)+"."+int_to_string(GPR_PATCHLEVEL)+"." );
-    pencilInformation->add_line("Release Date:                  01-05-2018");
-    pencilInformation->add_line("Author:                        PawByte");
-    pencilInformation->add_line("Lead Developer:                Nathan Hurde aka theweirdn8");
-    pencilInformation->add_line("Email:                         help@pawbyte.com");
-    pencilInformation->add_line("Website:                       gamepencil.pawbyte.com");
-    pencilInformation->isCodeEditor = false;
     pencilMissionStatement = new GPE_TextAreaInputBasic();
     pencilMissionStatement->set_read_only();
     pencilMissionStatement->isCodeEditor = false;
-    pencilLicense= new GPE_TextAreaInputBasic();
+
+    pencilLicense = new GPE_TextAreaInputBasic();
     pencilLicense->set_read_only();
     pencilLicense->isCodeEditor = false;
 
@@ -274,6 +270,13 @@ gamePencilAboutPageResource::gamePencilAboutPageResource(GPE_ResourceContainer *
     pencilLicense->add_line("OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.");
     pencilLicense->add_line("");
     pencilLicense->set_height(640);
+
+    thirdPartyLicenses = new GPE_TextAreaInputBasic();
+    thirdPartyLicenses->set_read_only();
+    thirdPartyLicenses->isCodeEditor = false;
+    thirdPartyLicenses->import_text(APP_DIRECTORY_NAME+"third_party_licenses.txt");
+    thirdPartyLicenses->set_height(640);
+
     aboutPageList->barXPadding = GENERAL_GPE_PADDING;
     aboutPageList->barXMargin = 0;
 }
@@ -293,10 +296,30 @@ gamePencilAboutPageResource::~gamePencilAboutPageResource()
         delete aboutPageList;
         aboutPageList = NULL;
     }
-    if( aboutPageTabBar!=NULL)
+    if( pencilCredits!=NULL)
     {
-        delete aboutPageTabBar;
-        aboutPageTabBar = NULL;
+        delete pencilCredits;
+        pencilCredits = NULL;
+    }
+    if( pencilDescription!=NULL)
+    {
+        delete pencilDescription;
+        pencilDescription = NULL;
+    }
+    if( pencilLicense!=NULL)
+    {
+        delete pencilLicense;
+        pencilLicense = NULL;
+    }
+    if( thirdPartyLicenses!=NULL)
+    {
+        delete thirdPartyLicenses;
+        thirdPartyLicenses = NULL;
+    }
+    if( pencilMissionStatement!=NULL)
+    {
+        delete pencilMissionStatement;
+        pencilMissionStatement = NULL;
     }
 }
 
@@ -310,62 +333,65 @@ void gamePencilAboutPageResource::preprocess_self(std::string alternatePath)
 
 }
 
-void gamePencilAboutPageResource::process_self(GPE_Rect * viewedSpace , GPE_Rect * cam )
+void gamePencilAboutPageResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( viewedSpace!=NULL && aboutPageList!=NULL)
     {
-        aboutPageTabBar->set_coords(GENERAL_GPE_PADDING,GENERAL_GPE_PADDING );
-        aboutPageTabBar->process_self(viewedSpace,cam);
+        int prevTab = sideAreaPanel->get_selection();
+        if( PANEL_GENERAL_EDITOR!=NULL )
+        {
+            subViewedSpace.x = 0;
+            subViewedSpace.y = 0;
+            subViewedSpace.w = viewedSpace->w;
+            subViewedSpace.h = viewedSpace->h;
+            PANEL_GENERAL_EDITOR->add_gui_element_fullsize( sideAreaPanel );
+            PANEL_GENERAL_EDITOR->process_self();
 
-        subViewedSpace.x = GENERAL_GPE_PADDING;
-        subViewedSpace.y = aboutPageTabBar->get_y2pos()+GENERAL_GPE_PADDING;
-        subViewedSpace.w = viewedSpace->w-subViewedSpace.x;
-        subViewedSpace.h = viewedSpace->h- subViewedSpace.y;
+        }
+        else
+        {
+            sideAreaPanel->set_coords(0, 0 );
+            sideAreaPanel->set_height( viewedSpace->h );
+            sideAreaPanel->process_self( viewedSpace, cam );
+            subViewedSpace.x = sideAreaPanel->get_x2pos();
+            subViewedSpace.y = 0;
+            subViewedSpace.w = viewedSpace->w - sideAreaPanel->get_width();
+            subViewedSpace.h = viewedSpace->h;
+        }
+
+        if( prevTab!=sideAreaPanel->get_selection() )
+        {
+            aboutPageList->reset_self();
+        }
 
 
 
         aboutPageList->set_coords(subViewedSpace.x,subViewedSpace.y );
         aboutPageList->set_width(subViewedSpace.w);
-        aboutPageList->set_height(subViewedSpace.h-aboutPageList->get_ypos());
+        aboutPageList->set_height(subViewedSpace.h );
         aboutPageList->barXPadding = GENERAL_GPE_PADDING;
         aboutPageList->barXMargin = subViewedSpace.w/8;
 
         aboutPageList->clear_list();
-        if( aboutPageTabBar->get_selected_name()=="Credits")
+        if( sideAreaPanel->get_selected_name()=="Credits")
         {
-            pencilCredits->set_width(subViewedSpace.w );
-            pencilCredits->set_height(subViewedSpace.h );
-            pencilCredits->set_coords(subViewedSpace.x,subViewedSpace.y);
-            pencilCredits->process_self(viewedSpace,cam);
+            aboutPageList->add_gui_element_fullsize(pencilCredits);
         }
-        else if( aboutPageTabBar->get_selected_name()=="Description" )
+        else if( sideAreaPanel->get_selected_name()=="Description" )
         {
-            pencilDescription->set_width(subViewedSpace.w );
-            pencilDescription->set_height(subViewedSpace.h);
-            pencilDescription->set_coords(subViewedSpace.x,subViewedSpace.y);
-            pencilDescription->process_self(viewedSpace,cam);
+            aboutPageList->add_gui_element_fullsize(pencilDescription);
         }
-        else if( aboutPageTabBar->get_selected_name()=="Information" )
+        else if( sideAreaPanel->get_selected_name()=="License" )
         {
-            pencilInformation->set_width(subViewedSpace.w );
-            pencilInformation->set_height(subViewedSpace.h);
-            pencilInformation->set_coords(subViewedSpace.x,subViewedSpace.y);
-            pencilInformation->process_self(viewedSpace,cam);
+            aboutPageList->add_gui_element_fullsize(pencilLicense);
         }
-        else if( aboutPageTabBar->get_selected_name()=="License" )
+        else if( sideAreaPanel->get_selected_name()=="3rd Party Licenses" )
         {
-            pencilLicense->set_width(subViewedSpace.w );
-            pencilLicense->set_height(subViewedSpace.h );
-            pencilLicense->set_coords(subViewedSpace.x,subViewedSpace.y);
-            pencilLicense->process_self(viewedSpace,cam);
+            aboutPageList->add_gui_element_fullsize(thirdPartyLicenses);
         }
-        else
-        {
-            //aboutPageList->add_gui_element(aboutPageTabBar,true);
-            aboutPageList->process_self(viewedSpace,cam);
-        }
+        aboutPageList->process_self(viewedSpace,cam);
     }
 }
 
@@ -373,34 +399,16 @@ void gamePencilAboutPageResource::render_self(GPE_Rect * viewedSpace, GPE_Rect *
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( viewedSpace!=NULL && aboutPageList!=NULL)
+    if( cam!=NULL && viewedSpace!=NULL)
     {
-//        gpe->render_gradient_vertical( &gpeLogoSpace,GPE_MAIN_THEME->Button_Box_Highlighted_Color);
-        if( aboutPageTabBar->get_selected_name()=="Credits")
+        if( sideAreaPanel!=NULL && PANEL_GENERAL_EDITOR==NULL )
         {
-            pencilCredits->render_self( viewedSpace,cam,forceRedraw);
+            sideAreaPanel->render_self( viewedSpace,cam, forceRedraw);
         }
-        if( aboutPageTabBar->get_selected_name()=="Description")
+        if( aboutPageList!=NULL )
         {
-            pencilDescription->render_self( viewedSpace,cam,forceRedraw);
+            aboutPageList->render_self( viewedSpace,cam, forceRedraw);
         }
-        else if( aboutPageTabBar->get_selected_name()=="Information" )
-        {
-            pencilInformation->render_self( viewedSpace,cam,forceRedraw);
-        }
-        else if( aboutPageTabBar->get_selected_name()=="License" )
-        {
-            pencilLicense->render_self( viewedSpace,cam,forceRedraw);
-        }
-        else
-        {
-            aboutPageList->render_self( viewedSpace,cam,forceRedraw);
-        }
-
-        //render_new_text( gpeLogoSpace.x,gpeLogoSpace.y+gpeLogoSpace.h-GENERAL_GPE_PADDING,"PUBLIC[BETA] - Version 0.2 | Copyright (c)2016 PawByte | make.pawbyte.com",GPE_MAIN_THEME->Main_Box_Faded_Font_Color,DEFAULT_FONT,FA_LEFT,FA_BOTTOM);
-
-        //render_new_text( subViewedSpace.x+GENERAL_GPE_PADDING,subViewedSpace.y+GENERAL_GPE_PADDING,"Recent Projects",GPE_MAIN_THEME->Main_Box_Font_Color,textboxFont,FA_LEFT,FA_TOP);
-        aboutPageTabBar->render_self( viewedSpace,cam,forceRedraw);
     }
 }
 

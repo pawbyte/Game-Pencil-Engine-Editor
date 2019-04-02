@@ -3,10 +3,10 @@ GPE_Color.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -38,32 +38,33 @@ SOFTWARE.
 
 class GPE_Color
 {
-    private:
-        Uint8 rVal;
-        Uint8 gVal;
-        Uint8 bVal;
-        Uint8 aVal;
-        std::string colorName;
-        int hexDecNumb;
-    public:
-        GPE_Color();
-        GPE_Color(std::string name,Uint8 r, Uint8 g, Uint8 b, Uint8 a=255);
-        GPE_Color(Uint8 r, Uint8 g, Uint8 b, Uint8 a=255);
-        GPE_Color(int hexDec);
-        bool checkEquality(GPE_Color otherColor);
-        GPE_Color * duplicate_color();
-        std::string get_name();
-        SDL_Color get_sdl_color();
-        Uint8 get_r();
-        Uint8 get_g();
-        Uint8 get_b();
-        void set_hex(int newHex);
-        void change_r(Uint8 r);
-        void change_g(Uint8 g);
-        void change_b(Uint8 b);
+private:
+    Uint8 rVal;
+    Uint8 gVal;
+    Uint8 bVal;
+    Uint8 aVal;
+    std::string colorName;
+    int hexDecNumb;
+public:
+    GPE_Color(std::string name,Uint8 r = 0, Uint8 g = 0, Uint8 b = 0, Uint8 a=255);
+    GPE_Color(int hexDec);
+    bool checkEquality(GPE_Color otherColor);
+    GPE_Color * duplicate_color();
+    std::string get_name();
+    SDL_Color get_sdl_color();
+    Uint8 get_r();
+    Uint8 get_g();
+    Uint8 get_b();
+    Uint8 get_a();
+    void set_hex(int newHex);
+    void change_r(Uint8 r);
+    void change_g(Uint8 g);
+    void change_b(Uint8 b);
+    void change_a(Uint8 a);
 
-        void change_rgba(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
-        ~GPE_Color();
+    void change_rgba(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
+    void change_and_verify_rgba(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
+    ~GPE_Color();
 };
 
 #endif

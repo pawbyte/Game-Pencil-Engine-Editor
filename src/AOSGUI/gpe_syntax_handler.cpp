@@ -3,10 +3,10 @@ gpe_syntax_handler.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -79,8 +79,9 @@ std::string GPE_Compiler_Term::get_parameters()
     return termParametersString;
 }
 
-GPE_Gui_Engine_Language::GPE_Gui_Engine_Language(std::string langName, std::string langShortName, bool projectCodeLanguage,bool useDefaultSymbols)
+GPE_Gui_Engine_Language::GPE_Gui_Engine_Language(std::string langName, std::string langShortName, int langId, bool projectCodeLanguage, bool useDefaultSymbols)
 {
+    languageId = langId;
     macroCommentChar = "";
     commentChar = "//";
     blockcommentStartStr = "/*";
@@ -242,7 +243,7 @@ int GPE_Gui_Engine_Language::firstSymbolInString(std::string inString, int pos)
     int returnVal = -1;
 
     int maxLoop = symbolLibrary.size();
-    for(int i=0;i<maxLoop;i+=1)
+    for(int i=0; i<maxLoop; i+=1)
     {
         int symPos = inString.find(symbolLibrary[i],pos);
         if(symPos!=-1)
@@ -567,9 +568,9 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     newParametersString = "";
     parametersAreValid = false;
 
-    /*GPE_Gui_Engine_Language * CPPLang  = add_programming_language("C++","CPP",true,true,false );
-    CPPLang->macroCommentChar = "#";*/
-    GPE_Gui_Engine_Language * JSLang = defaultLanguage = add_programming_language("JavaScript","JS",true,true,true );
+    GPE_Gui_Engine_Language * JSLang = defaultLanguage = add_programming_language("JavaScript","JS",PROGRAM_LANGUAGE_JS, true,true,true );
+    GPE_Gui_Engine_Language * CPPLang  = add_programming_language("C++","CPP",PROGRAM_LANGUAGE_CPP, true,true,false );
+    CPPLang->macroCommentChar = "#";
 
 
     //JS classes
@@ -579,12 +580,12 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_class("window");
     JSLang->add_language_class("GPE_JSFile");
     JSLang->add_language_class("GPE_FileReader");
-    JSLang->add_language_class("GPE_InputManager_GameController");
+    JSLang->add_language_class("GPE_GameController");
     JSLang->add_language_class("GPE_InputManager");
     JSLang->add_language_class("GPE_LogoDisplay");
     JSLang->add_language_class("GPE_MainGame");
     JSLang->add_language_class("GPE_GameScene");
-    JSLang->add_language_class("ResourceController");
+    JSLang->add_language_class("GPE_DataManager");
     JSLang->add_language_class("GPE_ResourceLoader");
     JSLang->add_language_class("GPE_MainMenuOption");
     JSLang->add_language_class("GPE_MainMenu");
@@ -620,19 +621,19 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_function("center_camera","Centers camera at (x,y)","(camId, x,y","void","gpe");
     JSLang->add_language_function("check_collision_rect","Checks if two rectangles collide","rectA, rectB","bool","gpe");
     JSLang->add_language_function("check_collision_with_rect","Checks if a rectangle collides with a box","boxX, boxY, boxW, boxH, rectA","bool","gpe");
-    JSLang->add_language_function("degree","Converts an angle in radians to degrees","x","float","gpe");
-    JSLang->add_language_function("radian","Converts an angle in degrees to radians","x","float","gpe");
+    JSLang->add_language_function("degree","Converts an angle in radians to degrees","x","double","gpe");
+    JSLang->add_language_function("radian","Converts an angle in degrees to radians","x","double","gpe");
     JSLang->add_language_function("sign","Gets the sign of the variable","x","int","gpe");
 
     //input functions
-    JSLang->add_language_function("gamepad_connected","Checks if the gamepad is conected","controllerPos","bool","input");
-    JSLang->add_language_function("gamepad_name","Returns the gamepad's name","controllerPos,","string","input");
-    JSLang->add_language_function("gamepad_object","Returns the gamepad object","controllerPos,","GPE_GamePad","input");
-    JSLang->add_language_function("gamepad_mapping","Returns the gamepad's mapping","controllerPos","string","input");
-    JSLang->add_language_function("check_gamepad","Checks if the gamepad's button is down","controllerPos, buttonId","int","input");
-    JSLang->add_language_function("check_gamepad_down","Checks if the gamepad's buttonId is down","controllerPos, buttonId","int","input");
-    JSLang->add_language_function("check_gamepad_pressed","Checks if the gamepad's buttonId was pressed","controllerPos, buttonId","int","input");
-    JSLang->add_language_function("check_gamepad_released","Checks if the gamepad's buttonId was released","controllerPos, buttonId","int","input");
+    JSLang->add_language_function("gamecontroller_connected","Checks if the gamecontroller is conected","gamecontrollerPos","bool","input");
+    JSLang->add_language_function("gamecontroller_name","Returns the gamecontroller's name","gamecontrollerPos,","string","input");
+    JSLang->add_language_function("gamecontroller_object","Returns the gamecontroller object","gamecontrollerPos,","GPE_gamecontroller","input");
+    JSLang->add_language_function("gamecontroller_mapping","Returns the gamecontroller's mapping","gamecontrollerPos","string","input");
+    JSLang->add_language_function("check_gamecontroller","Checks if the gamecontroller's button is down","gamecontrollerPos, buttonId","int","input");
+    JSLang->add_language_function("check_gamecontroller_down","Checks if the gamecontroller's buttonId is down","gamecontrollerPos, buttonId","int","input");
+    JSLang->add_language_function("check_gamecontroller_pressed","Checks if the gamecontroller's buttonId was pressed","gamecontrollerPos, buttonId","int","input");
+    JSLang->add_language_function("check_gamecontroller_released","Checks if the gamecontroller's buttonId was released","gamecontrollerPos, buttonId","int","input");
 
     JSLang->add_language_function("check_keyboard_down","Checks if the keyboard button is down","keyId","bool","input");
     JSLang->add_language_function("check_keyboard_pressed","Checks if the keyboard button was pressed","keyId","bool","input");
@@ -689,10 +690,10 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_function("get_font_size","Get the size(pt) of the font assigned to fontId. Returns a blank string if out of bounds.","fontId","String","gpe");
     JSLang->add_language_function("get_font_width","Get the estimated width of the font assigned to fontId. Returns a blank string if out of bounds.","fontId,words","String","gpe");
 
-    JSLang->add_language_function("get_sprite_width","Get the width of the sprite assigned to spriteId. Returns 0 if out of bounds.","spriteId","int","gpe");
-    JSLang->add_language_function("get_sprite_height","Get the height of the sprite assigned to spriteId. Returns 0 if out of bounds","spriteId","int","gpe");
-    JSLang->add_language_function("get_sprite_length","Get the length of the sprite assigned to spriteId. Returns 0 if out of bounds","spriteId","int","gpe");
-    JSLang->add_language_function("get_sprite_object","Gets the actual sprite object attached to spriteId. Returns IS_NULL if out of bounds","spriteId","GameSprite","gpe");
+    JSLang->add_language_function("get_sprite_width","Get the width of the sprite assigned to animId. Returns 0 if out of bounds.","animId","int","gpe");
+    JSLang->add_language_function("get_sprite_height","Get the height of the sprite assigned to animId. Returns 0 if out of bounds","animId","int","gpe");
+    JSLang->add_language_function("get_sprite_length","Get the length of the sprite assigned to animId. Returns 0 if out of bounds","animId","int","gpe");
+    JSLang->add_language_function("get_sprite_object","Gets the actual sprite object attached to animId. Returns IS_NULL if out of bounds","animId","GameSprite","gpe");
 
     JSLang->add_language_function("get_texture_width","Get the width of the texture assigned to textureId. Returns 0 if out of bounds.","textureId","int","gpe");
     JSLang->add_language_function("get_texture_height","Get the height of the texture assigned to textureId. Returns 0 if out of bounds","textureId","int","gpe");
@@ -779,12 +780,12 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
 
     //rendering functions
     JSLang->add_language_function("render_circle","Renders a circle","x, y, radius, circleColor, isOutline, oulineWidth, renderImmediately","void","gpe");
-    JSLang->add_language_function("gpe->render_line","Renders a line","x1, y1, x2, y2, lineColor, lineWidth, renderImmediately","void","gpe");
+    JSLang->add_language_function("gcanvas->render_line","Renders a line","x1, y1, x2, y2, lineColor, lineWidth, renderImmediately","void","gpe");
     JSLang->add_language_function("render_rectangle","Renders a rectangle","x1, y1, x2, y2,rectColor, outline,rectLineWidth,renderImmediately","void","gpe");
     JSLang->add_language_function("render_self","Renders this object onto scene","","void","gpe");
-    JSLang->add_language_function("render_animation_rotated","Renders a rotated sprite","spriteIdIn, frameNumb, xOn, yOn, rotationAngle,scaleX, scaleY","void","gpe");
+    JSLang->add_language_function("render_animation_rotated","Renders a rotated sprite","animIdIn, frameNumb, xOn, yOn, rotationAngle,scaleX, scaleY","void","gpe");
 
-    JSLang->add_language_function("render_animation","Renders a sprite","spriteIdIn, frameNumb, xOn, yOn, scaleX, scaleY","void","gpe");
+    JSLang->add_language_function("render_animation","Renders a sprite","animIdIn, frameNumb, xOn, yOn, scaleX, scaleY","void","gpe");
     JSLang->add_language_function("render_square","Renders a square","xOn, yOn, squareSize,squareColor, outline,squareLineWidth,renderImmediately","void","gpe");
     JSLang->add_language_function("render_text","Renders text","fontIdIn, xOn, yOn, textToRender, fontRenderColor, fontHalign, fontValign","void","gpe");
     JSLang->add_language_function("render_texture_rotated","Renders a rotated texture","texureIdIn, xDraw, yDraw, width, height, angle","void","gpe");
@@ -813,13 +814,13 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_function("video_stop_all","Stops all video","","void","gpe");
     JSLang->add_language_function("video_stop","Stops video whose id is videoId","videoId","void","gpe");
 
-     //Console functions
+    //Console functions
     JSLang->add_language_function("clear","Clears the console window.","text","void","console");
     JSLang->add_language_function("error","Writes an error message into the console window.","message","void","console");
     JSLang->add_language_function("log","Writes text into the console window.","text","void","console");
     JSLang->add_language_function("warn","Writes a warning message into the console window.","text","void","console");
 
-     //Math functions
+    //Math functions
     JSLang->add_language_function("acos","Returns the arccosine of x.","radians x","double","Math");
     JSLang->add_language_function("asin","Returns the arcsine  of x.","radians x","double","Math");
     JSLang->add_language_function("atan","Returns the arctangent of x as a numeric value between -PI/2 and PI/2 radians","x","double","Math");
@@ -881,11 +882,11 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_constant("GPE_SETTINGS_ENTRY_LEVEL_LOCATION");
     JSLang->add_language_constant("pi");
     JSLang->add_language_constant("PI");
-    JSLang->add_language_constant("isnull");
-    JSLang->add_language_constant("is_null");
+    JSLang->add_language_constant("isNULL");
+    JSLang->add_language_constant("is_NULL");
     JSLang->add_language_constant("IS_NULL");
     JSLang->add_language_constant("NaN");
-    JSLang->add_language_constant("null");
+    JSLang->add_language_constant("NULL");
     JSLang->add_language_constant("NULL");
     JSLang->add_language_constant("true");
     JSLang->add_language_constant("TRUE");
@@ -1183,10 +1184,10 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_variable("GPE_ProgramStateId");
     JSLang->add_language_variable("currentState");
 
-	//actual datatypes used/allowed
+    //actual datatypes used/allowed
     JSLang->add_language_data_type("char");
     JSLang->add_language_data_type("double");
-    JSLang->add_language_data_type("float");
+    JSLang->add_language_data_type("double");
     JSLang->add_language_data_type("grid");
     JSLang->add_language_data_type("int");
     JSLang->add_language_data_type("string");
@@ -1194,7 +1195,7 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_data_type("var","","JavaScript Global");
 
     //Adds CSS language syntax and such
-    GPE_Gui_Engine_Language * CSSLang = add_programming_language("CSS","CSS", true, false,false);
+    GPE_Gui_Engine_Language * CSSLang = add_programming_language("CSS","CSS", -1, true, false,false);
     CSSLang->add_language_keyword("a:active");
     CSSLang->add_language_keyword("a:hover");
     CSSLang->add_language_keyword("a:link");
@@ -1238,7 +1239,7 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     CSSLang->add_language_keyword("display");
     CSSLang->add_language_keyword("family");
     CSSLang->add_language_keyword("filter");
-    CSSLang->add_language_keyword("float");
+    CSSLang->add_language_keyword("double");
     CSSLang->add_language_keyword("font");
     CSSLang->add_language_keyword("height");
     CSSLang->add_language_keyword("horizontal");
@@ -1294,19 +1295,20 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     codeBeingSuggested = false;
     iSuggestedStartPos = 0;
     iSuggestionPos = 0;
-    suggestedTextMaxInViewCount = 0;
+    suggestedTextMaxInViewCount = 7;
     maxSuggestedTextWidth = 0;
     //End of suggested text/code highlights related variables
 }
 
 GPE_Syntax_Highlighter::~GPE_Syntax_Highlighter()
 {
-
+    highlightedTerm = NULL;
+    suggestedCompilerTerms.clear();
 }
 
-GPE_Gui_Engine_Language * GPE_Syntax_Highlighter::add_programming_language(std::string langName, std::string langShortName, bool useDefaultSymbols, bool isCodingLanguage,bool isDefaultCodeLanguage)
+GPE_Gui_Engine_Language * GPE_Syntax_Highlighter::add_programming_language(std::string langName, std::string langShortName, int langId, bool useDefaultSymbols, bool isCodingLanguage,bool isDefaultCodeLanguage)
 {
-    GPE_Gui_Engine_Language * newLangauge = new GPE_Gui_Engine_Language(langName, langShortName,isCodingLanguage, useDefaultSymbols);
+    GPE_Gui_Engine_Language * newLangauge = new GPE_Gui_Engine_Language(langName, langShortName,langId, isCodingLanguage, useDefaultSymbols);
     editorLanguages.push_back(newLangauge);
     return newLangauge;
 }
@@ -1496,6 +1498,92 @@ GPE_Compiler_Term * GPE_Syntax_Highlighter::find_matching_function(std::string n
     return NULL;
 }
 
+int GPE_Syntax_Highlighter::get_language_count()
+{
+    return (int)editorLanguages.size();
+}
+
+int GPE_Syntax_Highlighter::get_language_id_from_name( std::string nameIn)
+{
+    GPE_Gui_Engine_Language * cLang = NULL;
+    for( int i = 0; i < (int)editorLanguages.size(); i++)
+    {
+        cLang = editorLanguages[i];
+        if( cLang !=NULL )
+        {
+            if( cLang->languageName == nameIn || cLang->languageShortName == nameIn )
+            {
+                return cLang->languageId;
+            }
+        }
+    }
+    return -1;
+}
+
+GPE_Gui_Engine_Language * GPE_Syntax_Highlighter::get_language_object( int langPosition)
+{
+    if( langPosition >=0 && langPosition < (int)editorLanguages.size() )
+    {
+        return editorLanguages[langPosition];
+    }
+    return NULL;
+}
+
+GPE_Gui_Engine_Language * GPE_Syntax_Highlighter::get_language_object_from_id( int langId )
+{
+    if( langId < 0)
+    {
+        return NULL;
+    }
+    GPE_Gui_Engine_Language * cLang = NULL;
+    for( int i = 0; i < (int)editorLanguages.size(); i++)
+    {
+        cLang = editorLanguages[i];
+        if( cLang !=NULL )
+        {
+            if( cLang->languageId == langId )
+            {
+                return cLang;
+            }
+        }
+    }
+    return NULL;
+}
+
+std::string GPE_Syntax_Highlighter::get_language_name_from_id( int langId )
+{
+    GPE_Gui_Engine_Language * cLang = NULL;
+    for( int i = 0; i < (int)editorLanguages.size(); i++)
+    {
+        cLang = editorLanguages[i];
+        if( cLang !=NULL )
+        {
+            if( cLang->languageId == langId )
+            {
+                return cLang->languageName;
+            }
+        }
+    }
+    return "";
+}
+
+std::string GPE_Syntax_Highlighter::get_language_shortname_from_id( int langId)
+{
+    GPE_Gui_Engine_Language * cLang = NULL;
+    for( int i = 0; i < (int)editorLanguages.size(); i++)
+    {
+        cLang = editorLanguages[i];
+        if( cLang !=NULL )
+        {
+            if( cLang->languageId == langId )
+            {
+                return cLang->languageShortName;
+            }
+        }
+    }
+    return "";
+}
+
 bool GPE_Syntax_Highlighter::process_parameters_string( std::string paramToProcess)
 {
     foundParameters.clear();
@@ -1570,8 +1658,8 @@ bool GPE_Syntax_Highlighter::process_parameters_string( std::string paramToProce
                         parameterValue = trim_left_inplace(parameterValue);
                         parameterValue = trim_right_inplace(parameterValue);
 
-                       if( is_alnum(parameterKey,false,true) && (int)parameterKey.size() >0 )
-                       {
+                        if( is_alnum(parameterKey,false,true) && (int)parameterKey.size() >0 )
+                        {
                             if( (int)parameterValue.size() >0 )
                             {
                                 if( is_compilable_word(parameterKey) )
@@ -1661,57 +1749,132 @@ void GPE_Syntax_Highlighter::begin_compiling()
     parametersAreValid = true;
 }
 
+void GPE_Syntax_Highlighter::clear_all()
+{
+    clear_suggestions();
+    clear_highlights();
+}
+
+void GPE_Syntax_Highlighter::clear_highlights()
+{
+    highlightedTerm = NULL;
+    highlightedTermXPos = 0;
+    highlightedTermYPos = 0;
+    documentationIsBeingShown = false;
+}
+
+void GPE_Syntax_Highlighter::clear_suggestions()
+{
+    highlightedTermXPos = 0;
+    highlightedTermYPos = 0;
+    codeBeingSuggested = false;
+    iSuggestedStartPos = 0;
+    iSuggestionPos = 0;
+    suggestedCompilerTerms.clear();
+}
 
 void GPE_Syntax_Highlighter::render_code_highlights( bool forceRedraw)
 {
     if( highlightedTerm!=NULL)
     {
-
         MAIN_RENDERER->set_viewpoint( NULL);
         MAIN_RENDERER->reset_viewpoint( );
         std::string fullPhraseToRender;
-        std::string fullTermScope = GPE_MAIN_HIGHLIGHTER->highlightedTerm->termScope;
+        std::string fullTermScope = highlightedTerm->termScope;
         if( (int)fullTermScope.size()>1 )
         {
             fullTermScope = "Scope: "+fullTermScope;
         }
-        if( GPE_MAIN_HIGHLIGHTER->highlightedTerm->termType==CTERM_FUNCTION)
+        if( highlightedTerm->termType==CTERM_FUNCTION)
         {
-            fullPhraseToRender = GPE_MAIN_HIGHLIGHTER->highlightedTerm->termFunctionReturnType+" "+GPE_MAIN_HIGHLIGHTER->highlightedTerm->termString+"("+GPE_MAIN_HIGHLIGHTER->highlightedTerm->get_parameters()+")";
+            fullPhraseToRender = highlightedTerm->termFunctionReturnType+" "+highlightedTerm->termString+"("+highlightedTerm->get_parameters()+")";
         }
         else
         {
-            fullPhraseToRender = GPE_MAIN_HIGHLIGHTER->highlightedTerm->termString;
+            fullPhraseToRender = highlightedTerm->termString;
         }
 
         int highlightedTermWidth  = 0, highlightedTermHeight =0;
-        int widestStringSize = std::max( (int)fullPhraseToRender.size(), (int)GPE_MAIN_HIGHLIGHTER->highlightedTerm->termDescription.size() );
+        int widestStringSize = std::max( (int)fullPhraseToRender.size(), (int)highlightedTerm->termDescription.size() );
         widestStringSize = std::max( (int)fullTermScope.size(), widestStringSize);
 
         FONT_TEXTINPUT->get_metrics("A",&highlightedTermWidth, &highlightedTermHeight);
         highlightedTermWidth*=widestStringSize;
 
-        if( GPE_MAIN_HIGHLIGHTER->highlightedTermXPos+32+highlightedTermWidth > SCREEN_WIDTH)
+        if( highlightedTermXPos+32+highlightedTermWidth > SCREEN_WIDTH)
         {
-            GPE_MAIN_HIGHLIGHTER->highlightedTermXPos = SCREEN_WIDTH - 64-highlightedTermWidth;
+            highlightedTermXPos = SCREEN_WIDTH - 64-highlightedTermWidth;
         }
-        if( GPE_MAIN_HIGHLIGHTER->highlightedTermXPos< 0)
+        if( highlightedTermXPos< 0)
         {
-            GPE_MAIN_HIGHLIGHTER->highlightedTermXPos = 0;
+            highlightedTermXPos = 0;
         }
 
-        gpe->render_rectangle(  GPE_MAIN_HIGHLIGHTER->highlightedTermXPos, GPE_MAIN_HIGHLIGHTER->highlightedTermYPos,
-                         GPE_MAIN_HIGHLIGHTER->highlightedTermXPos+highlightedTermWidth+64, GPE_MAIN_HIGHLIGHTER->highlightedTermYPos+(GPE_AVERAGE_LINE_HEIGHT*3),GPE_MAIN_THEME->PopUp_Box_Color,false);
+        gcanvas->render_rectangle(  highlightedTermXPos, highlightedTermYPos,
+                                highlightedTermXPos+highlightedTermWidth+64, highlightedTermYPos+(GPE_AVERAGE_LINE_HEIGHT*3),GPE_MAIN_THEME->PopUp_Box_Color,false);
 
-        render_new_text( GPE_MAIN_HIGHLIGHTER->highlightedTermXPos+32, GPE_MAIN_HIGHLIGHTER->highlightedTermYPos,fullPhraseToRender,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TERM_NAME,FA_LEFT,FA_TOP,255 );
-        render_new_text( GPE_MAIN_HIGHLIGHTER->highlightedTermXPos+32, GPE_MAIN_HIGHLIGHTER->highlightedTermYPos+GPE_AVERAGE_LINE_HEIGHT,GPE_MAIN_HIGHLIGHTER->highlightedTerm->termDescription,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TERM_DESCRIPTION,FA_LEFT,FA_TOP,255 );
+        gfs->render_text( highlightedTermXPos+32, highlightedTermYPos,fullPhraseToRender,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TERM_NAME,FA_LEFT,FA_TOP,255 );
+        gfs->render_text( highlightedTermXPos+32, highlightedTermYPos+GPE_AVERAGE_LINE_HEIGHT,highlightedTerm->termDescription,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TERM_DESCRIPTION,FA_LEFT,FA_TOP,255 );
 
         if( (int)fullTermScope.size()>1 )
         {
-            render_new_text( highlightedTermXPos+32, highlightedTermYPos+GPE_AVERAGE_LINE_HEIGHT*2,fullTermScope,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TERM_SCOPE,FA_LEFT,FA_TOP,255 );
+            gfs->render_text( highlightedTermXPos+32, highlightedTermYPos+GPE_AVERAGE_LINE_HEIGHT*2,fullTermScope,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TERM_SCOPE,FA_LEFT,FA_TOP,255 );
         }
 
-        gpe->render_rectangle(  highlightedTermXPos, highlightedTermYPos,
-                         highlightedTermXPos+highlightedTermWidth+64, highlightedTermYPos+GPE_AVERAGE_LINE_HEIGHT*3,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
+        gcanvas->render_rectangle(  highlightedTermXPos, highlightedTermYPos,
+                                highlightedTermXPos+highlightedTermWidth+64, highlightedTermYPos+GPE_AVERAGE_LINE_HEIGHT*3,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
+    }
+}
+
+
+void GPE_Syntax_Highlighter::render_code_suggestions( bool forceRedraw )
+{
+    if( forceRedraw && (int)suggestedCompilerTerms.size() > 0 )
+    {
+        //MAIN_RENDERER->reset_viewpoint();
+        int iRendSuggestion = 0;
+        GPE_Compiler_Term * cTerm = NULL;
+        std::string fullPhraseToRender = "";
+        maxSuggestedTextWidth = SCREEN_WIDTH - highlightedTermXPos;
+        int currentYRenderPos = highlightedTermYPos;
+        for( int iSuggestedEntry = iSuggestedStartPos; iSuggestedEntry < (int)suggestedCompilerTerms.size() && iSuggestedEntry <  iSuggestedStartPos+suggestedTextMaxInViewCount; iSuggestedEntry++ )
+        {
+            cTerm = suggestedCompilerTerms[iSuggestedEntry];
+            if( cTerm!=NULL)
+            {
+                if( cTerm->termType==CTERM_FUNCTION)
+                {
+                    if( (int)cTerm->termScope.size() > 0 && cTerm->termScope!="User Global" )
+                    {
+                        fullPhraseToRender = cTerm->termFunctionReturnType+" "+cTerm->termScope+"."+cTerm->termString+"("+cTerm->get_parameters()+")";
+                    }
+                    else
+                    {
+                        fullPhraseToRender = cTerm->termFunctionReturnType+" "+cTerm->termString+"("+cTerm->get_parameters()+")";
+                    }
+                }
+                else if( (int)cTerm->termScope.size() > 0 && cTerm->termScope!="User Global" )
+                {
+                    fullPhraseToRender = cTerm->termScope+"."+cTerm->termString;
+                }
+                else
+                {
+                    fullPhraseToRender = cTerm->termString;
+                }
+                if( iSuggestedEntry==iSuggestionPos)
+                {
+                    gcanvas->render_rectangle(  highlightedTermXPos, currentYRenderPos,highlightedTermXPos+maxSuggestedTextWidth, currentYRenderPos+GPE_AVERAGE_LINE_HEIGHT,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
+                    gfs->render_only_text( highlightedTermXPos+32, currentYRenderPos,fullPhraseToRender,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
+                }
+                else
+                {
+                    gcanvas->render_rectangle(  highlightedTermXPos, currentYRenderPos,highlightedTermXPos+maxSuggestedTextWidth, currentYRenderPos+GPE_AVERAGE_LINE_HEIGHT,GPE_MAIN_THEME->PopUp_Box_Color,false);
+                    gfs->render_only_text(highlightedTermXPos+32, currentYRenderPos,fullPhraseToRender,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
+                }
+                iRendSuggestion++;
+            }
+            currentYRenderPos += GPE_AVERAGE_LINE_HEIGHT;
+        }
+        gcanvas->render_rectangle(  highlightedTermXPos, highlightedTermYPos,highlightedTermXPos+maxSuggestedTextWidth, currentYRenderPos,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
     }
 }

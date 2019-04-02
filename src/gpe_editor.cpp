@@ -3,10 +3,10 @@ gpe_editor.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -30,1313 +30,35 @@ SOFTWARE.
 
 
 */
-
+#include "GPE_Engine/GPE_Program_State.h"
 #include "gpe_editor.h"
+#include "gpe_editor_start_page.h"
 #include "gpe_project_resources.h"
+#include "gpe_editor_helppage.h"
+#include "gpe_cpp_compiler_settings.h"
+#include "gpe_gamecontroller_tester.h"
 
 int lastResTypeRendered = -1;
 
 GPE_ProjectFolder * CURRENT_PROJECT = NULL;
-GPE_Animation * GPE_RadioButton_GFX = NULL;
 
 GPE_Gui_Engine * GPE_MAIN_GUI = NULL;
 
 GPE_PopUpMenu_Option * MAIN_TOOLBAR_RECENT_PROJECTS = NULL;
-GPE_TabManager * GPE_Main_TabManager = NULL;
 
-
-std::string GPE_Action_Message = "";
-int GPE_Action_ID = -1;
-bool GPE_ACTION_IS_CONTEXT = false;
-
-generalGameResource * SELECTED_GENERAL_RESOUCE = NULL;
-GPE_ResourceContainer * RESOURCE_TO_DRAG = NULL;
-GPE_ResourceContainer * LAST_CLICKED_RESOURCE = NULL;
-bool RESOURCEMENU_WAS_RIGHTCLICKED = false;
-GPE_ResourceContainer * RESOURCE_BEINGRENAMED = NULL;
-
-int LAST_CLICKED_RESTYPE = -1;
-int DRAGGED_RESTYPE = -1;
-
+//generalGameResource * SELECTED_GENERAL_RESOUCE = NULL;
 GPE_Texture * GPE_LOGO = NULL;
 GPE_Texture * GPE_TEXTURE_TRANSPARENT_BG = NULL;
-GPE_Texture * GPE_TEXTURE_COLOR_PICKER_GRADIENT = NULL;
-SDL_Surface * GPE_SURFACE_COLOR_PICKER_GRADIENT = NULL;
-GPE_Texture * GPE_CHECKMARK_IMAGE = NULL;
-GPE_Animation  * GPE_TRIANGLE = NULL;
 
-std::string PROJECT_LANGUAGE_NAMES[PROJECT_LANGUAGE_MAX];
-std::string RESOURCE_TYPE_NAMES[res_type_count];
 std::string GPE_BUILD_NAMES[GPE_BUILD_OPTIONS];
 
-
-std::string displayMessageTitle = "";
-std::string displayMessageSubtitle = "";
-std::string displayMessageString = "";
 
 int GPE_GetMessageBoxResult(const std::string  title, const std::string  prompt, int flagType)
 {
     return 0;
 }
 
-
-GPE_LogManager::GPE_LogManager()
-{
-    minLogHeight= 64;
-    isVisible = true;
-    menuResized = false;
-    beingResized = false;
-    justResized = false;
-    logTabs = new GPE_TabBar();
-    logTabs->add_new_tab("Game Pencil Log",true);
-    logTabs->add_new_tab("Build Log",false);
-    logTabs->add_new_tab("Search",false);
-    logTabs->add_new_tab("Search Results",false);
-    logTabs->add_new_tab("Other...",false);
-    /*logTabs->add_new_tab("Debug Log");
-    logTabs->add_new_tab("Search Results");*/
-
-    generalTextLog = new GPE_TextAreaInputBasic();
-    generalTextLog->isCodeEditor = false;
-    generalTextLog->isTextLog = true;
-    generalTextLog->set_read_only();
-    generalTextLog->clear_all_lines();
-
-    debugTextLog = new GPE_TextAreaInputBasic();
-    debugTextLog->isCodeEditor = false;
-    debugTextLog->isTextLog = true;
-    debugTextLog->set_read_only();
-    debugTextLog->clear_all_lines();
-
-    buildTextLog = new GPE_TextAreaInputBasic();
-    buildTextLog->isCodeEditor = false;
-    buildTextLog->isTextLog = true;
-    buildTextLog->set_read_only();
-    buildTextLog->clear_all_lines();
-
-    otherLog = new GPE_TextAreaInputBasic();
-    otherLog->isCodeEditor = false;
-    otherLog->isTextLog = true;
-    otherLog->set_read_only();
-    otherLog->clear_all_lines();
-
-    logToView = NULL;
-    seekedY1Pos = 0;
-    bottomInfoList = new GPE_GuiElementList();
-    emptyResultsLabel = new GPE_Label_Text("No results found","No results found");
-}
-
-GPE_LogManager::~GPE_LogManager()
-{
-    if( bottomInfoList!=NULL)
-    {
-        bottomInfoList->clear_list();
-        delete bottomInfoList;
-        bottomInfoList = NULL;
-    }
-    if( logTabs!=NULL)
-    {
-        delete logTabs;
-        logTabs = NULL;
-    }
-
-    if( generalTextLog!=NULL)
-    {
-        delete generalTextLog;
-        generalTextLog = NULL;
-    }
-
-    if( debugTextLog!=NULL)
-    {
-        delete debugTextLog;
-        debugTextLog = NULL;
-    }
-
-    if( buildTextLog!=NULL)
-    {
-        delete buildTextLog;
-        buildTextLog = NULL;
-    }
-    if( emptyResultsLabel!=NULL)
-    {
-        delete emptyResultsLabel;
-        emptyResultsLabel = NULL;
-    }
-}
-
-void GPE_LogManager::clear_search_anchors()
-{
-    if( (int)searchAnchors.size() > 0)
-    {
-        GPE_TextAnchor * tAnchor = NULL;
-        for( int i = (int)searchAnchors.size()-1; i >=0; i--)
-        {
-            tAnchor = searchAnchors[i];
-            delete tAnchor;
-            tAnchor = NULL;
-        }
-        searchAnchors.clear();
-    }
-    if( FONT_LABEL_ANCHOR!=NULL)
-    {
-        FONT_LABEL_ANCHOR->clear_cache();
-    }
-}
-
-void GPE_LogManager::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
-{
-    viewedSpace = GPE_find_camera(viewedSpace);
-    cam = GPE_find_camera(cam);
-    if( elementBox.h < 32 && MAIN_SEARCH_CONTROLLER!=NULL )
-    {
-         MAIN_SEARCH_CONTROLLER->close_finder();
-    }
-
-
-    if( isEnabled && isVisible && viewedSpace!=NULL && cam!=NULL && elementBox.h >8 )
-    {
-        std::string pastTab = logTabs->get_selected_name();
-        if( pastTab!="Search" && MAIN_SEARCH_CONTROLLER!=NULL )
-        {
-             MAIN_SEARCH_CONTROLLER->close_finder();
-        }
-        //resize_code
-        if( beingResized)
-        {
-            if( point_between(input->mouse_x,input->mouse_y,elementBox.x,0,elementBox.x+elementBox.w,SCREEN_HEIGHT-32) )
-            {
-                seekedY1Pos = input->mouse_y;
-                GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZENS);
-                if(input->check_mouse_released(0) )
-                {
-                    justResized = true;
-                    beingResized = false;
-                    elementBox.y = input->mouse_y;
-                    if( elementBox.y < 96)
-                    {
-                        elementBox.y = 96;
-                    }
-
-                    elementBox.h = SCREEN_HEIGHT-elementBox.y-GPE_Main_Statusbar->get_height();
-                    if( elementBox.h < 16 && isVisible)
-                    {
-                        elementBox.h = 16;
-                        elementBox.y = SCREEN_HEIGHT-GPE_Main_Statusbar->get_height()-32;
-                    }
-                    input->reset_all_input();
-                    //GPE_MAIN_GUI->save_settings();
-                }
-            }
-            else
-            {
-                beingResized = false;
-            }
-        }
-        menuResized = false;
-
-		if( logToView==NULL || (logToView->hasScrollControl==false) )
-        {
-            if( point_within(input->mouse_x,input->mouse_y,elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+8) )
-            {
-                GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZENS);
-                if(input->check_mouse_pressed(0) )
-                {
-                    beingResized = true;
-                }
-            }
-        }
-
-        menuResized = false;
-		if( logToView!=NULL )
-        {
-            if( point_within(input->mouse_x,input->mouse_y,elementBox.x,elementBox.y-2,elementBox.x+elementBox.w,elementBox.y+8) )
-            {
-                GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZENS);
-                if(input->check_mouse_pressed(0) )
-                {
-                    beingResized = true;
-                }
-            }
-        }
-
-        if( elementBox.h > 32)
-        {
-            if( elementBox.y < 96)
-            {
-                elementBox.h = SCREEN_HEIGHT-GPE_Main_Statusbar->get_height()-96;
-            }
-            if( logTabs!=NULL)
-            {
-                GPE_GeneralGuiElement::process_self(viewedSpace,cam);
-
-                logTabs->set_width(elementBox.w);
-                logTabs->set_height(24);
-                logTabs->set_coords(elementBox.x, elementBox.y+elementBox.h-24);
-                logTabs->process_self(viewedSpace,cam);
-
-                if( logTabs->tabIsRightClicked )
-                {
-                    logTabs->tabIsRightClicked = false;
-                    GPE_open_context_menu(input->mouse_x,input->mouse_y-32,256);
-                    MAIN_CONTEXT_MENU->add_menu_option("Copy Log to Clipboard",0);
-                    MAIN_CONTEXT_MENU->add_menu_option("Clear THIS Log",1);
-                    MAIN_CONTEXT_MENU->add_menu_option("Clear ALL Logs",2);
-                    MAIN_CONTEXT_MENU->add_menu_option("Clear Search Results",3);
-                    //MAIN_CONTEXT_MENU->add_menu_option("Tabs at Top",3);
-                    int foundResult = get_popupmenu_result();
-                    switch(foundResult)
-                    {
-                        case 0:
-                            if( logToView!=NULL )
-                            {
-                                logToView->copy_all();
-                            }
-                        break;
-
-                            case 1:
-                            if( logToView!=NULL )
-                            {
-                                logToView->clear_all_lines();
-                            }
-                        break;
-
-                        case 2:
-                            clear_all_logs();
-                        break;
-
-                        case 3:
-                            clear_search_anchors();
-                        break;
-
-                        default:
-                            logToView = NULL;
-                        break;
-                    }
-                }
-
-                if( pastTab != logTabs->get_selected_name() )
-                {
-                    bottomInfoList->reset_self();
-                }
-                logToView = NULL;
-
-                if( elementBox.h >= 64 && FONT_TEXTINPUT!=NULL)
-                {
-                    if( logTabs->get_selected_name()=="Game Pencil Log")
-                    {
-                        logToView = generalTextLog;
-                        MAIN_SEARCH_CONTROLLER->close_finder();
-                    }
-                    else if( logTabs->get_selected_name()=="Build Log")
-                    {
-                        logToView = buildTextLog;
-                        MAIN_SEARCH_CONTROLLER->close_finder();
-                    }
-                    else if( logTabs->get_selected_name()=="Debug Log")
-                    {
-                        logToView = generalTextLog;
-                        MAIN_SEARCH_CONTROLLER->close_finder();
-                    }
-                    else if( logTabs->get_selected_name()=="Other...")
-                    {
-                        logToView = otherLog;
-                        MAIN_SEARCH_CONTROLLER->close_finder();
-                    }
-                    else
-                    {
-                        logToView= NULL;
-                        if( logTabs->get_selected_name()=="Search" && bottomInfoList!=NULL )
-                        {
-                            if( pastTab != "Search" )
-                            {
-                                input->reset_all_input();
-                                elementBox.h = 96;
-                                if( MAIN_SEARCH_CONTROLLER->previousSearchMode != MAIN_SEARCH_CONTROLLER->textSearchMode )
-                                {
-                                    MAIN_SEARCH_CONTROLLER->textSearchMode = MAIN_SEARCH_CONTROLLER->previousSearchMode;
-                                    if( MAIN_SEARCH_CONTROLLER->textSearchMode==SEARCH_MODE_FIND || MAIN_SEARCH_CONTROLLER->textSearchMode==SEARCH_MODE_FINDALL )
-                                    {
-                                        MAIN_SEARCH_CONTROLLER->findTextStringBox->switch_inuse( true);
-                                        MAIN_SEARCH_CONTROLLER->findTextStringBox->inputSubmitted = false;
-                                        MAIN_SEARCH_CONTROLLER->findTextStringBox->resubmissionAllowed = true;
-                                        MAIN_SEARCH_CONTROLLER->findTextStringBox->set_clicked( true);
-                                        MAIN_SEARCH_CONTROLLER->findButton->set_clicked( false);
-                                        MAIN_SEARCH_CONTROLLER->findAllButton->set_clicked( false);
-                                        record_error("Opening Finder...");
-                                    }
-                                    else if( MAIN_SEARCH_CONTROLLER->textSearchMode==SEARCH_MODE_GOTO )
-                                    {
-                                        MAIN_SEARCH_CONTROLLER->goToLineStringBox->switch_inuse( true);
-                                        MAIN_SEARCH_CONTROLLER->goToLineStringBox->inputSubmitted = false;
-                                        MAIN_SEARCH_CONTROLLER->goToLineStringBox->resubmissionAllowed = true;
-                                        MAIN_SEARCH_CONTROLLER->goToLineStringBox->set_clicked( true);
-                                        MAIN_SEARCH_CONTROLLER->goToButton->set_clicked( false);
-                                        record_error("Opening Goto Finder...");
-                                    }
-                                    else
-                                    {
-                                        MAIN_SEARCH_CONTROLLER->findTextStringBox->switch_inuse( true);
-                                        MAIN_SEARCH_CONTROLLER->findTextStringBox->set_clicked( false);
-                                        MAIN_SEARCH_CONTROLLER->findButton->set_clicked( true);
-                                        MAIN_SEARCH_CONTROLLER->findAllButton->set_clicked( false);
-                                        MAIN_SEARCH_CONTROLLER->findTextStringBox->inputSubmitted = false;
-                                        MAIN_SEARCH_CONTROLLER->findTextStringBox->resubmissionAllowed = true;
-                                        record_error("Opening Finder thru Else...");
-                                    }
-                                }
-                                //GPE_Main_Logs->open_search_mode();
-                            }
-
-                            bottomInfoList->set_coords(elementBox.x,elementBox.y);
-                            bottomInfoList->set_width(elementBox.w);
-                            bottomInfoList->set_height(elementBox.h-32);
-                            bottomInfoList->barYMargin = bottomInfoList->barYPadding = GENERAL_GPE_PADDING/2;
-                            bottomInfoList->barXMargin = bottomInfoList->barXPadding = GENERAL_GPE_PADDING;
-                            bottomInfoList->clear_list();
-                            switch( MAIN_SEARCH_CONTROLLER->textSearchMode )
-                            {
-                                //find case
-                                case SEARCH_MODE_FIND:
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->findTextStringBox,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->findButton,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->findMatchCase,false);
-                                break;
-
-                                 case SEARCH_MODE_FINDALL:
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->findTextStringBox,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->findButton,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->findMatchCase,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->scopeLabel,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->findScope,false);
-
-                                break;
-
-                                //goto case
-                                case SEARCH_MODE_GOTO:
-                                        bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->goToLineStringBox,false);
-                                        bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->goToButton,false);
-                                break;
-
-                                case SEARCH_MODE_REPLACE:
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->findTextStringBox,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->findButton,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->findMatchCase,true);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->replaceTextStringBox,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->replaceButton,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->replaceAllButton,false);
-                                break;
-
-                                case SEARCH_MODE_REPLACEALL:
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->findTextStringBox,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->findButton,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->findMatchCase,true);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->replaceTextStringBox,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->replaceButton,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->replaceAllButton,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->scopeLabel,false);
-                                    bottomInfoList->add_gui_element(MAIN_SEARCH_CONTROLLER->findScope,false);
-                                break;
-
-                                //find/replace case
-                                default:
-                                    MAIN_SEARCH_CONTROLLER->close_finder();
-                                    bottomInfoList->clear_list();
-                                    /**/
-                                break;
-                            }
-                            bottomInfoList->process_self(viewedSpace,cam);
-                            if( MAIN_SEARCH_CONTROLLER->textSearchMode == SEARCH_MODE_FINDALL )
-                            {
-                                if( MAIN_SEARCH_CONTROLLER->findButton->is_clicked() || MAIN_SEARCH_CONTROLLER->findTextStringBox->was_submitted() )
-                                {
-                                    if( (int)MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string().size() > 0 )
-                                    {
-                                        if( MAIN_SEARCH_CONTROLLER->findScope!=NULL)
-                                        {
-                                            GPE_Main_Logs->clear_search_anchors();
-                                            if( MAIN_SEARCH_CONTROLLER->findScope->get_selected_tag()=="Open Tabs" && GPE_Main_TabManager!=NULL )
-                                            {
-                                                GPE_Main_Logs->log_general_comment("Searching Tabs for ["+MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string()+"]...");
-                                                GPE_Main_TabManager->search_for_string(MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string() );
-                                            }
-                                            else if( MAIN_SEARCH_CONTROLLER->findScope->get_selected_tag()=="Project Resources" && CURRENT_PROJECT!=NULL )
-                                            {
-                                                if( CURRENT_PROJECT->RESC_PROJECT_FOLDER!=NULL)
-                                                {
-                                                    GPE_Main_Logs->log_general_comment("Searching Project for ["+MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string()+"]...");
-                                                    CURRENT_PROJECT->RESC_PROJECT_FOLDER->search_for_string(MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string() );
-                                                }
-                                            }
-                                            input->reset_all_input();
-                                            open_search_results();
-                                        }
-                                    }
-                                    else
-                                    {
-                                        display_user_alert("Search Error","You can not search for an empty string!");
-                                    }
-                                }
-                            }
-                        }
-                        else if( logTabs->get_selected_name()=="Search Results" && bottomInfoList!=NULL)
-                        {
-                            MAIN_SEARCH_CONTROLLER->close_finder();
-                            GPE_TextAnchor * fAnchor = NULL;
-
-                            bottomInfoList->set_coords(elementBox.x,elementBox.y);
-                            bottomInfoList->set_width(elementBox.w);
-                            bottomInfoList->set_height(elementBox.h-32);
-                            bottomInfoList->clear_list();
-                            if( (int)searchAnchors.size()== 0 )
-                            {
-                                bottomInfoList->add_gui_element(emptyResultsLabel,true);
-                            }
-                            else
-                            {
-                                bottomInfoList->barYMargin = bottomInfoList->barXMargin =  0;
-                                bottomInfoList->barYPadding = bottomInfoList->barXPadding = 0;
-                                for( int iAnchor = 0; iAnchor < (int)searchAnchors.size(); iAnchor++)
-                                {
-                                    fAnchor = searchAnchors[iAnchor];
-                                    if( fAnchor!=NULL)
-                                    {
-                                        bottomInfoList->add_gui_element(fAnchor,true);
-                                    }
-                                }
-                            }
-                            bottomInfoList->set_full_width();
-                            bottomInfoList->process_self(viewedSpace,cam);
-                        }
-                        else
-                        {
-                            MAIN_SEARCH_CONTROLLER->close_finder();
-                        }
-                    }
-                    if( logToView!=NULL)
-                    {
-                        logToView->set_coords(elementBox.x,elementBox.y+8);
-                        logToView->set_width(elementBox.w);
-                        logToView->set_height(elementBox.h-32);
-                        logToView->process_self(viewedSpace,cam);
-                    }
-                }
-            }
-        }
-    }
-}
-
-void GPE_LogManager::render_self( GPE_Rect * viewedSpace,GPE_Rect *cam, bool forceRedraw)
-{
-    viewedSpace = GPE_find_camera(viewedSpace);
-    cam = GPE_find_camera(cam);
-    if( isEnabled && forceRedraw && elementBox.h >8 )
-    {
-        gpe->render_rect( &elementBox,GPE_MAIN_THEME->Text_Box_Color,false);
-        if( elementBox.h > 32 && logTabs!=NULL)
-        {
-            if( elementBox.h >= 64 && FONT_TEXTINPUT!=NULL)
-            {
-                if( logToView!=NULL)
-                {
-                    logToView->render_self( viewedSpace,cam,forceRedraw);
-                }
-                else if( bottomInfoList!=NULL)
-                {
-                    bottomInfoList->render_self( viewedSpace,cam,forceRedraw);
-                }
-            }
-            logTabs->render_self( viewedSpace,cam,forceRedraw);
-        }
-        gpe->render_rect( &elementBox,GPE_MAIN_THEME->Text_Box_Outline_Color,true);
-    }
-    if( beingResized && viewedSpace!=NULL && cam!=NULL && seekedY1Pos>0)
-    {
-        if( seekedY1Pos < 96)
-        {
-            gpe->render_rectangle( elementBox.x, seekedY1Pos-2,elementBox.x+elementBox.w,seekedY1Pos+2,GPE_MAIN_THEME->Input_Error_Font_Color,false);
-        }
-        else
-        {
-            gpe->render_rectangle( elementBox.x, seekedY1Pos-2,elementBox.x+elementBox.w,seekedY1Pos+2,GPE_MAIN_THEME->Input_Outline_Color,false);
-        }
-    }
-}
-
-bool GPE_LogManager::being_resized()
-{
-    return beingResized;
-}
-
-void GPE_LogManager::clear_all_logs()
-{
-    clear_build_log();
-    clear_debug_log();
-    clear_general_log();
-
-}
-
-void GPE_LogManager::clear_debug_log()
-{
-    GPE_Log_Entry * tempLogEntry = NULL;
-    for( int i = (int)debugLog.size()-1; i >=0; i--)
-    {
-        tempLogEntry = debugLog[i];
-        if( tempLogEntry!=NULL)
-        {
-            delete tempLogEntry;
-            tempLogEntry = NULL;
-        }
-    }
-    debugLog.clear();
-    if( debugTextLog!=NULL)
-    {
-        debugTextLog->clear_all_lines();
-    }
-}
-
-void GPE_LogManager::clear_build_log()
-{
-    GPE_Log_Entry * tempLogEntry = NULL;
-    for( int i = (int)buildLog.size()-1; i >=0; i--)
-    {
-        tempLogEntry = buildLog[i];
-        if( tempLogEntry!=NULL)
-        {
-            delete tempLogEntry;
-            tempLogEntry = NULL;
-        }
-    }
-    buildLog.clear();
-    if( buildTextLog!=NULL)
-    {
-        buildTextLog->clear_all_lines();
-    }
-}
-
-void GPE_LogManager::clear_general_log()
-{
-    GPE_Log_Entry * tempLogEntry = NULL;
-    for( int i = (int)generalLog.size()-1; i >=0; i--)
-    {
-        tempLogEntry = generalLog[i];
-        if( tempLogEntry!=NULL)
-        {
-            delete tempLogEntry;
-            tempLogEntry = NULL;
-        }
-    }
-    generalLog.clear();
-    if( generalTextLog!=NULL)
-    {
-        generalTextLog->clear_all_lines();
-    }
-}
-
-void GPE_LogManager::log_general_line(std::string newLogLine)
-{
-    if( generalTextLog!=NULL)
-    {
-        generalTextLog->add_line(newLogLine, true );
-        open_general_log();
-    }
-}
-
-void GPE_LogManager::log_general_comment(std::string newLogLine)
-{
-    if( generalTextLog!=NULL)
-    {
-        generalTextLog->add_line("Comment: "+newLogLine, true );
-        open_general_log();
-    }
-}
-
-
-void GPE_LogManager::log_general_error(std::string newLogLine)
-{
-    if( generalTextLog!=NULL)
-    {
-        generalTextLog->add_line("Error: "+newLogLine, true );
-        open_general_log();
-    }
-}
-
-void GPE_LogManager::log_general_warning(std::string newLogLine)
-{
-    if( generalTextLog!=NULL)
-    {
-        generalTextLog->add_line("Warning: "+newLogLine, true );
-        open_general_log();
-    }
-}
-
-void GPE_LogManager::log_debug_line(std::string newLogLine)
-{
-    if( generalTextLog!=NULL)
-    {
-        generalTextLog->add_line("Error: "+newLogLine, true );
-        open_general_log();
-    }
-}
-
-
-void GPE_LogManager::log_build_line(std::string newLogLine)
-{
-    if( buildTextLog!=NULL)
-    {
-        buildTextLog->add_line(newLogLine, true );
-        open_build_log();
-    }
-}
-
-void GPE_LogManager::log_build_comment(std::string newLogLine)
-{
-    if( buildTextLog!=NULL)
-    {
-        buildTextLog->add_line("Comment: "+newLogLine, true );
-        open_build_log();
-    }
-}
-
-void GPE_LogManager::log_build_error(std::string newLogLine)
-{
-    if( buildTextLog!=NULL)
-    {
-        buildTextLog->add_line("Error: "+newLogLine, true );
-        open_build_log();
-    }
-}
-
-void GPE_LogManager::log_build_warning(std::string newLogLine)
-{
-    if( buildTextLog!=NULL)
-    {
-        buildTextLog->add_line("Warning: "+newLogLine, true );
-        open_build_log();
-    }
-}
-
-
-void GPE_LogManager::log_other_line(std::string newLogLine)
-{
-    record_error(newLogLine);
-    if( otherLog!=NULL)
-    {
-        otherLog->add_line(newLogLine, true );
-        open_other_log();
-    }
-}
-
-void GPE_LogManager::open_general_log()
-{
-    if( elementBox.h < minLogHeight )
-    {
-        elementBox.h = minLogHeight;
-    }
-    if( logTabs!=NULL)
-    {
-        logTabs->open_tab("Game Pencil Log");
-    }
-}
-
-void GPE_LogManager::open_build_log()
-{
-    if( elementBox.h < minLogHeight )
-    {
-        elementBox.h = minLogHeight ;
-    }
-    if( logTabs!=NULL)
-    {
-        logTabs->open_tab("Build Log");
-    }
-}
-
-void GPE_LogManager::open_other_log()
-{
-    if( elementBox.h < minLogHeight )
-    {
-        elementBox.h = minLogHeight;
-    }
-    if( logTabs!=NULL)
-    {
-        logTabs->open_tab("Other...");
-    }
-}
-
-void GPE_LogManager::open_replace_mode()
-{
-    //if( elementBox.h < 128 )
-    {
-        elementBox.h = 128;
-    }
-    bottomInfoList->reset_self();
-    if( logTabs!=NULL)
-    {
-        logTabs->open_tab("Search");
-    }
-}
-
-void GPE_LogManager::open_search_mode()
-{
-    //if( elementBox.h < 96)
-    {
-        elementBox.h = 96;
-    }
-    bottomInfoList->reset_self();
-    if( logTabs!=NULL)
-    {
-        logTabs->open_tab("Search");
-    }
-}
-
-void GPE_LogManager::open_search_results()
-{
-    if( elementBox.h < 128)
-    {
-        elementBox.h = 128;
-    }
-    if( logTabs!=NULL)
-    {
-        logTabs->open_tab("Search Results");
-    }
-    bottomInfoList->reset_self();
-    if( MAIN_GUI_SETTINGS!=NULL)
-    {
-        MAIN_SEARCH_CONTROLLER->close_finder();
-    }
-}
-
-
-GPE_DropDown_Resouce_Menu::GPE_DropDown_Resouce_Menu(int xPos, int yPos, std::string name, GPE_ResourceContainer * cTree,int id,bool selectable )
-{
-    guiListTypeName = "resourcedropdown";
-    elementBox.x = xPos;
-    elementBox.y = yPos;
-    elementBox.w = 228;
-    //int nameMinSize = name.size()*
-    elementBox.h = 32;
-    displayedResult = dropdownName = opName = name;
-    containerTree = cTree;
-    opId = id;
-    isSelectable = selectable;
-    selectedId = -1;
-    isOpen = false;
-    isClicked = false;
-    justActivated = false;
-    selectedResource= NULL;
-}
-
-GPE_DropDown_Resouce_Menu::~GPE_DropDown_Resouce_Menu()
-{
-
-}
-
-std::string GPE_DropDown_Resouce_Menu::get_data()
-{
-    if( containerTree!=NULL)
-    {
-        std::string dataString = guiListTypeName+":"+dropdownName+"==|||==";
-        dataString+= containerTree->get_name()+",,,";
-        if( selectedResource!=NULL)
-        {
-            dataString+=int_to_string(selectedResource->get_global_id() )+",";
-        }
-        else
-        {
-            dataString+="-1,";
-        }
-        return dataString;
-    }
-    return "";
-}
-
-void GPE_DropDown_Resouce_Menu::load_data(std::string dataString)
-{
-    if( (int)dataString.size() > 0)
-    {
-        std::string projectResourceFolder = "";
-        int projectSelectedContainer = -1;
-        GPE_ProjectFolder * foundProjectFolder = GPE_MAIN_GUI->find_project_from_filename(CURRENT_PROJECT_NAME);
-        if( foundProjectFolder!=NULL)
-        {
-            if( foundProjectFolder->RESC_PROJECT_FOLDER!=NULL)
-            {
-                projectResourceFolder = split_first_string(dataString,",,,");
-
-                GPE_ResourceContainer * foundResContainer  = foundProjectFolder->RESC_PROJECT_FOLDER->find_resource_from_name(projectResourceFolder );
-                if( foundResContainer!=NULL)
-                {
-                    containerTree = foundResContainer;
-                    projectSelectedContainer = split_first_int(dataString,',');
-                    set_selection( projectSelectedContainer);
-                }
-                else
-                {
-                    record_error("Can't find project resource container using...["+CURRENT_PROJECT_NAME+"]");
-                }
-            }
-            else
-            {
-                record_error("Can't find project GPE resource container using...["+CURRENT_PROJECT_NAME+"]");
-            }
-        }
-        else
-        {
-            record_error("Can't find project using...["+CURRENT_PROJECT_NAME+"]");
-        }
-    }
-}
-
-void GPE_DropDown_Resouce_Menu::add_folder_contents(GPE_ResourceContainer * fFolder, GPE_PopUpMenu_Option * fOptionFolder)
-{
-    if( fFolder!=NULL && fOptionFolder!=NULL)
-    {
-        GPE_ResourceContainer * cContainer = NULL;
-        GPE_PopUpMenu_Option * cOption = NULL;
-        for( int i = 0; i < fFolder->get_size(); i++)
-        {
-            cContainer = fFolder->get_resource_at(i);
-            if( cContainer!=NULL)
-            {
-                cOption = fOptionFolder->add_menu_option(cContainer->get_name(),cContainer->get_global_id(),cContainer->get_resource_texture(),0,cContainer->get_resource_sprite(),false,true,true);
-                cOption->isResourceOption = true;
-                if( cContainer->is_folder() )
-                {
-                    cOption->isFolderOption = true;
-                    add_folder_contents(cContainer,cOption);
-                }
-            }
-        }
-    }
-}
-
-
-GPE_ResourceContainer * GPE_DropDown_Resouce_Menu::get_selected_container()
-{
-    if( containerTree!=NULL)
-    {
-        return containerTree->find_resource_from_id(selectedId,true,false);
-    }
-    return NULL;
-}
-
-std::string GPE_DropDown_Resouce_Menu::get_selected_name()
-{
-    if( containerTree!=NULL)
-    {
-        GPE_ResourceContainer * fRes = containerTree->find_resource_from_id(selectedId,true,false);
-        if( fRes!=NULL)
-        {
-            std::string fStr = fRes->get_name();
-            if( is_alnum( fStr, false, true) )
-            {
-                return fStr;
-            }
-            else
-            {
-                //defaults to the object's id instead.
-                return int_to_string(fRes->get_global_id() );
-            }
-        }
-    }
-    return "";
-}
-
-std::string GPE_DropDown_Resouce_Menu::get_plain_string()
-{
-    if( selectedResource!=NULL)
-    {
-        if( selectedResource->get_resource_type()==RESOURCE_TYPE_FUNCTION)
-        {
-            return ""+selectedResource->get_name()+"()";
-        }
-        else
-        {
-            return selectedResource->get_name();
-        }
-    }
-    return "''";
-}
-
-int GPE_DropDown_Resouce_Menu::get_selected_id()
-{
-    return selectedId;
-}
-
-bool GPE_DropDown_Resouce_Menu::just_activated()
-{
-    return justActivated;
-}
-
-void GPE_DropDown_Resouce_Menu::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
-{
-    viewedSpace = GPE_find_camera(viewedSpace);
-    cam = GPE_find_camera(cam);
-    isHovered = false;
-    justActivated = false;
-    GPE_GeneralGuiElement::process_self(viewedSpace,cam);
-    if( isHovered || isInUse)
-    {
-        MAIN_OVERLAY->update_tooltip(dropdownName);
-    }
-    if( isInUse &&( input->check_keyboard_down( kb_enter ) || input->check_keyboard_down( kb_space )  ) )
-    {
-        isClicked = true;
-    }
-
-    if( isClicked && cam!=NULL && viewedSpace!=NULL && containerTree!=NULL )
-    {
-        if( RESOURCE_TO_DRAG!=NULL)
-        {
-            if( RESOURCE_TO_DRAG->is_folder()==false && RESOURCE_TO_DRAG->projectParentFileName.compare(CURRENT_PROJECT_NAME)==0 )
-            {
-                set_selection(RESOURCE_TO_DRAG->get_global_id() );
-                isOpen = false;
-                isClicked = false;
-                justActivated = true;
-            }
-            RESOURCE_TO_DRAG = NULL;
-        }
-        else if( MAIN_CONTEXT_MENU!=NULL)
-        {
-            if( MAIN_CONTEXT_MENU->subMenuIsOpen == false)
-            {
-                isOpen = true;
-                GPE_open_context_menu(viewedSpace->x+elementBox.x-cam->x, viewedSpace->y+elementBox.y+elementBox.h-cam->y);
-                int estimatedMenuSize = containerTree->get_options_width()+GENERAL_ICON_WIDTH_AND_PADDING ;
-                int dropdownNameWidth = 0;
-                int dropdownNameHeight = 0;
-                if( (int)opName.size()>0 && FONT_TOOLBAR!=NULL)
-                {
-                    FONT_TOOLBAR->get_metrics(dropdownName,&dropdownNameWidth, &dropdownNameHeight);
-                }
-                dropdownNameWidth+=GENERAL_ICON_WIDTH_AND_PADDING+GENERAL_GPE_PADDING;
-                estimatedMenuSize = std::max( estimatedMenuSize, dropdownNameWidth );
-                MAIN_CONTEXT_MENU->set_width( estimatedMenuSize );
-                MAIN_CONTEXT_MENU->add_menu_option(dropdownName,-1,NULL,-1,NULL,false,true);
-                GPE_ResourceContainer * cContainer = NULL;
-                GPE_PopUpMenu_Option * cOption = NULL;
-                if(containerTree!=NULL)
-                {
-                    for( int i = 0; i < containerTree->get_size(); i++)
-                    {
-                        cContainer = containerTree->get_resource_at(i);
-                        if( cContainer!=NULL)
-                        {
-                            cOption = MAIN_CONTEXT_MENU->add_menu_option(cContainer->get_name(),cContainer->get_global_id(),cContainer->get_resource_texture(),cContainer->get_resource_image_frame(),cContainer->get_resource_sprite(),false,true);
-                            cOption->isResourceOption = true;
-                            if( cContainer->is_folder() )
-                            {
-                                add_folder_contents(cContainer,cOption);
-                                cOption->isFolderOption = true;
-                            }
-                        }
-                    }
-                }
-                isOpen = false;
-                isClicked = false;
-                justActivated = true;
-                int foundResult = get_popupmenu_result();
-                if( foundResult>=0)
-                {
-                    selectedId = foundResult;
-                    selectedResource = containerTree->find_resource_from_id(selectedId);
-                    displayedResult = GPE_Action_Message;
-                }
-                else
-                {
-                    selectedId=-1;
-                    displayedResult=dropdownName;
-                }
-                GPE_close_context_menu();
-            }
-        }
-    }
-}
-
-void GPE_DropDown_Resouce_Menu::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
-{
-    viewedSpace = GPE_find_camera(viewedSpace);
-    cam = GPE_find_camera(cam);
-    if( forceRedraw && cam!=NULL && viewedSpace!=NULL)
-    {
-        gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Input_Color,false);
-        if( selectedId >= 0)
-        {
-            selectedResource = containerTree->find_resource_from_id(selectedId);
-            if( selectedResource!=NULL)
-            {
-                render_new_text_ext( elementBox.x+32+GENERAL_GPE_PADDING-cam->x,elementBox.y+elementBox.h/2-cam->y,selectedResource->get_name(),GPE_MAIN_THEME->Input_Font_Color,FONT_POPUP,FA_LEFT,FA_MIDDLE,elementBox.w-elementBox.h-12,-1);
-                selectedResource->render_image( elementBox.x,elementBox.y,elementBox.h-2,elementBox.h-2,viewedSpace,cam);
-            }
-            else
-            {
-                render_new_text_ext( elementBox.x-cam->x,elementBox.y+elementBox.h/2-cam->y,opName,GPE_MAIN_THEME->Input_Font_Color,FONT_POPUP,FA_LEFT,FA_MIDDLE,elementBox.w-elementBox.h-12,-1);
-            }
-        }
-        else
-        {
-            render_new_text_ext( elementBox.x+GENERAL_GPE_PADDING-cam->x,elementBox.y+elementBox.h/2-cam->y,opName,GPE_MAIN_THEME->Input_Font_Color,FONT_POPUP,FA_LEFT,FA_MIDDLE,elementBox.w-elementBox.h-12,-1);
-        }
-        gpe->render_rectangle( elementBox.x+elementBox.w-elementBox.h*3/4-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Input_Outline_Color ,false);
-        render_animation_ext( GPE_TRIANGLE,3,elementBox.x+elementBox.w-elementBox.h/2-cam->x,elementBox.y+elementBox.h/3 - cam->y,elementBox.h/3,elementBox.h/3,GPE_MAIN_THEME->Input_Color );
-        if( isInUse)
-        {
-            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Input_Highlight_Outline_Color,true);
-        }
-        else if( isHovered)
-        {
-            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Input_Highlight_Alt_Color,true);
-        }
-        else
-        {
-            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Input_Outline_Color,true);
-        }
-    }
-}
-
-void GPE_DropDown_Resouce_Menu::set_name(std::string newName)
-{
-    opName = newName;
-}
-
-void GPE_DropDown_Resouce_Menu::set_selection(int newId)
-{
-    if( newId>0 && containerTree!=NULL)
-    {
-        GPE_ResourceContainer * tRes = containerTree->find_resource_from_id(newId,true);
-        if( tRes!=NULL)
-        {
-            selectedId = newId;
-            displayedResult = tRes->get_name();
-            selectedResource = tRes;
-        }
-    }
-    else
-    {
-        selectedId = -1;
-        displayedResult = opName = dropdownName;
-        selectedResource = NULL;
-    }
-}
-
-void GPE_DropDown_Resouce_Menu::set_selected_target(std::string newName)
-{
-    int newId = string_to_int(newName, -1);
-    if( newId > 0 && containerTree!=NULL )
-    {
-        GPE_ResourceContainer * tRes = containerTree->find_resource_from_id(newId,true);
-        if( tRes!=NULL)
-        {
-            selectedId = newId;
-            displayedResult = tRes->get_name();
-            selectedResource = tRes;
-        }
-    }
-    else if(  containerTree!=NULL )
-    {
-        GPE_ResourceContainer * tRes = containerTree->find_resource_from_name(newName,true);
-        if( tRes!=NULL)
-        {
-            selectedId = tRes->get_global_id();
-            displayedResult = tRes->get_name();
-            selectedResource = tRes;
-        }
-        else
-        {
-            selectedId = -1;
-            displayedResult = opName = dropdownName;
-            selectedResource = NULL;
-        }
-    }
-    else
-    {
-        selectedId = -1;
-        displayedResult = opName = dropdownName;
-        selectedResource = NULL;
-    }
-}
-
-
-
-GPE_TextAnchor::GPE_TextAnchor(int lineN, int charN, std::string messageIn, std::string alertInfo, int anchorType)
-{
-    anchorType = anchorType;
-    lineNumber = lineN;
-    characterNumber = charN;
-    lineMessage = messageIn;
-    lineAlert = alertInfo;
-    if( GPE_MAIN_GUI!=NULL)
-    {
-        anchorProjectName = GPE_MAIN_GUI->searchResultProjectName;
-        anchorProjectResourceId = GPE_MAIN_GUI->searchResultResourceId;
-        anchorProjectResourceName = GPE_MAIN_GUI->searchResultResourceName;
-    }
-    else
-    {
-        anchorProjectName = "";
-        anchorProjectResourceId = 0;
-        anchorProjectResourceName = "";
-    }
-    if( (int)anchorProjectResourceName.size() > 0 )
-    {
-        opName = "["+anchorProjectResourceName+"]["+lineMessage+"]";
-    }
-    else
-    {
-        opName = "["+lineMessage+"]";
-    }
-    opName+=" Ln "+int_to_string(lineN+1)+"Col "+int_to_string(charN+1);
-    elementBox.x = 0;
-    elementBox.y = 0;
-    if( FONT_LABEL_ANCHOR!=NULL)
-    {
-        int bWid = 0;
-        int bHgt = 0;
-        FONT_LABEL_ANCHOR->get_metrics(opName.c_str(), &bWid, &bHgt);
-        elementBox.w = bWid;
-        elementBox.h = bHgt+GENERAL_GPE_PADDING*2;
-    }
-}
-
-GPE_TextAnchor::~GPE_TextAnchor()
-{
-
-}
-
-void GPE_TextAnchor::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
-{
-    GPE_GeneralGuiElement::process_self(viewedSpace,cam);
-
-    if( isHovered)
-    {
-        GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
-    }
-    if( isInUse)
-    {
-        if( input->check_keyboard_down(kb_ctrl) && input->check_keyboard_released(kb_c) )
-        {
-            SDL_SetClipboardText(opName.c_str() );
-        }
-    }
-
-    if( isClicked  && GPE_MAIN_GUI )
-    {
-        if( (int)anchorProjectName.size() > 0 )
-        {
-            GPE_ProjectFolder * foundProject = GPE_MAIN_GUI->find_project_from_filename(anchorProjectName);
-            GPE_ResourceContainer * foundResContainer = NULL;
-            generalGameResource * foundGameResource = NULL;
-            if( foundProject!=NULL && foundProject->RESC_PROJECT_FOLDER!=NULL )
-            {
-                if( anchorProjectResourceId >=0 )
-                {
-                    foundResContainer = foundProject->RESC_PROJECT_FOLDER->find_resource_from_id(anchorProjectResourceId,true,false);
-                }
-                else if( anchorProjectResourceId < 0 )
-                {
-                    foundResContainer = foundProject->RESC_PROJECT_SETTINGS;
-                }
-            }
-
-            if( foundResContainer!=NULL)
-            {
-                foundGameResource = foundResContainer->get_held_resource();
-            }
-            if( foundGameResource!=NULL)
-            {
-                foundGameResource->open_code(lineNumber, characterNumber, lineMessage );
-                if( GPE_Main_TabManager!=NULL)
-                {
-                    GPE_Main_TabManager->add_new_tab(foundGameResource);
-                }
-            }
-        }
-        //input->reset_all_input();
-    }
-}
-
-void GPE_TextAnchor::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
-{
-    viewedSpace = GPE_find_camera(viewedSpace);
-    cam = GPE_find_camera(cam);
-    if( forceRedraw && (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
-    {
-        if( isInUse)
-        {
-            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Border_Highlighted_Color,true);
-        }
-        else if( isHovered)
-        {
-            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Box_Highlighted_Color,false);
-            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Border_Highlighted_Color,false);
-        }
-        else
-        {
-            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Box_Color,false);
-            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Border_Color,true);
-        }
-        render_new_text( elementBox.x-cam->x+GENERAL_GPE_PADDING,elementBox.y-cam->y+GENERAL_GPE_PADDING,opName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_LABEL_ANCHOR,FA_LEFT,FA_MIDDLE);
-    }
-}
-
-//
-
-void GPE_set_selected_gresource(generalGameResource *newResource)
-{
-    SELECTED_GENERAL_RESOUCE = newResource;
-}
-
-generalGameResource * GPE_get_selected_gresource()
-{
-    generalGameResource * returnValue = SELECTED_GENERAL_RESOUCE;
-    SELECTED_GENERAL_RESOUCE = NULL;
-    return returnValue;
-}
-
-
-GPE_ResourceContainer::GPE_ResourceContainer(std::string projFolderName,int  rezPropValue)
-{
-    foundX2Pos = 0;
-    resouceNameChanged = false;
-    subContentsModified = false;
-    opName = projFolderName;
-    parentResource = NULL;
-    globalResouceId = -1;
-    html5BuildGlobalId = -1;
-    projectParentFileName = projectParentName = projFolderName;
-    if( rezPropValue<=0)
-    {
-        isFolder = false;
-        isSuperFolder = false;
-        isSuperProjectFolder = false;
-    }
-    else if( rezPropValue==1)
-    {
-        isSuperProjectFolder = true;
-    }
-    else if( rezPropValue>1)
-    {
-        isSuperFolder = true;
-    }
-    heldResource = NULL;
-    containerSprite = NULL;
-    optionBox.x = 0;
-    optionBox.y = 0;
-    optionBox.w = 0;
-    optionBox.h = RESOURCE_AREA_HEIGHT;
-    int textW = 0;
-    int textH = 0;
-
-    if( (int)opName.size()>0 && FONT_TOOLBAR!=NULL)
-    {
-        FONT_TOOLBAR->get_metrics(opName,&textW, &textH);
-    }
-    strTexWidth = textW;
-    strTexHeight = textH;
-    subMenuIsOpen = false;
-}
-
-GPE_ResourceContainer::GPE_ResourceContainer(std::string projFolderName, std::string newName, int rType, int rId,bool folder, int globalIdVal,  int rezPropValue)
+GPE_GeneralResourceContainer::GPE_GeneralResourceContainer(std::string projFolderName, std::string newName, int rType, int rId,bool folder, int globalIdVal,  int rezPropValue)
 {
     foundX2Pos = 0;
     resouceNameChanged = false;
@@ -1347,7 +69,7 @@ GPE_ResourceContainer::GPE_ResourceContainer(std::string projFolderName, std::st
     resourceType = rType;
     resourceId = rId;
     isFolder = folder;
-    html5BuildGlobalId = -1;
+    exportBuildGlobalId = -1;
     globalResouceId = -1;
     if(globalIdVal>=0)
     {
@@ -1391,19 +113,26 @@ GPE_ResourceContainer::GPE_ResourceContainer(std::string projFolderName, std::st
 
 }
 
-GPE_ResourceContainer::~GPE_ResourceContainer()
+GPE_GeneralResourceContainer::~GPE_GeneralResourceContainer()
 {
-    record_error("Deleting Resource named ["+opName+"].");
+    GPE_Report("Removing Resource named ["+opName+"].");
+    if( GPE_LOADER != NULL )
+    {
+        GPE_LOADER->update_submessages( "Removing Resource", opName );
+    }
     if( heldResource!=NULL)
     {
+        GPE_Report("Removing Held-Resource named ["+opName+"].");
         if( GPE_Main_TabManager!=NULL)
         {
-            GPE_Main_TabManager->close_resource_tab(projectParentName,heldResource->globalResouceIdNumber);
+            GPE_Main_TabManager->close_resource_tab( projectParentName,heldResource->globalResouceIdNumber );
         }
+        GPE_Report("Held-Resource deleted ["+opName+"].");
         delete heldResource;
         heldResource = NULL;
     }
-    GPE_ResourceContainer * tempSubOp = NULL;
+    GPE_Report("Held-Resource's sub-options deleted ["+opName+"].");
+    GPE_GeneralResourceContainer * tempSubOp = NULL;
     for( int i = (int)subOptions.size()-1; i >=0; i--)
     {
         tempSubOp = subOptions[i];
@@ -1417,7 +146,7 @@ GPE_ResourceContainer::~GPE_ResourceContainer()
     if( containerSprite!=NULL)
     {
         //delete containerSprite;
-       //containerSprite = NULL;
+        //containerSprite = NULL;
     }
     if( containerTexture!=NULL)
     {
@@ -1425,11 +154,11 @@ GPE_ResourceContainer::~GPE_ResourceContainer()
         containerTexture = NULL;*/
     }
     subOptions.clear();
-    record_error("Resource ["+opName+"] deleted.");
+    GPE_Report("Resource ["+opName+"] deleted.");
 
 }
 
-void GPE_ResourceContainer::add_resource_container( GPE_ResourceContainer * newResource, bool changeGlobalId, GPE_ResourceContainer * referenceObject)
+void GPE_GeneralResourceContainer::add_resource_container( GPE_GeneralResourceContainer * newResource, bool changeGlobalId, GPE_GeneralResourceContainer * referenceObject)
 {
     if( newResource!=NULL)
     {
@@ -1449,7 +178,7 @@ void GPE_ResourceContainer::add_resource_container( GPE_ResourceContainer * newR
         if( referenceObject!=NULL )
         {
             int foundRef = -1;
-            GPE_ResourceContainer * tempResource = NULL;
+            GPE_GeneralResourceContainer * tempResource = NULL;
             for( int i = (int)subOptions.size()-1; i>=0; i--)
             {
                 tempResource = subOptions[i];
@@ -1496,10 +225,10 @@ void GPE_ResourceContainer::add_resource_container( GPE_ResourceContainer * newR
     }
 }
 
-GPE_ResourceContainer * GPE_ResourceContainer::add_resource_folder( std::string resourceTypeName,  int gResId,int rezPropValue)
+GPE_GeneralResourceContainer * GPE_GeneralResourceContainer::add_resource_folder( std::string resourceTypeName,  int gResId,int rezPropValue)
 {
     int newId = (int)subOptions.size()+1;
-    GPE_ResourceContainer * newFolder = new GPE_ResourceContainer(projectParentFileName,resourceTypeName,resourceType,newId,true, gResId, rezPropValue);
+    GPE_GeneralResourceContainer * newFolder = new GPE_GeneralResourceContainer(projectParentFileName,resourceTypeName,resourceType,newId,true, gResId, rezPropValue);
     newFolder->optionBox.x = optionBox.x;
     newFolder->optionBox.y = optionBox.y+newId*RESOURCE_AREA_HEIGHT;
     //optionBox.h+=RESOURCE_AREA_HEIGHT;
@@ -1512,10 +241,10 @@ GPE_ResourceContainer * GPE_ResourceContainer::add_resource_folder( std::string 
     return newFolder;
 }
 
-GPE_ResourceContainer * GPE_ResourceContainer::add_newtype_folder( int rType,std::string resourceTypeName, int gResId, int rezPropValue)
+GPE_GeneralResourceContainer * GPE_GeneralResourceContainer::add_newtype_folder( int rType,std::string resourceTypeName, int gResId, int rezPropValue)
 {
     int newId = (int)subOptions.size()+1;
-    GPE_ResourceContainer * newFolder = new GPE_ResourceContainer(projectParentFileName,resourceTypeName,rType,newId,true, gResId,rezPropValue);
+    GPE_GeneralResourceContainer * newFolder = new GPE_GeneralResourceContainer(projectParentFileName,resourceTypeName,rType,newId,true, gResId,rezPropValue);
     newFolder->optionBox.x = optionBox.x;
     newFolder->optionBox.y = optionBox.y+newId*RESOURCE_AREA_HEIGHT;
     //optionBox.h+=RESOURCE_AREA_HEIGHT;
@@ -1525,12 +254,12 @@ GPE_ResourceContainer * GPE_ResourceContainer::add_newtype_folder( int rType,std
     return newFolder;
 }
 
-void GPE_ResourceContainer::delete_resource(GPE_ResourceContainer * otherContainer)
+void GPE_GeneralResourceContainer::delete_resource(GPE_GeneralResourceContainer * otherContainer)
 {
     remove_resource(otherContainer);
 }
 
-bool GPE_ResourceContainer::detect_name_change(bool autoChange)
+bool GPE_GeneralResourceContainer::detect_name_change(bool autoChange)
 {
     if( heldResource!=NULL)
     {
@@ -1547,7 +276,7 @@ bool GPE_ResourceContainer::detect_name_change(bool autoChange)
     return false;
 }
 
-GPE_ResourceContainer * GPE_ResourceContainer::get_resource_at(int resourcePos, bool nestDown)
+GPE_GeneralResourceContainer * GPE_GeneralResourceContainer::get_resource_at(int resourcePos, bool nestDown)
 {
     if((int)subOptions.size()>0)
     {
@@ -1559,10 +288,10 @@ GPE_ResourceContainer * GPE_ResourceContainer::get_resource_at(int resourcePos, 
     return NULL;
 }
 
-GPE_ResourceContainer * GPE_ResourceContainer::find_resource_from_id(int resourceIdToFind, bool nestDown, bool includeSelf)
+GPE_GeneralResourceContainer * GPE_GeneralResourceContainer::find_resource_from_id(int resourceIdToFind, bool nestDown, bool includeSelf)
 {
-    GPE_ResourceContainer * rFound = NULL;
-    GPE_ResourceContainer * nResource = NULL;
+    GPE_GeneralResourceContainer * rFound = NULL;
+    GPE_GeneralResourceContainer * nResource = NULL;
     if( globalResouceId==resourceIdToFind && includeSelf)
     {
         return this;
@@ -1585,10 +314,10 @@ GPE_ResourceContainer * GPE_ResourceContainer::find_resource_from_id(int resourc
     return rFound;
 }
 
-GPE_ResourceContainer * GPE_ResourceContainer::get_usable_resource()
+GPE_GeneralResourceContainer * GPE_GeneralResourceContainer::get_usable_resource()
 {
-    GPE_ResourceContainer * rFound = NULL;
-    GPE_ResourceContainer * nResource = NULL;
+    GPE_GeneralResourceContainer * rFound = NULL;
+    GPE_GeneralResourceContainer * nResource = NULL;
     if( heldResource!=NULL )
     {
         return this;
@@ -1612,11 +341,11 @@ GPE_ResourceContainer * GPE_ResourceContainer::get_usable_resource()
 
 }
 
-GPE_ResourceContainer * GPE_ResourceContainer::find_resource_from_name(std::string rNameToFind, bool nestDown)
+GPE_GeneralResourceContainer * GPE_GeneralResourceContainer::find_resource_from_name(std::string rNameToFind, bool nestDown)
 {
     bool foundResult = false;
-    GPE_ResourceContainer * fContainer = NULL;
-    GPE_ResourceContainer * soughtContainer = NULL;
+    GPE_GeneralResourceContainer * fContainer = NULL;
+    GPE_GeneralResourceContainer * soughtContainer = NULL;
     if( rNameToFind.size()> 0 )
     {
         if((int)subOptions.size()>0)
@@ -1633,11 +362,11 @@ GPE_ResourceContainer * GPE_ResourceContainer::find_resource_from_name(std::stri
                     }
                     else if( nestDown)
                     {
-                         if( fContainer->find_resource_from_name(rNameToFind,nestDown)!=NULL)
-                         {
-                             foundResult = true;
-                             soughtContainer = fContainer->find_resource_from_name(rNameToFind,nestDown);
-                         }
+                        if( fContainer->find_resource_from_name(rNameToFind,nestDown)!=NULL)
+                        {
+                            foundResult = true;
+                            soughtContainer = fContainer->find_resource_from_name(rNameToFind,nestDown);
+                        }
                     }
                 }
             }
@@ -1650,7 +379,7 @@ GPE_ResourceContainer * GPE_ResourceContainer::find_resource_from_name(std::stri
     return NULL;
 }
 
-GPE_ResourceContainer * GPE_ResourceContainer::find_resource_target(std::string rNameToFind, bool nestDown)
+GPE_GeneralResourceContainer * GPE_GeneralResourceContainer::find_resource_target(std::string rNameToFind, bool nestDown)
 {
     int foundId = string_to_int(rNameToFind,-1);
     if( foundId > 0)
@@ -1664,34 +393,34 @@ GPE_ResourceContainer * GPE_ResourceContainer::find_resource_target(std::string 
     return NULL;
 }
 
-std::string GPE_ResourceContainer::get_name()
+std::string GPE_GeneralResourceContainer::get_name()
 {
     return opName;
 }
 
-std::string GPE_ResourceContainer::get_project_name()
+std::string GPE_GeneralResourceContainer::get_project_name()
 {
     return projectParentName;
 }
 
-int GPE_ResourceContainer::get_global_id()
+int GPE_GeneralResourceContainer::get_global_id()
 {
     return globalResouceId;
 }
 
-generalGameResource * GPE_ResourceContainer::get_held_resource()
+generalGameResource * GPE_GeneralResourceContainer::get_held_resource()
 {
     return heldResource;
 }
 
-int GPE_ResourceContainer::get_resource_count()
+int GPE_GeneralResourceContainer::get_resource_count()
 {
     int returnNumb = 0;
     if( !isFolder &&  !isSuperFolder &&  !isSuperProjectFolder)
     {
         returnNumb = 1;
     }
-    GPE_ResourceContainer * tempContainer = NULL;
+    GPE_GeneralResourceContainer * tempContainer = NULL;
     for( int i = subOptions.size()-1; i >=0; i--)
     {
         tempContainer = subOptions[i];
@@ -1704,23 +433,23 @@ int GPE_ResourceContainer::get_resource_count()
 }
 
 
-int GPE_ResourceContainer::get_resource_id()
+int GPE_GeneralResourceContainer::get_resource_id()
 {
     return resourceId;
 }
 
-int GPE_ResourceContainer::get_resource_type()
+int GPE_GeneralResourceContainer::get_resource_type()
 {
     return resourceType;
 }
 
 
-int GPE_ResourceContainer::get_resource_image_frame()
+int GPE_GeneralResourceContainer::get_resource_image_frame()
 {
     return spriteFrameNumber;
 }
 
-GPE_Animation * GPE_ResourceContainer::get_resource_sprite()
+GPE_Animation * GPE_GeneralResourceContainer::get_resource_sprite()
 {
     if( !isFolder && !isSuperProjectFolder)
     {
@@ -1729,20 +458,20 @@ GPE_Animation * GPE_ResourceContainer::get_resource_sprite()
             gameObjectResource * heldGOResource = (gameObjectResource*) heldResource;
             if( heldGOResource!=NULL && heldGOResource->projectParentFolder!=NULL)
             {
-                GPE_ResourceContainer * allSpritesFolder = heldGOResource->projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_SPRITE]+"s");
+                GPE_GeneralResourceContainer * allSpritesFolder = heldGOResource->projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_SPRITE]+"s");
                 if( allSpritesFolder!=NULL)
                 {
-                    GPE_ResourceContainer *objTypeContainer = allSpritesFolder->find_resource_from_id(heldGOResource->spriteIndex);
+                    GPE_GeneralResourceContainer *objTypeContainer = allSpritesFolder->find_resource_from_id(heldGOResource->spriteIndex);
                     if( objTypeContainer!=NULL)
                     {
-                       animationResource * heldSpriteResouce = (animationResource*) objTypeContainer->heldResource;
-                       if( heldSpriteResouce!=NULL)
-                       {
-                           if( heldSpriteResouce->spriteInEditor!=NULL)
-                           {
-                               return heldSpriteResouce->spriteInEditor;
-                           }
-                       }
+                        animationResource * heldSpriteResouce = (animationResource*) objTypeContainer->heldResource;
+                        if( heldSpriteResouce!=NULL)
+                        {
+                            if( heldSpriteResouce->animInEditor!=NULL)
+                            {
+                                return heldSpriteResouce->animInEditor;
+                            }
+                        }
                     }
                 }
             }
@@ -1752,9 +481,9 @@ GPE_Animation * GPE_ResourceContainer::get_resource_sprite()
             animationResource * heldGOResource = (animationResource*) heldResource;
             if( heldGOResource!=NULL && heldGOResource->projectParentFolder!=NULL)
             {
-                if( heldGOResource->spriteInEditor!=NULL)
+                if( heldGOResource->animInEditor!=NULL)
                 {
-                    return heldGOResource->spriteInEditor;
+                    return heldGOResource->animInEditor;
                 }
             }
         }
@@ -1762,7 +491,7 @@ GPE_Animation * GPE_ResourceContainer::get_resource_sprite()
     return NULL;
 }
 
-GPE_Texture * GPE_ResourceContainer::get_resource_texture()
+GPE_Texture * GPE_GeneralResourceContainer::get_resource_texture()
 {
     if( !isFolder && !isSuperProjectFolder)
     {
@@ -1792,10 +521,10 @@ GPE_Texture * GPE_ResourceContainer::get_resource_texture()
     return containerTexture;
 }
 
-int GPE_ResourceContainer::get_options_width()
+int GPE_GeneralResourceContainer::get_options_width()
 {
     int maxFoundWith = 0;
-    GPE_ResourceContainer * tempOption = NULL;
+    GPE_GeneralResourceContainer * tempOption = NULL;
     for( int i = subOptions.size()-1; i>=0; i--)
     {
         tempOption = subOptions[i];
@@ -1810,14 +539,14 @@ int GPE_ResourceContainer::get_options_width()
     return maxFoundWith;
 }
 
-int GPE_ResourceContainer::get_size()
+int GPE_GeneralResourceContainer::get_size()
 {
     return (int)subOptions.size();
 }
 
-void GPE_ResourceContainer::grab_useable_resources(std::vector <GPE_ResourceContainer * > &rVector)
+void GPE_GeneralResourceContainer::grab_useable_resources(std::vector <GPE_GeneralResourceContainer * > &rVector)
 {
-    GPE_ResourceContainer * nResource = NULL;
+    GPE_GeneralResourceContainer * nResource = NULL;
     if( heldResource!=NULL )
     {
         rVector.push_back(this);
@@ -1829,20 +558,20 @@ void GPE_ResourceContainer::grab_useable_resources(std::vector <GPE_ResourceCont
             nResource = subOptions[i];
             if( nResource!=NULL)
             {
-               nResource->grab_useable_resources(rVector);
+                nResource->grab_useable_resources(rVector);
             }
         }
     }
 }
 
-void GPE_ResourceContainer::integrate_into_syntax()
+void GPE_GeneralResourceContainer::integrate_into_syntax()
 {
     if( heldResource!=NULL)
     {
         heldResource->integrate_into_syntax();
     }
 
-    GPE_ResourceContainer * tSub = NULL;
+    GPE_GeneralResourceContainer * tSub = NULL;
     for( int i = 0; i < (int)subOptions.size(); i++)
     {
         tSub = subOptions[i];
@@ -1853,28 +582,28 @@ void GPE_ResourceContainer::integrate_into_syntax()
     }
 }
 
-bool GPE_ResourceContainer::is_folder()
+bool GPE_GeneralResourceContainer::is_folder()
 {
 
     return isFolder;
 }
 
-bool GPE_ResourceContainer::is_super_folder()
+bool GPE_GeneralResourceContainer::is_super_folder()
 {
     return isSuperFolder;
 }
 
-bool GPE_ResourceContainer::is_super_project_folder()
+bool GPE_GeneralResourceContainer::is_super_project_folder()
 {
     return isSuperProjectFolder;
 }
 
-bool GPE_ResourceContainer::is_child_of(GPE_ResourceContainer * otherContainer)
+bool GPE_GeneralResourceContainer::is_child_of(GPE_GeneralResourceContainer * otherContainer)
 {
     if( otherContainer!=NULL)
     {
         int i;
-        GPE_ResourceContainer * tempSubOption = NULL;
+        GPE_GeneralResourceContainer * tempSubOption = NULL;
         if( matches(otherContainer)==1 )
         {
             return true;
@@ -1894,7 +623,7 @@ bool GPE_ResourceContainer::is_child_of(GPE_ResourceContainer * otherContainer)
     return false;
 }
 
-bool GPE_ResourceContainer::can_obtain(GPE_ResourceContainer * otherContainer)
+bool GPE_GeneralResourceContainer::can_obtain(GPE_GeneralResourceContainer * otherContainer)
 {
     if( otherContainer!=NULL)
     {
@@ -1908,23 +637,23 @@ bool GPE_ResourceContainer::can_obtain(GPE_ResourceContainer * otherContainer)
                 }
                 else
                 {
-                    record_error("Can not move["+otherContainer->get_name()+"] into ["+get_name()+"] folder.");
+                    GPE_Report("Can not move["+otherContainer->get_name()+"] into ["+get_name()+"] folder.");
                 }
             }
             else
             {
-                record_error("Can not move["+otherContainer->get_name()+"] into ["+get_name()+"] folder[Different Folder Type].");
+                GPE_Report("Can not move["+otherContainer->get_name()+"] into ["+get_name()+"] folder[Different Folder Type].");
             }
         }
         else
         {
-            record_error("Can not move super folder["+otherContainer->get_name()+".Illegal editor operation.");
+            GPE_Report("Can not move super folder["+otherContainer->get_name()+".Illegal editor operation.");
         }
     }
     return false;
 }
 
-int GPE_ResourceContainer::matches(GPE_ResourceContainer * otherContainer)
+int GPE_GeneralResourceContainer::matches(GPE_GeneralResourceContainer * otherContainer)
 {
     if( otherContainer!=NULL)
     {
@@ -1963,19 +692,19 @@ int GPE_ResourceContainer::matches(GPE_ResourceContainer * otherContainer)
     return -1;
 }
 
-void GPE_ResourceContainer::open_folder()
+void GPE_GeneralResourceContainer::open_folder()
 {
     subMenuIsOpen = true;
 }
 
-void GPE_ResourceContainer::preprocess_container(std::string alternatePath, int backupId)
+void GPE_GeneralResourceContainer::preprocess_container(std::string alternatePath, int backupId)
 {
     if( heldResource!=NULL)
     {
         heldResource->preprocess_self(alternatePath);
     }
-    GPE_ResourceContainer * cResource = NULL;
-    for(int i = 0; i<(int)subOptions.size();i+=1)
+    GPE_GeneralResourceContainer * cResource = NULL;
+    for(int i = 0; i<(int)subOptions.size(); i+=1)
     {
         cResource = subOptions[i];
         if(cResource != NULL)
@@ -1986,14 +715,14 @@ void GPE_ResourceContainer::preprocess_container(std::string alternatePath, int 
     }
 }
 
-void GPE_ResourceContainer::prerender_self( )
+void GPE_GeneralResourceContainer::prerender_self( )
 {
 
     if( heldResource!=NULL)
     {
         heldResource->prerender_self( );
     }
-    GPE_ResourceContainer * tSubOption= NULL;
+    GPE_GeneralResourceContainer * tSubOption= NULL;
     for( int i = 0; i < (int)subOptions.size(); i++)
     {
         tSubOption = subOptions[i];
@@ -2004,7 +733,7 @@ void GPE_ResourceContainer::prerender_self( )
     }
 }
 
-int GPE_ResourceContainer::process_container(int xPos, int yPos, int selectedId, GPE_Rect * viewedSpace, GPE_Rect * cam, bool mouseInRange )
+int GPE_GeneralResourceContainer::process_container(int xPos, int yPos, int selectedId, GPE_Rect * viewedSpace, GPE_Rect * cam, bool mouseInRange )
 {
     int returnAnswer = -1;
     int lxPos = xPos-cam->x+viewedSpace->x;
@@ -2016,7 +745,7 @@ int GPE_ResourceContainer::process_container(int xPos, int yPos, int selectedId,
     foundX2Pos = xPos+strTexWidth+RESOURCE_AREA_HEIGHT*3/2;
     if( isFolder || isSuperFolder || isSuperProjectFolder )
     {
-        GPE_ResourceContainer * cResource = NULL;
+        GPE_GeneralResourceContainer * cResource = NULL;
         int subYPos = yPos+RESOURCE_AREA_HEIGHT;
         if( mouseInRange && input->check_mouse_pressed(0) )
         {
@@ -2025,7 +754,7 @@ int GPE_ResourceContainer::process_container(int xPos, int yPos, int selectedId,
                 set_current_gpe_project_from_name( projectParentFileName);
                 if( CURRENT_PROJECT ==NULL)
                 {
-                    record_error("Null Project Found for"+opName+".");
+                    GPE_Report("NULL Project Found for"+opName+".");
                 }
                 if( !isSuperFolder && !isSuperProjectFolder)
                 {
@@ -2033,7 +762,7 @@ int GPE_ResourceContainer::process_container(int xPos, int yPos, int selectedId,
                 }
             }
         }
-        else if(mouseInRange && input->check_mouse_released(0) )
+        else if(mouseInRange && input->check_mouse_released( mb_left))
         {
             if(point_between(input->mouse_x,input->mouse_y,lxPos,lyPos,lx2Pos,ly2Pos) )
             {
@@ -2041,7 +770,7 @@ int GPE_ResourceContainer::process_container(int xPos, int yPos, int selectedId,
                 set_current_gpe_project_from_name(  projectParentFileName );
                 if( CURRENT_PROJECT ==NULL )
                 {
-                    record_error("Null Project Found for"+opName+".");
+                    GPE_Report("NULL Project Found for"+opName+".");
                 }
                 bool openAllowed = true;
                 if( RESOURCE_TO_DRAG!=NULL)
@@ -2090,13 +819,17 @@ int GPE_ResourceContainer::process_container(int xPos, int yPos, int selectedId,
                 set_current_gpe_project_from_name ( CURRENT_PROJECT_NAME = projectParentFileName );
                 if( CURRENT_PROJECT ==NULL)
                 {
-                    record_error("Null Project Found for"+opName+".");
+                    GPE_Report("NULL Project Found for"+opName+".");
                 }
                 LAST_CLICKED_RESOURCE = this;
                 LAST_CLICKED_RESTYPE = resourceType;
                 RESOURCEMENU_WAS_RIGHTCLICKED = true;
                 RESOURCE_TO_DRAG = NULL;
             }
+        }
+        else if( mouseInRange && point_between(input->mouse_x,input->mouse_y,lxPos,lyPos,lx2Pos,ly2Pos) )
+        {
+            MAIN_OVERLAY->update_tooltip( opName );
         }
 
         if( subMenuIsOpen )
@@ -2105,7 +838,7 @@ int GPE_ResourceContainer::process_container(int xPos, int yPos, int selectedId,
             subYPos = yPos+RESOURCE_AREA_HEIGHT;
             optionBox.h = RESOURCE_AREA_HEIGHT;
             int subAnswer = -1;
-            for(int i = 0; i<(int)subOptions.size();i+=1)
+            for(int i = 0; i<(int)subOptions.size(); i+=1)
             {
                 cResource = subOptions[i];
                 if(cResource != NULL)
@@ -2150,10 +883,10 @@ int GPE_ResourceContainer::process_container(int xPos, int yPos, int selectedId,
             if( heldSpriteC!=NULL)
             {
                 spriteFrameNumber = 0;
-                containerSprite = heldSpriteC->spriteInEditor;
+                containerSprite = heldSpriteC->animInEditor;
                 if( containerSprite==NULL)
                 {
-                    containerTexture = rsm->texture_add(APP_DIRECTORY_NAME+"resouces/buttons/magnet.png");
+                    containerTexture = guiRCM->texture_add(APP_DIRECTORY_NAME+"resouces/buttons/magnet.png");
                 }
             }
         }
@@ -2166,21 +899,21 @@ int GPE_ResourceContainer::process_container(int xPos, int yPos, int selectedId,
         {
             if( point_within(input->mouse_x,input->mouse_y,lxPos,lyPos,lx2Pos,ly2Pos ) )
             {
-                if(globalResouceId == selectedId)
+                if( globalResouceId == selectedId && GPE_Main_TabManager!=NULL )
                 {
-                    GPE_set_selected_gresource(heldResource);
+                    GPE_Main_TabManager->set_selected_gresource( heldResource );
                 }
                 returnAnswer = globalResouceId;
                 set_current_gpe_project_from_name( projectParentFileName );
                 if( CURRENT_PROJECT ==NULL)
                 {
-                    record_error("Null Project Found for"+opName+".");
+                    GPE_Report("NULL Project Found for"+opName+".");
                 }
                 LAST_CLICKED_RESOURCE = this;
                 RESOURCE_TO_DRAG = NULL;
             }
         }
-        else if( mouseInRange && input->check_mouse_released(0) )
+        else if( mouseInRange && input->check_mouse_released( mb_left))
         {
             if( point_within(input->mouse_x,input->mouse_y,lxPos,lyPos,lx2Pos,ly2Pos ) )
             {
@@ -2192,7 +925,7 @@ int GPE_ResourceContainer::process_container(int xPos, int yPos, int selectedId,
                 set_current_gpe_project_from_name( CURRENT_PROJECT_NAME = projectParentFileName );
                 if( CURRENT_PROJECT ==NULL)
                 {
-                    record_error("Null Project Found for"+opName+".");
+                    GPE_Report("NULL Project Found for"+opName+".");
                 }
                 LAST_CLICKED_RESOURCE = this;
             }
@@ -2205,7 +938,7 @@ int GPE_ResourceContainer::process_container(int xPos, int yPos, int selectedId,
                 set_current_gpe_project_from_name(CURRENT_PROJECT_NAME = projectParentFileName );
                 if( CURRENT_PROJECT ==NULL)
                 {
-                    record_error("Null Project Found for"+opName+".");
+                    GPE_Report("NULL Project Found for"+opName+".");
                 }
                 LAST_CLICKED_RESOURCE = this;
                 RESOURCEMENU_WAS_RIGHTCLICKED = true;
@@ -2218,6 +951,11 @@ int GPE_ResourceContainer::process_container(int xPos, int yPos, int selectedId,
                 RESOURCE_TO_DRAG = this;
             }
         }
+        else if(mouseInRange && point_within(input->mouse_x,input->mouse_y,lxPos,lyPos,lx2Pos,ly2Pos) )
+        {
+            MAIN_OVERLAY->update_tooltip( opName );
+        }
+
         if(heldResource!=NULL)
         {
             std::string heldResName = heldResource->get_name();
@@ -2234,7 +972,7 @@ int GPE_ResourceContainer::process_container(int xPos, int yPos, int selectedId,
     return returnAnswer;
 }
 
-bool GPE_ResourceContainer::read_data_from_projectfile(std::ofstream * fileTarget)
+bool GPE_GeneralResourceContainer::read_data_from_projectfile(std::ofstream * fileTarget)
 {
     if( fileTarget!=NULL)
     {
@@ -2246,12 +984,12 @@ bool GPE_ResourceContainer::read_data_from_projectfile(std::ofstream * fileTarge
     return false;
 }
 
-void GPE_ResourceContainer::render_contained_object(GPE_Rect * viewedSpace ,GPE_Rect *cam)
+void GPE_GeneralResourceContainer::render_contained_object(GPE_Rect * viewedSpace,GPE_Rect *cam)
 {
 
 }
 
-void GPE_ResourceContainer::render_option( int xPos, int yPos, int selectedIdNumber, GPE_Rect * viewedSpace, GPE_Rect * cam , bool renderSubOptions, bool renderAutomatically)
+void GPE_GeneralResourceContainer::render_option( int xPos, int yPos, int selectedIdNumber, GPE_Rect * viewedSpace, GPE_Rect * cam, bool renderSubOptions, bool renderAutomatically)
 {
     bool selfIsInView = false;
     viewedSpace = GPE_find_camera(viewedSpace);
@@ -2274,12 +1012,12 @@ void GPE_ResourceContainer::render_option( int xPos, int yPos, int selectedIdNum
             {
                 if( (selfIsInView || renderAutomatically) && (int)subOptions.size() > 0 )
                 {
-                    render_new_text( xPos-cam->x,yPos-cam->y,"-",GPE_MAIN_THEME->Main_Box_Font_Color,FONT_RESOURCEBAR,FA_LEFT,FA_TOP);
+                    gfs->render_text( xPos-cam->x,yPos-cam->y,"-",GPE_MAIN_THEME->Main_Box_Font_Color,FONT_RESOURCEBAR,FA_LEFT,FA_TOP);
                 }
-                GPE_ResourceContainer * foundContainer;
+                GPE_GeneralResourceContainer * foundContainer;
                 int subXPos = xPos+RESOURCE_AREA_HEIGHT;
                 int subYPos = yPos+RESOURCE_AREA_HEIGHT;
-                for(int i=0; i< (int)subOptions.size();i+=1)
+                for(int i=0; i< (int)subOptions.size(); i+=1)
                 {
                     foundContainer = subOptions[i];
                     if(foundContainer!=NULL)
@@ -2291,7 +1029,7 @@ void GPE_ResourceContainer::render_option( int xPos, int yPos, int selectedIdNum
             }
             else if( (selfIsInView || renderAutomatically ) && (int)subOptions.size() > 0 )
             {
-                render_new_text( xPos-cam->x,yPos-cam->y,"+",GPE_MAIN_THEME->Main_Box_Font_Color,FONT_RESOURCEBAR,FA_LEFT,FA_TOP);
+                gfs->render_text( xPos-cam->x,yPos-cam->y,"+",GPE_MAIN_THEME->Main_Box_Font_Color,FONT_RESOURCEBAR,FA_LEFT,FA_TOP);
             }
         }
 
@@ -2299,66 +1037,67 @@ void GPE_ResourceContainer::render_option( int xPos, int yPos, int selectedIdNum
         {
             if(globalResouceId ==selectedIdNumber && projectParentName.compare(CURRENT_PROJECT_NAME)==0 )
             {
-                gpe->render_rectangle( xPos-cam->x,yPos-cam->y,xPos+RESOURCE_AREA_HEIGHT*2+GENERAL_NEAR_ICON_YPADDING+strTexWidth-cam->x,yPos+16-cam->y,GPE_MAIN_THEME->Button_Box_Highlighted_Color,false,64);
+                //gcanvas->render_rectangle( xPos-cam->x,yPos-cam->y,xPos+RESOURCE_AREA_HEIGHT*2+GENERAL_NEAR_ICON_YPADDING+strTexWidth-cam->x,yPos+16-cam->y,GPE_MAIN_THEME->Button_Box_Highlighted_Color,false,64);
+                gcanvas->render_rectangle( -cam->x,yPos-cam->y,elementBox.w-cam->x,yPos+16-cam->y,GPE_MAIN_THEME->Button_Box_Highlighted_Color,false,64);
             }
             if( (isFolder || isSuperFolder || isSuperProjectFolder ) && containerTexture!=NULL )
             {
                 if(projectParentName.compare(CURRENT_PROJECT_NAME)==0 && isSuperProjectFolder)
                 {
-                    render_texture_resized(containerTexture,xPos+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,yPos-cam->y,RESOURCE_AREA_HEIGHT,RESOURCE_AREA_HEIGHT,NULL,FA_LEFT,FA_TOP,GPE_MAIN_THEME->Main_Folder_Highlighted_Color);
+                    containerTexture->render_tex_resized( xPos+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,yPos-cam->y,RESOURCE_AREA_HEIGHT,RESOURCE_AREA_HEIGHT,NULL,GPE_MAIN_THEME->Main_Folder_Highlighted_Color);
                 }
                 else
                 {
-                    render_texture_resized( containerTexture,xPos+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,yPos-cam->y,RESOURCE_AREA_HEIGHT,RESOURCE_AREA_HEIGHT,NULL,FA_LEFT,FA_TOP,GPE_MAIN_THEME->Main_Folder_Color);
+                    containerTexture->render_tex_resized( xPos+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,yPos-cam->y,RESOURCE_AREA_HEIGHT,RESOURCE_AREA_HEIGHT,NULL,GPE_MAIN_THEME->Main_Folder_Color);
                 }
             }
             else if( !isSuperProjectFolder && !isFolder && !isSuperFolder )
             {
-                render_image( xPos,yPos,RESOURCE_AREA_HEIGHT,RESOURCE_AREA_HEIGHT,NULL,cam);
+                render_image( xPos,yPos,RESOURCE_AREA_HEIGHT,RESOURCE_AREA_HEIGHT,NULL,cam );
             }
 
-            render_new_text( xPos+RESOURCE_AREA_HEIGHT+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,yPos-cam->y+RESOURCE_AREA_HEIGHT/2,opName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_RESOURCEBAR,FA_LEFT,FA_CENTER);
+            gfs->render_text( xPos+RESOURCE_AREA_HEIGHT+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,yPos-cam->y+RESOURCE_AREA_HEIGHT/2,opName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_RESOURCEBAR,FA_LEFT,FA_CENTER);
             /*if(heldResource!=NULL)
             {
                 if(heldResource->is_modified() || resouceNameChanged)
                 {
-                    render_new_text( xPos+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,yPos-cam->y,"!",GPE_MAIN_THEME->Button_Box_Selected_Color,FONT_RESOURCEBAR,FA_RIGHT,FA_TOP);
+                    render_text( xPos+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,yPos-cam->y,"!",GPE_MAIN_THEME->Button_Box_Selected_Color,FONT_RESOURCEBAR,FA_RIGHT,FA_TOP);
                 }
             }
             else if( subContentsModified)
             {
-                render_new_text( xPos-cam->x,yPos-cam->y,"!!",GPE_MAIN_THEME->Button_Box_Selected_Color,FONT_RESOURCEBAR,FA_RIGHT,FA_TOP);
+                render_text( xPos-cam->x,yPos-cam->y,"!!",GPE_MAIN_THEME->Button_Box_Selected_Color,FONT_RESOURCEBAR,FA_RIGHT,FA_TOP);
             }*/
 
             if( (isSuperFolder || isSuperProjectFolder || resourceType == RESOURCE_TYPE_PROJECT_SETTINGS )&& renderAutomatically==false )
             {
-                gpe->render_horizontal_line_color( rendY-cam->y,0,viewedSpace->w,GPE_MAIN_THEME->Main_Box_Font_Color,32);
+                gcanvas->render_horizontal_line_color( rendY-cam->y,0,viewedSpace->w,GPE_MAIN_THEME->Main_Box_Font_Color,32);
             }
             lastResTypeRendered = resourceType;
         }
     }
+
 }
 
-void GPE_ResourceContainer::render_image( int xPos, int yPos, int rWidth, int rHeight,GPE_Rect * viewedSpace ,GPE_Rect *cam, GPE_Color * renderColor)
+void GPE_GeneralResourceContainer::render_image( int xPos, int yPos, int rWidth, int rHeight,GPE_Rect * viewedSpace,GPE_Rect *cam, GPE_Color * renderColor)
 {
+    if( renderColor == NULL )
+    {
+        renderColor = c_white;
+    }
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
     bool imageWasRendered = false;
 
     if( (isFolder || isSuperProjectFolder) && containerTexture!=NULL )
     {
-        if( rWidth <=0 && rHeight <= 0)
-        {
-            rWidth = 32;
-            rHeight = 32;
-        }
         if(projectParentName.compare(CURRENT_PROJECT_NAME)==0 && isSuperProjectFolder)
         {
-            render_texture_resized( containerTexture,xPos+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,yPos-cam->y,rWidth,rHeight,NULL,FA_LEFT,FA_TOP,GPE_MAIN_THEME->Main_Folder_Highlighted_Color);
+            containerTexture->render_tex_resized( xPos+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,yPos-cam->y,rWidth,rHeight,NULL,GPE_MAIN_THEME->Main_Folder_Highlighted_Color);
         }
         else
         {
-            render_texture_resized( containerTexture,xPos+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,yPos-cam->y,rWidth,rHeight,NULL,FA_LEFT,FA_TOP,GPE_MAIN_THEME->Main_Folder_Color);
+            containerTexture->render_tex_resized( xPos+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,yPos-cam->y,rWidth,rHeight,NULL,GPE_MAIN_THEME->Main_Folder_Color);
         }
     }
     else if( !isSuperProjectFolder)
@@ -2368,13 +1107,13 @@ void GPE_ResourceContainer::render_image( int xPos, int yPos, int rWidth, int rH
             gameObjectResource * heldGOResource = (gameObjectResource*) heldResource;
             if( heldGOResource!=NULL && heldGOResource->projectParentFolder!=NULL)
             {
-                GPE_ResourceContainer * allObjsFolder = heldGOResource->projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_SPRITE]+"s");
-                if( allObjsFolder!=NULL)
+                GPE_GeneralResourceContainer * allSpritesFolder = heldGOResource->projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_SPRITE]+"s");
+                if( allSpritesFolder!=NULL)
                 {
-                    GPE_ResourceContainer *objTypeContainer = allObjsFolder->find_resource_from_id(heldGOResource->spriteIndex);
-                    if( objTypeContainer!=NULL)
+                    GPE_GeneralResourceContainer * heldSprieOfObj = allSpritesFolder->find_resource_from_id(heldGOResource->spriteIndex);
+                    if( heldSprieOfObj!=NULL)
                     {
-                        objTypeContainer->render_image( xPos, yPos, rWidth, rHeight,viewedSpace,cam, renderColor);
+                        heldSprieOfObj->render_image( xPos, yPos, rWidth, rHeight,viewedSpace,cam, renderColor);
                         imageWasRendered= true;
                     }
                 }
@@ -2385,7 +1124,7 @@ void GPE_ResourceContainer::render_image( int xPos, int yPos, int rWidth, int rH
             textureResource * heldGOResource = (textureResource*) heldResource;
             if( heldGOResource!=NULL && heldGOResource->projectParentFolder!=NULL)
             {
-                if( heldGOResource->textureInEditor!=NULL)
+                if( heldGOResource->textureInEditor!=NULL && heldGOResource->textureInEditor->get_width() > 0 )
                 {
                     heldGOResource->textureInEditor->render_tex_resized( xPos-cam->x, yPos-cam->y, rWidth, rHeight,NULL);
                     imageWasRendered= true;
@@ -2404,44 +1143,145 @@ void GPE_ResourceContainer::render_image( int xPos, int yPos, int rWidth, int rH
                 }
             }
         }
-        else if( resourceType== RESOURCE_TYPE_SPRITE )
+        else if( resourceType == RESOURCE_TYPE_ANIMATION || resourceType == RESOURCE_TYPE_SPRITE )
         {
-            animationResource * heldGOResource = (animationResource*) heldResource;
-            if( heldGOResource!=NULL && heldGOResource->projectParentFolder!=NULL)
+            animationResource * heldAnimResource = (animationResource*) heldResource;
+            if( heldAnimResource!=NULL && heldAnimResource->projectParentFolder!=NULL)
             {
-                if( heldGOResource->spriteInEditor!=NULL && heldGOResource->spriteInEditor->animationTexture!=NULL)
+                if( heldAnimResource->animInEditor!=NULL && heldAnimResource->animInEditor->has_texture()  )
                 {
-                    render_animation_ext( heldGOResource->spriteInEditor,heldGOResource->get_preview_frame(),xPos-cam->x,yPos-cam->y,rWidth,rHeight,renderColor);
+                    if( rWidth <=0 || rHeight <= 0 )
+                    {
+                        rWidth = heldAnimResource->animInEditor->get_width();
+                        rHeight = heldAnimResource->animInEditor->get_height();
+                        GPE_Report("Resizing sprite to "+ int_to_string(rWidth)+","+int_to_string(rHeight)+" px." );
+                    }
+                    heldAnimResource->animInEditor->render_piece_resized( xPos-cam->x,yPos-cam->y,rWidth,rHeight, NULL);
                     imageWasRendered= true;
                 }
             }
         }
     }
+
     if( imageWasRendered==false && containerTexture!=NULL )
     {
         GPE_Color * imageColor  = GPE_MAIN_THEME->Main_Box_Font_Color;
 
-        if( rWidth <=0 && rHeight <= 0)
+        if( rWidth <=0 && rHeight <= 0 )
         {
             rWidth = rHeight = 32;
         }
+
         if(projectParentName.compare(CURRENT_PROJECT_NAME)==0 && isSuperProjectFolder)
         {
-            render_texture_resized( containerTexture,xPos-cam->x,yPos-cam->y,rWidth,rHeight,NULL,FA_LEFT,FA_TOP,GPE_MAIN_THEME->Main_Box_Font_Color);
+            containerTexture->render_tex_resized(xPos-cam->x,yPos-cam->y,rWidth,rHeight,NULL,GPE_MAIN_THEME->Main_Box_Font_Color);
         }
         else
         {
-            render_texture_resized( containerTexture,xPos-cam->x,yPos-cam->y,rWidth,rHeight,NULL,FA_LEFT,FA_TOP,GPE_MAIN_THEME->Main_Box_Faded_Font_Color);
+            containerTexture->render_tex_resized(  xPos-cam->x,yPos-cam->y,rWidth,rHeight,NULL,GPE_MAIN_THEME->Main_Box_Font_Color);
         }
     }
 
 }
 
-void GPE_ResourceContainer::remove_resource(GPE_ResourceContainer * otherContainer, bool deleteResource)
+void GPE_GeneralResourceContainer::render_image_scaled( int xPos, int yPos, double xScale, double yScale,GPE_Rect * viewedSpace,GPE_Rect *cam, GPE_Color * renderColor)
+{
+    if( renderColor == NULL )
+    {
+        renderColor = c_white;
+    }
+    cam = GPE_find_camera(cam);
+    viewedSpace = GPE_find_camera(viewedSpace);
+    bool imageWasRendered = false;
+
+    if( (isFolder || isSuperProjectFolder) && containerTexture!=NULL )
+    {
+        if(projectParentName.compare(CURRENT_PROJECT_NAME)==0 && isSuperProjectFolder)
+        {
+            containerTexture->render_tex_scaled( xPos+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,yPos-cam->y, xScale,yScale,NULL, GPE_MAIN_THEME->Main_Folder_Highlighted_Color);
+        }
+        else
+        {
+            containerTexture->render_tex_scaled( xPos+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,yPos-cam->y,xScale,yScale,NULL, GPE_MAIN_THEME->Main_Folder_Color );
+        }
+    }
+    else if( !isSuperProjectFolder)
+    {
+        if( resourceType == RESOURCE_TYPE_OBJECT )
+        {
+            gameObjectResource * heldGOResource = (gameObjectResource*) heldResource;
+            if( heldGOResource!=NULL && heldGOResource->projectParentFolder!=NULL)
+            {
+                GPE_GeneralResourceContainer * allSpritesFolder = heldGOResource->projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_SPRITE]+"s");
+                if( allSpritesFolder!=NULL)
+                {
+                    GPE_GeneralResourceContainer * heldSprieOfObj = allSpritesFolder->find_resource_from_id(heldGOResource->spriteIndex);
+                    if( heldSprieOfObj!=NULL)
+                    {
+                        heldSprieOfObj->render_image_scaled( xPos, yPos, xScale, yScale,viewedSpace,cam, renderColor);
+                        imageWasRendered= true;
+                    }
+                }
+            }
+        }
+        else if( resourceType == RESOURCE_TYPE_TEXTURE )
+        {
+            textureResource * heldGOResource = (textureResource*) heldResource;
+            if( heldGOResource!=NULL && heldGOResource->projectParentFolder!=NULL)
+            {
+                if( heldGOResource->textureInEditor!=NULL && heldGOResource->textureInEditor->get_width() > 0 )
+                {
+                    heldGOResource->textureInEditor->render_tex_scaled( xPos-cam->x, yPos-cam->y, xScale, yScale,NULL );
+                    imageWasRendered= true;
+                }
+            }
+        }
+        else if( resourceType == RESOURCE_TYPE_TILESHEET )
+        {
+            tilesheetResource * heldGOResource = (tilesheetResource*) heldResource;
+            if( heldGOResource!=NULL && heldGOResource->projectParentFolder!=NULL)
+            {
+                if( heldGOResource->tilesheetInEditor!=NULL && heldGOResource->tilesheetInEditor->tsImage!=NULL)
+                {
+                    heldGOResource->tilesheetInEditor->tsImage->render_tex_scaled( xPos-cam->x, yPos-cam->y, xScale, yScale,NULL);
+                    imageWasRendered= true;
+                }
+            }
+        }
+        else if( resourceType == RESOURCE_TYPE_ANIMATION || resourceType == RESOURCE_TYPE_SPRITE )
+        {
+            animationResource * heldAnimResource = (animationResource*) heldResource;
+            if( heldAnimResource!=NULL && heldAnimResource->projectParentFolder!=NULL)
+            {
+                if( heldAnimResource->animInEditor!=NULL && heldAnimResource->animInEditor->has_texture() )
+                {
+                    heldAnimResource->animInEditor->render_scaled( heldAnimResource->get_preview_frame(),xPos-cam->x,yPos-cam->y, xScale,yScale );
+                    imageWasRendered= true;
+                }
+            }
+        }
+    }
+
+    if( imageWasRendered==false && containerTexture!=NULL )
+    {
+        GPE_Color * imageColor  = GPE_MAIN_THEME->Main_Box_Font_Color;
+
+        if(projectParentName.compare(CURRENT_PROJECT_NAME)==0 && isSuperProjectFolder)
+        {
+            containerTexture->render_tex_scaled( xPos-cam->x,yPos-cam->y, xScale, yScale, NULL,GPE_MAIN_THEME->Main_Box_Font_Color);
+        }
+        else
+        {
+            containerTexture->render_tex_scaled( xPos-cam->x,yPos-cam->y,xScale, yScale, NULL,GPE_MAIN_THEME->Main_Box_Font_Color);
+        }
+    }
+}
+
+void GPE_GeneralResourceContainer::remove_resource(GPE_GeneralResourceContainer * otherContainer, bool deleteResource)
 {
     if( otherContainer!=NULL )
     {
-        GPE_ResourceContainer * tContainer = NULL;
+        GPE_GeneralResourceContainer * tContainer = NULL;
         int resIdToDelete = otherContainer->get_global_id();
         for( int i = (int)subOptions.size()-1; i>=0; i--)
         {
@@ -2452,20 +1292,20 @@ void GPE_ResourceContainer::remove_resource(GPE_ResourceContainer * otherContain
                 //otherContainer->parentResource = NULL;
                 if( deleteResource )
                 {
-                    GPE_Main_TabManager->close_resource_tab(projectParentName , resIdToDelete );
+                    GPE_Main_TabManager->close_resource_tab(projectParentName, resIdToDelete );
                     delete tContainer;
                     tContainer = NULL;
                     otherContainer = NULL;
-                    //record_error("Rez deletedish...");
+                    //GPE_Report("Rez deletedish...");
                 }
                 subOptions.erase( subOptions.begin()+i );
-                //record_error("Rez deleted...");
+                //GPE_Report("Rez deleted...");
             }
         }
     }
 }
 
-void GPE_ResourceContainer::save_container(std::string alternatePath, int backupId)
+void GPE_GeneralResourceContainer::save_container(std::string alternatePath, int backupId)
 {
     if( heldResource!=NULL)
     {
@@ -2473,10 +1313,10 @@ void GPE_ResourceContainer::save_container(std::string alternatePath, int backup
     }
 }
 
-int GPE_ResourceContainer::search_for_string(std::string needle)
+int GPE_GeneralResourceContainer::search_for_string(std::string needle)
 {
     int foundStrings = 0;
-    GPE_ResourceContainer * fContainer  = NULL;
+    GPE_GeneralResourceContainer * fContainer  = NULL;
     for( int i = (int)subOptions.size()-1; i >=0; i--)
     {
         fContainer = subOptions[i];
@@ -2492,10 +1332,10 @@ int GPE_ResourceContainer::search_for_string(std::string needle)
     return foundStrings;
 }
 
-int GPE_ResourceContainer::search_and_replace_string(std::string needle, std::string newStr)
+int GPE_GeneralResourceContainer::search_and_replace_string(std::string needle, std::string newStr)
 {
     int foundStrings = 0;
-    GPE_ResourceContainer * fContainer  = NULL;
+    GPE_GeneralResourceContainer * fContainer  = NULL;
     for( int i = (int)subOptions.size()-1; i >=0; i--)
     {
         fContainer = subOptions[i];
@@ -2510,56 +1350,57 @@ int GPE_ResourceContainer::search_and_replace_string(std::string needle, std::st
     }
     return foundStrings;
 }
-void GPE_ResourceContainer::set_basic_image_value()
+
+void GPE_GeneralResourceContainer::set_basic_image_value()
 {
     if( isFolder)
     {
-        containerTexture = rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/folder.png");
+        containerTexture = guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/folder.png");
     }
     else
     {
         switch( resourceType)
         {
-            case RESOURCE_TYPE_SPRITE:
-                containerTexture = rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/magnet.png");
+        case RESOURCE_TYPE_SPRITE:
+            containerTexture = guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/magnet.png");
             break;
-            case RESOURCE_TYPE_TEXTURE:
-                   containerTexture = rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/image.png");
+        case RESOURCE_TYPE_TEXTURE:
+            containerTexture = guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/image.png");
             break;
-            case RESOURCE_TYPE_TILESHEET:
-                   containerTexture = rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/th-large.png");
+        case RESOURCE_TYPE_TILESHEET:
+            containerTexture = guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/th-large.png");
             break;
-            case RESOURCE_TYPE_AUDIO:
-                containerTexture = rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/volume-up.png");
+        case RESOURCE_TYPE_AUDIO:
+            containerTexture = guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/volume-up.png");
             break;
-            case RESOURCE_TYPE_VIDEO:
-                containerTexture = rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/film.png");
+        case RESOURCE_TYPE_VIDEO:
+            containerTexture = guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/film.png");
             break;
-            case RESOURCE_TYPE_OBJECT:
-                containerTexture = rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/automobile-colored.png");
+        case RESOURCE_TYPE_OBJECT:
+            containerTexture = guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/automobile.png");
             break;
-            case RESOURCE_TYPE_FUNCTION:
-                containerTexture = rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/code.png");
+        case RESOURCE_TYPE_FUNCTION:
+            containerTexture = guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/code.png");
             break;
-            case RESOURCE_TYPE_FONT:
-                containerTexture = rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/font.png");
+        case RESOURCE_TYPE_FONT:
+            containerTexture = guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/font.png");
             break;
-            case RESOURCE_TYPE_SCENE:
-                containerTexture = rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/area-chart.png");
+        case RESOURCE_TYPE_SCENE:
+            containerTexture = guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/area-chart.png");
             break;
-            default:
-                containerTexture = rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/diamond.png");
+        default:
+            containerTexture = guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/diamond.png");
             break;
         }
     }
 }
 
-void GPE_ResourceContainer::set_held_resource(generalGameResource * newGenResource)
+void GPE_GeneralResourceContainer::set_held_resource(generalGameResource * newGenResource)
 {
     heldResource = newGenResource;
 }
 
-void GPE_ResourceContainer::set_global_id(int newId)
+void GPE_GeneralResourceContainer::set_global_id(int newId)
 {
     globalResouceId = newId;
     if( heldResource!=NULL)
@@ -2568,16 +1409,16 @@ void GPE_ResourceContainer::set_global_id(int newId)
     }
 }
 
-void GPE_ResourceContainer::set_global_html5id(int newId)
+void GPE_GeneralResourceContainer::set_container_gameid(int newId)
 {
-    html5BuildGlobalId = newId;
+    exportBuildGlobalId = newId;
     if( heldResource!=NULL)
     {
-        heldResource->html5BuildGlobalId = newId;
+        heldResource->exportBuildGlobalId = newId;
     }
 }
 
-void GPE_ResourceContainer::set_name(std::string newName)
+void GPE_GeneralResourceContainer::set_name(std::string newName)
 {
     opName = newName;
     int textW = 0;
@@ -2595,7 +1436,7 @@ void GPE_ResourceContainer::set_name(std::string newName)
     }
 }
 
-void GPE_ResourceContainer::set_project_parent_name(std::string newParentName)
+void GPE_GeneralResourceContainer::set_project_parent_name(std::string newParentName)
 {
     projectParentFileName = newParentName;
     if( heldResource!=NULL)
@@ -2605,7 +1446,7 @@ void GPE_ResourceContainer::set_project_parent_name(std::string newParentName)
     int sSize = (int)subOptions.size();
     if( sSize > 0)
     {
-        GPE_ResourceContainer * cResource = NULL;
+        GPE_GeneralResourceContainer * cResource = NULL;
         for( int i = 0; i < sSize; i++)
         {
             cResource = subOptions[i];
@@ -2617,7 +1458,7 @@ void GPE_ResourceContainer::set_project_parent_name(std::string newParentName)
     }
 }
 
-bool GPE_ResourceContainer::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn)
+bool GPE_GeneralResourceContainer::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn)
 {
     bool foundProblem = false;
     std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
@@ -2632,10 +1473,10 @@ bool GPE_ResourceContainer::write_data_into_projectfile(std::ofstream * fileTarg
             else if(isSuperFolder)
             {
                 *fileTarget << nestedTabsStr << "[SuperFolder=" << opName<< "]\n";
-                displayMessageTitle = "Saving SuperFolder";
-                displayMessageSubtitle = opName;
-                displayMessageString = "...";
-                display_user_messaage();
+                if( GPE_LOADER != NULL )
+                {
+                    GPE_LOADER->update_submessages( "Saving "+opName+" resources", "Please wait..." );
+                }
             }
             else if( isFolder)
             {
@@ -2650,7 +1491,7 @@ bool GPE_ResourceContainer::write_data_into_projectfile(std::ofstream * fileTarg
             int sSize = (int)subOptions.size();
             if( sSize > 0)
             {
-                GPE_ResourceContainer * cResource = NULL;
+                GPE_GeneralResourceContainer * cResource = NULL;
                 for( int i = 0; i < sSize; i++)
                 {
                     cResource = subOptions[i];
@@ -2686,6 +1527,7 @@ bool GPE_ResourceContainer::write_data_into_projectfile(std::ofstream * fileTarg
 
 GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directoryIn, std::string fileNameIn, std::string projectLanguageIn, bool createBlankScene )
 {
+    projectRSM = new GPE_DataManager();
     int iLayerN = 0;
     for( iLayerN = 0; iLayerN < 32; iLayerN++)
     {
@@ -2695,10 +1537,10 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directoryIn, 
     projectLayerNames[0] = "Default Background Layer";
     projectLayerNames[1] = "Default Object Layer";
     for( iLayerN = 2; iLayerN < 24; iLayerN++)
-    for( iLayerN = 2; iLayerN < 24; iLayerN++)
-    {
-        projectLayerNames[iLayerN] = "Custom Layer"+int_to_string(iLayerN-2);
-    }
+        for( iLayerN = 2; iLayerN < 24; iLayerN++)
+        {
+            projectLayerNames[iLayerN] = "Custom Layer"+int_to_string(iLayerN-2);
+        }
     for( iLayerN = 24; iLayerN < 32; iLayerN++)
     {
         projectLayerNames[iLayerN] = "Default Tile Layer"+int_to_string(iLayerN-24);
@@ -2706,16 +1548,17 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directoryIn, 
 
 
     //Defaults to JS Project Language
-    myProjectLanguage = PROJECT_LANGUAGE_JS;
+    myProjectLanguage = PROGRAM_LANGUAGE_JS;
 
     //Changes Project Language if name is found...
     if( (int)projectLanguageIn.size() > 0 )
     {
         GPE_Gui_Engine_Language * tLanguage  = NULL;
-        for( int cLanguage = 0; cLanguage < (int)GPE_MAIN_HIGHLIGHTER->editorLanguages.size(); cLanguage++ )
+        int maxLanguageCount = GPE_MAIN_HIGHLIGHTER->get_language_count();
+        for( int cLanguage = 0; cLanguage < maxLanguageCount; cLanguage++ )
         {
-            tLanguage = GPE_MAIN_HIGHLIGHTER->editorLanguages.at(cLanguage);
-            //checks if the found lanuage isnt null and is a coding language
+            tLanguage = GPE_MAIN_HIGHLIGHTER->get_language_object(cLanguage);
+            //checks if the found lanuage isnt NULL and is a coding language
             if( tLanguage!=NULL && tLanguage->isCodingLanguage)
             {
                 //if its regular name or short name matches. We end loop and change our project language.
@@ -2749,10 +1592,10 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directoryIn, 
     RESC_SHADERS = NULL;
     for( int i = 0; i < res_type_count; i++)
     {
-         RESC_ALL[i] = NULL;
-         CREATED_RESOURCE_COUNT[i] = 0;
+        RESC_ALL[i] = NULL;
+        CREATED_RESOURCE_COUNT[i] = 0;
     }
-    RESC_PROJECT_FOLDER = GPE_MAIN_GUI->mainResourceBar->add_project_folder(0,projectFileName,projectName);
+    RESC_PROJECT_FOLDER = GPE_MAIN_GUI->mainResourceTree->add_project_folder(0,projectFileName,projectName);
     RESC_PROJECT_FOLDER->parentProjectDirectory = projectDirectory;
     RESC_PROJECT_FOLDER->projectParentFileName = projectFileName;
     RESC_PROJECT_FOLDER->open_folder();
@@ -2764,6 +1607,8 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directoryIn, 
     RESC_VIDEOS =  RESC_ALL[RESOURCE_TYPE_VIDEO] =RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_VIDEO,"Videos", increment_resouce_count(), restype_superfolder);
     RESC_FUNCTIONS =  RESC_ALL[RESOURCE_TYPE_FUNCTION] =RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_FUNCTION,"Functions", increment_resouce_count(), restype_superfolder);
     RESC_PATHS =  RESC_ALL[RESOURCE_TYPE_PATH] =RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_PATH,"Paths", increment_resouce_count(), restype_superfolder);
+    RESC_EMITTERS =  RESC_ALL[RESOURCE_TYPE_EMITTER] =RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_EMITTER,"Particles", increment_resouce_count(), restype_superfolder);
+    RESC_LIGHTS =  RESC_ALL[RESOURCE_TYPE_LIGHT] =RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_LIGHT,"Lights", increment_resouce_count(), restype_superfolder);
     RESC_OBJECTS =  RESC_ALL[RESOURCE_TYPE_OBJECT] =RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_OBJECT,"Objects", increment_resouce_count(), restype_superfolder);
     RESC_CLASSES =  RESC_ALL[RESOURCE_TYPE_CLASS] =RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_CLASS,"Classes", increment_resouce_count(), restype_superfolder);
     RESC_SCENES =  RESC_ALL[RESOURCE_TYPE_SCENE] =RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_SCENE,"Scenes", increment_resouce_count(), restype_superfolder);
@@ -2772,7 +1617,7 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directoryIn, 
     RESC_DICTIONARIES =  RESC_ALL[RESOURCE_TYPE_DICTIONARY]  = NULL;//=RESC_PROJECT_FOLDER->add_newtype_folder(RESOURCE_TYPE_DICTIONARY,"Dictionaries", increment_resouce_count(), restype_superfolder);
 
     int projectPropertiesId = increment_resouce_count();
-    RESC_PROJECT_SETTINGS = new GPE_ResourceContainer(projectFileName, RESOURCE_TYPE_NAMES[RESOURCE_TYPE_PROJECT_SETTINGS] , RESOURCE_TYPE_PROJECT_SETTINGS,projectPropertiesId ,false, projectPropertiesId,-1);
+    RESC_PROJECT_SETTINGS = new GPE_GeneralResourceContainer(projectFileName, RESOURCE_TYPE_NAMES[RESOURCE_TYPE_PROJECT_SETTINGS], RESOURCE_TYPE_PROJECT_SETTINGS,projectPropertiesId,false, projectPropertiesId,-1);
     RESC_PROJECT_SETTINGS->parentProjectDirectory = projectDirectory;
 
     RESC_PROJECT_FOLDER->add_resource_container(RESC_PROJECT_SETTINGS,true);
@@ -2790,11 +1635,17 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directoryIn, 
 
 GPE_ProjectFolder::~GPE_ProjectFolder()
 {
-    record_error("Deleting RESC_PROJECT_FOLDER" );
+    GPE_Report("Deleting RESC_PROJECT_FOLDER" );
     if( RESC_PROJECT_FOLDER!=NULL )
     {
         delete RESC_PROJECT_FOLDER;
         RESC_PROJECT_FOLDER = NULL;
+    }
+
+    if( projectRSM!=NULL )
+    {
+        delete projectRSM;
+        projectRSM = NULL;
     }
 }
 
@@ -2909,7 +1760,7 @@ bool GPE_ProjectFolder::clean_build_folder( int buildMetaTemplate )
     {
         if( path_exists(projectBuildDirectory) )
         {
-            if( display_get_prompt("[WARNING]Function deletion of "+folderDeletionName+" build folder?","Are you sure you will like to delete all the contents of this build directory? This action is irreversible!")==DISPLAY_QUERY_YES)
+            if( GPE_Display_Basic_Prompt("[WARNING]Function deletion of "+folderDeletionName+" build folder?","Are you sure you will like to delete all the contents of this build directory? This action is irreversible!")==DISPLAY_QUERY_YES)
             {
                 GPE_Main_Logs->log_build_line("---");
                 GPE_Main_Logs->log_build_line("Cleaning Project ["+projectName+" build folder:");
@@ -2939,7 +1790,7 @@ bool GPE_ProjectFolder::clean_build_folder( int buildMetaTemplate )
     return false;
 }
 
-GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_folder(GPE_ResourceContainer * folderContainer, std::string newName, int newResId )
+GPE_GeneralResourceContainer *  GPE_ProjectFolder::create_blank_folder(GPE_GeneralResourceContainer * folderContainer, std::string newName, int newResId )
 {
     if( folderContainer!=NULL )
     {
@@ -2951,7 +1802,7 @@ GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_folder(GPE_ResourceCont
         {
             newName = "New Folder";
         }
-        GPE_ResourceContainer *  newFolder= folderContainer->add_resource_folder(newName,newResId,-1);
+        GPE_GeneralResourceContainer *  newFolder= folderContainer->add_resource_folder(newName,newResId,-1);
         newFolder->projectParentFileName = projectFileName;
         //folderContainer->open_folder();
         return newFolder;
@@ -2959,11 +1810,11 @@ GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_folder(GPE_ResourceCont
     return NULL;
 }
 
-GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_resource(int rNewType, GPE_ResourceContainer * folderContainer, std::string newName, int newResId )
+GPE_GeneralResourceContainer *  GPE_ProjectFolder::create_blank_resource(int rNewType, GPE_GeneralResourceContainer * folderContainer, std::string newName, int newResId )
 {
-    if( rNewType >= 0 && rNewType <= RESOURCE_TYPE_FONT )
+    if( rNewType >= 0 && rNewType <= RESOURCE_TYPE_ACHIEVEMENT )
     {
-        GPE_ResourceContainer * RES_FOLDER_HOLDER = RESC_ALL[rNewType];
+        GPE_GeneralResourceContainer * RES_FOLDER_HOLDER = RESC_ALL[rNewType];
         if(RES_FOLDER_HOLDER!=NULL)
         {
             CREATED_RESOURCE_COUNT[rNewType]+=1;
@@ -2975,46 +1826,49 @@ GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_resource(int rNewType, 
             standardEditableGameResource * newProjectResource;
             switch( rNewType)
             {
-                case RESOURCE_TYPE_AUDIO:
-                    newProjectResource = new audioResource(RESC_PROJECT_FOLDER);
+            case RESOURCE_TYPE_AUDIO:
+                newProjectResource = new audioResource(RESC_PROJECT_FOLDER);
                 break;
-                case RESOURCE_TYPE_VIDEO:
-                    newProjectResource = new videoResource(RESC_PROJECT_FOLDER);
+            case RESOURCE_TYPE_VIDEO:
+                newProjectResource = new videoResource(RESC_PROJECT_FOLDER);
                 break;
-                case RESOURCE_TYPE_FONT:
-                    newProjectResource = new fontResource(RESC_PROJECT_FOLDER);
+            case RESOURCE_TYPE_FONT:
+                newProjectResource = new fontResource(RESC_PROJECT_FOLDER);
                 break;
-                case RESOURCE_TYPE_FUNCTION:
-                    newProjectResource = new functionResource(RESC_PROJECT_FOLDER);
+            case RESOURCE_TYPE_FUNCTION:
+                newProjectResource = new functionResource(RESC_PROJECT_FOLDER);
                 break;
-                case RESOURCE_TYPE_CLASS:
-                    newProjectResource = new classResource(RESC_PROJECT_FOLDER);
+            case RESOURCE_TYPE_CLASS:
+                newProjectResource = new classResource(RESC_PROJECT_FOLDER);
                 break;
-                case RESOURCE_TYPE_OBJECT:
-                    newProjectResource = new gameObjectResource(RESC_PROJECT_FOLDER);
+            case RESOURCE_TYPE_LIGHT:
+                newProjectResource = new lightResource(RESC_PROJECT_FOLDER);
                 break;
-                //Added since Version 1.12 [BEGIN]
-                case RESOURCE_TYPE_PATH:
-                    newProjectResource = new gamePathResource(RESC_PROJECT_FOLDER);
+            case RESOURCE_TYPE_OBJECT:
+                newProjectResource = new gameObjectResource(RESC_PROJECT_FOLDER);
                 break;
-                case RESOURCE_TYPE_DICTIONARY:
-                    newProjectResource = new dictionaryResource(RESC_PROJECT_FOLDER);
+            //Added since Version 1.12 [BEGIN]
+            case RESOURCE_TYPE_PATH:
+                newProjectResource = new gamePathResource(RESC_PROJECT_FOLDER);
                 break;
-                //Added since Version 1.12 [END]
-                case RESOURCE_TYPE_SCENE:
-                    newProjectResource = new gameSceneResource(RESC_PROJECT_FOLDER);
+            case RESOURCE_TYPE_EMITTER:
+                newProjectResource = new particleResource(RESC_PROJECT_FOLDER);
                 break;
-                case RESOURCE_TYPE_SPRITE:
-                    newProjectResource = new animationResource(RESC_PROJECT_FOLDER);
+            //Added since Version 1.12 [END]
+            case RESOURCE_TYPE_SCENE:
+                newProjectResource = new gameSceneResource(RESC_PROJECT_FOLDER);
                 break;
-                case RESOURCE_TYPE_TEXTURE:
-                    newProjectResource = new textureResource(RESC_PROJECT_FOLDER);
+            case RESOURCE_TYPE_SPRITE:
+                newProjectResource = new animationResource(RESC_PROJECT_FOLDER);
                 break;
-                case RESOURCE_TYPE_TILESHEET:
-                    newProjectResource = new tilesheetResource(RESC_PROJECT_FOLDER);
+            case RESOURCE_TYPE_TEXTURE:
+                newProjectResource = new textureResource(RESC_PROJECT_FOLDER);
                 break;
-                default:
-                    newProjectResource = NULL;
+            case RESOURCE_TYPE_TILESHEET:
+                newProjectResource = new tilesheetResource(RESC_PROJECT_FOLDER);
+                break;
+            default:
+                newProjectResource = NULL;
                 break;
             }
 
@@ -3040,7 +1894,7 @@ GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_resource(int rNewType, 
                     newProjectResource->parentProjectName = projectFileName;
                     newProjectResource->parentProjectDirectory = projectDirectory;
                     newProjectResource->resourceType = rNewType;
-                    GPE_ResourceContainer * newContainer = new GPE_ResourceContainer(projectFileName,newName,rNewType,resourceNumb,false,newProjectResource->get_global_rid() );
+                    GPE_GeneralResourceContainer * newContainer = new GPE_GeneralResourceContainer(projectFileName,newName,rNewType,resourceNumb,false,newProjectResource->get_global_rid() );
                     newContainer->set_held_resource(newProjectResource);
                     folderContainer->add_resource_container(newContainer);
                     //folderContainer->open_folder();
@@ -3053,74 +1907,84 @@ GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_resource(int rNewType, 
     return NULL;
 }
 
-GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_audio( GPE_ResourceContainer * folderContainer,std::string newName, int newResId  )
+GPE_GeneralResourceContainer *  GPE_ProjectFolder::create_blank_audio( GPE_GeneralResourceContainer * folderContainer,std::string newName, int newResId  )
 {
     return create_blank_resource(RESOURCE_TYPE_AUDIO, folderContainer, newName, newResId);
 }
 
-GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_video( GPE_ResourceContainer * folderContainer,std::string newName, int newResId  )
+GPE_GeneralResourceContainer *  GPE_ProjectFolder::create_blank_video( GPE_GeneralResourceContainer * folderContainer,std::string newName, int newResId  )
 {
     return create_blank_resource(RESOURCE_TYPE_VIDEO, folderContainer, newName, newResId);
 }
 
-GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_path( GPE_ResourceContainer * folderContainer,std::string newName, int newResId  )
+GPE_GeneralResourceContainer *  GPE_ProjectFolder::create_blank_emitter( GPE_GeneralResourceContainer * folderContainer,std::string newName, int newResId  )
+{
+    return create_blank_resource(RESOURCE_TYPE_EMITTER, folderContainer, newName, newResId);
+}
+
+GPE_GeneralResourceContainer *  GPE_ProjectFolder::create_blank_light( GPE_GeneralResourceContainer * folderContainer,std::string newName, int newResId  )
+{
+    return create_blank_resource(RESOURCE_TYPE_LIGHT, folderContainer, newName, newResId);
+}
+
+GPE_GeneralResourceContainer *  GPE_ProjectFolder::create_blank_path( GPE_GeneralResourceContainer * folderContainer,std::string newName, int newResId  )
 {
     return create_blank_resource(RESOURCE_TYPE_PATH, folderContainer, newName, newResId);
 }
 
 //
-GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_font(GPE_ResourceContainer * folderContainer, std::string newName, int newResId )
+GPE_GeneralResourceContainer *  GPE_ProjectFolder::create_blank_font(GPE_GeneralResourceContainer * folderContainer, std::string newName, int newResId )
 {
     return create_blank_resource(RESOURCE_TYPE_FONT, folderContainer, newName, newResId);
 }
 //
 
-GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_function(GPE_ResourceContainer * folderContainer, std::string newName, int newResId )
+GPE_GeneralResourceContainer *  GPE_ProjectFolder::create_blank_function(GPE_GeneralResourceContainer * folderContainer, std::string newName, int newResId )
 {
     return create_blank_resource(RESOURCE_TYPE_FUNCTION, folderContainer, newName, newResId);
 }
 
-GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_class(GPE_ResourceContainer * folderContainer, std::string newName, int newResId )
+GPE_GeneralResourceContainer *  GPE_ProjectFolder::create_blank_class(GPE_GeneralResourceContainer * folderContainer, std::string newName, int newResId )
 {
     return create_blank_resource(RESOURCE_TYPE_CLASS, folderContainer, newName, newResId);
 }
 
-GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_sprite(GPE_ResourceContainer * folderContainer, std::string newName, int newResId )
+GPE_GeneralResourceContainer *  GPE_ProjectFolder::create_blank_sprite(GPE_GeneralResourceContainer * folderContainer, std::string newName, int newResId )
 {
     return create_blank_resource(RESOURCE_TYPE_SPRITE, folderContainer, newName, newResId);
 }
 
-GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_texture(GPE_ResourceContainer * folderContainer, std::string newName, int newResId )
+GPE_GeneralResourceContainer *  GPE_ProjectFolder::create_blank_texture(GPE_GeneralResourceContainer * folderContainer, std::string newName, int newResId )
 {
     return create_blank_resource(RESOURCE_TYPE_TEXTURE, folderContainer, newName, newResId);
 }
 
-GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_tilesheet(GPE_ResourceContainer * folderContainer, std::string newName, int newResId )
+GPE_GeneralResourceContainer *  GPE_ProjectFolder::create_blank_tilesheet(GPE_GeneralResourceContainer * folderContainer, std::string newName, int newResId )
 {
     return create_blank_resource(RESOURCE_TYPE_TILESHEET, folderContainer, newName, newResId);
 }
 
-GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_gameobject(GPE_ResourceContainer * folderContainer, std::string newName, int newResId )
+GPE_GeneralResourceContainer *  GPE_ProjectFolder::create_blank_gameobject(GPE_GeneralResourceContainer * folderContainer, std::string newName, int newResId )
 {
     return create_blank_resource(RESOURCE_TYPE_OBJECT, folderContainer, newName, newResId);
 }
 
-GPE_ResourceContainer *  GPE_ProjectFolder::create_blank_scene(GPE_ResourceContainer * folderContainer,std::string newName, int newResId )
+GPE_GeneralResourceContainer *  GPE_ProjectFolder::create_blank_scene(GPE_GeneralResourceContainer * folderContainer,std::string newName, int newResId )
 {
     return create_blank_resource(RESOURCE_TYPE_SCENE, folderContainer, newName, newResId);
 }
 
 //Export C++
-bool GPE_ProjectFolder::export_project_cpp(std::string projectBuildDirectory , int buildMetaTemplate, bool runGameOnCompile, bool inDebugMode)
+bool GPE_ProjectFolder::export_project_cpp(std::string projectBuildDirectory, int buildMetaTemplate, bool runGameOnCompile, bool inDebugMode)
 {
 
 }
 //Export HTML5
 //Build HTML5
-bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory , int buildMetaTemplate, bool runGameOnCompile, bool inDebugMode)
+bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, int buildMetaTemplate, bool runGameOnCompile, bool inDebugMode)
 {
-    GPE_ResourceContainer * firstObjectContainer = RESC_OBJECTS->get_usable_resource();
-    GPE_ResourceContainer * firstSceneContainer = RESC_SCENES->get_usable_resource();
+    GPE_GeneralResourceContainer * firstObjectContainer = RESC_OBJECTS->get_usable_resource();
+    GPE_GeneralResourceContainer * firstSceneContainer = RESC_SCENES->get_usable_resource();
     bool hadSaveErrors = false;
     int BUILD_SCREEN_WIDTH = 640;
     int BUILD_SCREEN_HEIGHT = 480;
@@ -3151,19 +2015,19 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                     GPE_MAIN_GUI->setup_build_folder(projectBuildDirectory,GPE_BUILD_HTML5,0,inDebugMode );
                 }
                 //Grabs the list of resources and such.
-                std::vector <GPE_ResourceContainer *> buildTextureOptions;
-                std::vector <GPE_ResourceContainer *> buildTilesheetOptions;
-                std::vector <GPE_ResourceContainer *> buildSpriteOptions;
-                std::vector <GPE_ResourceContainer *> buildAudioOptions;
-                std::vector <GPE_ResourceContainer *> buildVideoOptions;
-                std::vector <GPE_ResourceContainer *> buildPathsOptions;
-                std::vector <GPE_ResourceContainer *> buildFunctionsOptions;
-                std::vector <GPE_ResourceContainer *> buildFontOptions;
+                std::vector <GPE_GeneralResourceContainer *> buildTextureOptions;
+                std::vector <GPE_GeneralResourceContainer *> buildTilesheetOptions;
+                std::vector <GPE_GeneralResourceContainer *> buildSpriteOptions;
+                std::vector <GPE_GeneralResourceContainer *> buildAudioOptions;
+                std::vector <GPE_GeneralResourceContainer *> buildVideoOptions;
+                std::vector <GPE_GeneralResourceContainer *> buildPathsOptions;
+                std::vector <GPE_GeneralResourceContainer *> buildFunctionsOptions;
+                std::vector <GPE_GeneralResourceContainer *> buildFontOptions;
                 //Added as of 1.14 [ BEGIN ]
-                std::vector <GPE_ResourceContainer *> buildClassesOptions;
+                std::vector <GPE_GeneralResourceContainer *> buildClassesOptions;
                 //Added as of 1.14 [ END ]
-                std::vector <GPE_ResourceContainer *> buildGameObjectOptions;
-                std::vector <GPE_ResourceContainer *> buildGameSceneOptions;
+                std::vector <GPE_GeneralResourceContainer *> buildGameObjectOptions;
+                std::vector <GPE_GeneralResourceContainer *> buildGameSceneOptions;
                 projectPropertiesResource * projectSettingsObject = (projectPropertiesResource*)RESC_PROJECT_SETTINGS->get_held_resource();
                 RESC_TEXTURES->grab_useable_resources(buildTextureOptions);
                 RESC_TILESHEETS->grab_useable_resources(buildTilesheetOptions);
@@ -3180,7 +2044,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                 RESC_SCENES->grab_useable_resources(buildGameSceneOptions);
 
                 //For Mega Looking of resources:
-                std::vector <GPE_ResourceContainer *> buildGameBuildAllOptions;
+                std::vector <GPE_GeneralResourceContainer *> buildGameBuildAllOptions;
                 RESC_TEXTURES->grab_useable_resources(buildGameBuildAllOptions);
                 RESC_TILESHEETS->grab_useable_resources(buildGameBuildAllOptions);
                 RESC_SPRITES->grab_useable_resources(buildGameBuildAllOptions);
@@ -3204,7 +2068,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                 std::string copyFileDestination;
                 int tempParentHTML5Id;
                 int foundHtml5BuildId;
-                GPE_ResourceContainer * tempContainer = NULL;
+                GPE_GeneralResourceContainer * tempContainer = NULL;
                 for( iRes = 0; iRes < (int)buildGameBuildAllOptions.size(); iRes++)
                 {
                     tempContainer = buildGameBuildAllOptions[iRes];
@@ -3228,14 +2092,14 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
 
                 if( !hadSaveErrors || GPE_JS_COMPILER_SETTINGS->stopCompileOnError->is_clicked()==false )
                 {
-                    if( projectSettingsObject->projectScreenWidthField->get_held_number() > 0)
+                    if( projectSettingsObject->projectScreenWidthField->get_held_int() > 0)
                     {
-                        BUILD_SCREEN_WIDTH = std::max(160, projectSettingsObject->projectScreenWidthField->get_held_number() );
+                        BUILD_SCREEN_WIDTH = std::max(160, projectSettingsObject->projectScreenWidthField->get_held_int() );
                     }
 
-                    if( projectSettingsObject->projectScreenHeightField->get_held_number() > 0)
+                    if( projectSettingsObject->projectScreenHeightField->get_held_int() > 0)
                     {
-                        BUILD_SCREEN_HEIGHT = std::max(120,projectSettingsObject->projectScreenHeightField->get_held_number() );
+                        BUILD_SCREEN_HEIGHT = std::max(120,projectSettingsObject->projectScreenHeightField->get_held_int() );
                     }
                     //temp variables for held resources and containers
 
@@ -3270,7 +2134,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                         tempContainer = buildTextureOptions[iRes];
                         if( tempContainer!=NULL)
                         {
-                            tempContainer->set_global_html5id ( iRes);
+                            tempContainer->set_container_gameid ( iRes);
                             appendToFile(get_user_settings_folder()+"resources_check.txt",tempContainer->get_name() +"...");
                             hasTextureToUse = false;
                             if( tempContainer->get_held_resource()!=NULL)
@@ -3298,7 +2162,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                         tempContainer = buildTilesheetOptions[iRes];
                         if( tempContainer!=NULL)
                         {
-                            tempContainer->set_global_html5id ( iRes);
+                            tempContainer->set_container_gameid ( iRes);
                             appendToFile(get_user_settings_folder()+"resources_check.txt",tempContainer->get_name() +"...");
                             hasTextureToUse = false;
                             if( tempContainer->get_held_resource()!=NULL)
@@ -3326,19 +2190,19 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                         tempContainer = buildSpriteOptions[iRes];
                         if( tempContainer!=NULL)
                         {
-                            tempContainer->set_global_html5id ( iRes);
+                            tempContainer->set_container_gameid ( iRes);
                             appendToFile(get_user_settings_folder()+"resources_check.txt",tempContainer->get_name() +"...");
                             hasTextureToUse = false;
                             if( tempContainer->get_held_resource()!=NULL)
                             {
                                 tempSprRes = (animationResource * )tempContainer->get_held_resource();
-                                if( ( tempSprRes!=NULL) && ( tempSprRes->spriteInEditor!=NULL) && ( tempSprRes->spriteInEditor->animationTexture!=NULL )&& (tempSprRes->spriteInEditor->animationTexture->get_width() > 0) )
+                                if( ( tempSprRes!=NULL) && ( tempSprRes->animInEditor!=NULL) && ( tempSprRes->animInEditor->has_texture() )&& (tempSprRes->animInEditor->get_width() > 0) )
                                 {
                                     hasTextureToUse = true;
                                     tempSprRes->save_resource();
-                                    if( tempSprRes->spriteInEditor->animationTexture->copy_image_source(projectBuildDirectory+"/resources/sprites")  )
+                                    if( tempSprRes->animInEditor->copy_image_source(projectBuildDirectory+"/resources/animations")  )
                                     {
-                                        preloadImgSprites.push_back( getShortFileName(tempSprRes->spriteInEditor->animationTexture->get_filename()) );
+                                        preloadImgSprites.push_back( getShortFileName(tempSprRes->animInEditor->get_file_name() ) );
                                     }
                                 }
                                 if( hasTextureToUse == false)
@@ -3355,7 +2219,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                         tempContainer = buildAudioOptions[iRes];
                         if( tempContainer!=NULL)
                         {
-                            tempContainer->set_global_html5id ( iRes);
+                            tempContainer->set_container_gameid ( iRes);
                             appendToFile(get_user_settings_folder()+"resources_check.txt",tempContainer->get_name() +"...");
                         }
                     }
@@ -3366,7 +2230,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                         tempContainer = buildVideoOptions[iRes];
                         if( tempContainer!=NULL)
                         {
-                            tempContainer->set_global_html5id ( iRes);
+                            tempContainer->set_container_gameid ( iRes);
                             appendToFile(get_user_settings_folder()+"resources_check.txt",tempContainer->get_name() +"...");
                         }
                     }
@@ -3377,7 +2241,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                         tempContainer = buildPathsOptions[iRes];
                         if( tempContainer!=NULL)
                         {
-                            tempContainer->set_global_html5id ( iRes);
+                            tempContainer->set_container_gameid ( iRes);
                             appendToFile(get_user_settings_folder()+"resources_check.txt",tempContainer->get_name() +" - "+int_to_string(iRes)+"...");
                         }
                     }
@@ -3388,7 +2252,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                         tempContainer = buildFunctionsOptions[iRes];
                         if( tempContainer!=NULL)
                         {
-                            tempContainer->set_global_html5id ( iRes);
+                            tempContainer->set_container_gameid ( iRes);
                             appendToFile(get_user_settings_folder()+"resources_check.txt",tempContainer->get_name() +"...");
                         }
                     }
@@ -3400,7 +2264,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                         if( tempContainer!=NULL)
                         {
                             tempFntRes = (fontResource * ) tempContainer->get_held_resource();
-                            tempContainer->set_global_html5id ( iRes);
+                            tempContainer->set_container_gameid ( iRes);
                             if( tempFntRes!=NULL)
                             {
                                 for( jFontType = 0; jFontType < FONT_FILE_TYPES; jFontType++)
@@ -3426,7 +2290,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                         tempContainer = buildClassesOptions[iRes];
                         if( tempContainer!=NULL)
                         {
-                            tempContainer->set_global_html5id ( iRes);
+                            tempContainer->set_container_gameid ( iRes);
                             appendToFile(get_user_settings_folder()+"resources_check.txt",tempContainer->get_name() +"...");
                         }
                     }
@@ -3438,7 +2302,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                         tempContainer = buildGameObjectOptions[iRes];
                         if( tempContainer!=NULL)
                         {
-                            tempContainer->set_global_html5id ( iRes);
+                            tempContainer->set_container_gameid ( iRes);
                             appendToFile(get_user_settings_folder()+"resources_check.txt",tempContainer->get_name() +"...");
                         }
                     }
@@ -3449,7 +2313,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                         tempContainer = buildGameSceneOptions[iRes];
                         if( tempContainer!=NULL)
                         {
-                            tempContainer->set_global_html5id ( iRes);
+                            tempContainer->set_container_gameid ( iRes);
                             appendToFile(get_user_settings_folder()+"resources_check.txt",tempContainer->get_name() +"...");
                         }
                     }
@@ -3461,23 +2325,27 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                         tempContainer = buildFontOptions[iRes];
                         if( tempContainer!=NULL)
                         {
-                            tempContainer->set_global_html5id ( iRes);
+                            tempContainer->set_container_gameid ( iRes);
                             appendToFile(get_user_settings_folder()+"resources_check.txt",tempContainer->get_name() +"...");
                         }
                     }
-                    //
 
-                    displayMessageTitle = "Exporting Project";
+
                     if( buildMetaTemplate >=0 && buildMetaTemplate < GPE_BUILD_OPTIONS)
                     {
-                        displayMessageSubtitle = GPE_BUILD_NAMES[buildMetaTemplate]+" Export";
+                        if( GPE_LOADER!=NULL )
+                        {
+                            GPE_LOADER->update_messages( GPE_BUILD_NAMES[buildMetaTemplate]+" Export", "Please Wait...", "DO NOT CLOSE" );
+                        }
                     }
                     else
                     {
-                        displayMessageSubtitle = "Unknown Export";
+                        if( GPE_LOADER!=NULL )
+                        {
+                            GPE_LOADER->update_messages( "Unknown Export", "Please Wait...", "DO NOT CLOSE" );
+                        }
                     }
-                    displayMessageString = projectName;
-                    display_user_messaage();
+                    //displayMessageString = projectName;
 
                     //GPE Engine Files
                     std::string buildFileStyleCssFilleName = APP_DIRECTORY_NAME+"build_files/css/style.css";
@@ -3493,14 +2361,14 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                     if( inDebugMode )
                     {
                         GPE_Main_Logs->log_build_line("Using DEBUG mode...");
-                        buildFileGPEPowerFilleName = APP_DIRECTORY_NAME+"build_files/js/lib/gpepower_strict_v1_1_4_debug.txt";
-                        indexFileGPEPowerFileName =projectBuildDirectory+"/js/lib/gpepower_strict_v1_1_4_debug.js";
+                        buildFileGPEPowerFilleName = APP_DIRECTORY_NAME+"build_files/js/lib/gpepower_strict_v1_2_2_debug.txt";
+                        indexFileGPEPowerFileName =projectBuildDirectory+"/js/lib/gpepower_strict_v1_2_2_debug.js";
                     }
                     else
                     {
                         GPE_Main_Logs->log_build_line("Using RELEASE mode...");
-                        buildFileGPEPowerFilleName = APP_DIRECTORY_NAME+"build_files/js/lib/gpepower_strict_v1_1_4.txt";
-                        indexFileGPEPowerFileName =projectBuildDirectory+"/js/lib/gpepower_strict_v1_1_4.js";
+                        buildFileGPEPowerFilleName = APP_DIRECTORY_NAME+"build_files/js/lib/gpepower_strict_v1_2_2.txt";
+                        indexFileGPEPowerFileName =projectBuildDirectory+"/js/lib/gpepower_strict_v1_2_2.js";
                     }
 
                     if( buildMetaTemplate ==GPE_BUILD_WIIU)
@@ -3609,6 +2477,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                             indexHTML5FILE << "<!--  Warning: Manually editing this file may cause unexpected bugs and errors. -->\n";
                             indexHTML5FILE << "<!--  If you have any problems reading this file please report it to help@pawbyte.com -->\n";
                             indexHTML5FILE << "    <head>\n";
+                            /*
                             if( buildMetaTemplate ==GPE_BUILD_HTML5 && projectSettingsObject->projectHtmlHeaderCode!=NULL)
                             {
                                 if( projectSettingsObject->headerCodeBeforeGPECheckbox!=NULL && projectSettingsObject->headerCodeBeforeGPECheckbox->is_clicked() )
@@ -3620,6 +2489,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                     }
                                 }
                             }
+                            */
 
                             indexHTML5FILE << "        <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>\n";
                             indexHTML5FILE << "        <meta name='viewport' content='width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1.0'> \n";
@@ -3650,11 +2520,11 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                             //Modified as of 1.14 [ BEGIN ]
                             if( inDebugMode)
                             {
-                                indexHTML5FILE << "        <script src='js/lib/gpepower_strict_v1_1_4_debug.js'></script>	 \n";
+                                indexHTML5FILE << "        <script src='js/lib/gpepower_strict_v1_2_2_debug.js'></script>	 \n";
                             }
                             else
                             {
-                                indexHTML5FILE << "        <script src='js/lib/gpepower_strict_v1_1_4.js'></script>	 \n";
+                                indexHTML5FILE << "        <script src='js/lib/gpepower_strict_v1_2_2.js'></script>	 \n";
                             }
                             //Modified as of 1.14 [ END ]
                             if( buildMetaTemplate ==GPE_BUILD_WIIU)
@@ -3664,18 +2534,6 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
 
                             }
                             //indexHTML5FILE << "        <script src='js/gpe_app.js'></script>	 \n";
-                             if( buildMetaTemplate ==GPE_BUILD_HTML5 && projectSettingsObject->projectHtmlHeaderCode!=NULL)
-                            {
-                                if( projectSettingsObject->headerCodeBeforeGPECheckbox==NULL || projectSettingsObject->headerCodeBeforeGPECheckbox->is_clicked()==false )
-                                {
-                                    if( projectSettingsObject->projectHtmlHeaderCode->has_content() )
-                                    {
-                                        projectSettingsObject->projectHtmlHeaderCode->write_data_into_file(&indexHTML5FILE,2,true);
-                                        indexHTML5FILE << "\n";
-
-                                    }
-                                }
-                            }
                             indexHTML5FILE << "     </head>\n";
                             indexHTML5FILE << "     <body>\n";
                             indexHTML5FILE << "        <canvas id='gpeCanvas' width='auto' height='"<< BUILD_SCREEN_HEIGHT << "' oncontextmenu='return false;'></canvas> \n";
@@ -3700,13 +2558,6 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                             indexHTML5FILE << "     <p>";
                                             projectSettingsObject->projectGameNotes->write_data_into_file(&indexHTML5FILE,2,true);
                                             indexHTML5FILE << "</p>\n";
-                                        }
-                                    }
-                                    if( buildMetaTemplate ==GPE_BUILD_HTML5 && projectSettingsObject->projectHtmlCode!=NULL)
-                                    {
-                                        if( projectSettingsObject->projectHtmlCode->has_content() )
-                                        {
-                                            projectSettingsObject->projectHtmlCode->write_data_into_file(&indexHTML5FILE,2,true);
                                         }
                                     }
 
@@ -3785,20 +2636,20 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                     indexJSSettingsFILE << "GPE_STANDARD_FPS = 60;\n \n";
                                     indexJSSettingsFILE << "GPE_FPS_UNCAPPED = true;\n \n";
                                 }
-                                indexJSSettingsFILE << "GPE_STANDARD_INTERVAL = 1000/GPE_STANDARD_FPS;;\n \n";
+                                indexJSSettingsFILE << "GPE_STANDARD_INTERVAL =  1000/GPE_STANDARD_FPS ; \n";
                                 indexJSSettingsFILE << "var GPE_SETTINGS_APP_LOGO_LOCATION = 'res/gpe_logo_start.png'; \n";
                                 indexJSSettingsFILE << "var GPE_SETTINGS_START_SCENE = '"+projectFirstLevelName+"'; \n";
 
 
-                                indexJSSettingsFILE << "var GPE_SETTINGS_SCREEN_WIDTH = "<< BUILD_SCREEN_WIDTH << ";\n";
-                                indexJSSettingsFILE << "var GPE_SETTINGS_SCREEN_HEIGHT = "<< BUILD_SCREEN_HEIGHT << ";\n";
+                                indexJSSettingsFILE << "var GPE_SETTINGS_SCREEN_WIDTH = " << BUILD_SCREEN_WIDTH << ";\n";
+                                indexJSSettingsFILE << "var GPE_SETTINGS_SCREEN_HEIGHT = " << BUILD_SCREEN_HEIGHT << ";\n";
 
                                 indexJSSettingsFILE << "var GPE_SETTINGS_PROG_NAME = '" << projectSettingsObject->projectGameTitleField->get_string() << "';\n";
                                 indexJSSettingsFILE << "var GPE_SETTINGS_VERSION_NUMBER = "<< projectSettingsObject->projectGameVersionField->get_string()<< ";\n";
                                 indexJSSettingsFILE << "var GPE_MAX_OBJECT_TYPES = "<< (int)buildGameObjectOptions.size() << ";\n";
                                 if( buildMetaTemplate ==GPE_BUILD_WIIU)
                                 {
-                                        indexJSSettingsFILE << "var GPE_SETTINGS_SYSTEM_OS = 'WiiU';\n";
+                                    indexJSSettingsFILE << "var GPE_SETTINGS_SYSTEM_OS = 'WiiU';\n";
                                 }
                                 else
                                 {
@@ -3836,7 +2687,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                 }
                                 for( iPreloadRes = 0; iPreloadRes < (int)preloadImgSprites.size(); iPreloadRes++ )
                                 {
-                                    indexJSSettingsFILE << "GPE_PreloadImageResource[" << int_to_string(preloadCount) << "] = 'resources/sprites/" << preloadImgSprites.at( iPreloadRes ) << "';\n";
+                                    indexJSSettingsFILE << "GPE_PreloadImageResource[" << int_to_string(preloadCount) << "] = 'resources/animations/" << preloadImgSprites.at( iPreloadRes ) << "';\n";
                                     preloadCount+=1;
                                 }
                                 indexJSSettingsFILE << "var GPE_PreloadAudioResource = [];\n";
@@ -4021,7 +2872,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                     tempContainer = buildPathsOptions[iRes];
                                     if( tempContainer!=NULL)
                                     {
-                                        indexJSCustomGameFILE << "var " << tempContainer->get_name() << " =  " << tempContainer->get_held_resource()->html5BuildGlobalId << "; \n";
+                                        indexJSCustomGameFILE << "var " << tempContainer->get_name() << " =  " << tempContainer->get_held_resource()->exportBuildGlobalId << "; \n";
                                         if( tempContainer->get_held_resource()!=NULL )
                                         {
                                             tempPathRes = (gamePathResource * ) tempContainer->get_held_resource();
@@ -4045,7 +2896,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                     tempContainer = buildGameObjectOptions[iRes];
                                     if( tempContainer!=NULL)
                                     {
-                                        indexJSCustomGameFILE << "var " << tempContainer->get_name() << " =  " << tempContainer->get_held_resource()->html5BuildGlobalId << "; \n";
+                                        indexJSCustomGameFILE << "var " << tempContainer->get_name() << " =  " << tempContainer->get_held_resource()->exportBuildGlobalId << "; \n";
                                     }
                                 }
 
@@ -4054,7 +2905,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                     tempContainer = buildGameSceneOptions[iRes];
                                     if( tempContainer!=NULL)
                                     {
-                                        foundHtml5BuildId = tempContainer->get_held_resource()->html5BuildGlobalId;
+                                        foundHtml5BuildId = tempContainer->get_held_resource()->exportBuildGlobalId;
                                         indexJSCustomGameFILE << "var " << tempContainer->get_name() << " =  " << foundHtml5BuildId << "; \n";
                                         indexJSCustomGameFILE << "var  _scn_" << tempContainer->get_name() << " =  GPE.add_gamescene("+int_to_string(foundHtml5BuildId)+" , '"+tempContainer->get_name()+"'); \n";
                                     }
@@ -4110,7 +2961,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                             tempFuncRes = (functionResource * )tempContainer->get_held_resource();
                                             if( ( tempFuncRes!=NULL) && ( tempFuncRes->functionCode!=NULL && tempFuncRes->parametersField!=NULL)  )
                                             {
-                                                //record_error("Processing "+tempFuncRes->get_name()+"['s function"+tempFuncRes->parametersField->get_string() +"].");
+                                                //GPE_Report("Processing "+tempFuncRes->get_name()+"['s function"+tempFuncRes->parametersField->get_string() +"].");
                                                 if( GPE_MAIN_HIGHLIGHTER->process_parameters_string( tempFuncRes->parametersField->get_string() ) )
                                                 {
                                                     indexJSCustomGameFILE << "function " << tempContainer->get_name() << "( " << GPE_MAIN_HIGHLIGHTER->newParametersString << " ) \n";
@@ -4125,7 +2976,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                                     for( iErrorLine = 0; iErrorLine < (int)GPE_MAIN_HIGHLIGHTER->functionParameterErrors.size(); iErrorLine++)
                                                     {
                                                         GPE_Main_Logs->log_build_error("Invalid parameters given for "+tempContainer->get_name()+": "+GPE_MAIN_HIGHLIGHTER->functionParameterErrors[iErrorLine] );
-                                                        record_error("Invalid parameters given for "+tempContainer->get_name()+": "+GPE_MAIN_HIGHLIGHTER->functionParameterErrors[iErrorLine] );
+                                                        GPE_Report("Invalid parameters given for "+tempContainer->get_name()+": "+GPE_MAIN_HIGHLIGHTER->functionParameterErrors[iErrorLine] );
                                                     }
                                                     hadSaveErrors = true;
                                                     if( GPE_JS_COMPILER_SETTINGS->stopCompileOnError->is_clicked() )
@@ -4180,7 +3031,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                     tempObjCreationFunc->add_line("     {");
 
                                     //first compiles all objects whose parent is the standard default game object
-                                    GPE_ResourceContainer * currObjParent = NULL;
+                                    GPE_GeneralResourceContainer * currObjParent = NULL;
                                     for( iRes = 0; iRes < (int)buildGameObjectOptions.size(); iRes++)
                                     {
                                         tempContainer = buildGameObjectOptions[iRes];
@@ -4192,12 +3043,12 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                                 tempObjRes = (gameObjectResource * )tempContainer->get_held_resource();
                                                 if( tempObjRes!=NULL && tempObjRes->get_parent_resource()==NULL)
                                                 {
-                                                    record_error("Building: ["+tempObjRes->get_name()+"]...");
+                                                    GPE_Report("Building: ["+tempObjRes->get_name()+"]...");
                                                     if( tempObjRes->build_intohtml5_file(&indexJSCustomGameFILE,0)==false )
                                                     {
                                                         hadSaveErrors = true;
                                                         //GPE_Main_Logs->log_build_error("Error building "+tempObjRes->get_name()+".");
-                                                        record_error("Error building "+tempObjRes->get_name()+" (Default Object Parent).");
+                                                        GPE_Report("Error building "+tempObjRes->get_name()+" (Default Object Parent).");
                                                         if( GPE_JS_COMPILER_SETTINGS->stopCompileOnError->is_clicked() )
                                                         {
                                                             break;
@@ -4206,7 +3057,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                                     }
                                                     else
                                                     {
-                                                        record_error("Built "+tempObjRes->get_name()+" (Default Object Parent).");
+                                                        GPE_Report("Built "+tempObjRes->get_name()+" (Default Object Parent).");
                                                     }
                                                     nextObjParents.push_back( tempContainer->get_global_id() );
                                                     tempObjCreationFunc->add_line("         case "+int_to_string(iRes)+":");
@@ -4236,12 +3087,12 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                                         currObjParent = tempObjRes->parentObjectField->get_selected_container();
                                                         if( currObjParent !=NULL && check_obj_inlist(currObjParent->get_global_id() ) )
                                                         {
-                                                            record_error("Building: ["+tempObjRes->get_name()+" - child]...");
+                                                            GPE_Report("Building: ["+tempObjRes->get_name()+" - child]...");
                                                             if( tempObjRes->build_intohtml5_file(&indexJSCustomGameFILE,0)==false )
                                                             {
                                                                 hadSaveErrors = true;
                                                                 //GPE_Main_Logs->log_build_error("Error building "+tempObjRes->get_name()+".");
-                                                                record_error("Error building "+tempObjRes->get_name()+".");
+                                                                GPE_Report("Error building "+tempObjRes->get_name()+".");
                                                                 if(  GPE_JS_COMPILER_SETTINGS->stopCompileOnError->is_clicked() )
                                                                 {
                                                                     break;
@@ -4249,7 +3100,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                                             }
                                                             else
                                                             {
-                                                                record_error("Built: ["+tempObjRes->get_name()+" - child]...");
+                                                                GPE_Report("Built: ["+tempObjRes->get_name()+" - child]...");
                                                             }
                                                             tempObjCreationFunc->add_line("         case "+int_to_string(iRes)+":");
                                                             tempObjCreationFunc->add_line("             newObjOut = new GPE._obj_"+tempObjRes->get_name()+"( newX, newY,objectLayerId);");
@@ -4266,7 +3117,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
 
                                     //reverse inherits parents for creation of object families
                                     begin_obj_reverse_inheritence();
-                                    record_error("Creating inheritance trees...");
+                                    GPE_Report("Creating inheritance trees...");
                                     while( currentObjParents.size() > 0)
                                     {
                                         for( iRes = 0; iRes < (int)buildGameObjectOptions.size(); iRes++)
@@ -4280,18 +3131,18 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                                     currObjParent = tempObjRes->parentObjectField->get_selected_container();
                                                     if( currObjParent !=NULL)
                                                     {
-                                                        tempParentHTML5Id = currObjParent->html5BuildGlobalId;
+                                                        tempParentHTML5Id = currObjParent->exportBuildGlobalId;
                                                         if( tempParentHTML5Id >=0 && tempParentHTML5Id < (int)ALL_OBJECTS_CHAINS.size() )
                                                         {
                                                             nextObjParents.push_back( currObjParent->get_global_id() );
 
-                                                            if( tempContainer->html5BuildGlobalId >=0 && tempContainer->html5BuildGlobalId < (int)ALL_OBJECTS_CHAINS.size() )
+                                                            if( tempContainer->exportBuildGlobalId >=0 && tempContainer->exportBuildGlobalId < (int)ALL_OBJECTS_CHAINS.size() )
                                                             {
-                                                                tObjectChainLink = ALL_OBJECTS_CHAINS[tempContainer->html5BuildGlobalId];
+                                                                tObjectChainLink = ALL_OBJECTS_CHAINS[tempContainer->exportBuildGlobalId];
                                                                 if( tObjectChainLink->is_inchain(tempParentHTML5Id)==false)
                                                                 {
                                                                     tObjectChainLink = ALL_OBJECTS_CHAINS[tempParentHTML5Id];
-                                                                    tObjectChainLink->grab_chain(ALL_OBJECTS_CHAINS[tempContainer->html5BuildGlobalId]);
+                                                                    tObjectChainLink->grab_chain(ALL_OBJECTS_CHAINS[tempContainer->exportBuildGlobalId]);
                                                                 }
                                                                 else
                                                                 {
@@ -4338,7 +3189,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                     indexJSCustomGameFILE << "}\n";
                                     indexJSCustomGameFILE << "\n\n";
 
-                                    record_error("Creating Object Chains...");
+                                    GPE_Report("Creating Object Chains...");
                                     //Cleans up all of that messy backward tracing of parental families
                                     for( iRes = (int)ALL_OBJECTS_CHAINS.size()-1; iRes >=0; iRes--)
                                     {
@@ -4369,7 +3220,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                     indexJSCustomGameFILE << "GPE.rsm.audioIsReadyForLoading = true; \n";
 
                                     indexJSCustomGameFILE << "var _scn_temp_layer = IS_NULL; \n\n";
-                                    record_error("Creating  scenes...");
+                                    GPE_Report("Creating  scenes...");
                                     for( iRes = 0; iRes < (int)buildGameSceneOptions.size(); iRes++)
                                     {
                                         tempContainer = buildGameSceneOptions[iRes];
@@ -4379,7 +3230,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                             tempScnRes->build_intohtml5_file(&indexJSCustomGameFILE,0);
                                         }
                                     }
-                                    record_error("Scenes created");
+                                    GPE_Report("Scenes created");
                                     if( projectSettingsObject->projectGameMacros!=NULL)
                                     {
                                         indexJSCustomGameFILE << "//Start of Project Macros \n";
@@ -4390,7 +3241,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
 
                                 //Closes the custom gpe_app.js file
                                 indexJSCustomGameFILE.close();
-                                record_error("Building CSS file..");
+                                GPE_Report("Building CSS file..");
                                 if( !hadSaveErrors || GPE_JS_COMPILER_SETTINGS->stopCompileOnError->is_clicked()==false )
                                 {
                                     std::string indexCustomCSSGameFileName = projectBuildDirectory+"/css/gpe_custom_style.css";
@@ -4418,10 +3269,6 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
                                         indexCustomCSSGameFile <<"a:visited\n{\n     color: #" << projectSettingsObject->projectTextLinkVisitedColor->get_hex_string() << ";\n}\n";
                                         indexCustomCSSGameFile <<"\n\n";
 
-                                        if( buildMetaTemplate ==GPE_BUILD_HTML5 && projectSettingsObject->projectCSSCode!=NULL )
-                                        {
-                                            projectSettingsObject->projectCSSCode->write_short_data_into_file(&indexHTML5FILE,2,true);
-                                        }
                                         indexCustomCSSGameFile.close();
                                     }
                                     else
@@ -4494,16 +3341,16 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory ,
 
 bool GPE_ProjectFolder::export_project_wiiu( bool inDebugMode)
 {
-    displayMessageTitle = "Exporting Project";
-    displayMessageSubtitle = "WiiU Export";
-    displayMessageString = projectFileName;
-    display_user_messaage();
+    if( GPE_LOADER != NULL )
+    {
+        GPE_LOADER->update_messages( "Exporting ["+projectName+"][wiiU]", "Please wait...", "DO NOT CLOSE" );
+    }
     std::string projectBuildDirectory = fileToDir(projectFileName)+"/gpe_project/builds/wiiu";
     projectBuildDirectory = GPE_MAIN_GUI->setup_build_folder(projectBuildDirectory,GPE_BUILD_WIIU,64,inDebugMode);
     return export_project_html5( projectBuildDirectory,GPE_BUILD_WIIU,false,inDebugMode);
 }
 
-bool GPE_ProjectFolder::export_project_windows(std::string projectBuildDirectory, int buildBits, bool runGameOnCompile, bool inDebugMode , int nativeBuildType )
+bool GPE_ProjectFolder::export_project_windows(std::string projectBuildDirectory, int buildBits, bool runGameOnCompile, bool inDebugMode, int nativeBuildType )
 {
     bool buildResult = false;
     if( GPE_Main_Logs!=NULL)
@@ -4514,10 +3361,10 @@ bool GPE_ProjectFolder::export_project_windows(std::string projectBuildDirectory
         if( nativeBuildType!=Native_None)
         {
             GPE_Main_Logs->log_build_line("-------------- Building: ["+projectName+"] ["+GPE_BUILD_NAMES[GPE_BUILD_WINDOWS]+" Export] (Compiler: Pawbitious Compiler)---------------");
-            displayMessageTitle = "Exporting Project";
-            displayMessageSubtitle = "Windows Export";
-            displayMessageString = projectFileName;
-            display_user_messaage();
+            if( GPE_LOADER != NULL )
+            {
+                GPE_LOADER->update_messages( "Exporting ["+projectName+"][Windows]", "Please wait...", "DO NOT CLOSE");
+            }
             if( (int)projectBuildDirectory.size() < 3)
             {
                 projectBuildDirectory = fileToDir(projectFileName)+"/gpe_project/builds/windows";
@@ -4557,12 +3404,12 @@ bool GPE_ProjectFolder::export_project_windows(std::string projectBuildDirectory
     }
     else
     {
-        record_error("Unable to build game. Internal Log error");
+        GPE_Report("Unable to build game. Internal Log error");
     }
     return buildResult;
 }
 
-bool GPE_ProjectFolder::export_project_osx(std::string projectBuildDirectory, int buildBits, bool runGameOnCompile, bool inDebugMode , int nativeBuildType)
+bool GPE_ProjectFolder::export_project_osx(std::string projectBuildDirectory, int buildBits, bool runGameOnCompile, bool inDebugMode, int nativeBuildType)
 {
     bool buildResult = false;
     if( GPE_Main_Logs!=NULL)
@@ -4571,10 +3418,10 @@ bool GPE_ProjectFolder::export_project_osx(std::string projectBuildDirectory, in
         GPE_Main_Logs->log_build_line("-------------- Building: ["+projectName+"] ["+GPE_BUILD_NAMES[GPE_BUILD_MAC]+" Export] (Compiler: Pawbitious Compiler)---------------");
         if( nativeBuildType!=Native_None)
         {
-            displayMessageTitle = "Exporting Project";
-            displayMessageSubtitle = "OSX Export";
-            displayMessageString = projectFileName;
-            display_user_messaage();
+            if( GPE_LOADER != NULL )
+            {
+                GPE_LOADER->update_messages( "Exporting ["+projectName+"][OSX]", "Please wait...", "DO NOT CLOSE");
+            }
             if( (int)projectBuildDirectory.size() < 3)
             {
                 projectBuildDirectory = fileToDir(projectFileName)+"/gpe_project/builds/osx";
@@ -4622,12 +3469,12 @@ bool GPE_ProjectFolder::export_project_osx(std::string projectBuildDirectory, in
     }
     else
     {
-        record_error("Unable to build game. Internal Log error");
+        GPE_Report("Unable to build game. Internal Log error");
     }
     return buildResult;
 }
 
-bool GPE_ProjectFolder::export_project_linux(std::string projectBuildDirectory, int buildBits, bool runGameOnCompile, bool inDebugMode , int nativeBuildType)
+bool GPE_ProjectFolder::export_project_linux(std::string projectBuildDirectory, int buildBits, bool runGameOnCompile, bool inDebugMode, int nativeBuildType)
 {
     bool buildResult = false;
     if( GPE_Main_Logs!=NULL)
@@ -4636,16 +3483,16 @@ bool GPE_ProjectFolder::export_project_linux(std::string projectBuildDirectory, 
         GPE_Main_Logs->log_build_line("-------------- Building: ["+projectName+"] ["+GPE_BUILD_NAMES[GPE_BUILD_LINUX]+" Export] (Compiler: Pawbitious Compiler)---------------");
         if( nativeBuildType!=Native_None)
         {
-            displayMessageTitle = "Exporting Project";
-            displayMessageSubtitle = "Linux Export";
-            displayMessageString = projectFileName;
-            display_user_messaage();
+            if( GPE_LOADER != NULL )
+            {
+                GPE_LOADER->update_messages( "Exporting ["+projectName+"][Linux]", "Please wait...", "DO NOT CLOSE");
+            }
             if( (int)projectBuildDirectory.size() < 3)
             {
                 projectBuildDirectory = fileToDir(projectFileName)+"/gpe_project/builds/linux";
             }
             std::string pBuildDirectory  = GPE_MAIN_GUI->setup_build_folder(projectBuildDirectory,GPE_BUILD_LINUX,buildBits,inDebugMode, nativeBuildType);
-            bool buildResult =  export_project_html5( pBuildDirectory,GPE_BUILD_LINUX, runGameOnCompile , inDebugMode);
+            bool buildResult =  export_project_html5( pBuildDirectory,GPE_BUILD_LINUX, runGameOnCompile, inDebugMode);
 
             if( runGameOnCompile && GPE_FOUND_OS==GPE_IDE_LINUX )
             {
@@ -4683,7 +3530,7 @@ bool GPE_ProjectFolder::export_project_linux(std::string projectBuildDirectory, 
     }
     else
     {
-        record_error("Unable to build game. Internal Log error");
+        GPE_Report("Unable to build game. Internal Log error");
     }
     return buildResult;
 }
@@ -4691,6 +3538,11 @@ bool GPE_ProjectFolder::export_project_linux(std::string projectBuildDirectory, 
 std::string GPE_ProjectFolder::get_project_language()
 {
     return projectLanguage;
+}
+
+int GPE_ProjectFolder::get_project_language_id()
+{
+    return myProjectLanguage;
 }
 
 std::string GPE_ProjectFolder::get_project_name()
@@ -4719,14 +3571,20 @@ int GPE_ProjectFolder::get_resource_count()
 
 bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
 {
-    displayMessageTitle = "Loading Project";
-    displayMessageSubtitle = "Opening File";
-    displayMessageString = projectFileIn;
-    display_user_messaage();
+    if( GPE_LOADER != NULL )
+    {
+        GPE_LOADER->update_messages( "Loading Project [" + projectName + "]", "Opening Project File","DO NOT CLOSE..." );
+    }
 
     if( (int)projectFileIn.size() > 0)
     {
         std::ifstream newprofileFile( projectFileIn.c_str() );
+
+        //Checks and/or makes all of the sub-directories for the folder.
+        if( GPE_MAIN_GUI!=NULL)
+        {
+            GPE_MAIN_GUI->setup_project_directory(projectDirectory);
+        }
 
         //If the level file could be loaded
         if( !newprofileFile.fail() )
@@ -4736,18 +3594,22 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
             {
                 projectFileName = projectFileIn;
                 set_current_gpe_project_from_name( CURRENT_PROJECT_NAME = projectFileIn );
-                displayMessageSubtitle = "File Opened";
-                display_user_messaage();
-                GPE_ResourceContainer * currentResFolder = NULL;
-                GPE_ResourceContainer * tempResFolder = NULL;
-                GPE_ResourceContainer * containerFolderToEdit = NULL;
-                GPE_ResourceContainer * newContainer = NULL;
+                if( GPE_LOADER != NULL )
+                {
+                    GPE_LOADER->update_submessages( "Reading Project File","DO NOT CLOSE..." );
+                }
+                GPE_GeneralResourceContainer * currentResFolder = NULL;
+                GPE_GeneralResourceContainer * tempResFolder = NULL;
+                GPE_GeneralResourceContainer * containerFolderToEdit = NULL;
+                GPE_GeneralResourceContainer * newContainer = NULL;
                 animationResource * tempSprRes = NULL;
                 textureResource * tempTexRes = NULL;
                 tilesheetResource * tempTstRes = NULL;
                 audioResource * tempAudRes = NULL;
                 videoResource * tempVidRes = NULL;
                 gamePathResource * tempPathRes = NULL;
+                lightResource * tempLightRes = NULL;
+                particleResource * tempEmitterRes = NULL;
                 functionResource * tempFuncRes = NULL;
                 classResource *    tempClassRes = NULL;
                 gameObjectResource * tempObjRes = NULL;
@@ -4755,9 +3617,6 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 //achievementResource * tempAchRes = NULL;
                 fontResource * tempFntRes = NULL;
                 std::string firstChar="";
-                std::string section="";
-                std::string cur_layer="";
-                std::string data_format="";
                 std::string keyString="";
                 std::string valString="";
                 std::string subValString="";
@@ -4776,6 +3635,8 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 std::vector <tilesheetResource *> projectGameTilesheets;
                 std::vector <audioResource * > projectGameAudio;
                 std::vector <videoResource *> projectGameVideos;
+                std::vector <lightResource *> projectLights2D;
+                std::vector <particleResource *> projectEmitters;
                 std::vector <gamePathResource *> projectGamePaths;
                 std::vector <functionResource *> projectGameFunctions;
                 std::vector <classResource *> projectGameClasses;
@@ -4783,12 +3644,8 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 std::vector <gameSceneResource *> projectScenes;
                 std::vector <fontResource *> projectGameFonts;
 
-                displayMessageTitle = "Loading Project";
-                displayMessageSubtitle = "Reading Project Data";
-                displayMessageString = "...";
-                display_user_messaage();
                 //makes sure the file is in good condition and the version is still unloaded
-                record_error("Loading in project file and processing version number...");
+                GPE_Report("Loading in project file and processing version number...");
                 while ( newprofileFile.good() )
                 {
                     getline (newprofileFile,currLine); //gets the next line of the file
@@ -4812,9 +3669,9 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                 {
                                     projectFilePreviousVersion = projectFileVersion = string_to_double(valString,1);
 
-                                    if( !compare_doubles(projectFileVersion , GPE_VERSION_DOUBLE_NUMBER) && projectFileVersion < GPE_VERSION_DOUBLE_NUMBER )
+                                    if( !compare_doubles(projectFileVersion, GPE_VERSION_DOUBLE_NUMBER) && projectFileVersion < GPE_VERSION_DOUBLE_NUMBER )
                                     {
-                                        if( display_get_prompt("Project Version Warning!","The following project version varies from the current version of this editor. Are you sure you will like to import this. Please note saving/loading may experience difficulties we recommend you back up these project files/folders before importing...")!=DISPLAY_QUERY_YES )
+                                        if( GPE_Display_Basic_Prompt("Project Version Warning!","The following project version varies from the current version of this editor. Are you sure you will like to import this. Please note saving/loading may experience difficulties we recommend you back up these project files/folders before importing...")!=DISPLAY_QUERY_YES )
                                         {
                                             newprofileFile.close();
                                             GPE_Main_Logs->log_general_line("Project import canceled ( Older version )");
@@ -4822,9 +3679,9 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                         }
                                         else
                                         {
-                                            if( GPE_MAIN_GUI->editorReleaseType!=RELEASE_TYPE_RELEASE )
+                                            if( GPE_MAIN_GUI->editorReleaseType!=RELEASE_TYPE_PRODUCTION )
                                             {
-                                                if( display_get_prompt("WARNING!","You are using a non-release version of the editor. Are you sure you will like to continue? Potential incompatibility issues may happen in later versions.")!=DISPLAY_QUERY_YES )
+                                                if( GPE_Display_Basic_Prompt("WARNING!","You are using a NON-PRODUCTION version of the editor. Are you sure you will like to continue? Potential incompatibility issues may happen in later versions.")!=DISPLAY_QUERY_YES )
                                                 {
                                                     newprofileFile.close();
                                                     GPE_Main_Logs->log_general_line("Project import canceled ( Alpha/Beta version )");
@@ -4834,9 +3691,9 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                             GPE_Main_Logs->log_general_line("Attempting to open older project...");
                                         }
                                     }
-                                    else if( GPE_MAIN_GUI->editorReleaseType!=RELEASE_TYPE_RELEASE )
+                                    else if( GPE_MAIN_GUI->editorReleaseType!=RELEASE_TYPE_PRODUCTION )
                                     {
-                                        if( display_get_prompt("WARNING!","You are using a non-release version of the editor. Are you sure you will like to continue? Potential incompatibility issues may happen in later versions.")!=DISPLAY_QUERY_YES )
+                                        if( GPE_Display_Basic_Prompt("WARNING!","You are using a NON-PRODUCTION version of the editor. Are you sure you will like to continue? Potential incompatibility issues may happen in later versions.")!=DISPLAY_QUERY_YES )
                                         {
                                             newprofileFile.close();
                                             GPE_Main_Logs->log_general_line("Project import canceled ( Alpha/Beta version )");
@@ -4859,12 +3716,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                 }
                                 else if(keyString=="ProjectLanguage" || keyString=="ProgrammingLanguage" || keyString=="CodingLanguage")
                                 {
-                                    for( iLang = 0; iLang < PROJECT_LANGUAGE_MAX; iLang++)
+                                    myProjectLanguage = GPE_MAIN_HIGHLIGHTER->get_language_id_from_name( valString);
+                                    if( myProjectLanguage < 0 )
                                     {
-                                        if( valString==PROJECT_LANGUAGE_NAMES[iLang] )
-                                        {
-                                            myProjectLanguage = iLang;
-                                        }
+                                        set_project_language_id( PROGRAM_LANGUAGE_CPP );
                                     }
                                 }
                                 else if( keyString == "ProjectIcon")
@@ -4971,7 +3826,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                         {
                                             tempAudRes->resourcePostProcessed = false;
                                             projectGameAudio.push_back( tempAudRes);
-                                         }
+                                        }
                                     }
                                 }
                                 else if( keyString=="Video" || keyString=="video" )
@@ -4986,10 +3841,44 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                         {
                                             tempVidRes->resourcePostProcessed = false;
                                             projectGameVideos.push_back( tempVidRes);
-                                         }
+                                        }
                                     }
                                 }
-                                 else if( keyString=="Path" || keyString=="path" )
+                                else if( keyString=="Light2D" || keyString=="light2d" )
+                                {
+
+                                    tempNewResName = split_first_string(valString,',');
+                                    GPE_Report("Adding 2d light["+tempNewResName+"]...");
+                                    foundResGlobalId = split_first_int(valString,',');
+                                    newContainer = create_blank_light(containerFolderToEdit,tempNewResName,foundResGlobalId);
+                                    if( newContainer->get_held_resource()!=NULL)
+                                    {
+                                        tempLightRes = (lightResource * )newContainer->get_held_resource();
+                                        if( tempLightRes!=NULL)
+                                        {
+                                            tempLightRes->resourcePostProcessed = false;
+                                            projectLights2D.push_back( tempLightRes);
+                                        }
+                                    }
+                                }
+                                else if( keyString=="ParticleEmitter" || keyString=="emitter" )
+                                {
+
+                                    tempNewResName = split_first_string(valString,',');
+                                    GPE_Report("Adding particle emitter ["+tempNewResName+"]...");
+                                    foundResGlobalId = split_first_int(valString,',');
+                                    newContainer = create_blank_emitter(containerFolderToEdit,tempNewResName,foundResGlobalId);
+                                    if( newContainer->get_held_resource()!=NULL)
+                                    {
+                                        tempEmitterRes = (particleResource * )newContainer->get_held_resource();
+                                        if( tempEmitterRes!=NULL)
+                                        {
+                                            tempEmitterRes->resourcePostProcessed = false;
+                                            projectEmitters.push_back( tempEmitterRes);
+                                        }
+                                    }
+                                }
+                                else if( keyString=="Path" || keyString=="path" )
                                 {
                                     tempNewResName = split_first_string(valString,',');
                                     foundResGlobalId = split_first_int(valString,',');
@@ -5001,7 +3890,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                         {
                                             tempPathRes->resourcePostProcessed = false;
                                             projectGamePaths.push_back( tempPathRes);
-                                         }
+                                        }
                                     }
                                 }
                                 else if( keyString=="Function" || keyString=="function" )
@@ -5023,7 +3912,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                 {
 
                                     tempNewResName = split_first_string(valString,',');
-                                    record_error("Adding class ["+tempNewResName+"]...");
+                                    GPE_Report("Adding class ["+tempNewResName+"]...");
                                     foundResGlobalId = split_first_int(valString,',');
                                     newContainer = create_blank_class(containerFolderToEdit,tempNewResName,foundResGlobalId);
                                     if( newContainer->get_held_resource()!=NULL)
@@ -5114,7 +4003,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 std::string projectLayerInfoFileName =projectDirectory+"/gpe_project/project_layer_info.gpf";
                 std::ifstream projectLayerInfoFile (projectLayerInfoFileName.c_str() );
                 int iLayerN = 0;
-                record_error("Version number["+double_to_string( projectFilePreviousVersion )+"] found and now processing project data...");
+                GPE_Report("Version number["+double_to_string( projectFilePreviousVersion )+"] found and now processing project data...");
                 while ( projectLayerInfoFile.good() )
                 {
                     getline (projectLayerInfoFile,currLine); //gets the next line of the file
@@ -5194,6 +4083,22 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                         tempPathRes->preprocess_self();
                     }
                 }
+                for( iItr = 0; iItr < (int)projectLights2D.size(); iItr++)
+                {
+                    tempLightRes = projectLights2D[iItr];
+                    if( tempLightRes!=NULL)
+                    {
+                        tempLightRes->preprocess_self();
+                    }
+                }
+                for( iItr = 0; iItr < (int)projectEmitters.size(); iItr++)
+                {
+                    tempEmitterRes = projectEmitters[iItr];
+                    if( tempEmitterRes!=NULL)
+                    {
+                        tempEmitterRes->preprocess_self();
+                    }
+                }
 
                 for( iItr = 0; iItr < (int)projectGameFonts.size(); iItr++)
                 {
@@ -5240,7 +4145,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 }
                 RESC_PROJECT_SETTINGS->set_project_parent_name(projectFileIn);
                 RESC_PROJECT_SETTINGS->preprocess_container();
-                record_error("Project successfully preprocessed.");
+                GPE_Report("Project successfully preprocessed.");
                 if( (int)projectScenes.size() > 0 )
                 {
                     GPE_Main_TabManager->add_new_tab( projectScenes[0] );
@@ -5498,17 +4403,18 @@ bool GPE_ProjectFolder::save_project_as(std::string projectFileNewName)
     bool hadSaveErrors = false;
     if( (int)projectFileNewName.size()>3)
     {
-        displayMessageTitle = "Saving Project";
-        displayMessageSubtitle = "Opening File";
-        displayMessageString = projectFileName;
-        display_user_messaage();
-        record_error(displayMessageTitle+" "+projectFileName);
+        if( GPE_LOADER != NULL )
+        {
+            GPE_LOADER->update_messages( "Saving Project [" + projectName + "]", "Please Wait...","DO NOT CLOSE..." );
+        }
+
+        GPE_Report( "Saving Project [" + projectFileName + "]" );
         bool isSameFileName = false;
         bool saveAuthorized = false;
-        if( !compare_doubles(projectFilePreviousVersion , GPE_VERSION_DOUBLE_NUMBER ) && projectFilePreviousVersion < GPE_VERSION_DOUBLE_NUMBER )
+        if( !compare_doubles(projectFilePreviousVersion, GPE_VERSION_DOUBLE_NUMBER ) && projectFilePreviousVersion < GPE_VERSION_DOUBLE_NUMBER )
         {
             std::string versionComparePhrase = "The following project version varies from the current version of this editor. Are you sure you will like to save this. Please note saving/loading may experience difficulties we recommend you back up these project files/folders ELSEWHERE before saving...";
-            if( display_get_prompt("Project Version Warning!",versionComparePhrase)==DISPLAY_QUERY_YES )
+            if( GPE_Display_Basic_Prompt("Project Version Warning!",versionComparePhrase)==DISPLAY_QUERY_YES )
             {
                 saveAuthorized = true;
             }
@@ -5577,9 +4483,9 @@ bool GPE_ProjectFolder::save_project_as(std::string projectFileNewName)
                 myfile << "Name=" << projectName << "\n";
 
                 myfile << "Count=" << GLOBAL_REZ_ID_COUNT << "\n";
-                if( myProjectLanguage >=0 && myProjectLanguage < PROJECT_LANGUAGE_MAX )
+                if( (int)projectLanguage.size()  > 0  )
                 {
-                    myfile << "ProjectLanguage=" << PROJECT_LANGUAGE_NAMES[myProjectLanguage] << "\n";
+                    myfile << "ProjectLanguage=" << projectLanguage << "\n";
                 }
                 else
                 {
@@ -5595,11 +4501,11 @@ bool GPE_ProjectFolder::save_project_as(std::string projectFileNewName)
             }
             else
             {
-                record_error("Unable to open to save ["+projectFileNewName+"].");
+                GPE_Report("Unable to open to save ["+projectFileNewName+"].");
                 hadSaveErrors = true;
             }
             std::string projectLayerInfoFileName =projectDirectory+"/gpe_project/project_layer_info.gpf";
-            record_error("Saving project layer info to "+projectLayerInfoFileName);
+            GPE_Report("Saving project layer info to "+projectLayerInfoFileName);
             std::ofstream projectLayerInfoFile (projectLayerInfoFileName.c_str() );
             if (projectLayerInfoFile.is_open() )
             {
@@ -5613,7 +4519,7 @@ bool GPE_ProjectFolder::save_project_as(std::string projectFileNewName)
             }
             else
             {
-                record_error("Unable to open to save ["+projectLayerInfoFileName+"].");
+                GPE_Report("Unable to open to save ["+projectLayerInfoFileName+"].");
                 hadSaveErrors = true;
             }
         }
@@ -5624,7 +4530,7 @@ bool GPE_ProjectFolder::save_project_as(std::string projectFileNewName)
     }
     else
     {
-        record_error("File named "+projectFileNewName+" is too short and does not fit the proper format for project save feature.");
+        GPE_Report("File named "+projectFileNewName+" is too short and does not fit the proper format for project save feature.");
     }
     integrate_syntax();
     return hadSaveErrors;
@@ -5646,6 +4552,52 @@ bool GPE_ProjectFolder::save_project_settings()
     return false;
 }
 
+void GPE_ProjectFolder::set_project_language( std::string newProjectLanguage)
+{
+    if( (int)newProjectLanguage.size() > 0 )
+    {
+        GPE_Gui_Engine_Language * tLanguage  = NULL;
+        bool languageChanged = false;
+        int languageMax = GPE_MAIN_HIGHLIGHTER->get_language_count();
+        for( int cLanguage = 0; cLanguage < languageMax; cLanguage++ )
+        {
+            tLanguage = GPE_MAIN_HIGHLIGHTER->get_language_object(cLanguage);
+            //checks if the found language isnt NULL and is a coding language
+            if( tLanguage!=NULL && tLanguage->isCodingLanguage)
+            {
+                //if its regular name or short name matches. We end loop and change our project language.
+                if( newProjectLanguage == tLanguage->languageName || newProjectLanguage == tLanguage->languageShortName )
+                {
+                    GPE_Report("Changing project language to "+ tLanguage->languageName + "...");
+                    myProjectLanguage = cLanguage;
+                    projectLanguage = tLanguage->languageShortName;
+                    languageChanged = true;
+                    break;
+                }
+            }
+        }
+        if( !languageChanged )
+        {
+            GPE_Report("Unable to find language ["+newProjectLanguage+"]...");
+        }
+        return;
+    }
+    GPE_Report("You can not change project language to an empty name");
+}
+
+void GPE_ProjectFolder::set_project_language_id( int projectLanguageId )
+{
+    if( projectLanguageId >= 0 )
+    {
+        GPE_Gui_Engine_Language * tLanguage = GPE_MAIN_HIGHLIGHTER->get_language_object_from_id( projectLanguageId );
+        //checks if the found lanuage isnt NULL and is a coding language
+        if( tLanguage!=NULL && tLanguage->isCodingLanguage)
+        {
+            myProjectLanguage = projectLanguageId;
+            projectLanguage = tLanguage->languageShortName;
+        }
+    }
+}
 
 bool set_current_gpe_project( GPE_ProjectFolder * newMainProject)
 {
@@ -5681,6 +4633,7 @@ bool set_current_gpe_project_from_name( std::string newMainProjectName )
         if( CURRENT_PROJECT!=NULL && projectChanged)
         {
             //Integrate for syntax highlighter and such...
+            GPE_MAIN_GUI->process_window_title();
             CURRENT_PROJECT->refresh_gui_syntax();
         }
     }
@@ -5691,1318 +4644,26 @@ bool set_current_gpe_project_from_name( std::string newMainProjectName )
     return projectChanged;
 }
 
-
-GPE_ResourceManagementBar::GPE_ResourceManagementBar()
-{
-    upDelayTime = 0;
-    downDelayTime = 0;
-    leftDelayTime = 0;
-    rightDelayTime = 0;
-
-    guiListTypeName = "resourcemangementbar";
-    resourcebarMoved = true;
-    cameraBox.x = 0;
-    cameraBox.y = 0;
-    cameraBox.w = 128;
-    cameraBox.h = 128;
-
-    menuBox.x = 0;
-    menuBox.y = 0;
-    menuBox.w = 128;
-    menuBox.h = 128;
-
-    elementBox.x = 0;
-    elementBox.y = 48;
-    elementBox.w = 192;
-    elementBox.h = 128;
-
-    entireBox.x = 0;
-    entireBox.y = 48;
-    entireBox.w = 192;
-    entireBox.h = 32;
-
-    barXPadding = 8;
-    barYPadding = 8;
-    elementBox.h = SCREEN_HEIGHT-elementBox.y;
-    subMenuIsOpen = true;
-    selectedSubOption = -1;
-    hasScrollControl = false;
-    hasArrowkeyControl = false;
-    beingResized = false;
-    justResized = false;
-    menuResized = true;
-    xScroll = new GPE_ScrollBar_XAxis();
-    yScroll = new GPE_ScrollBar_YAxis();
-    barTitleWidth = 0;
-    barTitleHeight = 24;
-    DEFAULT_FONT->get_metrics("Project Resources",&barTitleWidth,&barTitleHeight);
-    barTitleHeight= 24;
-    //menuNameTexture->loadFromRenderedText(MAIN_RENDERER,"Project Resources",GPE_MAIN_THEME->Main_Box_Font_Color,FONT_CATEGORY_BAR);
-    isVisible = true;
-    lastWidth = elementBox.w;
-}
-
-GPE_ResourceManagementBar::~GPE_ResourceManagementBar()
-{
-    if( xScroll!=NULL)
-    {
-        delete xScroll;
-        xScroll = NULL;
-    }
-
-    if( yScroll!=NULL)
-    {
-        delete yScroll;
-        yScroll = NULL;
-    }
-
-}
-
-void GPE_ResourceManagementBar::set_height(int newHeight)
-{
-    if( newHeight!=elementBox.h)
-    {
-        menuResized = true;
-    }
-    elementBox.h = newHeight;
-    if( elementBox.y+elementBox.h >SCREEN_HEIGHT)
-    {
-        elementBox.h = SCREEN_HEIGHT - elementBox.y;
-    }
-    menuBox.h = elementBox.h - menuBox.y;//minus extra 32 for xscroll
-}
-
-GPE_ResourceContainer * GPE_ResourceManagementBar::add_resource_folder(int resourceType, std::string projFolderName, std::string resourceTypeName)
-{
-    GPE_ResourceContainer * newResourceFolder = new GPE_ResourceContainer(projFolderName,resourceTypeName,resourceType,-1,true,0,restype_superfolder);
-    newResourceFolder->optionBox.x = elementBox.x;
-    subOptions.push_back(newResourceFolder);
-    menuResized = true;
-    return newResourceFolder;
-}
-
-GPE_ResourceContainer * GPE_ResourceManagementBar::add_project_folder(int resourceType, std::string projFolderName, std::string resourceTypeName)
-{
-    GPE_ResourceContainer * newResourceFolder = new GPE_ResourceContainer(projFolderName,resourceTypeName,resourceType,-1,true,0,restype_projfolder);
-    newResourceFolder->optionBox.x = elementBox.x;
-    subOptions.push_back(newResourceFolder);
-    menuResized = true;
-    return newResourceFolder;
-}
-
-void GPE_ResourceManagementBar::delete_project_resources(std::string projectFileName)
-{
-    remove_project_resources( projectFileName);
-}
-
-bool GPE_ResourceManagementBar::is_visible()
-{
-    return isVisible;
-}
-
-void GPE_ResourceManagementBar::prerender_self( )
-{
-    GPE_ResourceContainer * tSubOption= NULL;
-    for( int i = 0; i < (int)subOptions.size(); i++)
-    {
-        tSubOption = subOptions[i];
-        if( tSubOption!=NULL)
-        {
-            tSubOption->prerender_self( );
-        }
-    }
-}
-
-void GPE_ResourceManagementBar::process_managementbar()
-{
-    if( isVisible)
-    {
-        int sOpNumber = -1;
-        justResized = false;
-
-        bool mouseInRange = false;
-        menuBox.x = elementBox.x;
-        menuBox.y = elementBox.y+barTitleHeight;
-        cameraBox.w = menuBox.w = elementBox.w - yScroll->get_box_width();
-        cameraBox.h = menuBox.h = elementBox.y+elementBox.h-menuBox.y;
-
-        int xPos = 0;
-        int yPos = 0;
-        int y2Pos = yPos;
-        if( elementBox.w > SCREEN_WIDTH/2)
-        {
-            elementBox.w = SCREEN_WIDTH/2;
-            menuResized = justResized = true;
-        }
-
-        if( elementBox.w < 32 && isVisible)
-        {
-            elementBox.w = 32;
-            menuResized = justResized = true;
-        }
-        if( point_between_rect(input->mouse_x,input->mouse_y, &menuBox) )
-        {
-            mouseInRange = true;
-        }
-        if( input->check_mouse_pressed(0) || input->check_mouse_pressed(1) || input->check_mouse_pressed(2) )
-        {
-            if( mouseInRange)
-            {
-                hasScrollControl = true;
-                hasArrowkeyControl = true;
-            }
-            else
-            {
-                hasScrollControl = false;
-                hasArrowkeyControl = false;
-            }
-        }
-        //if( mouseInRange || menuResized || resourcebarMoved)
-        {
-            entireBox.x = 0;
-            entireBox.y = 0;
-            entireBox.w = 0;
-            entireBox.h = RESOURCE_AREA_HEIGHT*3;
-            GPE_ResourceContainer * cContainer = NULL;
-            for(int i=0; i<(int)subOptions.size();i++)
-            {
-                cContainer = subOptions[i];
-                if(cContainer!=NULL)
-                {
-                    sOpNumber=cContainer->process_container(xPos,y2Pos,selectedSubOption,&menuBox,&cameraBox,mouseInRange);
-                    if( sOpNumber>=0)
-                    {
-                        selectedSubOption = sOpNumber;
-                    }
-                    entireBox.h+=cContainer->optionBox.h;
-                    y2Pos+=cContainer->optionBox.h;
-                    if( cContainer->foundX2Pos > entireBox.w)
-                    {
-                        entireBox.w = cContainer->foundX2Pos;
-                    }
-                }
-            }
-        }
-        showYScroll = true;
-        //Xscroll code
-
-        if( xScroll!=NULL && yScroll!=NULL)
-        {
-            xScroll->elementBox.x = elementBox.x;
-            xScroll->elementBox.y = elementBox.y+elementBox.h-16;
-            if( RENDER_RESOURCEBAR_LEFT)
-            {
-                xScroll->elementBox.w = elementBox.w-20;
-            }
-            else
-            {
-                xScroll->elementBox.w = elementBox.w-16;
-            }
-            xScroll->elementBox.h = 16;
-
-            xScroll->fullRect.x = 0;
-            xScroll->fullRect.y = 0;
-            xScroll->fullRect.w = entireBox.w;
-            xScroll->fullRect.h = entireBox.h;
-
-            //if( hasScrollControl && input->check_keyboard_down(kb_ctrl) )
-            if( mouseInRange && input->check_keyboard_down(kb_ctrl) )
-            {
-                if( input->mouseScrollingUp)
-                {
-                    cameraBox.x-=cameraBox.w/8;
-                }
-                else if( input->mouseScrollingDown)
-                {
-                    cameraBox.x+=cameraBox.w/8;
-                }
-            }
-
-            xScroll->contextRect.x = cameraBox.x;
-            xScroll->contextRect.y = cameraBox.y;
-            xScroll->contextRect.w = cameraBox.w;
-            xScroll->contextRect.h = cameraBox.h;
-
-            if( hasScrollControl)
-            {
-                if( input->check_keyboard_down(kb_left) && !input->check_keyboard_pressed(kb_left) )
-                {
-                    leftDelayTime++;
-                }
-                else if( input->check_keyboard_down(kb_right)  && !input->check_keyboard_pressed(kb_right) )
-                {
-                    rightDelayTime++;
-                }
-
-                if( leftDelayTime > MAIN_GUI_SETTINGS->textInputDelayTime || input->check_keyboard_pressed(kb_left) )
-                {
-                    xScroll->contextRect.x-=cameraBox.w/8;
-                    leftDelayTime = 0;
-                }
-                else if( rightDelayTime > MAIN_GUI_SETTINGS->textInputDelayTime || input->check_keyboard_pressed(kb_right) )
-                {
-                    xScroll->contextRect.x+=cameraBox.w/8;
-                    rightDelayTime = 0;
-                }
-            }
-            xScroll->process_self();
-            if( xScroll->has_moved() || xScroll->is_scrolling() )
-            {
-                cameraBox.x = xScroll->contextRect.x;
-                if( cameraBox.x +cameraBox.w > entireBox.w)
-                {
-                    cameraBox.x = entireBox.w - cameraBox.w;
-                }
-                if( cameraBox.x < 0)
-                {
-                    cameraBox.x = 0;
-                }
-                xScroll->process_self();
-            }
-
-            if( RENDER_RESOURCEBAR_LEFT)
-            {
-                yScroll->elementBox.x = elementBox.x+elementBox.w-20;
-            }
-            else
-            {
-                yScroll->elementBox.x = elementBox.x+elementBox.w-16;
-            }
-            yScroll->elementBox.y = menuBox.y;
-            yScroll->elementBox.w = 16;
-            yScroll->elementBox.h = menuBox.h;
-
-            yScroll->fullRect.x = 0;
-            yScroll->fullRect.y = 0;
-            yScroll->fullRect.w = entireBox.w,
-            yScroll->fullRect.h = entireBox.h;
-            yScroll->contextRect.x =cameraBox.x;
-            yScroll->contextRect.y = cameraBox.y;
-            yScroll->contextRect.w = cameraBox.w,
-            yScroll->contextRect.h = cameraBox.h;
-
-            //if( hasScrollControl && input->check_keyboard_down(kb_ctrl)==false )
-            if( mouseInRange && input->check_keyboard_down(kb_ctrl)==false )
-            {
-                if( input->mouseScrollingUp)
-                {
-                    yScroll->contextRect.y-=cameraBox.h/8;
-                }
-                else if( input->mouseScrollingDown)
-                {
-                    yScroll->contextRect.y+=cameraBox.h/8;
-                }
-            }
-
-            if( hasScrollControl)
-            {
-                if( input->check_keyboard_down(kb_up) && !input->check_keyboard_pressed(kb_up) )
-                {
-                    upDelayTime++;
-                }
-                else if( input->check_keyboard_down(kb_down)  && !input->check_keyboard_pressed(kb_down) )
-                {
-                    downDelayTime++;
-                }
-
-                if( upDelayTime > MAIN_GUI_SETTINGS->textInputDelayTime || input->check_keyboard_pressed(kb_up) )
-                {
-                    yScroll->contextRect.y-=cameraBox.h/8;
-                    upDelayTime = 0;
-                }
-                else if( downDelayTime > MAIN_GUI_SETTINGS->textInputDelayTime || input->check_keyboard_pressed(kb_down) )
-                {
-                    yScroll->contextRect.y+=cameraBox.h/8;
-                    downDelayTime = 0;
-                }
-            }
-            yScroll->process_self();
-            //if( yScroll->has_moved() || yScroll->is_scrolling() || hasScrollControl)
-            if( yScroll->has_moved() || yScroll->is_scrolling() || mouseInRange)
-            {
-                cameraBox.y = yScroll->contextRect.y;
-                if( cameraBox.y +cameraBox.h> entireBox.h)
-                {
-                    cameraBox.y = entireBox.h - cameraBox.h;
-                }
-                if( cameraBox.y < 0)
-                {
-                    cameraBox.y = 0;
-                }
-                yScroll->process_self();
-            }
-
-            if( xScroll->is_scrolling()==false && xScroll->has_moved()==false  && yScroll->is_scrolling()==false && yScroll->has_moved()==false )
-            {
-                if( RENDER_RESOURCEBAR_LEFT)
-                {
-                    if( point_within(input->mouse_x,input->mouse_y,elementBox.x+elementBox.w-2,elementBox.y,elementBox.x+elementBox.w+2,elementBox.y+elementBox.h) )
-                    {
-                        GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZEWE);
-                        if(input->check_mouse_pressed(0) )
-                        {
-                            beingResized = true;
-                        }
-                    }
-                }
-                else if( point_within(input->mouse_x,input->mouse_y,elementBox.x,elementBox.y,elementBox.x+4,elementBox.y+elementBox.h) )
-                {
-                    GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZEWE);
-                    if(input->check_mouse_pressed(0) )
-                    {
-                        beingResized = true;
-                    }
-                }
-            }
-        }
-
-        //resize_code
-        if( beingResized)
-        {
-            if( point_between(input->mouse_x,input->mouse_y,0,elementBox.y,SCREEN_WIDTH,elementBox.y+elementBox.h-8) )
-            {
-                seekedX2Pos = input->mouse_x;
-                GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZEWE);
-                if(input->check_mouse_released(0) )
-                {
-                    justResized = true;
-                    beingResized = false;
-                    if( RENDER_RESOURCEBAR_LEFT)
-                    {
-                        elementBox.w = input->mouse_x;
-                    }
-                    else
-                    {
-                        elementBox.w = SCREEN_WIDTH- input->mouse_x;
-                    }
-                    if( elementBox.w > SCREEN_WIDTH/2)
-                    {
-                        elementBox.w = SCREEN_WIDTH/2;
-                    }
-
-                    if( elementBox.w < 32 && isVisible)
-                    {
-                        elementBox.w = 32;
-                    }
-                    if( RENDER_RESOURCEBAR_LEFT)
-                    {
-
-                    }
-                    else
-                    {
-                        GPE_Main_TabManager->set_width(SCREEN_WIDTH-elementBox.w);
-                    }
-                    input->reset_all_input();
-                    GPE_MAIN_GUI->save_settings();
-                }
-            }
-            else
-            {
-                beingResized = false;
-            }
-        }
-        menuResized = false;
-
-        ///Processes if a previous right click was made and if so, make context menu
-        if( RESOURCEMENU_WAS_RIGHTCLICKED && LAST_CLICKED_RESOURCE!=NULL)
-        {
-            RESOURCEMENU_WAS_RIGHTCLICKED = false;
-            if( RENDER_RESOURCEBAR_LEFT)
-            {
-                GPE_open_context_menu(-1,-1,256);
-            }
-            else
-            {
-                GPE_open_context_menu(input->mouse_x-256,input->mouse_y,256);
-            }
-            if( !LAST_CLICKED_RESOURCE->is_folder() && !LAST_CLICKED_RESOURCE->is_super_project_folder() && !LAST_CLICKED_RESOURCE->is_super_project_folder() )
-            {
-                int tempResType= LAST_CLICKED_RESOURCE->get_resource_type() ;
-                if( tempResType!=RESOURCE_TYPE_TEXTURE && tempResType!=RESOURCE_TYPE_TILESHEET && tempResType!=RESOURCE_TYPE_SPRITE && tempResType!=RESOURCE_TYPE_AUDIO && tempResType!=RESOURCE_TYPE_VIDEO && tempResType!=RESOURCE_TYPE_PROJECT_SETTINGS )
-                {
-                    MAIN_CONTEXT_MENU->add_menu_option("Duplicate Resource",-1,NULL,-1,NULL,false,true);
-                }
-                MAIN_CONTEXT_MENU->add_menu_option("Rename Resource",-1,NULL,-1,NULL,false,true);
-                MAIN_CONTEXT_MENU->add_menu_option("Remove Resource",-1,NULL,-1,NULL,false,true);
-                MAIN_CONTEXT_MENU->add_menu_option("Resource Properties",-1,NULL,-1,NULL,true,true);
-            }
-            else if(LAST_CLICKED_RESOURCE->is_super_project_folder() )
-            {
-                MAIN_CONTEXT_MENU->add_menu_option("Save Project",-1,NULL,-1,NULL,false,true);
-                MAIN_CONTEXT_MENU->add_menu_option("Close Project",-1,NULL,-1,NULL,true,true);
-
-                MAIN_CONTEXT_MENU->add_menu_option("Build Project",-1,NULL,-1,NULL,false,true);
-                //MAIN_CONTEXT_MENU->add_menu_option("Debug Project",-1,NULL,-1,NULL,false,true);
-                GPE_PopUpMenu_Option *cleanFolderOptions =  MAIN_CONTEXT_MENU->add_menu_option("Clean Project",-1,NULL,-1,NULL,true,false);
-                cleanFolderOptions->add_menu_option("Clean [HTML5] Build Folder",-1);
-                if( GPE_MAIN_GUI->includeNintendoWiiUExport )
-                cleanFolderOptions->add_menu_option("Clean [WiiU] Build Folder",-1);
-                cleanFolderOptions->add_menu_option("Clean [Windows] Build Folder",-1);
-                cleanFolderOptions->add_menu_option("Clean [Linux] Build Folder",-1);
-                cleanFolderOptions->add_menu_option("Clean [OSX] Build Folder",-1);
-                cleanFolderOptions = MAIN_CONTEXT_MENU->add_menu_option("Open Project Directory");
-                MAIN_CONTEXT_MENU->add_menu_option("Find Resource...");
-
-                //MAIN_CONTEXT_MENU->add_menu_option("Browse Directory",-1,-1,NULL,false,true);
-            }
-            else if(LAST_CLICKED_RESOURCE->is_super_folder() || LAST_CLICKED_RESOURCE->is_folder() )
-            {
-                MAIN_CONTEXT_MENU->add_menu_option("Add Resource",-1,NULL,-1,NULL,false,true);
-                MAIN_CONTEXT_MENU->add_menu_option("Add Folder",-1,NULL,-1,NULL,true,true);
-                if( !LAST_CLICKED_RESOURCE->is_super_folder())
-                {
-                    MAIN_CONTEXT_MENU->add_menu_option("Rename Folder",-1,NULL,-1,NULL,true,true);
-                    MAIN_CONTEXT_MENU->add_menu_option("Clear Resource Folder Contents",-1,NULL,-1,NULL,true,true);
-                }
-                MAIN_CONTEXT_MENU->add_menu_option("Sort by Name",-1,NULL,-1,NULL,true,true);
-                if( !LAST_CLICKED_RESOURCE->is_super_folder())
-                {
-                    MAIN_CONTEXT_MENU->add_menu_option("Remove Folder",-1,NULL,-1,NULL,false,true);
-                }
-                MAIN_CONTEXT_MENU->add_menu_option("Find Resource...");
-            }
-            else if( LAST_CLICKED_RESOURCE->is_folder()==false)
-            {
-                int tempResType= LAST_CLICKED_RESOURCE->get_resource_type() ;
-                if( tempResType!=RESOURCE_TYPE_TEXTURE && tempResType!=RESOURCE_TYPE_TILESHEET && tempResType!=RESOURCE_TYPE_SPRITE && tempResType!=RESOURCE_TYPE_AUDIO && tempResType!=RESOURCE_TYPE_VIDEO && tempResType!=RESOURCE_TYPE_PROJECT_SETTINGS )
-                {
-                    MAIN_CONTEXT_MENU->add_menu_option("Duplicate Resource",-1,NULL,-1,NULL,false,true);
-                }
-                MAIN_CONTEXT_MENU->add_menu_option("Rename Resource",-1,NULL,-1,NULL,false,true);
-                MAIN_CONTEXT_MENU->add_menu_option("Delete Resource",-1,NULL,-1,NULL,false,true);
-                MAIN_CONTEXT_MENU->add_menu_option("Properties",-1,NULL,-1,NULL,false,true);
-            }
-            get_popupmenu_result();
-        }
-        else if( input->check_mouse_released(0) &&  RESOURCE_TO_DRAG!=NULL )
-        {
-            if( LAST_CLICKED_RESOURCE!=NULL)
-            {
-                if( LAST_CLICKED_RESOURCE->is_super_folder() || LAST_CLICKED_RESOURCE->is_folder() )
-                {
-                    if( RESOURCE_TO_DRAG->parentResource!=NULL && LAST_CLICKED_RESOURCE->can_obtain(RESOURCE_TO_DRAG) )
-                    {
-                        RESOURCE_TO_DRAG->parentResource->remove_resource(RESOURCE_TO_DRAG,false);
-                        LAST_CLICKED_RESOURCE->add_resource_container(RESOURCE_TO_DRAG);
-                        input->reset_all_input();
-                        GPE_MAIN_GUI->mainResourceBar->selectedSubOption = RESOURCE_TO_DRAG->get_global_id();
-                        RESOURCE_TO_DRAG = NULL;
-                        LAST_CLICKED_RESOURCE = NULL;
-                        process_managementbar();
-                    }
-                }
-                else if( RESOURCE_TO_DRAG->parentResource!=NULL && LAST_CLICKED_RESOURCE->parentResource!=NULL && LAST_CLICKED_RESOURCE->parentResource->can_obtain(RESOURCE_TO_DRAG) )
-                {
-                    if( RESOURCE_TO_DRAG->matches(LAST_CLICKED_RESOURCE)!=1  &&  RESOURCE_TO_DRAG->matches(LAST_CLICKED_RESOURCE->parentResource)!=1  )
-                    {
-                        GPE_ResourceContainer * previousParentResource = RESOURCE_TO_DRAG->parentResource;
-                        RESOURCE_TO_DRAG->parentResource->remove_resource(RESOURCE_TO_DRAG, false);
-                        record_error("Trying to copy ["+RESOURCE_TO_DRAG->get_name()+"] resource.");
-                        record_error("Trying to copy to ["+LAST_CLICKED_RESOURCE->get_name()+"]'s parent resource.");
-                        record_error("Trying to copy to ["+LAST_CLICKED_RESOURCE->parentResource->get_name()+"]'s resource.");
-                        LAST_CLICKED_RESOURCE->parentResource->add_resource_container(RESOURCE_TO_DRAG,false,LAST_CLICKED_RESOURCE);
-                        GPE_MAIN_GUI->mainResourceBar->selectedSubOption = RESOURCE_TO_DRAG->get_global_id();
-                        input->reset_all_input();
-                        RESOURCE_TO_DRAG = NULL;
-                        LAST_CLICKED_RESOURCE = NULL;
-                        process_managementbar();
-                    }
-                }
-                LAST_CLICKED_RESOURCE= NULL;
-            }
-        }
-    }
-}
-
-void GPE_ResourceManagementBar::render_resourcebar( GPE_Rect *cam,bool forceRedraw)
-{
-    if( resourcebarMoved)
-    {
-        forceRedraw = true;
-    }
-    if( isVisible && forceRedraw)
-    {
-
-        MAIN_RENDERER->set_viewpoint( &menuBox );
-        if( GPE_MAIN_THEME->themeBgTexture == NULL)
-        {
-            gpe->render_rectangle( 0,0,elementBox.w,elementBox.h,GPE_MAIN_THEME->Program_Color,false);
-        }
-        GPE_ResourceContainer * cResource;
-        int xDrawPos = 0;
-        int yDrawPos = 0;
-        for(int i=0; i<(int)subOptions.size();i+=1)
-        {
-            cResource = subOptions[i];
-            if(cResource!=NULL)
-            {
-                cResource->render_option(xDrawPos,yDrawPos,selectedSubOption,&menuBox,&cameraBox);
-                yDrawPos+=cResource->optionBox.h;
-            }
-        }
-        MAIN_RENDERER->reset_viewpoint( );
-        MAIN_RENDERER->set_viewpoint( &elementBox );
-        gpe->render_rectangle( 0,0,elementBox.w,barTitleHeight,GPE_MAIN_THEME->PopUp_Box_Color,false);
-        render_new_text( GENERAL_GPE_PADDING,barTitleHeight/2,"Project Resources",GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_LEFT,FA_MIDDLE);
-
-        MAIN_RENDERER->reset_viewpoint();
-
-
-        if( xScroll!=NULL)
-        {
-            xScroll->render_self( );
-        }
-        if( yScroll!=NULL)
-        {
-            yScroll->render_self( );
-            //if( RENDER_RESOURCEBAR_LEFT)
-            {
-                //gpe->render_rectangle( yScroll->elementBox.x+yScroll->elementBox.w,yScroll->elementBox.y,elementBox.x+elementBox.w,elementBox.h,barColor,false);
-            }
-        }
-
-        if( hasScrollControl)
-        {
-            gpe->render_rectangle( elementBox.x,menuBox.y,elementBox.x+elementBox.w,elementBox.y+elementBox.h,GPE_MAIN_THEME->Button_Box_Highlighted_Color,true);
-        }
-        else
-        {
-            gpe->render_rect( &elementBox,GPE_MAIN_THEME->Text_Box_Outline_Color,true);
-        }
-
-        if( beingResized)
-        {
-            if( RENDER_RESOURCEBAR_LEFT)
-            {
-                if( seekedX2Pos > SCREEN_WIDTH/2 )
-                {
-                    gpe->render_rectangle( seekedX2Pos-2,elementBox.y,seekedX2Pos+2,elementBox.y+elementBox.h,GPE_MAIN_THEME->Input_Error_Box_Color,false);
-                }
-                else
-                {
-                    gpe->render_rectangle( seekedX2Pos-2,elementBox.y,seekedX2Pos+2,elementBox.y+elementBox.h,GPE_MAIN_THEME->Input_Outline_Color,false);
-                }
-            }
-            else if( seekedX2Pos < SCREEN_WIDTH/2 )
-            {
-                gpe->render_rectangle( seekedX2Pos-2,elementBox.y,seekedX2Pos+2,elementBox.y+elementBox.h,GPE_MAIN_THEME->Input_Error_Box_Color,false);
-            }
-            else
-            {
-                gpe->render_rectangle( seekedX2Pos-2,elementBox.y,seekedX2Pos+2,elementBox.y+elementBox.h,GPE_MAIN_THEME->Input_Outline_Color,false);
-            }
-        }
-    }
-}
-
-void GPE_ResourceManagementBar::remove_project_resources(std::string projectFileName)
-{
-    if( (int)projectFileName.size()>0 )
-    {
-        GPE_ResourceContainer * tContainer = NULL;
-        for( int i = (int)subOptions.size()-1; i>=0; i--)
-        {
-            tContainer = subOptions[i];
-            if( tContainer!=NULL )
-            {
-                if( projectFileName.compare(tContainer->projectParentFileName )==0)
-                {
-                    subOptions.erase(subOptions.begin()+i);
-                }
-            }
-        }
-        menuResized = true;
-    }
-}
-
-void GPE_ResourceManagementBar::toggle_self()
-{
-    if( isVisible)
-    {
-        isVisible = false;
-        //lastWidth = elementBox.w;
-        //elementBox.w = 0;
-    }
-    else
-    {
-        //elementBox.w = lastWidth;
-        isVisible = true;
-        menuResized = true;
-    }
-    //MAIN_RENDERER->clear_renderer();
-}
-
-
-
-GPE_TabManager::GPE_TabManager()
-{
-    guiListTypeName = "tabmanager";
-    elementBox.x = 16;
-    elementBox.y = 16;
-    elementBox.w = SCREEN_WIDTH/2;
-    elementBox.h = 24;
-
-    tabHeaderBox.x = 16;
-    tabHeaderBox.y = 0;
-    tabHeaderBox.w = SCREEN_WIDTH/2;
-    tabHeaderBox.h = 24;
-    tabBox.x = 16;
-    tabBox.y = 32;
-    tabBox.w = SCREEN_WIDTH;
-    tabBox.h = SCREEN_HEIGHT-elementBox.y;
-    barXPadding = 4;
-    barYPadding = 4;
-    tabXPAdding = 2;
-
-    tabToClose = -1;
-    tabXHover = -1;
-    tabInUse = -1;
-    tabSize = -1; //defaults to equally divide the tab onto the screen
-
-    miniTabSize = 48;
-    extraSmallSize = 64;
-    smallTabSize = 96;
-    medTabSize = 128;
-    largeTabSize = 160;
-    extraLargeTabSize = 192;
-    xxLargeTabSize = 256;
-    tabsPerView = -1;
-    tabPos = 0;
-    openContextMenu = false;
-}
-
-GPE_TabManager::~GPE_TabManager()
-{
-
-}
-
-void GPE_TabManager::add_new_tab(generalGameResource * newTabResource)
-{
-    if( newTabResource!=NULL)
-    {
-        if( (int)subOptions.size() > 0 )
-        {
-            int i = 0;
-            int foundTab = -1;
-            generalGameResource * cGResource = NULL;
-            //makes sure the tab is not already open
-            for( i = 0; i < (int)subOptions.size(); i +=1)
-            {
-                cGResource = subOptions[i];
-                if( cGResource!=NULL)
-                {
-                    if( cGResource->matches( newTabResource) )
-                    {
-                        foundTab = i;
-                        tabInUse = i;
-                        move_to_tab(i);
-                    }
-                }
-            }
-            //if tab is not already open, open it
-            if(foundTab==-1)
-            {
-                subOptions.push_back(newTabResource);
-                newTabResource->justOpenedThisFrame = true;
-                tabInUse = (int)subOptions.size() - 1;
-            }
-        }
-        else
-        {
-            //automatically add  resource to when the tab bar is empty
-            subOptions.push_back(newTabResource);
-            tabInUse = 0;
-            newTabResource->justOpenedThisFrame = true;
-        }
-        if( tabInUse < (int)subOptions.size() )
-        {
-            subOptions[tabInUse]->justOpenedThisFrame = true;
-        }
-        if( GPE_MAIN_HIGHLIGHTER!=NULL)
-        {
-            GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-        }
-    }
-}
-
-void GPE_TabManager::close_resource_tab( std::string projectParentName, int resIdIn)
-{
-    generalGameResource * tRes = NULL;
-    if( GPE_MAIN_HIGHLIGHTER!=NULL)
-    {
-        GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-    }
-    for( int i = (int)subOptions.size()-1; i >=0; i--)
-    {
-        tRes = subOptions[i];
-        if( tRes!=NULL)
-        {
-            if( projectParentName==tRes->parentProjectName && tRes->get_global_rid()==resIdIn)
-            {
-                close_tab(i);
-            }
-        }
-        else
-        {
-            record_error("Removing tab value with unknown origin...");
-            close_tab(i);
-        }
-    }
-}
-
-void GPE_TabManager::close_tab(int tabIdToClose)
-{
-    if( tabIdToClose>=0 && tabIdToClose < (int)subOptions.size() )
-    {
-        subOptions.erase(subOptions.begin()+tabIdToClose);
-        if( tabInUse>=tabIdToClose)
-        {
-            tabInUse -=1;
-            if( tabInUse < 0)
-            {
-                tabInUse = 0;
-            }
-        }
-        tabToClose = -1;
-        update_tabsizes();
-        if( tabInUse >=0 && tabInUse < (int)subOptions.size() )
-        {
-            subOptions[tabInUse]->justOpenedThisFrame = true;
-        }
-        MAIN_SEARCH_CONTROLLER->close_finder();
-        MAIN_OVERLAY->update_temporary_message("","","",0);
-        GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-    }
-}
-
-void GPE_TabManager::close_tabs_left(int tabIdToClose)
-{
-    if( tabIdToClose>0 && tabIdToClose < (int) subOptions.size() )
-    {
-        for( int i = tabIdToClose-1; i >=0; i--)
-        {
-            subOptions.erase(subOptions.begin()+i);
-        }
-        tabToClose = -1;
-        tabInUse = 0;
-        update_tabsizes();
-        if( tabInUse < (int)subOptions.size() )
-        {
-            subOptions[tabInUse]->justOpenedThisFrame = true;
-        }
-        MAIN_SEARCH_CONTROLLER->close_finder();
-        MAIN_OVERLAY->update_temporary_message("","","",0);
-        GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-    }
-}
-
-void GPE_TabManager::close_tabs_right(int tabIdToClose)
-{
-    if( tabIdToClose>=0 && tabIdToClose < (int) subOptions.size()-1 )
-    {
-        for( int i = (int) subOptions.size()-1; i >tabIdToClose; i--)
-        {
-            subOptions.erase(subOptions.begin()+i);
-        }
-        tabToClose = -1;
-        update_tabsizes();
-        if( tabInUse < (int)subOptions.size() )
-        {
-            subOptions[tabInUse]->justOpenedThisFrame = true;
-        }
-        MAIN_SEARCH_CONTROLLER->close_finder();
-        MAIN_OVERLAY->update_temporary_message("","","",0);
-        GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-    }
-}
-
-void GPE_TabManager::close_tabs_from_project( std::string projectDirNameIn)
-{
-    generalGameResource * tRes = NULL;
-    for( int i = (int)subOptions.size()-1; i >=0; i--)
-    {
-        tRes = subOptions[i];
-        if( tRes!=NULL)
-        {
-            if( tRes->parentProjectName==projectDirNameIn)
-            {
-                close_tab(i);
-            }
-        }
-        else
-        {
-            close_tab(i);
-        }
-    }
-    MAIN_SEARCH_CONTROLLER->close_finder();
-    MAIN_OVERLAY->update_temporary_message("","","",0);
-    GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-}
-
-void GPE_TabManager::close_all_tabs()
-{
-    tabPos = 0;
-    tabToClose = -1;
-    tabXHover = -1;
-    tabInUse= 0;
-    subOptions.clear();
-    update_tabsizes();
-    MAIN_SEARCH_CONTROLLER->close_finder();
-    MAIN_OVERLAY->update_temporary_message("","","",0);
-    GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-
-}
-
-void GPE_TabManager::update_tabsizes()
-{
-    if( tabHeaderBox.w!=0)
-    {
-     //gets tab size for tabs, dependent on number of tiles
-        int subOpCount = (int)subOptions.size();
-
-        tabSize = subOpCount*xxLargeTabSize;
-        tabsPerView = subOpCount;
-        if( tabSize < tabHeaderBox.w)
-        {
-            tabSize = xxLargeTabSize;
-        }
-        else
-        {
-            tabSize = subOpCount*extraLargeTabSize;
-            tabsPerView = subOpCount;
-            if( tabSize < tabHeaderBox.w)
-            {
-                tabSize = extraLargeTabSize;
-            }
-            else
-            {
-                tabSize = subOpCount*largeTabSize;
-                tabsPerView = subOpCount;
-                if( tabSize < tabHeaderBox.w)
-                {
-                    tabSize = largeTabSize;
-                }
-                else
-                {
-                    tabSize = subOpCount*medTabSize;
-                    if( tabSize < tabHeaderBox.w)
-                    {
-                        tabSize = medTabSize;
-                    }
-                    else
-                    {
-                        tabSize = subOpCount*smallTabSize;
-                        if( tabSize < tabHeaderBox.w)
-                        {
-                            tabSize = smallTabSize;
-                        }
-                        else
-                        {
-                            tabSize = subOpCount*extraSmallSize;
-                            if( tabSize < tabHeaderBox.w)
-                            {
-                                tabSize = extraSmallSize;
-                            }
-                            else
-                            {
-                                tabsPerView = floor(tabHeaderBox.w/miniTabSize);
-                                tabSize = miniTabSize;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    else
-    {
-        tabSize = -1;
-    }
-}
-
-generalGameResource * GPE_TabManager::get_selected_resource()
-{
-    if(tabInUse>=0 && tabInUse < (int)subOptions.size() )
-    {
-        generalGameResource * cGenResource = subOptions.at(tabInUse);
-        return cGenResource;
-    }
-    return NULL;
-}
-
-void GPE_TabManager::process_tabbar()
-{
-    add_new_tab( GPE_get_selected_gresource() );
-    update_tabsizes();
-    generalGameResource * fResource = NULL;
-    if( openContextMenu )
-    {
-        openContextMenu = false;
-        int prevTabInUse = tabInUse;
-        if( prevTabInUse >=0 && prevTabInUse < (int)subOptions.size() )
-        {
-            fResource = subOptions.at(prevTabInUse);
-            GPE_open_context_menu(input->mouse_x,input->mouse_y,256);
-            MAIN_CONTEXT_MENU->add_menu_option("Close",0);
-            MAIN_CONTEXT_MENU->add_menu_option("Close All Tabs",1);
-            MAIN_CONTEXT_MENU->add_menu_option("Close Other Tabs",2);
-            MAIN_CONTEXT_MENU->add_menu_option("Close Tabs to the Left",3);
-            MAIN_CONTEXT_MENU->add_menu_option("Close Tabs to the Right",4);
-            MAIN_CONTEXT_MENU->add_menu_option("Save",5);
-            int foundResult = get_popupmenu_result();
-            switch(foundResult)
-            {
-                case 0:
-                    tabToClose = prevTabInUse;
-                    tabXHover = -1;
-                    input->reset_all_input();
-                break;
-                case 1:
-                    close_all_tabs();
-                    input->reset_all_input();
-                    if( GPE_MAIN_HIGHLIGHTER!=NULL)
-                    {
-                        GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-                    }
-                break;
-                case 2:
-                    close_tabs_right(prevTabInUse);
-                    close_tabs_left(prevTabInUse);
-                    tabInUse = 0;
-                    if( tabInUse < (int)subOptions.size() )
-                    {
-                        subOptions[tabInUse]->justOpenedThisFrame = true;
-                    }
-                break;
-
-                case 3:
-                    close_tabs_left(prevTabInUse);
-                    tabInUse = 0;
-                    if( tabInUse < (int)subOptions.size() )
-                    {
-                        subOptions[tabInUse]->justOpenedThisFrame = true;
-                    }
-                break;
-
-                case 4:
-                    close_tabs_right(prevTabInUse);
-                    tabInUse = prevTabInUse;
-                    if( tabInUse < (int)subOptions.size() )
-                    {
-                        subOptions[tabInUse]->justOpenedThisFrame = true;
-                    }
-                break;
-
-                case 5:
-                    if( fResource!=NULL)
-                    {
-                        fResource->save_resource();
-                    }
-                break;
-
-                default:
-                break;
-            }
-            GPE_close_context_menu();
-            update_tabsizes();
-        }
-    }
-    if( tabHeaderBox.w!=0)
-    {
-        bool withinTabArea = false;
-        if (point_between_rect(input->mouse_x,input->mouse_y,&tabHeaderBox) )
-        {
-            withinTabArea = true;
-        }
-
-        //Processes tab management
-        tabXHover = -1;
-        if(withinTabArea)
-        {
-            int subPos = 0;
-            for(int i=tabPos; i< (int)subOptions.size() && i < tabsPerView+tabPos; i+=1)
-            {
-                fResource = subOptions[i];
-                if( fResource!=NULL)
-                {
-                    if (point_between(input->mouse_x,input->mouse_y,tabHeaderBox.x+(subPos)*(tabSize+tabXPAdding)+tabSize-16,tabHeaderBox.y,tabHeaderBox.x+(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.y+tabHeaderBox.h) )
-                    {
-                        MAIN_OVERLAY->update_tooltip("Close "+fResource->get_name() );
-                        tabXHover = i;
-                        if(input->check_mouse_released(0) )
-                        {
-                            tabToClose = i;
-                            tabXHover = -1;
-                            input->reset_all_input();
-                        }
-                    }
-                    else if(point_between(input->mouse_x,input->mouse_y,tabHeaderBox.x+subPos*(tabSize+tabXPAdding),tabHeaderBox.y,tabHeaderBox.x+(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.y+tabHeaderBox.h) )
-                    {
-                        MAIN_OVERLAY->update_tooltip( fResource->get_name() );
-                        if(input->check_mouse_released(0) )
-                        {
-                            tabInUse = i;
-                            if( tabInUse < (int)subOptions.size() )
-                            {
-                                subOptions[tabInUse]->justOpenedThisFrame = true;
-                            }
-                            input->reset_all_input();
-                        }
-                        else if(input->check_mouse_released(1) )
-                        {
-                            tabInUse = i;
-                            openContextMenu = true;
-                        }
-                        else if(input->check_mouse_released(2) )
-                        {
-                            tabToClose = i;
-                            tabXHover = -1;
-                            input->reset_all_input();
-                        }
-                    }
-                }
-                subPos+=1;
-            }
-        }
-
-        if( input->check_keyboard_down(kb_ctrl)  )
-        {
-            if( input->check_keyboard_released(kb_w))
-            {
-                tabToClose = tabInUse;
-            }
-            else if( input->check_keyboard_released(kb_tab) )
-            {
-                if( input->shiftKeyIsPressed )
-                {
-                    move_to_tab(tabInUse-1);
-                }
-                else
-                {
-                    move_to_tab(tabInUse+1);
-                }
-            }
-        }
-        if( tabToClose>=0 && tabToClose < (int) subOptions.size() )
-        {
-            close_tab(tabToClose);
-            tabToClose = -1;
-        }
-
-        //Proceses open tab...
-        if(!GPE_MAIN_GUI->mainResourceBar->beingResized )
-        {
-            if(tabInUse>=0 && tabInUse < (int)subOptions.size() )
-            {
-                generalGameResource * cGenResource = subOptions.at(tabInUse);
-                if( cGenResource!=NULL)
-                {
-                    cGenResource->process_resource(&tabBox,&GPE_DEFAULT_CAMERA);
-                }
-            }
-        }
-    }
-}
-
-void GPE_TabManager::render_tabbar( GPE_Rect *cam, bool forceRedraw)
-{
-    if( forceRedraw && GPE_MAIN_THEME->themeBgTexture==NULL )
-    {
-        gpe->render_rect(&tabHeaderBox,GPE_MAIN_THEME->Program_Color,false);
-        gpe->render_rect(&tabHeaderBox,GPE_MAIN_THEME->Main_Border_Color,true);
-    }
-    if( (int)subOptions.size() >0 )
-    {
-        int subPos = 0;
-        generalGameResource * fResource = NULL;
-        std::string tabOptionStr = "";
-        if( forceRedraw)
-        {
-            MAIN_RENDERER->set_viewpoint(&tabHeaderBox);
-            for(int i=tabPos; i< (int)subOptions.size() && i < tabsPerView+tabPos; i+=1)
-            {
-                fResource = subOptions[i];
-                if( tabInUse==i)
-                {
-                    gpe->render_rectangle( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h,GPE_MAIN_THEME->Program_Color,false);
-                }
-                else
-                {
-                    gpe->render_rectangle( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h,GPE_MAIN_THEME->Program_Header_Color,false);
-                }
-                if( fResource!=NULL)
-                {
-                    if( fResource->is_modified() )
-                    {
-                        tabOptionStr = "* "+fResource->get_name();
-                    }
-                    else
-                    {
-                        tabOptionStr =fResource->get_name();
-                    }
-                    if( tabInUse==i)
-                    {
-                        render_new_text_ext(subPos*(tabSize+tabXPAdding)+tabSize/2,tabHeaderBox.h/2,tabOptionStr,GPE_MAIN_THEME->PopUp_Box_Font_Color,DEFAULT_FONT,FA_CENTER,FA_MIDDLE,tabSize-tabXPAdding-16);
-                    }
-                    else
-                    {
-                        render_new_text_ext(subPos*(tabSize+tabXPAdding)+tabSize/2,tabHeaderBox.h/2,tabOptionStr,GPE_MAIN_THEME->Main_Box_Font_Color,DEFAULT_FONT,FA_CENTER,FA_MIDDLE,tabSize-tabXPAdding-16);
-                    }
-                }
-
-                if( tabXHover==i)
-                {
-                    gpe->render_rectangle( subPos*(tabSize+tabXPAdding)+tabSize-GENERAL_ICON_WIDTH,0,+(subPos)*(tabSize+tabXPAdding)+tabSize,+tabHeaderBox.h,c_red,false);
-                }
-                render_new_text( (subPos)*(tabSize+tabXPAdding)+tabSize-GENERAL_GPE_PADDING,+tabHeaderBox.h-barYPadding,"X",GPE_MAIN_THEME->Main_Box_Font_Color,DEFAULT_FONT,FA_RIGHT,FA_BOTTOM);
-
-
-                /*if( i!=tabInUse)
-                {
-                    gpe->render_rectangle( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
-                    gpe->render_rectangle( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize-1,tabHeaderBox.h-1,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
-                }*/
-                subPos+=1;
-            }
-
-            MAIN_RENDERER->reset_viewpoint();
-            if( forceRedraw )
-            gpe->render_horizontal_line_color(elementBox.y,elementBox.x, elementBox.x+elementBox.w, c_black );
-        }
-        if(tabInUse>=0 && tabInUse < (int)subOptions.size() )
-        {
-            generalGameResource * cGenResource = subOptions.at(tabInUse);
-            if( cGenResource!=NULL)
-            {
-                if( input->input_received() || MAIN_RENDERER->screen_was_cleared() || forceRedraw)
-                {
-                    //gpe->render_rect(,&tabBox,GPE_MAIN_THEME->Program_Color,false);
-                }
-                MAIN_RENDERER->set_viewpoint( &tabBox );
-                cGenResource->render_resource(&tabBox,&GPE_DEFAULT_CAMERA,forceRedraw);
-                MAIN_RENDERER->reset_viewpoint();
-            }
-        }
-    }
-    else if( forceRedraw  && GPE_MAIN_THEME->themeBgTexture==NULL )
-    {
-        gpe->render_rect(&tabBox,GPE_MAIN_THEME->Program_Color,false);
-    }
-    //gpe->render_rect(&tabBox,GPE_MAIN_THEME->Text_Box_Outline_Color,true);
-
-}
-
-int GPE_TabManager::search_for_string(std::string needle)
-{
-    int foundStrings = 0;
-    generalGameResource * fOption  = NULL;
-    GPE_Main_Logs->log_debug_line("Searching for ["+needle+"] in tabs");
-    for( int i = (int)subOptions.size()-1; i >=0; i--)
-    {
-        fOption = subOptions[i];
-        if( fOption!=NULL)
-        {
-            foundStrings+=fOption->search_for_string(needle);
-        }
-    }
-    GPE_Main_Logs->log_debug_line("Found ["+needle+"] "+int_to_string(foundStrings)+" times...");
-    return foundStrings;
-}
-
-int GPE_TabManager::search_and_replace_string(std::string needle, std::string newStr )
-{
-    int foundStrings = 0;
-    generalGameResource * fOption  = NULL;
-    for( int i = (int)subOptions.size()-1; i >=0; i--)
-    {
-        fOption = subOptions[i];
-        if( fOption!=NULL)
-        {
-            foundStrings+=fOption->search_and_replace_string(needle, newStr);
-        }
-    }
-    return foundStrings;
-}
-
-void GPE_TabManager::set_coords(int newX, int newY)
-{
-    if( newX!=-1)
-    {
-        elementBox.x = newX;
-        tabBox.x = newX;
-        tabHeaderBox.x = newX;
-        tabBox.x = tabHeaderBox.x = elementBox.x;
-
-        if( RENDER_RESOURCEBAR_LEFT)
-        {
-            tabBox.w = tabHeaderBox.w = elementBox.w = SCREEN_WIDTH - elementBox.x;
-        }
-        else
-        {
-            //tabBox.w = tabHeaderBox.w = elementBox.w = SCREEN_WIDTH - elementBox.w;
-        }
-    }
-    if(newY!=-1)
-    {
-        elementBox.y = newY;
-        tabHeaderBox.y = newY;
-        tabBox.y = newY+tabHeaderBox.h;
-    }
-}
-
-void GPE_TabManager::set_height(int newHeight)
-{
-    elementBox.h = newHeight;
-    tabBox.h = newHeight-tabHeaderBox.h;
-}
-
-void GPE_TabManager::set_width(int newWidth)
-{
-    tabBox.w = newWidth;
-    tabHeaderBox.w = newWidth;
-    elementBox.w = newWidth;
-}
-
-void GPE_TabManager::move_to_tab(int newTabId)
-{
-    if( (int)subOptions.size() > 0)
-    {
-        tabInUse= newTabId;
-        if( newTabId<0)
-        {
-            tabInUse = subOptions.size()-1;
-        }
-        if( tabInUse >=(int)subOptions.size() )
-        {
-            tabInUse = 0;
-        }
-    }
-    else
-    {
-        tabInUse = 0;
-        tabPos = 0;
-    }
-    MAIN_SEARCH_CONTROLLER->close_finder();
-    MAIN_OVERLAY->update_temporary_message("","","",0);
-    GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-}
-
 GPE_Gui_Engine::GPE_Gui_Engine()
 {
     includeNintendoWiiUExport = false;
     includeNintendoSwitchExport = false;
     includePlaystation4Export = false;
     includeXboxOneExport = false;
-    editorReleaseType = RELEASE_TYPE_RC;
+    editorReleaseType = RELEASE_TYPE_ALPHA;
     if( MAIN_RENDERER!=NULL)
     {
         MAIN_RENDERER->set_window_title("Game Pencil Engine");
-        record_error("Main renderer is not null...");
+        GPE_Report("Main renderer is not NULL...");
     }
     else
     {
-        record_error("Main renderer is null...");
+        GPE_Report("Main renderer is NULL...");
     }
+    GPE_DEFAULT_TEMPLATE = add_theme("default");
+    GPE_DEFAULT_TEMPLATE->load_theme(APP_DIRECTORY_NAME+"themes/default.gpf");
+    GPE_MAIN_THEME = GPE_DEFAULT_TEMPLATE;
+
     load_tips();
     fileOpenProjectDir = "";
     fileOpenProjectIconDir = "";
@@ -7010,49 +4671,7 @@ GPE_Gui_Engine::GPE_Gui_Engine()
 
 
     mainToolBar = NULL;
-
-    mainResourceBar = NULL;
-    GPE_DEFAULT_TEMPLATE = add_theme("default");
-    GPE_DEFAULT_TEMPLATE->load_theme(APP_DIRECTORY_NAME+"themes/default.gpf");
-    GPE_MAIN_THEME = GPE_DEFAULT_TEMPLATE;
-
-    MAIN_CONTEXT_MENU = new GPE_PopUpMenu_Option("  ",-1,true,false,true);
-    //MAIN_CONTEXT_MENU->isTopOfMenu = true;
-
-    GPE_TEXTURE_COLOR_PICKER_GRADIENT = new GPE_Texture();
-    if( GPE_TEXTURE_COLOR_PICKER_GRADIENT!=NULL)
-    {
-        GPE_TEXTURE_COLOR_PICKER_GRADIENT->load_new_texture(APP_DIRECTORY_NAME+"resources/gfx/textures/color_picker_gradient.png",-1,false);
-    }
-
-    GPE_SURFACE_COLOR_PICKER_GRADIENT =load_surface_image(APP_DIRECTORY_NAME+"resources/gfx/textures/color_picker_gradient.png");
-    if( SDL_MUSTLOCK( GPE_SURFACE_COLOR_PICKER_GRADIENT) )
-    {
-        SDL_LockSurface(GPE_SURFACE_COLOR_PICKER_GRADIENT);
-    }
-    GPE_LOGO = new GPE_Texture();
-    if( GPE_LOGO!=NULL)
-    {
-        GPE_LOGO->load_new_texture(APP_DIRECTORY_NAME+"resources/gfx/textures/game_penciil_logo.png",-1,false);
-    }
-
-    GPE_TEXTURE_TRANSPARENT_BG = new GPE_Texture();
-    if( GPE_TEXTURE_TRANSPARENT_BG!=NULL)
-    {
-        GPE_TEXTURE_TRANSPARENT_BG->load_new_texture(APP_DIRECTORY_NAME+"resources/gfx/textures/transparent_bg.png",-1,false);
-    }
-
-    GPE_CHECKMARK_IMAGE = new GPE_Texture();
-    if( GPE_CHECKMARK_IMAGE!=NULL)
-    {
-        GPE_CHECKMARK_IMAGE->load_new_texture(APP_DIRECTORY_NAME+"resources/gfx/icons/checkmark_200px.png",-1,false);
-    }
-    GPE_TRIANGLE = rsm->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/spr_triangle_64px.png",4,true,0,0,false);
-
-    GPE_Cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
-    GPE_HoverCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
-    GPE_LoadingCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT);
-
+    mainResourceTree = NULL;
 
     //findTextStringBox->set_label("Find:");
     //goToLineStringBox->set_label("Go To Line:");
@@ -7084,6 +4703,7 @@ GPE_Gui_Engine::GPE_Gui_Engine()
             recentFileListFile.close();
         }
     }
+    eraserAnimation = guiRCM->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/eraser.png",1, true );
 }
 
 GPE_Gui_Engine::~GPE_Gui_Engine()
@@ -7102,16 +4722,21 @@ GPE_Gui_Engine::~GPE_Gui_Engine()
 
 
 
+    if( eraserAnimation!=NULL)
+    {
+        guiRCM->remove_animation( eraserAnimation );
+        eraserAnimation = NULL;
+    }
     if( mainToolBar!=NULL)
     {
         delete mainToolBar;
         mainToolBar = NULL;
     }
 
-    if( mainResourceBar!=NULL)
+    if( mainResourceTree!=NULL)
     {
-        delete mainResourceBar;
-        mainResourceBar = NULL;
+        delete mainResourceTree;
+        mainResourceTree = NULL;
     }
 
     if( GPE_MAIN_THEME!=NULL)
@@ -7130,11 +4755,19 @@ GPE_Gui_Engine::~GPE_Gui_Engine()
         delete GPE_Main_TabManager;
         GPE_Main_TabManager = NULL;
     }
+
     if(GPE_Main_Logs!=NULL)
     {
         delete GPE_Main_Logs;
         GPE_Main_Logs = NULL;
     }
+    if( GPE_ANCHOR_GC!=NULL )
+    {
+        GPE_ANCHOR_GC->clear_list( false );
+        delete GPE_ANCHOR_GC;
+        GPE_ANCHOR_GC = NULL;
+    }
+
     if(GPE_Cursor!=NULL)
     {
         SDL_FreeCursor(GPE_Cursor);
@@ -7170,7 +4803,7 @@ GPE_Gui_Engine::~GPE_Gui_Engine()
 
 }
 
-GPE_Theme * GPE_Gui_Engine::add_theme(std::string themeName , bool customTheme )
+GPE_Theme * GPE_Gui_Engine::add_theme(std::string themeName, bool customTheme )
 {
     GPE_Theme * newTemplate = new GPE_Theme(themeName, customTheme);
     gpeThemes.push_back( newTemplate);
@@ -7201,7 +4834,7 @@ void GPE_Gui_Engine::add_to_recent_project_list(std::string newProjectFileName, 
             }
         }
         gpeRecentProjects.insert(gpeRecentProjects.begin(),newProjectFileName);
-        record_error("Added ["+newProjectFileName+"] to Recent Project List");
+        GPE_Report("Added ["+newProjectFileName+"] to Recent Project List");
     }
     if( saveData)
     {
@@ -7249,8 +4882,11 @@ void GPE_Gui_Engine::apply_logic()
             //prevents the toolbar isnt activated when popup menu is open
             mainToolBar->process_toolbar();
         }
-        mainResourceBar->resourcebarMoved = false;
 
+        if( mainToolBar->open_requested() )
+        {
+            GPE_DOCK->update_toolbar();
+        }
         if( !mainToolBar->is_open() )
         {
             //prevents the popup menu from being processed while toolbar is open
@@ -7263,47 +4899,41 @@ void GPE_Gui_Engine::apply_logic()
                 }
             }
         }
+
         if( !mainToolBar->is_open() && !MAIN_CONTEXT_MENU->is_open() )
         {
-            if( GPE_Main_Logs!=NULL)
-            {
-                GPE_Main_Logs->process_self();
-                if( GPE_Main_Logs->justResized)
-                {
-                    input->reset_all_input();
-                    currentState->process_input();
-                    GPE_Main_Logs->justResized = false;
-                    apply_logic();
-                    return;
-                }
-            }
             if( GPE_Main_Statusbar!=NULL)
             {
                 GPE_Main_Statusbar->process_self();
             }
-            if( GPE_Main_Logs->isVisible && GPE_Main_Logs->beingResized==false)
-            {
-                if( mainResourceBar!=NULL)
-                {
-                    mainResourceBar->process_managementbar();
 
-                    if( mainResourceBar->justResized)
+            if( GPE_DOCK!=NULL)
+            {
+                GPE_DOCK->setup_dock();
+                if( mainResourceTree!=NULL && PANEL_RESOURCE_TREE!=NULL )
+                {
+                    PANEL_RESOURCE_TREE->clear_panel();
+                    PANEL_RESOURCE_TREE->add_gui_element_fullsize(  mainResourceTree );
+                }
+                GPE_DOCK->process_self();
+                if( PANEL_RESOURCE_TREE!=NULL)
+                {
+                    if( input->check_keyboard_down( kb_ctrl) || input->check_keyboard_only_released(kb_1) )
                     {
-                        input->reset_all_input();
-                        currentState->process_input();
-                        mainResourceBar->justResized = false;
-                        apply_logic();
-                        return;
+                        //GPE_Main_Logs->log_general_line( )
                     }
                 }
-                if( GPE_Main_TabManager!=NULL)
-                {
-                    GPE_Main_TabManager->process_tabbar();
-                }
+            }
+            else
+            {
+                GPE_Report( "GPE_DOCK not initialized!" );
             }
         }
     }
-    process_overlay_message();
+    if( mainToolBar!=NULL && mainToolBar->just_closed() )
+    {
+        process_overlay_message();
+    }
 
     if( input->check_keyboard_down(kb_ctrl) )
     {
@@ -7389,10 +5019,6 @@ void GPE_Gui_Engine::apply_logic()
                 save_current_project();
             }
         }
-        else if( input->check_keyboard_released(kb_t) )
-        {
-            GPE_Main_TabManager->add_new_tab(PROJECT_BROWSER_PAGE);
-        }
         else if( input->check_keyboard_released(kb_u) )
         {
             GPE_Main_TabManager->add_new_tab(MAIN_EDITOR_SETTINGS);
@@ -7420,7 +5046,7 @@ void GPE_Gui_Engine::apply_logic()
     }
     else if( input->check_keyboard_released(kb_f10) )
     {
-        //gpe->get_font_cache_size(true);
+        //gcanvas->get_font_cache_size(true);
     }
     else if( input->check_keyboard_released(kb_f11) )
     {
@@ -7434,7 +5060,7 @@ void GPE_Gui_Engine::apply_logic()
         }
         MAIN_RENDERER->toggle_fullscreen();
     }
-    if( input->check_keyboard_released(kb_f12) )
+    else if( input->check_keyboard_released(kb_f12) )
     {
         GPE_MAIN_GUI->take_live_screenshor();
     }
@@ -7467,15 +5093,17 @@ void GPE_Gui_Engine::apply_logic()
             }
         }
     }
-    if( input->check_mouse_released(-1) )
+
+    if( input->check_mouse_released( mb_anybutton ) )
     {
         RESOURCE_TO_DRAG = NULL;
         LAST_CLICKED_RESOURCE = NULL;
     }
+
     //If the user has Xed out the window
-    if( MAIN_RENDERER->windowClosed || input->done || GPE_Action_Message=="Quit Editor" || GPE_Action_Message=="Quit")
+    if( MAIN_RENDERER->windowClosed || input->done || GPE_Action_Message=="Quit Editor" || GPE_Action_Message=="Quit" )
     {
-        if( (int)gpeProjects.size() > 0)
+        if( (int)gpeProjects.size() > 0 )
         {
             int returnedAction = -1;
             int projectAction = -1;
@@ -7485,16 +5113,22 @@ void GPE_Gui_Engine::apply_logic()
                 tempProjFolder = gpeProjects[i];
                 if( tempProjFolder!=NULL)
                 {
-                    projectAction = display_get_prompt("[Warning!] "+tempProjFolder->get_project_name()+" project not saved","Will you like to save and close before exiting?",true);
+                    projectAction = GPE_Display_Basic_Prompt("[Warning!] "+tempProjFolder->get_project_name()+" project not saved","Will you like to save and close before exiting?",true);
                     if( projectAction==DISPLAY_QUERY_YES)
                     {
                         tempProjFolder->save_project();
+                        remove_project( tempProjFolder->get_project_file_name() );
                     }
                     else if( projectAction==DISPLAY_QUERY_CANCEL)
                     {
                         returnedAction = 2;
                         input->done = true;
                         MAIN_RENDERER->windowClosed = false;
+                    }
+                    else
+                    {
+                        remove_project( tempProjFolder->get_project_file_name() );
+                        input->done = true;
                     }
                 }
             }
@@ -7588,32 +5222,17 @@ std::string GPE_Gui_Engine::get_recent_project_name( int pId )
     return "";
 }
 
-GPE_ResourceManagementBar * GPE_Gui_Engine::init_resourcebar()
+GPE_ResourceTree * GPE_Gui_Engine::init_resourcebar()
 {
-    if( mainResourceBar!=NULL)
+    if( mainResourceTree!=NULL)
     {
-        delete mainResourceBar;
-        mainResourceBar = NULL;
+        delete mainResourceTree;
+        mainResourceTree = NULL;
     }
-    mainResourceBar = new GPE_ResourceManagementBar();
+    mainResourceTree = new GPE_ResourceTree();
 
     //update the tabbar and resourcemenu
-    if( GPE_Main_TabManager!=NULL)
-    {
-        GPE_Main_TabManager->set_width(SCREEN_WIDTH-mainResourceBar->get_width());
-        if( RENDER_RESOURCEBAR_LEFT)
-        {
-            mainResourceBar->set_coords(0,24+16);
-            GPE_Main_TabManager->set_coords( mainResourceBar->get_x2pos(),24+16);
-        }
-        else
-        {
-            GPE_Main_TabManager->set_coords( 0,24+16);
-            mainResourceBar->set_coords(GPE_Main_TabManager->get_x2pos(),24+16);
-        }
-    }
-    return mainResourceBar;
-
+    return mainResourceTree;
 }
 
 GPE_Toolbar * GPE_Gui_Engine::init_toolbar(std::string bName,GPE_Rect bRect)
@@ -7622,7 +5241,11 @@ GPE_Toolbar * GPE_Gui_Engine::init_toolbar(std::string bName,GPE_Rect bRect)
     {
         delete mainToolBar;
     }
-    mainToolBar = new GPE_Toolbar(bName,bRect);
+    mainToolBar = new GPE_Toolbar();
+    mainToolBar->set_name( bName );
+    mainToolBar->set_coords( bRect.x, bRect.y);
+    mainToolBar->set_width( bRect.w) ;
+    mainToolBar->set_height( bRect.h );
     return mainToolBar;
 }
 
@@ -7794,7 +5417,7 @@ void GPE_Gui_Engine::launch_new_project()
     RESOURCE_TO_DRAG = NULL;
     if( GPE_MAIN_GUI!=NULL && MAIN_RENDERER!=NULL)
     {
-        record_error("Launching New Project");
+        GPE_Report("Launching New Project");
         std::string popUpCaption = "Launch New Project";
         GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
         MAIN_OVERLAY->process_cursor();
@@ -7829,13 +5452,15 @@ void GPE_Gui_Engine::launch_new_project()
         //Adds all available languages to drop down menu
         GPE_DropDown_Menu * newprojectLanguage = new GPE_DropDown_Menu( "Project Language",true);
         int addedLanguages = 0;
-        if( GPE_MAIN_HIGHLIGHTER!=NULL && (int)GPE_MAIN_HIGHLIGHTER->editorLanguages.size() >=0 )
+        if( GPE_MAIN_HIGHLIGHTER!=NULL )
         {
-            //short opertion so not "optimized"
+            //short operation so not "optimized"
             GPE_Gui_Engine_Language * tLanguage  = NULL;
-            for( int cLanguage = 0; cLanguage < (int)GPE_MAIN_HIGHLIGHTER->editorLanguages.size(); cLanguage++ )
+            int languageCount = (int)GPE_MAIN_HIGHLIGHTER->get_language_count();
+
+            for( int cLanguage = 0; cLanguage < languageCount; cLanguage++ )
             {
-                tLanguage = GPE_MAIN_HIGHLIGHTER->editorLanguages.at(cLanguage);
+                tLanguage = GPE_MAIN_HIGHLIGHTER->get_language_object( cLanguage);
                 if( tLanguage!=NULL && tLanguage->isCodingLanguage)
                 {
                     newprojectLanguage->add_menu_option(tLanguage->languageName+" ("+tLanguage->languageShortName+")",tLanguage->languageShortName,cLanguage,true);
@@ -7846,8 +5471,8 @@ void GPE_Gui_Engine::launch_new_project()
         //In the event something went wrong and we somehow didn't add JS and any other new coding language...
         if( addedLanguages == 0 )
         {
-            newprojectLanguage->add_menu_option("JavaScript(more coming soon)","JavaScript(more coming soon)",0,true);
-            newprojectLanguage->add_menu_option("C++(more coming soon)","C++((more coming soon)",1,true);
+            newprojectLanguage->add_menu_option("JavaScript","JS", PROGRAM_LANGUAGE_JS,true);
+            newprojectLanguage->add_menu_option("C++","CPP", PROGRAM_LANGUAGE_CPP,true);
         }
 
         GPE_DropDown_Menu * newprojectMainExport= new GPE_DropDown_Menu( "Main Export Target",true);
@@ -7859,36 +5484,21 @@ void GPE_Gui_Engine::launch_new_project()
 
         GPE_GuiElementList * popupMenuList = new GPE_GuiElementList();
         GPE_TextInputBasic * projectNameField = new GPE_TextInputBasic("","New Project");
-        GPE_TextInputBasic * fileToCreateField = NULL;
-        if( path_exists(GPE_MAIN_GUI->fileOpenProjectDir) )
-        {
-            fileToCreateField = new GPE_TextInputBasic("",GPE_MAIN_GUI->fileOpenProjectDir+"/example.gppf");
-        }
-        else if( GPE_FOUND_OS==GPE_IDE_WINDOWS)
-        {
-            fileToCreateField = new GPE_TextInputBasic("",APP_DIRECTORY_NAME+"/examples/example.gppf");
-        }
-        else
-        {
-            fileToCreateField = new GPE_TextInputBasic("","filename");
-        }
+        GPE_Label_Text * fileToCreateField = new GPE_Label_Text("No file selected","No file selected" );
         fileToCreateField->set_width( DEFAULT_WINDOW_MIN_WIDTH -32 );
-        GPE_ToolLabelButton * closeButton = new GPE_ToolLabelButton(0,16,"Cancel","Cancel");
-        GPE_ToolLabelButton * createButton = new GPE_ToolLabelButton(0,16,"Create","Create");
-        GPE_CheckBoxBasic * matchProjectFileName = new GPE_CheckBoxBasic("Same as file name","Makes project name same as file name",0,0,true );
-        GPE_Label_Error * projectCreateErrorLabel = new GPE_Label_Error("","");
-        GPE_ToolIconButton * fileFindButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/buttons/folder.png","Browse for new file...");
-
+        GPE_ToolLabelButton * closeButton = new GPE_ToolLabelButton( "Cancel","Cancel");
+        GPE_ToolLabelButton * createButton = new GPE_ToolLabelButton( "Create","Create");
+        GPE_CheckBoxBasic * matchProjectFileName = new GPE_CheckBoxBasic("Same as file name","Makes project name same as file name", true );
+        GPE_Label_Error * projectCreateErrorLabel = new GPE_Label_Error("Please input all fields above","");
+        GPE_ToolPushButton * fileFindButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/folder.png","Browse Projects...");
+        fileToCreateField->set_width( DEFAULT_WINDOW_MIN_WIDTH -32 );
         MAIN_RENDERER->reset_viewpoint( );
         //MAIN_OVERLAY->render_frozen_screenshot( );
         while(exitOperation==false)
         {
             GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
-            //record_error("Processing tip of the day");
-            //Start the frame timer
-            GPE_TIMER_CAP->start();
-            //gets user input
-            input->handle(true,true);
+            //GPE_Report("Processing tip of the day");
+            gpe->start_loop();
 
             if( SCREEN_WIDTH > DEFAULT_WINDOW_MIN_WIDTH*2 )
             {
@@ -7923,9 +5533,10 @@ void GPE_Gui_Engine::launch_new_project()
             popupMenuList->clear_list();
             popupMenuList->add_gui_element(mainMenuLabel,true);
 
-            popupMenuList->add_gui_element(projectLocationLabel,true);
-            popupMenuList->add_gui_element(fileToCreateField,false);
+            popupMenuList->add_gui_element(projectLocationLabel,false);
             popupMenuList->add_gui_element(fileFindButton, true);
+
+            popupMenuList->add_gui_element(fileToCreateField,true);
             popupMenuList->add_gui_element(matchProjectFileName, true);
 
             popupMenuList->add_gui_element(projectNameLabel,false);
@@ -7992,7 +5603,7 @@ void GPE_Gui_Engine::launch_new_project()
                 if( (int)foundFileName.size() > 0 )
                 {
                     newProjectFileName = foundFileName;
-                    fileToCreateField->set_string(foundFileName);
+                    fileToCreateField->set_name(foundFileName);
                     if( matchProjectFileName!=NULL && matchProjectFileName->is_clicked() )
                     {
                         projectNameField->set_string( get_file_noext( get_local_from_global_file(foundFileName) ) );
@@ -8001,10 +5612,7 @@ void GPE_Gui_Engine::launch_new_project()
 
             }
 
-
-
-            calculate_avg_fps();
-            //record_error("Rendering tip of the day");
+            //GPE_Report("Rendering tip of the day");
             MAIN_RENDERER->reset_viewpoint( );
             if( !WINDOW_WAS_JUST_RESIZED)
             {
@@ -8013,21 +5621,20 @@ void GPE_Gui_Engine::launch_new_project()
                     MAIN_OVERLAY->render_frozen_screenshot( );
                 }
                 //Update screen
-                gpe->render_rectangle( elementBox.x-4,elementBox.y-4,elementBox.x+elementBox.w+8,elementBox.y+elementBox.h+8,c_blgray,false,64);
-                gpe->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Color,false);
+                gcanvas->render_rectangle( elementBox.x-4,elementBox.y-4,elementBox.x+elementBox.w+8,elementBox.y+elementBox.h+8,c_blgray,false,64);
+                gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Color,false);
 
-                gpe->render_rectangle( elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+32,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
-                gpe->render_rect( &elementBox,GPE_MAIN_THEME->Button_Box_Highlighted_Color,true);
-                render_new_text( elementBox.x+elementBox.w/2,elementBox.y+GENERAL_GPE_PADDING,popUpCaption,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,DEFAULT_FONT,FA_CENTER,FA_TOP);
+                gcanvas->render_rectangle( elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+32,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
+                gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->Button_Box_Highlighted_Color,true);
+                gfs->render_text( elementBox.x+elementBox.w/2,elementBox.y+GENERAL_GPE_PADDING,popUpCaption,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP);
                 popupMenuList->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
                 //GPE_MAIN_GUI-render_gui_info(MAIN_RENDERER, true);
 
-                gpe->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
+                gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
                 MAIN_OVERLAY->process_cursor();
                 GPE_MAIN_GUI->render_gui_info( true);
-                MAIN_RENDERER->update_renderer();
             }
-            cap_fps();
+            gpe->end_loop();
         }
 
         input->reset_all_input();
@@ -8118,6 +5725,7 @@ void GPE_Gui_Engine::launch_new_project()
             delete fileFindButton;
             fileFindButton = NULL;
         }
+        gpe->start_loop();
     }
 }
 
@@ -8156,17 +5764,17 @@ void GPE_Gui_Engine::load_tips()
 
 void GPE_Gui_Engine::load_settings()
 {
-    displayMessageTitle = "Loading Gui Settings";
-    displayMessageSubtitle = "Please Wait...";
-    displayMessageString = "...";
-    display_user_messaage();
+    if( GPE_LOADER != NULL )
+    {
+        GPE_LOADER->update_messages( "Loading Gui Settings", "Please Wait...","..." );
+    }
 
     std::string otherColContainerName = "";
 
     std::string newFileIn = get_user_settings_folder()+"gpe_ide_settings.txt";
     std::ifstream gameResourceFileIn( newFileIn.c_str() );
 
-    record_error("Loading settings - "+newFileIn);
+    GPE_Report("Loading settings - "+newFileIn);
     //If the level file could be loaded
     if( !gameResourceFileIn.fail() )
     {
@@ -8175,23 +5783,20 @@ void GPE_Gui_Engine::load_settings()
         {
             int equalPos = 0;
             std::string firstChar="";
-            std::string section="";
-            std::string cur_layer="";
-            std::string data_format="";
             std::string keyString="";
             std::string valString="";
             std::string subValString="";
             std::string currLine="";
             std::string currLineToBeProcessed;
             std::string colorThemeName;
-            float foundFileVersion = 0;
+            double foundFileVersion = 0;
             while ( gameResourceFileIn.good() )
             {
                 getline (gameResourceFileIn,currLine); //gets the next line of the file
                 currLineToBeProcessed = trim_left_inplace(currLine);
                 currLineToBeProcessed = trim_right_inplace(currLineToBeProcessed);
 
-                if( foundFileVersion <=0)
+                if( foundFileVersion <=0 )
                 {
                     //Empty Line skipping is only allowed at the top of the file
                     if(!currLineToBeProcessed.empty() )
@@ -8214,7 +5819,7 @@ void GPE_Gui_Engine::load_settings()
                         }
                     }
                 }
-                else if( foundFileVersion <= 2)
+                else if( foundFileVersion <= 2 )
                 {
                     //Begin processing the file.
                     if(!currLineToBeProcessed.empty() )
@@ -8226,56 +5831,40 @@ void GPE_Gui_Engine::load_settings()
                             keyString = currLineToBeProcessed.substr(0,equalPos);
                             valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
-                            if( keyString=="ResourceBarPosition")
+
+                            if( keyString == "BottomLogsHeight")
                             {
-                                if( is_bool(valString)==1)
+                                if( GPE_Main_Logs!=NULL )
                                 {
-                                    RENDER_RESOURCEBAR_LEFT = 1;
+                                    GPE_Main_Logs->set_height( string_to_int( valString,32 ) );
+                                    GPE_Report("Logs Height = "+valString+";");
                                 }
                                 else
                                 {
-                                    RENDER_RESOURCEBAR_LEFT = 0;
+                                    GPE_Report("main logs = NULL...");
                                 }
-                            }
-                            else if( keyString=="ResourceBarVisible")
-                            {
-                                if( is_bool(valString)==0)
-                                {
-                                    if( mainResourceBar->is_visible()==true)
-                                    {
-                                        mainResourceBar->toggle_self();
-                                    }
-                                }
-                                else if( mainResourceBar->is_visible()==false)
-                                {
-                                    mainResourceBar->toggle_self();
-                                }
-                            }
-                            else if( keyString=="ReourceBarWidth")
-                            {
-                                mainResourceBar->set_width( string_to_int(valString,192) );
                             }
                             else if( keyString=="TextAreaViewLineCount")
                             {
-                                MAIN_GUI_SETTINGS->showTextEditorLineCount = is_bool(valString);
+                                MAIN_GUI_SETTINGS->showTextEditorLineCount = string_to_bool(valString);
                             }
                             else if( keyString=="TextAreaViewSyntaxHighlighting")
                             {
-                                MAIN_GUI_SETTINGS->showTextEditorSyntaxHightlight =is_bool(valString);
+                                MAIN_GUI_SETTINGS->showTextEditorSyntaxHightlight =string_to_bool(valString);
                             }
 
                             else if(keyString=="ShowStartPageAtStart")
                             {
-                                showStartPageAtStartUp =is_bool(valString);
+                                showStartPageAtStartUp =string_to_bool(valString);
                             }
                             else if(keyString=="ShowTipOfDayAtStart")
                             {
-                                showTipsAtStartUp =is_bool(valString);
+                                showTipsAtStartUp = string_to_bool(valString);
                                 MAIN_EDITOR_SETTINGS->showStatupTipsBox->set_clicked(showTipsAtStartUp);
                             }
                             else if( keyString=="ShowFPSCounter")
                             {
-                                SHOW_FPS_COUNTER = is_bool( valString);
+                                SHOW_FPS_COUNTER = string_to_bool( valString);
                             }
                             else if(keyString=="ColorTheme")
                             {
@@ -8290,7 +5879,7 @@ void GPE_Gui_Engine::load_settings()
                 }
                 else
                 {
-                    record_error("Invalid FoundFileVersion ="+double_to_string(foundFileVersion)+".");
+                    GPE_Report("Invalid FoundFileVersion ="+double_to_string(foundFileVersion)+".");
                 }
             }
         }
@@ -8316,23 +5905,37 @@ void GPE_Gui_Engine::open_project(std::string newProjectFileName)
             {
                 if( file_exists(newProjectFileName) )
                 {
-                    record_error("Attempting to load ["+newProjectFileName+"]...");
-                    GPE_Main_Logs->log_general_line("Opening Project ("+newProjectFileName+")...");
+                    if( MAIN_GUI_SETTINGS && MAIN_GUI_SETTINGS->useShortProjectNames )
+                    {
+                        GPE_Main_Logs->log_general_line("Attempting to load ["+ get_local_from_global_file( newProjectFileName )+"]...");
+                    }
+                    else
+                    {
+                        GPE_Main_Logs->log_general_line("Attempting to load ["+newProjectFileName+"]...");
+                    }
                     std::string previousProjectInView = CURRENT_PROJECT_NAME;
                     std::string newProjectTitle = "Loaded Project";
                     GPE_ProjectFolder * newProject = new GPE_ProjectFolder(newProjectTitle,newProjectDir,newProjectFileName);
                     CURRENT_PROJECT_NAME = newProjectFileName;
                     gpeProjects.push_back(newProject);
-                    record_error("Added new project with name ["+newProjectFileName+"] file name...");
+                    GPE_Report("New Project added into editor.");
                     bool projectLoadedSuccessfuly = newProject->load_project_file(newProjectFileName);
-                    if( projectLoadedSuccessfuly)
+                    if( projectLoadedSuccessfuly )
                     {
                         newProject->integrate_syntax();
                         set_current_gpe_project_from_name( newProjectFileName );
-                        record_error("Checking with project list: ["+newProject->get_project_name()+"].");;
+                        GPE_Report("Checking with project list: ["+newProject->get_project_name()+"].");
                         add_to_recent_project_list(newProjectFileName,true );
-                        record_error("Project added to GPE ["+newProject->get_project_name()+"]");
+                        GPE_Report("Project added to GPE ["+newProject->get_project_name()+"]");
                         GPE_Main_Logs->log_general_line("Done.");
+                        if( MAIN_GUI_SETTINGS && MAIN_GUI_SETTINGS->useShortProjectNames )
+                        {
+                            GPE_Main_Logs->log_general_line("Project ["+ get_local_from_global_file( newProjectFileName )+"] processed...");
+                        }
+                        else
+                        {
+                            GPE_Main_Logs->log_general_line("Project ["+newProjectFileName+"] processed...");
+                        }
                     }
                     else
                     {
@@ -8362,7 +5965,7 @@ void GPE_Gui_Engine::open_project(std::string newProjectFileName)
 
 void GPE_Gui_Engine::prerender_gui( )
 {
-    mainResourceBar->prerender_self( );
+    mainResourceTree->prerender_self( );
     mainToolBar->prerender_self( );
     MAIN_CONTEXT_MENU->prerender_self( );
 }
@@ -8370,6 +5973,10 @@ void GPE_Gui_Engine::prerender_gui( )
 
 void GPE_Gui_Engine::process_overlay_message()
 {
+    if( (int)GPE_Action_Message.size()== 0 )
+    {
+        return;
+    }
     if( GPE_Action_Message=="Add Folder")
     {
         GPE_ProjectFolder * fFolder = find_project_from_filename(CURRENT_PROJECT_NAME);
@@ -8405,10 +6012,10 @@ void GPE_Gui_Engine::process_overlay_message()
     {
         if( LAST_CLICKED_RESOURCE!=NULL && LAST_CLICKED_RESOURCE->parentResource!=NULL)
         {
-            if( display_get_prompt("Warning","Are you sure you will like to clear this folder's contents?")==DISPLAY_QUERY_YES)
+            if( GPE_Display_Basic_Prompt("Warning","Are you sure you will like to clear this folder's contents?")==DISPLAY_QUERY_YES)
             {
                 /*Coming in Version 1.1.3...
-                GPE_ResourceContainer * parRes = LAST_CLICKED_RESOURCE->parentResource;
+                GPE_GeneralResourceContainer * parRes = LAST_CLICKED_RESOURCE->parentResource;
                 parRes->delete_resource(LAST_CLICKED_RESOURCE);
                 LAST_CLICKED_RESOURCE = NULL;
                 RESOURCE_TO_DRAG = NULL;*/
@@ -8419,9 +6026,9 @@ void GPE_Gui_Engine::process_overlay_message()
     {
         if( LAST_CLICKED_RESOURCE!=NULL && LAST_CLICKED_RESOURCE->parentResource!=NULL)
         {
-            if( display_get_prompt("Warning","Are you sure you will like to delete this folder?")==DISPLAY_QUERY_YES)
+            if( GPE_Display_Basic_Prompt("Warning","Are you sure you will like to delete this folder?")==DISPLAY_QUERY_YES)
             {
-                GPE_ResourceContainer * parRes = LAST_CLICKED_RESOURCE->parentResource;
+                GPE_GeneralResourceContainer * parRes = LAST_CLICKED_RESOURCE->parentResource;
                 parRes->delete_resource(LAST_CLICKED_RESOURCE);
                 LAST_CLICKED_RESOURCE = NULL;
                 RESOURCE_TO_DRAG = NULL;
@@ -8434,9 +6041,9 @@ void GPE_Gui_Engine::process_overlay_message()
         {
             if( LAST_CLICKED_RESOURCE->get_resource_type()!=RESOURCE_TYPE_PROJECT_SETTINGS)
             {
-                if( display_get_prompt("Warning","Are you sure you will like to delete this resource?")==DISPLAY_QUERY_YES)
+                if( GPE_Display_Basic_Prompt("Warning","Are you sure you will like to delete this resource?")==DISPLAY_QUERY_YES)
                 {
-                    GPE_ResourceContainer * parRes = LAST_CLICKED_RESOURCE->parentResource;
+                    GPE_GeneralResourceContainer * parRes = LAST_CLICKED_RESOURCE->parentResource;
                     if( parRes!=NULL)
                     {
                         parRes->delete_resource(LAST_CLICKED_RESOURCE);
@@ -8454,7 +6061,7 @@ void GPE_Gui_Engine::process_overlay_message()
             std::string resourceNeedle = get_string_from_popup("Project Resource Search","Resource name:","");
             if( (int)resourceNeedle.size() > 0 )
             {
-                GPE_ResourceContainer * foundRes = LAST_CLICKED_RESOURCE->find_resource_from_name(resourceNeedle);
+                GPE_GeneralResourceContainer * foundRes = LAST_CLICKED_RESOURCE->find_resource_from_name(resourceNeedle);
                 if( foundRes!=NULL)
                 {
                     generalGameResource * foundHeldRes = foundRes->get_held_resource();
@@ -8472,11 +6079,11 @@ void GPE_Gui_Engine::process_overlay_message()
         if( fFolder!=NULL)
         {
             int tempResType = LAST_CLICKED_RESOURCE->get_resource_type();
-            GPE_ResourceContainer * newResource = fFolder->create_blank_resource(tempResType,LAST_CLICKED_RESOURCE);
+            GPE_GeneralResourceContainer * newResource = fFolder->create_blank_resource(tempResType,LAST_CLICKED_RESOURCE);
             if( newResource!=NULL)
             {
                 GPE_Main_TabManager->add_new_tab(newResource->get_held_resource() );
-                GPE_MAIN_GUI->mainResourceBar->selectedSubOption = newResource->get_global_id();
+                GPE_MAIN_GUI->mainResourceTree->selectedSubOption = newResource->get_global_id();
             }
         }
     }
@@ -8493,34 +6100,34 @@ void GPE_Gui_Engine::process_overlay_message()
                     GPE_ProjectFolder * fFolder = find_project_from_filename(CURRENT_PROJECT_NAME);
                     if( fFolder!=NULL)
                     {
-                        GPE_ResourceContainer * newResource = fFolder->create_blank_resource(LAST_CLICKED_RESOURCE->get_resource_type(),LAST_CLICKED_RESOURCE->parentResource,"copy_of_"+LAST_CLICKED_RESOURCE->get_name() );
+                        GPE_GeneralResourceContainer * newResource = fFolder->create_blank_resource(LAST_CLICKED_RESOURCE->get_resource_type(),LAST_CLICKED_RESOURCE->parentResource,"copy_of_"+LAST_CLICKED_RESOURCE->get_name() );
                         if( newResource!=NULL)
                         {
                             LAST_CLICKED_RESOURCE->save_container(get_user_temp_folder()+"temp_duplicated_resource.gpf");
                             newResource->preprocess_container(get_user_temp_folder()+"temp_duplicated_resource.gpf");
                             newResource->detect_name_change(true);
                             GPE_Main_TabManager->add_new_tab(newResource->get_held_resource() );
-                            GPE_MAIN_GUI->mainResourceBar->selectedSubOption = newResource->get_global_id();
-                         }
-                         else
-                         {
-                             record_error("Unable to duplicate resource - new resource is NULL...");
-                         }
+                            GPE_MAIN_GUI->mainResourceTree->selectedSubOption = newResource->get_global_id();
+                        }
+                        else
+                        {
+                            GPE_Report("Unable to duplicate resource - new resource is NULL...");
+                        }
                     }
                     else
                     {
-                        record_error("Unable to duplicate resource - Unable to find project for resource ");
+                        GPE_Report("Unable to duplicate resource - Unable to find project for resource ");
                     }
                 }
             }
             else
             {
-                record_error("Unable to duplicate resource - Last clicked resource is a folder...");
+                GPE_Report("Unable to duplicate resource - Last clicked resource is a folder...");
             }
         }
         else
         {
-            record_error("Unable to duplicate resource - Last Clicked Resource or is parent equals NULL.");
+            GPE_Report("Unable to duplicate resource - Last Clicked Resource or is parent equals NULL.");
         }
     }
     else if( GPE_Action_Message=="Close Project")
@@ -8528,7 +6135,7 @@ void GPE_Gui_Engine::process_overlay_message()
         GPE_ProjectFolder * fFolder = find_project_from_filename(CURRENT_PROJECT_NAME);
         if( fFolder!=NULL)
         {
-            int projectSaveState = display_get_prompt("Project Warning(Recommended)","Will you like to save this project before closing(Recommended)?",true);
+            int projectSaveState = GPE_Display_Basic_Prompt("Project Warning","Will you like to save this project before closing(Recommended)?",true);
 
             if( projectSaveState==DISPLAY_QUERY_YES)
             {
@@ -8538,21 +6145,13 @@ void GPE_Gui_Engine::process_overlay_message()
             {
                 //Close the project
                 std::string projectNameToDelete = fFolder->get_project_file_name();
-                displayMessageTitle = "Closing Game Project";
-                displayMessageSubtitle = projectNameToDelete;
-                displayMessageString = "...";
-                display_user_messaage();
+                if( GPE_LOADER != NULL )
+                {
+                    GPE_LOADER->update_messages( "Closing Game Project",projectNameToDelete, "Please wait..." );
+                }
 
-                displayMessageTitle = "Closing Game Project";
-                displayMessageSubtitle = projectNameToDelete;
-                displayMessageString = "Closing Tabs";
-                display_user_messaage();
                 GPE_Main_TabManager->close_tabs_from_project( projectNameToDelete );
 
-                displayMessageTitle = "Closing Game Project";
-                displayMessageSubtitle = projectNameToDelete;
-                displayMessageString = "Removing from Internal Data";
-                display_user_messaage();
                 remove_project(projectNameToDelete);
             }
         }
@@ -8586,7 +6185,7 @@ void GPE_Gui_Engine::process_overlay_message()
         {
             GPE_Main_TabManager->add_new_tab(CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource() );
             projectPropertiesResource * tProjectProps = (projectPropertiesResource *)CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource();
-            tProjectProps->projectSettingsTabBar->open_tab("Platforms");
+            tProjectProps->projectSettingsBar->set_selected_option("Platforms");
         }
     }
     else if( GPE_Action_Message=="Clean [HTML5] Build Folder")
@@ -8623,7 +6222,7 @@ void GPE_Gui_Engine::process_overlay_message()
         {
             GPE_Main_TabManager->add_new_tab(CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource() );
             projectPropertiesResource * tProjectProps = (projectPropertiesResource *)CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource();
-            tProjectProps->projectSettingsTabBar->open_tab("Platforms");
+            tProjectProps->projectSettingsBar->set_selected_option("Platforms");
             tProjectProps->exportSettingsBar->set_selected_option("HTML5");
         }
     }
@@ -8634,7 +6233,7 @@ void GPE_Gui_Engine::process_overlay_message()
             /*
             GPE_Main_TabManager->add_new_tab(CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource() );
             projectPropertiesResource * tProjectProps = (projectPropertiesResource *)CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource();
-            tProjectProps->projectSettingsTabBar->open_tab("Platforms");
+            tProjectProps->projectSettingsBar->set_selected_option("Platforms");
             tProjectProps->exportSettingsBar->set_selected_option("HTML5");
             */
             GPE_MAIN_GUI->export_current_project_html5(true);
@@ -8653,7 +6252,7 @@ void GPE_Gui_Engine::process_overlay_message()
         {
             GPE_Main_TabManager->add_new_tab(CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource() );
             projectPropertiesResource * tProjectProps = (projectPropertiesResource *)CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource();
-            tProjectProps->projectSettingsTabBar->open_tab("Platforms");
+            tProjectProps->projectSettingsBar->set_selected_option("Platforms");
             tProjectProps->exportSettingsBar->set_selected_option("WiiU");
         }
     }
@@ -8663,7 +6262,7 @@ void GPE_Gui_Engine::process_overlay_message()
         {
             GPE_Main_TabManager->add_new_tab(CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource() );
             projectPropertiesResource * tProjectProps = (projectPropertiesResource *)CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource();
-            tProjectProps->projectSettingsTabBar->open_tab("Platforms");
+            tProjectProps->projectSettingsBar->set_selected_option("Platforms");
             tProjectProps->exportSettingsBar->set_selected_option("Switch");
         }
     }
@@ -8673,7 +6272,7 @@ void GPE_Gui_Engine::process_overlay_message()
         {
             GPE_Main_TabManager->add_new_tab(CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource() );
             projectPropertiesResource * tProjectProps = (projectPropertiesResource *)CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource();
-            tProjectProps->projectSettingsTabBar->open_tab("Platforms");
+            tProjectProps->projectSettingsBar->set_selected_option("Platforms");
             tProjectProps->exportSettingsBar->set_selected_option("Windows");
         }
     }
@@ -8683,7 +6282,7 @@ void GPE_Gui_Engine::process_overlay_message()
         {
             GPE_Main_TabManager->add_new_tab(CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource() );
             projectPropertiesResource * tProjectProps = (projectPropertiesResource *)CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource();
-            tProjectProps->projectSettingsTabBar->open_tab("Platforms");
+            tProjectProps->projectSettingsBar->set_selected_option("Platforms");
             tProjectProps->exportSettingsBar->set_selected_option("OSX");
         }
     }
@@ -8693,7 +6292,7 @@ void GPE_Gui_Engine::process_overlay_message()
         {
             GPE_Main_TabManager->add_new_tab(CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource() );
             projectPropertiesResource * tProjectProps = (projectPropertiesResource *)CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource();
-            tProjectProps->projectSettingsTabBar->open_tab("Platforms");
+            tProjectProps->projectSettingsBar->set_selected_option("Platforms");
             tProjectProps->exportSettingsBar->set_selected_option("Linux");
         }
     }
@@ -8736,7 +6335,7 @@ void GPE_Gui_Engine::process_overlay_message()
     }
     else if( GPE_Action_Message=="Community Chat")
     {
-        GPE_OpenURL("https://discord.gg/aNX3Fcx");
+        GPE_OpenURL("https://discord.gg/bua3rDW");
     }
     else if( GPE_Action_Message=="Toggle Fullscreen Mode")
     {
@@ -8746,40 +6345,26 @@ void GPE_Gui_Engine::process_overlay_message()
         }
         MAIN_RENDERER->toggle_fullscreen();
     }
+    else if( GPE_Action_Message=="Toggle Logs")
+    {
+        GPE_DOCK->add_to_panel("Logs", DOCK_BOTTOM_MIDDLE );
+        GPE_Main_Logs->toggle_manager();
+    }
+    else if( GPE_Action_Message=="Reset Dock" )
+    {
+        GPE_DOCK->reset_dock();
+        if( GPE_Main_Logs->is_enabled() ==false )
+        {
+            GPE_Main_Logs->toggle_manager();
+        }
+        if( GPE_Main_TabManager->requests_fullscreen() )
+        {
+            GPE_Main_TabManager->toggle_full_width();
+        }
+    }
     else if( GPE_Action_Message=="Clear Recent Projects List")
     {
         GPE_MAIN_GUI->clear_recent_project_list();
-    }
-    else if( GPE_Action_Message=="Toggle Resource Bar On/Off")
-    {
-        mainResourceBar->toggle_self();
-        save_settings();
-    }
-    else if( GPE_Action_Message=="Left Align Resource Bar")
-    {
-        if( !RENDER_RESOURCEBAR_LEFT)
-        {
-            mainResourceBar->resourcebarMoved = true;
-        }
-        RENDER_RESOURCEBAR_LEFT = true;
-        if( mainResourceBar->is_visible()==false)
-        {
-            mainResourceBar->toggle_self();
-        }
-        save_settings();
-    }
-    else if( GPE_Action_Message=="Right Align Resource Bar")
-    {
-        if( RENDER_RESOURCEBAR_LEFT)
-        {
-            mainResourceBar->resourcebarMoved = true;
-        }
-        RENDER_RESOURCEBAR_LEFT = false;
-        if( mainResourceBar->is_visible()==false)
-        {
-            mainResourceBar->toggle_self();
-        }
-        save_settings();
     }
     else if( GPE_Action_Message=="Toggle Line Count")
     {
@@ -8791,31 +6376,6 @@ void GPE_Gui_Engine::process_overlay_message()
         MAIN_GUI_SETTINGS->showTextEditorSyntaxHightlight = !MAIN_GUI_SETTINGS->showTextEditorSyntaxHightlight;
         save_settings();
     }
-    /*
-    else if( GPE_Action_Message=="Use Dark Color Theme")
-    {
-        GPE_MAIN_THEME = GPE_DARK_TEMPLATE;
-        prerender_gui(MAIN_RENDERER);
-        save_settings();
-    }
-    else if( GPE_Action_Message=="Use Red Color Theme")
-    {
-        GPE_MAIN_THEME = GPE_RED_TEMPLATE;
-        prerender_gui(MAIN_RENDERER);
-        save_settings();
-    }
-    else if( GPE_Action_Message=="Use Green Color Theme")
-    {
-        GPE_MAIN_THEME = GPE_GREEN_TEMPLATE;
-        prerender_gui(MAIN_RENDERER);
-        save_settings();
-    }
-    else if( GPE_Action_Message=="Use Blue Color Theme")
-    {
-        GPE_MAIN_THEME = GPE_BLUE_TEMPLATE;
-        prerender_gui(MAIN_RENDERER);
-        save_settings();
-    }*/
     else if( GPE_Action_Message=="Find...")
     {
         if( GPE_Main_Logs!=NULL)
@@ -8851,7 +6411,7 @@ void GPE_Gui_Engine::process_overlay_message()
             std::string resourceNeedle = get_string_from_popup("Project Resource Search","Resource name:","");
             if( (int)resourceNeedle.size() > 0 )
             {
-                GPE_ResourceContainer * foundRes = CURRENT_PROJECT->RESC_PROJECT_FOLDER->find_resource_from_name(resourceNeedle);
+                GPE_GeneralResourceContainer * foundRes = CURRENT_PROJECT->RESC_PROJECT_FOLDER->find_resource_from_name(resourceNeedle);
                 if( foundRes!=NULL)
                 {
                     generalGameResource * foundHeldRes = foundRes->get_held_resource();
@@ -8882,10 +6442,6 @@ void GPE_Gui_Engine::process_overlay_message()
     {
         GPE_Main_TabManager->add_new_tab(MAIN_START_PAGE);
     }
-    else if( GPE_Action_Message=="Browse Projects" || GPE_Action_Message=="Project Browser" || GPE_Action_Message=="Use Project Browser" )
-    {
-        GPE_Main_TabManager->add_new_tab(PROJECT_BROWSER_PAGE);
-    }
     else if( GPE_Action_Message=="Tip of the Day")
     {
         GPE_Show_Tip_Of_Day();
@@ -8906,20 +6462,21 @@ void GPE_Gui_Engine::process_overlay_message()
     {
         GPE_Main_TabManager->add_new_tab(MAIN_EDITOR_SETTINGS);
     }
+    else if( GPE_Action_Message=="Game Controller Tester" )
+    {
+        GPE_Main_TabManager->add_new_tab( MAIN_GameController_TESTER );
+    }
     else if( GPE_Action_Message=="JS Compiler Settings" )
     {
         GPE_Main_TabManager->add_new_tab( GPE_JS_COMPILER_SETTINGS );
     }
+    else if( GPE_Action_Message=="Extra Tools" )
+    {
+        GPE_Main_TabManager->add_new_tab( MAIN_EXTRA_TOOLS );
+    }
     else if( GPE_Action_Message=="C++ Compiler Settings" )
     {
         GPE_Main_TabManager->add_new_tab( GPE_CPP_COMPILER_SETTINGS );
-    }
-    else if( file_exists(GPE_Action_Message) )
-    {
-        if( get_file_ext(GPE_Action_Message)=="gppf")
-        {
-            open_project(GPE_Action_Message);
-        }
     }
     else if( string_starts(GPE_Action_Message, "Import ") )
     {
@@ -8944,12 +6501,12 @@ void GPE_Gui_Engine::process_overlay_message()
                 std::string fileToImportName = GPE_GetOpenFileName( GPE_Action_Message,".gpf", MAIN_GUI_SETTINGS->fileOpenImportFileDir );
                 if( file_exists(fileToImportName) && get_file_ext(fileToImportName) =="gpf" )
                 {
-                    GPE_ResourceContainer * newResource = CURRENT_PROJECT->create_blank_resource(tempResType,NULL, get_file_noext(get_local_from_global_file( fileToImportName) ) );
+                    GPE_GeneralResourceContainer * newResource = CURRENT_PROJECT->create_blank_resource(tempResType,NULL, get_file_noext(get_local_from_global_file( fileToImportName) ) );
                     if( newResource!=NULL)
                     {
                         GPE_Main_TabManager->add_new_tab(newResource->get_held_resource() );
                         newResource->preprocess_container(fileToImportName);
-                        GPE_MAIN_GUI->mainResourceBar->selectedSubOption = newResource->get_global_id();
+                        GPE_MAIN_GUI->mainResourceTree->selectedSubOption = newResource->get_global_id();
                         newResource->detect_name_change(true);
                     }
                     else
@@ -8964,6 +6521,23 @@ void GPE_Gui_Engine::process_overlay_message()
             }
         }
     }
+    else if( string_starts(GPE_Action_Message, "Toggle ") && string_ends(GPE_Action_Message, " Pane") )
+    {
+        GPE_Action_Message = string_replace_all(GPE_Action_Message,"Toggle ","");
+        GPE_Action_Message = string_replace_all(GPE_Action_Message," Pane","");
+        GPE_DOCK->toggle_default_pane( GPE_Action_Message );
+    }
+    else if( file_exists(GPE_Action_Message) )
+    {
+        if( get_file_ext(GPE_Action_Message)=="gppf")
+        {
+            open_project(GPE_Action_Message);
+        }
+    }
+    else
+    {
+        GPE_Report( "Unknown Command: ["+GPE_Action_Message+"]" );
+    }
 }
 
 void GPE_Gui_Engine::process_window_title()
@@ -8977,14 +6551,18 @@ void GPE_Gui_Engine::process_window_title()
         }
         if( GPE_VERSION_UPDATE_NUMBER==0)
         {
-            windowCurrentTitle+= "[Game Pencil Engine   "+double_to_string(GPE_VERSION_DOUBLE_NUMBER)+".0 -";
+            windowCurrentTitle+= "Game Pencil Engine   "+double_to_string(GPE_VERSION_DOUBLE_NUMBER)+".0 -";
         }
         else
         {
-            windowCurrentTitle+= "[Game Pencil Engine   "+double_to_string(GPE_VERSION_DOUBLE_NUMBER)+" -";
+            windowCurrentTitle+= "Game Pencil Engine   "+double_to_string(GPE_VERSION_DOUBLE_NUMBER)+" -";
         }
 
-        if( editorReleaseType==RELEASE_TYPE_RC)
+        if( editorReleaseType==RELEASE_TYPE_PRODUCTION)
+        {
+            windowCurrentTitle+=" [Production]";
+        }
+        else if( editorReleaseType==RELEASE_TYPE_RC)
         {
             windowCurrentTitle+=" [Release Candidate]";
         }
@@ -8992,7 +6570,10 @@ void GPE_Gui_Engine::process_window_title()
         {
             windowCurrentTitle+=" [Beta]";
         }
-
+        else if( editorReleaseType== RELEASE_TYPE_ALPHA)
+        {
+            windowCurrentTitle+=" [Alpha]";
+        }
         if( !MAIN_RENDERER->windowHasFocus)
         {
             windowCurrentTitle += " Out of Focus |";
@@ -9001,16 +6582,12 @@ void GPE_Gui_Engine::process_window_title()
         {
             windowCurrentTitle += " Mouse Outside |";
         }
-        //MAIN_RENDERER->set_window_title(windowCurrentTitle);
+        MAIN_RENDERER->set_window_title(windowCurrentTitle);
     }
 }
 
 void GPE_Gui_Engine::render_foreground_engine(bool forceRedraw)
 {
-    if( mainResourceBar->resourcebarMoved)
-    {
-        forceRedraw = true;
-    }
     if(GPE_IS_LOADING)
     {
         SDL_SetCursor(GPE_LoadingCursor);
@@ -9021,34 +6598,36 @@ void GPE_Gui_Engine::render_foreground_engine(bool forceRedraw)
     }
 
     MAIN_RENDERER->reset_viewpoint();
+
     if( mainToolBar!=NULL && MAIN_CONTEXT_MENU!=NULL )
     {
-        mainToolBar->render_toolbar( NULL, forceRedraw);
-        MAIN_CONTEXT_MENU->render_self( &GPE_DEFAULT_CAMERA);
         if( !mainToolBar->is_open() && !MAIN_CONTEXT_MENU->is_open() )
         {
-            if( GPE_Main_TabManager!=NULL)
+            if( !forceRedraw )
             {
-                GPE_Main_TabManager->render_tabbar( NULL,forceRedraw );
+                //return;
             }
-            if( mainResourceBar!=NULL )
+            if( GPE_DOCK!=NULL )
             {
-                mainResourceBar->render_resourcebar( NULL,forceRedraw);
+                GPE_DOCK->render_self( NULL, NULL, forceRedraw );
             }
-            if( GPE_Main_Logs!=NULL)
-            {
-                GPE_Main_Logs->render_self( NULL,NULL,forceRedraw);
-            }
+
             render_gui_info(  forceRedraw);
             MAIN_OVERLAY->render_temporary_message();
             GPE_MAIN_HIGHLIGHTER->render_code_highlights(  forceRedraw);
-            if( RESOURCE_TO_DRAG!=NULL)
+            GPE_MAIN_HIGHLIGHTER->render_code_suggestions(  forceRedraw);
+            if( RESOURCE_TO_DRAG!=NULL && forceRedraw )
             {
                 RESOURCE_TO_DRAG->render_option(  input->mouse_x+32, input->mouse_y, -1,NULL, NULL,false, true);
-                render_new_boxed( input->mouse_x+32,input->mouse_y,RESOURCE_TO_DRAG->get_name(),GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_MAIN_THEME->PopUp_Box_Color,FONT_CATEGORY_BAR,FA_LEFT,FA_TOP );
+                gfs->render_text_boxed( input->mouse_x+32,input->mouse_y,RESOURCE_TO_DRAG->get_name(),GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_MAIN_THEME->PopUp_Box_Color,FONT_CATEGORY_BAR,FA_LEFT,FA_TOP );
             }
-            gpe->render_fps(FONT_TEXTINPUT);
+            if( forceRedraw )
+            {
+                gfs->render_fps(FONT_TEXTINPUT, GPE_MAIN_THEME->Main_Box_Font_Color );
+            }
         }
+        mainToolBar->render_toolbar( NULL, forceRedraw);
+        MAIN_CONTEXT_MENU->render_self( &GPE_DEFAULT_CAMERA);
     }
 }
 
@@ -9076,6 +6655,11 @@ void GPE_Gui_Engine::remove_project(std::string projectFileName )
             {
                 if( tPFolder->get_project_file_name().compare(projectFileName)==0 )
                 {
+                    if( GPE_LOADER != NULL )
+                    {
+                        GPE_LOADER->update_messages( "Closing Game Project ["+tPFolder->get_project_name()+"]", projectFileName,"PLEASE WAIT" );
+                    }
+                    GPE_DOCK->setup_dock();
                     GPE_Main_TabManager->close_tabs_from_project( projectFileName );
                     if(CURRENT_PROJECT!=NULL)
                     {
@@ -9086,30 +6670,28 @@ void GPE_Gui_Engine::remove_project(std::string projectFileName )
                         }
                     }
 
-                    if( GPE_MAIN_GUI!=NULL && GPE_MAIN_GUI->mainResourceBar!=NULL)
+                    if( GPE_MAIN_GUI!=NULL && GPE_MAIN_GUI->mainResourceTree!=NULL)
                     {
-                        displayMessageTitle = "Closing Game Project";
-                        displayMessageSubtitle = projectFileName;
-                        displayMessageString = "Removing from Projects Menu";
-                        display_user_messaage();
-                        GPE_MAIN_GUI->mainResourceBar->remove_project_resources(projectFileName);
+                        if( GPE_LOADER != NULL )
+                        {
+                            GPE_LOADER->update_messages( "Closing Game Project", projectFileName,"Removing from Projects Menu.." );
+                        }
 
-                        displayMessageTitle = "Closing Game Project";
-                        displayMessageSubtitle = projectFileName;
-                        displayMessageString = "Removing from Projects Menu";
-                        display_user_messaage();
+                        GPE_MAIN_GUI->mainResourceTree->remove_project_resources(projectFileName);
+
+                        if( GPE_LOADER != NULL )
+                        {
+                            GPE_LOADER->update_messages( "Closing Game Project", projectFileName,"Removed from Projects Menu.." );
+                        }
                     }
 
                     delete tPFolder;
                     tPFolder = NULL;
-                    gpeProjects.erase(gpeProjects.begin()+i);
+                    gpeProjects.erase(gpeProjects.begin()+i );
 
-                    displayMessageTitle = "Closing Game Project";
-                    displayMessageSubtitle = projectFileName;
-                    displayMessageString = "Cache Cleared...";
-                    display_user_messaage();
-
-                    gpe->clear_font_cache();
+                    GPE_LOADER->update_messages( "Closing Game Project", projectFileName,"Clearing cache..." );
+                    gfs->clear_font_cache();
+                    GPE_LOADER->update_messages( "Closing Game Project", projectFileName,"Cache Cleared..." );
                 }
             }
         }
@@ -9195,12 +6777,11 @@ void GPE_Gui_Engine::save_settings()
         if (newSaveDataFile.is_open())
         {
             //write_header_on_file(&newSaveDataFile);
-            newSaveDataFile << "ResourceBarPosition=" <<RENDER_RESOURCEBAR_LEFT << "\n";
-
-            if( mainResourceBar!=NULL)
+            newSaveDataFile << "Version=" << GPE_VERSION_DOUBLE_NUMBER << "\n";
+            if( GPE_Main_Logs!=NULL )
             {
-                newSaveDataFile << "ResourceBarVisible=" << mainResourceBar->is_visible() << "\n";
-                newSaveDataFile << "ResourceBarWidth=" << mainResourceBar->get_width() << "\n";
+                newSaveDataFile << "BottomLogsHeight=" << GPE_Main_Logs->get_height() << "\n";
+
             }
             newSaveDataFile << "ShowFPSCounter=" << SHOW_FPS_COUNTER << "\n";
             newSaveDataFile << "ShowStartPageAtStart=" << showStartPageAtStartUp << "\n";
@@ -9232,20 +6813,22 @@ void GPE_Gui_Engine::setup_project_directory(std::string newProjectDir)
         create_directory(newProjectDir+"/gpe_project/resources/achievements");
         create_directory(newProjectDir+"/gpe_project/resources/audio");
         //Class Directory addition for 1.14
+        create_directory(newProjectDir+"/gpe_project/resources/animations");
         create_directory(newProjectDir+"/gpe_project/resources/classes");
         create_directory(newProjectDir+"/gpe_project/resources/fonts");
         create_directory(newProjectDir+"/gpe_project/resources/functions");
+        create_directory(newProjectDir+"/gpe_project/resources/lights");
         create_directory(newProjectDir+"/gpe_project/resources/objects");
         create_directory(newProjectDir+"/gpe_project/resources/paths");
+        create_directory(newProjectDir+"/gpe_project/resources/particles");
         create_directory(newProjectDir+"/gpe_project/resources/scenes");
-        create_directory(newProjectDir+"/gpe_project/resources/sprites");
         create_directory(newProjectDir+"/gpe_project/resources/textures");
         create_directory(newProjectDir+"/gpe_project/resources/tilesheets");
         create_directory(newProjectDir+"/gpe_project/resources/videos");
     }
 }
 
-std::string GPE_Gui_Engine::setup_build_folder(std::string buildDirectory,int buildType , int buildBits, bool inDebugMode, int nativeBuildType)
+std::string GPE_Gui_Engine::setup_build_folder(std::string buildDirectory,int buildType, int buildBits, bool inDebugMode, int nativeBuildType)
 {
     if( GPE_Main_Logs!=NULL)
     {
@@ -9309,8 +6892,11 @@ std::string GPE_Gui_Engine::setup_build_folder(std::string buildDirectory,int bu
                 create_directory(newBuildDirectory+"/res");
 
                 create_directory(newBuildDirectory+"/resources");
+                create_directory(newBuildDirectory+"/resources/animations");
                 create_directory(newBuildDirectory+"/resources/audio");
                 create_directory(newBuildDirectory+"/resources/fonts");
+                create_directory(newBuildDirectory+"/resources/lights");
+                create_directory(newBuildDirectory+"/resources/particles");
                 create_directory(newBuildDirectory+"/resources/sprites");
                 create_directory(newBuildDirectory+"/resources/textures");
                 create_directory(newBuildDirectory+"/resources/tilesheets");
@@ -9320,77 +6906,102 @@ std::string GPE_Gui_Engine::setup_build_folder(std::string buildDirectory,int bu
                 {
                     if( buildType == GPE_BUILD_WINDOWS)
                     {
-                        displayMessageTitle = "Copying Electron-Windows Files";
-                        displayMessageSubtitle = "Please wait";
-                        displayMessageString = "Do NOT close";
-                        display_user_messaage();
+                        if( GPE_LOADER != NULL )
+                        {
+                            GPE_LOADER->update_messages( "Copying Electron-Windows Files", "Please wait","Do NOT CLOSE" );
+                        }
                         if( buildBits==64)
                         {
                             GPE_Main_Logs->log_build_line("Copying Electron-Windows 64Bit Files...");
-                            displayMessageSubtitle = "Copying [game.exe] and [dlls] files";
-                            display_user_messaage();
+                            if( GPE_LOADER!=NULL )
+                            {
+                                GPE_LOADER->update_submessages( "Copying [game.exe and dlls] folder", "Please Wait..." );
+                            }
                             copy_folder(APP_DIRECTORY_NAME+"build_files/win64build_electron",buildDirectory);
 
-                            displayMessageSubtitle = "Copying locales folder";
-                            display_user_messaage();
+                            if( GPE_LOADER!=NULL )
+                            {
+                                GPE_LOADER->update_submessages( "Copying [game.exe and dlls] folder", "Please Wait..." );
+                            }
                             copy_folder(APP_DIRECTORY_NAME+"build_files/win64build_electron/locales",buildDirectory+"/locales");
 
 
-                            displayMessageSubtitle = "Copying [resources] folder";
-                            display_user_messaage();
+                            if( GPE_LOADER!=NULL )
+                            {
+                                GPE_LOADER->update_submessages( "Copying [resources] folder", "Please Wait..." );
+                            }
                             copy_folder(APP_DIRECTORY_NAME+"build_files/win64build_electron/resources",buildDirectory+"/resources", true);
                         }
                         else
                         {
                             GPE_Main_Logs->log_build_line("Copying Electron-Windows 32Bit Files...");
-                            displayMessageSubtitle = "Copying [game.exe] and [dlls] files";
-                            display_user_messaage();
+                            if( GPE_LOADER!=NULL )
+                            {
+                                GPE_LOADER->update_submessages( "Copying [game.exe and dlls] folder", "Please Wait..." );
+                            }
                             copy_folder(APP_DIRECTORY_NAME+"build_files/win32build_electron",buildDirectory);
 
-                            displayMessageSubtitle = "Copying [locales] folder";
-                            display_user_messaage();
+                            if( GPE_LOADER!=NULL )
+                            {
+                                GPE_LOADER->update_submessages( "Copying [locales] folder", "Please Wait..." );
+                            }
                             copy_folder(APP_DIRECTORY_NAME+"build_files/win32build_electron/locales",buildDirectory+"/locales");
 
-                            displayMessageSubtitle = "Copying [resources] folder";
-                            display_user_messaage();
+                            if( GPE_LOADER!=NULL )
+                            {
+                                GPE_LOADER->update_submessages( "Copying [resources] folder", "Please Wait..." );
+                            }
                             copy_folder(APP_DIRECTORY_NAME+"build_files/win32build_electron/resources",buildDirectory+"/resources", true);
                         }
                     }
                     else if( buildType == GPE_BUILD_LINUX)
                     {
-                        displayMessageTitle = "Copying Electron-Linux Files";
-                        displayMessageSubtitle = "Please wait";
-                        displayMessageString = "Do NOT close";
-                        display_user_messaage();
+                        if( GPE_LOADER != NULL )
+                        {
+                            GPE_LOADER->update_messages( "Copying Electron-Linux Files", "Please wait","Do NOT CLOSE" );
+                        }
+
                         if( buildBits==64)
                         {
                             GPE_Main_Logs->log_build_line("Copying Electron-Linux 64bit Files...");
-                            displayMessageSubtitle = "Copying game and SO files";
-                            display_user_messaage();
+                            if( GPE_LOADER != NULL )
+                            {
+                                GPE_LOADER->update_submessages( "Copying [game and SO files] folder", "Please Wait..." );
+                            }
                             copy_folder(APP_DIRECTORY_NAME+"build_files/linux64build_electron",buildDirectory);
 
-                            displayMessageSubtitle = "Copying locales folder";
-                            display_user_messaage();
+                            if( GPE_LOADER != NULL )
+                            {
+                                GPE_LOADER->update_submessages( "Copying [locales] folder", "Please Wait..." );
+                            }
                             copy_folder(APP_DIRECTORY_NAME+"build_files/linux64build_electron/locales",buildDirectory+"/locales");
 
 
-                            displayMessageSubtitle = "Copying [resources] folder";
-                            display_user_messaage();
+                            if( GPE_LOADER != NULL )
+                            {
+                                GPE_LOADER->update_submessages( "Copying [resources] folder", "Please Wait..." );
+                            }
                             copy_folder(APP_DIRECTORY_NAME+"build_files/linux64build_electron/resources",buildDirectory+"/resources", true);
                         }
                         else
                         {
                             GPE_Main_Logs->log_build_line("Copying Electron-Linux 32Bit Files...");
-                            displayMessageSubtitle = "Copying game and SO files";
-                            display_user_messaage();
+                            if( GPE_LOADER != NULL )
+                            {
+                                GPE_LOADER->update_submessages( "Copying [game and SO files] folder", "Please Wait..." );
+                            }
                             copy_folder(APP_DIRECTORY_NAME+"build_files/linux32build_electron",buildDirectory);
 
-                            displayMessageSubtitle = "Copying [locales] folder";
-                            display_user_messaage();
+                            if( GPE_LOADER != NULL )
+                            {
+                                GPE_LOADER->update_submessages( "Copying [locales] folder", "Please Wait..." );
+                            }
                             copy_folder(APP_DIRECTORY_NAME+"build_files/linux32build_electron/locales",buildDirectory+"/locales");
 
-                            displayMessageSubtitle = "Copying [resources] folder";
-                            display_user_messaage();
+                            if( GPE_LOADER != NULL )
+                            {
+                                GPE_LOADER->update_submessages( "Copying [resources] folder", "Please Wait..." );
+                            }
                             copy_folder(APP_DIRECTORY_NAME+"build_files/linux32build_electron/resources",buildDirectory+"/resources", true);
                         }
                     }
@@ -9465,7 +7076,7 @@ void GPE_Gui_Engine::take_live_screenshor()
                     if( foundBlank==false)
                     {
                         appendToFile(APP_DIRECTORY_NAME+"screenshots/screenshot_log.txt","Unable to save screenshot to "+screenshotNewLocation);
-                        record_error("Unable to save screenshot to "+screenshotNewLocation);
+                        GPE_Report("Unable to save screenshot to "+screenshotNewLocation);
                     }
                 }
                 else
@@ -9517,205 +7128,59 @@ GPE_Editor_State::GPE_Editor_State()
     stateName = "GPE_Editor";
     if( GPE_VERSION_UPDATE_NUMBER==0)
     {
-        GPE_Main_Logs->log_general_line("Starting Game Pencil Engine Version "+float_to_string(GPE_VERSION_DOUBLE_NUMBER)+".0...");
+        GPE_Main_Logs->log_general_line("Starting Game Pencil Engine Version "+double_to_string(GPE_VERSION_DOUBLE_NUMBER)+".0...");
     }
     else
     {
-        GPE_Main_Logs->log_general_line("Starting Game Pencil Engine Version "+float_to_string(GPE_VERSION_DOUBLE_NUMBER)+"...");
-    }
-    for(int rI = 0; rI < res_type_count; rI++)
-    {
-        RESOURCE_TYPE_NAMES[rI] = "";
+        GPE_Main_Logs->log_general_line("Starting Game Pencil Engine Version "+double_to_string(GPE_VERSION_DOUBLE_NUMBER)+"...");
     }
 
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_SPRITE] = "Sprite";
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_ANIMATION] = "Animation";
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_TEXTURE] = "Texture";
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_TILESHEET] = "Tilesheet";
-
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_AUDIO] = "Audio";
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_VIDEO] = "Video";
-
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_FUNCTION] = "Function";
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_CLASS] = "Class";
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_OBJECT] = "Object";
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_SCENE] = "Scene";
-    //RESOURCE_TYPE_NAMES[RESOURCE_TYPE_ACHIEVEMENT] = "Achievement";
-
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_PATH] = "Path";
-    //RESOURCE_TYPE_NAMES[RESOURCE_TYPE_DICTIONARY] = "Dictionary";
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_FONT] = "Font";
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_PLUGIN] = "Plugin";
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_EVENT] = "Event";
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_QUEST] = "Quest";
-    RESOURCE_TYPE_NAMES[RESOURCE_TYPE_PROJECT_SETTINGS] = "Project Properties";
-
-    for(int bI = 0; bI < GPE_BUILD_OPTIONS; bI++)
-    {
-        GPE_BUILD_NAMES[bI] = "";
-    }
-    GPE_BUILD_NAMES[GPE_BUILD_HTML5] = "HTML5";
-    GPE_BUILD_NAMES[GPE_BUILD_WINDOWS] = "WINDOWS";
-    GPE_BUILD_NAMES[GPE_BUILD_MAC] = "OSX";
-    GPE_BUILD_NAMES[GPE_BUILD_LINUX] = "LINUX";
-    GPE_BUILD_NAMES[GPE_BUILD_WIIU] = "WIIU";
-    GPE_BUILD_NAMES[GPE_BUILD_XBOXONE] = "XBOXONE";
-    GPE_BUILD_NAMES[GPE_BUILD_PS4] = "PS4";
-    GPE_BUILD_NAMES[GPE_BUILD_PSVITA] = "PSVITA";
-    GPE_BUILD_NAMES[GPE_BUILD_ANDROID] = "ANDROID";
-    GPE_BUILD_NAMES[GPE_BUILD_IOS] = "IOS";
-    GPE_BUILD_NAMES[GPE_BUILD_WINDOWS_PHONE] = "WINDOWS PHONE";
-    //Gets SDL Version
-    GPE_RadioButton_GFX = rsm->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/spr_radio_button.png",3,true,0,0,false);
     GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
+    //Gets SDL Version
     SDL_compiled_version.major = 0;
     SDL_VERSION(&SDL_compiled_version);
     SDL_VersionText = "SDL Version: "+int_to_string(SDL_compiled_version.major)+"."+int_to_string(SDL_compiled_version.minor)+"."+int_to_string(SDL_compiled_version.patch);
-
-    spriteDataLabels[sprFrameCount] = "Frame Count";
-    spriteDataLabels[sprFrameWidth] = "Frame Width";
-    spriteDataLabels[sprFrameHeight] = "Frame Height";
-    spriteDataLabels[sprHPixelOffset] = "Horizontal Pixel  Offset";
-    spriteDataLabels[sprVPixelOffset] = "Vertical Pixel Offset";
-    spriteDataLabels[sprHPixelPadding] = "Horizontal Frame Padding";
-    spriteDataLabels[sprVPixelPadding] = "Vertictal Frame Padding";
-
-    tsDataLabels[0] = "Width";
-    tsDataLabels[1] = "Height";
-    tsDataLabels[2] = "X-Offset";
-    tsDataLabels[3] = "Y-Offset";
-    tsDataLabels[4] = "H-Padding";
-    tsDataLabels[5] = "Y-Padding";
-
     spriteDataLabelWidth =  0;
     int hh=0; // the 8th position is the widest
-    DEFAULT_FONT->get_metrics(spriteDataLabels[sprHPixelPadding].c_str(),&spriteDataLabelWidth,&hh);
+    GPE_DEFAULT_FONT->get_metrics(spriteDataLabels[sprHPixelPadding].c_str(),&spriteDataLabelWidth,&hh);
     tsDataLabelWidth = 0;
-    DEFAULT_FONT->get_metrics(tsDataLabels[5].c_str(),&tsDataLabelWidth,&hh);
-
-    POPUP_FONT_SIZE_WIDTH = 12;
-    POPUP_FONT_SIZE_HEIGHT = 12;
-    if( FONT_POPUP!=NULL)
-    {
-         FONT_POPUP->get_metrics("A",&POPUP_FONT_SIZE_WIDTH,&POPUP_FONT_SIZE_HEIGHT);
-    }
+    GPE_DEFAULT_FONT->get_metrics(tsDataLabels[5].c_str(),&tsDataLabelWidth,&hh);
     spriteDataLabelWidth+=GENERAL_ICON_WIDTH_AND_PADDING; //add some extra padding for "just in case"
-    for( int iLangName = 0; iLangName < PROJECT_LANGUAGE_MAX; iLangName++)
-    {
-        PROJECT_LANGUAGE_NAMES[iLangName] = "";
-    }
-    PROJECT_LANGUAGE_NAMES[PROJECT_LANGUAGE_JS] = "JS";
-    PROJECT_LANGUAGE_NAMES[PROJECT_LANGUAGE_CS] = "CS";
-    PROJECT_LANGUAGE_NAMES[PROJECT_LANGUAGE_CPP] = "CPP";
-    PROJECT_LANGUAGE_NAMES[PROJECT_LANGUAGE_TST] = "TST";
-    PROJECT_LANGUAGE_NAMES[PROJECT_LANGUAGE_LUA] = "LUA";
-
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[0] = "Constructor";
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[1] = "Destructor";
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[2] = "Start Frame";
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[3] = "Main Logic";
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[4] = "Sprite Done";
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[5] = "End Frame";
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[6] = "PRE-Render";
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[7] = "Render";
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[8] = "POST-Render";
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[9] = "Render HUD";
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[10] = "";
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[11] = "";
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[12] = "";
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[13] = "";
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[14] = "";
-    DEFAULT_OBJECT_FUNCTIONS_NAMES[15] = "";
-
-    DEFAULT_OBJECT_SPECIALS_NAMES[0] = "Scene Start";
-    DEFAULT_OBJECT_SPECIALS_NAMES[1] = "Scene End";
-    DEFAULT_OBJECT_SPECIALS_NAMES[2] = "Game Start";
-    DEFAULT_OBJECT_SPECIALS_NAMES[3] = "Game Exit";
-    DEFAULT_OBJECT_SPECIALS_NAMES[4] = "Player Died";
-    DEFAULT_OBJECT_SPECIALS_NAMES[5] = "Game Over";
-
-
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[0] = "Constructor";
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[1] = "self_obliterate";
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[2] = "start_frame_logic";
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[3] = "perform_object_logic";
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[4] = "animation_concluded";
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[5] = "end_frame_logic";
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[6] = "render_under";
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[7] = "render_self";
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[8] = "render_above";
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[9] = "render_hud";
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[10] = "";
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[11] = "";
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[12] = "";
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[13] = "";
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[14] = "";
-    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[15] = "";
-
-    DEFAULT_OBJECT_SPECIALS_HTML5_NAMES[0] = "scene_start";
-    DEFAULT_OBJECT_SPECIALS_HTML5_NAMES[1] = "scene_end";
-    DEFAULT_OBJECT_SPECIALS_HTML5_NAMES[2] = "game_start";
-    DEFAULT_OBJECT_SPECIALS_HTML5_NAMES[3] = "game_exit";
-    DEFAULT_OBJECT_SPECIALS_HTML5_NAMES[4] = "player_died";
-    DEFAULT_OBJECT_SPECIALS_HTML5_NAMES[5] = "game_over";
-
-    DEFAULT_SCENE_SUBEDITOR_NAMES[0] = "Settings";
-    DEFAULT_SCENE_SUBEDITOR_NAMES[1] = "Layers";
-    DEFAULT_SCENE_SUBEDITOR_NAMES[2] = "Extras";
-    DEFAULT_SCENE_SUBEDITOR_NAMES[3] = "Extras";
-    DEFAULT_SCENE_SUBEDITOR_NAMES[3] = "Extras";
-
-    SUPPORTED_AUDIO_EXT[aacFileName] = "AAC";
-    SUPPORTED_AUDIO_EXT[mp3FileName] = "MP3";
-    SUPPORTED_AUDIO_EXT[oggFileName] = "OGG";
-    SUPPORTED_AUDIO_EXT[wavFileName] = "WAV";
-
-
-    SUPPORTED_VIDEO_EXT[0] = "MP4";
-    SUPPORTED_VIDEO_EXT[1] = "WEBM";
-    SUPPORTED_VIDEO_EXT[2] = "OGG";
-
-    SUPPORTED_FONT_EXT[FONT_EOT]  = "EOT";
-    SUPPORTED_FONT_EXT[FONT_SVG]  = "SVG";
-    SUPPORTED_FONT_EXT[FONT_TTF]  = "TTF";
-    SUPPORTED_FONT_EXT[FONT_WOFF] = "WOFF";
-    SUPPORTED_FONT_EXT[FONT_WOFF2] = "WOFF2";
 
     mainToolBar = GPE_MAIN_GUI->init_toolbar();
 
-    GPE_Animation * mainExportOptionsSprite = rsm->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/main_export_options_icons.png",12,true,0,0,false);
+    GPE_Animation * mainExportOptionsSprite = guiRCM->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/main_export_options_icons.png",12,true,0,0,false);
     mainButtonBar = new GPE_ToolIconButtonBar(24);
     mainButtonBar->set_coords( 0, mainToolBar->get_height() );
     mainButtonBar->widthAutoResizes = true;
-    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/binoculars.png","Project Browser",0,true );
-    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/file.png","New Project",1,true );
-    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/folder.png","Open Project",2,true );
-    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/save.png","Save Project",3,false );
-    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/book.png","Save All Projects",4,true );
-    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/cog.png","Build Project",5,false);
-    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png","Build & PLAY Project",6,false);
+    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/file.png","New Project",1,true );
+    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/folder.png","Open Project",2,true );
+    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/save.png","Save Project",3,false );
+    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/book.png","Save All Projects",4,true );
+    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/cog.png","Build Project",5,false);
+    mainButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/play.png","Build & PLAY Project",6,false);
 
     GPE_PopUpMenu_Option * newOption = NULL;
     GPE_PopUpMenu_Option * newOptionLayer2 = NULL;
     GPE_PopUpMenu_Option * newOptionLayer3 = NULL;
     newOption = mainToolBar->add_menu_option("File");
-    newOption->add_menu_option("New Project",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/file.png"),-1,NULL,false,true,false,kb_ctrl,kb_n );
-    newOption->add_menu_option("Open Project",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/folder.png"),-1,NULL,false,true,false,kb_ctrl,kb_o );
-    newOption->add_menu_option("Browse Projects",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/binoculars.png") );
+    newOption->add_menu_option("New Project",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/file.png"),-1,NULL,false,true,false,kb_ctrl,kb_n );
+    newOption->add_menu_option("Open Project",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/folder.png"),-1,NULL,false,true,false,kb_ctrl,kb_o );
+    newOption->add_menu_option("Browse Projects",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/binoculars.png") );
     newOptionLayer2 = MAIN_TOOLBAR_RECENT_PROJECTS = newOption->add_menu_option("Recent Projects",-1,NULL,-1,NULL,true);
     GPE_MAIN_GUI->update_recent_project_list(false);
     //Adds the recent projects to the list
 
     //Adds the recent files to the list
-    newOption->add_menu_option("Save Project",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/save.png"),-1,NULL,false,true,false,kb_ctrl,kb_s  );
-    newOption->add_menu_option("Save All Projects",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/save.png") ,-1,NULL,false,true,false,kb_ctrl,kb_s ,kb_shift );
+    newOption->add_menu_option("Save Project",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/save.png"),-1,NULL,false,true,false,kb_ctrl,kb_s  );
+    newOption->add_menu_option("Save All Projects",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/save.png"),-1,NULL,false,true,false,kb_ctrl,kb_s,kb_shift );
     /*
     newOption->add_menu_option("Export",-1,-1,NULL,false);
     newOption->add_menu_option("Import Resources");
     newOption->add_menu_option("Export Resources");
     newOption->add_menu_option("Properties",-1,5,NULL,true);
     */
-    newOption->add_menu_option("Quit Editor",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/truck.png"),76,NULL,false,true,false,kb_ctrl,kb_q);
+    newOption->add_menu_option("Quit Editor",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/truck.png"),76,NULL,false,true,false,kb_ctrl,kb_q);
 
 
     /*
@@ -9730,19 +7195,18 @@ GPE_Editor_State::GPE_Editor_State()
     newOption = mainToolBar->add_menu_option("View");
     //newOption->add_menu_option("Reset View",-1,-1,NULL,false);
 
-    newOption->add_menu_option("Toggle Fullscreen Mode",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/crop.png"),-1,NULL,false,true,false, kb_f11);
+    newOption->add_menu_option("Toggle Fullscreen Mode",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/crop.png"),-1,NULL,false,true,false, kb_f11);
+    if( GPE_DOCK!=NULL)
+    {
+        newOption->add_option( GPE_DOCK->toolbarOptonsHolder );
+    }
 
-    newOptionLayer2 = newOption->add_menu_option("Resource Bar Settings",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/cogs.png"),-1,NULL,false,false);
-    newOptionLayer2->add_menu_option("Left Align Resource Bar",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/align-left.png"),-1,NULL,false);
-    newOptionLayer2->add_menu_option("Right Align Resource Bar",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/align-right.png"),-1,NULL,false);
-    newOptionLayer2->add_menu_option("Toggle Resource Bar On/Off",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/toggle-on.png"),-1,NULL,false);
-    newOptionLayer2 = newOption->add_menu_option("Text Area Settings",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/cogs.png"),-1,NULL,false,false);
-    newOptionLayer2->add_menu_option("Toggle Line Count",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/toggle-on.png"),-1,NULL,false);
-    newOptionLayer2->add_menu_option("Toggle Syntax Highlighting",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/toggle-on.png"),-1,NULL,false);
+    newOptionLayer2 = newOption->add_menu_option("Text Area Settings",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/cogs.png"),-1,NULL,false,false);
+    newOptionLayer2->add_menu_option("Toggle Line Count",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
+    newOptionLayer2->add_menu_option("Toggle Syntax Highlighting",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
     //newOptionLayer2->add_menu_option("",-1,-1,NULL,false);
-    newOption->add_menu_option("Project Browser",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/binoculars.png"),-1,NULL,false);
-    newOption->add_menu_option("Start Page",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/cube.png"),-1,NULL,false);
-    newOption->add_menu_option("Tip of the Day",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/info.png"),-1,NULL,false);
+    newOption->add_menu_option("Start Page",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/cube.png"),-1,NULL,false);
+    newOption->add_menu_option("Tip of the Day",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/info.png"),-1,NULL,false);
 
     //newOption = mainToolBar->add_menu_option("Tools");
     //newOption = mainToolBar->add_menu_option("Resources");
@@ -9753,39 +7217,39 @@ GPE_Editor_State::GPE_Editor_State()
     newOption->add_menu_option("Replace...",-1,NULL,-1,NULL,false,true,false, kb_ctrl,kb_r);
     newOption->add_menu_option("Replace in files....",-1,NULL,-1,NULL,false,true,false, kb_ctrl,kb_r,kb_shift);
     newOption->add_menu_option("Goto Line...",-1,NULL,-1,NULL,false,true,false, kb_ctrl,kb_g);
-    newOption->add_menu_option("Find Project Resource...",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/search.png"),-1,NULL,false);
+    newOption->add_menu_option("Find Project Resource...",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/search.png"),-1,NULL,false);
 
     newOption = mainToolBar->add_menu_option("Import");
     for( int tempResType = RESOURCE_TYPE_SPRITE; tempResType <= RESOURCE_TYPE_FONT; tempResType++ )
     {
         if( (int)RESOURCE_TYPE_NAMES[tempResType].size() > 2 )
-        newOption->add_menu_option("Import "+RESOURCE_TYPE_NAMES[tempResType]);
+            newOption->add_menu_option("Import "+RESOURCE_TYPE_NAMES[tempResType]);
     }
 
     newOption = mainToolBar->add_menu_option("Build");
     // HTML5/ Web platforms
 
-    newOption->add_menu_option("Build HTML5 GAME",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/html5.png"),-1,NULL,true,true,false,kb_ctrl,kb_f5);
-    newOption->add_menu_option("RUN HTML5 GAME",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/play-circle.png"),-1,NULL,true,true,false,kb_f8);
-    newOption->add_menu_option("Build HTML5 GAME & RUN",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/play.png"),-1,NULL,true,true,false,kb_f5);
+    newOption->add_menu_option("Build HTML5 GAME",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/html5.png"),-1,NULL,true,true,false,kb_ctrl,kb_f5);
+    newOption->add_menu_option("RUN HTML5 GAME",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/play-circle.png"),-1,NULL,true,true,false,kb_f8);
+    newOption->add_menu_option("Build HTML5 GAME & RUN",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/play.png"),-1,NULL,true,true,false,kb_f5);
     //desktop / laptop platforms
     if( GPE_FOUND_OS==GPE_IDE_WINDOWS)
     {
-        newOption->add_menu_option("Build WINDOWS GAME",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/windows.png"),-1,NULL,false,true );
-        newOption->add_menu_option("Build OSX GAME",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/apple.png"),-1,NULL,false,true );
-        newOption->add_menu_option("Build LINUX GAME",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/linux.png"),-1,NULL,true,true );
+        newOption->add_menu_option("Build WINDOWS GAME",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/windows.png"),-1,NULL,false,true );
+        newOption->add_menu_option("Build OSX GAME",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/apple.png"),-1,NULL,false,true );
+        newOption->add_menu_option("Build LINUX GAME",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/linux.png"),-1,NULL,true,true );
     }
     else if( GPE_FOUND_OS==GPE_IDE_MAC)
     {
-        newOption->add_menu_option("Build OSX GAME",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/apple.png"),-1,NULL,false,true );
-        newOption->add_menu_option("Build LINUX GAME",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/linux.png"),-1,NULL,true,true );
-        newOption->add_menu_option("Build WINDOWS GAME",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/windows.png"),-1,NULL,false,true );
+        newOption->add_menu_option("Build OSX GAME",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/apple.png"),-1,NULL,false,true );
+        newOption->add_menu_option("Build LINUX GAME",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/linux.png"),-1,NULL,true,true );
+        newOption->add_menu_option("Build WINDOWS GAME",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/windows.png"),-1,NULL,false,true );
     }
     else
     {
-        newOption->add_menu_option("ExpBuildort LINUX GAME",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/linux.png"),-1,NULL,true,true );
-        newOption->add_menu_option("Build WINDOWS GAME",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/windows.png"),-1,NULL,false,true );
-        newOption->add_menu_option("Build OSX GAME",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/apple.png"),-1,NULL,false,true );
+        newOption->add_menu_option("ExpBuildort LINUX GAME",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/linux.png"),-1,NULL,true,true );
+        newOption->add_menu_option("Build WINDOWS GAME",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/windows.png"),-1,NULL,false,true );
+        newOption->add_menu_option("Build OSX GAME",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/apple.png"),-1,NULL,false,true );
     }
     /*
     newOption->add_menu_option("Compile Current Tab",-1);
@@ -9793,9 +7257,9 @@ GPE_Editor_State::GPE_Editor_State()
     */
 
     //console platforms
-    /*newOptionLayer2 =newOption->add_menu_option("Build Nintendo WiiU GAME",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/nintendo_wiiu_logo.png"),-1,NULL,true,true);
+    /*newOptionLayer2 =newOption->add_menu_option("Build Nintendo WiiU GAME",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/nintendo_wiiu_logo.png"),-1,NULL,true,true);
     newOptionLayer2->renderWhite = true;
-    newOptionLayer2 =newOption->add_menu_option("Build Nintendo Switch GAME",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/nintendo_switch_logo.png"),-1,NULL,true,true);
+    newOptionLayer2 =newOption->add_menu_option("Build Nintendo Switch GAME",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/nintendo_switch_logo.png"),-1,NULL,true,true);
     newOptionLayer2->renderWhite = true;*/
     /*
     newOption->add_menu_option("Build Xbox One GAME",-1,3,mainExportOptionsSprite,true,false);
@@ -9822,35 +7286,40 @@ GPE_Editor_State::GPE_Editor_State()
     newOptionLayer2 = newOption->add_menu_option("Clean Build Folder",-1);
     newOptionLayer2->add_menu_option("Clean [HTML5] Build Folder",-1);
     if( GPE_MAIN_GUI->includeNintendoWiiUExport )
-    newOptionLayer2->add_menu_option("Clean [WiiU] Build Folder",-1);
+        newOptionLayer2->add_menu_option("Clean [WiiU] Build Folder",-1);
     newOptionLayer2->add_menu_option("Clean [Windows] Build Folder",-1);
     newOptionLayer2->add_menu_option("Clean [Linux] Build Folder",-1);
     newOptionLayer2->add_menu_option("Clean [OSX] Build Folder",-1);
     //newOptionLayer2->add_menu_option("Clean [HTML5] Build Folder",-1,-1,mainExportOptionsSprite,false);
 
+    newOption = mainToolBar->add_menu_option("Tools");
+    newOption->add_menu_option("Game Controller Tester",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/gamepad.png"),-1,NULL,false,true,false);
+    newOption->add_menu_option("Extra Tools",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/briefcase.png"),-1,NULL,false,true,false);
 
     newOption = mainToolBar->add_menu_option("Settings");
-    newOption->add_menu_option("User Settings",-1,NULL,-1,NULL,false,true,false,kb_f2);
-    newOption->add_menu_option("JS Compiler Settings",-1,NULL,-1,NULL,false,true,false);
+    newOption->add_menu_option("User Settings",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/cog.png"),-1, NULL,false,true,false,kb_f2);
+    newOption->add_menu_option("JS Compiler Settings",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/code.png"),-1,NULL,false,true,false);
     //C++ Settings
-    newOption->add_menu_option("C++ Compiler Settings",-1,NULL,-1,NULL,false,true,false);
+    newOption->add_menu_option("C++ Compiler Settings",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/code.png"),-1,NULL,false,true,false);
 
     newOption = mainToolBar->add_menu_option("Help" );
     //newOption->add_menu_option("Online Documentation",-1,17,mainMenuSprite,false);
     //newOption->add_menu_option("Tips",-1,20,mainMenuSprite,false);
     //newOption->add_menu_option("Forums",-1);
     newOption->add_menu_option("General Help",-1,NULL,-1,NULL,false,true,false,kb_f1);
-    newOption->add_menu_option("Online Documentation",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/book.png"),-1,NULL,false);
-    newOption->add_menu_option("Online Forums",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/group.png"),-1,NULL,false);
-    newOption->add_menu_option("Community Chat",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/comments.png"),-1,NULL,false);
-    newOption->add_menu_option("Tip of the Day",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/infO.png"),-1,NULL,false);
-    newOption->add_menu_option("Report Issue",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/bug.png"),-1,NULL,false);
-    newOption->add_menu_option("Check Updates",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/question-circle.png"),-1,NULL,false);
-    newOption->add_menu_option("License",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/file-text.png"),-1,NULL,false);
-    newOption->add_menu_option("About Game Pencil Engine",-1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/gfx/buttons/pencil.png"),-1,NULL,false,true,false,kb_ctrl,kb_b);
+
+
+    newOption->add_menu_option("Online Documentation",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/book.png"),-1,NULL,false);
+    newOption->add_menu_option("Online Forums",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/group.png"),-1,NULL,false);
+    newOption->add_menu_option("Community Chat",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/comments.png"),-1,NULL,false);
+    newOption->add_menu_option("Tip of the Day",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/infO.png"),-1,NULL,false);
+    newOption->add_menu_option("Report Issue",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/bug.png"),-1,NULL,false);
+    newOption->add_menu_option("Check Updates",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/question-circle.png"),-1,NULL,false);
+    newOption->add_menu_option("License",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/file-text.png"),-1,NULL,false);
+    newOption->add_menu_option("About Game Pencil Engine",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/pencil.png"),-1,NULL,false,true,false,kb_ctrl,kb_b);
     //newOption->add_menu_option("Licenses",-1,27,mainMenuSprite,false);
     GPE_Main_TabManager->set_coords(-1,mainButtonBar->get_y2pos()+GENERAL_GPE_PADDING );
-    mainResourceBar = GPE_MAIN_GUI->init_resourcebar();
+    GPE_MAIN_GUI->init_resourcebar();
     //main resource bar elements
 
     country_language_image = new GPE_Texture();
@@ -9873,10 +7342,10 @@ GPE_Editor_State::GPE_Editor_State()
             MAIN_START_PAGE->set_name("Start Page");
         }
 
-        /*if( GPE_MAIN_GUI->showTipsAtStartUp)
+        if( GPE_MAIN_GUI->showTipsAtStartUp)
         {
             GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
-            input->handle(true);
+            input->handle_input(true);
             process_input();
             input->reset_all_input();
             apply_logic();
@@ -9886,7 +7355,7 @@ GPE_Editor_State::GPE_Editor_State()
             {
                 GPE_Show_Tip_Of_Day();
             }
-        }*/
+        }
 
 
         /*
@@ -9908,15 +7377,14 @@ GPE_Editor_State::~GPE_Editor_State()
         delete GPE_MAIN_GUI;
         GPE_MAIN_GUI = NULL;
     }
-    if( GPE_RadioButton_GFX!=NULL)
-    {
-        delete GPE_RadioButton_GFX;
-        GPE_RadioButton_GFX = NULL;
-    }
 }
 
 void GPE_Editor_State::process_input()
 {
+    if( input->check_mouse_released( mb_anybutton ) )
+    {
+        GPE_MAIN_HIGHLIGHTER->clear_suggestions();
+    }
     GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
     //if( MAIN_RENDERER->window_changed() )
     {
@@ -9955,51 +7423,19 @@ void GPE_Editor_State::process_input()
                 }
             }
         }
-        if( mainResourceBar->is_visible() )
-        {
-            GPE_Main_TabManager->set_width(SCREEN_WIDTH-mainResourceBar->get_width() );
-        }
-        else
-        {
-            GPE_Main_TabManager->set_width(SCREEN_WIDTH );
-        }
-        if( RENDER_RESOURCEBAR_LEFT)
-        {
-            mainResourceBar->set_coords( 0,mainButtonBar->get_y2pos()+GENERAL_GPE_PADDING );
-            if( mainResourceBar->is_visible() )
-            {
-                GPE_Main_TabManager->set_coords(mainResourceBar->get_x2pos(),mainButtonBar->get_y2pos()+GENERAL_GPE_PADDING );
-            }
-            else
-            {
-                GPE_Main_TabManager->set_coords(0,mainButtonBar->get_y2pos() +GENERAL_GPE_PADDING);
-            }
-        }
-        else
-        {
-            GPE_Main_TabManager->set_coords(0,mainButtonBar->get_y2pos() +GENERAL_GPE_PADDING);
-            mainResourceBar->set_coords( GPE_Main_TabManager->get_x2pos(),mainButtonBar->get_y2pos()+GENERAL_GPE_PADDING );
-        }
 
         GPE_Main_Statusbar->set_coords(0,SCREEN_HEIGHT-24 );
         GPE_Main_Statusbar->set_height( 24 );
         GPE_Main_Statusbar->set_width(SCREEN_WIDTH);
 
-        if( GPE_Main_Logs->beingResized==false)
+        if( GPE_DOCK!=NULL )
         {
-            GPE_Main_Logs->set_coords(0,SCREEN_HEIGHT-GPE_Main_Statusbar->get_height()-GPE_Main_Logs->get_height() );
+            GPE_DOCK->set_coords( 0,mainButtonBar->get_y2pos() + GENERAL_GPE_PADDING);
+            GPE_DOCK->set_width( SCREEN_WIDTH );
+            GPE_DOCK->set_height( SCREEN_HEIGHT-GPE_DOCK->get_ypos() - GPE_Main_Statusbar->get_height() );
+            GPE_DOCK->setup_dock();
         }
-        GPE_Main_Logs->set_width(SCREEN_WIDTH);
-
-        mainResourceBar->set_height(SCREEN_HEIGHT-mainButtonBar->get_y2pos() -GPE_Main_Statusbar->get_height()-GPE_Main_Logs->get_height()-GENERAL_GPE_PADDING);
-        GPE_Main_TabManager->set_height(SCREEN_HEIGHT-mainButtonBar->get_y2pos()-GPE_Main_Statusbar->get_height()-GPE_Main_Logs->get_height()- GENERAL_GPE_PADDING);
-        /*
-        mainResourceBar->set_height(SCREEN_HEIGHT-mainButtonBar->get_y2pos() -32-GENERAL_GPE_PADDING);
-        GPE_Main_TabManager->set_height(SCREEN_HEIGHT-mainButtonBar->get_y2pos()-32- GENERAL_GPE_PADDING);
-        */
-
     }
-
 }
 
 void GPE_Editor_State::apply_logic()
@@ -10015,40 +7451,37 @@ void GPE_Editor_State::apply_logic()
             {
                 switch( mainButtonBar->selectedOption)
                 {
-                    case 0:
-                        GPE_Main_TabManager->add_new_tab(PROJECT_BROWSER_PAGE);
+                case 1:
+                    GPE_MAIN_GUI->launch_new_project();
                     break;
-                    case 1:
-                        GPE_MAIN_GUI->launch_new_project();
-                    break;
-                    case 2:
-                        GPE_MAIN_GUI->open_new_project();
+                case 2:
+                    GPE_MAIN_GUI->open_new_project();
                     break;
 
-                    case 3:
-                        GPE_MAIN_GUI->save_current_project();
+                case 3:
+                    GPE_MAIN_GUI->save_current_project();
                     break;
 
-                    case 4:
-                        GPE_MAIN_GUI->save_all_projects();
+                case 4:
+                    GPE_MAIN_GUI->save_all_projects();
                     break;
 
-                    case 5:
-                        if( CURRENT_PROJECT!=NULL && CURRENT_PROJECT->RESC_PROJECT_SETTINGS!=NULL )
-                        {
-                            GPE_Main_TabManager->add_new_tab(CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource() );
-                            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource();
-                            tProjectProps->projectSettingsTabBar->open_tab("Platforms");
-                        }
+                case 5:
+                    if( CURRENT_PROJECT!=NULL && CURRENT_PROJECT->RESC_PROJECT_SETTINGS!=NULL )
+                    {
+                        GPE_Main_TabManager->add_new_tab(CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource() );
+                        projectPropertiesResource * tProjectProps = (projectPropertiesResource *)CURRENT_PROJECT->RESC_PROJECT_SETTINGS->get_held_resource();
+                        tProjectProps->projectSettingsBar->set_selected_option("Platforms");
+                    }
                     break;
 
-                    case 6:
-                        if( CURRENT_PROJECT!=NULL && CURRENT_PROJECT->RESC_PROJECT_SETTINGS!=NULL )
-                        {
-                            CURRENT_PROJECT->export_and_play_native();
-                        }
+                case 6:
+                    if( CURRENT_PROJECT!=NULL && CURRENT_PROJECT->RESC_PROJECT_SETTINGS!=NULL )
+                    {
+                        CURRENT_PROJECT->export_and_play_native();
+                    }
                     break;
-                    default:
+                default:
 
                     break;
                 }
@@ -10076,32 +7509,37 @@ void GPE_Editor_State::render()
     bool forceRedraw = false;
     if( input->input_received() )
     {
-        //gpe->render_rectangle( 0,0,SCREEN_WIDTH,SCREEN_HEIGHT,c_black,false,255);
         forceRedraw = true;
     }
-    if( MAIN_EDITOR_SETTINGS!=NULL)
+    else if( MAIN_EDITOR_SETTINGS!=NULL)
     {
         if( MAIN_EDITOR_SETTINGS->forceFrameRedraw!=NULL && MAIN_EDITOR_SETTINGS->forceFrameRedraw->is_clicked() )
         {
             forceRedraw = true;
-            GPE_MAIN_THEME->render_background(NULL, NULL);
         }
     }
     /*else if( GPE_FOUND_OS==GPE_IDE_LINUX )
     {
-        gpe->render_rectangle( 0,0,SCREEN_WIDTH,SCREEN_HEIGHT,c_black,false,255);
+        gcanvas->render_rectangle( 0,0,SCREEN_WIDTH,SCREEN_HEIGHT,c_black,false,255);
          forceRedraw = true;
     }*/
 
     if( forceRedraw )
     {
+        gcanvas->render_rectangle( 0,0,SCREEN_WIDTH,SCREEN_HEIGHT,c_black,false,255);
+        GPE_MAIN_THEME->render_background(NULL, NULL);
+
         if( mainButtonBar!=NULL  )
         {
-            //gpe->render_rectangle( 0,0,SCREEN_WIDTH,GPE_Main_TabManager->get_ypos(),GPE_MAIN_THEME->Program_Header_Color,false);
+            //gcanvas->render_rectangle( 0,0,SCREEN_WIDTH,GPE_Main_TabManager->get_ypos(),GPE_MAIN_THEME->Program_Header_Color,false);
             mainButtonBar->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA,forceRedraw);
         }
     }
     GPE_MAIN_GUI->render_foreground_engine(forceRedraw);
+    //for( int i = 0; i < 100; i++)
+    {
+        gcanvas->render_triangle_color(input->mouse_x,input->mouse_y,input->mouse_x,input->mouse_y+256,input->mouse_x+256,input->mouse_y-360,c_green, 128, false );
+    }
     //MAIN_RENDERER->update_renderer();
     /*
     //Pending language support
@@ -10121,17 +7559,16 @@ int modify_folder_images(std::string folderLocation, int modifcationType)
         GPE_FileDirectory * foundFolder = new GPE_FileDirectory();
         foundFolder->open_directory_sorted(folderLocation);
 
-        GPE_Color * colorToRemove = NULL;
+        GPE_Color * colorToRemove = c_fuchsia->duplicate_color();
         bool continueWithAction = false;
         imagesModifiedCount = 0;
         if( foundFolder->get_count() > 0 )
         {
             if( modifcationType==0)
             {
-                colorToRemove = GPE_Get_Color_PopUp("Image Background Color To Remove",c_fuchsia);
-                if( colorToRemove!=NULL)
+                if( GPE_Change_Color_PopUp("Image Background Color To Remove",colorToRemove) )
                 {
-                    if( display_get_prompt("Are you sure you want to erase this Color from all images in this folder?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
+                    if( GPE_Display_Basic_Prompt("Are you sure you want to erase this Color from all images in this folder?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
                     {
                         continueWithAction = true;
                     }
@@ -10139,14 +7576,14 @@ int modify_folder_images(std::string folderLocation, int modifcationType)
             }
             else if( modifcationType==1 )
             {
-                if( display_get_prompt("Are you sure you want to invert your all images in this folder?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
+                if( GPE_Display_Basic_Prompt("Are you sure you want to invert your all images in this folder?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
                 {
                     continueWithAction = true;
                 }
             }
             else if( modifcationType==2 )
             {
-                if( display_get_prompt("Are you sure you want to grayscale all images in this folder?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
+                if( GPE_Display_Basic_Prompt("Are you sure you want to grayscale all images in this folder?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
                 {
                     continueWithAction = true;
                 }
@@ -10165,29 +7602,30 @@ int modify_folder_images(std::string folderLocation, int modifcationType)
                         if( tempFile->get_type()=="bmp" || tempFile->get_type()=="png")
                         {
                             newImageName = folderLocation+"/"+tempFile->get_name();
-                            oTempSurface = load_surface_image( newImageName );
+                            oTempSurface = gpe_sdl->load_surface_image( newImageName );
                             if( oTempSurface->w > 0 && oTempSurface->h > 0)
                             {
                                 nTempSurface = NULL;
                                 if( oTempSurface!=NULL)
                                 {
-                                    record_error("Modifying image at: "+newImageName+".");
+                                    GPE_Report("Modifying image at: "+newImageName+".");
 
-                                    displayMessageTitle = "Modifying Image";
-                                    displayMessageSubtitle = tempFile->get_name();;
-                                    displayMessageString = "...";
-                                    display_user_messaage();
+                                    if( GPE_LOADER != NULL )
+                                    {
+                                        GPE_LOADER->update_messages( "Modifying Image", tempFile->get_name(),"Please wait..." );
+                                    }
+
                                     if( modifcationType==0)
                                     {
-                                        nTempSurface=surface_remove_color(oTempSurface,colorToRemove->get_sdl_color() );
+                                        nTempSurface= gpe_sdl->surface_remove_color(oTempSurface,colorToRemove->get_sdl_color() );
                                     }
                                     else if( modifcationType==1 )
                                     {
-                                        nTempSurface=surface_invert(oTempSurface);
+                                        nTempSurface= gpe_sdl->surface_invert(oTempSurface);
                                     }
                                     else if( modifcationType==2 )
                                     {
-                                        nTempSurface=surface_grayscale(oTempSurface);
+                                        nTempSurface= gpe_sdl->surface_grayscale(oTempSurface);
                                     }
                                     if( nTempSurface!=NULL)
                                     {
@@ -10214,289 +7652,28 @@ int modify_folder_images(std::string folderLocation, int modifcationType)
         }
         foundFolder->close_directory();
         delete foundFolder;
+        if( colorToRemove!=NULL)
+        {
+            delete colorToRemove;
+            colorToRemove = NULL;
+        }
     }
     return imagesModifiedCount;
 }
 
 
-int clean_folder(std::string folderName)
+
+bool GPE_Editor_Init( int argc, char* args[] )
 {
-    GPE_FileDirectory * dir = new GPE_FileDirectory();
-    GPE_File * file = NULL;
-    int iFile = 0;
-    int iDirectory = 0;
-
-    std::string fileToClick = "";
-    std::vector< std::string > foldersToDelete;
-    foldersToDelete.push_back(folderName);
-    std::string currentFolderToClear = folderName;
-    int filesDeletedCount = 0;
-    if( dir!=NULL)
+    GPE_Report("Starting GPE Editor...");
+    GPE_Editor_Init_Globals();
+    GPE_Report( "Starting GUI..." );
+    if( !PAW_GUI_START() )
     {
-        while( (int)foldersToDelete.size() > 0 )
-        {
-            currentFolderToClear = foldersToDelete[0];
-            dir->open_directory(currentFolderToClear);
-            for (iFile = (int)dir->get_count()-1; iFile>=0; iFile--)
-            {
-                file = dir->get_file(iFile);
-                if( file!=NULL)
-                {
-                    fileToClick = file->get_name();
-                    if( fileToClick!="." && fileToClick!="..")
-                    {
-                        fileToClick = currentFolderToClear+"/"+fileToClick;
-                        if( file->is_directory() )
-                        {
-                            foldersToDelete.push_back(fileToClick );
-                        }
-                        else
-                        {
-                            remove(fileToClick.c_str() );
-                            filesDeletedCount++;
-                        }
-                    }
-                }
-            }
-            for( iDirectory = (int)foldersToDelete.size()-1; iDirectory >=0; iDirectory--)
-            {
-                if( currentFolderToClear==foldersToDelete.at(iDirectory) )
-                {
-                    foldersToDelete.erase( foldersToDelete.begin()+iDirectory);
-                }
-            }
-        }
-        delete dir;
-        dir = NULL;
-        return filesDeletedCount;
+        GPE_Report("Unable to start Paw_GUI LIBRARY!\n");
+        return false;
     }
-    return 0;
-}
-
-bool copy_folder(std::string folderName, std::string targetFolder, bool copySubFolders)
-{
-    if( path_exists(folderName) && path_exists(targetFolder) )
-    {
-        GPE_FileDirectory * dir = new GPE_FileDirectory();
-        GPE_File * file = NULL;
-        std::string currentFileName = "";
-        int iFile = 0;
-        int iDirectory = 0;
-        if( dir!=NULL)
-        {
-            dir->open_directory(folderName);
-            for (iFile = 0; iFile < (int)dir->get_count(); iFile++)
-            {
-                file = dir->get_file(iFile);
-                if( file!=NULL)
-                {
-                    currentFileName = file->get_name();
-                    if( currentFileName!="." && currentFileName!="..")
-                    {
-                        displayMessageString = "Copying "+currentFileName;
-                        display_user_messaage();
-                        currentFileName = folderName+"/"+currentFileName;
-                        if( file->is_directory() )
-                        {
-                            if( copySubFolders)
-                            {
-                                create_directory(currentFileName);
-                                copy_folder( currentFileName, targetFolder+"/"+ file->get_name(), true );
-                            }
-                        }
-                        else
-                        {
-
-                            copy_file(currentFileName,targetFolder+"/"+ file->get_name() );
-                        }
-                    }
-                }
-            }
-            delete dir;
-            dir = NULL;
-            return true;
-        }
-    }
-    return false;
-}
-
-
-std::string get_user_settings_folder()
-{
-    char* homeDir = getenv("%UserProfile%");
-    std::string foundPath = "";
-    bool useProgramFolder = false;
-    if( homeDir==NULL)
-    {
-        homeDir = getenv("home");
-        if( homeDir==NULL)
-        {
-            homeDir = getenv("HOME");
-            if( homeDir==NULL)
-            {
-                homeDir = getenv("homepath");
-                if( homeDir==NULL)
-                {
-                    foundPath = APP_DIRECTORY_NAME;
-                }
-                else
-                {
-                    foundPath = homeDir;
-                }
-            }
-            else
-            {
-                foundPath = homeDir;
-            }
-        }
-        else
-        {
-            foundPath = homeDir;
-        }
-    }
-    else
-    {
-        foundPath = homeDir;
-    }
-
-    if( path_exists(foundPath) )
-    {
-        std::string appDataPath = foundPath;
-        if( GPE_FOUND_OS==GPE_IDE_WINDOWS)
-        {
-            appDataPath = foundPath+"/AppData";
-            if( create_directory(appDataPath)!=-1)
-            {
-                foundPath = appDataPath;
-                appDataPath = foundPath+"/Roaming";
-                if( create_directory(appDataPath)!=-1)
-                {
-                    foundPath = appDataPath;
-                    appDataPath = foundPath+"/PawByte";
-                    if( create_directory(appDataPath)!=-1)
-                    {
-                        foundPath = appDataPath;
-                        appDataPath = foundPath+"/GPE_Editor";
-                        if( create_directory(appDataPath)!=-1)
-                        {
-                            foundPath = appDataPath;
-                        }
-                    }
-                    else
-                    {
-                        useProgramFolder = true;
-                    }
-                }
-                else
-                {
-                    useProgramFolder = true;
-                }
-            }
-            else
-            {
-                useProgramFolder = true;
-            }
-        }
-        else if( GPE_FOUND_OS==GPE_IDE_LINUX)
-        {
-            appDataPath = foundPath+"/.PawByte";
-            if( create_directory(appDataPath)!=-1)
-            {
-                foundPath = appDataPath;
-                appDataPath = foundPath+"/GPE_Editor";
-                if( create_directory(appDataPath)!=-1)
-                {
-                    foundPath = appDataPath;
-                }
-            }
-        }
-        else if( GPE_FOUND_OS==GPE_IDE_MAC)
-        {
-            appDataPath = foundPath+"/~/Library/Preferences";
-            if( create_directory(appDataPath)!=-1)
-            {
-                foundPath = appDataPath;
-                appDataPath = foundPath+"/PawByte";
-                if( create_directory(appDataPath)!=-1)
-                {
-                    foundPath = appDataPath;
-                    appDataPath = foundPath+"/GPE_Editor";
-                    if( create_directory(appDataPath)!=-1)
-                    {
-                        foundPath = appDataPath;
-                    }
-                }
-            }
-        }
-        else
-        {
-            foundPath = APP_DIRECTORY_NAME.c_str();
-            useProgramFolder = true;
-        }
-    }
-    else
-    {
-        useProgramFolder = true;
-    }
-    if( useProgramFolder)
-    {
-        foundPath = APP_DIRECTORY_NAME.c_str();
-    }
-    else
-    {
-        foundPath = foundPath+"/";
-    }
-    return foundPath;
-}
-
-std::string get_user_temp_folder()
-{
-    std::string foundPath = get_user_settings_folder();
-    std::string tempFolderString = foundPath;
-    foundPath = foundPath+"/temp_files";
-    if( create_directory(foundPath)!=-1)
-    {
-        tempFolderString = foundPath+"/";
-    }
-    return tempFolderString;
-}
-
-std::string get_user_screenshot_folder()
-{
-    std::string foundPath = get_user_settings_folder();
-    std::string tempScreenshotString = foundPath;
-    foundPath = foundPath+"/screenshots";
-    if( create_directory(foundPath)!=-1)
-    {
-        tempScreenshotString = foundPath+"/";
-    }
-    return tempScreenshotString;
-}
-
-
-void record_error(std::string stringIn,std::string stringIn2,std::string stringIn3,std::string stringIn4, std::string stringIn5, std::string stringIn6, std::string stringIn7, std::string stringIn8, std::string stringIn9)
-{
-    std::string errorFileName = get_user_settings_folder()+"gpe_error_log.txt";
-    stringIn+=stringIn2;
-    stringIn+=stringIn3;
-    stringIn+=stringIn4;
-    stringIn+=stringIn5;
-    stringIn+=stringIn6;
-    stringIn+=stringIn7;
-    stringIn+=stringIn8;
-    stringIn+=stringIn9;
-
-    std::cout << stringIn+" \n";
-    std::ofstream filestr(errorFileName.c_str(), std::ios::out | std::ios::app);
-    if( filestr.is_open() )
-    {
-        filestr << stringIn+" \n";
-        filestr.close();
-    }
-}
-
-bool GPE_Editor_Init()
-{
+    GPE_MAIN_GUI = new GPE_Gui_Engine();
     //If everything initialized fine
     GPE_Main_TabManager = new GPE_TabManager();
 
@@ -10518,9 +7695,9 @@ bool GPE_Editor_Init()
     MAIN_START_PAGE->set_global_rid(-4);
     MAIN_START_PAGE->set_name("Start Page");
 
-    PROJECT_BROWSER_PAGE = new gamePencilProjectBrowserResource();
-    PROJECT_BROWSER_PAGE->set_global_rid(-5);
-    PROJECT_BROWSER_PAGE->set_name("Project Browser");
+    MAIN_EXTRA_TOOLS = new gamePencilExtraTools();
+    MAIN_EXTRA_TOOLS->set_global_rid(-5);
+    MAIN_EXTRA_TOOLS->set_name("Extra Tools");
 
     GPE_JS_COMPILER_SETTINGS = new gameJSCompilerSettingsResource();
     GPE_JS_COMPILER_SETTINGS->set_global_rid(-6);
@@ -10529,6 +7706,10 @@ bool GPE_Editor_Init()
     GPE_CPP_COMPILER_SETTINGS = new gameCPPCompilerSettingsResource();
     GPE_CPP_COMPILER_SETTINGS->set_global_rid(-7);
     GPE_CPP_COMPILER_SETTINGS->set_name("C++ Compiler Settings");
+
+    MAIN_GameController_TESTER = new gamePencilgamecontrollerTesterResource();
+    MAIN_GameController_TESTER->set_global_rid(-8);
+    MAIN_GameController_TESTER->set_name("Game Controller Tester");
 
     //GPE_Main_TabManager->add_new_tab(MAIN_START_PAGE);
 
@@ -10543,64 +7724,396 @@ bool GPE_Editor_Init()
     GPE_Main_Logs->set_height(32);
 
     GPE_MAIN_HIGHLIGHTER = new GPE_Syntax_Highlighter();
+    GPE_Report("Adding Docking System...");
+    GPE_DOCK = new gpeEditorDock();
+    GPE_DOCK->add_default_panel("Editor",DOCK_TOP_LEFT, true );
+    GPE_DOCK->add_default_panel("Inspector",DOCK_BOTTOM_LEFT, true );
+    GPE_DOCK->add_default_panel("Resources",DOCK_TOP_RIGHT, true );
+    GPE_DOCK->add_default_panel("Tilesheet",DOCK_BOTTOM_RIGHT, true );
+    GPE_DOCK->add_default_panel("Grid Settings",DOCK_BOTTOM_RIGHT, true );
+    GPE_DOCK->reset_dock();
+    GPE_Report("Docking System added...");
+
+    spm = new GPE_SceneEditorHelper();
+    gpe->set_fps( FPS_CAP );
+
+    GPE_NextProgramState = STATE_NULL;
+    GPE_ProgramStateId = STATE_GPE_EDITOR;
+    GPE_IS_LOADING = false;
+    currentState = new GPE_Editor_State();
+
+    //Opens projects based on args[0] being the application name.
+    if( argc > 1)
+    {
+        for( int iArgc = 1; iArgc <argc; iArgc++ )
+        {
+            GPE_MAIN_GUI->open_project( args[iArgc] );
+            GPE_Report( args[iArgc] );
+        }
+    }
+    else if( MAIN_EDITOR_SETTINGS!=NULL && MAIN_EDITOR_SETTINGS->launchLastProjectBox!=NULL )
+    {
+        if( MAIN_EDITOR_SETTINGS->launchLastProjectBox->is_clicked() )
+        {
+            int iRPList = 0;
+            int maxRPList = GPE_MAIN_GUI->get_recent_project_list_size();
+            if( maxRPList > 0 )
+            {
+                if( file_exists(GPE_MAIN_GUI->get_recent_project_name(0) ) )
+                {
+                    GPE_MAIN_GUI->open_project( GPE_MAIN_GUI->get_recent_project_name(0) );
+                }
+            }
+        }
+    }
+
+    gpe->set_fps( FPS_CAP );
     return true;
+}
+
+void GPE_Editor_Init_Globals()
+{
+    //Let's start off with the build names
+    for(int bI = 0; bI < GPE_BUILD_OPTIONS; bI++)
+    {
+        GPE_BUILD_NAMES[bI] = "";
+    }
+    GPE_BUILD_NAMES[GPE_BUILD_HTML5] = "HTML5";
+    GPE_BUILD_NAMES[GPE_BUILD_WINDOWS] = "WINDOWS";
+    GPE_BUILD_NAMES[GPE_BUILD_MAC] = "OSX";
+    GPE_BUILD_NAMES[GPE_BUILD_LINUX] = "LINUX";
+    GPE_BUILD_NAMES[GPE_BUILD_WIIU] = "WIIU";
+    GPE_BUILD_NAMES[GPE_BUILD_XBOXONE] = "XBOXONE";
+    GPE_BUILD_NAMES[GPE_BUILD_PS4] = "PS4";
+    GPE_BUILD_NAMES[GPE_BUILD_PSVITA] = "PSVITA";
+    GPE_BUILD_NAMES[GPE_BUILD_ANDROID] = "ANDROID";
+    GPE_BUILD_NAMES[GPE_BUILD_IOS] = "IOS";
+    GPE_BUILD_NAMES[GPE_BUILD_WINDOWS_PHONE] = "WINDOWS PHONE";
+
+    //Sprite Labels we will use
+    spriteDataLabels[sprFrameCount] = "Frame Count";
+    spriteDataLabels[sprFrameWidth] = "Frame Width";
+    spriteDataLabels[sprFrameHeight] = "Frame Height";
+    spriteDataLabels[sprHPixelOffset] = "Horizontal Pixel  Offset";
+    spriteDataLabels[sprVPixelOffset] = "Vertical Pixel Offset";
+    spriteDataLabels[sprHPixelPadding] = "Horizontal Frame Padding";
+    spriteDataLabels[sprVPixelPadding] = "Vertictal Frame Padding";
+
+    //Tilesheet labels we will use
+    tsDataLabels[0] = "Width";
+    tsDataLabels[1] = "Height";
+    tsDataLabels[2] = "X-Offset";
+    tsDataLabels[3] = "Y-Offset";
+    tsDataLabels[4] = "H-Padding";
+    tsDataLabels[5] = "Y-Padding";
+
+    //Font Popup variables
+    POPUP_FONT_SIZE_WIDTH = 12;
+    POPUP_FONT_SIZE_HEIGHT = 12;
+    if( FONT_POPUP!=NULL)
+    {
+        FONT_POPUP->get_metrics("A",&POPUP_FONT_SIZE_WIDTH,&POPUP_FONT_SIZE_HEIGHT);
+    }
+    //Object names
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[0] = "Constructor";
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[1] = "Destructor";
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[2] = "Start Frame";
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[3] = "Main Logic";
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[4] = "Sprite Done";
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[5] = "End Frame";
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[6] = "PRE-Render";
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[7] = "Render";
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[8] = "POST-Render";
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[9] = "Render HUD";
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[10] = "";
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[11] = "";
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[12] = "";
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[13] = "";
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[14] = "";
+    DEFAULT_OBJECT_FUNCTIONS_NAMES[15] = "";
+
+    DEFAULT_OBJECT_SPECIALS_NAMES[0] = "Scene Start";
+    DEFAULT_OBJECT_SPECIALS_NAMES[1] = "Scene End";
+    DEFAULT_OBJECT_SPECIALS_NAMES[2] = "Game Start";
+    DEFAULT_OBJECT_SPECIALS_NAMES[3] = "Game Exit";
+    DEFAULT_OBJECT_SPECIALS_NAMES[4] = "Player Died";
+    DEFAULT_OBJECT_SPECIALS_NAMES[5] = "Game Over";
+
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[0] = "Constructor";
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[1] = "self_obliterate";
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[2] = "start_frame_logic";
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[3] = "perform_object_logic";
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[4] = "animation_concluded";
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[5] = "end_frame_logic";
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[6] = "render_under";
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[7] = "render_self";
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[8] = "render_above";
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[9] = "render_hud";
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[10] = "";
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[11] = "";
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[12] = "";
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[13] = "";
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[14] = "";
+    DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[15] = "";
+
+
+    DEFAULT_OBJECT_SPECIALS_HTML5_NAMES[0] = "scene_start";
+    DEFAULT_OBJECT_SPECIALS_HTML5_NAMES[1] = "scene_end";
+    DEFAULT_OBJECT_SPECIALS_HTML5_NAMES[2] = "game_start";
+    DEFAULT_OBJECT_SPECIALS_HTML5_NAMES[3] = "game_exit";
+    DEFAULT_OBJECT_SPECIALS_HTML5_NAMES[4] = "player_died";
+    DEFAULT_OBJECT_SPECIALS_HTML5_NAMES[5] = "game_over";
+
+    //Scene globals
+    DEFAULT_SCENE_SUBEDITOR_NAMES[0] = "Settings";
+    DEFAULT_SCENE_SUBEDITOR_NAMES[1] = "Layers";
+    DEFAULT_SCENE_SUBEDITOR_NAMES[2] = "Extras";
+    DEFAULT_SCENE_SUBEDITOR_NAMES[3] = "Extras";
+    DEFAULT_SCENE_SUBEDITOR_NAMES[3] = "Extras";
+
+    //Audio type names
+    SUPPORTED_AUDIO_EXT[aacFileName] = "AAC";
+    SUPPORTED_AUDIO_EXT[mp3FileName] = "MP3";
+    SUPPORTED_AUDIO_EXT[oggFileName] = "OGG";
+    SUPPORTED_AUDIO_EXT[wavFileName] = "WAV";
+
+    //Video type names
+    SUPPORTED_VIDEO_EXT[0] = "MP4";
+    SUPPORTED_VIDEO_EXT[1] = "WEBM";
+    SUPPORTED_VIDEO_EXT[2] = "OGG";
+
+    //Font type names
+    SUPPORTED_FONT_EXT[FONT_EOT]  = "EOT";
+    SUPPORTED_FONT_EXT[FONT_SVG]  = "SVG";
+    SUPPORTED_FONT_EXT[FONT_OTF] = "OTF";
+    SUPPORTED_FONT_EXT[FONT_TTF]  = "TTF";
+    SUPPORTED_FONT_EXT[FONT_WOFF] = "WOFF";
+    SUPPORTED_FONT_EXT[FONT_WOFF2] = "WOFF2";
 }
 
 bool GPE_Editor_Quit()
 {
-    record_error("Closing all tabs....");
+    GPE_Report("Closing all tabs....");
     if( GPE_Main_TabManager!=NULL)
     {
         GPE_Main_TabManager->close_all_tabs();
     }
-    record_error("Deleting Settings....");
+    GPE_Report("Deleting Settings....");
     if( MAIN_EDITOR_SETTINGS!=NULL)
     {
         MAIN_EDITOR_SETTINGS->save_resource();
         delete MAIN_EDITOR_SETTINGS;
         MAIN_EDITOR_SETTINGS = NULL;
     }
-    record_error("Deleting about page....");
+    GPE_Report("Deleting about page....");
     if( MAIN_ABOUT_PAGE!=NULL)
     {
         delete MAIN_ABOUT_PAGE;
         MAIN_ABOUT_PAGE = NULL;
     }
-    record_error("Deleting help page....");
+    GPE_Report("Deleting help page....");
     if( MAIN_HELP_PAGE!=NULL)
     {
         delete MAIN_HELP_PAGE;
         MAIN_HELP_PAGE = NULL;
     }
-    record_error("Deleting start page....");
+    GPE_Report("Deleting start page....");
     if( MAIN_START_PAGE!=NULL)
     {
         delete MAIN_START_PAGE;
         MAIN_START_PAGE = NULL;
     }
-    record_error("Deleting context menu....");
+    GPE_Report("Deleting extra tools....");
+    if( MAIN_EXTRA_TOOLS!=NULL)
+    {
+        delete MAIN_EXTRA_TOOLS;
+        MAIN_EXTRA_TOOLS = NULL;
+    }
+    GPE_Report("Deleting context menu....");
     if( MAIN_CONTEXT_MENU!=NULL)
     {
         delete MAIN_CONTEXT_MENU;
         MAIN_CONTEXT_MENU = NULL;
     }
-    record_error("Deleting toolbar recent projects....");
+    GPE_Report("Deleting toolbar recent projects....");
     if( MAIN_TOOLBAR_RECENT_PROJECTS!=NULL)
     {
         delete MAIN_TOOLBAR_RECENT_PROJECTS;
         MAIN_TOOLBAR_RECENT_PROJECTS = NULL;
     }
-    record_error("Deleting mini-compiler....");
-    if( GPE_MAIN_HIGHLIGHTER!=NULL)
-    {
-        delete GPE_MAIN_HIGHLIGHTER;
-        GPE_MAIN_HIGHLIGHTER = NULL;
-    }
-    record_error("Deleting gui....");
+
+    GPE_Report("Deleting gui....");
     if( GPE_MAIN_GUI!=NULL)
     {
         GPE_MAIN_GUI->save_settings();
         delete GPE_MAIN_GUI;
         GPE_MAIN_GUI = NULL;
+    }
+}
+
+void GPE_Show_Tip_Of_Day()
+{
+    if( GPE_MAIN_GUI!=NULL && MAIN_RENDERER!=NULL )
+    {
+        gpe->end_loop();
+        RESOURCE_TO_DRAG = NULL;
+        GPE_Report("Showing tip of the day");
+        std::string popUpCaption = "Tip of the Day";
+        GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
+        MAIN_OVERLAY->process_cursor();
+        GPE_MAIN_GUI->reset_gui_info();
+        MAIN_OVERLAY->take_frozen_screenshot( );
+
+        int promptBoxWidth = 544;
+        int promptBoxHeight = 384;
+        GPE_Rect elementBox;
+
+        bool exitOperation = false;
+        input->reset_all_input();
+        int currentTipId = GPE_MAIN_GUI->get_random_tip();
+        if( currentTipId < 0 || currentTipId > GPE_MAIN_GUI->get_tip_count() )
+        {
+            currentTipId = 0;
+        }
+        std::string currentTipString = GPE_MAIN_GUI->get_tip(currentTipId);
+
+        GPE_Label_Title * doYouKnowLabel = new GPE_Label_Title("Do you know?","Do you know?");
+        GPE_GuiElementList * showTipList = new GPE_GuiElementList();
+        showTipList->hideXScroll = true;
+        showTipList->hideYScroll = true;
+        GPE_ToolLabelButton * closeButton = new GPE_ToolLabelButton( "Close","");
+        GPE_ToolLabelButton * nextTipButton = new GPE_ToolLabelButton( "Next Tip","");
+        GPE_ToolLabelButton * previousTipButton = new GPE_ToolLabelButton( "Previous Tip","");
+        GPE_CheckBoxBasic * showAtStartUpButton = new GPE_CheckBoxBasic("Show tips at startup","Unclick to not see this popup automatically on start");
+        showAtStartUpButton->set_clicked( GPE_MAIN_GUI->showTipsAtStartUp);
+        GPE_ToolLabelButton * randomTipButton = new GPE_ToolLabelButton( "Random Tip","");
+        GPE_WrappedTextArea * tipParagraph = new GPE_WrappedTextArea();
+        tipParagraph->set_string(currentTipString);
+        tipParagraph->set_width(512-GENERAL_GPE_PADDING*2);
+        tipParagraph->set_height(96);
+        MAIN_RENDERER->reset_viewpoint();
+        //MAIN_OVERLAY->render_frozen_screenshot( );
+        while(exitOperation==false)
+        {
+            GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
+            //GPE_Report("Processing tip of the day");
+            gpe->start_loop();
+
+            elementBox.x = (SCREEN_WIDTH-promptBoxWidth)/2;
+            elementBox.y = (SCREEN_HEIGHT-promptBoxHeight)/2;
+            elementBox.w = promptBoxWidth;
+            elementBox.h = promptBoxHeight;
+            showTipList->set_coords(elementBox.x, elementBox.y+32);
+            showTipList->set_width(elementBox.w);
+            showTipList->set_height(elementBox.h-32);
+            showTipList->barXMargin = GENERAL_GPE_PADDING;
+            showTipList->barYMargin = GENERAL_GPE_PADDING;
+            showTipList->barXPadding = GENERAL_GPE_PADDING*2;
+            showTipList->barYPadding = GENERAL_GPE_PADDING*2;
+
+            GPE_MAIN_GUI->reset_gui_info();
+            showTipList->clear_list();
+            showTipList->add_gui_element(doYouKnowLabel,true);
+            showTipList->add_gui_element(tipParagraph,true);
+            showTipList->add_gui_element(showAtStartUpButton, true);
+            showTipList->add_gui_element(previousTipButton,false);
+            showTipList->add_gui_element(nextTipButton,true);
+            showTipList->add_gui_element(randomTipButton,false);
+            showTipList->add_gui_element(closeButton,false);
+            showTipList->process_self( NULL, NULL );
+
+            if( input->check_keyboard_released(kb_esc) || closeButton->is_clicked() || WINDOW_WAS_JUST_RESIZED )
+            {
+                exitOperation = true;
+            }
+            else if( nextTipButton->is_clicked() )
+            {
+                currentTipId = GPE_MAIN_GUI->get_next_tip(currentTipId);
+                currentTipString = GPE_MAIN_GUI->get_tip(currentTipId);
+                tipParagraph->set_string(currentTipString);
+            }
+            else if( previousTipButton->is_clicked() )
+            {
+                currentTipId = GPE_MAIN_GUI->get_previous_tip(currentTipId);
+                currentTipString = GPE_MAIN_GUI->get_tip(currentTipId);
+                tipParagraph->set_string(currentTipString);
+            }
+            else if( randomTipButton->is_clicked() )
+            {
+                currentTipId = GPE_MAIN_GUI->get_random_tip();
+                currentTipString = GPE_MAIN_GUI->get_tip(currentTipId);
+                tipParagraph->set_string(currentTipString);
+            }
+
+            //GPE_Report("Rendering tip of the day");
+            MAIN_RENDERER->reset_viewpoint();
+            if( !WINDOW_WAS_JUST_RESIZED)
+            {
+                //if( input->windowEventHappendInFrame )
+                {
+                    MAIN_OVERLAY->render_frozen_screenshot( );
+                }
+                //Update screen
+                gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->Main_Box_Color,false);
+
+                gcanvas->render_rectangle( elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+32,GPE_MAIN_THEME->PopUp_Box_Color,false);
+                gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,true);
+                gfs->render_text( elementBox.x+elementBox.w/2,elementBox.y+GENERAL_GPE_PADDING,popUpCaption,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP);
+                showTipList->render_self( NULL, NULL );
+                //GPE_MAIN_GUI-render_gui_info(  true);
+
+                gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
+                MAIN_OVERLAY->process_cursor();
+                GPE_MAIN_GUI->render_gui_info(  true);
+            }
+            gpe->end_loop();
+        }
+
+        if( showTipList!=NULL)
+        {
+            delete showTipList;
+            showTipList = NULL;
+        }
+
+        if( doYouKnowLabel!=NULL)
+        {
+            delete doYouKnowLabel;
+            doYouKnowLabel = NULL;
+        }
+        if( closeButton!=NULL)
+        {
+            delete closeButton;
+            closeButton = NULL;
+        }
+        if( nextTipButton!=NULL)
+        {
+            delete nextTipButton;
+            nextTipButton = NULL;
+        }
+        if( previousTipButton!=NULL)
+        {
+            delete previousTipButton;
+            previousTipButton = NULL;
+        }
+        if( randomTipButton!=NULL)
+        {
+            delete randomTipButton;
+            randomTipButton = NULL;
+        }
+        if( showAtStartUpButton!=NULL)
+        {
+            GPE_MAIN_GUI->showTipsAtStartUp = showAtStartUpButton->is_clicked();
+            GPE_MAIN_GUI->save_settings();
+            delete showAtStartUpButton;
+            showAtStartUpButton = NULL;
+        }
+        if( tipParagraph!=NULL)
+        {
+            delete tipParagraph;
+            tipParagraph = NULL;
+        }
+        input->reset_all_input();
+        MAIN_OVERLAY->render_frozen_screenshot( );
+        MAIN_RENDERER->update_renderer();
     }
 }

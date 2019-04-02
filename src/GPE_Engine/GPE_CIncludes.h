@@ -3,10 +3,10 @@ GPE_CIncludes.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -44,7 +44,11 @@ SOFTWARE.
 #include <vector>
 
 #include "limits.h"
-#include "SDL2/SDL.h"
+#include <SDL.h>
+#include <SDL_version.h>
+#include <SDL_image.h>
+#include <SDL_mixer.h>
+#include <SDL_video.h>
 
 #ifdef _WIN32
 
@@ -56,12 +60,6 @@ SOFTWARE.
 
 #endif
 
-#include "SDL2/SDL_version.h"
-#include "SDL2/SDL_video.h"
-#include "SDL2/SDL_image.h"
-#include "SDL2/SDL_ttf.h"
-#include "SDL2/SDL_mixer.h"
-
 #include <iostream>
 #include <fstream>
 #include <cerrno>
@@ -72,6 +70,6 @@ SOFTWARE.
 int GPE_Gain_OS();
 //File Functions
 void appendToFile(std::string fileName, std::string stringIn,std::string stringIn2="",std::string stringIn3="",std::string stringIn4="", std::string stringIn5="", std::string stringIn6="", std::string stringIn7="", std::string stringIn8="", std::string stringIn9="");
-void record_error(std::string stringIn,std::string stringIn2="",std::string stringIn3="",std::string stringIn4="", std::string stringIn5="", std::string stringIn6="", std::string stringIn7="", std::string stringIn8="", std::string stringIn9="");
+void GPE_Report(std::string stringIn,std::string stringIn2="",std::string stringIn3="",std::string stringIn4="", std::string stringIn5="", std::string stringIn6="", std::string stringIn7="", std::string stringIn8="", std::string stringIn9="");
 
 #endif

@@ -3,10 +3,10 @@ GPE_Input.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,6 +35,7 @@ SOFTWARE.
 #define GPE_Input_H
 
 #include "GPE_CIncludes.h"
+#include "GPE_Functions.h"
 #include "GPE_Timer.h"
 #include <string>
 
@@ -135,7 +136,7 @@ const int kb_minus = 189;
 const int kb_period = 190;
 
 //Mouse constants [ BEGIN ]
-
+const int mb_anybutton = -1;
 const int mb_left = 0;
 const int mb_right = 1;
 const int mb_middle = 2;
@@ -153,8 +154,10 @@ const int gc_joystick_left_x = 0;
 const int gc_joystick_left_y = 1;
 const int gc_joystick_right_x = 2;
 const int gc_joystick_right_y = 3;
-const int gc_joystick_dpad_x = 4;
-const int gc_joystick_dpad_y = 5;
+const int gc_joystick_trigger_left = 4;
+const int gc_joystick_trigger_right = 5;
+const int gc_joystick_dpad_x = 6;
+const int gc_joystick_dpad_y = 7;
 
 const int gc_left = 0;
 const int gc_right = 1;
@@ -178,154 +181,173 @@ const int gc_start = 14;
 const int gc_select = 15;
 const int gc_home = 16;
 const int gc_share = 17;
+
+const double gc_deadzone = 32767.d;
+const int gc_button_count = 25; //way more than enough for a video game controller
+const int gc_axes_count = 16; //also way more than enough for any normal controller
+
 //GameController constants [ END ]
 
-class GPE_InputManager_GameController
+class GPE_GameController
 {
-    private:
-        int controllerType;
-        std::string controllerExtension;
-        std::string detectedDeviceType;
-        std::string deviceType;
-        std::string deviceName;
-        //systemController = IS_NULL;
-        bool isConnected;
-        int mapping;
-        float timestamp;
+private:
+    int controllerType;
+    std::string controllerExtension;
+    std::string detectedDeviceType;
+    std::string deviceType;
+    std::string deviceName;
+    //systemController = IS_NULL;
+    bool isConnected;
+    int mapping;
+    double timestamp;
 
-        static const int button_count = 25; //way more than enough for a video game controller
-        static const int axes_count = 16; //also way more than enough for any normal controller
-        static const int system_axes_count = 0;
-        int touch_mouse_x; //for touch screen enabled controllers
-        int touch_mouse_y;
-        //Controller buttons
-        int prevHit[button_count];
-        int butIsDown[button_count];
-        int butIsPressed[button_count];
-        int butIsReleased[button_count];
-        int butIsLocked[button_count];
-        int buttonsMap[button_count];
-        //Axes / Joysticks
-        int axesMap[axes_count];
-        int axesValues[axes_count];
-    public:
-        SDL_GameController * assignedSDLController;
-        GPE_InputManager_GameController();
-        ~GPE_InputManager_GameController();
-        bool check_connection( );
-        int check_button(int buttonId);
-        int check_button_pressed(int buttonId);
-        int check_button_released(int buttonId);
-        int gamepad_get_axes_count( );
-        std::string get_name( );
-        int find_gamepad_axes_mapping(int axesId );
-        int find_gamepad_button_mapping(int buttonId );
-        bool gamepad_map_axes(int axesId, int newAxesId );
-        bool gamepad_map_button(int buttonId, int newButtonId );
-        void pure_reset();
-        void reset_controller();
-        void set_connected( bool isNowConnected);
-        void set_name( std::string newName);
+    int touch_mouse_x; //for touch screen enabled controllers
+    int touch_mouse_y;
+
+public:
+    //Controller buttons
+    int prevHit[gc_button_count];
+    int butIsDown[gc_button_count];
+    int butIsPressed[gc_button_count];
+    int butIsReleased[gc_button_count];
+    int butIsLocked[gc_button_count];
+    int buttonsMap[gc_button_count];
+    //Axes / Joysticks
+    int axesMap[gc_axes_count];
+    int gc_system_axes_count;
+    double axesValues[gc_axes_count];
+    SDL_Joystick  * assignedSDLController;
+    int sdlJoyId;
+    GPE_GameController();
+    ~GPE_GameController();
+    int check_button(int buttonId);
+    int check_button_pressed(int buttonId);
+    int check_button_released(int buttonId);
+    int gamecontroller_get_axes_count( );
+    std::string get_name( );
+    int find_gamecontroller_axes_mapping(int axesId );
+    int find_gamecontroller_button_mapping(int buttonId );
+    bool gamecontroller_map_axes(int axesId, int newAxesId );
+    bool gamecontroller_map_button(int buttonId, int newButtonId );
+    double get_axis_value( int axisNumber);
+    void handle_input();
+    bool is_connected( );
+    void pure_reset();
+    void reset_controller();
+    void set_connected( bool isNowConnected);
+    void set_name( std::string newName);
+    void setup_default_mapping( bool mapButtons = true , bool mapAxis = true );
 };
 
+const int gc_max_devices = 16; //max of 16 players. Change this if you want manually.
 /**
  * class GPE_InputManager
  *
- * Handles keyboard, gamepad and mouse states
+ * Handles keyboard, gamecontroller and mouse states
  */
+
 class GPE_InputManager
 {
-    public:
-        //Added for gamecontroller support
-        static const int max_controllers = 8; //max of 8 players. Change this if you want manually.
-		GPE_InputManager_GameController * game_controllers[max_controllers];
+private:
+    int currentControllerCount;
+public:
+    bool debugInput;
+    //Added for gamecontroller support
+    bool requireControllerInputToConnect;
+    GPE_GameController * game_controllers[gc_max_devices];
 
-        bool programJustStarted;
-        int programStartTicks;
-        time_t lastTimeScreenResized;
-        bool keyInputReceivedInFrame;
-        bool mouseInputReceivedInFrame;
-        bool mouseMovementInputReceivedInFrame;
-        bool mouseWheelInputReceivedInFrame;
-        bool inputHappenedInFrame;
-        bool windowEventHappendInFrame;
-        char* dropped_filedir;
-        static const int key_count = 256;
-        static const int joy_key_count = 2;
-        static const int mouse_button_count = 7;
-        int binding[key_count];
-        int binding_alt[key_count];
-        int joy_binding[joy_key_count];
-        int mouse_x, mouse_y;
-        bool mouseScrollingUp;
-        bool mouseScrollingDown;
-        bool mouseScrollingLeft;
-        bool mouseScrollingRight;
-        bool backSpaceIsPressed;
-        bool shiftKeyIsPressed;
-        std::string binding_name[key_count];
-        //mouse buttons
-        int prevMouseButton[mouse_button_count];
-        int downMouseButton[mouse_button_count];
-        int pressedMouseButton[mouse_button_count];
-        int releasedMouseButton[mouse_button_count];
-        int doubleClickedMouseButton[mouse_button_count];
-        std::string mouse_button[mouse_button_count];
-        std::vector < std::string >fileDroppedList;
-        bool forceRedrawNeeded;
+    bool invertScrollDirection;
+    bool programJustStarted;
+    int programStartTicks;
+    time_t lastTimeScreenResized;
+    bool keyInputReceivedInFrame;
+    bool mouseInputReceivedInFrame;
+    bool mouseMovementInputReceivedInFrame;
+    bool mouseWheelInputReceivedInFrame;
+    bool inputHappenedInFrame;
+    bool windowEventHappendInFrame;
+    char* dropped_filedir;
+    static const int key_count = 256;
+    static const int joy_key_count = 2;
+    static const int mouse_button_count = 7;
+    int binding[key_count];
+    int binding_alt[key_count];
+    int joy_binding[joy_key_count];
+    int mouse_x, mouse_y;
+    bool mouseScrollingUp;
+    bool mouseScrollingDown;
+    bool mouseScrollingLeft;
+    bool mouseScrollingRight;
+    bool backSpaceIsPressed;
+    bool shiftKeyIsPressed;
+    std::string binding_name[key_count];
+    //mouse buttons
+    int prevMouseButton[mouse_button_count];
+    int downMouseButton[mouse_button_count];
+    int pressedMouseButton[mouse_button_count];
+    int releasedMouseButton[mouse_button_count];
+    int doubleClickedMouseButton[mouse_button_count];
+    std::string mouse_button[mouse_button_count];
+    std::vector < std::string >fileDroppedList;
+    bool forceRedrawNeeded;
 
-        bool done;
+    bool done;
 
-        std::string inkeys;
-        int last_key;
-        int last_button;
-        bool scroll_up;
-        bool scroll_down;
-        GPE_InputManager();
-        ~GPE_InputManager();
-        void defaultQwertyKeyBindings();
-        void loadKeyBindings();
-        void saveKeyBindings();
-        void handle(bool dump_event = false, bool isEmbedded=false);
-        //void handle_modifers( SDLMod mod );
-        void resetScroll();
-        bool anyKeyIsPress();
-        //keyboard arrays
-        bool prev[key_count];
-        bool down[key_count];
-        bool pressed[key_count];
-        bool released[key_count];
-        bool lock[key_count];
-        bool joy_pressed[joy_key_count];
-        bool check_keyboard_only_down(int buttonId = -1 );
-        bool check_keyboard_only_released(int buttonId = -1 );
-        bool check_keyboard_down(int buttonId=-1);
-        bool check_keyboard_pressed(int buttonId=-1);
-        bool check_keyboard_released(int buttonId=-1);
-        //Gamepad related functions [ BEGIN ]
-        bool detect_controllers();
-        bool gamepad_connected(int controllerPos);
-        std::string gamepad_detected_name(int controllerPos);
-        std::string gamepad_name(int controllerPos);
-        int gamepad_get_axes_count(int controllerPos);
-        int find_gamepad_mapping(int controllerPos, int buttonId);
-        int check_gamepad(int controllerPos, int buttonId);
-        int check_gamepad_down(int controllerPos, int buttonId);
-        int check_gamepad_pressed(int controllerPos, int buttonId);
-        int check_gamepad_released(int controllerPos, int buttonId);
-        int find_gamepad_axes_mapping(int controllerPos, int axesId);
-        bool gamepad_map_axes(int controllerPos, int axesId, int newAxesId);
-        int find_gamepad_button_mapping(int controllerPos, int buttonId);
-        bool gamepad_map_button(int controllerPos, int buttonId, int newButtonId);
-        GPE_InputManager_GameController * gamepad_object(int controllerPos);
-        //Gamepad related functions [END ]
-        bool input_received();
-        int move_cursor(int cursor, int maxValue, int rowMax=1);
-        bool check_mouse_doubleclicked(int buttonId=-1);
-        bool check_mouse_down(int buttonId=-1);
-        bool check_mouse_pressed(int buttonId=-1);
-        bool check_mouse_released(int buttonId=-1);
-        void reset_all_input();
+    std::string inkeys;
+    int last_key;
+    int last_button;
+    bool scroll_up;
+    bool scroll_down;
+    GPE_InputManager();
+    ~GPE_InputManager();
+    void defaultQwertyKeyBindings();
+    void loadKeyBindings();
+    void saveKeyBindings();
+    //void handle_modifers( SDLMod mod );
+    void resetScroll();
+    bool anyKeyIsPress();
+    //keyboard arrays
+    bool prev[key_count];
+    bool down[key_count];
+    bool pressed[key_count];
+    bool released[key_count];
+    bool lock[key_count];
+    bool joy_pressed[joy_key_count];
+    bool check_keyboard_only_down(int buttonId = -1 );
+    bool check_keyboard_only_released(int buttonId = -1 );
+    bool check_keyboard_down(int buttonId=-1);
+    bool check_keyboard_pressed(int buttonId=-1);
+    bool check_keyboard_released(int buttonId=-1);
+    //gamecontroller related functions [ BEGIN ]
+    int gamecontroller_count();
+    bool detect_gamecontrollers(  );
+    bool disconnect_gamecontroller( int cId);
+    bool gamecontroller_connected(int gamecontrollerPos);
+    std::string gamecontroller_detected_name(int gamecontrollerPos);
+    std::string gamecontroller_name(int gamecontrollerPos);
+    int gamecontroller_get_axes_count(int gamecontrollerPos);
+    int find_gamecontroller_mapping(int gamecontrollerPos, int buttonId);
+    int check_gamecontroller(int gamecontrollerPos, int buttonId);
+    int check_gamecontroller_down(int gamecontrollerPos, int buttonId);
+    int check_gamecontroller_pressed(int gamecontrollerPos, int buttonId);
+    int check_gamecontroller_released(int gamecontrollerPos, int buttonId);
+    int find_gamecontroller_axes_mapping(int gamecontrollerPos, int axesId);
+    bool gamecontroller_map_axes(int gamecontrollerPos, int axesId, int newAxesId);
+    int find_gamecontroller_button_mapping(int gamecontrollerPos, int buttonId);
+    bool gamecontroller_map_button(int gamecontrollerPos, int buttonId, int newButtonId);
+    double gamecontroller_get_axis_value( int gamecontrollerPos, int axisNumber);
+    GPE_GameController * gamecontroller_object(int gamecontrollerPos);
+    //gamecontroller related functions [END ]
+    bool input_received();
+    bool load_input_settings(std::string alternatePath = "");
+    int move_cursor(int cursor, int maxValue, int rowMax=1);
+    bool check_mouse_doubleclicked(int buttonId=-1);
+    bool check_mouse_down(int buttonId=-1);
+    bool check_mouse_pressed(int buttonId=-1);
+    bool check_mouse_released(int buttonId=-1);
+    void handle_input(bool dump_event = false, bool isEmbedded=false );
+    void reset_all_input();
+    bool setup_new_gamecontroller(int cId );
 };
 
 #endif
