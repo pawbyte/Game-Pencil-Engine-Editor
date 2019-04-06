@@ -1,0 +1,36 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project Game Scene DataFile 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.3
+ResourceName=scn_game
+#     
+SceneMusic=
+SceneStartAudio=
+SceneEndAudio=-1
+LevelWidth=800
+LevelHeight=480
+DefaultTileWidth=32
+DefaultTileHeight=32
+ViewTileGrid=1
+Preload=1
+Isometric=0
+Continuous=0
+BGColor=0,0,0
+GridWidth=32
+GridHeight=32
+GridColor=808080
+GridAlpha=228
+DisplayObjectGrid=1
+[GPE_LayerContainer=0,]
+
+[/GPE_LayerContainer] 
+[GPE_LayerContainer=1,]
+
+[/GPE_LayerContainer] 

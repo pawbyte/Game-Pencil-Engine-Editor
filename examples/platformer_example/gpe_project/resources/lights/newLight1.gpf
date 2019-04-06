@@ -1,0 +1,29 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project Game Light DataFile 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.3
+ResourceName=newLight1
+#     
+LightType=2
+LightColor=FFFF00
+LightIntensity[0]=228
+LightIntensity[1]=192
+LightIntensity[2]=160
+PointLightRadius[0]=128
+PointLightRadius[1]=128
+PointLightRadius[2]=0
+DirectionLightLength=256
+DirectionLightWidth=64
+DirectionLightAngle=270
+DirectionLightTexture=
+LightFlicker=0
+LightFlickerTime=255
+LightFlickerAmount=2
+RotateInEditor=1

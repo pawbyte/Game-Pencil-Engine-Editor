@@ -1,0 +1,38 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project Game Particle DataFile 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.3
+ResourceName=newParticle1
+#     
+MaxParticles=35
+EmissionRate=10
+LifeMin=5
+LifeMax=10
+StartColor=FF6600
+StartColorVar=202020
+EndColor=990000
+EndColorVar=202020
+XStart=0
+YStart=0
+XRandom=8
+YRandom=8
+DirectionMin=-360
+DirectionMax=360
+SpeedMin=3
+SpeedMax=7
+GravityXValue=0
+GravityYValue=0
+BlendType=1
+EmitterShape=1
+ShowDebugInfo=1
+Texture=
+FallbackShape=5
+ShapeW=16
+ShapeH=16

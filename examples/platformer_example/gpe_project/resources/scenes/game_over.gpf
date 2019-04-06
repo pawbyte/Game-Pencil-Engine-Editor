@@ -8,7 +8,7 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=2
+Version=1.3
 ResourceName=game_over
 #     
 SceneMusic=
@@ -16,18 +16,22 @@ SceneStartAudio=
 SceneEndAudio=-1
 LevelWidth=720
 LevelHeight=720
-TileWidth=32
-TileHeight=32
+DefaultTileWidth=32
+DefaultTileHeight=32
 ViewTileGrid=1
 Preload=1
 Isometric=0
 Continuous=0
 BGColor=0,0,0
-ObjectGridWidth=70
-ObjectGridHeight=70
+GridWidth=70
+GridHeight=70
+GridColor=808080
+GridAlpha=228
 DisplayObjectGrid=1
-[GPE_Layer=1,0,]
-   GPE_Background=bg_death,0,0,0,0,1,1,0,
-[/GPE_Layer]
-[GPE_Layer=2,1,]
-[/GPE_Layer]
+[GPE_LayerContainer=0,]
+       GPE_Background=bg_death,0,0,0,0,1,1,0,Background0,
+
+[/GPE_LayerContainer] 
+[GPE_LayerContainer=1,]
+
+[/GPE_LayerContainer] 

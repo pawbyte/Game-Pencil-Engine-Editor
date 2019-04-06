@@ -1,0 +1,35 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project Game Path DataFile 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.22
+ResourceName=newPath2
+#     
+#     
+RelevantScene=
+PathIsClosed=0
+LineColor=0,0,255,
+PointColor=255,165,0,
+Point=367,272,1,
+Point=458,542,1,
+Point=439,886,1,
+Point=451,1201,1,
+Point=540,1563,1,
+Point=358,1634,1,
+Point=125,1632,1,
+Point=110,1475,1,
+Point=106,1295,1,
+Point=251,1227,1,
+Point=230,1147,1,
+Point=171,1041,1,
+Point=75,1149,1,
+Point=76,1694,1,
+Point=375,1687,1,
+Point=598,1571,1,
+Point=553,1421,1,

@@ -8,10 +8,10 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=2
+Version=1.3
 ResourceName=obj_heart_piece
 #     
-SpriteId=spr_heartpiece
+animId=spr_heartpiece
 ParentGameObjectId=
 NeedsCamera=1
 IsMoveable=1

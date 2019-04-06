@@ -8,7 +8,7 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=2
+Version=1.22
 ResourceName=spr_heartpiece
 #     
 SpriteData[0]=1

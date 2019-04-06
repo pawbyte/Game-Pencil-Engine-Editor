@@ -1,115 +1,108 @@
 #    --------------------------------------------------  # 
 #     
 #     
-#    Game Pencil Engine Project GameScene File 
+#    Game Pencil Engine Project Game Scene DataFile 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to debug@pawbyte.com . 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.1
+Version=1.3
 ResourceName=newScene2
+#     
 SceneMusic=
 SceneStartAudio=
 SceneEndAudio=-1
 LevelWidth=1024
 LevelHeight=1024
-TileWidth=72
-TileHeight=72
+DefaultTileWidth=72
+DefaultTileHeight=72
 ViewTileGrid=0
 Preload=1
 Isometric=0
 Continuous=0
 BGColor=110,183,183
-ObjectGridWidth=70
-ObjectGridHeight=70
+GridWidth=70
+GridHeight=70
+GridColor=808080
+GridAlpha=228
 DisplayObjectGrid=1
-[GPE_Layer=1,0,]
-   GPE_Background=bg_sky,0,0,0,0,1,1,0,
-[/GPE_Layer]
-[GPE_Layer=0,2,]
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-[/GPE_Layer]
-[GPE_Layer=2,1,]
-   GPEObject=obj_block,0,0,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,140,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,70,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,280,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,350,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,280,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,210,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,280,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,350,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,420,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,490,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,560,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,630,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,700,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,770,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,840,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,0,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,210,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,280,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,350,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,420,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,490,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,560,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,630,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,700,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,770,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,700,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,560,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,490,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,420,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,350,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,280,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,210,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,140,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,70,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,840,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,910,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,980,910,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,980,840,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,980,770,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,980,700,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,980,630,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,980,630,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,980,560,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,980,420,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,980,140,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,980,490,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,980,350,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,980,280,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,980,210,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,980,70,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,980,0,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,910,0,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,840,0,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,770,0,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,700,0,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,630,0,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,560,0,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,490,0,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,420,0,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,350,0,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,280,0,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,210,0,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,140,0,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_player,210,700,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_block,70,0,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-[/GPE_Layer]
+[GPE_LayerContainer=0,]
+       GPE_Background=bg_sky,0,0,0,0,1,1,0,Background0,
+
+[/GPE_LayerContainer] 
+[GPE_LayerContainer=1,]
+    GPE_SceneObject=obj_block,35,35,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,175,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,105,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,315,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,385,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,315,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,245,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,315,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,385,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,455,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,525,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,595,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,665,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,735,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,805,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,875,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,35,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,245,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,315,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,385,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,455,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,525,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,595,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,665,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,735,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,805,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,735,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,595,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,525,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,455,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,385,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,315,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,245,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,175,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,105,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,875,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,945,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,1015,945,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,1015,875,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,1015,805,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,1015,735,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,1015,665,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,1015,665,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,1015,595,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,1015,455,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,1015,175,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,1015,525,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,1015,385,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,1015,315,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,1015,245,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,1015,105,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,1015,35,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,945,35,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,875,35,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,805,35,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,735,35,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,665,35,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,595,35,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,525,35,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,455,35,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,385,35,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,315,35,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,245,35,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,175,35,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_player,246,749,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_block,105,35,0,1,1,FFFFFF,unnamed,,,
+
+[/GPE_LayerContainer] 
+[GPE_LayerContainer=2,]
+    [GPE_TileMap=72,72,15,15,0,0,0,tilemap,,]
+        [/GPE_TileMap]
+
+[/GPE_LayerContainer] 

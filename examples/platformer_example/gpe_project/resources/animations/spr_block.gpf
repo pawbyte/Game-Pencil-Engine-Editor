@@ -1,0 +1,28 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project Game Animation DataFile 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.3
+ResourceName=spr_block
+#     
+SpriteData[0]=1
+SpriteData[1]=70
+SpriteData[2]=70
+SpriteData[3]=0
+SpriteData[4]=0
+SpriteData[5]=0
+SpriteData[6]=0
+SubimageInView=0
+Preload=1
+EditorPreviewFrame=0
+PreviewCollisionShape=1
+CollisionShape=0
+CircleCollisionRegion=0,0,70
+RectangleCollisionBox=0,0,70,70
+ImageLocation=spr_70x70_block.png

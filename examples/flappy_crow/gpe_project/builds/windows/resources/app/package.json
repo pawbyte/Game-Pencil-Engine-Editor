@@ -1,0 +1,7 @@
+{
+"name"             :   "flappycrow",
+"productName"      :   "Flappy Crow",
+"description"      :   "",
+"version"          :   "1",
+"main"             :   "main.js"
+}

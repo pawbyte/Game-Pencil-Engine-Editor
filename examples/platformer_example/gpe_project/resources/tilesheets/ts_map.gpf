@@ -8,7 +8,7 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=2
+Version=1.3
 ResourceName=ts_map
 #     
 ImageLocation=grassmap.png

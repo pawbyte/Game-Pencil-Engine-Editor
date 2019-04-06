@@ -4,24 +4,22 @@
 #    Game Pencil Engine Project Game Sprite DataFile 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to help@pawbyte.com . 
+#    If you have any problems reading this file please report it to debug@pawyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.13
+Version=1.0
 ResourceName=spr_paddle2
-SpriteData[0]=1
-SpriteData[1]=32
-SpriteData[2]=64
+ImageLocation=pong_paddle2.png
+SpriteData[0]=32
+SpriteData[1]=64
+SpriteData[2]=0
 SpriteData[3]=0
 SpriteData[4]=0
 SpriteData[5]=0
-SpriteData[6]=0
 SubimageInView=0
 Preload=1
-EditorPreviewFrame=0
 PreviewCollisionShape=0
 CollisionShape=0
 CircleCollisionRegion=0,0,32
 RectangleCollisionBox=0,0,32,64
-ImageLocation=pong_paddle2.png

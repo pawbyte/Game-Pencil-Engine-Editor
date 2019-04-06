@@ -8,7 +8,7 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=2
+Version=1.3
 ResourceName=bg_death
 #     
 ImageLocation=gg_Screen_plat.png

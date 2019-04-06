@@ -8,9 +8,9 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.14
+Version=1.3
 Name=flappy_crow
-Count=1024
+Count=1026
 ProjectLanguage=JS
 ProjectIcon=flappy_crow_icon.png
 [Project=flappy_crow]
@@ -19,7 +19,7 @@ ProjectIcon=flappy_crow_icon.png
     [/SuperFolder]
     [SuperFolder=Tilesheets]
     [/SuperFolder]
-    [SuperFolder=Sprites]
+    [SuperFolder=Animations]
         Sprite=spr_crow,1001,
         Sprite=spr_ground,1002,
         Sprite=spr_block,1014,
@@ -35,6 +35,11 @@ ProjectIcon=flappy_crow_icon.png
         Function=newFunction1,1024,
     [/SuperFolder]
     [SuperFolder=Paths]
+    [/SuperFolder]
+    [SuperFolder=Particles]
+        ParticleEmitter=newParticle1,1026,
+    [/SuperFolder]
+    [SuperFolder=Lights]
     [/SuperFolder]
     [SuperFolder=Objects]
         GameObject=obj_crow,1003,

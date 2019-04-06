@@ -4,17 +4,18 @@
 #    Game Pencil Engine Project Game Tilesheet DataFile 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to debug@pawyte.com . 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.0
+Version=1.22
 ResourceName=newTilesheet2
-ImageLocation=tiles_spritesheet.png
+#     
+ImageLocation=char1.png
 Preload=1
-TilesheetData[0]=72
-TilesheetData[1]=72
+TilesheetData[0]=64
+TilesheetData[1]=64
 TilesheetData[2]=0
 TilesheetData[3]=0
 TilesheetData[4]=0
-TilesheetData[5]=1
+TilesheetData[5]=0

@@ -8,10 +8,10 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=2
+Version=1.3
 ResourceName=obj_slime
 #     
-SpriteId=spr_slime
+animId=spr_slime
 ParentGameObjectId=
 NeedsCamera=1
 IsMoveable=1

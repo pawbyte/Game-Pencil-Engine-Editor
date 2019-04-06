@@ -1,46 +1,51 @@
 #    --------------------------------------------------  # 
 #     
 #     
-#    Game Pencil Engine Project GameScene File 
+#    Game Pencil Engine Project Game Scene DataFile 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
 #    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.14
+Version=1.3
 ResourceName=scn_game
+#     
 SceneMusic=
 SceneStartAudio=
 SceneEndAudio=-1
 LevelWidth=832
 LevelHeight=640
-TileWidth=32
-TileHeight=32
+DefaultTileWidth=32
+DefaultTileHeight=32
 ViewTileGrid=1
 Preload=1
 Isometric=0
 Continuous=0
 BGColor=0,0,0
-ObjectGridWidth=64
-ObjectGridHeight=64
+GridWidth=64
+GridHeight=64
+GridColor=808080
+GridAlpha=228
 DisplayObjectGrid=1
-[GPE_Layer=1,0,]
-   GPE_Background=tex_sky,0,0,-4,0,1,1,0,
-[/GPE_Layer]
-[GPE_Layer=2,1,]
-   GPEObject=obj_crow,320,384,-2147483648,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_ground,768,576,-2147483648,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_ground,704,576,-2147483648,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_ground,640,576,-2147483648,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_ground,320,576,-2147483648,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_ground,256,576,-2147483648,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_ground,192,576,-2147483648,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_ground,128,576,-2147483648,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_ground,64,576,-2147483648,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_ground,0,576,-2147483648,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_ground,384,576,-2147483648,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_ground,448,576,-2147483648,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_ground,576,576,-2147483648,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_ground,512,576,-2147483648,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-[/GPE_Layer]
+[GPE_LayerContainer=0,]
+       GPE_Background=tex_sky,0,0,-4,0,1,1,0,Background0,
+
+[/GPE_LayerContainer] 
+[GPE_LayerContainer=1,]
+    GPE_SceneObject=obj_crow,332,396,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_ground,800,608,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_ground,736,608,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_ground,672,608,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_ground,352,608,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_ground,288,608,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_ground,224,608,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_ground,160,608,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_ground,96,608,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_ground,32,608,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_ground,416,608,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_ground,480,608,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_ground,608,608,0,1,1,FFFFFF,unnamed,,,
+    GPE_SceneObject=obj_ground,544,608,0,1,1,FFFFFF,unnamed,,,
+
+[/GPE_LayerContainer] 

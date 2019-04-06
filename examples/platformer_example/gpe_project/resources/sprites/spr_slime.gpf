@@ -8,7 +8,7 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=2
+Version=1.22
 ResourceName=spr_slime
 #     
 SpriteData[0]=2
