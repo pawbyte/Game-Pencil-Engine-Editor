@@ -1,0 +1,28 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project Game Animation DataFile 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.3
+ResourceName=spr_ground
+#     
+SpriteData[0]=4
+SpriteData[1]=64
+SpriteData[2]=256
+SpriteData[3]=0
+SpriteData[4]=0
+SpriteData[5]=0
+SpriteData[6]=0
+SubimageInView=3
+Preload=1
+EditorPreviewFrame=0
+PreviewCollisionShape=1
+CollisionShape=0
+CircleCollisionRegion=0,0,64
+RectangleCollisionBox=0,0,64,256
+ImageLocation=spr_season_grass.png

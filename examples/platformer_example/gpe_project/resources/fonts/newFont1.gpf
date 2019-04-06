@@ -8,9 +8,10 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=2
+Version=1.22
 ResourceName=newFont1
 #     
-FontSize=12
+FontSize=144
+OTF_File=C:/Users/SirNathanHurde/OneDrive/Documents/gpe_crossplatform/Game_Pencil_Engine_IDE/bin/Release/examples/platformer_example/gpe_project/resources/fonts/Laconic_Bold.otf
 FontType=0
-PreviewText=ABCD012456789
+PreviewText=PawByte

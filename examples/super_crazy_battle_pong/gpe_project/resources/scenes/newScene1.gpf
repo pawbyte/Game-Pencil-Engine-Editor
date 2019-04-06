@@ -4,14 +4,14 @@
 #    Game Pencil Engine Project GameScene File 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to help@pawbyte.com . 
+#    If you have any problems reading this file please report it to debug@pawyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.13
+Version=1.0
 ResourceName=newScene1
-SceneMusic=
-SceneStartAudio=
+SceneMusic=-1
+SceneStartAudio=-1
 SceneEndAudio=-1
 LevelWidth=800
 LevelHeight=640
@@ -25,10 +25,17 @@ BGColor=19,19,22
 ObjectGridWidth=32
 ObjectGridHeight=32
 DisplayObjectGrid=1
-[GPE_Layer=1,0,]
-[/GPE_Layer]
-[GPE_Layer=2,1,]
-   GPEObject=obj_paddle_p2,672,288,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_paddle_p1,64,288,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-   GPEObject=obj_ball,352,288,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
-[/GPE_Layer]
+[SceneBackgrounds]
+	SceneBackground=0,-1,0,0,0,0,1,0,0,0,
+	SceneBackground=1,-1,0,0,0,0,1,1,1,1,
+	SceneBackground=2,-1,0,0,0,0,1,1,1,1,
+	SceneBackground=3,-1,0,0,0,0,1,1,1,1,
+	SceneBackground=4,-1,0,0,0,0,1,1,1,1,
+	SceneBackground=5,-1,0,0,0,0,1,1,1,1,
+	SceneBackground=6,-1,0,0,0,0,1,1,1,1,
+[/SceneBackgrounds]
+[SceneGameObjects]
+	GameObject=1008,672,288,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
+	GameObject=1005,64,288,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
+	GameObject=1004,352,288,0,1,1,255,255,255,unnamed,,,[GPECustomFields][/GPECustomFields]
+[/SceneGameObjects]

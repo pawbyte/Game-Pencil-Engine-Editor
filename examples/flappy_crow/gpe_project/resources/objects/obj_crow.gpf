@@ -1,16 +1,17 @@
 #    --------------------------------------------------  # 
 #     
 #     
-#    Game Pencil Engine Project GameObject File 
+#    Game Pencil Engine Project Game Object DataFile 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
 #    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.14
+Version=1.3
 ResourceName=obj_crow
-SpriteId=spr_crow
+#     
+animId=spr_crow
 ParentGameObjectId=
 NeedsCamera=0
 IsMoveable=1

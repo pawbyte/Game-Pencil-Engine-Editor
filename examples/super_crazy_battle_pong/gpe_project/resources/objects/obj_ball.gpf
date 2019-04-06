@@ -4,14 +4,14 @@
 #    Game Pencil Engine Project GameObject File 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to help@pawbyte.com . 
+#    If you have any problems reading this file please report it to debug@pawyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.13
+Version=1.0
 ResourceName=obj_ball
-SpriteId=spr_ball
-ParentGameObjectId=
+SpriteId=1006
+ParentGameObjectId=-1
 NeedsCamera=0
 IsMoveable=1
 IsVisible=1
@@ -29,7 +29,7 @@ if( gpe.get_random(0, 10) > 5)
     this.direction = gpe.radian(0);
 }
 else
-{
+{ 
     this.direction = gpe.radian(180);
 }
 this.canBounce = true;
@@ -40,8 +40,8 @@ if( this.getx() < 0)
 {
     this.update_cords( this.xBegin, this.yBegin);
     this.direction = gpe.radian(180);
-    this.futureSpeed = 4;
-    this.speed = 0;
+    this.futureSpeed = 4; 
+    this.speed = 0; 
     //player 1 starts
     this.player2Score++;
 }
@@ -50,8 +50,8 @@ if( this.getx2() > gpe.get_scene_width() )
 {
     this.update_cords( this.xBegin, this.yBegin);
     this.direction = gpe.radian(0);
-    this.futureSpeed = 4;
-    this.speed = 0;
+    this.futureSpeed = 4; 
+    this.speed = 0;  
      //player 2 starts
     this.player1Score++;
 }
@@ -70,12 +70,11 @@ if( this.gety2() >= gpe.get_scene_height() )
 {
     if(!gpe.audio_playing(aud_bounce) )
     {
-        gpe.audio_play(aud_bounce);
+        gpe.audio_play(aud_bounce); 
         this.update_cords( this.xPast, gpe.get_scene_height()-32);
         this.set_velocity( -this.direction, this.speed);
     }
 }
-//Sets the ball in motion if the Space or Y key is pressed
 if( this.speed ==0 && gpe.check_keyboard(gp_space) || gpe.check_keyboard(gp_y) )
 {
     if( this.futureSpeed!=0)
@@ -85,47 +84,47 @@ if( this.speed ==0 && gpe.check_keyboard(gp_space) || gpe.check_keyboard(gp_y) )
     else
     {
         this.speed = 4;
-    }
+    } 
 }
 
-if( this.speed > 20 )
+if( this.speed > 20)
 {
-    this.speed = 20;
+    this.speed = 20;    
 }
 [[[Function=Render HUD]]] 
 if( this.speed ==0)
 {
     gpe.render_text(smallGuiFont,gpe.get_camera_screen_width()/2,32,"Super Crazy Battle Pong","white",fa_center,fa_top);
-    gpe.render_text(smallGuiFont,gpe.get_camera_screen_width()/2,gpe.get_camera_screen_height()-64,"Press Y or Space to Start","white",fa_center,fa_bottom);
+    gpe.render_text(smallGuiFont,gpe.get_camera_screen_width()/2,gpe.get_camera_screen_height()-64,"Press Y or Space to Start","white",fa_center,fa_bottom);    
 }
 gpe.render_text(guiFont,gpe.get_scene_width()/2,64,this.player1Score+":"+this.player2Score,"white",fa_center,fa_top);
 
-[[[CollideFunction=obj_paddle_p1]]] 
+[[[CollisionFunction=1005]]] 
 if( this.canBounce==true)
 {
     gpe.audio_play(aud_bounce);
     this.update_cords( other.getx2()+2, this.yPast );
     var hh = other.get_collision_height() / 2;
     var bounceAngle = ((this.gety() + this.get_collision_height() / 2) - (other.gety() + hh)) / hh * 45;
-    //please note the angle automatically sets it to 45 degrees
+    //please note the angel automatically sets it to 45 degrees
     //In a real game there will be a bit more math for the "perfect bounce"
     //For this tutorial we will not go that advanced.
     this.set_velocity( gpe.radian(bounceAngle), this.speed*-1.1);
     this.canBounce = false;
 }
-[[[CollideFunction=obj_paddle_p2]]] 
+[[[CollisionFunction=1008]]] 
 if( this.canBounce==true)
 {
     gpe.audio_play(aud_bounce);
     this.update_cords( other.getx()-this.get_collision_width()-2, this.yPast );
     //The only change in code is the angle 235[degrees]
-
+    
     var bounceAngle = 180;
     var hh = other.get_collision_height() / 2;
     bounceAngle =( (this.gety() + this.get_collision_height() / 2) - (other.gety() + hh) ) / hh *(-45);
     this.set_velocity( gpe.radian(bounceAngle+180), this.speed*-1.1);
     this.canBounce = false;
-    //please note the angle automatically sets it to 45 degrees
+    //please note the angel automatically sets it to 45 degrees
     //In a real game there will be a bit more math for the "perfect bounce"
     //For this tutorial we will not go that advanced.
 }

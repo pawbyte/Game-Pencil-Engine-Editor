@@ -4,15 +4,13 @@
 #    Game Pencil Engine Project File 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to help@pawbyte.com . 
+#    If you have any problems reading this file please report it to debug@pawyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.13
+Version=1.0
 Name=super_crazy_battle_pong
 Count=1012
-ProjectLanguage=JS
-ProjectIcon=
 [Project=super_crazy_battle_pong]
     [SuperFolder=Textures]
     [/SuperFolder]
@@ -29,8 +27,6 @@ ProjectIcon=
     [SuperFolder=Videos]
     [/SuperFolder]
     [SuperFolder=Functions]
-    [/SuperFolder]
-    [SuperFolder=Paths]
     [/SuperFolder]
     [SuperFolder=Objects]
         GameObject=obj_ball,1004,

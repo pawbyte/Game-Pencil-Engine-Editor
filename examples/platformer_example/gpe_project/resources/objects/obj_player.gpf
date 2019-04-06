@@ -8,10 +8,10 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=2
+Version=1.3
 ResourceName=obj_player
 #     
-SpriteId=spr_player
+animId=spr_player
 ParentGameObjectId=
 NeedsCamera=0
 IsMoveable=1

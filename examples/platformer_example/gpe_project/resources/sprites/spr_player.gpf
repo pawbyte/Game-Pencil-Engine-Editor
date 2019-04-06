@@ -8,7 +8,7 @@
 #     
 #     
 #    --------------------------------------------------  # 
-Version=2
+Version=1.22
 ResourceName=spr_player
 #     
 SpriteData[0]=11
@@ -18,11 +18,11 @@ SpriteData[3]=0
 SpriteData[4]=0
 SpriteData[5]=0
 SpriteData[6]=0
-SubimageInView=6
+SubimageInView=5
 Preload=1
 EditorPreviewFrame=0
 PreviewCollisionShape=1
-CollisionShape=1
+CollisionShape=0
 CircleCollisionRegion=0,0,36
 RectangleCollisionBox=16,0,48,97
 ImageLocation=player_walk.png

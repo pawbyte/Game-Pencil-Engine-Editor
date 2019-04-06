@@ -1,2 +1,5 @@
 **/*.o
 Game_Pencil_Engine_IDE
+*.exe
+*.dll
+obj/*

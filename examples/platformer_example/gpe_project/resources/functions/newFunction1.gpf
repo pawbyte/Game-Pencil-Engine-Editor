@@ -4,11 +4,12 @@
 #    Game Pencil Engine Project Game Function DataFile 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to debug@pawyte.com . 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.0
+Version=1.22
 ResourceName=newFunction1
+#     
 Cursor=0,0
 ReturnType=void

@@ -1,0 +1,53 @@
+#    --------------------------------------------------  # 
+#     
+#     
+#    Game Pencil Engine Project File 
+#    Created automatically via the Game Pencil Engine Editor 
+#    Warning: Manually editing this file may cause unexpected bugs and errors. 
+#    If you have any problems reading this file please report it to help@pawbyte.com . 
+#     
+#     
+#    --------------------------------------------------  # 
+Version=1.3
+Name=flappy_wings
+Count=1010
+ProjectLanguage=JS
+ProjectIcon=
+[Project=flappy_wings]
+    [SuperFolder=Textures]
+        Texture=tex_sky,1007,
+        Texture=newTexture2,1010,
+    [/SuperFolder]
+    [SuperFolder=Tilesheets]
+    [/SuperFolder]
+    [SuperFolder=Animations]
+        Sprite=spr_crow,1001,
+        Sprite=spr_ground,1002,
+        Sprite=newSprite3,1009,
+    [/SuperFolder]
+    [SuperFolder=Audio]
+    [/SuperFolder]
+    [SuperFolder=Videos]
+    [/SuperFolder]
+    [SuperFolder=Functions]
+    [/SuperFolder]
+    [SuperFolder=Paths]
+    [/SuperFolder]
+    [SuperFolder=Particles]
+    [/SuperFolder]
+    [SuperFolder=Lights]
+    [/SuperFolder]
+    [SuperFolder=Objects]
+        GameObject=obj_crow,1003,
+        GameObject=obj_ground,1004,
+        GameObject=obj_main_menu,1008,
+    [/SuperFolder]
+    [SuperFolder=Classes]
+    [/SuperFolder]
+    [SuperFolder=Scenes]
+        scene=scn_title,1005,
+        scene=scn_game,1006,
+    [/SuperFolder]
+    [SuperFolder=Fonts]
+    [/SuperFolder]
+[/Project]

@@ -4,14 +4,14 @@
 #    Game Pencil Engine Project GameObject File 
 #    Created automatically via the Game Pencil Engine Editor 
 #    Warning: Manually editing this file may cause unexpected bugs and errors. 
-#    If you have any problems reading this file please report it to help@pawbyte.com . 
+#    If you have any problems reading this file please report it to debug@pawyte.com . 
 #     
 #     
 #    --------------------------------------------------  # 
-Version=1.13
+Version=1.0
 ResourceName=obj_paddle_p1
-SpriteId=spr_paddle
-ParentGameObjectId=
+SpriteId=1001
+ParentGameObjectId=-1
 NeedsCamera=0
 IsMoveable=1
 IsVisible=1
@@ -21,13 +21,13 @@ IsContinuous=0
 [[[Function=Main Logic]]] 
 if( gpe.check_keyboard( gp_w ) && this.gety() > 4 )
 {
-    this.move_up(8);
+    this.move_up(8);    
 }
 else if( gpe.check_keyboard( gp_s ) && this.gety2() < gpe.get_scene_height() )
 {
     this.move_down(8);
 }
-else if( gpe.check_keyboard( gp_d ) && this.x() < gpe.get_scene_width() )
+else if( gpe.check_keyboard( gp_d ) && this.x() < gpe.get_scene_width()() )
 {
     this.x+=8;
 }
