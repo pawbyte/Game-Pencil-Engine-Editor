@@ -4,7 +4,7 @@ Please look at our [Website](http://create.pawbyte.com/) and take a look around!
 
 If you have any questions or comments: feel free to email us at <help@pawbyte.com>
 
-Additionally, please report all bugs in the [issues](https://github.com/pawbyte/Game-Pencil-Engine/issues) portion of the github page
+Additionally, please report all bugs in the [issues](https://github.com/pawbyte/Game-Pencil-Engine/issues) portion of the github page or use our [Trello page](https://trello.com/b/QoLoJUwn/game-pencil-roadmap).
 
 
 Donate to make Game Pencil Engine greater
