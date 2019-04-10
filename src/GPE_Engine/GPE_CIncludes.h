@@ -52,6 +52,7 @@ SOFTWARE.
 
 #ifdef _WIN32
 
+#define NOMINMAX
 #include <windows.h>
 //#include <SDL_sysWM.h>
 //#undef WIN32_LEAN_AND_MEAN
