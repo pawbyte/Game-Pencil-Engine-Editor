@@ -844,5 +844,5 @@ std::string get_user_screenshot_folder()
 
 bool delete_file( std::string fName)
 {
-
+	return false;
 }

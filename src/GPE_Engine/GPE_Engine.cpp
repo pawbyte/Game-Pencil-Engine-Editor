@@ -202,6 +202,7 @@ int GPE_Artist::sprite_get_number(GPE_Animation* spriteIn)
 bool GPE_Artist::render_circle( int x, int y, int rad, bool renderOutLine )
 {
     render_circle_color(x,y,rad, currentColor, currentAlpha, renderOutLine);
+	return false;
 }
 
 bool GPE_Artist::render_circle_color( int x, int y, int rad, GPE_Color *rendColor, int alphaChannel, bool renderOutLine )
@@ -292,21 +293,23 @@ bool GPE_Artist::render_circle_color( int x, int y, int rad, GPE_Color *rendColo
             tempCircleTexture->render_tex_resized(x-rad, y-rad, rad*2, rad*2, NULL,rendColor, alphaChannel );
         }
     }
+	return false;
 }
 
 bool GPE_Artist::render_oval( int x, int y, int w, int h,bool renderOutLine )
 {
-
+	return false;
 }
 
 bool GPE_Artist::render_oval_color( int x, int y, int w, int h, GPE_Color *rendColor, int alphaChannel, bool renderOutLine )
 {
-
+	return false;
 }
 
 bool GPE_Artist::render_semi_circle( int x, int y, int rad, int direction, bool renderOutLine)
 {
     render_semi_circle_color( x,y,rad, direction, currentColor, currentAlpha, renderOutLine );
+	return false;
 }
 
 bool GPE_Artist::render_semi_circle_color( int x, int y, int rad, int direction, GPE_Color *rendColor, int alphaChannel, bool renderOutLine )
@@ -410,6 +413,7 @@ bool GPE_Artist::render_semi_circle_color( int x, int y, int rad, int direction,
             tempCircleTexture->render_tex_special_at_point(x, y, direction,FA_CENTER,FA_MIDDLE,rad, rad*2,rendColor, tempCipRect, alphaChannel );
         }
     }
+	return false;
 }
 
 

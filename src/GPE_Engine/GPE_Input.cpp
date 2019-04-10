@@ -1262,6 +1262,7 @@ bool GPE_InputManager::disconnect_gamecontroller( int cId )
     {
         GPE_Report("gamecontroller["+ int_to_string(cId )+"] disconnected..." );
     }
+	return false;
 }
 
 bool GPE_InputManager::setup_new_gamecontroller(int cId )

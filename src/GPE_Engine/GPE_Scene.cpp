@@ -374,7 +374,7 @@ void GPE_GameScene::load_and_parse_scene()
 
 bool GPE_GameScene::process_scene()
 {
-
+	return false;
 }
 
 void GPE_GameScene::render_background_color()
