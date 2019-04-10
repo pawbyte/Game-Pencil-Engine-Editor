@@ -32,7 +32,6 @@ SOFTWARE.
 */
 
 #include "GPE_Color_Manager.h"
-GPE_Color_Master * MASTER_OF_COLORS = NULL;
 GPE_Color * textColor = NULL;
 
 GPE_Color * c_aqua = NULL;
