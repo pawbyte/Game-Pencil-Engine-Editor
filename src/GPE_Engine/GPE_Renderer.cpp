@@ -51,6 +51,11 @@ void reset_camera()
     GPE_DEFAULT_CAMERA.h = SCREEN_HEIGHT;
 }
 
+GPE_Rect* GPE_find_camera(GPE_Rect* rectIn)
+{
+	return nullptr;
+}
+
 bool WINDOW_WAS_JUST_RESIZED = false;
 
 GPE_Renderer::GPE_Renderer(int wWidth, int wHeight,bool showBorder, bool fullScreen, bool maximized)
