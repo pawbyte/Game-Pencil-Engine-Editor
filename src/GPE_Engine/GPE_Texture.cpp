@@ -499,11 +499,11 @@ void GPE_BasicTexture::render_tex_special(  int x, int y, double renderAngle, in
         return;
     }
 
-    if( newWidth <=0.d)
+    if( newWidth <=0.l)
     {
         newWidth = texWid;
     }
-    if( newHeight<=0.d)
+    if( newHeight<=0.l)
     {
         newHeight = texHeight;
     }

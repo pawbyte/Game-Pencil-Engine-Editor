@@ -69,7 +69,7 @@ int GPE_Timer::calculate_avg_fps()
     if ( deltaTime != 0 )
     {
         recordedDeltas.push_back( deltaTime );
-        double tempFPS = 1000.d / (double)deltaTime;
+        double tempFPS = 1000.l / (double)deltaTime;
         //CURRENT_FPS = round( avgFPS );
         recordedFPS.push_back( tempFPS );
         myFPS = round( tempFPS );
@@ -214,10 +214,10 @@ void GPE_Timer::set_fps( int newFPS )
         FPS_CAP = 30;
     }
     myFPS = FPS_CAP;
-    ticksPerFrame = 1000.d / FPS_CAP;
+    ticksPerFrame = 1000.l / FPS_CAP;
     deltaTime = ticksPerFrame;
     CURRENT_DELTA = ticksPerFrame;
-    FPS_RATIO = FPS_CAP/30.d;
+    FPS_RATIO = FPS_CAP/30.l;
     CURRENT_FPS = newFPS;
     if( FPS_RATIO < 0)
     {

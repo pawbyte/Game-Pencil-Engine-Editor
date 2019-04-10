@@ -93,7 +93,7 @@ public:
     void render_text_scaled( int xPos, int yPos, std::string textureText, GPE_Color * textColor, double textScale, int hAlign=FA_LEFT,int vAlign=FA_TOP, int renderAlpha = 255);
     void render_text_resized( int xPos, int yPos, std::string textureText, GPE_Color * textColor, int hAlign=FA_LEFT,int vAlign=FA_TOP, int rendWid = -1, int rendHeight = -1,int renderAlpha = 255);
     void render_text_rotated( int xPos, int yPos, std::string textureText, GPE_Color * textColor, double textAngle = 0,int renderAlpha = 255);
-    bool render_text_special( int xPos, int yPos, std::string textureText, GPE_Color * textColor, int hAlign=FA_LEFT,int vAlign=FA_TOP, double renderAngle = 0, double renderScale = 1.d, int renderAlpha = 255);
+    bool render_text_special( int xPos, int yPos, std::string textureText, GPE_Color * textColor, int hAlign=FA_LEFT,int vAlign=FA_TOP, double renderAngle = 0, double renderScale = 1.l, int renderAlpha = 255);
 
 };
 
@@ -127,7 +127,7 @@ class GPE_Font_Controller
         bool render_text_resized( int xPos, int yPos, std::string textureText, GPE_Color * textColor, GPE_Font * textFont=NULL, int hAlign=FA_LEFT,int vAlign=FA_TOP, int rendWid = -1, int rendHeight = -1, int renderAlpha = 255);
         bool render_text_rotated( int xPos, int yPos, std::string textureText, GPE_Color * textColor, GPE_Font * textFont, double textAngle = 0, int renderAlpha  = 255);
         bool render_text_scaled( int xPos, int yPos, std::string textureText, GPE_Color * textColor, double scaleValue, GPE_Font * textFont=NULL,  int hAlign=FA_LEFT,int vAlign=FA_TOP, int renderAlpha = 255);
-        bool render_text_special( int xPos, int yPos, std::string textureText, GPE_Color * textColor, GPE_Font * textFont=NULL, int hAlign=FA_LEFT,int vAlign=FA_TOP, double renderAngle = 0, double renderScale = 1.d, int renderAlpha = 255);
+        bool render_text_special( int xPos, int yPos, std::string textureText, GPE_Color * textColor, GPE_Font * textFont=NULL, int hAlign=FA_LEFT,int vAlign=FA_TOP, double renderAngle = 0, double renderScale = 1.l, int renderAlpha = 255);
         //Doesnt translate ( useful for textfields and code/text editors)
         bool render_only_text( int xPos, int yPos, std::string textureText, GPE_Color * textColor,GPE_Font * textFont=NULL, int hAlign=FA_LEFT,int vAlign=FA_TOP, int renderAlpha = 255);
         //Font Rendering [ END ]

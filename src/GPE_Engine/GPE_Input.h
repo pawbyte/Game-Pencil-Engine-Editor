@@ -182,7 +182,7 @@ const int gc_select = 15;
 const int gc_home = 16;
 const int gc_share = 17;
 
-const double gc_deadzone = 32767.d;
+const double gc_deadzone = 32767.l;
 const int gc_button_count = 25; //way more than enough for a video game controller
 const int gc_axes_count = 16; //also way more than enough for any normal controller
 

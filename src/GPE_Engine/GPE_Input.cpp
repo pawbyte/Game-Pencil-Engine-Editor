@@ -791,14 +791,14 @@ void GPE_InputManager::handle_input(bool dump_event, bool isEmbedded )
                     {
                         tempAxisValue = event.caxis.value / gc_deadzone;
                         //Less than the dead zone
-                        if( tempAxisValue < -1.d )
+                        if( tempAxisValue < -1.l )
                         {
-                            tempAxisValue = -1.d;
+                            tempAxisValue = -1.l;
                         }
                         //Right of dead zone
-                        else if( tempAxisValue > 1.d )
+                        else if( tempAxisValue > 1.l )
                         {
-                            tempAxisValue =  1.d;
+                            tempAxisValue =  1.l;
                         }
                         tempController->axesValues[event.caxis.axis] = tempAxisValue;
                     }

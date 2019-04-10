@@ -115,13 +115,13 @@ void GPE_Directionight::render_light_at( double x, double y, double scale, GPE_R
 
 void GPE_Directionight::set_direction( double newDir )
 {
-    while( newDir < -360.d  )
+    while( newDir < -360.l  )
     {
-        newDir += 360.d ;
+        newDir += 360.l ;
     }
-    while( newDir >= 360.d )
+    while( newDir >= 360.l )
     {
-        newDir -= 360.d;
+        newDir -= 360.l;
     }
     lightDirection = newDir;
 }

@@ -49,12 +49,12 @@ const double GPE_VERSION_UPDATE_NUMBER = 1;
 const double GPE_VERSION_DOUBLE_NUMBER = GPE_VERSION_NUMBER + GPE_VERSION_SUB_NUMBER/10 + GPE_VERSION_UPDATE_NUMBER/100;
 
 const bool GPE_DRAW_OBJECT_BOXES = false;
-const double PI = 3.141592653589793;
-const double pi = 3.141592653589793;
-const double pie = 3.141592653589793;
-const double GPE_TO_RADIANS = 180.d/PI;
-const double degreesMultiple = 180.d/-PI;
-const double radiansMultiple = PI/-180.d;
+const double PI = 3.141592653589793l;
+const double pi = 3.141592653589793l;
+const double pie = 3.141592653589793l;
+const double GPE_TO_RADIANS = 180.l/PI;
+const double degreesMultiple = 180.l/-PI;
+const double radiansMultiple = PI/-180.l;
 
 const int IS_NULL = -1;
 const int isNULL = -1;
