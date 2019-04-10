@@ -52,7 +52,12 @@ SOFTWARE.
 
 #ifdef _WIN32
 
-#define NOMINMAX
+//Improve compatibility with cross compilation
+#ifdef _MSC_VER
+ #define NOMINMAX
+ #pragma warning(disable:4996)
+#endif
+
 #include <windows.h>
 //#include <SDL_sysWM.h>
 //#undef WIN32_LEAN_AND_MEAN
