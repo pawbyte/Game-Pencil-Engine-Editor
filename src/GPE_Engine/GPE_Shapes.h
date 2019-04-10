@@ -35,6 +35,7 @@ SOFTWARE.
 #define GPE_SHAPES_H
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 class GPE_Rect
 {

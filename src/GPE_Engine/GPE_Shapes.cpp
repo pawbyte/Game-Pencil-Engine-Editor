@@ -173,7 +173,7 @@ void GPE_Rect::update_shape( double xNew, double yNew, double widNew, double hgt
     if( widNew < 0)
     {
         x = xNew-widNew;
-        w = abs(widNew);
+        w = fabs(widNew);
         /*if( GPE_SETTINGS_IS_DEBUGGING )
         console.log( rectWidth);*/
     }
@@ -181,7 +181,7 @@ void GPE_Rect::update_shape( double xNew, double yNew, double widNew, double hgt
     if( hgtNew < 0)
     {
         y = yNew-hgtNew;
-        h =abs(hgtNew);
+        h =fabs(hgtNew);
         /*if( GPE_SETTINGS_IS_DEBUGGING )
         console.log( rectHeigh);*/
     }
@@ -199,13 +199,13 @@ void GPE_Rect::update_size( double widNew, double hgtNew)
     if( widNew < 0)
     {
         x = x-widNew;
-        w = abs(widNew);
+        w = fabs(widNew);
     }
 
     if( hgtNew < 0)
     {
         y = y-hgtNew;
-        h = abs(hgtNew);
+        h = fabs(hgtNew);
     }
 
     x2Pos = x+w;
