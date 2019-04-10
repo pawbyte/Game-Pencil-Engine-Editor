@@ -69,7 +69,14 @@ SOFTWARE.
 #include <fstream>
 #include <cerrno>
 #include <stdio.h>
-#include <dirent.h>
+
+//Allow non-POSIX compilation on MSC
+#ifdef _MSC_VER
+ #include "GPE_Dirent.h"
+#else
+ #include <dirent.h>
+#endif
+
 #include <exception>
 //Operating Systems
 int GPE_Gain_OS();
