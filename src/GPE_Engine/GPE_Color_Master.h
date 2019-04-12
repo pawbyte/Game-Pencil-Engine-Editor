@@ -35,6 +35,6 @@ SOFTWARE.
 
 #include "GPE_Color_Manager.h"
 
-extern colorMaster * MASTER_OF_COLORS;
+
 
 #endif

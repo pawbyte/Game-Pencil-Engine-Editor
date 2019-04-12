@@ -33,4 +33,4 @@ SOFTWARE.
 
 #include "GPE_Color_Master.h"
 
-colorMaster * MASTER_OF_COLORS = new colorMaster();
+GPE_Color_Master * MASTER_OF_COLORS = new GPE_Color_Master();

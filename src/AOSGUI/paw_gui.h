@@ -3,10 +3,10 @@ paw_gui.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -34,6 +34,27 @@ SOFTWARE.
 #ifndef PAW_GUI_LIBRARY_H
 #define PAW_GUI_LIBRARY_H
 
+#include "paw_gui_base.h"
+#include "paw_gui_buttons.h"
+#include "paw_gui_checkbox.h"
+#include "paw_gui_color_picker.h"
+#include "paw_gui_context.h"
+#include "paw_gui_dropdown.h"
+#include "paw_gui_file_popups.h"
+#include "paw_gui_labels.h"
+#include "paw_gui_overlay.h"
+#include "paw_gui_panel_list.h"
+#include "paw_gui_parsers.h"
+#include "paw_gui_popups.h"
+#include "paw_gui_radiobuttons.h"
+#include "paw_gui_resource_dropdown.h"
+#include "paw_gui_scrollbars.h"
+#include "paw_gui_search_controller.h"
+#include "paw_gui_selectbox.h"
+#include "paw_gui_sliders.h"
+#include "paw_gui_stree.h"
+#include "paw_gui_tab_manager.h"
+#include "paw_gui_text_input.h"
 #include "ambitious_gui_library.h"
 #include "text_editor.h"
 

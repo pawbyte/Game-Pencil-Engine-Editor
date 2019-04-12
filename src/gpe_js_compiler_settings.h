@@ -31,5 +31,42 @@ SOFTWARE.
 
 */
 
-#include "gpe_project_resources.h"
+#ifndef GPE_JS_COMPILER_RESOURCES_H
+#define GPE_JS_COMPILER_RESOURCES_H
 
+
+#include "gpe_basic_resource_page.h"
+
+class gameJSCompilerSettingsResource: public standardEditableGameResource
+{
+public:
+    GPE_SelectBoxBasic * sideAreaPanel;
+    GPE_Rect * sidePanelRect;
+    //Compiler Settings
+    GPE_CheckBoxBasic * stopCompileOnError;
+    //Added as of 1.15 [ BEGIN ]
+    GPE_CheckBoxBasic * minifyCode;
+    GPE_CheckBoxBasic * pluginConstantValues;
+    GPE_CheckBoxBasic * obfuscateCode;
+    GPE_TextInputBasic * obfuscatorDirectoryField;
+    GPE_ToolIconButton * obfuscatorDirectoryLoadButton;
+    GPE_TextInputBasic * googleClosureCompilerFile;
+    GPE_ToolIconButton * googleClosureCompilerLoadButton;
+    //Added as of 1.15 [ END ]
+    GPE_Rect subViewedSpace;
+    GPE_TabBar * editorPageTabBar;
+    GPE_GuiElementList * editorPageList;
+    std::string projectFolderListLocation;
+    gameJSCompilerSettingsResource(GPE_GeneralResourceContainer * pFolder = NULL);
+    ~gameJSCompilerSettingsResource();
+    void prerender_self( );
+    void preprocess_self(std::string alternatePath = "");
+    void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
+    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void save_resource(std::string alternatePath = "", int backupId = -1);
+    bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
+};
+
+extern gameJSCompilerSettingsResource * GPE_JS_COMPILER_SETTINGS;
+
+#endif

@@ -2,10 +2,10 @@
 gpe_file_system.cpp
 This file is part of:GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -34,9 +34,9 @@ SOFTWARE.
 
 std::string generate_filters(const std::vector<GPE_FileFilter *> filters)
 {
-	std::string result ="";
+    std::string result ="";
     GPE_FileFilter * tempFilter = NULL;
-	for(int i = 0; i < (int)filters.size(); i++)
+    for(int i = 0; i < (int)filters.size(); i++)
     {
         tempFilter = filters[i];
         if( tempFilter!=NULL)
@@ -46,8 +46,8 @@ std::string generate_filters(const std::vector<GPE_FileFilter *> filters)
             result += tempFilter->exts;
             result += '\0';
         }
-	}
-	return result + '\0';
+    }
+    return result + '\0';
 }
 
 std::string parse_file_types(std::string allowedFileTypes,std::vector <std::string> &fileTypeVector)
@@ -56,7 +56,7 @@ std::string parse_file_types(std::string allowedFileTypes,std::vector <std::stri
     std::string returnFileFilterString = "All types(*.*)\0*.*\0";
     std::vector<GPE_FileFilter *> filters;
     GPE_FileFilter * tempNewFilter = NULL;
-	if( (int)allowedFileTypes.size() > 0)
+    if( (int)allowedFileTypes.size() > 0)
     {
         if( allowedFileTypes=="All types(*.*)" ||  allowedFileTypes=="All Files" || allowedFileTypes=="None" ||  allowedFileTypes=="All Files*")
         {
@@ -178,7 +178,7 @@ bool file_passes_filter(std::string fileTypeIn, std::vector <std::string> &fileT
     return false;
 }
 
-GPE_FileFilter::GPE_FileFilter(std::string fDesc , std::string fExts )
+GPE_FileFilter::GPE_FileFilter(std::string fDesc, std::string fExts )
 {
     desc = fDesc;
     exts = fExts;
@@ -297,7 +297,7 @@ void GPE_FileDirectory::filter_directory(bool onlyFolders, std::vector <std::str
             {
                 subdirectoryCount++;
             }
-            else if( file_passes_filter (tempFile->get_type() , fTypesToUse) )
+            else if( file_passes_filter (tempFile->get_type(), fTypesToUse) )
             {
                 fileCount++;
             }
@@ -328,8 +328,8 @@ bool GPE_FileDirectory::open_directory_sorted(std::string directoryIn)
         {
             foundErrorMessage = strerror(errno);
 
-            record_error("Unable to open directory["+directoryIn+"]");
-            record_error("Error: "+foundErrorMessage);
+            GPE_Report("Unable to open directory["+directoryIn+"]");
+            GPE_Report("Error: "+foundErrorMessage);
 
             //tinydir_close(&dir);
             return false;
@@ -351,8 +351,8 @@ bool GPE_FileDirectory::open_directory_sorted(std::string directoryIn)
                 if( tinydir_readfile(&dir, &file)==-1)
                 {
                     foundErrorMessage = strerror(errno) ;
-                    record_error("Unable to open directory's file #"+int_to_string(i)+"]");
-                    record_error("Error: "+foundErrorMessage);
+                    GPE_Report("Unable to open directory's file #"+int_to_string(i)+"]");
+                    GPE_Report("Error: "+foundErrorMessage);
                     tinydir_close(&dir);
                     return false;
                 }
@@ -464,30 +464,26 @@ bool GPE_FileDirectory::set_position(int position)
 
 
 
-void GPE_OpenProgram(std::string programLocation, std::string programInfo, bool openProgrmaInfoOnFail)
+void GPE_OpenProgram(std::string programLocation, std::string programInfo, bool openProgrmaInfoOnFail )
 {
-    record_error("Attempting to open ["+programLocation+"] with ["+programInfo+"] data...");
+    GPE_Report("Attempting to open ["+programLocation+"] with ["+programInfo+"] data...");
     if( file_exists(programLocation) || path_exists(programLocation) )
     {
-        /*if( GPE_Main_Logs!=NULL )
-        {
-            GPE_Main_Logs->log_general_line( "Starting "+programLocation );
-        }*/
-        #ifdef _WIN32
-            // win implementation
-            //programLocation = "start "+urlIn;
-            programInfo = string_replace_all(programInfo,"/","\\");
-            ShellExecute(NULL,NULL,programLocation.c_str(),programInfo.c_str(),NULL,SW_SHOW );
-        #elif __APPLE__
-            // apple implementation
-            programLocation = "open "+programLocation;
+#ifdef _WIN32
+        // win implementation
+        //programLocation = "start "+urlIn;
+        programInfo = string_replace_all(programInfo,"/","\\");
+        ShellExecute(NULL,NULL,programLocation.c_str(),programInfo.c_str(),NULL,SW_SHOW );
+#elif __APPLE__
+        // apple implementation
+        programLocation = "open "+programLocation;
 
-            system(programLocation.c_str() );
-        #else
-            // Linux and others implementation
-            programLocation = "xdg-open \""+programLocation+"\"";
-            system(programLocation.c_str() );
-        #endif
+        system(programLocation.c_str() );
+#else
+        // Linux and others implementation
+        programLocation = "xdg-open \""+programLocation+"\"";
+        system(programLocation.c_str() );
+#endif
     }
     else if( openProgrmaInfoOnFail )
     {
@@ -499,19 +495,354 @@ void GPE_OpenURL(std::string urlIn)
 {
     //urlIn+="&";
     /**/
-    #ifdef _WIN32
-        // win implementation
-        //urlIn = string_replace_all(urlIn," ","%20");
-        urlIn = "start  \"\" \""+urlIn+"\"";
-        record_error(urlIn);
-        system(urlIn.c_str() );
-	#elif __APPLE__
-        // apple implementation
-        urlIn = "open "+urlIn;
-        system(urlIn.c_str() );
-    #else
-        // Linux and others implementation
-        urlIn = "xdg-open \""+urlIn+"\"";
-        system(urlIn.c_str() );
-    #endif
+#ifdef _WIN32
+    // win implementation
+    //urlIn = string_replace_all(urlIn," ","%20");
+    urlIn = "start  \"\" \""+urlIn+"\"";
+    GPE_Report(urlIn);
+    system(urlIn.c_str() );
+#elif __APPLE__
+    // apple implementation
+    urlIn = "open "+urlIn;
+    system(urlIn.c_str() );
+#else
+    // Linux and others implementation
+    urlIn = "xdg-open \""+urlIn+"\"";
+    system(urlIn.c_str() );
+#endif
+}
+
+int getFileSize(const std::string &fileName)
+{
+    std::ifstream file(fileName.c_str(), std::ifstream::in | std::ifstream::binary);
+
+    if(!file.is_open())
+    {
+        return -1;
+    }
+
+    file.seekg(0, std::ios::end);
+    int fileSize = file.tellg();
+    file.close();
+
+    return fileSize;
+}
+
+std::string getFileSizeString(const std::string &fileName)
+{
+    double fSizeInBytes = getFileSize( fileName );
+    if( fSizeInBytes <  0 )
+    {
+        return "Error: File Size not found...";
+    }
+    if( fSizeInBytes >=BSIZE_TB )
+    {
+        return double_to_string( fSizeInBytes/BSIZE_TB )+"GB";
+    }
+    else if( fSizeInBytes >=BSIZE_GB )
+    {
+        return double_to_string( fSizeInBytes/BSIZE_GB )+"GB";
+    }
+    else if( fSizeInBytes >=BSIZE_MB )
+    {
+        return double_to_string( fSizeInBytes/BSIZE_MB )+"MB";
+    }
+    else if( fSizeInBytes >=BSIZE_KB )
+    {
+        return double_to_string( fSizeInBytes/BSIZE_KB )+"KB";
+    }
+    return double_to_string( fSizeInBytes )+" bytes";
+}
+
+int clean_folder(std::string folderName)
+{
+    GPE_FileDirectory * dir = new GPE_FileDirectory();
+    GPE_File * file = NULL;
+    int iFile = 0;
+    int iDirectory = 0;
+
+    std::string fileToClick = "";
+    std::vector< std::string > foldersToDelete;
+    foldersToDelete.push_back(folderName);
+    std::string currentFolderToClear = folderName;
+    int filesDeletedCount = 0;
+    if( dir!=NULL)
+    {
+        while( (int)foldersToDelete.size() > 0 )
+        {
+            currentFolderToClear = foldersToDelete[0];
+            dir->open_directory(currentFolderToClear);
+            for (iFile = (int)dir->get_count()-1; iFile>=0; iFile--)
+            {
+                file = dir->get_file(iFile);
+                if( file!=NULL)
+                {
+                    fileToClick = file->get_name();
+                    if( fileToClick!="." && fileToClick!="..")
+                    {
+                        fileToClick = currentFolderToClear+"/"+fileToClick;
+                        if( file->is_directory() )
+                        {
+                            foldersToDelete.push_back(fileToClick );
+                        }
+                        else
+                        {
+                            remove(fileToClick.c_str() );
+                            filesDeletedCount++;
+                        }
+                    }
+                }
+            }
+            for( iDirectory = (int)foldersToDelete.size()-1; iDirectory >=0; iDirectory--)
+            {
+                if( currentFolderToClear==foldersToDelete.at(iDirectory) )
+                {
+                    foldersToDelete.erase( foldersToDelete.begin()+iDirectory);
+                }
+            }
+        }
+        delete dir;
+        dir = NULL;
+        return filesDeletedCount;
+    }
+    return 0;
+}
+
+bool copy_folder(std::string folderName, std::string targetFolder, bool copySubFolders)
+{
+    if( path_exists(folderName) && path_exists(targetFolder) )
+    {
+        GPE_FileDirectory * dir = new GPE_FileDirectory();
+        GPE_File * file = NULL;
+        std::string currentFileName = "";
+        int iFile = 0;
+        int iDirectory = 0;
+        if( dir!=NULL)
+        {
+            dir->open_directory(folderName);
+            for (iFile = 0; iFile < (int)dir->get_count(); iFile++)
+            {
+                file = dir->get_file(iFile);
+                if( file!=NULL)
+                {
+                    currentFileName = file->get_name();
+                    if( currentFileName!="." && currentFileName!="..")
+                    {
+                        //displayMessageString = "Copying "+currentFileName;
+                        currentFileName = folderName+"/"+currentFileName;
+                        if( file->is_directory() )
+                        {
+                            if( copySubFolders)
+                            {
+                                create_directory(currentFileName);
+                                copy_folder( currentFileName, targetFolder+"/"+ file->get_name(), true );
+                            }
+                        }
+                        else
+                        {
+
+                            copy_file(currentFileName,targetFolder+"/"+ file->get_name() );
+                        }
+                    }
+                }
+            }
+            delete dir;
+            dir = NULL;
+            return true;
+        }
+    }
+    return false;
+}
+
+
+bool GPE_Seek_Settings_Folder()
+{
+    //Sets the folder used in all get_user_settings_folder() calls based on the 2 parameters above
+    GPE_APP_SETTINGS_FOLDER = APP_DIRECTORY_NAME;
+    if( (int)GPE_PROGRAM_PUBLISHER.size() ==0 )
+    {
+        return false;
+    }
+    //if a publisher is said to be to this program
+    //Here is where he fun happens...
+    bool useProgramFolder = false;
+    bool homeDirFound  = true;
+
+    //Going thru all of the possible getenv paramters that i know of...
+    char* homeDir = getenv("%UserProfile%");
+    std::string foundPath = "";
+    //Attempt 1...
+    if( homeDir!=NULL)
+    {
+        //Attempt 1...
+        foundPath = homeDir;
+    }
+    else
+    {
+        //Attempt 2...
+        homeDir = getenv("home");
+        if( homeDir!=NULL )
+        {
+            foundPath = homeDir;
+        }
+        else
+        {
+            //Attempt 3...
+            homeDir = getenv("HOME");
+            if( homeDir!=NULL)
+            {
+                foundPath = homeDir;
+            }
+            else
+            {
+                //final shot...
+                homeDir = getenv("homepath");
+                if( homeDir!=NULL )
+                {
+                    foundPath = homeDir;
+                }
+                else
+                {
+                    //All attempts failed defaults to program folder...
+                    return false;
+                }
+            }
+        }
+    }
+
+    if( homeDirFound && path_exists(foundPath) )
+    {
+        std::string appDataPath = foundPath;
+        if( GPE_FOUND_OS==GPE_IDE_WINDOWS)
+        {
+            //First Layer of Windows unlocked :-)
+            if( create_directory(appDataPath+"/AppData")!=-1)
+            {
+                foundPath = appDataPath = appDataPath+"/AppData";
+
+                //See if we can get into the Roaming folder now
+                if( create_directory(appDataPath+"/Roaming")!=-1)
+                {
+                    foundPath = appDataPath = appDataPath+"/Roaming";
+                }
+                else if( create_directory(appDataPath+"/Local")!=-1 )
+                {
+                    //If failed, lets see if we can get into the Local folder now
+                    foundPath = appDataPath = appDataPath+"/Local";
+                }
+                else if( create_directory(appDataPath+"/LocalLow")!=-1 )
+                {
+                    foundPath = appDataPath = appDataPath+"/LocalLow";
+                }
+                else
+                {
+                    //Windows failed to get into settings...
+                    return false;
+                }
+            }
+            else
+            {
+                useProgramFolder = true;
+                appDataPath = foundPath = "";
+            }
+        }
+        else if( GPE_FOUND_OS==GPE_IDE_MAC)
+        {
+            appDataPath = foundPath+"/~/Library/Preferences";
+            if( create_directory(appDataPath)==-1)
+            {
+                useProgramFolder = true;
+                appDataPath = foundPath = "";
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        if( useProgramFolder )
+        {
+            //Something failed above so now we just use the program folder...
+            return false;
+        }
+
+        //If we have some sort of file path...
+        if( GPE_FOUND_OS==GPE_IDE_LINUX)
+        {
+            appDataPath = appDataPath+"/."+GPE_PROGRAM_PUBLISHER;
+        }
+        else
+        {
+            //Windows, Mac, etc afaik...
+            appDataPath = appDataPath+"/"+GPE_PROGRAM_PUBLISHER;
+        }
+
+        //If we are able to get into the publisher folder
+        if( create_directory(appDataPath)!=-1)
+        {
+            foundPath = appDataPath;
+            GPE_APP_SETTINGS_FOLDER = foundPath;
+            if( (int)GPE_PROGRAM_TITLE.size() > 0 )
+            {
+                //If we are able to get into the titled program's folder
+                if( create_directory( foundPath+"/"+GPE_PROGRAM_TITLE )!=-1 )
+                {
+                    foundPath = foundPath+"/"+GPE_PROGRAM_TITLE;
+                    GPE_APP_SETTINGS_FOLDER = foundPath;
+                }
+                GPE_APP_SETTINGS_FOLDER = GPE_APP_SETTINGS_FOLDER+"/";
+                //If this fails we will just default to the publisher and call it a day...
+            }
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    //save the settings and local directory to the application directory
+    if( useProgramFolder )
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+std::string get_user_settings_folder()
+{
+    return GPE_APP_SETTINGS_FOLDER;
+}
+
+std::string get_user_temp_folder()
+{
+    std::string foundPath = get_user_settings_folder();
+    std::string tempFolderString = foundPath;
+    foundPath = foundPath+"/temp_files";
+    if( create_directory(foundPath)!=-1)
+    {
+        tempFolderString = foundPath+"/";
+    }
+    return tempFolderString;
+}
+
+std::string get_user_screenshot_folder()
+{
+    std::string foundPath = get_user_settings_folder();
+    std::string tempScreenshotString = foundPath;
+    foundPath = foundPath+"/screenshots";
+    if( create_directory(foundPath)!=-1)
+    {
+        tempScreenshotString = foundPath+"/";
+    }
+    return tempScreenshotString;
+}
+
+bool delete_file( std::string fName)
+{
+
 }

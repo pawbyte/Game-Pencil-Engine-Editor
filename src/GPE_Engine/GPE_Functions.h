@@ -3,10 +3,10 @@ GPE_Functions.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,12 +35,16 @@ SOFTWARE.
 #define FUNCTIONS_H
 
 #include <string>
-#include "GPE_CIncludes.h"
+#include "GPE_String_Ex.h"
 #include "GPE_Renderer.h"
+
+//Degree math
+double degCos( double dAngle  );
+double degSin( double dAngle  );
 
 //The headers
 bool compare_doubles(double a,double b);
-bool copy_file(std::string sourceFile, std::string desinationFile);
+bool copy_file(std::string sourceFile, std::string desinationFile, bool overwriteExisting = true);
 int create_directory( std::string newPathToCreate);
 double bound_number(double numbIn,double xMin =0, double xMax = 100);
 
@@ -56,8 +60,9 @@ std::string get_file_noext(std::string fileLocationIn);
 double point_direction(double x1,double y1,double x2,double y2);
 double point_distance(double x1, double y1, double x2, double y2);
 //random function
-int random(int maxIn);
+int random_int(int maxIn );
 int random(int low,int high);
+double random_double(double low,double high);
 int sign(double valIn);
 
 void update_rect(GPE_Rect * rectIn, int nx, int ny, int nw, int nh);
@@ -70,17 +75,5 @@ bool path_exists(std::string pathNameIn);
 
 void HEXtoRGB(std::string hexCode,int &r, int &g, int &b);
 std::string RGBtoHEX(int r, int g, int b);
-
-//Surface Functions
-SDL_Surface * load_surface_image( std::string filename );
-
-Uint32 get_pixel32( SDL_Surface *surface, int x, int y );
-void put_pixel32( SDL_Surface *surface, int x, int y, Uint32 pixel );
-
-SDL_Surface * surface_grayscale( SDL_Surface *surface);
-SDL_Surface * surface_invert( SDL_Surface *surface);
-SDL_Surface * surface_merge_color( SDL_Surface *surface, SDL_Color colorMerge, float amount );
-SDL_Surface * surface_remove_color( SDL_Surface *surface, SDL_Color colorToRemove );
-SDL_Surface * surface_flip( SDL_Surface *surface, int flags );
 
 #endif

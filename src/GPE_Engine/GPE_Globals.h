@@ -3,10 +3,10 @@ GPE_Globals.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -41,6 +41,14 @@ SOFTWARE.
 #include <string>
 //#include "functions.h"
 
+//Start Cursor stuff
+extern SDL_Cursor * GPE_Cursor;
+extern SDL_SystemCursor GPE_PreviousCursor;
+extern SDL_SystemCursor GPE_CurrentCursor;
+extern SDL_Cursor * GPE_LoadingCursor;
+extern SDL_Cursor * GPE_HoverCursor;
+//End Cursor stuff
+
 extern int ARGS_PROCESSED;
 //The event structure
 extern SDL_Event event;
@@ -50,9 +58,6 @@ extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
 
 //Keep track of the frame count
-extern double CURRENT_FPS;
-extern float TIMER_TICKS;
-extern float OLD_TIMER_TICKS;
 extern bool SHOW_FPS_COUNTER;
 
 extern bool IN_DEBUG_MODE;
@@ -65,11 +70,13 @@ extern int commandLength;
 
 extern std::string APP_FILE_NAME;
 extern std::string APP_DIRECTORY_NAME;
+extern std::string GPE_APP_SETTINGS_FOLDER;
 extern int GPE_FOUND_OS;
 
 extern int LAST_USED_HALIGNMENT;
 extern int LAST_USED_VALIGNMENT;
-extern std::string programTitle;
+extern std::string GPE_PROGRAM_PUBLISHER;
+extern std::string GPE_PROGRAM_TITLE;
 extern std::string LANGUAGE;
 extern std::string PATH_CONFIG;
 extern std::string FILE_KEYBINDINGS;
@@ -86,7 +93,6 @@ extern bool GLOBAL_WIN_RESIZABLE;
 extern bool GLOBAL_WIN_FULL_SCREEN;
 extern bool GLOBAL_WIN_NULL_DECLARE;
 
-extern bool RENDER_RESOURCEBAR_LEFT;
 extern GPE_Renderer * MAIN_RENDERER;
 extern GPE_Renderer * CURRENT_RENDERER;
 

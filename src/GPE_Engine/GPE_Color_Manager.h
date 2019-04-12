@@ -3,10 +3,10 @@ GPE_Color_Manager.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -81,28 +81,27 @@ extern GPE_Color * hudColor;
 extern GPE_Color * hudColorHighlight;
 
 //color functions
-void activate_colors();
+void GPE_Init_Colors();
 bool colorEquals(GPE_Color cOne, GPE_Color cTwo);
-int merge_channel(int a, int b, float amount);
-GPE_Color merge_color(GPE_Color clOne, GPE_Color clTwo, float amount);
-class colorMaster
+int merge_channel(int a, int b, double amount);
+GPE_Color merge_color(GPE_Color clOne, GPE_Color clTwo, double amount);
+
+class GPE_Color_Master
 {
-    private:
-        std::vector <GPE_Color *> COLOR_OBJECTS;
-        int biggestStringSize;
-    public:
-        colorMaster();
-        void addColor(GPE_Color *colorIn,std::string stringIn);
-        int getBiggestColorSize();
-        int getListSize();
-        GPE_Color * getColor(std::string stringInForSearch);
-        int getColorPos(std::string stringInForSearch);
-        GPE_Color *getColorAt(int pos);
-        std::string getColorNameAt(int pos);
+private:
+    std::vector <GPE_Color *> COLOR_OBJECTS;
+    int biggestStringSize;
+public:
+    GPE_Color_Master();
+    void add_color(GPE_Color *colorIn,std::string stringIn);
+    bool define_colors();
+    int find_color_id(std::string stringInForSearch);
+    int get_longest_color_name();
+    int get_color_count();
+    GPE_Color * get_color(std::string stringInForSearch);
+    GPE_Color * get_color_from_id(int pos);
+    std::string get_color_name(int pos);
 };
-
+extern GPE_Color_Master * MASTER_OF_COLORS;
 //Color Loading
-void load_colors();
-
-
 #endif

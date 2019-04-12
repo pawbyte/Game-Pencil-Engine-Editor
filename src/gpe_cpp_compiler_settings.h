@@ -30,6 +30,42 @@ SOFTWARE.
 
 
 */
+#ifndef GPE_CPP_COMPILER_RESOURCES_H
+#define GPE_CPP_COMPILER_RESOURCES_H
 
-#include "gpe_project_resources.h"
+#include "gpe_basic_resource_page.h"
 
+class cppCompilerManager
+{
+
+};
+
+class gameCPPCompilerSettingsResource: public standardEditableGameResource
+{
+    public:
+        GPE_SelectBoxBasic * sideAreaPanel;
+        GPE_Rect * sidePanelRect;
+        //Compiler Settings
+        GPE_DropDown_Menu * compilerInUse;
+        GPE_ToolLabelButton * defaultCompilerButton;
+        GPE_ToolLabelButton * copyCompilerButton;
+        GPE_ToolLabelButton * renameCompilerButton;
+        GPE_ToolLabelButton * resetDefaultsCompilerButton;
+        GPE_CheckBoxBasic * stopCompileOnError;
+        GPE_Rect gpeLogoSpace;
+        GPE_Rect subViewedSpace;
+        GPE_GuiElementList * editorPageList;
+        std::string projectFolderListLocation;
+        gameCPPCompilerSettingsResource(GPE_GeneralResourceContainer * pFolder = NULL);
+        ~gameCPPCompilerSettingsResource();
+        void prerender_self( );
+        void preprocess_self(std::string alternatePath = "");
+        void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
+        void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+        void save_resource(std::string alternatePath = "", int backupId = -1);
+        bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
+};
+
+extern gameCPPCompilerSettingsResource * GPE_CPP_COMPILER_SETTINGS;
+
+#endif

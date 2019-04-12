@@ -3,10 +3,10 @@ GPE_String_Ex.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -48,22 +48,20 @@ SOFTWARE.
 bool char_is_alnum(char c, bool allowSpaces = false, bool allowUnderscores = false);
 bool char_is_alpha(char c, bool allowSpaces = false, bool allowUnderscores = false);
 bool is_alnum(const std::string str, bool allowSpaces = false, bool allowUnderscores = false);
-bool string_starts(std::string hay, std::string needle);
-bool string_contains(std::string hay, std::string needle);
-bool string_ends(std::string hay, std::string needle);
+
+bool string_contains(const std::string& hay, const std::string& needle);
+bool string_starts(const std::string& hay, const std::string& needle);
+bool string_ends(const std::string& hay, const std::string& needle);
 
 std::string double_to_string(double in);
-std::string float_to_string(float in);
+std::string double_to_string(double in);
 std::string int_to_string(int in);
 
 std::string get_substring(std::string strIn, int cStart = 0, int cLength =-1);
 int get_leading_space_count(std::string strIn);
 int get_trailing_space_count( std::string strIn);
 
-bool is_bool(int value);
-bool is_bool(std::string value);
-
-int string_count(std::string str, std::string substr);
+int string_count(std::string str, std::string needle );
 std::string string_digits(std::string str);
 std::string string_letters(std::string str);
 std::string string_lettersdigits(std::string str);
@@ -80,6 +78,7 @@ std::string fileToDir(std::string fileNameIn);
 int split_first_int(std::string& s, char separator);
 std::string split_first_string(std::string& s, char separator);
 std::string split_first_string(std::string& s, std::string separator);
+bool string_to_bool(std::string value);
 int string_to_int(const std::string& s, int default_value = 0);
 double string_to_double( const std::string& s, double default_value = 0 );
 

@@ -3,10 +3,10 @@ GPE_Translator.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -70,8 +70,8 @@ std::string GPE_Translator::get_language( )
 std::string GPE_Translator::get_str(std::string message)
 {
     //std::string foundTranslation = myTranslations[message];
-	//if (foundTranslation == "") foundTranslation = message;
-	return message;
+    //if (foundTranslation == "") foundTranslation = message;
+    return message;
 }
 
 
@@ -90,7 +90,7 @@ bool GPE_Translator::translate_po_file(std::string fName)
 {
     std::ifstream langFile( fName.c_str() );
 
-    record_error("Loading language file - "+fName );
+    GPE_Report("Loading language file - "+fName );
     //If the level file could be loaded
     if( !langFile.fail() )
     {
@@ -100,15 +100,13 @@ bool GPE_Translator::translate_po_file(std::string fName)
             int keyPos = 0;
             std::string firstChar="";
             std::string section="";
-            std::string cur_layer="";
-            std::string data_format="";
             std::string msgid = "";
             std::string msgstr = "";
             std::string keyString ="";
             std::string valString = "";
             std::string currLine = "";
             std::string currLineToBeProcessed;
-            float foundFileVersion = 0;
+            double foundFileVersion = 0;
             int fCursorX = 0;
             int fCursorY = 0;
             while ( langFile.good() )

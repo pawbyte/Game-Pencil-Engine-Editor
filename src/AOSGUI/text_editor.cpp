@@ -3,10 +3,10 @@ text_editor.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -32,10 +32,190 @@ SOFTWARE.
 */
 
 #include "text_editor.h"
-GPE_LogManager * GPE_Main_Logs = NULL;
+#include "paw_gui.h"
+
+
+GPE_TextAnchorGBCollector * GPE_ANCHOR_GC  = NULL;
+
+GPE_Log_Entry::GPE_Log_Entry(std::string projectName, std::string resName, std::string logTxt, std::string funcName, int lineNumb, int charNumb)
+{
+    projectLogBelongsTo = projectName;
+    resourceNameRelated = resName;
+    functionName = funcName; //where applicable
+    logText = logTxt;
+    lineToReach = lineNumb;
+    characterToReach = charNumb;
+}
+
+
+GPE_Log_Entry::~GPE_Log_Entry()
+{
+    projectLogBelongsTo = "";
+    resourceNameRelated = "";
+    functionName = ""; //where applicable
+    logText = "";
+}
+
+
+GPE_TextAnchor::GPE_TextAnchor(int lineN, int charN, std::string messageIn, std::string alertInfo, int anchorType)
+{
+    anchorType = anchorType;
+    lineNumber = lineN;
+    characterNumber = charN;
+    lineMessage = messageIn;
+    lineAlert = alertInfo;
+    /*if( GPE_MAIN_GUI!=NULL)
+    {
+        anchorProjectName = GPE_MAIN_GUI->searchResultProjectName;
+        anchorProjectResourceId = GPE_MAIN_GUI->searchResultResourceId;
+        anchorProjectResourceName = GPE_MAIN_GUI->searchResultResourceName;
+    }
+    else*/
+    {
+        anchorProjectName = "";
+        anchorProjectResourceId = 0;
+        anchorProjectResourceName = "";
+    }
+    if( (int)anchorProjectResourceName.size() > 0 )
+    {
+        opName = "["+anchorProjectResourceName+"]["+lineMessage+"]";
+    }
+    else
+    {
+        opName = "["+lineMessage+"]";
+    }
+    opName+=" Ln "+int_to_string(lineN+1)+"Col "+int_to_string(charN+1);
+    elementBox.x = 0;
+    elementBox.y = 0;
+    if( FONT_LABEL_ANCHOR!=NULL)
+    {
+        int bWid = 0;
+        int bHgt = 0;
+        FONT_LABEL_ANCHOR->get_metrics(opName.c_str(), &bWid, &bHgt);
+        elementBox.w = bWid;
+        elementBox.h = bHgt+GENERAL_GPE_PADDING*2;
+    }
+}
+
+GPE_TextAnchor::~GPE_TextAnchor()
+{
+
+}
+
+void GPE_TextAnchor::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
+{
+    GPE_GeneralGuiElement::process_self(viewedSpace,cam);
+
+    if( isHovered)
+    {
+        GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
+    }
+    if( isInUse)
+    {
+        if( input->check_keyboard_down(kb_ctrl) && input->check_keyboard_released(kb_c) )
+        {
+            SDL_SetClipboardText (opName.c_str() );
+        }
+    }
+
+    /*
+    if( isClicked  && GPE_MAIN_GUI )
+    {
+        if( (int)anchorProjectName.size() > 0 )
+        {
+            GPE_ProjectFolder * foundProject = GPE_MAIN_GUI->find_project_from_filename(anchorProjectName);
+            GPE_GeneralResourceContainer * foundResContainer = NULL;
+            generalGameResource * foundGameResource = NULL;
+            if( foundProject!=NULL && foundProject->RESC_PROJECT_FOLDER!=NULL )
+            {
+                if( anchorProjectResourceId >=0 )
+                {
+                    foundResContainer = foundProject->RESC_PROJECT_FOLDER->find_resource_from_id(anchorProjectResourceId,true,false);
+                }
+                else if( anchorProjectResourceId < 0 )
+                {
+                    foundResContainer = foundProject->RESC_PROJECT_SETTINGS;
+                }
+            }
+
+            if( foundResContainer!=NULL)
+            {
+                foundGameResource = foundResContainer->get_held_resource();
+            }
+            if( foundGameResource!=NULL)
+            {
+                foundGameResource->open_code(lineNumber, characterNumber, lineMessage );
+                if( GPE_Main_TabManager!=NULL)
+                {
+                    GPE_Main_TabManager->add_new_tab(foundGameResource);
+                }
+            }
+        }
+        //input->reset_all_input();
+    }
+    */
+}
+
+void GPE_TextAnchor::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+{
+    viewedSpace = GPE_find_camera(viewedSpace);
+    cam = GPE_find_camera(cam);
+    if( forceRedraw && (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
+    {
+        if( isInUse)
+        {
+            gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Border_Highlighted_Color,true);
+        }
+        else if( isHovered)
+        {
+            gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Box_Highlighted_Color,false);
+            gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Border_Highlighted_Color,false);
+        }
+        else
+        {
+            gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Box_Color,false);
+            gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Main_Border_Color,true);
+        }
+        gfs->render_text( elementBox.x-cam->x+GENERAL_GPE_PADDING,elementBox.y-cam->y+GENERAL_GPE_PADDING,opName,GPE_MAIN_THEME->Text_Box_Font_Color,FONT_LABEL_ANCHOR,FA_LEFT,FA_MIDDLE);
+    }
+}
+
+GPE_TextAnchorGBCollector::GPE_TextAnchorGBCollector()
+{
+
+}
+
+GPE_TextAnchorGBCollector::~GPE_TextAnchorGBCollector()
+{
+    clear_list( true );
+}
+
+void GPE_TextAnchorGBCollector::clear_list( bool deleteAnchors  )
+{
+    if( deleteAnchors )
+    {
+        GPE_TextAnchor * tempAnchor = NULL;
+        int gcSize =  loggedAnchors.size();
+        for( int gcItr = gcSize-1; gcItr >=0; gcItr-- )
+        {
+            tempAnchor =  loggedAnchors.at( gcItr );
+            if( tempAnchor !=NULL )
+            {
+                delete tempAnchor;
+                tempAnchor = NULL;
+
+            }
+        }
+    }
+    loggedAnchors.clear();
+}
 
 GPE_TextAreaInputBasic::GPE_TextAreaInputBasic(bool saveFirstEdit)
 {
+    tempCLineXStartPos = 0;
+    tempCLineXEndPos = 0;
+    needsNewLine = true;
+    isFullWidth = true;
     editorZoomLevel= 1;
     defaultLineHeight = 16; //px
     redrawDelay = 0;
@@ -51,15 +231,11 @@ GPE_TextAreaInputBasic::GPE_TextAreaInputBasic(bool saveFirstEdit)
     highlightXPos = 0;
     highlightYPos = 0;
     guiListTypeName = "textarea";
-    suggestedTextMaxInViewCount = 7;
-    iSuggestedStartPos = 0;
-    iSuggestionPos = 0;
-    maxSuggestedTextWidth = 0;
-    codeBeingSuggested = false;
     lastDoubleClickAction = 0;
     undoableActionOccurred = false;
     currentPositionInHistory = 0;
     hasLineBreak = true;
+    showButtonBar = true;
     isReadOnly = false;
     isCodeEditor = true;
     isTextLog= false;
@@ -100,12 +276,26 @@ GPE_TextAreaInputBasic::GPE_TextAreaInputBasic(bool saveFirstEdit)
     TEXTBOX_FONT_SIZE_HEIGHT = 10;
     if( FONT_TEXTINPUT!=NULL)
     {
-         FONT_TEXTINPUT->get_metrics("A",&TEXTBOX_FONT_SIZE_WIDTH,&TEXTBOX_FONT_SIZE_HEIGHT);
+        FONT_TEXTINPUT->get_metrics("A",&TEXTBOX_FONT_SIZE_WIDTH,&TEXTBOX_FONT_SIZE_HEIGHT);
     }
-    textSpaceRect.x = 0;
-    textSpaceRect.y = 0;
-    textSpaceRect.w = 32;
-    textSpaceRect.h = 32;
+
+    lineCountBox = new GPE_Rect();
+    lineCountBox->x = 0;
+    lineCountBox->y = 0;
+    lineCountBox->w = 0;
+    lineCountBox->h = 0;
+
+    renderBox = new GPE_Rect();
+    renderBox->x = 0;
+    renderBox->y = 0;
+    renderBox->w = 0;
+    renderBox->h = 0;
+
+    textSpaceRect = new GPE_Rect();
+    textSpaceRect->x = 0;
+    textSpaceRect->y = 0;
+    textSpaceRect->w = 0;
+    textSpaceRect->h = 0;
 
     textEditorButtonBar = NULL;
     create_buttonbar();
@@ -143,116 +333,13 @@ GPE_TextAreaInputBasic::GPE_TextAreaInputBasic(bool saveFirstEdit)
     }
 }
 
-GPE_TextAreaInputBasic::GPE_TextAreaInputBasic(int newX, int newY, int boxW, int boxH,std::string startName,std::string placeHolderText, bool saveFirstEdit)
-{
-    editorZoomLevel= 1;
-    defaultLineHeight = 16; //px
-    redrawDelay = 0;
-    redrawDelayMax = 2;
-    parseForErrorsTimerGoal = 60;
-    parseForErrorsTimerPos = 0;
-    missingSymbolDetected = false;
-    missingSymbolStartXPos = 0;
-    missingSymbolStartYPos = 0;
-    misingSymbolSuggestedEndYPos = 0;
-    misingSymbolSuggestedEndXPos = 0;
-    highlightXPos = 0;
-    highlightYPos = 0;
-    guiListTypeName = "textarea";
-    codeBeingSuggested = false;
-    maxSuggestedTextWidth= 0;
-    suggestedTextMaxInViewCount = 7;
-    iSuggestedStartPos = 0;
-    iSuggestionPos = 0;
-    lastDoubleClickAction = 0;
-    undoableActionOccurred = false;
-    currentPositionInHistory = 0;
-    hasLineBreak = true;
-    isCodeEditor = true;
-    isTextLog= false;
-    codeEditorType = 0;
-    isReadOnly = false;
-    isEnabled = true;
-    elementBox.x = newX;
-    elementBox.y = newY;
-    elementBox.w = boxW;
-    elementBox.h = boxH;
-    textSpaceRect.x = newX;
-    textSpaceRect.y = newY;
-    textSpaceRect.w = boxW;
-    textSpaceRect.h = boxH;
-    showXScroll = false;
-    showYScroll = false;
-    useWordWrap = false;
-    displayMode = 0;
-    cursorXPos = 0;
-    cursorYPos = 0;
-    prevCursorXPos = cursorXPos;
-    prevCursorYPos = cursorYPos;
-    cursorTimer = 0;
-    showCursor = false;
-    inputFieldPos = 0;
-    maxLength = 2048;
-    maxLineCount = 32768;
-    lineCountBoxWidth = 48;
-    lineStartXPos = 0;
-    charactersWithinView = 16;
-    linesWithinView = 4;
-    lineStartYPos = 0;
-    placeHolderString = placeHolderText;
-    textInputString = "";
-    lineToEdit = "";
-    listOfStrings.push_back("");
-    bscDelay = 0;
-    delDelay = 0;
-    enterDelay = 0;
-    upDelay = 0;
-    downDelay = 0;
-    leftDelay = 0;
-    rightDelay = 0;
-    dKeyDelay = 0;
-    tabDelay=0;
-
-    textXScroll = new GPE_ScrollBar_XAxis();
-    textYScroll = new GPE_ScrollBar_YAxis();
-    TEXTBOX_FONT_SIZE_WIDTH = 12;
-    TEXTBOX_FONT_SIZE_HEIGHT = 12;
-    if( FONT_TEXTINPUT!=NULL)
-    {
-         FONT_TEXTINPUT->get_metrics("A",&TEXTBOX_FONT_SIZE_WIDTH,&TEXTBOX_FONT_SIZE_HEIGHT);
-    }
-    textEditorButtonBar = NULL;
-    create_buttonbar();
-
-    selectionCursorXPos = 0;
-    selectionCursorYPos = 0;
-    selectionEndCursorXPos = 0;
-    selectionEndCursorYPos = 0;
-
-    symbolCursorXPos = -1;
-    symbolCursorYPos = -1;
-    symbolEndCursorXPos = -1;
-    symbolEndCursorYPos = -1;
-
-    commentLineText = new GPE_SyntaxLine();
-    normalLineText = new GPE_SyntaxLine();
-    datatypeLineText = new GPE_SyntaxLine();
-    functionLineText = new GPE_SyntaxLine();
-    numberLineText = new GPE_SyntaxLine();
-    projectFunctionLineText = new GPE_SyntaxLine();
-    projectKeywordLineText = new GPE_SyntaxLine();
-    keywordLineText = new GPE_SyntaxLine();
-    dQuoteLineText = new GPE_SyntaxLine();
-    sQuoteLineText = new GPE_SyntaxLine();
-    symbolLineText = new GPE_SyntaxLine();
-    if( saveFirstEdit)
-    {
-        save_edit();
-    }
-}
-
 GPE_TextAreaInputBasic::~GPE_TextAreaInputBasic()
 {
+    if( textSpaceRect!=NULL)
+    {
+        delete textSpaceRect;
+        textSpaceRect = NULL;
+    }
     if( textXScroll!=NULL)
     {
         delete textXScroll;
@@ -385,68 +472,70 @@ void GPE_TextAreaInputBasic::add_line( std::string newLine, bool scrollToBottom)
 
 void GPE_TextAreaInputBasic::adjust_fortabs()
 {
-    if( cursorXPos > 0 && MAIN_GUI_SETTINGS!=NULL && MAIN_GUI_SETTINGS->autoFindMouseTabs )
-    {
-        if( (int)listOfStrings.size() > cursorYPos )
+    /*
+        if( cursorXPos > 0 && MAIN_GUI_SETTINGS!=NULL && MAIN_GUI_SETTINGS->autoFindMouseTabs )
         {
-            std::string currStrToCheck = listOfStrings[cursorYPos];
-            int currLineSize = (int)currStrToCheck.size();
-            if( currLineSize > cursorXPos )
+            if( (int)listOfStrings.size() > cursorYPos )
             {
-                if( (int)currStrToCheck[cursorXPos]==' ')
+                std::string currStrToCheck = listOfStrings[cursorYPos];
+                int currLineSize = (int)currStrToCheck.size();
+                if( currLineSize > cursorXPos )
                 {
-                    int preSpacesCounted = 0;
-                    int postSpacesCounted = 0;
-                    int allSpacesCounted = 0;
-                    int i = 0;
-
-                    for( i = cursorXPos-1; i>= 0; i--)
+                    if( (int)currStrToCheck[cursorXPos]==' ')
                     {
-                        if( currStrToCheck[i]==' ')
-                        {
-                            preSpacesCounted++;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
+                        int preSpacesCounted = 0;
+                        int postSpacesCounted = 0;
+                        int allSpacesCounted = 0;
+                        int i = 0;
 
-                    for( i = cursorXPos+1; i < currLineSize; i++)
-                    {
-                        if( currStrToCheck[i]==' ')
+                        for( i = cursorXPos-1; i>= 0; i--)
                         {
-                            postSpacesCounted++;
+                            if( currStrToCheck[i]==' ')
+                            {
+                                preSpacesCounted++;
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
-                        else
-                        {
-                            break;
-                        }
-                    }
 
-                    allSpacesCounted = preSpacesCounted+postSpacesCounted+1;
-                    preSpacesCounted = preSpacesCounted%MAIN_GUI_SETTINGS->tabSpaceCount;
-                    postSpacesCounted = postSpacesCounted%MAIN_GUI_SETTINGS->tabSpaceCount;
-                    if( allSpacesCounted%MAIN_GUI_SETTINGS->tabSpaceCount==0)
-                    {
-                        if( preSpacesCounted >postSpacesCounted )
+                        for( i = cursorXPos+1; i < currLineSize; i++)
                         {
-                            cursorXPos+=postSpacesCounted+1;
+                            if( currStrToCheck[i]==' ')
+                            {
+                                postSpacesCounted++;
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
-                        else
+
+                        allSpacesCounted = preSpacesCounted+postSpacesCounted+1;
+                        preSpacesCounted = preSpacesCounted%MAIN_GUI_SETTINGS->tabSpaceCount;
+                        postSpacesCounted = postSpacesCounted%MAIN_GUI_SETTINGS->tabSpaceCount;
+                        if( allSpacesCounted%MAIN_GUI_SETTINGS->tabSpaceCount==0)
                         {
-                            cursorXPos-=preSpacesCounted;
+                            if( preSpacesCounted >postSpacesCounted )
+                            {
+                                cursorXPos+=postSpacesCounted+1;
+                            }
+                            else
+                            {
+                                cursorXPos-=preSpacesCounted;
+                            }
+                            scroll_to_cursor();
                         }
-                        scroll_to_cursor();
                     }
                 }
-            }
-            else
-            {
-                cursorXPos = (int)currStrToCheck.size();
+                else
+                {
+                    cursorXPos = (int)currStrToCheck.size();
+                }
             }
         }
-    }
+    */
 }
 
 bool GPE_TextAreaInputBasic::can_redo()
@@ -509,17 +598,17 @@ void GPE_TextAreaInputBasic::create_buttonbar()
     }
     textEditorButtonBar = new GPE_ToolIconButtonBar( 16);
     textEditorButtonBar->set_height(24);
-    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/plane.png","Export Text",TEXTAREA_OPTION_EXPORT,false );
-    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/file.png","Import Text",TEXTAREA_OPTION_IMPORT,true );
-    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/eraser.png","Clear Text ",TEXTAREA_OPTION_CLEAR );
-    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/backward.png","Undo Action",TEXTAREA_OPTION_UNDO,false );
-    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/forward.png","Redo Action",TEXTAREA_OPTION_REDO,true );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/save.png","Export Text",TEXTAREA_OPTION_EXPORT,false );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/file.png","Import Text",TEXTAREA_OPTION_IMPORT,true );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/eraser.png","Clear Text ",TEXTAREA_OPTION_CLEAR );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/backward.png","Undo Action",TEXTAREA_OPTION_UNDO,false );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/forward.png","Redo Action",TEXTAREA_OPTION_REDO,true );
 
-    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/cut.png","Cut",TEXTAREA_OPTION_CUT,false );
-    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/copy.png","Copy",TEXTAREA_OPTION_COPY,true );
-    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/paste.png","Paste",TEXTAREA_OPTION_PASTE,true );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/cut.png","Cut",TEXTAREA_OPTION_CUT,false );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/copy.png","Copy",TEXTAREA_OPTION_COPY,true );
+    textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/paste.png","Paste",TEXTAREA_OPTION_PASTE,true );
 
-    //textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/buttons/info.png","Text Info (Not Available Yet)",TEXTAREA_OPTION_TEXTINFO,true );
+    //textEditorButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/info.png","Text Info (Not Available Yet)",TEXTAREA_OPTION_TEXTINFO,true );
     textEditorButtonBar->limit_width(true);
 }
 
@@ -667,7 +756,7 @@ bool GPE_TextAreaInputBasic::copy_all()
         }
         if( SDL_SetClipboardText( superLongClipboardStr.c_str() )!=0 )
         {
-           return false;
+            return false;
         }
         return true;
     }
@@ -752,7 +841,7 @@ void GPE_TextAreaInputBasic::delete_selection()
                         {
                             strToCopy += get_substring(tempStrToUse,maxHighlightXPos);
                         }
-                        for( int i=maxHighlightYPos; i >= minHighlightYPos;i-- )
+                        for( int i=maxHighlightYPos; i >= minHighlightYPos; i-- )
                         {
                             listOfStrings.erase(listOfStrings.begin()+i);
                         }
@@ -901,7 +990,7 @@ void GPE_TextAreaInputBasic::export_text(std::string newFileName)
         }
         else
         {
-            display_user_alert("Unable to save text",newFileName);
+            GPE_Report("Unable to save text",newFileName);
         }
     }
 }
@@ -931,7 +1020,7 @@ void GPE_TextAreaInputBasic::export_text_anchors(std::string newFileName)
         }
         else
         {
-            display_user_alert("Unable to save text anchors",newFileName);
+            GPE_Report("Unable to save text anchors",newFileName);
         }
     }
 }
@@ -954,11 +1043,10 @@ int GPE_TextAreaInputBasic::find_all_strings(std::string strTarget,bool matchCas
         {
             //add to list
             stringsFoundInSearch++;
-            if( addAnchor && GPE_Main_Logs!=NULL)
+            if( addAnchor && GPE_ANCHOR_GC!=NULL )
             {
                 nTextAnchor = new GPE_TextAnchor(selectionCursorYPos,selectionCursorXPos,areaTitle,"",GPE_ANCHOR_REGULAR);
-                GPE_Main_Logs->log_general_comment( "Adding anchor.." );
-                GPE_Main_Logs->searchAnchors.push_back(nTextAnchor);
+                GPE_ANCHOR_GC->loggedAnchors.push_back(nTextAnchor);
             }
             else
             {
@@ -980,9 +1068,9 @@ void GPE_TextAreaInputBasic::find_mouse_cursor(int *mXCursor, int *mYCursor, GPE
     cam = GPE_find_camera(cam);
     if( viewedSpace!=NULL && cam!=NULL && (int)listOfStrings.size() > 0)
     {
-        if( point_within_rect(input->mouse_x,input->mouse_y,&textSpaceRect)  )
+        if( point_within_rect(input->mouse_x,input->mouse_y, textSpaceRect)  )
         {
-            *mYCursor = (float)(input->mouse_y - viewedSpace->y-textEditorButtonBar->get_y2pos()+cam->y)/( defaultLineHeight * editorZoomLevel); //gets the elementBox.y pos essentially
+            *mYCursor = (double)(input->mouse_y - textSpaceRect->y )/( defaultLineHeight * editorZoomLevel); //gets the elementBox.y pos essentially
             *mYCursor+=lineStartYPos;
             if( *mYCursor < lineStartYPos)
             {
@@ -1001,14 +1089,8 @@ void GPE_TextAreaInputBasic::find_mouse_cursor(int *mXCursor, int *mYCursor, GPE
             {
                 listOfStrings.push_back("");
             }
-            if( MAIN_GUI_SETTINGS->showTextEditorLineCount )
-            {
-                *mXCursor = (float)(input->mouse_x - elementBox.x-viewedSpace->x-lineCountBoxWidth+cam->x)/TEXTBOX_FONT_SIZE_WIDTH+lineStartXPos;
-            }
-            else
-            {
-                *mXCursor = (float)(input->mouse_x - elementBox.x-viewedSpace->x+cam->x)/TEXTBOX_FONT_SIZE_WIDTH+lineStartXPos;
-            }
+            *mXCursor = (double)(input->mouse_x - textSpaceRect->x )/( TEXTBOX_FONT_SIZE_WIDTH * editorZoomLevel);
+            mXCursor+=  (int)lineStartXPos;
             std::string newString = listOfStrings.at(*mYCursor);
             int maxCursorSpace = (int)newString.size();
             if( *mXCursor > maxCursorSpace )
@@ -1040,7 +1122,7 @@ bool GPE_TextAreaInputBasic::find_connected_symbols()
             std::string endSymbol;
             std::string charStr = "";
             bool foundBookedSymbol = false;
-            bool searchForEndSymbol = false;;
+            bool searchForEndSymbol = false;
 
             int subStrSearchBeginPos = cursorXPos;
             int subStrSearchEndPos = cursorXPos;
@@ -1070,7 +1152,7 @@ bool GPE_TextAreaInputBasic::find_connected_symbols()
                 symbolCursorYPos = cursorYPos;
                 foundBookedSymbol = true;
                 searchForEndSymbol = true;
-             }
+            }
             else if( charStr =="[")
             {
                 beginSymbol = "[";
@@ -1127,7 +1209,7 @@ bool GPE_TextAreaInputBasic::find_connected_symbols()
                     foundBookedSymbol = true;
                     searchForEndSymbol = true;
                     fCursorXPos-=1;
-                 }
+                }
                 else if( charStr =="[")
                 {
                     beginSymbol = "[";
@@ -1345,7 +1427,7 @@ bool GPE_TextAreaInputBasic::find_string(std::string strTarget, bool searchDown,
             }
             else
             {
-                for( int i = searchCursorYPos+1; i < (int)listOfStrings.size();i++)
+                for( int i = searchCursorYPos+1; i < (int)listOfStrings.size(); i++)
                 {
                     strToSearch = listOfStrings[i];
                     foundSubXPos= strToSearch.find(strTarget, 0);
@@ -1382,9 +1464,12 @@ bool GPE_TextAreaInputBasic::find_string(std::string strTarget, bool searchDown,
 
 void GPE_TextAreaInputBasic::find_documentation_description(int tCursorX, int tCursorY)
 {
-    documentationIsBeingShown = false;
-    iSuggestedStartPos = 0;
-    iSuggestionPos = 0;
+    if( GPE_MAIN_HIGHLIGHTER!=NULL )
+    {
+        GPE_MAIN_HIGHLIGHTER->documentationIsBeingShown = false;
+        GPE_MAIN_HIGHLIGHTER->iSuggestedStartPos = 0;
+        GPE_MAIN_HIGHLIGHTER->iSuggestionPos = 0;
+    }
     int  i = 0;
 
     if( tCursorY < 0)
@@ -1403,9 +1488,8 @@ void GPE_TextAreaInputBasic::find_documentation_description(int tCursorX, int tC
     }
 
 
-    if( !codeBeingSuggested && tCursorY >=0 && tCursorY < (int)listOfStrings.size() && isCodeEditor)
+    if( !GPE_MAIN_HIGHLIGHTER->codeBeingSuggested && tCursorY >=0 && tCursorY < (int)listOfStrings.size() && isCodeEditor)
     {
-        maxSuggestedTextWidth = 0;
         std::string currentStringInView = "";
         tempCLineXStartPos = 0;
         tempCLineXEndPos = tCursorX;
@@ -1478,7 +1562,7 @@ void GPE_TextAreaInputBasic::find_documentation_description(int tCursorX, int tC
                     {
                         if( GPE_MAIN_HIGHLIGHTER->highlightedTerm->termString == currentStringInView)
                         {
-                            documentationIsBeingShown = true;
+                            GPE_MAIN_HIGHLIGHTER->documentationIsBeingShown = true;
                             return;
                         }
                         else
@@ -1497,7 +1581,7 @@ void GPE_TextAreaInputBasic::find_documentation_description(int tCursorX, int tC
                                 if( tempTerm->termString==currentStringInView)
                                 {
                                     GPE_MAIN_HIGHLIGHTER->highlightedTerm = tempTerm;
-                                    documentationIsBeingShown = true;
+                                    GPE_MAIN_HIGHLIGHTER->documentationIsBeingShown = true;
                                     return;
                                 }
                             }
@@ -1511,7 +1595,7 @@ void GPE_TextAreaInputBasic::find_documentation_description(int tCursorX, int tC
                                 if( tempTerm->termString == currentStringInView)
                                 {
                                     GPE_MAIN_HIGHLIGHTER->highlightedTerm = tempTerm;
-                                    documentationIsBeingShown = true;
+                                    GPE_MAIN_HIGHLIGHTER->documentationIsBeingShown = true;
                                     return;
                                 }
                             }
@@ -1520,7 +1604,7 @@ void GPE_TextAreaInputBasic::find_documentation_description(int tCursorX, int tC
                         if( tempTerm!=NULL)
                         {
                             GPE_MAIN_HIGHLIGHTER->highlightedTerm = tempTerm;
-                            documentationIsBeingShown = true;
+                            GPE_MAIN_HIGHLIGHTER->documentationIsBeingShown = true;
                             return;
                         }
 
@@ -1528,7 +1612,7 @@ void GPE_TextAreaInputBasic::find_documentation_description(int tCursorX, int tC
                         if( tempTerm!=NULL)
                         {
                             GPE_MAIN_HIGHLIGHTER->highlightedTerm = tempTerm;
-                            documentationIsBeingShown = true;
+                            GPE_MAIN_HIGHLIGHTER->documentationIsBeingShown = true;
                             return;
                         }
                     }
@@ -1556,11 +1640,13 @@ void GPE_TextAreaInputBasic::find_documentation_description(int tCursorX, int tC
 
 void GPE_TextAreaInputBasic::find_suggested_text()
 {
-    codeBeingSuggested = false;
-    maxSuggestedTextWidth = 0;
-    iSuggestedStartPos = 0;
-    iSuggestionPos = 0;
-    suggestedCompilerTerms.clear();
+    //Avoids function if the main highlighter class is "somehow NULL"
+    if( GPE_MAIN_HIGHLIGHTER==NULL)
+    {
+        return;
+    }
+
+    GPE_MAIN_HIGHLIGHTER->clear_suggestions();
     int  i = 0;
     if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
     {
@@ -1591,6 +1677,7 @@ void GPE_TextAreaInputBasic::find_suggested_text()
                     }
                 }
             }
+
             //makes sure our subtext is alphanumeric without spaces
             if( char_is_alnum(cLineToParse[tempCLineXEndPos],false,true) )
             {
@@ -1622,7 +1709,7 @@ void GPE_TextAreaInputBasic::find_suggested_text()
                             {
                                 if( string_starts(tempTerm->termString,currentStringInView) )
                                 {
-                                    suggestedCompilerTerms.push_back(tempTerm);
+                                    GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.push_back(tempTerm);
                                 }
                             }
                         }
@@ -1634,7 +1721,7 @@ void GPE_TextAreaInputBasic::find_suggested_text()
                             {
                                 if( string_starts(tempTerm->termString,currentStringInView) )
                                 {
-                                    suggestedCompilerTerms.push_back(tempTerm);
+                                    GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.push_back(tempTerm);
                                 }
                             }
                         }
@@ -1649,7 +1736,7 @@ void GPE_TextAreaInputBasic::find_suggested_text()
                                 {
                                     if( string_starts(tempTerm->termString,currentStringInView) )
                                     {
-                                        suggestedCompilerTerms.push_back(tempTerm);
+                                        GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.push_back(tempTerm);
                                     }
                                 }
                             }
@@ -1661,7 +1748,7 @@ void GPE_TextAreaInputBasic::find_suggested_text()
                                 {
                                     if( string_starts(tempTerm->termString,currentStringInView) )
                                     {
-                                        suggestedCompilerTerms.push_back(tempTerm);
+                                        GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.push_back(tempTerm);
                                     }
                                 }
                             }
@@ -1673,7 +1760,7 @@ void GPE_TextAreaInputBasic::find_suggested_text()
                                 {
                                     if( string_starts(tempTerm->termString,currentStringInView) )
                                     {
-                                        suggestedCompilerTerms.push_back(tempTerm);
+                                        GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.push_back(tempTerm);
                                     }
                                 }
                             }
@@ -1685,18 +1772,18 @@ void GPE_TextAreaInputBasic::find_suggested_text()
                                 {
                                     if( string_starts(tempTerm->termString,currentStringInView) )
                                     {
-                                        suggestedCompilerTerms.push_back(tempTerm);
+                                        GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.push_back(tempTerm);
                                     }
                                 }
                             }
                         }
                     }
                     int tTermWidth = 0;
-                    maxSuggestedTextWidth = 0;
+                    GPE_MAIN_HIGHLIGHTER->maxSuggestedTextWidth = 0;
                     //soon add optional sorting [alphabetically] of these terms here....
-                    for(  i = 0; i < (int)suggestedCompilerTerms.size(); i++)
+                    for(  i = 0; i < (int)GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.size(); i++)
                     {
-                        tempTerm = suggestedCompilerTerms[i];
+                        tempTerm = GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms[i];
                         if( tempTerm!=NULL)
                         {
                             if( tempTerm->termType==CTERM_FUNCTION)
@@ -1713,9 +1800,9 @@ void GPE_TextAreaInputBasic::find_suggested_text()
                                 tTermWidth+=tempTerm->termScope.size()+1;
                             }
 
-                            if( tTermWidth > maxSuggestedTextWidth)
+                            if( tTermWidth > GPE_MAIN_HIGHLIGHTER->maxSuggestedTextWidth)
                             {
-                                maxSuggestedTextWidth = tTermWidth;
+                                GPE_MAIN_HIGHLIGHTER->maxSuggestedTextWidth = tTermWidth;
                             }
                         }
                     }
@@ -1724,16 +1811,16 @@ void GPE_TextAreaInputBasic::find_suggested_text()
 
                     if( FONT_TEXTINPUT!=NULL)
                     {
-                         FONT_TEXTINPUT->get_metrics("A",&TEXTBOX_FONT_SIZE_WIDTH,&TEXTBOX_FONT_SIZE_HEIGHT);
+                        FONT_TEXTINPUT->get_metrics("A",&TEXTBOX_FONT_SIZE_WIDTH,&TEXTBOX_FONT_SIZE_HEIGHT);
                     }
-                    maxSuggestedTextWidth=64+maxSuggestedTextWidth*TEXTBOX_FONT_SIZE_WIDTH;
+                    GPE_MAIN_HIGHLIGHTER-> maxSuggestedTextWidth= 64+GPE_MAIN_HIGHLIGHTER->maxSuggestedTextWidth*TEXTBOX_FONT_SIZE_WIDTH;
                 }
             }
         }
     }
-    if( (int)suggestedCompilerTerms.size() > 0)
+    if( (int)GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.size() > 0)
     {
-        codeBeingSuggested = true;
+        GPE_MAIN_HIGHLIGHTER->codeBeingSuggested = true;
     }
 }
 
@@ -1745,29 +1832,6 @@ int GPE_TextAreaInputBasic::get_xcursor()
 int GPE_TextAreaInputBasic::get_ycursor()
 {
     return cursorYPos;
-}
-
-int GPE_TextAreaInputBasic::get_renderbox_height()
-{
-    int returnVal = elementBox.h-textEditorButtonBar->get_height();
-    /*switch(MAIN_SEARCH_CONTROLLER->textSearchMode)
-    {
-        case 1:
-        case 2:
-            returnVal = elementBox.h-textEditorButtonBar->get_height()-48;
-        break;
-        case 3:
-            returnVal = elementBox.h-textEditorButtonBar->get_height()-80;
-        break;
-        default:
-           returnVal = elementBox.h-textEditorButtonBar->get_height();
-        break;
-    }*/
-    if( showXScroll)
-    {
-        returnVal-=16;
-    }
-    return returnVal;
 }
 
 std::string GPE_TextAreaInputBasic::get_string()
@@ -1856,7 +1920,7 @@ int GPE_TextAreaInputBasic::get_most_anchors_characters()
 {
     int maxCharsUsed = 0;
     GPE_TextAnchor * tAnchor;
-    for( int i = 0; i < (int)anchorPositions.size();i++)
+    for( int i = 0; i < (int)anchorPositions.size(); i++)
     {
         tAnchor = anchorPositions[i];
         if( tAnchor!=NULL)
@@ -1873,7 +1937,7 @@ int GPE_TextAreaInputBasic::get_most_anchors_characters()
 int GPE_TextAreaInputBasic::get_most_characters_used()
 {
     int maxCharsUsed = 0;
-    for( int i = 0; i < (int)listOfStrings.size();i++)
+    for( int i = 0; i < (int)listOfStrings.size(); i++)
     {
         if( (int)listOfStrings[i].size() > maxCharsUsed)
         {
@@ -1883,9 +1947,101 @@ int GPE_TextAreaInputBasic::get_most_characters_used()
     return maxCharsUsed;
 }
 
-void GPE_TextAreaInputBasic::handle_scrolling()
+void GPE_TextAreaInputBasic::handle_scrolling(GPE_Rect * viewedSpace, GPE_Rect * cam  )
 {
+    viewedSpace = GPE_find_camera( viewedSpace );
+    cam = GPE_find_camera( cam );
 
+    charactersWithinView = renderBox->w/( ( double)TEXTBOX_FONT_SIZE_WIDTH);
+    linesWithinView = renderBox->h/( (double) defaultLineHeight*editorZoomLevel  );
+
+    showXScroll = false;
+    showYScroll = false;
+
+    int listSize = (int)listOfStrings.size();
+    if( linesWithinView <  listSize )
+    {
+        showYScroll = true;
+    }
+
+    int mostChractersUsed  = get_most_characters_used();
+    if( charactersWithinView <  mostChractersUsed )
+    {
+        showXScroll = true;
+    }
+    else
+    {
+        lineStartXPos = 0;
+        textXScroll->reset_scroller();
+    }
+
+    //Handles X-Axis
+    if( textXScroll!=NULL)
+    {
+        //int prevYPos = lineStartYPos;
+        textXScroll->set_coords( renderBox->x,renderBox->y+renderBox->h - textXScroll->get_height()  );
+        textXScroll->set_width( renderBox->w-lineCountBoxWidth );
+
+        textXScroll->fullRect.x = 0;
+        textXScroll->fullRect.y = 0;
+        textXScroll->fullRect.w = (double)mostChractersUsed;
+        textXScroll->fullRect.h = renderBox->h;
+
+        textXScroll->contextRect.x = (double)lineStartXPos;
+        textXScroll->contextRect.w = (double)charactersWithinView;
+
+        textXScroll->process_self(viewedSpace,cam );
+        if( textXScroll->has_moved() || textXScroll->is_scrolling() )
+        {
+            lineStartXPos = mostChractersUsed * ( (double)textXScroll->scrollXPos/(double)textXScroll->get_width() );
+        }
+    }
+    else
+    {
+        lineStartXPos = 0;
+        textXScroll->reset_scroller();
+    }
+
+    //Handles Y-Axis
+    if( textYScroll!=NULL)
+    {
+        if( showYScroll )
+        {
+            //int prevYPos = lineStartYPos;
+
+            textYScroll->set_coords( renderBox->x+renderBox->w - textYScroll->get_width(), renderBox->y  );
+            textYScroll->set_height( renderBox->h );
+
+            textYScroll->fullRect.x = 0;
+            textYScroll->fullRect.y = 0;
+            textYScroll->fullRect.w = renderBox->w;
+            textYScroll->fullRect.h = (double)listSize;
+
+            textYScroll->contextRect.y = (double)lineStartYPos;
+            textYScroll->contextRect.h = (double)linesWithinView;
+
+            textYScroll->process_self(viewedSpace,cam );
+            if( textYScroll->has_moved() )
+            {
+                lineStartYPos =  round ( textYScroll->contextRect.y );
+                //    lineStartYPos =  ceil( ( (double)listOfStrings.size() ) * ( (double)textYScroll->scrollYPos/(double)textYScroll->elementBox.h ) );
+            }
+        }
+        else
+        {
+            lineStartYPos = 0;
+            textYScroll->reset_scroller();
+        }
+    }
+
+    if( lineStartXPos < 0)
+    {
+        lineStartXPos = 0;
+    }
+    if( lineStartYPos < 0)
+    {
+        lineStartYPos = 0;
+    }
 }
 
 bool GPE_TextAreaInputBasic::has_content()
@@ -1947,6 +2103,7 @@ bool GPE_TextAreaInputBasic::import_text(std::string newFileName)
             }
         }
     }
+    GPE_Report("Unable to import text from ["+newFileName+"] file." );
     return false;
 }
 
@@ -2318,7 +2475,7 @@ bool GPE_TextAreaInputBasic::parse_code_javascript()
                         */
                         else if (char_is_alpha(currStringToRender[currPosToParse],true,true) )
                         {
-                            //color = GPE_MAIN_THEME->Main_Box_Font_Color;
+                            //color = GPE_MAIN_THEME->Text_Box_Font_Color;
                             currPosToParse++;
                             while (currPosToParse < lineEnd && char_is_alnum(currStringToRender[currPosToParse],true,true) )
                             {
@@ -2327,7 +2484,7 @@ bool GPE_TextAreaInputBasic::parse_code_javascript()
                         }
                         else
                         {
-                            //color = GPE_MAIN_THEME->Main_Box_Font_Color;
+                            //color = GPE_MAIN_THEME->Text_Box_Font_Color;
                             //anything else is just regular text as well...
                             currPosToParse++;
                         }
@@ -2362,17 +2519,30 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
     hasScrollControl = false;
     prevCursorXPos = cursorXPos;
     prevCursorYPos = cursorYPos;
+    setup_editor(viewedSpace,cam);
     GPE_GeneralGuiElement::process_self(viewedSpace,cam);
+    handle_scrolling(viewedSpace,cam);
+
     if( clickedOutside)
     {
         hasArrowkeyControl = false;
         hasScrollControl = false;
+        input->inkeys = "";
     }
     else if( isClicked)
     {
         hasArrowkeyControl = true;
         hasScrollControl = true;
+        isInUse = true;
+        input->inkeys = "";
     }
+
+    if( isInUse)
+    {
+        hasArrowkeyControl = true;
+        hasScrollControl = true;
+    }
+
     if( (int)listOfStrings.size()==0)
     {
         listOfStrings.push_back("");
@@ -2381,1002 +2551,929 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
 
     bool pasteCommandGiven = false;
     bool mouseHoveringInTextArea = false;
-    if( textEditorButtonBar!=NULL )
-    {
-        if( !isReadOnly )
-        {
-            textEditorButtonBar->set_coords(elementBox.x,elementBox.y);
-            //sets the buttonbar to the width of the text editor( minus width of yScroll width[16 ).
-            textEditorButtonBar->set_width(elementBox.w);
-            textEditorButtonBar->set_height(24);
-            textEditorButtonBar->process_self(viewedSpace,cam);
+    bool buttonBarClicked = false;
 
-            if( textEditorButtonBar->selectedOption>= 0 && textEditorButtonBar->selectedOption < TEXTAREA_OPTION_MAX_OPTIONS)
+    if( !isReadOnly && textEditorButtonBar!=NULL && showButtonBar )
+    {
+        textEditorButtonBar->set_coords(elementBox.x,elementBox.y);
+        //sets the buttonbar to the width of the text editor( minus width of yScroll width[16 ).
+        //textEditorButtonBar->set_width(elementBox.w);
+        textEditorButtonBar->set_height(24);
+        textEditorButtonBar->process_self(viewedSpace,cam);
+        buttonBarClicked = textEditorButtonBar->is_clicked();
+        if( textEditorButtonBar->selectedOption>= 0 && textEditorButtonBar->selectedOption < TEXTAREA_OPTION_MAX_OPTIONS)
+        {
+            if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_IMPORT)
             {
-                if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_IMPORT)
+                std::string importTextFileName = GPE_GetOpenFileName("Import Text","",MAIN_GUI_SETTINGS->fileOpenTextFileDir );
+                if( (int)importTextFileName.size() > 0)
                 {
-                    std::string importTextFileName = GPE_GetOpenFileName("Import Text","",MAIN_GUI_SETTINGS->fileOpenTextFileDir );
-                    if( (int)importTextFileName.size() > 0)
+                    //if( GPE_Display_Basic_Prompt("Warning!","Clearing this text area is irreversible. Are you sure you want to continue this operation?")==DISPLAY_QUERY_YES )
                     {
-                        //if( display_get_prompt("Warning!","Clearing this text area is irreversible. Are you sure you want to continue this operation?")==DISPLAY_QUERY_YES )
-                        {
-                            import_text( importTextFileName);
-                        }
+                        import_text( importTextFileName);
                     }
                 }
-                else if(textEditorButtonBar->selectedOption ==TEXTAREA_OPTION_REDO)
+            }
+            else if(textEditorButtonBar->selectedOption ==TEXTAREA_OPTION_REDO)
+            {
+                if( can_redo() )
                 {
-                    if( can_redo() )
-                    {
-                        redo_edit();
-                    }
+                    redo_edit();
                 }
-                else if(textEditorButtonBar->selectedOption ==TEXTAREA_OPTION_UNDO)
+            }
+            else if(textEditorButtonBar->selectedOption ==TEXTAREA_OPTION_UNDO)
+            {
+                if( can_undo() )
                 {
-                    if( can_undo() )
-                    {
-                        undo_edit();
-                    }
+                    undo_edit();
                 }
-                else if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_EXPORT)
+            }
+            else if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_EXPORT)
+            {
+                std::string exportTextFileName = GPE_GetSaveFileName("Export Text","",MAIN_GUI_SETTINGS->fileOpenFunctionDir);
+                if( file_exists(exportTextFileName) )
                 {
-                    std::string exportTextFileName = GPE_GetSaveFileName("Export Text","",MAIN_GUI_SETTINGS->fileOpenFunctionDir);
-                    if( file_exists(exportTextFileName) )
-                    {
-                        if( display_get_prompt("Warning!","File Exists already, do you wish to overwrite it?)")==DISPLAY_QUERY_YES )
-                        {
-                            export_text( exportTextFileName);
-                        }
-                    }
-                    else
+                    if( GPE_Display_Basic_Prompt("Warning!","File Exists already, do you wish to overwrite it?)")==DISPLAY_QUERY_YES )
                     {
                         export_text( exportTextFileName);
                     }
                 }
-                else if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_CLEAR)
+                else
                 {
-                    if( display_get_prompt("Warning!","Are you sure you want to continue this operation?")==DISPLAY_QUERY_YES )
-                    {
-                        clear_all_lines();
-                        listOfStrings.push_back("");
-                        save_edit();
-                    }
+                    export_text( exportTextFileName);
                 }
-                else if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_COPY)
+            }
+            else if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_CLEAR)
+            {
+                if( GPE_Display_Basic_Prompt("Warning!","Are you sure you want to continue this operation?")==DISPLAY_QUERY_YES )
                 {
-                    copy_selection();
+                    clear_all_lines();
+                    listOfStrings.push_back("");
+                    save_edit();
                 }
-                else if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_CUT)
-                {
-                    cut_selection();
-                }
-                else if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_PASTE)
-                {
-                    pasteCommandGiven = true;
-                }
+            }
+            else if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_COPY)
+            {
+                copy_selection();
+            }
+            else if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_CUT)
+            {
+                cut_selection();
+            }
+            else if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_PASTE)
+            {
+                pasteCommandGiven = true;
             }
         }
+    }
+    else if( textEditorButtonBar!=NULL)
+    {
+        textEditorButtonBar->set_coords(elementBox.x,elementBox.y);
 
-        if( !textEditorButtonBar->is_clicked() && (int)listOfStrings.size() >0 )
+        textEditorButtonBar->set_height(0);
+    }
+    if( !buttonBarClicked && (int)listOfStrings.size() >0 )
+    {
+        textInputString = "";
+        cursorTimer+=gpe->get_delta_time();
+
+        if( cursorTimer > MAIN_GUI_SETTINGS->cursorBlinkTime )
         {
-            textInputString = "";
-            showXScroll = false;
-            showYScroll = false;
-            cursorTimer+=1;
+            showCursor = !showCursor;
+            cursorTimer = 0;
+        }
 
-            if( cursorTimer > 15 )
+        if( isClicked )
+        {
+            isInUse = true;
+            //inputFieldPos = 0;
+            input->inkeys = "";
+        }
+        else if( clickedOutside )
+        {
+            isInUse = false;
+        }
+
+
+        if( isHovered && (showXScroll || showYScroll ) )
+        {
+            hasScrollControl = true;
+        }
+
+        if( isEnabled &&  isInUse && cam!=NULL && textEditorButtonBar!=NULL)
+        {
+            if( point_within_rect(input->mouse_x,input->mouse_y, textSpaceRect)  )
             {
-                showCursor = true;
+                mouseHoveringInTextArea = true;
+                GPE_change_cursor(SDL_SYSTEM_CURSOR_IBEAM);
             }
-            if( cursorTimer > 30 )
+
+            if( mouseHoveringInTextArea && textXScroll->is_scrolling()==false && textYScroll->is_scrolling()==false )
             {
-                showCursor = false;
-                cursorTimer = 0;
-            }
-            if( isClicked)
-            {
-                isInUse = true;
-                //inputFieldPos = 0;
-                input->inkeys = "";
-            }
-            if( clickedOutside )
-            {
-                isInUse = false;
-            }
-            if( MAIN_GUI_SETTINGS->showTextEditorLineCount && isReadOnly==false )
-            {
-                lineCountBoxWidth = MAIN_GUI_SETTINGS->defaultLineCountWidth;
-            }
-            else
-            {
-                lineCountBoxWidth = 0;
-            }
-            if( textEditorButtonBar!=NULL)
-            {
-                textEditorButtonBar->set_coords(elementBox.x,elementBox.y);
-                //sets the buttonbar to the width of the text editor( minus width of yScroll width[16 ).
-                textEditorButtonBar->set_width(elementBox.w);
-                if( !isReadOnly)
+                if( input->check_mouse_down( mb_left ) )
                 {
-                    textEditorButtonBar->set_height(24);
-                    textEditorButtonBar->enable_self();
-                }
-                else
-                {
-                    textEditorButtonBar->set_height(0);
-                    textEditorButtonBar->disable_self();
-                }
-
-                renderBox.x = elementBox.x+lineCountBoxWidth;
-                renderBox.y = textEditorButtonBar->get_y2pos();
-            }
-
-            renderBox.w = elementBox.w-lineCountBoxWidth;
-            renderBox.h = get_renderbox_height();
-
-
-            charactersWithinView = (renderBox.w/TEXTBOX_FONT_SIZE_WIDTH)-2;
-            linesWithinView = renderBox.h/(defaultLineHeight*editorZoomLevel );
-
-
-            if( linesWithinView < (int)listOfStrings.size() )
-            {
-                showYScroll = true;
-            }
-            if( textXScroll!=NULL)
-            {
-                if( charactersWithinView < get_most_characters_used() )
-                {
-                    showXScroll = true;
-                    if( linesWithinView>1)
+                    update_cursor_to_mouse(viewedSpace, cam);
+                    if( lineStartXPos < 0)
                     {
-                        linesWithinView-=1;
+                        lineStartXPos = 0;
                     }
-                    //int prevYPos = lineStartYPos;
-                    textXScroll->elementBox.x = renderBox.x;
-                    textXScroll->elementBox.y = renderBox.y+renderBox.h-16;
-                    textXScroll->elementBox.w = elementBox.w-lineCountBoxWidth;
-                    textXScroll->elementBox.h = 16;
-                    textXScroll->fullRect.x = 0;
-                    textXScroll->fullRect.y = 0;
-                    textXScroll->fullRect.w = get_most_characters_used();
-                    textXScroll->fullRect.h = renderBox.h;
-                    if(showYScroll)
+                    if( lineStartYPos < 0)
                     {
-                        textXScroll->elementBox.w-=textYScroll->elementBox.w;
-                        charactersWithinView-=1;
-                    }
-
-                    textXScroll->contextRect.x = lineStartXPos;
-                    textXScroll->contextRect.y = 0;
-                    textXScroll->contextRect.w = charactersWithinView;
-                    textXScroll->contextRect.h = renderBox.h;
-
-                    textXScroll->process_self(viewedSpace,cam );
-                    if( textXScroll->has_moved() || textXScroll->is_scrolling() )
-                    {
-                        lineStartXPos = get_most_characters_used() * ( (float)textXScroll->scrollXPos/(float)textXScroll->elementBox.w );
+                        lineStartYPos = 0;
                     }
                 }
-                else
+                //Handles the Mouse movements & buttons
+                if( input->check_mouse_doubleclicked(0) && RESOURCE_TO_DRAG==NULL )
                 {
-                    lineStartXPos = 0;
-                    textXScroll->reset_scroller();
-                }
-            }
-            if( textYScroll!=NULL)
-            {
-                if( showYScroll )
-                {
-                    //int prevYPos = lineStartYPos;
-                    textYScroll->elementBox.x = elementBox.x+elementBox.w-16;
-                    textYScroll->elementBox.y = textEditorButtonBar->get_y2pos();
-                    textYScroll->elementBox.w = 16;
-                    textYScroll->elementBox.h = elementBox.h-textEditorButtonBar->get_height();
-
-                    textYScroll->fullRect.x = 0;
-                    textYScroll->fullRect.y = 0;
-                    textYScroll->fullRect.w = renderBox.w;
-                    textYScroll->fullRect.h = (int)listOfStrings.size();
-                    textYScroll->contextRect.x = 0;
-                    textYScroll->contextRect.y = lineStartYPos;
-                    textYScroll->contextRect.w = renderBox.w;
-                    textYScroll->contextRect.h = linesWithinView;
-                    if(showXScroll)
+                    update_cursor_to_mouse(viewedSpace, cam);
+                    if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
                     {
-                        textYScroll->elementBox.h-=textXScroll->elementBox.h;
-                        //textYScroll->contextRect.h-=1;
-                    }
-                    textYScroll->process_self(viewedSpace,cam );
-                    if( textYScroll->has_moved() )
-                    {
-                        lineStartYPos =  round ( textYScroll->contextRect.y );
-                    //    lineStartYPos =  ceil( ( (float)listOfStrings.size() ) * ( (float)textYScroll->scrollYPos/(float)textYScroll->elementBox.h ) );
-                    }
+                        lineToEdit = listOfStrings[cursorYPos];
 
-                    //updates the buttonbar to appear less awkward
-                    textEditorButtonBar->set_width(elementBox.w);
-                }
-                else
-                {
-                    lineStartYPos = 0;
-                    textYScroll->reset_scroller();
-                }
-            }
-            if( lineStartXPos < 0)
-            {
-                lineStartXPos = 0;
-            }
-            if( lineStartYPos < 0)
-            {
-                lineStartYPos = 0;
-            }
-            //just changes the cursor around if it is in the specific text area
-            textSpaceRect.x = renderBox.x+1;
-            textSpaceRect.y = renderBox.y+1;
-            textSpaceRect.w = renderBox.w;
-            textSpaceRect.h = renderBox.h;
-
-            if( MAIN_GUI_SETTINGS->showTextEditorLineCount)
-            {
-                if(showYScroll)
-                {
-                    if(showXScroll)
-                    {
-                        textSpaceRect.x = renderBox.x;
-                        textSpaceRect.y = renderBox.y;
-                        textSpaceRect.w = elementBox.w-lineCountBoxWidth-16;
-                        textSpaceRect.h = renderBox.h-16;
-                    }
-                    else
-                    {
-                        textSpaceRect.x = renderBox.x;
-                        textSpaceRect.y = renderBox.y;
-                        textSpaceRect.w = elementBox.w-lineCountBoxWidth-16;
-                        textSpaceRect.h = renderBox.h;
-                    }
-                }
-                else if(showXScroll)
-                {
-                    textSpaceRect.x = renderBox.x;
-                    textSpaceRect.y = renderBox.y;
-                    textSpaceRect.w = elementBox.w-lineCountBoxWidth;
-                    textSpaceRect.h = renderBox.h-16;
-                }
-                else
-                {
-                    textSpaceRect.x = renderBox.x;
-                    textSpaceRect.y = renderBox.y;
-                    textSpaceRect.w = elementBox.w-lineCountBoxWidth;
-                    textSpaceRect.h = renderBox.h;
-                }
-            }
-            else if(showYScroll)
-            {
-                if( showXScroll)
-                {
-                    textSpaceRect.x = renderBox.x;
-                    textSpaceRect.y = renderBox.y;
-                    textSpaceRect.w = renderBox.w-16;
-                    textSpaceRect.h = renderBox.h-16;
-                }
-                else
-                {
-                    textSpaceRect.x = renderBox.x;
-                    textSpaceRect.y = renderBox.y;
-                    textSpaceRect.w = renderBox.w-16;
-                    textSpaceRect.h = renderBox.h;
-                }
-            }
-            else if ( showXScroll)
-            {
-                textSpaceRect.x = renderBox.x;
-                textSpaceRect.y = renderBox.y;
-                textSpaceRect.w = renderBox.w;
-                textSpaceRect.h = renderBox.h-16;
-            }
-
-            textSpaceRect.x = renderBox.x+viewedSpace->x-cam->x;
-            textSpaceRect.y = renderBox.y+viewedSpace->y-cam->y;
-
-            if( isHovered && (showXScroll || showYScroll ) )
-            {
-                hasScrollControl = true;
-            }
-            if( isInUse && isEnabled && cam!=NULL && textEditorButtonBar!=NULL)
-            {
-                if( point_within_rect(input->mouse_x,input->mouse_y,&textSpaceRect)  )
-                {
-                    mouseHoveringInTextArea = true;
-                    GPE_change_cursor(SDL_SYSTEM_CURSOR_IBEAM);
-                }
-                if( mouseHoveringInTextArea && textXScroll->is_scrolling()==false && textYScroll->is_scrolling()==false )
-                {
-                    if( input->check_mouse_down(0) )
-                    {
-                        update_cursor_to_mouse(viewedSpace, cam);
-                        if( lineStartXPos < 0)
+                        selectionCursorXPos = selectionEndCursorXPos = cursorXPos;
+                        selectionCursorYPos = selectionEndCursorYPos = cursorYPos;
+                        if( (int)lineToEdit.size() == 0 )
                         {
-                            lineStartXPos = 0;
+                            if( cursorYPos+1 < (int)listOfStrings.size() )
+                            {
+                                cursorXPos = 0;
+                                cursorYPos++;
+                                selectionEndCursorYPos = cursorYPos;
+                                selectionCursorXPos = 0;
+                                selectionEndCursorXPos = 0;
+                            }
                         }
-                        if( lineStartYPos < 0)
+                        else
                         {
-                            lineStartYPos = 0;
+                            int iPrev = cursorXPos;
+                            int jNext = cursorXPos;
+                            if( lastDoubleClickAction ==0)
+                            {
+                                if( cursorXPos>=0 &&  cursorXPos <= (int)lineToEdit.size() )
+                                {
+                                    if( lineToEdit[cursorXPos]==' ')
+                                    {
+                                        for(iPrev = cursorXPos-1; iPrev >=0; iPrev-- )
+                                        {
+                                            if( lineToEdit[iPrev]==' ')
+                                            {
+                                                selectionCursorXPos--;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        for(jNext = cursorXPos; jNext < (int)lineToEdit.size(); jNext++ )
+                                        {
+                                            if( lineToEdit[jNext]==' ')
+                                            {
+                                                selectionEndCursorXPos++;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else if( char_is_alnum( lineToEdit[cursorXPos],false,true) )
+                                    {
+                                        for(iPrev = cursorXPos-1; iPrev >=0; iPrev-- )
+                                        {
+                                            if( char_is_alnum( lineToEdit[iPrev],false,true) )
+                                            {
+                                                selectionCursorXPos--;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                        for(jNext = cursorXPos; jNext < (int)lineToEdit.size(); jNext++ )
+                                        {
+                                            if( char_is_alnum( lineToEdit[jNext],false,true) )
+                                            {
+                                                selectionEndCursorXPos++;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        //for symbols
+                                        for(iPrev = cursorXPos-1; iPrev >=0; iPrev-- )
+                                        {
+                                            if( char_is_alnum( lineToEdit[iPrev],true,true)==false)
+                                            {
+                                                selectionCursorXPos--;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        for(jNext = cursorXPos; jNext < (int)lineToEdit.size(); jNext++ )
+                                        {
+                                            if( char_is_alnum( lineToEdit[jNext],true,true)==false)
+                                            {
+                                                selectionEndCursorXPos++;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                lastDoubleClickAction = 1;
+                            }
+                            else if( (int)lineToEdit.size() > 0 )
+                            {
+                                selectionCursorXPos = 0;
+                                selectionEndCursorXPos = (int)lineToEdit.size();
+                                cursorXPos = 0;
+                                lastDoubleClickAction = 0;
+                            }
+                            else if( cursorYPos+1 < (int)listOfStrings.size() )
+                            {
+                                cursorXPos = 0;
+                                cursorYPos++;
+                                selectionEndCursorYPos = cursorYPos;
+                                selectionCursorXPos = 0;
+                                selectionEndCursorXPos = 0;
+                            }
+                            input->reset_all_input();
+                            find_documentation_description();
                         }
                     }
-                    //Handles the Mouse movements & buttons
-                    if( input->check_mouse_doubleclicked(0) && RESOURCE_TO_DRAG==NULL )
+                }
+                else if( input->check_mouse_pressed(0) )
+                {
+                    //if( lastDoubleClickAction==0)
                     {
                         update_cursor_to_mouse(viewedSpace, cam);
                         if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
                         {
-                            lineToEdit = listOfStrings[cursorYPos];
-
                             selectionCursorXPos = selectionEndCursorXPos = cursorXPos;
                             selectionCursorYPos = selectionEndCursorYPos = cursorYPos;
-                            if( (int)lineToEdit.size() == 0 )
-                            {
-                                if( cursorYPos+1 < (int)listOfStrings.size() )
-                                {
-                                    cursorXPos = 0;
-                                    cursorYPos++;
-                                    selectionEndCursorYPos = cursorYPos;
-                                    selectionCursorXPos = 0;
-                                    selectionEndCursorXPos = 0;
-                                }
-                            }
-                            else
-                            {
-                                int iPrev = cursorXPos;
-                                int jNext = cursorXPos;
-                                if( lastDoubleClickAction ==0)
-                                {
-                                    if( cursorXPos>=0 &&  cursorXPos <= (int)lineToEdit.size() )
-                                    {
-                                        if( lineToEdit[cursorXPos]==' ')
-                                        {
-                                            for(iPrev = cursorXPos-1; iPrev >=0; iPrev-- )
-                                            {
-                                                if( lineToEdit[iPrev]==' ')
-                                                {
-                                                    selectionCursorXPos--;
-                                                }
-                                                else
-                                                {
-                                                    break;
-                                                }
-                                            }
-                                            for(jNext = cursorXPos; jNext < (int)lineToEdit.size(); jNext++ )
-                                            {
-                                                if( lineToEdit[jNext]==' ')
-                                                {
-                                                    selectionEndCursorXPos++;
-                                                }
-                                                else
-                                                {
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        else if( char_is_alnum( lineToEdit[cursorXPos],false,true) )
-                                        {
-                                            for(iPrev = cursorXPos-1; iPrev >=0; iPrev-- )
-                                            {
-                                                if( char_is_alnum( lineToEdit[iPrev],false,true) )
-                                                {
-                                                    selectionCursorXPos--;
-                                                }
-                                                else
-                                                {
-                                                    break;
-                                                }
-                                            }
-
-                                            for(jNext = cursorXPos; jNext < (int)lineToEdit.size(); jNext++ )
-                                            {
-                                                if( char_is_alnum( lineToEdit[jNext],false,true) )
-                                                {
-                                                    selectionEndCursorXPos++;
-                                                }
-                                                else
-                                                {
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            //for symbols
-                                            for(iPrev = cursorXPos-1; iPrev >=0; iPrev-- )
-                                            {
-                                                if( char_is_alnum( lineToEdit[iPrev],true,true)==false)
-                                                {
-                                                    selectionCursorXPos--;
-                                                }
-                                                else
-                                                {
-                                                    break;
-                                                }
-                                            }
-                                            for(jNext = cursorXPos; jNext < (int)lineToEdit.size(); jNext++ )
-                                            {
-                                                if( char_is_alnum( lineToEdit[jNext],true,true)==false)
-                                                {
-                                                    selectionEndCursorXPos++;
-                                                }
-                                                else
-                                                {
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    lastDoubleClickAction = 1;
-                                }
-                                else if( (int)lineToEdit.size() > 0 )
-                                {
-                                    selectionCursorXPos = 0;
-                                    selectionEndCursorXPos = (int)lineToEdit.size();
-                                    cursorXPos = 0;
-                                    lastDoubleClickAction = 0;
-                                }
-                                else if( cursorYPos+1 < (int)listOfStrings.size() )
-                                {
-                                    cursorXPos = 0;
-                                    cursorYPos++;
-                                    selectionEndCursorYPos = cursorYPos;
-                                    selectionCursorXPos = 0;
-                                    selectionEndCursorXPos = 0;
-                                }
-                                input->reset_all_input();
-                                codeBeingSuggested = false;
-                                find_documentation_description();
-                            }
                         }
                     }
-                    else if( input->check_mouse_pressed(0) )
-                    {
-                        //if( lastDoubleClickAction==0)
-                        {
-                            update_cursor_to_mouse(viewedSpace, cam);
-                            if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
-                            {
-                                selectionCursorXPos = selectionEndCursorXPos = cursorXPos;
-                                selectionCursorYPos = selectionEndCursorYPos = cursorYPos;
-                            }
-                        }
-                        codeBeingSuggested = false;
-                        find_documentation_description();
-                    }
-                    else if( input->check_mouse_down(0) )
-                    {
-                        //if( lastDoubleClickAction==0)
-                        {
-                            update_cursor_to_mouse(viewedSpace, cam);
-                            if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
-                            {
-                                selectionEndCursorXPos = cursorXPos;
-                                selectionEndCursorYPos = cursorYPos;
-                            }
-                        }
-                        codeBeingSuggested = false;
-                        find_documentation_description();
-                    }
-                    else if( input->check_mouse_down(1) )
-                    {
-                        GPE_open_context_menu(-1,-1,128);
-                        MAIN_CONTEXT_MENU->add_menu_option("Undo",0,rsm->texture_add(APP_DIRECTORY_NAME+"resources/buttons/backward.png"),-1,NULL,true,!isReadOnly && can_undo());
-                        MAIN_CONTEXT_MENU->add_menu_option("Redo",1,rsm->texture_add(APP_DIRECTORY_NAME+"resources/buttons/forward.png"),-1,NULL,true,!isReadOnly && can_redo() );
-                        MAIN_CONTEXT_MENU->add_menu_option("Cut",2,rsm->texture_add(APP_DIRECTORY_NAME+"resources/buttons/cut.png"),-1,NULL,false,!isReadOnly);
-                        MAIN_CONTEXT_MENU->add_menu_option("Copy",3,rsm->texture_add(APP_DIRECTORY_NAME+"resources/buttons/copy.png"),-1,NULL,false,true);
-                        MAIN_CONTEXT_MENU->add_menu_option("Paste",4,rsm->texture_add(APP_DIRECTORY_NAME+"resources/buttons/paste.png"),-1,NULL,false,!isReadOnly);
-                        MAIN_CONTEXT_MENU->add_menu_option("Delete",5,rsm->texture_add(APP_DIRECTORY_NAME+"resources/buttons/remove.png"),-1,NULL,true,!isReadOnly);
-                        MAIN_CONTEXT_MENU->add_menu_option("Select All",6,rsm->texture_add(APP_DIRECTORY_NAME+"resources/buttons/sticky-note.png"),-1,NULL,true,true);
-                        int menuSelection = get_popupmenu_result();
-
-                        if( menuSelection==0)
-                        {
-                            if( can_undo() && !isReadOnly )
-                            {
-                                undo_edit();
-                            }
-                        }
-                        else if( menuSelection==1 && !isReadOnly )
-                        {
-                            if( can_redo() )
-                            {
-                                redo_edit();
-                            }
-                        }
-                        if( menuSelection==6)
-                        {
-                            select_all();
-                        }
-                        else
-                        {
-                            switch(menuSelection)
-                            {
-                                case 2:
-                                    cut_selection();
-                                break;
-                                case 3:
-                                    copy_selection();
-                                break;
-                                case 4:
-                                    pasteCommandGiven = true;
-                                break;
-                                case 5:
-                                    delete_selection();
-                                break;
-                                default:
-                                break;
-                            }
-                            reset_selection();
-                        }
-                        lastDoubleClickAction = 0;
-                        GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-                    }
-                    else if( input->mouseMovementInputReceivedInFrame && RESOURCE_TO_DRAG==NULL )
-                    {
-                        //Highlights documenation under mouse if found.
-                        int tMouseX = 0, tMouseY = 0;
-                        find_mouse_cursor(&tMouseX,&tMouseY, viewedSpace, cam);
-                        if( tMouseX!=highlightXPos || tMouseY!=highlightYPos)
-                        {
-                            find_documentation_description(tMouseX,tMouseY);
-                        }
-                    }
-                    else if( RESOURCE_TO_DRAG!=NULL && !isReadOnly )
-                    {
-                        if( input->check_mouse_released(0) )
-                        {
-                            if( point_within_rect(input->mouse_x,input->mouse_y,&textSpaceRect)  )
-                            {
-                                mouseHoveringInTextArea = true;
-                                GPE_change_cursor(SDL_SYSTEM_CURSOR_IBEAM);
-
-                                update_cursor_to_mouse(viewedSpace, cam);
-                                if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
-                                {
-                                    if( cursorXPos >=0 && cursorXPos <= (int)listOfStrings[cursorYPos].size() )
-                                    {
-
-                                        listOfStrings[cursorYPos] = get_substring(listOfStrings[cursorYPos],0,cursorXPos)+RESOURCE_TO_DRAG->get_name()+get_substring(listOfStrings[cursorYPos],cursorXPos);
-                                        RESOURCE_TO_DRAG = NULL;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                record_error("Unable to drag resource into textArea...");
-                            }
-                        }
-                    }
-                }
-                else if( input->check_mouse_down(0) && textXScroll->is_scrolling()==false && textYScroll->is_scrolling()==false )
-                {
-                    //if( lastDoubleClickAction==0)
-                    if( input->mouse_x < textSpaceRect.x )
-                    {
-                        if( cursorXPos > 0)
-                        {
-                            cursorXPos-=1;
-                        }
-                        move_left(1);
-                    }
-                    else if( input->mouse_x > textSpaceRect.x+textSpaceRect.w )
-                    {
-                        lineToEdit = listOfStrings[cursorYPos];
-                        if( cursorXPos > (int)lineToEdit.size()-1 )
-                        {
-                            cursorXPos+=1;
-                        }
-                        move_right(1);
-                    }
-
-                    if( input->mouse_y > textSpaceRect.y && input->mouse_y < textSpaceRect.y+4 )
-                    {
-                        if( cursorYPos > 0)
-                        {
-                            cursorYPos-=1;
-                        }
-                        move_up(1);
-                    }
-                    else if( input->mouse_y > textSpaceRect.y+textSpaceRect.h-4 )
-                    {
-                        if( cursorYPos < (int)listOfStrings.size()-1 )
-                        {
-                            cursorYPos+=1;
-                        }
-                        move_down(1);
-                    }
-
-                    update_cursor_to_mouse(viewedSpace, cam);
-                    if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
-                    {
-                        selectionEndCursorXPos = cursorXPos;
-                        selectionEndCursorYPos = cursorYPos;
-                    }
-                    showCursor = false;
-                    cursorTimer = 30;
-                    codeBeingSuggested = false;
                     find_documentation_description();
                 }
-            }
-
-            //special control action happening
-            if(  MAIN_SEARCH_CONTROLLER->using_search()==false && isInUse && isEnabled && hasArrowkeyControl )
-            {
-                //used to delay events from happening superfast
-                if( input->down[kb_backspace] && !input->pressed[kb_backspace] )
+                else if( input->check_mouse_down( mb_left ) )
                 {
-                    bscDelay +=1;
-                }
-                else
-                {
-                    bscDelay = 0;
-                }
-                if( input->down[kb_delete] && !input->pressed[kb_delete] )
-                {
-                    delDelay += 0.5;
-                }
-                else
-                {
-                    delDelay = 0;
-                }
-                if( input->down[kb_tab]  && !input->pressed[kb_tab])
-                {
-                    tabDelay += 0.5;
-                }
-                if(input->down[kb_enter] && !input->pressed[kb_enter])
-                {
-                    enterDelay+=0.5;
-                }
-                else
-                {
-                    enterDelay = 0;
-                }
-                if( input->down[kb_left] && !input->pressed[kb_left] && !input->released[kb_left] )
-                {
-                    leftDelay+=1;
-                }
-                else
-                {
-                    leftDelay = 0;
-                }
-
-                if( input->down[kb_right] && !input->pressed[kb_right] && !input->released[kb_right] )
-                {
-                    rightDelay+=1;
-                }
-                else
-                {
-                    rightDelay = 0;
-                }
-
-                if(input->down[kb_up] && !input->pressed[kb_up] && !input->released[kb_up] )
-                {
-                    upDelay+=1;
-                }
-                else
-                {
-                    upDelay = 0;
-                }
-                if(input->down[kb_down] && !input->pressed[kb_down] && !input->released[kb_down])
-                {
-                    downDelay+=0.5;
-                }
-                else
-                {
-                    downDelay = 0;
-                }
-
-                if(input->down[kb_d] && !input->pressed[kb_d] && !input->released[kb_d])
-                {
-                    dKeyDelay+=0.5;
-                }
-                else
-                {
-                    dKeyDelay = 0;
-                }
-
-                if( input->down[kb_ctrl]  )
-                {
-                    GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-                    if( input->released[kb_a])
+                    //if( lastDoubleClickAction==0)
                     {
-                       select_all();
-                    }
-                    else if( input->released[kb_c])
-                    {
-                         copy_selection();
-                    }
-                    else if( input->released[kb_f] ||  input->released[kb_h] )
-                    {
-                         MAIN_SEARCH_CONTROLLER->findTextStringBox->set_string( get_short_hightlighted() );
-                    }
-                    else if( dKeyDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)  || ( !input->pressed[kb_d] && input->released[kb_d] ) )
-                    {
-                        if( !isReadOnly )
+                        update_cursor_to_mouse(viewedSpace, cam);
+                        if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
                         {
-                            duplicate_text();
-                            dKeyDelay = 0;
+                            selectionEndCursorXPos = cursorXPos;
+                            selectionEndCursorYPos = cursorYPos;
                         }
                     }
-                    else if( input->released[kb_v] && !isReadOnly)
+                    find_documentation_description();
+                }
+                else if( input->check_mouse_down( mb_right ))
+                {
+                    GPE_open_context_menu(-1,-1,128);
+                    MAIN_CONTEXT_MENU->add_menu_option("Undo",0,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/buttons/backward.png"),-1,NULL,true,!isReadOnly && can_undo());
+                    MAIN_CONTEXT_MENU->add_menu_option("Redo",1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/buttons/forward.png"),-1,NULL,true,!isReadOnly && can_redo() );
+                    MAIN_CONTEXT_MENU->add_menu_option("Cut",2,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/buttons/cut.png"),-1,NULL,false,!isReadOnly);
+                    MAIN_CONTEXT_MENU->add_menu_option("Copy",3,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/buttons/copy.png"),-1,NULL,false,true);
+                    MAIN_CONTEXT_MENU->add_menu_option("Paste",4,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/buttons/paste.png"),-1,NULL,false,!isReadOnly);
+                    MAIN_CONTEXT_MENU->add_menu_option("Delete",5,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/buttons/remove.png"),-1,NULL,true,!isReadOnly);
+                    MAIN_CONTEXT_MENU->add_menu_option("Select All",6,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/buttons/sticky-note.png"),-1,NULL,true,true);
+                    int menuSelection = GPE_Get_Context_Result();
+
+                    if( menuSelection==0)
                     {
-                        pasteCommandGiven = true;
+                        if( can_undo() && !isReadOnly )
+                        {
+                            undo_edit();
+                        }
                     }
-                    else if( input->released[kb_x] && !isReadOnly)
-                    {
-                         cut_selection();
-                         scroll_to_cursor();
-                    }
-                    else if( input->released[kb_y] && !isReadOnly)
+                    else if( menuSelection==1 && !isReadOnly )
                     {
                         if( can_redo() )
                         {
                             redo_edit();
-                            input->reset_all_input();
-                            process_self( viewedSpace,cam );
                         }
                     }
-                    else if( input->released[kb_z] && !isReadOnly)
+                    if( menuSelection==6)
                     {
-                        if( can_undo() )
+                        select_all();
+                    }
+                    else
+                    {
+                        switch(menuSelection)
                         {
-                            undo_edit();
-                            input->reset_all_input();
-                            process_self( viewedSpace,cam );
+                        case 2:
+                            cut_selection();
+                            break;
+                        case 3:
+                            copy_selection();
+                            break;
+                        case 4:
+                            pasteCommandGiven = true;
+                            break;
+                        case 5:
+                            delete_selection();
+                            break;
+                        default:
+                            break;
                         }
+                        reset_selection();
                     }
-                    else if( upDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime)  || ( !input->pressed[kb_up] && input->released[kb_up] ) )
+                    lastDoubleClickAction = 0;
+                    GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
+                }
+                else if( input->mouseMovementInputReceivedInFrame && RESOURCE_TO_DRAG==NULL )
+                {
+                    //Highlights documenation under mouse if found.
+                    int tMouseX = 0, tMouseY = 0;
+                    find_mouse_cursor(&tMouseX,&tMouseY, viewedSpace, cam);
+                    if( tMouseX!=highlightXPos || tMouseY!=highlightYPos)
                     {
-                        lineStartYPos--;
-                        upDelay = 0;
-                        showCursor = true;
-                        cursorTimer = 0;
+                        find_documentation_description(tMouseX,tMouseY);
                     }
-                    else if( downDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime)  || ( !input->pressed[kb_down] && input->released[kb_down] ) )
+                }
+                else if( RESOURCE_TO_DRAG!=NULL && !isReadOnly )
+                {
+                    if( input->check_mouse_released( mb_left))
                     {
-                        lineStartYPos++;
-                        downDelay = 0;
-                        showCursor = true;
-                        cursorTimer = 0;
-                    }
-                    else if( leftDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime)  || ( !input->pressed[kb_left] && input->released[kb_left] ) )
-                    {
-                        if( input->shiftKeyIsPressed)
+                        if( point_within_rect(input->mouse_x,input->mouse_y, textSpaceRect)  )
                         {
-                            if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
+                            mouseHoveringInTextArea = true;
+                            GPE_change_cursor(SDL_SYSTEM_CURSOR_IBEAM);
+
+                            update_cursor_to_mouse(viewedSpace, cam);
+                            if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
                             {
-                                selectionCursorXPos = cursorXPos;
-                                selectionCursorYPos = cursorYPos;
-                            }
-                        }
-                        if( cursorXPos <=0)
-                        {
-                            if( cursorYPos > 0)
-                            {
-                                cursorYPos--;
-                                cursorXPos = (int)listOfStrings[cursorYPos].size()-1;
-                                if( cursorXPos < 0)
+                                if( cursorXPos >=0 && cursorXPos <= (int)listOfStrings[cursorYPos].size() )
                                 {
-                                    cursorXPos = 0;
+
+                                    listOfStrings[cursorYPos] = get_substring(listOfStrings[cursorYPos],0,cursorXPos)+RESOURCE_TO_DRAG->get_name()+get_substring(listOfStrings[cursorYPos],cursorXPos);
+                                    RESOURCE_TO_DRAG = NULL;
                                 }
                             }
                         }
-                        else if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                        else
                         {
-                            std::string currentLineToScroll = listOfStrings[cursorYPos];
-                            if( cursorXPos >=(int)currentLineToScroll.size() )
-                            {
-                                cursorXPos = (int)currentLineToScroll.size()-1;
-                            }
+                            GPE_Report("Unable to drag resource into textArea...");
+                        }
+                    }
+                }
+            }
+            else if( input->check_mouse_down( mb_left ) && textXScroll->is_scrolling()==false && textYScroll->is_scrolling()==false )
+            {
+                //if( lastDoubleClickAction==0)
+                if( input->mouse_x < textSpaceRect->x )
+                {
+                    if( cursorXPos > 0)
+                    {
+                        cursorXPos-=1;
+                    }
+                    move_left(1);
+                }
+                else if( input->mouse_x > textSpaceRect->x+ textSpaceRect->w )
+                {
+                    lineToEdit = listOfStrings[cursorYPos];
+                    if( cursorXPos > (int)lineToEdit.size()-1 )
+                    {
+                        cursorXPos+=1;
+                    }
+                    move_right(1);
+                }
+
+                if( input->mouse_y > textSpaceRect->y && input->mouse_y < textSpaceRect->y+4 )
+                {
+                    if( cursorYPos > 0)
+                    {
+                        cursorYPos-=1;
+                    }
+                    move_up(1);
+                }
+                else if( input->mouse_y > textSpaceRect->y+textSpaceRect->h-4 )
+                {
+                    if( cursorYPos < (int)listOfStrings.size()-1 )
+                    {
+                        cursorYPos+=1;
+                    }
+                    move_down(1);
+                }
+
+                update_cursor_to_mouse(viewedSpace, cam);
+                if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                {
+                    selectionEndCursorXPos = cursorXPos;
+                    selectionEndCursorYPos = cursorYPos;
+                }
+                showCursor = false;
+                cursorTimer = 30;
+                find_documentation_description();
+            }
+        }
+
+        //special control action happening
+        if( isEnabled &&   MAIN_SEARCH_CONTROLLER->using_search()==false && isInUse  )
+        {
+            //used to delay events from happening superfast
+            if( input->down[kb_backspace] && !input->pressed[kb_backspace] )
+            {
+                bscDelay +=gpe->get_delta_time();
+            }
+            else
+            {
+                bscDelay = 0;
+            }
+            if( input->down[kb_delete] && !input->pressed[kb_delete] )
+            {
+                delDelay += gpe->get_delta_time();
+            }
+            else
+            {
+                delDelay = 0;
+            }
+            if( input->down[kb_tab]  && !input->pressed[kb_tab])
+            {
+                tabDelay += gpe->get_delta_time();
+            }
+            if(input->down[kb_enter] && !input->pressed[kb_enter])
+            {
+                enterDelay+=gpe->get_delta_time();
+            }
+            else
+            {
+                enterDelay = 0;
+            }
+            if( input->down[kb_left] && !input->pressed[kb_left] && !input->released[kb_left] )
+            {
+                leftDelay+=gpe->get_delta_time();
+            }
+            else
+            {
+                leftDelay = 0;
+            }
+
+            if( input->down[kb_right] && !input->pressed[kb_right] && !input->released[kb_right] )
+            {
+                rightDelay+=gpe->get_delta_time();
+            }
+            else
+            {
+                rightDelay = 0;
+            }
+
+            if(input->down[kb_up] && !input->pressed[kb_up] && !input->released[kb_up] )
+            {
+                upDelay+=gpe->get_delta_time();
+            }
+            else
+            {
+                upDelay = 0;
+            }
+            if(input->down[kb_down] && !input->pressed[kb_down] && !input->released[kb_down])
+            {
+                downDelay+=gpe->get_delta_time();
+            }
+            else
+            {
+                downDelay = 0;
+            }
+
+            if(input->down[kb_d] && !input->pressed[kb_d] && !input->released[kb_d])
+            {
+                dKeyDelay+=gpe->get_delta_time();
+            }
+            else
+            {
+                dKeyDelay = 0;
+            }
+
+            if( input->down[kb_ctrl]  )
+            {
+                GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
+                if( input->released[kb_a])
+                {
+                    select_all();
+                }
+                else if( input->released[kb_c])
+                {
+                    copy_selection();
+                }
+                else if( input->released[kb_f] ||  input->released[kb_h] )
+                {
+                    MAIN_SEARCH_CONTROLLER->findTextStringBox->set_string( get_short_hightlighted() );
+                }
+                else if( dKeyDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime)  || ( !input->pressed[kb_d] && input->released[kb_d] ) )
+                {
+                    if( !isReadOnly )
+                    {
+                        duplicate_text();
+                        dKeyDelay = 0;
+                    }
+                }
+                else if( input->released[kb_v] && !isReadOnly)
+                {
+                    pasteCommandGiven = true;
+                }
+                else if( input->released[kb_x] && !isReadOnly)
+                {
+                    cut_selection();
+                    scroll_to_cursor();
+                }
+                else if( input->released[kb_y] && !isReadOnly)
+                {
+                    if( can_redo() )
+                    {
+                        redo_edit();
+                        input->reset_all_input();
+                        process_self( viewedSpace,cam );
+                    }
+                }
+                else if( input->released[kb_z] && !isReadOnly)
+                {
+                    if( can_undo() )
+                    {
+                        undo_edit();
+                        input->reset_all_input();
+                        process_self( viewedSpace,cam );
+                    }
+                }
+                else if( upDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime)  || ( !input->pressed[kb_up] && input->released[kb_up] ) )
+                {
+                    lineStartYPos--;
+                    upDelay = 0;
+                    showCursor = true;
+                    cursorTimer = 0;
+                }
+                else if( downDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime)  || ( !input->pressed[kb_down] && input->released[kb_down] ) )
+                {
+                    lineStartYPos++;
+                    downDelay = 0;
+                    showCursor = true;
+                    cursorTimer = 0;
+                }
+                else if( leftDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime)  || ( !input->pressed[kb_left] && input->released[kb_left] ) )
+                {
+                    if( input->shiftKeyIsPressed)
+                    {
+                        if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
+                        {
+                            selectionCursorXPos = cursorXPos;
+                            selectionCursorYPos = cursorYPos;
+                        }
+                    }
+                    if( cursorXPos <=0)
+                    {
+                        if( cursorYPos > 0)
+                        {
+                            cursorYPos--;
+                            cursorXPos = (int)listOfStrings[cursorYPos].size()-1;
                             if( cursorXPos < 0)
-                            {
-                                if( cursorYPos >0 && cursorYPos < (int)listOfStrings.size() )
-                                {
-                                    cursorYPos--;
-                                    cursorXPos = listOfStrings[cursorYPos].size()-1;
-                                }
-                            }
-                            else if( cursorXPos < (int)currentLineToScroll.size() )
-                            {
-                                int iNCursorX = cursorXPos-1;
-                                for( iNCursorX = cursorXPos-1; iNCursorX >=0; iNCursorX--)
-                                {
-                                    if( char_is_alnum(currentLineToScroll[iNCursorX],false,true)==false )
-                                    {
-                                        break;
-                                    }
-                                }
-                                if( iNCursorX< 0)
-                                {
-                                    iNCursorX = 0;
-                                }
-                                cursorXPos = iNCursorX;
-                            }
-                            else
                             {
                                 cursorXPos = 0;
                             }
                         }
-                        scroll_to_cursor();
-                        showCursor = true;
-                        cursorTimer = 0;
-                        if( input->shiftKeyIsPressed)
-                        {
-                            selectionEndCursorXPos = cursorXPos;
-                            selectionEndCursorYPos = cursorYPos;
-                        }
-                        leftDelay = 0;
                     }
-                    else if( rightDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime)  || ( !input->pressed[kb_right] && input->released[kb_right] ) )
+                    else if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
                     {
-                        if( input->shiftKeyIsPressed)
+                        std::string currentLineToScroll = listOfStrings[cursorYPos];
+                        if( cursorXPos >=(int)currentLineToScroll.size() )
                         {
-                            if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
+                            cursorXPos = (int)currentLineToScroll.size()-1;
+                        }
+                        if( cursorXPos < 0)
+                        {
+                            if( cursorYPos >0 && cursorYPos < (int)listOfStrings.size() )
                             {
-                                selectionCursorXPos = cursorXPos;
-                                selectionCursorYPos = cursorYPos;
+                                cursorYPos--;
+                                cursorXPos = listOfStrings[cursorYPos].size()-1;
                             }
                         }
+                        else if( cursorXPos < (int)currentLineToScroll.size() )
+                        {
+                            int iNCursorX = cursorXPos-1;
+                            for( iNCursorX = cursorXPos-1; iNCursorX >=0; iNCursorX--)
+                            {
+                                if( char_is_alnum(currentLineToScroll[iNCursorX],false,true)==false )
+                                {
+                                    break;
+                                }
+                            }
+                            if( iNCursorX< 0)
+                            {
+                                iNCursorX = 0;
+                            }
+                            cursorXPos = iNCursorX;
+                        }
+                        else
+                        {
+                            cursorXPos = 0;
+                        }
+                    }
+                    scroll_to_cursor();
+                    showCursor = true;
+                    cursorTimer = 0;
+                    if( input->shiftKeyIsPressed)
+                    {
+                        selectionEndCursorXPos = cursorXPos;
+                        selectionEndCursorYPos = cursorYPos;
+                    }
+                    leftDelay = 0;
+                }
+                else if( rightDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime)  || ( !input->pressed[kb_right] && input->released[kb_right] ) )
+                {
+                    if( input->shiftKeyIsPressed)
+                    {
+                        if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
+                        {
+                            selectionCursorXPos = cursorXPos;
+                            selectionCursorYPos = cursorYPos;
+                        }
+                    }
+                    if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                    {
+                        std::string currentLineToScroll = listOfStrings[cursorYPos];
+                        if( cursorXPos >=(int)currentLineToScroll.size() )
+                        {
+                            if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size()-1 )
+                            {
+                                cursorYPos++;
+                                cursorXPos = 0;
+                            }
+                        }
+                        else if( cursorXPos >= 0 && cursorXPos < (int)currentLineToScroll.size() )
+                        {
+                            int iNCursorX = cursorXPos+1;
+                            for( iNCursorX = cursorXPos+1; iNCursorX <(int)currentLineToScroll.size(); iNCursorX++)
+                            {
+                                if( char_is_alnum(currentLineToScroll[iNCursorX],false,true)==false )
+                                {
+                                    break;
+                                }
+                            }
+                            if( iNCursorX >=(int)currentLineToScroll.size() )
+                            {
+                                iNCursorX >(int)currentLineToScroll.size()-1;
+                            }
+                            if( iNCursorX < 0)
+                            {
+                                iNCursorX = 0;
+                            }
+                            cursorXPos = iNCursorX;
+                        }
+                    }
+                    scroll_to_cursor();
+                    showCursor = true;
+                    cursorTimer = 0;
+                    if( input->shiftKeyIsPressed)
+                    {
+                        selectionEndCursorXPos = cursorXPos;
+                        selectionEndCursorYPos = cursorYPos;
+                    }
+                    rightDelay = 0;
+                }
+                GPE_MAIN_HIGHLIGHTER->clear_all();
+            }
+            else
+            {
+                dKeyDelay = 0;
+                if( input->mouseScrollingUp > 0)
+                {
+                    //move_up( linesWithinView/4);
+                    GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
+                }
+                else if( mouseHoveringInTextArea && input->mouseScrollingDown > 0)
+                {
+                    //move_down( linesWithinView/4);
+                    GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
+                }
+                else if(  (enterDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*1.3 || ( !input->pressed[kb_enter] && input->released[kb_enter] )  )  && !isReadOnly )
+                {
+                    if( GPE_MAIN_HIGHLIGHTER->codeBeingSuggested )
+                    {
                         if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
                         {
-                            std::string currentLineToScroll = listOfStrings[cursorYPos];
-                            if( cursorXPos >=(int)currentLineToScroll.size() )
+                            std::string prevStr = listOfStrings[cursorYPos];
+                            if( GPE_MAIN_HIGHLIGHTER->iSuggestionPos >= 0 && GPE_MAIN_HIGHLIGHTER->iSuggestionPos < (int)GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.size() )
                             {
-                                if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size()-1 )
+                                GPE_Compiler_Term * tempTerm = GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.at(GPE_MAIN_HIGHLIGHTER->iSuggestionPos);
+                                if( tempTerm!=NULL)
                                 {
-                                    cursorYPos++;
-                                    cursorXPos = 0;
-                                }
-                            }
-                            else if( cursorXPos >= 0 && cursorXPos < (int)currentLineToScroll.size() )
-                            {
-                                int iNCursorX = cursorXPos+1;
-                                for( iNCursorX = cursorXPos+1; iNCursorX <(int)currentLineToScroll.size(); iNCursorX++)
-                                {
-                                    if( char_is_alnum(currentLineToScroll[iNCursorX],false,true)==false )
+                                    if( tempTerm->termType==CTERM_FUNCTION)
                                     {
-                                        break;
+                                        prevStr = prevStr.substr(0,tempCLineXStartPos)+tempTerm->termString+"()"+prevStr.substr(tempCLineXEndPos+1);
+                                        cursorXPos = tempCLineXStartPos + (int)tempTerm->termString.size()+1;
                                     }
+                                    else
+                                    {
+                                        prevStr = prevStr.substr(0,tempCLineXStartPos)+tempTerm->termString+prevStr.substr(tempCLineXEndPos+1);
+                                        cursorXPos = tempCLineXStartPos + (int)tempTerm->termString.size();
+                                    }
+                                    listOfStrings[cursorYPos] = prevStr;
                                 }
-                                if( iNCursorX >=(int)currentLineToScroll.size() )
-                                {
-                                    iNCursorX >(int)currentLineToScroll.size()-1;
-                                }
-                                if( iNCursorX < 0)
-                                {
-                                    iNCursorX = 0;
-                                }
-                                cursorXPos = iNCursorX;
                             }
                         }
-                        scroll_to_cursor();
-                        showCursor = true;
-                        cursorTimer = 0;
-                        if( input->shiftKeyIsPressed)
+                        GPE_MAIN_HIGHLIGHTER->clear_all();
+                        enterDelay = 0;
+                        input->reset_all_input();
+                    }
+                    else
+                    {
+                        log_editable_action();
+                        delete_selection();
+                        lineToEdit = listOfStrings[cursorYPos];
+                        //go to next line
+                        std::string nextString = "";
+                        if( (int)lineToEdit.size()> 0)
                         {
-                            selectionEndCursorXPos = cursorXPos;
-                            selectionEndCursorYPos = cursorYPos;
+                            nextString = get_substring(lineToEdit,cursorXPos);
+                            lineToEdit = get_substring(lineToEdit,0, cursorXPos);
                         }
-                        rightDelay = 0;
-                    }
-                    codeBeingSuggested = false;
-                }
-                else
-                {
-                    dKeyDelay = 0;
-                    if( input->mouseScrollingUp > 0)
-                    {
-                        //move_up( linesWithinView/4);
-                        GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-                    }
-                    else if( mouseHoveringInTextArea && input->mouseScrollingDown > 0)
-                    {
-                        //move_down( linesWithinView/4);
-                        GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-                    }
-                    else if(  (enterDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*1.3 || ( !input->pressed[kb_enter] && input->released[kb_enter] )  )  && !isReadOnly )
-                    {
-                        if( codeBeingSuggested )
+                        else
                         {
-                            if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                            lineToEdit = "";
+                            nextString = "";
+                        }
+                        cursorXPos = 0;
+                        if( (int)listOfStrings.size()>0 )
+                        {
+                            listOfStrings.erase(listOfStrings.begin()+cursorYPos );
+                            listOfStrings.insert(listOfStrings.begin()+cursorYPos,lineToEdit);
+                            int numbOfSpaces =  get_leading_space_count(lineToEdit);
+                            cursorXPos = 0;
+                            if( numbOfSpaces > 0)
                             {
-                                std::string prevStr = listOfStrings[cursorYPos];
-                                if( iSuggestionPos >= 0 && iSuggestionPos < (int)suggestedCompilerTerms.size() )
+                                for(int i= 0; i < numbOfSpaces; i++)
                                 {
-                                    GPE_Compiler_Term * tempTerm = suggestedCompilerTerms.at(iSuggestionPos);
-                                    if( tempTerm!=NULL)
-                                    {
-                                        if( tempTerm->termType==CTERM_FUNCTION)
-                                        {
-                                            prevStr = prevStr.substr(0,tempCLineXStartPos)+tempTerm->termString+"()"+prevStr.substr(tempCLineXEndPos+1);
-                                            cursorXPos = tempCLineXStartPos + (int)tempTerm->termString.size()+1;
-                                        }
-                                        else
-                                        {
-                                            prevStr = prevStr.substr(0,tempCLineXStartPos)+tempTerm->termString+prevStr.substr(tempCLineXEndPos+1);
-                                            cursorXPos = tempCLineXStartPos + (int)tempTerm->termString.size();
-                                        }
-                                        listOfStrings[cursorYPos] = prevStr;
-                                    }
+                                    nextString=" "+nextString;
+                                }
+                                cursorXPos = numbOfSpaces;
+                            }
+                            if( (int)lineToEdit.size()>0)
+                            {
+                                std::string lastChar = get_substring(lineToEdit, (int)lineToEdit.size()-1 );
+                                if( lastChar.compare("{" )==0)
+                                {
+                                    nextString=generate_tabs(1)+nextString;
+                                    cursorXPos+=get_tab_space_count();
                                 }
                             }
-                            codeBeingSuggested = false;
-                            suggestedCompilerTerms.clear();
-                            enterDelay = 0;
+                            listOfStrings.insert(listOfStrings.begin()+cursorYPos+1,nextString);
                             input->reset_all_input();
                         }
                         else
                         {
-                            log_editable_action();
-                            delete_selection();
-                            lineToEdit = listOfStrings[cursorYPos];
-                            //go to next line
-                            std::string nextString = "";
-                            if( (int)lineToEdit.size()> 0)
-                            {
-                                nextString = get_substring(lineToEdit,cursorXPos);
-                                lineToEdit = get_substring(lineToEdit,0, cursorXPos);
-                            }
-                            else
-                            {
-                                lineToEdit = "";
-                                nextString = "";
-                            }
-                            cursorXPos = 0;
-                            if( (int)listOfStrings.size()>0 )
-                            {
-                                listOfStrings.erase(listOfStrings.begin()+cursorYPos );
-                                listOfStrings.insert(listOfStrings.begin()+cursorYPos,lineToEdit);
-                                int numbOfSpaces =  get_leading_space_count(lineToEdit);
-                                cursorXPos = 0;
-                                if( numbOfSpaces > 0)
-                                {
-                                    for(int i= 0; i < numbOfSpaces; i++)
-                                    {
-                                        nextString=" "+nextString;
-                                    }
-                                    cursorXPos = numbOfSpaces;
-                                }
-                                if( (int)lineToEdit.size()>0)
-                                {
-                                    std::string lastChar = get_substring(lineToEdit, (int)lineToEdit.size()-1 );
-                                    if( lastChar.compare("{" )==0)
-                                    {
-                                        nextString=generate_tabs(1)+nextString;
-                                        cursorXPos+=get_tab_space_count();
-                                    }
-                                }
-                                listOfStrings.insert(listOfStrings.begin()+cursorYPos+1,nextString);
-                                input->reset_all_input();
-                            }
-                            else
-                            {
-                                listOfStrings.push_back(lineToEdit);
-                                listOfStrings.push_back(nextString);
-                            }
-                            if( cursorXPos < 0)
-                            {
-                                cursorXPos = 0;
-                            }
-                            cursorYPos+=1;
-                            move_down();
-                            showCursor = true;
-                            cursorTimer = 0;
-                            scroll_to_cursor();
-                            codeBeingSuggested = false;
-                            enterDelay = 0;
+                            listOfStrings.push_back(lineToEdit);
+                            listOfStrings.push_back(nextString);
                         }
-                        GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
+                        if( cursorXPos < 0)
+                        {
+                            cursorXPos = 0;
+                        }
+                        cursorYPos+=1;
+                        move_down();
+                        showCursor = true;
+                        cursorTimer = 0;
+                        scroll_to_cursor();
+                        GPE_MAIN_HIGHLIGHTER->clear_all();
                         enterDelay = 0;
                     }
-                    else if( leftDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2  || ( !input->released[kb_left] && input->pressed[kb_left] ) )
+                    GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
+                    enterDelay = 0;
+                }
+                else if( leftDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2  || ( !input->released[kb_left] && input->pressed[kb_left] ) )
+                {
+                    if( input->shiftKeyIsPressed )
                     {
-                        if( input->shiftKeyIsPressed )
+                        if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
+                        {
+                            selectionCursorXPos = cursorXPos;
+                            selectionCursorYPos = cursorYPos;
+                        }
+                    }
+                    else
+                    {
+                        reset_selection(-1);
+                    }
+                    if( cursorXPos > 0)
+                    {
+                        int tabCharCount = get_tab_space_count();
+                        if( (int)lineToEdit.size() >= cursorXPos-tabCharCount )
+                        {
+                            bool hasLeadingTabs = true;
+                            for( int iCharPos = std::min( cursorXPos-1, (int)lineToEdit.size()-1 ); iCharPos >=0 && iCharPos >=cursorXPos-tabCharCount; iCharPos-- )
+                            {
+                                if( lineToEdit[iCharPos]!=' ')
+                                {
+                                    hasLeadingTabs = false;
+                                }
+                            }
+                            if( hasLeadingTabs)
+                            {
+                                cursorXPos-=tabCharCount;
+                            }
+                            else
+                            {
+                                cursorXPos-=1;
+                            }
+                        }
+                        else
+                        {
+                            cursorXPos-=1;
+                        }
+                        //adjust_fortabs();
+                    }
+                    else if( cursorYPos > 0 )
+                    {
+                        cursorYPos-=1;
+                        move_up();
+                        std::string prevString = listOfStrings[cursorYPos];
+                        cursorXPos = prevString.size();
+                        if( cursorXPos < 0)
+                        {
+                            cursorXPos = 0;
+                        }
+                        adjust_fortabs();
+                    }
+                    if( input->shiftKeyIsPressed)
+                    {
+                        selectionEndCursorXPos = cursorXPos;
+                        selectionEndCursorYPos = cursorYPos;
+                    }
+                    leftDelay = 0;
+                    scroll_to_cursor();
+                    find_documentation_description();
+                }
+                else if( rightDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2  || ( !input->released[kb_right] && input->pressed[kb_right] ))
+                {
+                    lineToEdit = listOfStrings[cursorYPos];
+                    if( input->shiftKeyIsPressed)
+                    {
+                        if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
+                        {
+                            selectionCursorXPos = cursorXPos;
+                            selectionCursorYPos = cursorYPos;
+                        }
+                    }
+                    else
+                    {
+                        reset_selection(1);
+                    }
+                    //special shift action
+                    cursorXPos+=1;
+                    if( cursorXPos > (int)lineToEdit.size() )
+                    {
+                        //go to next line if available
+                        if(cursorYPos < (int) listOfStrings.size()-1 )
+                        {
+                            cursorXPos = 0;
+                            cursorYPos+=1;
+                            move_down();
+                        }
+                        else
+                        {
+                            cursorXPos = (int)lineToEdit.size();
+                        }
+                    }
+                    else
+                    {
+                        //adjust_fortabs();
+                    }
+                    if( input->shiftKeyIsPressed)
+                    {
+                        selectionEndCursorXPos = cursorXPos;
+                        selectionEndCursorYPos = cursorYPos;
+                    }
+                    rightDelay = 0;
+                    showCursor = true;
+                    cursorTimer = 0;
+                    scroll_to_cursor();
+                    find_documentation_description();
+                }
+                else if( upDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2  || ( !input->released[kb_up] && input->pressed[kb_up] ) )
+                {
+                    GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
+                    if( GPE_MAIN_HIGHLIGHTER->codeBeingSuggested )
+                    {
+                        if( GPE_MAIN_HIGHLIGHTER->iSuggestionPos > 0)
+                        {
+                            GPE_MAIN_HIGHLIGHTER->iSuggestionPos--;
+                            if( GPE_MAIN_HIGHLIGHTER->iSuggestionPos < GPE_MAIN_HIGHLIGHTER->iSuggestedStartPos )
+                            {
+                                GPE_MAIN_HIGHLIGHTER->iSuggestedStartPos = GPE_MAIN_HIGHLIGHTER->iSuggestionPos;
+                            }
+                        }
+                        upDelay = -1;
+                    }
+                    else
+                    {
+                        if( input->shiftKeyIsPressed)
                         {
                             if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
                             {
@@ -3388,59 +3485,66 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                         {
                             reset_selection(-1);
                         }
-                        if( cursorXPos > 0)
-                        {
-                            int tabCharCount = get_tab_space_count();
-                            if( (int)lineToEdit.size() >= cursorXPos-tabCharCount )
-							{
-							    bool hasLeadingTabs = true;
-							    for( int iCharPos = std::min( cursorXPos-1, (int)lineToEdit.size()-1 ); iCharPos >=0 && iCharPos >=cursorXPos-tabCharCount; iCharPos-- )
-                                {
-                                    if( lineToEdit[iCharPos]!=' ')
-                                    {
-                                        hasLeadingTabs = false;
-                                    }
-                                }
-                                if( hasLeadingTabs)
-                                {
-                                    cursorXPos-=tabCharCount;
-                                }
-                                else
-                                {
-                                    cursorXPos-=1;
-                                }
-                            }
-                            else
-                            {
-                                cursorXPos-=1;
-                            }
-                            //adjust_fortabs();
-                        }
-                        else if( cursorYPos > 0 )
+                        //special shift action
+                        if( cursorYPos>0)
                         {
                             cursorYPos-=1;
-                            move_up();
-                            std::string prevString = listOfStrings[cursorYPos];
-                            cursorXPos = prevString.size();
-                            if( cursorXPos < 0)
+                            if( lineStartYPos==cursorYPos+1)
                             {
-                                cursorXPos = 0;
+                                move_up();
                             }
-                            adjust_fortabs();
+                            else if( cursorYPos < lineStartYPos || cursorYPos > lineStartYPos+linesWithinView)
+                            {
+                                lineStartYPos = cursorYPos;
+                            }
+                            std::string prevLine = listOfStrings[cursorYPos];
+                            if( cursorXPos >= (int)prevLine.size() )
+                            {
+                                cursorXPos = (int)prevLine.size()-1;
+                                if( cursorXPos<0)
+                                {
+                                    cursorXPos = 0;
+                                }
+                            }
                         }
                         if( input->shiftKeyIsPressed)
                         {
                             selectionEndCursorXPos = cursorXPos;
                             selectionEndCursorYPos = cursorYPos;
                         }
-                        leftDelay = 0;
+                        upDelay = 0;
+                        showCursor = true;
+                        cursorTimer = 0;
+                        adjust_fortabs();
                         scroll_to_cursor();
-                        codeBeingSuggested = false;
                         find_documentation_description();
                     }
-                    else if( rightDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2  || ( !input->released[kb_right] && input->pressed[kb_right] ))
+                }
+                else if( downDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2  || ( !input->released[kb_down] && input->pressed[kb_down] ) )
+                {
+                    GPE_MAIN_HIGHLIGHTER->highlightedTerm  = NULL;
+                    if( GPE_MAIN_HIGHLIGHTER->codeBeingSuggested )
                     {
-                        lineToEdit = listOfStrings[cursorYPos];
+                        if( GPE_MAIN_HIGHLIGHTER->iSuggestionPos < (int)GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.size()-1 )
+                        {
+                            GPE_MAIN_HIGHLIGHTER->iSuggestionPos++;
+                            if( GPE_MAIN_HIGHLIGHTER->iSuggestionPos >= GPE_MAIN_HIGHLIGHTER->iSuggestedStartPos+GPE_MAIN_HIGHLIGHTER->suggestedTextMaxInViewCount)
+                            {
+                                GPE_MAIN_HIGHLIGHTER->iSuggestedStartPos = GPE_MAIN_HIGHLIGHTER->iSuggestionPos;
+                                if( GPE_MAIN_HIGHLIGHTER->iSuggestedStartPos+GPE_MAIN_HIGHLIGHTER->suggestedTextMaxInViewCount >= (int)GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.size() )
+                                {
+                                    GPE_MAIN_HIGHLIGHTER->iSuggestedStartPos = (int)GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.size() -  GPE_MAIN_HIGHLIGHTER->suggestedTextMaxInViewCount;
+                                }
+                                if( GPE_MAIN_HIGHLIGHTER->iSuggestedStartPos < 0)
+                                {
+                                    GPE_MAIN_HIGHLIGHTER->iSuggestedStartPos = 0;
+                                }
+                            }
+                        }
+                        downDelay = -1;
+                    }
+                    else
+                    {
                         if( input->shiftKeyIsPressed)
                         {
                             if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
@@ -3454,590 +3558,516 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                             reset_selection(1);
                         }
                         //special shift action
-                        cursorXPos+=1;
-                        if( cursorXPos > (int)lineToEdit.size() )
+                        if( cursorYPos < (int)listOfStrings.size()-1 )
                         {
-                            //go to next line if available
-                            if(cursorYPos < (int) listOfStrings.size()-1 )
+                            cursorYPos+=1;
+                            if( lineStartYPos>=cursorYPos+linesWithinView-1)
                             {
-                                cursorXPos = 0;
-                                cursorYPos+=1;
                                 move_down();
                             }
-                            else
+                            else if( cursorYPos < lineStartYPos || cursorYPos > lineStartYPos+linesWithinView)
                             {
-                                cursorXPos = (int)lineToEdit.size();
+                                lineStartYPos = cursorYPos;
                             }
-                        }
-                        else
-                        {
-                            //adjust_fortabs();
+                            std::string nextLine = listOfStrings[cursorYPos];
+                            if( cursorXPos >= (int)nextLine.size() )
+                            {
+                                cursorXPos = (int)nextLine.size()-1;
+                                if( cursorXPos<0)
+                                {
+                                    cursorXPos = 0;
+                                }
+                            }
                         }
                         if( input->shiftKeyIsPressed)
                         {
                             selectionEndCursorXPos = cursorXPos;
                             selectionEndCursorYPos = cursorYPos;
                         }
-                        rightDelay = 0;
+                        downDelay = 0;
+                        showCursor = true;
+                        cursorTimer = 0;
+                        adjust_fortabs();
+                        scroll_to_cursor();
+                        find_documentation_description();
+                    }
+                }
+                else if( bscDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2 || ( input->pressed[kb_backspace] && !input->released[kb_backspace] ) )
+                {
+                    bscDelay = 0;
+                    if( !isReadOnly)
+                    {
+                        bscDelay = 0;
+                        if( selectionCursorXPos!=selectionEndCursorXPos || selectionCursorYPos!=selectionEndCursorYPos)
+                        {
+                            delete_selection();
+                        }
+                        else if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                        {
+                            lineToEdit = listOfStrings[cursorYPos];
+                            int prevSize = (int)lineToEdit.size();
+                            if( prevSize>0)
+                            {
+                                if( cursorXPos > prevSize )
+                                {
+                                    cursorXPos = prevSize;
+                                }
+                            }
+                            else
+                            {
+                                cursorXPos = 0;
+                            }
+                            if( cursorXPos>0 && cursorXPos <= (int)lineToEdit.size() )
+                            {
+                                textInputString = get_substring(lineToEdit,0,cursorXPos);
+                                std::string rightSide = get_substring(lineToEdit,cursorXPos);
+                                if( cursorXPos >= (int)lineToEdit.size() )
+                                {
+                                    textInputString = get_substring(lineToEdit,0);
+                                    rightSide = "";
+                                }
+                                int trailingSpaces = get_trailing_space_count(textInputString);
+                                int tabsToCheckCount = get_tab_space_count();
+                                if( trailingSpaces >= tabsToCheckCount )
+                                {
+                                    cursorXPos -= tabsToCheckCount;
+                                    textInputString = get_substring(textInputString,0,cursorXPos);
+                                }
+                                else
+                                {
+                                    cursorXPos -=1;
+                                    textInputString = get_substring(textInputString,0,cursorXPos);
+                                }
+
+                                textInputString+=rightSide;
+                                listOfStrings.erase(listOfStrings.begin()+cursorYPos);
+                                if( cursorYPos>=0)
+                                {
+                                    listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
+                                }
+                                else
+                                {
+                                    listOfStrings.push_back(textInputString);
+                                }
+                                log_editable_action();
+                            }
+                            else if( cursorYPos>=1)
+                            {
+                                log_editable_action();
+                                textInputString = lineToEdit;
+                                std::string prevString = listOfStrings.at(cursorYPos-1);
+                                cursorXPos = prevString.size();
+                                listOfStrings.erase(listOfStrings.begin()+cursorYPos);
+                                cursorYPos -=1;
+                                if( cursorYPos < lineStartYPos && cursorYPos>=0)
+                                {
+                                    lineStartYPos-=1;
+                                }
+                                textInputString = listOfStrings[cursorYPos]+lineToEdit;
+                                listOfStrings.erase(listOfStrings.begin()+cursorYPos);
+                                listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
+                                log_editable_action();
+                            }
+                        }
+                        bscDelay = 0;
                         showCursor = true;
                         cursorTimer = 0;
                         scroll_to_cursor();
-                        codeBeingSuggested = false;
-                        find_documentation_description();
                     }
-                    else if( upDelay >= (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2  || ( !input->released[kb_up] && input->pressed[kb_up] ) )
+                    GPE_MAIN_HIGHLIGHTER->clear_all();
+                }
+                else if( delDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2  || ( input->pressed[kb_delete] && !input->released[kb_delete] ) )
+                {
+                    delDelay = 0;
+                    if(!isReadOnly)
                     {
-                        GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-                        if( codeBeingSuggested )
+                        log_editable_action();
+                        if( selectionCursorXPos!=selectionEndCursorXPos || selectionCursorYPos!=selectionEndCursorYPos)
                         {
-                            if( iSuggestionPos > 0)
-                            {
-                                iSuggestionPos--;
-                                if( iSuggestionPos < iSuggestedStartPos)
-                                {
-                                    iSuggestedStartPos = iSuggestionPos;
-                                }
-                            }
-                            upDelay = -1;
+                            delete_selection();
                         }
-                        else
+                        else if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
                         {
-                            if( input->shiftKeyIsPressed)
+                            lineToEdit = listOfStrings[cursorYPos];
+                            int prevSize = (int)lineToEdit.size();
+                            if( prevSize>0)
                             {
-                                if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
+                                if( cursorXPos > prevSize )
                                 {
-                                    selectionCursorXPos = cursorXPos;
-                                    selectionCursorYPos = cursorYPos;
+                                    cursorXPos = prevSize;
                                 }
                             }
                             else
                             {
-                                reset_selection(-1);
+                                cursorXPos = 0;
                             }
-                            //special shift action
-                            if( cursorYPos>0)
+                            if( cursorXPos>=0 && cursorXPos < (int)lineToEdit.size() )
                             {
-                                cursorYPos-=1;
-                                if( lineStartYPos==cursorYPos+1)
+                                textInputString = get_substring(lineToEdit,0,cursorXPos);
+                                std::string rightSide = get_substring(lineToEdit,cursorXPos+1);
+                                if( cursorXPos >= (int)lineToEdit.size() )
                                 {
-                                    move_up();
+                                    textInputString = get_substring(lineToEdit,0);
+                                    rightSide = "";
                                 }
-                                else if( cursorYPos < lineStartYPos || cursorYPos > lineStartYPos+linesWithinView)
+
+                                textInputString+=rightSide;
+                                listOfStrings.erase(listOfStrings.begin()+cursorYPos);
+                                if( cursorYPos>=0)
                                 {
-                                    lineStartYPos = cursorYPos;
-                                }
-                                std::string prevLine = listOfStrings[cursorYPos];
-                                if( cursorXPos >= (int)prevLine.size() )
-                                {
-                                    cursorXPos = (int)prevLine.size()-1;
-                                    if( cursorXPos<0)
-                                    {
-                                        cursorXPos = 0;
-                                    }
-                                }
-                            }
-                            if( input->shiftKeyIsPressed)
-                            {
-                                selectionEndCursorXPos = cursorXPos;
-                                selectionEndCursorYPos = cursorYPos;
-                            }
-                            upDelay = 0;
-                            showCursor = true;
-                            cursorTimer = 0;
-                            adjust_fortabs();
-                            scroll_to_cursor();
-                            find_documentation_description();
-                        }
-                    }
-                    else if( downDelay >= (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2  || ( !input->released[kb_down] && input->pressed[kb_down] ) )
-                    {
-                        GPE_MAIN_HIGHLIGHTER->highlightedTerm  = NULL;
-                        if( codeBeingSuggested )
-                        {
-                            if( iSuggestionPos < (int)suggestedCompilerTerms.size()-1 )
-                            {
-                                iSuggestionPos++;
-                                if( iSuggestionPos >= iSuggestedStartPos+suggestedTextMaxInViewCount)
-                                {
-                                    iSuggestedStartPos = iSuggestionPos;
-                                    if( iSuggestedStartPos+suggestedTextMaxInViewCount >=(int)suggestedCompilerTerms.size() )
-                                    {
-                                        iSuggestedStartPos = (int)suggestedCompilerTerms.size() -  suggestedTextMaxInViewCount;
-                                    }
-                                    if( iSuggestedStartPos < 0)
-                                    {
-                                        iSuggestedStartPos = 0;
-                                    }
-                                }
-                            }
-                            downDelay = -1;
-                        }
-                        else
-                        {
-                            if( input->shiftKeyIsPressed)
-                            {
-                                if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
-                                {
-                                    selectionCursorXPos = cursorXPos;
-                                    selectionCursorYPos = cursorYPos;
-                                }
-                            }
-                            else
-                            {
-                                reset_selection(1);
-                            }
-                            //special shift action
-                            if( cursorYPos < (int)listOfStrings.size()-1 )
-                            {
-                                cursorYPos+=1;
-                                if( lineStartYPos>=cursorYPos+linesWithinView-1)
-                                {
-                                    move_down();
-                                }
-                                else if( cursorYPos < lineStartYPos || cursorYPos > lineStartYPos+linesWithinView)
-                                {
-                                    lineStartYPos = cursorYPos;
-                                }
-                                std::string nextLine = listOfStrings[cursorYPos];
-                                if( cursorXPos >= (int)nextLine.size() )
-                                    {
-                                        cursorXPos = (int)nextLine.size()-1;
-                                        if( cursorXPos<0)
-                                        {
-                                            cursorXPos = 0;
-                                        }
-                                    }
-                                }
-                                if( input->shiftKeyIsPressed)
-                                {
-                                    selectionEndCursorXPos = cursorXPos;
-                                    selectionEndCursorYPos = cursorYPos;
-                                }
-                                downDelay = 0;
-                                showCursor = true;
-                                cursorTimer = 0;
-                                adjust_fortabs();
-                                scroll_to_cursor();
-                                find_documentation_description();
-                            }
-                    }
-                    else if( bscDelay > (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2 || ( input->pressed[kb_backspace] && !input->released[kb_backspace] ) )
-                    {
-                        bscDelay = 0;
-                        if( !isReadOnly)
-                        {
-                            bscDelay = 0;
-                            if( selectionCursorXPos!=selectionEndCursorXPos || selectionCursorYPos!=selectionEndCursorYPos)
-                            {
-                                delete_selection();
-                            }
-                            else if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
-                            {
-                                lineToEdit = listOfStrings[cursorYPos];
-                                int prevSize = (int)lineToEdit.size();
-                                if( prevSize>0)
-                                {
-                                    if( cursorXPos > prevSize )
-                                    {
-                                        cursorXPos = prevSize;
-                                    }
+                                    listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
                                 }
                                 else
                                 {
-                                    cursorXPos = 0;
+                                    listOfStrings.push_back(textInputString);
                                 }
-                                if( cursorXPos>0 && cursorXPos <= (int)lineToEdit.size() )
-                                {
-                                    textInputString = get_substring(lineToEdit,0,cursorXPos);
-                                    std::string rightSide = get_substring(lineToEdit,cursorXPos);
-                                    if( cursorXPos >= (int)lineToEdit.size() )
-                                    {
-                                        textInputString = get_substring(lineToEdit,0);
-                                        rightSide = "";
-                                    }
-                                    int trailingSpaces = get_trailing_space_count(textInputString);
-                                    int tabsToCheckCount = get_tab_space_count();
-                                    if( trailingSpaces >= tabsToCheckCount )
-                                    {
-                                        cursorXPos -= tabsToCheckCount;
-                                        textInputString = get_substring(textInputString,0,cursorXPos);
-                                    }
-                                    else
-                                    {
-                                        cursorXPos -=1;
-                                        textInputString = get_substring(textInputString,0,cursorXPos);
-                                    }
-
-                                    textInputString+=rightSide;
-                                    listOfStrings.erase(listOfStrings.begin()+cursorYPos);
-                                    if( cursorYPos>=0)
-                                    {
-                                        listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
-                                    }
-                                    else
-                                    {
-                                        listOfStrings.push_back(textInputString);
-                                    }
-                                    log_editable_action();
-                                }
-                                else if( cursorYPos>=1)
-                                {
-                                    log_editable_action();
-                                    textInputString = lineToEdit;
-                                    std::string prevString = listOfStrings.at(cursorYPos-1);
-                                    cursorXPos = prevString.size();
-                                    listOfStrings.erase(listOfStrings.begin()+cursorYPos);
-                                    cursorYPos -=1;
-                                    if( cursorYPos < lineStartYPos && cursorYPos>=0)
-                                    {
-                                        lineStartYPos-=1;
-                                    }
-                                    textInputString = listOfStrings[cursorYPos]+lineToEdit;
-                                    listOfStrings.erase(listOfStrings.begin()+cursorYPos);
-                                    listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
-                                    log_editable_action();
-                                }
+                                log_editable_action();
                             }
-                            bscDelay = 0;
-                            showCursor = true;
-                            cursorTimer = 0;
-                            scroll_to_cursor();
+                            else if( cursorYPos>=0 && cursorXPos>=(int)lineToEdit.size() && cursorYPos < (int)listOfStrings.size()-1 )
+                            {
+                                log_editable_action();
+                                textInputString = lineToEdit;
+                                std::string prevString = listOfStrings.at(cursorYPos+1);
+                                cursorXPos = lineToEdit.size();
+                                textInputString = lineToEdit+prevString;
+                                listOfStrings.erase(listOfStrings.begin()+cursorYPos+1);
+                                listOfStrings.erase(listOfStrings.begin()+cursorYPos);
+                                listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
+                                log_editable_action();
+                            }
                         }
-                        codeBeingSuggested = false;
-                        GPE_MAIN_HIGHLIGHTER->highlightedTerm  = NULL;
-
-                    }
-                    else if( delDelay >= (MAIN_GUI_SETTINGS->textAreaDelayTime+1)*2  || ( input->pressed[kb_delete] && !input->released[kb_delete] ) )
-                    {
                         delDelay = 0;
-                        if(!isReadOnly)
-                        {
-                            log_editable_action();
-                            if( selectionCursorXPos!=selectionEndCursorXPos || selectionCursorYPos!=selectionEndCursorYPos)
-                            {
-                                delete_selection();
-                            }
-                            else if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
-                            {
-                                lineToEdit = listOfStrings[cursorYPos];
-                                int prevSize = (int)lineToEdit.size();
-                                if( prevSize>0)
-                                {
-                                    if( cursorXPos > prevSize )
-                                    {
-                                        cursorXPos = prevSize;
-                                    }
-                                }
-                                else
-                                {
-                                    cursorXPos = 0;
-                                }
-                                if( cursorXPos>=0 && cursorXPos < (int)lineToEdit.size() )
-                                {
-                                    textInputString = get_substring(lineToEdit,0,cursorXPos);
-                                    std::string rightSide = get_substring(lineToEdit,cursorXPos+1);
-                                    if( cursorXPos >= (int)lineToEdit.size() )
-                                    {
-                                        textInputString = get_substring(lineToEdit,0);
-                                        rightSide = "";
-                                    }
-
-                                    textInputString+=rightSide;
-                                    listOfStrings.erase(listOfStrings.begin()+cursorYPos);
-                                    if( cursorYPos>=0)
-                                    {
-                                        listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
-                                    }
-                                    else
-                                    {
-                                        listOfStrings.push_back(textInputString);
-                                    }
-                                    log_editable_action();
-                                }
-                                else if( cursorYPos>=0 && cursorXPos>=(int)lineToEdit.size() && cursorYPos < (int)listOfStrings.size()-1 )
-                                {
-                                    log_editable_action();
-                                    textInputString = lineToEdit;
-                                    std::string prevString = listOfStrings.at(cursorYPos+1);
-                                    cursorXPos = lineToEdit.size();
-                                    textInputString = lineToEdit+prevString;
-                                    listOfStrings.erase(listOfStrings.begin()+cursorYPos+1);
-                                    listOfStrings.erase(listOfStrings.begin()+cursorYPos);
-                                    listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
-                                    log_editable_action();
-                                }
-                            }
-                            delDelay = 0;
-                            showCursor = true;
-                            cursorTimer = 0;
-                            scroll_to_cursor();
-                        }
-                        codeBeingSuggested = false;
-                        GPE_MAIN_HIGHLIGHTER->highlightedTerm  = NULL;
-
-                    }
-                    else if( tabDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+1)*2 || ( !input->pressed[kb_tab] && input->released[kb_tab] ) )
-                    {
-                        tabDelay = 0;
-                        if( !isReadOnly)
-                        {
-                            int tabStartYPos = 0;
-                            int tabEndYPos = 0;
-                            if( selectionCursorYPos>selectionEndCursorYPos)
-                            {
-                                tabEndYPos = selectionCursorYPos;
-                                tabStartYPos = selectionEndCursorYPos;
-                            }
-                            else
-                            {
-                                tabStartYPos = selectionCursorYPos;
-                                tabEndYPos = selectionEndCursorYPos;
-                            }
-
-                            int tabCharCount = get_tab_space_count();
-                            if( input->shiftKeyIsPressed)
-                            {
-                                std::string strToUnTab = "";
-                                if( selectionCursorXPos!=selectionEndCursorXPos || selectionCursorYPos!=selectionEndCursorYPos )
-                                {
-                                    for( int iTabPos = tabStartYPos; iTabPos <= tabEndYPos; iTabPos++)
-                                    {
-                                        strToUnTab = listOfStrings[iTabPos];
-                                        if( has_early_tab(strToUnTab) )
-                                        {
-                                            strToUnTab = untab_string(strToUnTab);
-                                            listOfStrings[iTabPos] = strToUnTab;
-                                            if( iTabPos ==selectionCursorYPos && selectionCursorYPos==selectionEndCursorYPos )
-                                            {
-                                                if( selectionCursorXPos>selectionEndCursorXPos)
-                                                {
-                                                    selectionCursorXPos-=tabCharCount;
-                                                }
-                                                else
-                                                {
-                                                    selectionEndCursorXPos-=tabCharCount;
-                                                }
-                                            }
-                                            else if(iTabPos ==selectionEndCursorYPos  )
-                                            {
-                                                if( selectionCursorYPos>selectionEndCursorYPos)
-                                                {
-                                                    selectionCursorXPos-=tabCharCount;
-                                                }
-                                                else
-                                                {
-                                                    selectionEndCursorXPos-=tabCharCount;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                std::string tabAddition = generate_tabs(1);
-                                if( selectionCursorXPos!=selectionEndCursorXPos || selectionCursorYPos!=selectionEndCursorYPos )
-                                {
-                                    for( int iTabPos = tabStartYPos; iTabPos <= tabEndYPos; iTabPos++)
-                                    {
-                                        listOfStrings[iTabPos] = tabAddition+listOfStrings[iTabPos];
-                                    }
-                                    if( selectionCursorYPos==selectionEndCursorYPos)
-                                    {
-                                        if( selectionCursorXPos>selectionEndCursorXPos)
-                                        {
-                                            selectionCursorXPos+=tabCharCount;
-                                        }
-                                        else
-                                        {
-                                            selectionEndCursorXPos+=tabCharCount;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if( selectionCursorYPos>selectionEndCursorYPos)
-                                        {
-                                            selectionCursorXPos+=tabCharCount;
-                                        }
-                                        else
-                                        {
-                                            selectionEndCursorXPos+=tabCharCount;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    delete_selection();
-                                    textInputString = get_substring(lineToEdit,0,cursorXPos);
-                                    textInputString+=tabAddition;
-                                    textInputString+=get_substring(lineToEdit,cursorXPos);
-                                    cursorXPos+=tabCharCount;
-                                    input->inkeys = "";
-                                    listOfStrings.erase(listOfStrings.begin()+cursorYPos);
-                                    listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
-                                    scroll_to_cursor();
-                                }
-
-                                scroll_to_pos(lineStartYPos, cursorXPos+tabCharCount );
-                            }
-                            save_edit();
-                        }
                         showCursor = true;
                         cursorTimer = 0;
-                        codeBeingSuggested = false;
-                        GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-                        tabDelay= 0;
+                        scroll_to_cursor();
                     }
-                    else if( (int)input->inkeys.size()>0 && !isReadOnly )
-                    {
-                        //Type input into textarea
-                        delete_selection();
-                        log_editable_action();
-                        textInputString = get_substring(lineToEdit,0,cursorXPos);
-                        std::string preInputString = string_replace_all(textInputString," ","");
-                        textInputString+=input->inkeys;
-                        listOfStrings.erase(listOfStrings.begin()+cursorYPos);
-                        std::string restofLine = get_substring(lineToEdit,cursorXPos);
-                        if( input->inkeys=="{" && (int)restofLine.size()==0 && (int)preInputString.size()==0 )
-                        {
-                            int numbOfSpaces =  get_leading_space_count(lineToEdit);
-                            cursorXPos = 0;
-                            std::string nextString = "";
-                            if( numbOfSpaces > 0)
-                            {
-                                for(int i= 0; i < numbOfSpaces; i++)
-                                {
-                                    nextString=" "+nextString;
-                                }
-                                cursorXPos = numbOfSpaces;
-                            }
-                            std::string bracketString = nextString+"}";
-                            nextString="    "+nextString;
-                            cursorXPos+=4;
+                    GPE_MAIN_HIGHLIGHTER->clear_all();
 
-                            textInputString+=restofLine;
-                            listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
-                            listOfStrings.insert(listOfStrings.begin()+cursorYPos+1,nextString);
-                            listOfStrings.insert(listOfStrings.begin()+cursorYPos+2,bracketString);
-                            cursorYPos+=1;
-                            scroll_to_pos(cursorYPos+1,cursorXPos);
-                            input->inkeys = "";
-                            save_edit();
+                }
+                else if( tabDelay > (MAIN_GUI_SETTINGS->normalInputDelayTime+1)*2 || ( !input->pressed[kb_tab] && input->released[kb_tab] ) )
+                {
+                    tabDelay = 0;
+                    if( !isReadOnly)
+                    {
+                        int tabStartYPos = 0;
+                        int tabEndYPos = 0;
+                        if( selectionCursorYPos>selectionEndCursorYPos)
+                        {
+                            tabEndYPos = selectionCursorYPos;
+                            tabStartYPos = selectionEndCursorYPos;
                         }
                         else
                         {
-                            log_editable_action();
-                            cursorXPos+=(int)input->inkeys.size();
-                            if( input->inkeys=="[" )
-                            {
-                                textInputString+="]";
-                            }
-                            else if( input->inkeys=="{" )
-                            {
-                                textInputString+="}";
-                            }
-                            else if( input->inkeys=="(" )
-                            {
-                                textInputString+=")";
-                            }
-                            textInputString+=restofLine;
-                            listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
-
-                            input->inkeys = "";
-                            if( isCodeEditor)
-                            find_suggested_text();
-                            scroll_to_cursor();
-                            GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
+                            tabStartYPos = selectionCursorYPos;
+                            tabEndYPos = selectionEndCursorYPos;
                         }
-                        input->inkeys = "";
+
+                        int tabCharCount = get_tab_space_count();
+                        if( input->shiftKeyIsPressed)
+                        {
+                            std::string strToUnTab = "";
+                            if( selectionCursorXPos!=selectionEndCursorXPos || selectionCursorYPos!=selectionEndCursorYPos )
+                            {
+                                for( int iTabPos = tabStartYPos; iTabPos <= tabEndYPos; iTabPos++)
+                                {
+                                    strToUnTab = listOfStrings[iTabPos];
+                                    if( has_early_tab(strToUnTab) )
+                                    {
+                                        strToUnTab = untab_string(strToUnTab);
+                                        listOfStrings[iTabPos] = strToUnTab;
+                                        if( iTabPos ==selectionCursorYPos && selectionCursorYPos==selectionEndCursorYPos )
+                                        {
+                                            if( selectionCursorXPos>selectionEndCursorXPos)
+                                            {
+                                                selectionCursorXPos-=tabCharCount;
+                                            }
+                                            else
+                                            {
+                                                selectionEndCursorXPos-=tabCharCount;
+                                            }
+                                        }
+                                        else if(iTabPos ==selectionEndCursorYPos  )
+                                        {
+                                            if( selectionCursorYPos>selectionEndCursorYPos)
+                                            {
+                                                selectionCursorXPos-=tabCharCount;
+                                            }
+                                            else
+                                            {
+                                                selectionEndCursorXPos-=tabCharCount;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            std::string tabAddition = generate_tabs(1);
+                            if( selectionCursorXPos!=selectionEndCursorXPos || selectionCursorYPos!=selectionEndCursorYPos )
+                            {
+                                for( int iTabPos = tabStartYPos; iTabPos <= tabEndYPos; iTabPos++)
+                                {
+                                    listOfStrings[iTabPos] = tabAddition+listOfStrings[iTabPos];
+                                }
+                                if( selectionCursorYPos==selectionEndCursorYPos)
+                                {
+                                    if( selectionCursorXPos>selectionEndCursorXPos)
+                                    {
+                                        selectionCursorXPos+=tabCharCount;
+                                    }
+                                    else
+                                    {
+                                        selectionEndCursorXPos+=tabCharCount;
+                                    }
+                                }
+                                else
+                                {
+                                    if( selectionCursorYPos>selectionEndCursorYPos)
+                                    {
+                                        selectionCursorXPos+=tabCharCount;
+                                    }
+                                    else
+                                    {
+                                        selectionEndCursorXPos+=tabCharCount;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                delete_selection();
+                                textInputString = get_substring(lineToEdit,0,cursorXPos);
+                                textInputString+=tabAddition;
+                                textInputString+=get_substring(lineToEdit,cursorXPos);
+                                cursorXPos+=tabCharCount;
+                                input->inkeys = "";
+                                listOfStrings.erase(listOfStrings.begin()+cursorYPos);
+                                listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
+                                scroll_to_cursor();
+                            }
+
+                            scroll_to_pos(lineStartYPos, cursorXPos+tabCharCount );
+                        }
+                        save_edit();
                     }
-                    else if( input->check_keyboard_released(kb_esc) )
+                    showCursor = true;
+                    cursorTimer = 0;
+                    GPE_MAIN_HIGHLIGHTER->clear_all();
+                    tabDelay= 0;
+                }
+                else if( (int)input->inkeys.size()>0 && !isReadOnly )
+                {
+                    GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
+                    //Type input into textarea
+                    delete_selection();
+                    log_editable_action();
+                    textInputString = get_substring(lineToEdit,0,cursorXPos);
+                    std::string preInputString = string_replace_all(textInputString," ","");
+                    textInputString+=input->inkeys;
+                    listOfStrings.erase(listOfStrings.begin()+cursorYPos);
+                    std::string restofLine = get_substring(lineToEdit,cursorXPos);
+                    if( input->inkeys=="{" && (int)restofLine.size()==0 && (int)preInputString.size()==0 )
                     {
-                        MAIN_SEARCH_CONTROLLER->close_finder();
-                        codeBeingSuggested = false;
-                        GPE_MAIN_HIGHLIGHTER->highlightedTerm  = NULL;
+                        int numbOfSpaces =  get_leading_space_count(lineToEdit);
+                        cursorXPos = 0;
+                        std::string nextString = "";
+                        if( numbOfSpaces > 0)
+                        {
+                            for(int i= 0; i < numbOfSpaces; i++)
+                            {
+                                nextString=" "+nextString;
+                            }
+                            cursorXPos = numbOfSpaces;
+                        }
+                        std::string bracketString = nextString+"}";
+                        nextString="    "+nextString;
+                        cursorXPos+=4;
+
+                        textInputString+=restofLine;
+                        listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
+                        listOfStrings.insert(listOfStrings.begin()+cursorYPos+1,nextString);
+                        listOfStrings.insert(listOfStrings.begin()+cursorYPos+2,bracketString);
+                        cursorYPos+=1;
+                        scroll_to_pos(cursorYPos+1,cursorXPos);
+                        input->inkeys = "";
+                        save_edit();
                     }
-                }
-            }
+                    else
+                    {
+                        log_editable_action();
+                        cursorXPos+=(int)input->inkeys.size();
+                        if( input->inkeys=="[" )
+                        {
+                            textInputString+="]";
+                        }
+                        else if( input->inkeys=="{" )
+                        {
+                            textInputString+="}";
+                        }
+                        else if( input->inkeys=="(" )
+                        {
+                            textInputString+=")";
+                        }
+                        textInputString+=restofLine;
+                        listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
 
-            parseForErrorsTimerPos++;
-            if( parseForErrorsTimerPos >=parseForErrorsTimerGoal)
-            {
-                if( isCodeEditor && codeEditorType==0)
-                {
-                    //parse_code_javascript(viewedSpace,cam);
+                        input->inkeys = "";
+                        if( isCodeEditor)
+                            find_suggested_text();
+                        scroll_to_cursor();
+                    }
+                    input->inkeys = "";
                 }
-                parseForErrorsTimerPos = 0;
-            }
-        }
-        else
-        {
-            hasScrollControl = false;
-            hasArrowkeyControl = false;
-        }
-
-        if( isHovered)
-        {
-            if( input->mouseScrollingUp > 0)
-            {
-                if( input->down[kb_ctrl])
+                else if( input->check_keyboard_released(kb_esc) )
                 {
-                    move_left(charactersWithinView/8);
-                    GPE_MAIN_HIGHLIGHTER->highlightedTerm  = NULL;
-                }
-                else
-                {
-                    move_up( 3 );
-                    GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
+                    MAIN_SEARCH_CONTROLLER->close_finder();
+                    GPE_MAIN_HIGHLIGHTER->clear_all();
                 }
             }
-            else if( input->mouseScrollingDown > 0)
-            {
-                if( input->down[kb_ctrl])
-                {
-                    move_right(charactersWithinView/8);
-                    GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-                }
-                else
-                {
-                    move_down( 3 );
-                    GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
-                }
-            }
-            hasScrollControl= true;
         }
 
-        if( lineStartXPos < 0)
+        parseForErrorsTimerPos++;
+        if( parseForErrorsTimerPos >=parseForErrorsTimerGoal)
         {
-            lineStartXPos = 0;
+            if( isCodeEditor && codeEditorType==0)
+            {
+                //parse_code_javascript(viewedSpace,cam);
+            }
+            parseForErrorsTimerPos = 0;
         }
-        if( lineStartYPos < 0)
+    }
+    else
+    {
+        hasScrollControl = false;
+        hasArrowkeyControl = false;
+    }
+
+    bool scrollingUp = false;
+    bool scrollingDown = false;
+    if( isHovered)
+    {
+        if( input->mouseScrollingUp > 0)
         {
-            lineStartYPos = 0;
+            if( input->down[kb_ctrl] )
+            {
+                move_left(charactersWithinView/8);
+                GPE_MAIN_HIGHLIGHTER->highlightedTerm  = NULL;
+            }
+            else
+            {
+                move_up( 3 );
+                GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
+            }
         }
+        else if( input->mouseScrollingDown > 0)
+        {
+            if( input->down[kb_ctrl])
+            {
+                move_right(charactersWithinView/8);
+                GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
+            }
+            else
+            {
+                move_down( 3 );
+                GPE_MAIN_HIGHLIGHTER->highlightedTerm = NULL;
+            }
+        }
+        hasScrollControl= true;
+    }
+
+    if( lineStartXPos < 0)
+    {
+        lineStartXPos = 0;
+    }
+    if( lineStartYPos < 0)
+    {
+        lineStartYPos = 0;
     }
 
     MAIN_GUI_SETTINGS->textAreaFindBox.x = elementBox.x+lineCountBoxWidth;
     //if( showXScroll && textXScroll!=NULL)
     {
-        //MAIN_GUI_SETTINGS->textAreaFindBox.y = elementBox.y+textEditorButtonBar->get_height()+renderBox.h+textXScroll->elementBox.h;
+        //MAIN_GUI_SETTINGS->textAreaFindBox.y = elementBox.y+textEditorButtonBar->get_height()+renderBox->h+textXScroll->elementBox.h;
     }
     //else
     {
-        MAIN_GUI_SETTINGS->textAreaFindBox.y = elementBox.y+textEditorButtonBar->get_height()+renderBox.h;
+        MAIN_GUI_SETTINGS->textAreaFindBox.y = elementBox.y+textEditorButtonBar->get_height()+renderBox->h;
     }
     MAIN_GUI_SETTINGS->textAreaFindBox.w = elementBox.w-lineCountBoxWidth;
 
     int findAllResult = 0;
-    switch(MAIN_SEARCH_CONTROLLER->textSearchMode )
+    switch( MAIN_SEARCH_CONTROLLER->textSearchMode )
     {
-        //find
-        case 1:
+    //find
+    case 1:
+        if( MAIN_SEARCH_CONTROLLER->findTextStringBox->has_content() )
+        {
+            if( MAIN_SEARCH_CONTROLLER->findTextStringBox->was_submitted() || MAIN_SEARCH_CONTROLLER->findButton->is_clicked() )
+            {
+                if( find_string(MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(),MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked(),false)==false )
+                {
+                    cursorXPos = 0;
+                    cursorYPos = 0;
+                    lineStartXPos = 0;
+                    lineStartYPos = 0;
+                    if( find_string(MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(),true,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked(),false)==false)
+                    {
+                        MAIN_OVERLAY->update_temporary_message("Searched for","["+MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string()+"]","Unable to Find String");
+                    }
+                }
+                MAIN_SEARCH_CONTROLLER->showFindAllResults = false;
+            }
+            /*
+            else if( MAIN_SEARCH_CONTROLLER->findAllButton->is_clicked() )
+            {
+                findAllResult = find_all_strings(MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(),MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() );
+                displayMessageTitle = "Substring Search";
+                displayMessageSubtitle = MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string();
+
+                if( findAllResult > 0)
+                {
+                    GPE_LOADER->update_messages( "Replacing" , MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(), "Found "+int_to_string(findAllResult)+" results" );
+                    MAIN_SEARCH_CONTROLLER->showFindAllResults = true;
+                }
+                else
+                {
+                    GPE_LOADER->update_messages( "Replacing" , MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(), "No matches found");
+                    MAIN_SEARCH_CONTROLLER->showFindAllResults = false;
+                }
+                MAIN_OVERLAY->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessageString,5);
+            }
+            */
+        }
+        break;
+
+    //goto line
+    case 2:
+        //MAIN_SEARCH_CONTROLLER->goToLineStringBox->set_string("1");
+
+        if( (int)listOfStrings.size() > 0)
+        {
+            MAIN_SEARCH_CONTROLLER->goToLineStringBox->descriptionText = "Go To Line: 1 - "+int_to_string( get_line_count() ) ;
+        }
+        else
+        {
+            MAIN_SEARCH_CONTROLLER->goToLineStringBox->descriptionText = "Go To Line: ";
+        }
+
+        if( ( MAIN_SEARCH_CONTROLLER->goToLineStringBox->was_submitted() || MAIN_SEARCH_CONTROLLER->goToButton->is_clicked() ) &&  MAIN_SEARCH_CONTROLLER->goToLineStringBox->is_valid() )
+        {
+            scroll_to_pos(MAIN_SEARCH_CONTROLLER->goToLineStringBox->get_held_number()-1,0);
+        }
+        break;
+
+    //find/replace
+    case 3:
+        if( !isReadOnly)
+        {
             if( MAIN_SEARCH_CONTROLLER->findTextStringBox->has_content() )
             {
                 if( MAIN_SEARCH_CONTROLLER->findTextStringBox->was_submitted() || MAIN_SEARCH_CONTROLLER->findButton->is_clicked() )
                 {
-                    if( find_string(MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(),MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked(),false)==false )
+                    if( find_string(MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(),true,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked(),false)==false )
                     {
                         cursorXPos = 0;
                         cursorYPos = 0;
@@ -4057,118 +4087,59 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
                     displayMessageTitle = "Substring Search";
                     displayMessageSubtitle = MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string();
 
+
                     if( findAllResult > 0)
                     {
-                        displayMessageString = "Found "+int_to_string(findAllResult)+" results";
+                        GPE_LOADER->update_messages( "Replacing" , needle, int_to_string(replaceCount)+" times");
                         MAIN_SEARCH_CONTROLLER->showFindAllResults = true;
                     }
                     else
                     {
-                        displayMessageString ="No matches found";
+                        GPE_LOADER->update_messages( "Replacing" , needle, "No matches found");
+
                         MAIN_SEARCH_CONTROLLER->showFindAllResults = false;
                     }
-                    display_user_messaage();
-                    MAIN_OVERLAY->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessageString,5);
+                    MAIN_OVERLAY->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessageString,15);
                 }
                 */
-            }
-        break;
-
-        //goto line
-        case 2:
-            //MAIN_SEARCH_CONTROLLER->goToLineStringBox->set_string("1");
-
-            if( (int)listOfStrings.size() > 0)
-            {
-                MAIN_SEARCH_CONTROLLER->goToLineStringBox->descriptionText = "Go To Line: 1 - "+int_to_string( get_line_count() ) ;
-            }
-            else
-            {
-                MAIN_SEARCH_CONTROLLER->goToLineStringBox->descriptionText = "Go To Line: ";
-            }
-
-            if( ( MAIN_SEARCH_CONTROLLER->goToLineStringBox->was_submitted() || MAIN_SEARCH_CONTROLLER->goToButton->is_clicked() ) &&  MAIN_SEARCH_CONTROLLER->goToLineStringBox->is_valid() )
-            {
-                scroll_to_pos(MAIN_SEARCH_CONTROLLER->goToLineStringBox->get_held_number()-1 ,0);
-            }
-        break;
-
-        //find/replace
-        case 3:
-            if( !isReadOnly)
-            {
-                if( MAIN_SEARCH_CONTROLLER->findTextStringBox->has_content() )
+                else if( MAIN_SEARCH_CONTROLLER->replaceTextStringBox->has_content() )
                 {
-                    if( MAIN_SEARCH_CONTROLLER->findTextStringBox->was_submitted() || MAIN_SEARCH_CONTROLLER->findButton->is_clicked() )
+                    if( MAIN_SEARCH_CONTROLLER->replaceTextStringBox->was_submitted() || MAIN_SEARCH_CONTROLLER->replaceButton->is_clicked() )
                     {
-                        if( find_string(MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(),true,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked(),false)==false )
-                        {
-                            cursorXPos = 0;
-                            cursorYPos = 0;
-                            lineStartXPos = 0;
-                            lineStartYPos = 0;
-                            if( find_string(MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(),true,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked(),false)==false)
-                            {
-                                MAIN_OVERLAY->update_temporary_message("Searched for","["+MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string()+"]","Unable to Find String");
-                            }
-                        }
                         MAIN_SEARCH_CONTROLLER->showFindAllResults = false;
                     }
-                    /*
-                    else if( MAIN_SEARCH_CONTROLLER->findAllButton->is_clicked() )
+                    else if( MAIN_SEARCH_CONTROLLER->replaceAllButton->is_clicked() )
                     {
-                        findAllResult = find_all_strings(MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(),MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked() );
-                        displayMessageTitle = "Substring Search";
-                        displayMessageSubtitle = MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string();
-
-                        if( findAllResult > 0)
+                        if( GPE_Display_Basic_Prompt("Warning!","All copies of the text will be replaced. Are you sure you want to continue this operation?")==DISPLAY_QUERY_YES )
                         {
-                            displayMessageString = "Found "+int_to_string(findAllResult)+" results";
-                            MAIN_SEARCH_CONTROLLER->showFindAllResults = true;
-                        }
-                        else
-                        {
-                            displayMessageString ="No matches found";
-                            MAIN_SEARCH_CONTROLLER->showFindAllResults = false;
-                        }
-                        display_user_messaage();
-                        MAIN_OVERLAY->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessageString,15);
-                    }
-                    */
-                    else if( MAIN_SEARCH_CONTROLLER->replaceTextStringBox->has_content() )
-                    {
-                        if( MAIN_SEARCH_CONTROLLER->replaceTextStringBox->was_submitted() || MAIN_SEARCH_CONTROLLER->replaceButton->is_clicked() )
-                        {
-                            MAIN_SEARCH_CONTROLLER->showFindAllResults = false;
-                        }
-                        else if( MAIN_SEARCH_CONTROLLER->replaceAllButton->is_clicked() )
-                        {
-                            if( display_get_prompt("Warning!","All copies of the text will be replaced. Are you sure you want to continue this operation?")==DISPLAY_QUERY_YES )
+                            findAllResult = find_all_strings(MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(),true);
+                            if( GPE_LOADER != NULL )
                             {
-                                findAllResult = find_all_strings(MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(),true);
-                                displayMessageTitle = "Replacing Substring";
-                                displayMessageSubtitle = MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string();
+                                GPE_LOADER->update_messages( "Replacing Substring", MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(),"With ["+MAIN_SEARCH_CONTROLLER->replaceTextStringBox->get_string()+"]"  );
+                            }
 
-                                if( findAllResult > 0)
+                            if( findAllResult > 0)
+                            {
+                                int replaceCount = replace_all_found( MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(), MAIN_SEARCH_CONTROLLER->replaceTextStringBox->get_string() ) ;
+                                if( GPE_LOADER != NULL )
                                 {
-                                    displayMessageString = "Replaced "+int_to_string(replace_all_found(MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(), MAIN_SEARCH_CONTROLLER->replaceTextStringBox->get_string() ) )+" copies.";;
-                                    MAIN_SEARCH_CONTROLLER->showFindAllResults = true;
+                                    GPE_LOADER->update_messages( "Replaced Substring", MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(), int_to_string( replaceCount )+" times" );
                                 }
-                                else
-                                {
-                                    displayMessageString ="No matches found";
-                                    MAIN_SEARCH_CONTROLLER->showFindAllResults = false;
-                                }
-                                display_user_messaage();
-                                MAIN_OVERLAY->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessageString,1);
+                                MAIN_SEARCH_CONTROLLER->showFindAllResults = true;
+                            }
+                            else
+                            {
+                                GPE_LOADER->update_messages( "Replaced Substring", MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string(), "No matches found" );
+                                MAIN_SEARCH_CONTROLLER->showFindAllResults = false;
                             }
                         }
                     }
                 }
             }
+        }
         break;
 
-        default:
+    default:
 
         break;
     }
@@ -4177,12 +4148,12 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
     {
         delete_selection();
         paste_clipboard();
-        codeBeingSuggested = false;
+        GPE_MAIN_HIGHLIGHTER->clear_all();
         input->reset_all_input();
         process_self( viewedSpace,cam );
     }
 
-    if( undoableActionOccurred)
+    if( undoableActionOccurred && !isReadOnly )
     {
         time_t currentTimeNow;
         time(&currentTimeNow);
@@ -4191,6 +4162,7 @@ void GPE_TextAreaInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam
             save_edit();
         }
     }
+    set_highlight_pos( viewedSpace, cam );
 }
 
 void GPE_TextAreaInputBasic::redo_edit()
@@ -4217,16 +4189,6 @@ void GPE_TextAreaInputBasic::render_code( GPE_Rect * viewedSpace, GPE_Rect * cam
     cam = GPE_find_camera(cam);
     if( viewedSpace!=NULL && cam!=NULL && textEditorButtonBar!=NULL && has_content() )
     {
-        renderBox.x = elementBox.x-cam->x;
-        renderBox.y = elementBox.y-cam->y+textEditorButtonBar->get_height();
-        renderBox.w = elementBox.w;
-
-        if(showYScroll)
-        {
-            renderBox.w-=16;
-        }
-        renderBox.h = elementBox.h-textEditorButtonBar->get_height()-32;
-
         int mostCharactersOfText = get_most_characters_used();
         if( mostCharactersOfText > charactersWithinView && showYScroll )
         {
@@ -4251,8 +4213,9 @@ void GPE_TextAreaInputBasic::render_code( GPE_Rect * viewedSpace, GPE_Rect * cam
         bool isInBlockCommentMode = false;
         bool isInDoubleQuoteMode = false;
         bool isInSingleQuoteMode = false;
-        int minLineToRender = std::max(lineStartYPos-50 ,0);
-        int maxLineToRender = std::min(lineStartYPos+linesWithinView ,(int)listOfStrings.size()-1);
+        int minLineToRender = std::max( (int)lineStartYPos-50,0);
+        int intLineStart = (int)lineStartYPos;
+        int maxLineToRender = std::min( (int)lineStartYPos+(int)linesWithinView,(int)listOfStrings.size()-1);
         int endBlockCommentPos = 0;
         int endDQuoteCommentPos = 0;
         int endSQuoteCommentPos = 0;
@@ -4263,7 +4226,7 @@ void GPE_TextAreaInputBasic::render_code( GPE_Rect * viewedSpace, GPE_Rect * cam
         GPE_ParsedText * tempParseTextToAdd = new GPE_ParsedText(-1, -1);
 
         //Finds the previous mode of  the editor up to 20 lines to the current lineStartYPos
-        for( i=minLineToRender; i < lineStartYPos && i < (int)listOfStrings.size(); i++)
+        for( i=minLineToRender; i < intLineStart && i < (int)listOfStrings.size(); i++)
         {
             currStringToRender = listOfStrings[i];
             currPosToParse = 0;
@@ -4342,7 +4305,7 @@ void GPE_TextAreaInputBasic::render_code( GPE_Rect * viewedSpace, GPE_Rect * cam
             }
         }
 
-        for( i=lineStartYPos; i <= maxLineToRender; i++)
+        for( i=intLineStart; i <= maxLineToRender; i++)
         {
             //resets highlight boxes and such
             if( commentLineText!=NULL)
@@ -4637,7 +4600,7 @@ void GPE_TextAreaInputBasic::render_code( GPE_Rect * viewedSpace, GPE_Rect * cam
                                             }
                                             else if (char_is_alpha(currStringToRender[currPosToParse],false,true) )
                                             {
-                                                //color = GPE_MAIN_THEME->Main_Box_Font_Color;
+                                                //color = GPE_MAIN_THEME->Text_Box_Font_Color;
                                                 tempParseTextToAdd->textStart = currPosToParse;
                                                 currPosToParse++;
                                                 while (currPosToParse < lineEnd && char_is_alnum(currStringToRender[currPosToParse],false,true) )
@@ -4652,7 +4615,7 @@ void GPE_TextAreaInputBasic::render_code( GPE_Rect * viewedSpace, GPE_Rect * cam
                                             {
                                                 if(currStringToRender[currPosToParse]!=' ')
                                                 {
-                                                    //color = GPE_MAIN_THEME->Main_Box_Font_Color;
+                                                    //color = GPE_MAIN_THEME->Text_Box_Font_Color;
                                                     //anything else is just regular text as well...
                                                     tempParseTextToAdd->textStart = currPosToParse;
                                                     tempParseTextToAdd->textEnd = currPosToParse+1;
@@ -4720,8 +4683,8 @@ void GPE_TextAreaInputBasic::render_code( GPE_Rect * viewedSpace, GPE_Rect * cam
 
             if ( i >=lineStartYPos  )
             {
-                textRenderXPos = renderBox.x+lineCountBoxWidth+2;
-                textRenderYPos = renderBox.y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight);
+                textRenderXPos = renderBox->x+2;
+                textRenderYPos = renderBox->y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight);
 
                 color = GPE_MAIN_THEME->Text_Box_Font_Color;
                 normalLineText->render_tokens( FONT_TEXTINPUT,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
@@ -4826,12 +4789,92 @@ void GPE_TextAreaInputBasic::render_code( GPE_Rect * viewedSpace, GPE_Rect * cam
     }
 }
 
-void GPE_TextAreaInputBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
+void GPE_TextAreaInputBasic::render_linebox( GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
+    if( viewedSpace!=NULL && cam!=NULL )
+    {
+        //draws the line count box
+        if( lineCountBoxWidth>0 && MAIN_GUI_SETTINGS->showTextEditorLineCount )
+        {
+            gcanvas->render_rect(lineCountBox,GPE_MAIN_THEME->Text_Box_Outer_Color,false);
+            int lineSize = (editorZoomLevel*defaultLineHeight);
+            int lineYPos = lineCountBox->y;
+            for(  int i=lineStartYPos; i <= lineStartYPos+linesWithinView && i < (int)listOfStrings.size(); i++)
+            {
+                if( i == cursorYPos)
+                {
+                    gcanvas->render_rectangle( lineCountBox->x,lineYPos,lineCountBox->x + lineCountBox->w, lineYPos+lineSize,GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
+                }
+                gfs->render_bitmap_text( lineCountBox->x+lineCountBox->w/2, lineYPos,int_to_string(i+1),GPE_MAIN_THEME->Text_Box_Font_Color,FONT_TEXTINPUT,FA_CENTER,FA_TOP,255);
+                lineYPos+=lineSize;
+            }
+            gcanvas->render_rect( lineCountBox, GPE_MAIN_THEME->Text_Box_Outline_Color,true);
+        }
+    }
+}
 
-    if( viewedSpace!=NULL &&  cam!=NULL && textEditorButtonBar!=NULL)
+void GPE_TextAreaInputBasic::render_plain( GPE_Rect * viewedSpace, GPE_Rect * cam )
+{
+    viewedSpace = GPE_find_camera(viewedSpace);
+    cam = GPE_find_camera(cam);
+    if( viewedSpace!=NULL && cam!=NULL && has_content() )
+    {
+        GPE_Color * textColor = GPE_MAIN_THEME->Text_Box_Font_Color;
+        int foundSpecialLogPos = 0;
+        int subCopyStartPos = 0;
+        std::string stringToRender = "";
+        for( int iLine=lineStartYPos; iLine <= lineStartYPos+linesWithinView && iLine < (int)listOfStrings.size(); iLine++)
+        {
+            stringToRender = listOfStrings[ iLine ];
+            if( (int)stringToRender.size() > lineStartXPos )
+            {
+                subCopyStartPos = 0;
+
+                if( isTextLog)
+                {
+                    textColor = GPE_MAIN_THEME->Text_Box_Font_Color;
+                    foundSpecialLogPos = stringToRender.find("Error:");
+                    if( foundSpecialLogPos!=(int)std::string::npos)
+                    {
+                        textColor = GPE_MAIN_THEME->Text_Box_Font_Color;
+                        subCopyStartPos =7;
+                    }
+                    else
+                    {
+                        foundSpecialLogPos = stringToRender.find("Warning:");
+                        if( foundSpecialLogPos!=(int)std::string::npos)
+                        {
+                            textColor = GPE_MAIN_THEME->Text_Box_Font_Keyword_Color;
+                            subCopyStartPos =8;
+                        }
+                        else
+                        {
+                            foundSpecialLogPos = stringToRender.find("Comment:");
+                            if( foundSpecialLogPos!=(int)std::string::npos)
+                            {
+                                textColor = GPE_MAIN_THEME->Text_Box_Font_Comment_Color;
+                                subCopyStartPos =8;
+                            }
+                        }
+                    }
+                }
+                stringToRender = get_substring(stringToRender,lineStartXPos,charactersWithinView );
+                //GPE_Report("Rendering ["+stringToRender+"]..." );
+                gfs->render_text( renderBox->x+2,renderBox->y+4+(iLine-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                                 stringToRender,textColor,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
+            }
+        }
+    }
+}
+
+void GPE_TextAreaInputBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+{
+    viewedSpace = GPE_find_camera(viewedSpace);
+    cam = GPE_find_camera(cam);
+    setup_editor(viewedSpace,cam);
+    if( viewedSpace!=NULL &&  cam!=NULL  )
     {
         int subCopyStartPos = 0;
         if( (int)listOfStrings.size()==0)
@@ -4839,21 +4882,13 @@ void GPE_TextAreaInputBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam
             listOfStrings.push_back("");
             reset_self();
         }
-        renderBox.x = elementBox.x-cam->x;
-        renderBox.y = elementBox.y-cam->y+textEditorButtonBar->get_height();
-        renderBox.w = elementBox.w;
-
-        if(showYScroll)
-        {
-            renderBox.w-=16;
-        }
-        renderBox.h = get_renderbox_height();
 
         int mostCharactersOfText = get_most_characters_used();
         if( mostCharactersOfText > charactersWithinView && showYScroll )
         {
             mostCharactersOfText-=2;
         }
+
         if( forceRedraw)
         {
             int i = 0;
@@ -4864,29 +4899,29 @@ void GPE_TextAreaInputBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam
             {
                 redrawDelay = 0;
             }
-            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Text_Box_Color,false);
 
+            gcanvas->render_rect( renderBox,GPE_MAIN_THEME->Text_Box_Color,false);
             if( has_content() )
             {
                 //Calculates and highlights the symbols
                 find_connected_symbols();
                 if( symbolCursorXPos >= lineStartXPos && symbolCursorYPos >=lineStartYPos )
                 {
-                    gpe->render_rectangle(
-                                     renderBox.x+lineCountBoxWidth+2+( std::min(mostCharactersOfText,symbolCursorXPos)-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                                     renderBox.y+(symbolCursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                                     renderBox.x+lineCountBoxWidth+2+( std::min(mostCharactersOfText,symbolCursorXPos)-lineStartXPos+1)*TEXTBOX_FONT_SIZE_WIDTH,
-                                     renderBox.y+(symbolCursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
-                                     GPE_MAIN_THEME->Text_Box_Font_Comment_Color,false,64);
+                    gcanvas->render_rectangle(
+                        renderBox->x+2+( std::min(mostCharactersOfText,symbolCursorXPos)-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
+                        renderBox->y+(symbolCursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                        renderBox->x+2+( std::min(mostCharactersOfText,symbolCursorXPos)-lineStartXPos+1)*TEXTBOX_FONT_SIZE_WIDTH,
+                        renderBox->y+(symbolCursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                        GPE_MAIN_THEME->Text_Box_Font_Comment_Color,false,64);
                 }
                 if( symbolEndCursorXPos >= lineStartXPos && symbolEndCursorYPos >=lineStartYPos )
                 {
-                    gpe->render_rectangle(
-                                     renderBox.x+lineCountBoxWidth+2+( std::min(mostCharactersOfText,symbolEndCursorXPos)-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                                     renderBox.y+(symbolEndCursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                                     renderBox.x+lineCountBoxWidth+2+( std::min(mostCharactersOfText,symbolEndCursorXPos)-lineStartXPos+1)*TEXTBOX_FONT_SIZE_WIDTH,
-                                     renderBox.y+(symbolEndCursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
-                                     GPE_MAIN_THEME->Text_Box_Font_Comment_Color,false,64);
+                    gcanvas->render_rectangle(
+                        renderBox->x+2+( std::min(mostCharactersOfText,symbolEndCursorXPos)-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
+                        renderBox->y+(symbolEndCursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                        renderBox->x+2+( std::min(mostCharactersOfText,symbolEndCursorXPos)-lineStartXPos+1)*TEXTBOX_FONT_SIZE_WIDTH,
+                        renderBox->y+(symbolEndCursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                        GPE_MAIN_THEME->Text_Box_Font_Comment_Color,false,64);
                 }
 
                 //Renders the text highlights
@@ -4906,26 +4941,28 @@ void GPE_TextAreaInputBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam
                         maxHighlightXPos = selectionEndCursorXPos;
                         minHighlightXPos = selectionCursorXPos;
                     }
+                    int calculatedMax = minHighlightXPos-lineStartXPos;
+
                     if(minHighlightYPos !=maxHighlightYPos)
                     {
                         if( (int)listOfStrings.size() > minHighlightYPos && minHighlightYPos>=lineStartYPos && minHighlightYPos < lineStartYPos+linesWithinView )
                         {
                             if( (int)listOfStrings.at(minHighlightYPos).size() > lineStartXPos && ( minHighlightXPos <= lineStartXPos+charactersWithinView) )
                             {
-                                gpe->render_rectangle(
-                                                 renderBox.x+lineCountBoxWidth+2+std::max(0,minHighlightXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                                                 renderBox.y+(minHighlightYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                                                 renderBox.x+lineCountBoxWidth+2+( std::min(mostCharactersOfText,(int)listOfStrings.at(minHighlightYPos).size() )-lineStartXPos+1)*TEXTBOX_FONT_SIZE_WIDTH,
-                                                 renderBox.y+(minHighlightYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
-                                                 GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
+                                gcanvas->render_rectangle(
+                                    renderBox->x+2+std::max(0, calculatedMax)*TEXTBOX_FONT_SIZE_WIDTH,
+                                    renderBox->y+(minHighlightYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                                    renderBox->x+2+( std::min(mostCharactersOfText,(int)listOfStrings.at(minHighlightYPos).size() )-lineStartXPos+1)*TEXTBOX_FONT_SIZE_WIDTH,
+                                    renderBox->y+(minHighlightYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                                    GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
                             }
                             else
                             {
-                                gpe->render_rectangle(
-                                renderBox.x+lineCountBoxWidth+2,
-                                renderBox.y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                                renderBox.x+lineCountBoxWidth+2+TEXTBOX_FONT_SIZE_WIDTH,
-                                renderBox.y+(i-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
+                                gcanvas->render_rectangle(
+                                    renderBox->x+2,
+                                    renderBox->y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                                    renderBox->x+2+TEXTBOX_FONT_SIZE_WIDTH,
+                                    renderBox->y+(i-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
 
                             }
                         }
@@ -4938,19 +4975,19 @@ void GPE_TextAreaInputBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam
                                 {
                                     if( (int)listOfStrings[i].size() > lineStartXPos )
                                     {
-                                            gpe->render_rectangle(
-                                                    renderBox.x+lineCountBoxWidth+2,
-                                                    renderBox.y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                                                    renderBox.x+lineCountBoxWidth+2+( std::min( mostCharactersOfText,(int)listOfStrings[i].size() )-lineStartXPos )*TEXTBOX_FONT_SIZE_WIDTH,
-                                                    renderBox.y+(i-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
+                                        gcanvas->render_rectangle(
+                                            renderBox->x+2,
+                                            renderBox->y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                                            renderBox->x+2+( std::min( mostCharactersOfText,(int)listOfStrings[i].size() )-lineStartXPos )*TEXTBOX_FONT_SIZE_WIDTH,
+                                            renderBox->y+(i-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
                                     }
                                     else
                                     {
-                                        gpe->render_rectangle(
-                                                    renderBox.x+lineCountBoxWidth+2,
-                                                    renderBox.y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                                                    renderBox.x+lineCountBoxWidth+2+TEXTBOX_FONT_SIZE_WIDTH,
-                                                    renderBox.y+(i-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
+                                        gcanvas->render_rectangle(
+                                            renderBox->x+2,
+                                            renderBox->y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                                            renderBox->x+2+TEXTBOX_FONT_SIZE_WIDTH,
+                                            renderBox->y+(i-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
                                     }
                                 }
                             }
@@ -4961,20 +4998,20 @@ void GPE_TextAreaInputBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam
                             std::string lastStrToHighlight = listOfStrings.at(maxHighlightYPos);
                             if( (int)lastStrToHighlight.size() > lineStartXPos && maxHighlightXPos >= lineStartXPos )
                             {
-                                gpe->render_rectangle(
-                                                 renderBox.x+lineCountBoxWidth+2,
-                                                 renderBox.y+(maxHighlightYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                                                 renderBox.x+lineCountBoxWidth+2+( std::min(mostCharactersOfText,maxHighlightXPos)-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                                                 renderBox.y+(maxHighlightYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
-                                                 GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
+                                gcanvas->render_rectangle(
+                                    renderBox->x+2,
+                                    renderBox->y+(maxHighlightYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                                    renderBox->x+2+( std::min(mostCharactersOfText,maxHighlightXPos)-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
+                                    renderBox->y+(maxHighlightYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                                    GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
                             }
                             else
                             {
-                                gpe->render_rectangle(
-                                            renderBox.x+lineCountBoxWidth+2,
-                                            renderBox.y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                                            renderBox.x+lineCountBoxWidth+2+TEXTBOX_FONT_SIZE_WIDTH,
-                                            renderBox.y+(i-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
+                                gcanvas->render_rectangle(
+                                    renderBox->x+2,
+                                    renderBox->y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                                    renderBox->x+2+TEXTBOX_FONT_SIZE_WIDTH,
+                                    renderBox->y+(i-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
                             }
                         }
                     }
@@ -4987,12 +5024,12 @@ void GPE_TextAreaInputBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam
                         {
                             maxHighlightXPos++;
                         }
-                        gpe->render_rectangle(
-                                         renderBox.x+lineCountBoxWidth+2+( minHighlightXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                                         renderBox.y+(maxHighlightYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                                         renderBox.x+lineCountBoxWidth+2+( maxHighlightXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                                         renderBox.y+(maxHighlightYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
-                                         GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
+                        gcanvas->render_rectangle(
+                            renderBox->x+2+( minHighlightXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
+                            renderBox->y+(maxHighlightYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                            renderBox->x+2+( maxHighlightXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
+                            renderBox->y+(maxHighlightYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                            GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
                     }
                 }
 
@@ -5005,49 +5042,11 @@ void GPE_TextAreaInputBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam
                 }
                 else
                 {
-                    GPE_Color * textColor = GPE_MAIN_THEME->Main_Box_Font_Color;
-                    int foundSpecialLogPos = 0;
-                    for( i=lineStartYPos; i <= lineStartYPos+linesWithinView && i < (int)listOfStrings.size(); i++)
-                    {
-                        currStringToRender = listOfStrings[i];
-                        if( (int)currStringToRender.size() > lineStartXPos)
-                        {
-                            subCopyStartPos = 0;
-                            if( isTextLog)
-                            {
-                                textColor = GPE_MAIN_THEME->Main_Box_Font_Color;;
-                                foundSpecialLogPos = currStringToRender.find("Error:");
-                                if( foundSpecialLogPos!=(int)std::string::npos)
-                                {
-                                    textColor = GPE_MAIN_THEME->Input_Error_Box_Color;
-                                    subCopyStartPos =7;
-                                }
-                                else
-                                {
-                                    foundSpecialLogPos = currStringToRender.find("Warning:");
-                                    if( foundSpecialLogPos!=(int)std::string::npos)
-                                    {
-                                        textColor = GPE_MAIN_THEME->Text_Box_Font_Keyword_Color;
-                                        subCopyStartPos =8;
-                                    }
-                                    else
-                                    {
-                                        foundSpecialLogPos = currStringToRender.find("Comment:");
-                                        if( foundSpecialLogPos!=(int)std::string::npos)
-                                        {
-                                            textColor = GPE_MAIN_THEME->Text_Box_Font_Comment_Color;
-                                            subCopyStartPos =8;
-                                        }
-                                    }
-                                }
-                            }
-                            currStringToRender = get_substring(currStringToRender,lineStartXPos,charactersWithinView );
-
-                            render_only_text( renderBox.x+lineCountBoxWidth+2,renderBox.y+4+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                                            currStringToRender,textColor,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
-                        }
-                    }
+                    //Codes
+                    render_plain( viewedSpace,cam);
                 }
+
+
 
                 //Renders the scrollbars
                 if( showXScroll && textXScroll!=NULL)
@@ -5066,41 +5065,25 @@ void GPE_TextAreaInputBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam
                 }
             }
 
-            //draws the line count box
-            if( lineCountBoxWidth>0 && MAIN_GUI_SETTINGS->showTextEditorLineCount)
+
+
+            gcanvas->render_rect( renderBox,GPE_MAIN_THEME->Text_Box_Outline_Color,true);
+            if( !isReadOnly && textEditorButtonBar!=NULL && showButtonBar )
             {
-                gpe->render_rectangle( elementBox.x-cam->x,renderBox.y,elementBox.x+lineCountBoxWidth-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Text_Box_Outer_Color,false);
-                for( i=lineStartYPos; i <= lineStartYPos+linesWithinView && i < (int)listOfStrings.size(); i++)
-                {
-                    if( i == cursorYPos)
-                    {
-                        gpe->render_rectangle( renderBox.x,renderBox.y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),renderBox.x+lineCountBoxWidth,renderBox.y+(i-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),GPE_MAIN_THEME->Text_Box_Highlight_Color,false);
-                    }
-                    render_bitmap_text( renderBox.x+lineCountBoxWidth/2,renderBox.y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),int_to_string(1+i),GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TEXTINPUT,FA_CENTER,FA_TOP,255);
-                }
-                gpe->render_rectangle( elementBox.x-cam->x,renderBox.y,elementBox.x+lineCountBoxWidth-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Text_Box_Outline_Color,true);
-            }
-
-            gpe->render_rectangle( renderBox.x,renderBox.y,renderBox.x+renderBox.w,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Text_Box_Outline_Color,true);
-            //gpe->render_horizontal_line_color( renderBox.y+renderBox.h+GENERAL_GPE_PADDING,renderBox.x+lineCountBoxWidth,renderBox.x+renderBox.w,GPE_MAIN_THEME->Main_Border_Color);
-
-
-
-            if( !isReadOnly )
-            {
-                gpe->render_rectangle( textEditorButtonBar->get_xpos()-cam->x,textEditorButtonBar->get_ypos()-cam->y,textEditorButtonBar->get_x2pos()-cam->x,textEditorButtonBar->get_y2pos()-cam->y,GPE_MAIN_THEME->Text_Box_Outer_Color,false);
                 textEditorButtonBar->render_self( viewedSpace,cam);
             }
         }
 
+        //Renders the linebox seen on the left
+        render_linebox( viewedSpace, cam );
         if( isInUse && (prevCursorXPos >=lineStartXPos && prevCursorXPos <= lineStartXPos+charactersWithinView) &&  ( prevCursorYPos >=lineStartYPos && prevCursorYPos <= lineStartYPos+linesWithinView ) )
         {
             if( prevCursorXPos!=cursorXPos || prevCursorYPos!=cursorYPos )
             {
-                gpe->render_vertical_line_color( renderBox.x+lineCountBoxWidth+2+(prevCursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                        renderBox.y+(prevCursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                        renderBox.y+(prevCursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
-                        GPE_MAIN_THEME->Text_Box_Color);
+                gcanvas->render_vertical_line_color( renderBox->x+2+(prevCursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
+                                                 renderBox->y+(prevCursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                                                 renderBox->y+(prevCursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                                                 GPE_MAIN_THEME->Text_Box_Color);
             }
         }
 
@@ -5109,26 +5092,27 @@ void GPE_TextAreaInputBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam
         {
             if( showCursor)
             {
-                gpe->render_vertical_line_color( renderBox.x+lineCountBoxWidth+2+(cursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                    renderBox.y+(cursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                    renderBox.y+(cursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
-                    GPE_MAIN_THEME->Main_Box_Font_Color);
+                gcanvas->render_vertical_line_color( renderBox->x+2+(cursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
+                                                 renderBox->y+(cursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                                                 renderBox->y+(cursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                                                 GPE_MAIN_THEME->Text_Box_Font_Color);
             }
             else
             {
-                gpe->render_vertical_line_color( renderBox.x+lineCountBoxWidth+2+(cursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
-                        renderBox.y+(cursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                        renderBox.y+(cursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
-                        GPE_MAIN_THEME->Text_Box_Color);
+                gcanvas->render_vertical_line_color( renderBox->x+2+(cursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
+                                                 renderBox->y+(cursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
+                                                 renderBox->y+(cursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
+                                                 GPE_MAIN_THEME->Text_Box_Color);
             }
         }
 
         if( isInUse)
         {
-            gpe->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Input_Highlight_Outline_Color,true);
+            gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Text_Box_Highlight_Color,true);
             if( !isReadOnly)
             {
                 std::string editorFeedbackLine = "Line: "+int_to_string(cursorYPos+1)+", Column: "+int_to_string(cursorXPos+1);
+                editorFeedbackLine+=", MaxLines: "+double_to_string(linesWithinView)+", MaxCharacters:"+double_to_string( charactersWithinView)+")";
                 if( GPE_Main_Statusbar!=NULL)
                 {
                     GPE_Main_Statusbar->set_codestring(editorFeedbackLine);
@@ -5136,15 +5120,15 @@ void GPE_TextAreaInputBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam
             }
         }
 
-        if( forceRedraw)
+        /*
+        if( forceRedraw && isInUse )
         {
-            MAIN_RENDERER->reset_viewpoint();
-            MAIN_RENDERER->reset_viewpoint();
-            int iRendSuggestion = 0;
-            GPE_Compiler_Term * cTerm = NULL;
-            std::string fullPhraseToRender = "";
-            if( codeBeingSuggested && (int)suggestedCompilerTerms.size() > 0 )
+            if( GPE_MAIN_HIGHLIGHTER->codeBeingSuggested && (int)GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.size() > 0 )
             {
+                MAIN_RENDERER->reset_viewpoint();
+                int iRendSuggestion = 0;
+                GPE_Compiler_Term * cTerm = NULL;
+                std::string fullPhraseToRender = "";
                 int suggestionRenderYPos = elementBox.y+viewedSpace->y;
                 if( cursorYPos >= lineStartYPos)
                 {
@@ -5191,18 +5175,18 @@ void GPE_TextAreaInputBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam
                             }
                             if( iSuggestedEntry==iSuggestionPos)
                             {
-                                gpe->render_rectangle(  elementBox.x+viewedSpace->x, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*iRendSuggestion,elementBox.x+viewedSpace->x+maxSuggestedTextWidth, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*(iRendSuggestion+1),GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
+                                gcanvas->render_rectangle(  elementBox.x+viewedSpace->x, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*iRendSuggestion,elementBox.x+viewedSpace->x+maxSuggestedTextWidth, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*(iRendSuggestion+1),GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
                                 render_only_text( elementBox.x+viewedSpace->x+32, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*iRendSuggestion,fullPhraseToRender,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
                             }
                             else
                             {
-                                gpe->render_rectangle(  elementBox.x+viewedSpace->x, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*iRendSuggestion,elementBox.x+viewedSpace->x+maxSuggestedTextWidth, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*(iRendSuggestion+1),GPE_MAIN_THEME->PopUp_Box_Color,false);
+                                gcanvas->render_rectangle(  elementBox.x+viewedSpace->x, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*iRendSuggestion,elementBox.x+viewedSpace->x+maxSuggestedTextWidth, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*(iRendSuggestion+1),GPE_MAIN_THEME->PopUp_Box_Color,false);
                                 render_only_text( elementBox.x+viewedSpace->x+32, suggestionRenderYPos+(editorZoomLevel*defaultLineHeight)*iRendSuggestion,fullPhraseToRender,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP,255 );
                             }
                             iRendSuggestion++;
                         }
                     }
-                    gpe->render_rectangle(  elementBox.x+viewedSpace->x, suggestionRenderYPos,elementBox.x+viewedSpace->x+maxSuggestedTextWidth, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*(iRendSuggestion+1),GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
+                    gcanvas->render_rectangle(  elementBox.x+viewedSpace->x, suggestionRenderYPos,elementBox.x+viewedSpace->x+maxSuggestedTextWidth, suggestionRenderYPos+GPE_AVERAGE_LINE_HEIGHT*(iRendSuggestion+1),GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
 
                 }
                 else
@@ -5210,36 +5194,13 @@ void GPE_TextAreaInputBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam
                     codeBeingSuggested = false;
                     suggestedCompilerTerms.clear();
                 }
+                MAIN_RENDERER->set_viewpoint( viewedSpace );
             }
-            else if( isCodeEditor && GPE_MAIN_HIGHLIGHTER->highlightedTerm!=NULL && highlightYPos >=lineStartYPos && highlightYPos <= lineStartYPos+linesWithinView+3 )
-            {
-                std::string fullTermDescription = "";
-                //GPE_MAIN_HIGHLIGHTER->highlightedTerm = highlightedTerm;
-
-                GPE_MAIN_HIGHLIGHTER->highlightedTermXPos = renderBox.x+viewedSpace->x+lineCountBoxWidth+( (highlightXPos -lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH);
-                int suggestionRenderYPos = 0;
-
-                if( highlightYPos > lineStartYPos+1)
-                {
-                    if( highlightYPos+3 <= lineStartYPos+linesWithinView)
-                    {
-                        suggestionRenderYPos = (highlightYPos-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT;
-                    }
-                    else
-                    {
-                        suggestionRenderYPos = (highlightYPos-lineStartYPos-4 )*GPE_AVERAGE_LINE_HEIGHT;
-                    }
-                }
-                else
-                {
-                    suggestionRenderYPos=(highlightYPos-lineStartYPos+3)*GPE_AVERAGE_LINE_HEIGHT;
-                }
-                GPE_MAIN_HIGHLIGHTER->highlightedTermYPos = renderBox.y+viewedSpace->y+suggestionRenderYPos;
-            }
-            MAIN_RENDERER->set_viewpoint( viewedSpace );
         }
+        */
     }
 }
+
 
 int GPE_TextAreaInputBasic::replace_all_found(std::string strToReplace, std::string newString)
 {
@@ -5248,7 +5209,7 @@ int GPE_TextAreaInputBasic::replace_all_found(std::string strToReplace, std::str
     std::string changedLine = "";
     int copiesDeleted = 0;
     export_text_anchors(APP_DIRECTORY_NAME+"replace_test.txt");
-    for( int iReplace = (int)anchorPositions.size()-1; iReplace >=0;iReplace--)
+    for( int iReplace = (int)anchorPositions.size()-1; iReplace >=0; iReplace--)
     {
         cAnchor = anchorPositions.at( iReplace);
         if( cAnchor!=NULL)
@@ -5612,6 +5573,123 @@ void GPE_TextAreaInputBasic::set_ycursor(int newPos)
     cursorTimer = 0;
 }
 
+void GPE_TextAreaInputBasic::set_highlight_pos(GPE_Rect * viewedSpace, GPE_Rect * cam  )
+{
+    viewedSpace = GPE_find_camera( viewedSpace );
+    cam = GPE_find_camera( cam );
+    if( viewedSpace!=NULL && cam!=NULL && isCodeEditor && GPE_MAIN_HIGHLIGHTER!=NULL && !isReadOnly && isInUse )
+    {
+        if( GPE_MAIN_HIGHLIGHTER->codeBeingSuggested && (int)GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.size() > 0 )
+        {
+            int suggestionRenderYPos = renderBox->y +viewedSpace->y;
+            if( cursorYPos >= lineStartYPos)
+            {
+                if( cursorYPos+GPE_MAIN_HIGHLIGHTER->suggestedTextMaxInViewCount <= lineStartYPos+linesWithinView && GPE_MAIN_HIGHLIGHTER->suggestedTextMaxInViewCount < linesWithinView )
+                {
+                    suggestionRenderYPos +=(cursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight);
+                    suggestionRenderYPos+=textEditorButtonBar->get_height();
+                }
+                else if( GPE_MAIN_HIGHLIGHTER->suggestedTextMaxInViewCount >= (int)GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.size() )
+                {
+                    suggestionRenderYPos += (cursorYPos-lineStartYPos-GPE_MAIN_HIGHLIGHTER->suggestedTextMaxInViewCount)*(editorZoomLevel*defaultLineHeight);
+                    suggestionRenderYPos+=textEditorButtonBar->get_height();
+                }
+                else
+                {
+                    suggestionRenderYPos+=(cursorYPos-lineStartYPos-(int)GPE_MAIN_HIGHLIGHTER->suggestedCompilerTerms.size() )*(editorZoomLevel*defaultLineHeight);
+                    suggestionRenderYPos+=textEditorButtonBar->get_height();
+                }
+            }
+            GPE_MAIN_HIGHLIGHTER->highlightedTermXPos = renderBox->x+viewedSpace->x;
+            GPE_MAIN_HIGHLIGHTER->highlightedTermYPos = suggestionRenderYPos;
+        }
+        else if( GPE_MAIN_HIGHLIGHTER->highlightedTerm!=NULL && highlightYPos >=lineStartYPos && highlightYPos <= lineStartYPos+linesWithinView+3 )
+        {
+            std::string fullTermDescription = "";
+            //highlightedTerm = highlightedTerm;
+
+            GPE_MAIN_HIGHLIGHTER->highlightedTermXPos = renderBox->x+viewedSpace->x+lineCountBoxWidth+( (highlightXPos -lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH);
+            int suggestionRenderYPos = 0;
+
+            if( highlightYPos > lineStartYPos+1)
+            {
+                if( highlightYPos+3 <= lineStartYPos+linesWithinView)
+                {
+                    suggestionRenderYPos = (highlightYPos-lineStartYPos+1)*GPE_AVERAGE_LINE_HEIGHT;
+                }
+                else
+                {
+                    suggestionRenderYPos = (highlightYPos-lineStartYPos-4 )*GPE_AVERAGE_LINE_HEIGHT;
+                }
+            }
+            else
+            {
+                suggestionRenderYPos=(highlightYPos-lineStartYPos+3)*GPE_AVERAGE_LINE_HEIGHT;
+            }
+            GPE_MAIN_HIGHLIGHTER->highlightedTermYPos = renderBox->y+viewedSpace->y+suggestionRenderYPos;
+        }
+    }
+}
+
+void GPE_TextAreaInputBasic::setup_editor(GPE_Rect * viewedSpace, GPE_Rect * cam )
+{
+    viewedSpace = GPE_find_camera( viewedSpace );
+    cam = GPE_find_camera( cam );
+    if( MAIN_GUI_SETTINGS->showTextEditorLineCount && isReadOnly==false )
+    {
+        lineCountBoxWidth = MAIN_GUI_SETTINGS->defaultLineCountWidth;
+        lineCountBox->x = elementBox.x - cam->x;
+        lineCountBox->y = elementBox.y - cam->y;
+        lineCountBox->w = MAIN_GUI_SETTINGS->defaultLineCountWidth;
+        lineCountBox->h = elementBox.h;
+
+    }
+    else
+    {
+        lineCountBoxWidth = 0;
+        lineCountBox->x = 0;
+        lineCountBox->y = 0;
+        lineCountBox->w = 0;
+        lineCountBox->h = 0;
+    }
+
+    if( textEditorButtonBar!=NULL)
+    {
+        textEditorButtonBar->set_coords(elementBox.x,elementBox.y);
+        //sets the buttonbar to the width of the text editor( minus width of yScroll width[16 ).
+        textEditorButtonBar->set_width(elementBox.w);
+        if( !isReadOnly)
+        {
+            textEditorButtonBar->set_height(24);
+            textEditorButtonBar->enable_self();
+        }
+        else
+        {
+            textEditorButtonBar->set_height(0);
+            textEditorButtonBar->disable_self();
+        }
+
+        renderBox->x = elementBox.x+lineCountBoxWidth -cam->x;
+        renderBox->y = elementBox.y+ textEditorButtonBar->get_height() -cam->y;
+        lineCountBox->y = elementBox.y + textEditorButtonBar->get_height() - cam->y;
+        lineCountBox->h = renderBox->h = elementBox.h - textEditorButtonBar->get_height();
+    }
+    else
+    {
+        renderBox->x = elementBox.x+lineCountBoxWidth -cam->x;
+        renderBox->y = elementBox.y -cam->y;
+        renderBox->h = elementBox.h;
+    }
+
+    renderBox->w = elementBox.w-lineCountBoxWidth;
+
+
+    textSpaceRect->x = viewedSpace->x + renderBox->x;
+    textSpaceRect->y = viewedSpace->y + renderBox->y;
+    textSpaceRect->w = renderBox->w;
+    textSpaceRect->h = renderBox->h;
+}
+
 void GPE_TextAreaInputBasic::undo_edit()
 {
     if( can_undo() )
@@ -5746,34 +5824,16 @@ bool GPE_TextAreaInputBasic::write_short_data_into_file(std::ofstream * fileTarg
 GPE_WrappedTextArea::GPE_WrappedTextArea()
 {
     guiListTypeName = "wrappedtextarea";
-    heldTextArea = new GPE_TextAreaInputBasic();
-    heldTextArea->set_read_only();
-    heldTextArea->isCodeEditor = false;
+    set_read_only();
+    isCodeEditor = false;
     elementBox.w = 640;
     elementBox.h = 480;
     paragraphText = "";
-    hasLineBreak = true;
 }
 
 GPE_WrappedTextArea::~GPE_WrappedTextArea()
 {
-    if( heldTextArea!=NULL)
-    {
-        delete heldTextArea;
-        heldTextArea = NULL;
-    }
-}
 
-void GPE_WrappedTextArea::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
-{
-    heldTextArea->set_coords(elementBox.x,elementBox.y);
-    heldTextArea->process_self(viewedSpace,cam);
-}
-
-void GPE_WrappedTextArea::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw )
-{
-    heldTextArea->set_coords(elementBox.x,elementBox.y);
-    heldTextArea->render_self( viewedSpace,cam, forceRedraw);
 }
 
 void GPE_WrappedTextArea::set_string( std::string strIn)
@@ -5790,7 +5850,6 @@ void GPE_WrappedTextArea::set_width(int newWidth)
     if( elementBox.w!=newWidth)
     {
         elementBox.w = newWidth;
-        heldTextArea->set_width( elementBox.w );
         update_paragraph();
     }
 }
@@ -5800,7 +5859,6 @@ void GPE_WrappedTextArea::set_height( int newHeight)
     if( elementBox.h!=newHeight)
     {
         elementBox.h = newHeight;
-        heldTextArea->set_height( elementBox.h );
         update_paragraph();
     }
 }
@@ -5810,7 +5868,6 @@ void GPE_WrappedTextArea::set_max_width( int nMW)
     if( elementBox.w!=nMW )
     {
         elementBox.w = nMW;
-        heldTextArea->set_width( elementBox.w );
         update_paragraph();
     }
 }
@@ -5820,22 +5877,21 @@ void GPE_WrappedTextArea::set_max_height( int nMH)
     if( elementBox.h!=nMH )
     {
         elementBox.h = nMH;
-        heldTextArea->set_height( elementBox.h );
         update_paragraph();
     }
 }
 
 void GPE_WrappedTextArea::update_paragraph(int foundMaxWidth )
 {
-    if( heldTextArea!=NULL && elementBox.w > 0 )
+    if( elementBox.w > 0 )
     {
-        heldTextArea->reset_self();
-        heldTextArea->clear_all_lines();
+        reset_self();
+        clear_all_lines();
         if( (int)paragraphText.size() > 0)
         {
             int maxMessageWidth = 0;
             //int maxMessageHeight = 0;
-            int defaultFontWidth = 0;;
+            int defaultFontWidth = 0;
             int defaultFontHeight = 0;
             int iSubMessage = 0;
             if( FONT_TEXTINPUT!=NULL)
@@ -5858,20 +5914,20 @@ void GPE_WrappedTextArea::update_paragraph(int foundMaxWidth )
                 maxMessageWidth = 0;
                 if( messageSubTitles.size() <= 0)
                 {
-                    heldTextArea->add_line("");
+                    add_line("");
                 }
                 else
                 {
                     for( iSubMessage = 0; iSubMessage < (int)messageSubTitles.size(); iSubMessage++)
                     {
-                        heldTextArea->add_line( messageSubTitles.at(iSubMessage) );
+                        add_line( messageSubTitles.at(iSubMessage) );
                     }
                 }
             }
         }
         else
         {
-            heldTextArea->add_line("");
+            add_line("");
         }
     }
 }

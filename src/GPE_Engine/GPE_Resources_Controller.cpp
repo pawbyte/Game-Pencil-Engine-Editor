@@ -3,10 +3,10 @@ GPE_Resources_Controller.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -33,8 +33,11 @@ SOFTWARE.
 
 #include "GPE_Resources_Controller.h"
 
+std::string RESOURCE_TYPE_NAMES[res_type_count];
+
 generalGameResource::generalGameResource()
 {
+    isFullScreenResource = false;
     resourceName = "";
     resourceFileName = "";
     parentProjectName = "";
@@ -45,19 +48,15 @@ generalGameResource::generalGameResource()
     encapBox.x = 0;
     encapBox.y = 0;
     encapBox.w = 32;
-    encapBox.h = 32;;
+    encapBox.h = 32;
     isModified = false;
     editorMode = 0;
-    html5BuildGlobalId = -1;
+    exportBuildGlobalId = -1;
     justOpenedThisFrame = false;
+    requestedMode = editorMode = 0;
 }
 
 generalGameResource::~generalGameResource()
-{
-
-}
-
-void generalGameResource::compile_self()
 {
 
 }
@@ -125,7 +124,7 @@ void generalGameResource::prerender_self( )
 
 void generalGameResource::process_resource(GPE_Rect * viewedSpace,GPE_Rect *cam)
 {
-
+    process_self(viewedSpace,cam);
 }
 
 void generalGameResource::process_self(GPE_Rect * viewedSpace,GPE_Rect *cam)
@@ -135,7 +134,18 @@ void generalGameResource::process_self(GPE_Rect * viewedSpace,GPE_Rect *cam)
 
 void generalGameResource::render_resource(GPE_Rect * viewedSpace,GPE_Rect *cam, bool forceRedraw)
 {
-
+    viewedSpace = GPE_find_camera(viewedSpace);
+    cam = GPE_find_camera(cam);
+    if(cam!=NULL)
+    {
+        if( forceRedraw || justOpenedThisFrame )
+        {
+            //gcanvas->render_rectangle( 0,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_THEME->Program_Color,false);
+            forceRedraw = true;
+        }
+        render_self( viewedSpace,cam,forceRedraw);
+    }
+    justOpenedThisFrame = false;
 }
 
 void generalGameResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam, bool forceRedraw)
@@ -145,7 +155,7 @@ void generalGameResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam, bool
 
 void generalGameResource::save_resource(std::string alternatePath, int backupId)
 {
-    record_error("Old save resource used..");
+    GPE_Report("Old save resource used..");
     isModified = false;
 }
 
@@ -204,90 +214,46 @@ int generalGameResource::search_and_replace_string(std::string needle, std::stri
     return 0;
 }
 
-bool define_colors()
+bool generalGameResource::write_header_on_file(std::ofstream * fileTarget)
 {
-    MASTER_OF_COLORS->addColor(c_aqua,"aqua");
-    MASTER_OF_COLORS->addColor(c_black,"black");
-    MASTER_OF_COLORS->addColor(c_blue,"blue");
-    MASTER_OF_COLORS->addColor(c_brown,"brown");
-    MASTER_OF_COLORS->addColor(c_dkgray,"dkgray");
-    MASTER_OF_COLORS->addColor(c_fuchsia,"fuchsia");
-    MASTER_OF_COLORS->addColor(c_gray,"gray");
-    MASTER_OF_COLORS->addColor(c_green,"green");
-    MASTER_OF_COLORS->addColor(c_lime,"lime");
-    MASTER_OF_COLORS->addColor(c_ltgray,"ltgray");
-    MASTER_OF_COLORS->addColor(c_maroon,"maroon");
-    MASTER_OF_COLORS->addColor(c_navy,"navy");
-    MASTER_OF_COLORS->addColor(c_olive,"olive");
-    MASTER_OF_COLORS->addColor(c_orange,"orange");
-    MASTER_OF_COLORS->addColor(c_orangered,"orangered");
-    MASTER_OF_COLORS->addColor(c_purple,"purple");
-    MASTER_OF_COLORS->addColor(c_red,"red");
-    MASTER_OF_COLORS->addColor(c_silver,"silver");
-    MASTER_OF_COLORS->addColor(c_teal,"teal");
-    MASTER_OF_COLORS->addColor(c_white,"white");
-    MASTER_OF_COLORS->addColor(c_yellow,"yellow");
-    return true;
+    if( fileTarget!=NULL && fileTarget->is_open() )
+    {
+        *fileTarget << "#    --------------------------------------------------  # \n";
+        *fileTarget << "#     \n";
+        *fileTarget << "#     \n";
+        if( resourceType >=0 && resourceType < res_type_count)
+        {
+            *fileTarget << "#    Game Pencil Engine Project Game " << RESOURCE_TYPE_NAMES[resourceType] <<" DataFile \n";
+        }
+        *fileTarget << "#    Created automatically via the Game Pencil Engine Editor \n";
+        *fileTarget << "#    Warning: Manually editing this file may cause unexpected bugs and errors. \n";
+        *fileTarget << "#    If you have any problems reading this file please report it to help@pawbyte.com . \n";
+        *fileTarget << "#     \n";
+        *fileTarget << "#     \n";
+        *fileTarget << "#    --------------------------------------------------  # \n";
+        *fileTarget << "Version=" << GPE_VERSION_DOUBLE_NUMBER << "\n";
+        *fileTarget << "ResourceName=" << resourceName << "\n";
+        *fileTarget << "#     \n";
+        return true;
+    }
+    return false;
 }
 
 
-ResourceController::ResourceController()
+GPE_DataManager::GPE_DataManager()
 {
     randomVariableOn=false;
 }
 
-ResourceController::~ResourceController()
+GPE_DataManager::~GPE_DataManager()
 {
     randomVariableOn=false;
     //loops and deletes music
-    int it;
-
-    if( rTextures.size() >0 )
-    {
-        GPE_Texture * tTexure = NULL;
-        for(it  = 0; it < (int) rTextures.size(); it++)
-        {
-            tTexure = rTextures.at(it);
-            if( tTexure!=NULL)
-            {
-                delete tTexure;
-                tTexure = NULL;
-            }
-        }
-        rTextures.clear();
-    }
-
-    if( rMusic.size() >0 )
-    {
-        Mix_Music * fMusic = NULL;
-        for(it  = 0; it < (int) rMusic.size(); it++)
-        {
-            fMusic = rMusic.at(it);
-            if( fMusic!=NULL)
-            {
-                Mix_FreeMusic(fMusic);
-            }
-        }
-        rMusic.clear();
-    }
-    //loops and deletes sounds
-    if( rSounds.size() >0 )
-    {
-        Mix_Chunk * fChunk = NULL;
-        for(it  = 0; it < (int) rSounds.size(); it++)
-        {
-            fChunk = rSounds.at(it);
-            if( fChunk!=NULL)
-            {
-                Mix_FreeChunk(fChunk);
-            }
-        }
-        rSounds.clear();
-    }
+    clean_up();
 }
 
 //adds a new game sprite with one row
-GPE_Animation* ResourceController::sprite_add(std::string spriteFileName,int imgnumb,bool transparent,int xorig,int yorig, bool addMirror)
+GPE_Animation* GPE_DataManager::sprite_add(std::string spriteFileName,int imgnumb,bool transparent,int xorig,int yorig, bool addMirror)
 {
     GPE_Animation * newSprite = get_sprite(spriteFileName);
     if(newSprite!=NULL)
@@ -295,103 +261,20 @@ GPE_Animation* ResourceController::sprite_add(std::string spriteFileName,int img
     //makes sure the xorig and yorig is not negative
     if(( xorig>=0)&&(yorig>=0) )
     {
-        //record_error("Loading "+spriteFileName+" sprite with "+int_to_string(imgnumb)+" needed images.");
+        //GPE_Report("Loading "+spriteFileName+" sprite with "+int_to_string(imgnumb)+" needed images.");
         //loads in the sprite's texture
-        GPE_Texture * newSurface = new GPE_Texture();
-        newSurface->load_new_texture( spriteFileName, -1,transparent );
-        if(newSurface!=NULL)
-        {
-            //gets the height and width of spritesheet
-            int nW = newSurface->get_width();
-            int nH =  newSurface->get_height();
-            if( (nH >= yorig )&&(nW  >=xorig) )
-            {
-                if(imgnumb<1)
-                {
-                     imgnumb=1;
-                }
-                newSprite = new GPE_Animation();
-                newSprite->width = (nW-xorig)/imgnumb;
-                newSprite->height = nH-yorig;
-                newSprite->boundingBox = new GPE_Rect;
-                newSprite->boundingBox->x=0;
-                newSprite->boundingBox->y=0;
-                newSprite->boundingBox->w=newSprite->width;
-                newSprite->boundingBox->h=newSprite->height;
-                newSprite->colBox = new GPE_Rect;
-                newSprite->colBox->x=0;
-                newSprite->colBox->y=0;
-                newSprite->colBox->w=newSprite->width;
-                newSprite->colBox->h=newSprite->height;
-
-                newSprite->animationTexture= newSurface;
-                //newSprite->spriteColor = c_white;
-                //newSprite->spritePhase = 0;
-                if(addMirror)
-                {
-                  //  GPE_Texture newMirSurface = flip_surface( newSurface, FLIP_HORIZONTAL );
-                  //  newSprite->spriteMirSurface=newMirSurface;
-                }
-                newSprite->framesForSprite = 0;
-                //newSprite->spriteImagesLeft[newSprite->framesForSprite];
-                //newSprite->spriteImagesNight[newSprite->framesForSprite];
-                //newSprite->spriteImagesNightLeft[newSprite->framesForSprite];
-
-                newSprite->fileName=spriteFileName; //the name along with path
-                newSprite->name=getShortFileName(spriteFileName); //gets rid of path
-
-                //Go through rows for the spritesheet
-                for( int x = 0; x < nW; x+=newSprite->width)
-                {
-                     GPE_Rect * newSubImage = new GPE_Rect;
-                     newSubImage->x = x;
-                     newSubImage->y = yorig;
-                     if(nW>=x+newSprite->width)
-                     {
-                          newSubImage->w = newSprite->width;
-                     }
-                     else
-                     {
-                          newSubImage->w = x+newSprite->width-nW;
-                     }
-                     newSubImage->h = newSprite->height;
-                     newSprite->framesForSprite+=1;
-
-                     newSprite->spriteImages.push_back(*newSubImage);
-                }
-                //big ole duh!
-                //gpe_error_logFile << "The Sprite with the file name '" << spriteFileName << "' was added successfully!";
-                //gpe_error_logFile << " \n";
-                std::stringstream outString;
-                rSprites.push_back(newSprite);
-                return newSprite;
-            }
-            else
-            {
-                std::stringstream outString;
-                outString << "Unable to load Sprite from file location: (" << spriteFileName << ") due to invalid dimensions given";
-                record_error( outString.str());
-                return NULL;
-            }
-        }
-        else
-        {
-            std::stringstream outString;
-            outString << "Unable to load Sprite from file location: (" << spriteFileName << ") due to invalid dimensions given";
-            record_error( outString.str());
-            return NULL;
-        }
+        newSprite = new GPE_Animation( spriteFileName, spriteFileName, transparent );
     }
     else
     {
         std::stringstream outString;
         outString << "Unable to load Sprite from file location: (" << spriteFileName << ") due to negative dimensions given";
-        record_error( outString.str());
+        GPE_Report( outString.str());
         return NULL;
     }
 }
 
-GPE_Animation* ResourceController::sprite_add_collision(std::string spriteFileName,int imgnumb,bool transparent,int xorig,int yorig, int cx, int cy, int cw, int ch, bool addMirror)
+GPE_Animation* GPE_DataManager::sprite_add_collision(std::string spriteFileName,int imgnumb,bool transparent,int xorig,int yorig, int cx, int cy, int cw, int ch, bool addMirror)
 {
     GPE_Animation * newSprite = get_sprite(spriteFileName);
     if(newSprite!=NULL)
@@ -399,313 +282,60 @@ GPE_Animation* ResourceController::sprite_add_collision(std::string spriteFileNa
     //makes sure the xorig and yorig is not negative
     if(( xorig>=0)&&(yorig>=0) )
     {
-        record_error("Loading" +spriteFileName+" sprite...");
+        GPE_Report("Loading" +spriteFileName+" sprite...");
         //loads in the sprite's texture
-        GPE_Texture * newSurface = new GPE_Texture();
-        newSurface->load_new_texture( spriteFileName, -1,transparent );
-        if(newSurface!=NULL)
-        {
-            //gets the height and width of spritesheet
-            int nW = newSurface->get_width();
-            int nH =  newSurface->get_height();
-            if( (nH >= yorig )&&(nW  >=xorig) )
-            {
-                if(imgnumb<1)
-                {
-                     imgnumb=1;
-                }
-                newSprite = new GPE_Animation();
-                newSprite->width = (nW-xorig)/imgnumb;
-                newSprite->height = nH-yorig;
-                if(cx<=0 || cx>newSprite->width)
-                {
-                    cx=0;
-                }
-                if(cy<=0 || cy>newSprite->height)
-                {
-                    cy=0;
-                }
-                if(cw<=0 || cw>newSprite->width)
-                {
-                    cw=newSprite->width;
-                }
-                if(ch<=0 || cw>=newSprite->height)
-                {
-                    ch=newSprite->height;
-                }
-                newSprite->boundingBox = new GPE_Rect;
-                newSprite->boundingBox->x=0;
-                newSprite->boundingBox->y=0;
-                newSprite->boundingBox->w=newSprite->width;
-                newSprite->boundingBox->h=newSprite->height;
-                newSprite->colBox = new GPE_Rect;
-                newSprite->colBox->x=cx;
-                newSprite->colBox->y=cy;
-                newSprite->colBox->w=cw;
-                newSprite->colBox->h=ch;
-
-                newSprite->animationTexture= newSurface;
-                //newSprite->spriteColor = c_white;
-                //newSprite->spritePhase = 0;
-
-                newSprite->framesForSprite = 0;
-                //newSprite->spriteImagesLeft[newSprite->framesForSprite];
-                //newSprite->spriteImagesNight[newSprite->framesForSprite];
-                //newSprite->spriteImagesNightLeft[newSprite->framesForSprite];
-
-                newSprite->fileName=spriteFileName; //the name along with path
-                newSprite->name=getShortFileName(spriteFileName); //gets rid of path
-
-                //Go through rows for the spritesheet
-                for( int x = 0; x < nW; x+=newSprite->width)
-                {
-                     GPE_Rect * newSubImage = new GPE_Rect;
-                     newSubImage->x = x;
-                     newSubImage->y = yorig;
-                     if(nW>=x+newSprite->width)
-                     {
-                          newSubImage->w = newSprite->width;
-                     }
-                     else
-                     {
-                          newSubImage->w = x+newSprite->width-nW;
-                     }
-                     newSubImage->h = newSprite->height;
-                     newSprite->framesForSprite+=1;
-
-                     newSprite->spriteImages.push_back(*newSubImage);
-                }
-                //big ole duh!
-                //gpe_error_logFile << "The Sprite with the file name '" << spriteFileName << "' was added successfully!";
-                //gpe_error_logFile << " \n";
-                rSprites.push_back(newSprite);
-                return newSprite;
-            }
-            else
-            {
-                std::stringstream outString;
-                outString << "Unable to load Sprite from file location: (" << spriteFileName << ") due to invalid dimensions given";
-                record_error( outString.str());
-                return NULL;
-            }
-        }
-        else
-        {
-            std::stringstream outString;
-            outString << "Unable to load Sprite from file location: (" << spriteFileName << ") due to invalid dimensions given";
-            record_error( outString.str());
-            return NULL;
-        }
+        newSprite = new GPE_Animation(spriteFileName,spriteFileName, transparent);
+        newSprite->edit_collision_box(cx, cy, cw, ch);
+        return newSprite;
     }
     else
     {
         std::stringstream outString;
         outString << "Unable to load Sprite from file location: (" << spriteFileName << ") due to negative dimensions given";
-        record_error( outString.str());
+        GPE_Report( outString.str());
         return NULL;
     }
 }
 
-GPE_Animation* ResourceController::sprite_addsheet(std::string spriteFileName, bool transparent, int width, int height)
+GPE_Animation* GPE_DataManager::sprite_addsheet(std::string spriteFileName, bool transparent, int width, int height)
 {
     GPE_Animation * newSprite = get_sprite(spriteFileName);
     if(newSprite!=NULL)
         return newSprite;
     if(( height>0)&&(width>0) )
     {
-        GPE_Texture * newSurface = new GPE_Texture();
-        newSurface->load_new_texture( spriteFileName, -1,transparent );
-        if(newSurface!=NULL)
-        {
-            int nW = newSurface->get_width();
-            int nH =  newSurface->get_height();
-            if( (nH >= height )&&(nW  >=width) )
-            {
-                newSprite = new GPE_Animation();
-                newSprite->width = width;
-                newSprite->height = height;
-                newSprite->boundingBox = new GPE_Rect();
-                newSprite->boundingBox->x=0;
-                newSprite->boundingBox->y=0;
-                newSprite->boundingBox->w=width;
-                newSprite->boundingBox->h=height;
-                newSprite->colBox = new GPE_Rect;
-                newSprite->colBox->x=0;
-                newSprite->colBox->y=0;
-                newSprite->colBox->w=width;
-                newSprite->colBox->h=height;
-                newSprite->animationTexture= newSurface;
-                newSprite->fileName=spriteFileName; //the name along with path
-                newSprite->name=getShortFileName(spriteFileName); //gets rid of path
-               //newSprite->spriteColor = c_white;
-               //newSprite->spritePhase = 0;
-
-                newSprite->framesForSprite = (nH / height)*(nW / width);
-                //newSprite->spriteImagesLeft[newSprite->framesForSprite];
-                //newSprite->spriteImagesNight[newSprite->framesForSprite];
-                //newSprite->spriteImagesNightLeft[newSprite->framesForSprite];
-                //Go through rows
-                int heightDecided=0;
-                for( int y = 0; y < nH; y+=height)
-                {
-                    if(nH>=y+height)
-                    {
-                        heightDecided = height;
-                    }
-                    else
-                    {
-                        heightDecided = y+height-nH;
-                    }
-                    //Go through columns
-                    for( int x = 0; x < nW; x+=width)
-                    {
-                        GPE_Rect * newSubImage = new GPE_Rect;
-                        newSubImage->x = x;
-                        newSubImage->y = y;
-                        if(nW>=x+width)
-                        {
-                                newSubImage->w = width;
-                        }
-                        else
-                        {
-                            newSubImage->w = x+width-nW;
-                        }
-                        newSubImage->h = heightDecided;
-                        newSprite->spriteImages.push_back(*newSubImage);
-                    }
-                }
-                //big ole duh!
-                std::stringstream outString;
-                outString << "Successfully loaded Sprite from file location: (" << spriteFileName << ")";
-                rSprites.push_back(newSprite);
-                return newSprite;
-            }
-            else
-            {
-                std::stringstream outString;
-                outString << "Unable to load Sprite from file location: (" << spriteFileName << ") due to invalid dimensions given";
-                record_error( outString.str());
-                return NULL;
-            }
-        }
-        else
-        {
-            std::stringstream outString;
-            outString << "Unable to load Sprite from file location: (" << spriteFileName << ")Read in as NULL";
-            record_error( outString.str());
-            return NULL;
-        }
+        newSprite = new GPE_Animation(spriteFileName,spriteFileName, transparent);
+        return newSprite;
     }
     else
     {
         std::stringstream outString;
         outString << "Unable to load Sprite from file location: (" << spriteFileName << " due to negative dimensions given)";
-        record_error( outString.str());
+        GPE_Report( outString.str());
         return NULL;
     }
 }
 
-GPE_Animation* ResourceController::sprite_addsheet_ext(std::string spriteFileName, bool transparent, unsigned short imgnumb, unsigned short imgPerRow, unsigned short width, unsigned short height, unsigned short cellOffX, unsigned short cellOffY, unsigned short pixelOffX, unsigned short pixOffY, unsigned short hSep, unsigned short vSep)
+GPE_Animation* GPE_DataManager::sprite_addsheet_ext(std::string spriteFileName, bool transparent, unsigned short imgnumb, unsigned short imgPerRow, unsigned short width, unsigned short height, unsigned short cellOffX, unsigned short cellOffY, unsigned short pixelOffX, unsigned short pixOffY, unsigned short hSep, unsigned short vSep)
 {
     GPE_Animation * newSprite = get_sprite(spriteFileName);
     if(newSprite!=NULL)
         return newSprite;
     if(( height!=0)&&(width!=0) )
     {
-        GPE_Texture * newSurface = new GPE_Texture();
-        newSurface->load_new_texture( spriteFileName, -1,transparent );
-        if(newSurface!=NULL)
-        {
-            int nW = newSurface->get_width();
-            int nH =  newSurface->get_height();
-            if( (nH >= height )&&(nW  >=width) )
-            {
-                newSprite = new GPE_Animation();
-                newSprite->width = width;
-                newSprite->height = height;
-                newSprite->boundingBox = new GPE_Rect();
-                newSprite->boundingBox->x=0;
-                newSprite->boundingBox->y=0;
-                newSprite->boundingBox->w=width;
-                newSprite->boundingBox->h=height;
-                newSprite->colBox = new GPE_Rect;
-                newSprite->colBox->x=0;
-                newSprite->colBox->y=0;
-                newSprite->colBox->w=width;
-                newSprite->colBox->h=height;
-                newSprite->fileName=spriteFileName; //the name along with path
-                newSprite->name=getShortFileName(spriteFileName); //gets rid of path
-                newSprite->animationTexture= newSurface;
-               //newSprite->spriteColor = c_white;
-               //newSprite->spritePhase = 0;
-
-                newSprite->framesForSprite = (nH / height)*(nW / width);
-                //newSprite->spriteImagesLeft[newSprite->framesForSprite];
-                //newSprite->spriteImagesNight[newSprite->framesForSprite];
-                //newSprite->spriteImagesNightLeft[newSprite->framesForSprite];
-                //Go through rows
-                int heightDecided=0;
-                for( int y = 0; y < nH; y+=height)
-                {
-                    if(nH>=y+height)
-                    {
-                        heightDecided = height;
-                    }
-                    else
-                    {
-                        heightDecided = y+height-nH;
-                    }
-                    //Go through columns
-                    for( int x = 0; x < nW; x+=width)
-                    {
-                        GPE_Rect * newSubImage = new GPE_Rect;
-                        newSubImage->x = x;
-                        newSubImage->y = y;
-                        if(nW>=x+width)
-                        {
-                                newSubImage->w = width;
-                        }
-                        else
-                        {
-                            newSubImage->w = x+width-nW;
-                        }
-                        newSubImage->h = heightDecided;
-                        newSprite->spriteImages.push_back(*newSubImage);
-                    }
-                }
-                //big ole duh!
-                std::stringstream outString;
-                outString << "Successfully loaded Sprite from file location: (" << spriteFileName << ")";
-                record_error( outString.str());
-                rSprites.push_back(newSprite);
-                return newSprite;
-            }
-            else
-            {
-                std::stringstream outString;
-                outString << "Unable to load Sprite from file location: (" << spriteFileName << ") due to invalid dimensions given";
-                record_error( outString.str());
-                return NULL;
-            }
-        }
-        else
-        {
-            std::stringstream outString;
-            outString << "Unable to load Sprite from file location: (" << spriteFileName << ")Read in as NULL";
-            record_error( outString.str());
-            return NULL;
-        }
+        newSprite = new GPE_Animation(spriteFileName, spriteFileName, transparent);
+        return newSprite;
     }
     else
     {
         std::stringstream outString;
         outString << "Unable to load Sprite from file location: (" << spriteFileName << " due to negative dimensions given)";
-        record_error( outString.str());
+        GPE_Report( outString.str());
         return NULL;
     }
 }
 
-GPE_Texture* ResourceController::texture_add(std::string textureFileName)
+GPE_Texture* GPE_DataManager::texture_add(std::string textureFileName)
 {
     GPE_Texture * newTexture = get_texture(textureFileName);
     if( newTexture!=NULL )
@@ -714,7 +344,7 @@ GPE_Texture* ResourceController::texture_add(std::string textureFileName)
     }
     else if( file_exists(textureFileName) )
     {
-        //record_error("Loading "+textureFileName+" texture image.");
+        //GPE_Report("Loading "+textureFileName+" texture image.");
         //loads in the sprite's texture
         newTexture = new GPE_Texture();
         if( newTexture!=NULL)
@@ -722,6 +352,7 @@ GPE_Texture* ResourceController::texture_add(std::string textureFileName)
             newTexture->load_new_texture( textureFileName, -1,true );
             if(newTexture->get_sdl_texture()!=NULL)
             {
+                GPE_Report( "Texture_Add "+get_local_from_global_file( textureFileName )+ "["+int_to_string( (int)rTextures.size() )+"]");
                 rTextures.push_back(newTexture);
                 return newTexture;
             }
@@ -735,65 +366,55 @@ GPE_Texture* ResourceController::texture_add(std::string textureFileName)
     return NULL;
 }
 
-void ResourceController::edit_collision_box(GPE_Animation *spriteIn, int cx, int cy, int cw, int ch)
-{
-    if(spriteIn!=NULL)
-    {
-        spriteIn->colBox->x=cx;
-        spriteIn->colBox->y=cy;
-        spriteIn->colBox->w=cw;
-        spriteIn->colBox->h=ch;
-    }
-}
 
-GPE_Animation * ResourceController::get_sprite(int idIn)
+GPE_Animation * GPE_DataManager::get_sprite(int idIn)
 {
-    if( rSprites.empty() )
+    if( rAnimations.empty() )
         return NULL;
-    if( (int)rSprites.size()<idIn)
+    if( (int)rAnimations.size()<idIn)
     {
-        if (rSprites.at(idIn) != NULL)
+        if (rAnimations.at(idIn) != NULL)
         {
-            if(rSprites.at(idIn)->spriteId == idIn)
+            if(rAnimations.at(idIn)->animId == idIn)
             {
-                return rSprites.at(idIn);
+                return rAnimations.at(idIn);
             }
         }
     }
-    for(int i=0;(int)i< (int)rSprites.size();i++)
+    for(int i=0; (int)i< (int)rAnimations.size(); i++)
     {
-        if (rSprites[i] != NULL)
+        if (rAnimations[i] != NULL)
         {
-            if(rSprites[i]->spriteId == idIn)
+            if(rAnimations[i]->animId == idIn)
             {
-                return rSprites[i];
+                return rAnimations[i];
             }
         }
     }
     return NULL;
 }
 
-GPE_Animation* ResourceController::get_sprite(std::string nameIn)
+GPE_Animation* GPE_DataManager::get_sprite(std::string nameIn)
 {
-    if( rSprites.empty() )
+    if( rAnimations.empty() )
         return NULL;
-    for(int i=0;i< (int)rSprites.size();i++)
+    for(int i=0; i< (int)rAnimations.size(); i++)
     {
-        if (rSprites[i] != NULL)
+        if (rAnimations[i] != NULL)
         {
-            if(rSprites[i]->name==nameIn || rSprites[i]->fileName==nameIn)
+            if(rAnimations[i]->get_name()==nameIn || rAnimations[i]->get_file_name()==nameIn)
             {
-                return rSprites[i];
+                return rAnimations[i];
             }
         }
     }
     return NULL;
 }
 
-GPE_Texture* ResourceController::get_texture(std::string textureFileName)
+GPE_Texture* GPE_DataManager::get_texture(std::string textureFileName)
 {
     GPE_Texture * tTexture = NULL;
-    for(int i=0;i< (int)rTextures.size();i++)
+    for(int i=0; i< (int)rTextures.size(); i++)
     {
         tTexture = rTextures[i];
         if ( tTexture!= NULL)
@@ -807,32 +428,32 @@ GPE_Texture* ResourceController::get_texture(std::string textureFileName)
     return NULL;
 }
 
-int ResourceController::get_sound(int idIn)
+GPE_Audio * GPE_DataManager::get_audio(int audioId)
 {
     /*
-    if( rSounds.empty() )
-        return -1;
-    if( rSounds.size()<idIn  && idIn>=0)
+    if( rAudio.empty() )
+        return NULL;
+    if( rAudio.size()<audioId  && audioId>=0)
     {
-        if (rSounds.at(idIn) != NULL)
+        if (rAudio.at(audioId) != NULL)
         {
-            return idIn;
+            return audioId;
         }
     }
-    for(int i=0;i<rSounds.size();i++)
+    for(int i=0;i<rAudio.size();i++)
     {
-        if (rSounds[i] != NULL)
+        if (rAudio[i] != NULL)
         {
-            if(rSounds[i]->soundId == idIn)
+            if(rAudio[i]->get_id() == audioId)
             {
                 return i;
             }
         }
     }*/
-    return -1;
+    return NULL;
 }
 
-int  ResourceController::get_sound(std::string nameIn)
+GPE_Audio * GPE_DataManager::get_audio(std::string nameIn)
 {
     /*
     if( rSounds.empty() )
@@ -847,93 +468,12 @@ int  ResourceController::get_sound(std::string nameIn)
             }
         }
     }*/
-    return -1;
+    return NULL;
 }
 
-
-int ResourceController::get_music(int idIn)
+GPE_Audio * GPE_DataManager::add_audio(std::string soundFileName, int soundTypeIn)
 {
-    /*
-    if( rMusic.empty() )
-        return -1;
-    if( rMusic.size()>idIn && idIn>=0)
-    {
-        if (rMusic.at(idIn) != NULL)
-        {
-            if(rMusic.at(idIn)->musicId == idIn)
-            {
-                return idIn;
-            }
-        }
-    }
-    else
-    {
-        for(int i=0;i<rMusic.size();i++)
-        {
-            if (rMusic[i] != NULL)
-            {
-                if(rMusic[i]->musicId == idIn)
-                {
-                    return i;
-                }
-            }
-        }
-    }
-    */
-    return -1;
-}
-
-int ResourceController::get_music(std::string nameIn)
-{
-    /*
-    if( rMusic.empty() )
-        return -1;
-    for(int i=0;i<rMusic.size();i++)
-    {
-        if (rMusic[i] != NULL)
-        {
-            if(rMusic[i]->get_name()==nameIn || rMusic[i]->resourceFileName==nameIn)
-            {
-                return i;
-            }
-        }
-    }
-    */
-    return -1;
-}
-
-int ResourceController::add_music(std::string musicFileName)
-{
-    int returnVal = -1;
-    /*
-    returnVal = get_music(musicFileName);
-    if(returnVal>=0)
-    {
-        return returnVal;
-    }
-    else
-    {
-        int prevMusicSize = (int)rMusic.size();
-        Mix_Music* newMusic = Mix_LoadMUS(musicFileName.c_str() );
-        if(newMusic!=NULL)
-        {
-            audioResource*  nMusic = new audioResource();
-            nMusic->musicVal = newMusic;
-            nMusic->resourceFileName = musicFileName;
-            nMusic->get_name() = getShortFileName(musicFileName);
-            nMusic->musicId = prevMusicSize;
-            rMusic.push_back(nMusic);
-            //if(prevMusicSize==(int)rMusic.size() )
-            return nMusic->musicId;
-        }
-    }
-    */
-    return returnVal;
-}
-
-int ResourceController::add_sound(std::string soundFileName, int soundTypeIn)
-{
-   int returnVal = get_sound(soundFileName);
+    GPE_Audio * returnVal = get_audio(soundFileName);
     /*
     if(returnVal>0)
     {
@@ -961,7 +501,7 @@ int ResourceController::add_sound(std::string soundFileName, int soundTypeIn)
     return returnVal;
 }
 
-void ResourceController::play_music(int musicId, int loops)
+void GPE_DataManager::play_audio(int audioId, int loops)
 {
     /*
     int fMusic = get_music(musicId);
@@ -980,41 +520,117 @@ void ResourceController::play_music(int musicId, int loops)
     */
 }
 
-void ResourceController::play_sound(int soundId, int soundChannel,int loops)
+void GPE_DataManager::remove_animation( GPE_Animation * anim )
 {
-    /*
-    int fSound = get_sound(soundId);
-    if(fSound>=0)
+    if( anim!=NULL && !rAnimations.empty() )
     {
-
+        GPE_Animation * tAnim;
+        for( int i= (int)rAnimations.size()-1; i>=0; i-- )
+        {
+            tAnim = rAnimations[i];
+            if ( tAnim!= NULL)
+            {
+                if( tAnim->get_name()==anim->get_name() || tAnim->get_file_name()==anim->get_file_name() )
+                {
+                    delete tAnim;
+                    tAnim = NULL;
+                    rAnimations.erase( rAnimations.begin()+i );
+                    return;
+                }
+            }
+        }
     }
-    */
+}
+
+void GPE_DataManager::remove_texture( GPE_Texture * tex )
+{
+    if( tex!=NULL )
+    {
+        GPE_Texture * tTex;
+        for( int i= (int)rTextures.size()-1; i>=0; i-- )
+        {
+            tTex = rTextures[i];
+            if ( tTex!= NULL)
+            {
+                if( tTex->get_name()==tex->get_name() || tTex->get_filename()==tex->get_filename() )
+                {
+                    delete tTex;
+                    tTex = NULL;
+                    rTextures.erase( rTextures.begin()+i );
+                }
+            }
+        }
+    }
 }
 
 
-
-bool ResourceController::load_files()
+bool GPE_DataManager::load_files()
 {
-    define_colors();
-   // get the loaded font's face fixed status
-    //GPE_Font *font;
-
     //If everything loaded fine
     return true;
 }
 
-void ResourceController::clean_up()
+void GPE_DataManager::clean_up()
 {
+    int it;
+    GPE_Animation * cAnimation = NULL;
     //loads through all of the sprites and deletes them
-    for(int i=0;i<(int)rSprites.size();i++)
+    for(int it=0; it<(int)rAnimations.size(); it++)
     {
-        if(rSprites[i]!=NULL)
+        cAnimation = rAnimations[it];
+        if( cAnimation!=NULL)
         {
-            rSprites[i]->clean_up();
-            //delete rSprites[i];
+            delete cAnimation;
+            cAnimation = NULL;
         }
     }
-    rSprites.clear();
-    //Quit SDL
-    SDL_Quit();
+    rAnimations.clear();
+
+    if( (int)rTextures.size() >0 )
+    {
+        GPE_Texture * tTexure = NULL;
+        for(it  = (int) rTextures.size()-1 ; it >=0; it-- )
+        {
+            tTexure = rTextures.at(it);
+            if( tTexure!=NULL)
+            {
+                //GPE_Report( "Deleting Texture["+int_to_string( it )+"]" );
+                delete tTexure;
+                tTexure = NULL;
+            }
+        }
+        rTextures.clear();
+    }
+
+    if( (int)rTilesheets.size() >0 )
+    {
+        GPE_Tilesheet * fTlesheet = NULL;
+        for(it  = (int) rTilesheets.size()-1 ; it >=0; it-- )
+        {
+            fTlesheet = rTilesheets.at(it);
+            if( fTlesheet!=NULL)
+            {
+                //GPE_Report( "Deleting Tilesheet["+int_to_string( it )+"]" );
+                delete fTlesheet;
+                fTlesheet = NULL;
+            }
+        }
+        rTilesheets.clear();
+    }
+
+    if( (int)rAudio.size() >0 )
+    {
+        GPE_Audio * fAudio = NULL;
+        for(it  = (int) rAudio.size()-1 ; it >=0; it-- )
+        {
+            fAudio = rAudio.at(it);
+            if( fAudio!=NULL)
+            {
+                //GPE_Report( "Deleting Audio["+int_to_string( it )+"]" );
+                delete fAudio;
+                fAudio = NULL;
+            }
+        }
+        rAudio.clear();
+    }
 }

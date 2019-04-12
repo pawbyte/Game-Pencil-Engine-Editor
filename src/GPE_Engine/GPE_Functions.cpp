@@ -3,10 +3,10 @@ functions.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2018 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2018 PawByte.
-Copyright (c) 2014-2018 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2019 PawByte LLC.
+Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -33,7 +33,6 @@ SOFTWARE.
 
 #include "GPE_Functions.h"
 #include "GPE_Globals.h"
-#include "GPE_Texture.h"
 #include "GPE_Collisions.h"
 #include "GPE_Constants.h"
 #include <iostream>
@@ -52,6 +51,17 @@ bool compare_doubles(double a, double b)
 {
     return fabs(a - b) < 0.00001;
 }
+
+double degCos( double dAngle  )
+{
+    return cos( dAngle *radiansMultiple );
+}
+
+double degSin( double dAngle  )
+{
+    return sin(dAngle *radiansMultiple);
+}
+
 
 double bound_number(double numbIn, double xMin,double xMax)
 {
@@ -76,7 +86,7 @@ std::string get_file_ext(std::string fileLocationIn)
             return fileLocationIn.substr( dotPos+ 1);
         }
     }
-    return "null";
+    return "NULL";
 }
 
 std::string get_file_ext_last_dot(std::string fileLocationIn)
@@ -89,7 +99,7 @@ std::string get_file_ext_last_dot(std::string fileLocationIn)
             return fileLocationIn.substr( dotPos+ 1);
         }
     }
-    return "null";
+    return "NULL";
 }
 
 bool file_is_audio(std::string fileLocationIn)
@@ -147,7 +157,7 @@ std::string get_file_noext(std::string fileLocationIn)
             return fileLocationIn;
         }
     }
-    return "null";
+    return "NULL";
 }
 
 double point_direction(double x1,double y1,double x2,double y2)
@@ -168,7 +178,7 @@ double point_distance(double x1, double y1, double x2, double y2)
     return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
 
-int random(int maxIn)
+int random_int(int maxIn)
 {
     return ( rand()  % (maxIn + 1));
 }
@@ -176,6 +186,21 @@ int random(int maxIn)
 int random(int low,int high)
 {
     return(rand()  % (high-low + 1) + low);
+}
+
+double random_double(double low,double high)
+{
+    double temp;
+
+    //Flips values if wrong order given
+    if (low > high)
+    {
+        temp = low;
+        low = high;
+        high = temp;
+    }
+
+    return( rand() / ( (double)(RAND_MAX) + 1.0 ) ) * (high - low) + low;
 }
 
 int sign(double valIn)
@@ -198,23 +223,23 @@ int sign(double valIn)
 int GPE_Gain_OS()
 {
     int returnOS = GPE_IDE_WINDOWS;
-    #ifdef _WIN32
-        returnOS = GPE_IDE_WINDOWS;
-    #elif __APPLE__
-        returnOS = GPE_IDE_MAC;
-    #else
-        returnOS = GPE_IDE_LINUX;
-    #endif
+#ifdef _WIN32
+    returnOS = GPE_IDE_WINDOWS;
+#elif __APPLE__
+    returnOS = GPE_IDE_MAC;
+#else
+    returnOS = GPE_IDE_LINUX;
+#endif
 
     return returnOS;
 }
 //File Functions
 void appendToFile(std::string fileName, std::string stringIn,std::string stringIn2,std::string stringIn3,std::string stringIn4, std::string stringIn5, std::string stringIn6, std::string stringIn7, std::string stringIn8, std::string stringIn9)
 {
-      std::ofstream filestr(fileName.c_str(), std::ios::out | std::ios::app);
-      filestr << "ERROR: "<< stringIn << stringIn2 << stringIn3 << stringIn4 << stringIn5 << stringIn6 << stringIn7 << stringIn8 << stringIn9;
-      filestr << " \n";
-      filestr.close();
+    std::ofstream filestr(fileName.c_str(), std::ios::out | std::ios::app);
+    filestr << "ERROR: "<< stringIn << stringIn2 << stringIn3 << stringIn4 << stringIn5 << stringIn6 << stringIn7 << stringIn8 << stringIn9;
+    filestr << " \n";
+    filestr.close();
 }
 
 
@@ -229,26 +254,31 @@ void update_rect(GPE_Rect * rectIn, int nx, int ny, int nw, int nh)
     }
 }
 
-bool copy_file(std::string sourceFile, std::string desinationFile)
+bool copy_file(std::string sourceFile, std::string desinationFile , bool overwriteExisting)
 {
     if( sourceFile!=desinationFile)
     {
         if(file_exists(sourceFile) )
         {
-            #ifdef _WIN32
-                CopyFile(sourceFile.c_str(), desinationFile.c_str(), FALSE );
-            #else
+            if( !overwriteExisting && file_exists( desinationFile ) )
+            {
+                return false;
+            }
+#ifdef _WIN32
+
+            CopyFile(sourceFile.c_str(), desinationFile.c_str(), FALSE );
+#else
             std::ifstream srce( sourceFile.c_str(), std::ios::binary ) ;
             std::ofstream dest( desinationFile.c_str(), std::ios::binary ) ;
             dest << srce.rdbuf() ;
-            #endif
+#endif
             return true;
         }
     }
     return false;
 }
 
-int create_directory( std::string newPathToCreate)
+int create_directory( std::string newPathToCreate )
 {
     if( (int)newPathToCreate.size() > 2)
     {
@@ -256,24 +286,27 @@ int create_directory( std::string newPathToCreate)
         {
             return 0;
         }
-        #ifdef _WIN32
-            std::string winNewDir = "mkdir \"" + newPathToCreate + "\"";
-            if (system(winNewDir.c_str()) == 0)
-            {
-                return true;
-            }
-            else
-            {
-                record_error("Unable to save directory named: "+newPathToCreate+".");
-            }
-        #else
-            int foundError = -1;
-            foundError = mkdir(newPathToCreate.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-            if( foundError==0)
-            {
-                return true;
-            }
-        #endif
+#ifdef _WIN32
+        if (CreateDirectory(newPathToCreate.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError())
+        {
+            return true;
+        }
+        else
+        {
+            GPE_Report("Unable to create directory named: "+newPathToCreate+".");
+        }
+#else
+        int foundError = -1;
+        foundError = mkdir(newPathToCreate.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+        if( foundError==0)
+        {
+            return true;
+        }
+        else
+        {
+            GPE_Report("Unable to create directory named: "+newPathToCreate+".");
+        }
+#endif
     }
     return -1;
 }
@@ -413,336 +446,4 @@ std::string RGBtoHEX(int r, int g, int b)
     char buf[256];
     sprintf(buf, "%.2X%.2X%.2X", r, g, b);
     return std::string(buf);
-}
-
-Uint32 get_pixel32( SDL_Surface *surface, int x, int y )
-{
-    if( surface!=NULL)
-    {
-        if( x>=0 && x < surface->w && y>=0 && y < surface->h)
-        {
-            Uint32 *ptr = (Uint32*)surface->pixels;
-            //record_error( double_to_string(surface->pitch) );
-            int lineoffset = y * (surface->pitch/4 );
-            return ptr[lineoffset + x ];
-        }
-    }
-    return 0;
-}
-
-void put_pixel32( SDL_Surface *surface, int x, int y, Uint32 pixel )
-{
-    if( surface!=NULL)
-    {
-        if( x < surface->w && y < surface->h)
-        {
-            //Convert the pixels to 32 bit
-            Uint32 *pixels = (Uint32 *)surface->pixels;
-
-            //Set the pixel
-            pixels[ ( y * surface->w ) + x ] = pixel;
-        }
-    }
-}
-
-SDL_Surface *load_surface_image( std::string filename )
-{
-    //The image that's loaded
-    SDL_Surface* loadedImage = NULL;
-
-    //Load the image
-    loadedImage = IMG_Load( filename.c_str() );
-
-    //If the image loaded
-    if( loadedImage != NULL )
-    {
-        //Create an optimized surface
-        //loadedImage = SDL_DisplayFormatAlpha( loadedImage );
-
-        //If the surface was optimized
-        //Color key surface
-        //SDL_SetColorKey( loadedImage, SDL_TRUE, SDL_MapRGBA( loadedImage->format, 255, 0, 255,255 ) );
-
-        //Return the optimized surface
-        SDL_Surface* formatedImage = SDL_ConvertSurfaceFormat(loadedImage,SDL_PIXELFORMAT_RGBA8888,0);
-        if( formatedImage!=NULL)
-        {
-            SDL_FreeSurface(loadedImage);
-            return formatedImage;
-        }
-        return loadedImage;
-    }
-    return NULL;
-}
-
-SDL_Surface * surface_grayscale( SDL_Surface *surface)
-{
-    if( surface!=NULL)
-    {
-        //Pointer to the soon to be coloredSurface surface
-        SDL_Surface *tempSurface = NULL;
-        SDL_Surface *coloredSurface = NULL;
-        //If the image is color keyed
-        tempSurface = SDL_CreateRGBSurface( 0, surface->w, surface->h, surface->format->BitsPerPixel, surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask );
-        coloredSurface = SDL_ConvertSurfaceFormat(tempSurface,SDL_PIXELFORMAT_RGBA8888,0);
-        if( coloredSurface!=NULL)
-        {
-            SDL_FreeSurface(tempSurface);
-            //coloredSurface = SDL_CreateRGBSurface(0, width, height, 32,SDL_rmask, SDL_gmask, SDL_bmask, SDL_amask);
-            //If the surface must be locked
-            if( SDL_MUSTLOCK( surface ) )
-            {
-                //Lock the surface
-                SDL_LockSurface( surface );
-            }
-            Uint8 rr=0, bb=0, gg=0, aa =0;
-            //Go through columns
-            for( int x = 0; x < coloredSurface->w; x++)
-            {
-                //Go through rows
-                for( int y = 0;y < coloredSurface->h; y++)
-                {
-                    //Get pixel
-                    Uint32 pixel = get_pixel32( surface, x, y );
-                    SDL_GetRGBA(pixel,surface->format,&rr,&gg,&bb, &aa);
-                    //if the color is a shade of white/black
-                    Uint8 grayedColor=(rr+gg+bb)/3;
-                    pixel = SDL_MapRGBA(surface->format,grayedColor,grayedColor,grayedColor,aa);
-                    put_pixel32( coloredSurface, x, y, pixel );
-                }
-            }
-
-            //Unlock surface
-            if( SDL_MUSTLOCK( surface ) )
-            {
-                SDL_UnlockSurface( surface );
-            }
-
-            //Return coloredSurface surface
-            return coloredSurface;
-        }
-        else if( tempSurface!=NULL)
-        {
-            SDL_FreeSurface(tempSurface);
-            tempSurface = NULL;
-        }
-    }
-    return NULL;
-}
-
-SDL_Surface * surface_invert( SDL_Surface *surface)
-{
-    if( surface!=NULL)
-    {
-        //Pointer to the soon to be coloredSurface surface
-        SDL_Surface *tempSurface = NULL;
-        SDL_Surface *coloredSurface = NULL;
-
-        tempSurface = SDL_CreateRGBSurface( 0, surface->w, surface->h, surface->format->BitsPerPixel, surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask );
-        coloredSurface = SDL_ConvertSurfaceFormat(tempSurface,SDL_PIXELFORMAT_RGBA8888,0);
-        if( coloredSurface!=NULL)
-        {
-            SDL_FreeSurface(tempSurface);
-            //If the surface must be locked
-            if( SDL_MUSTLOCK( surface ) )
-            {
-                //Lock the surface
-                SDL_LockSurface( surface );
-            }
-            Uint8 rr=0, bb=0, gg=0, aa = 0;
-            //Go through columns
-            for( int x = 0; x < coloredSurface->w; x++)
-            {
-                //Go through rows
-                for( int y = 0;y < coloredSurface->h; y++)
-                {
-                    //Get pixel
-                    Uint32 pixel = get_pixel32( surface, x, y );
-                    SDL_GetRGBA(pixel,surface->format,&rr,&gg,&bb, &aa);
-                    pixel = SDL_MapRGBA(surface->format,255-rr,255-gg,255-bb,aa);
-                    put_pixel32( coloredSurface, x, y, pixel );
-                }
-            }
-
-            //Unlock surface
-            if( SDL_MUSTLOCK( surface ) )
-            {
-                SDL_UnlockSurface( surface );
-            }
-
-            //Return coloredSurface surface
-            return coloredSurface;
-        }
-        else if( tempSurface!=NULL)
-        {
-            SDL_FreeSurface(tempSurface);
-            tempSurface = NULL;
-        }
-    }
-    return NULL;
-}
-
-SDL_Surface * surface_recolor( SDL_Surface *surface, SDL_Color colorMerge, float amount )
-{
-    if( surface!=NULL)
-    {
-        //Pointer to the soon to be coloredSurface surface
-        SDL_Surface *tempSurface = NULL;
-        SDL_Surface *coloredSurface = NULL;
-
-        //If the image is color keyed
-        tempSurface = SDL_CreateRGBSurface( 0, surface->w, surface->h, surface->format->BitsPerPixel, surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask );
-        coloredSurface = SDL_ConvertSurfaceFormat(tempSurface,SDL_PIXELFORMAT_RGBA8888,0);
-        if( coloredSurface!=NULL)
-        {
-            SDL_FreeSurface(tempSurface);
-            //If the surface must be locked
-            if( SDL_MUSTLOCK( surface ) )
-            {
-                //Lock the surface
-                SDL_LockSurface( surface );
-            }
-            Uint8 rr=0, bb=0, gg=0, aa = 0;
-            //Go through columns
-            for( int x = 0; x < coloredSurface->w; x++)
-            {
-                //Go through rows
-                for( int y = 0;y < coloredSurface->h; y++)
-                {
-                    //Get pixel
-                    Uint32 pixel = get_pixel32( surface, x, y );
-                    SDL_GetRGBA(pixel,surface->format,&rr,&gg,&bb, &aa);
-
-                    rr=merge_channel(rr,colorMerge.r,amount);
-                    gg=merge_channel(gg,colorMerge.g,amount);
-                    bb=merge_channel(bb,colorMerge.b,amount);
-                    pixel = SDL_MapRGBA(surface->format,rr,gg,bb, aa);
-                    put_pixel32( coloredSurface, x, y, pixel );
-                }
-            }
-
-            //Unlock surface
-            if( SDL_MUSTLOCK( surface ) )
-            {
-                SDL_UnlockSurface( surface );
-            }
-
-            //Return coloredSurface surface
-            return coloredSurface;
-        }
-        else if( tempSurface!=NULL)
-        {
-            SDL_FreeSurface(tempSurface);
-            tempSurface = NULL;
-        }
-    }
-    return NULL;
-}
-
-SDL_Surface * surface_remove_color( SDL_Surface *surface, SDL_Color colorToRemove )
-{
-    record_error("Removing Color.... rgb("+int_to_string( colorToRemove.r)+","+int_to_string( colorToRemove.g)+","+int_to_string( colorToRemove.b)+").");
-    if( surface!=NULL)
-    {
-        //Pointer to the soon to be coloredSurface surface
-        SDL_Surface *coloredSurface = NULL;
-
-        coloredSurface = SDL_ConvertSurfaceFormat(surface,SDL_PIXELFORMAT_RGBA8888,0);
-        if( coloredSurface!=NULL)
-        {
-            //If the surface must be locked
-            if( SDL_MUSTLOCK( coloredSurface ) )
-            {
-                //Lock the surface
-                SDL_LockSurface( coloredSurface );
-            }
-            Uint8 rr=0, bb=0, gg=0, aa = 0;
-            int y = 0;
-            Uint32 pixel;
-            //Go through columns
-            for( int x = 0; x < coloredSurface->w; x++)
-            {
-                //Go through rows
-                for(  y = 0;y < coloredSurface->h; y++)
-                {
-                    //Get pixel
-                    pixel = get_pixel32( coloredSurface, x, y );
-                    SDL_GetRGBA(pixel,coloredSurface->format,&rr,&gg,&bb, &aa);
-                    //if the color is shade of white/gray
-                    if(rr==colorToRemove.r&&gg==colorToRemove.g&&bb==colorToRemove.b)
-                    {
-                        pixel = SDL_MapRGBA(coloredSurface->format,255,0,255,0);
-                    }
-                    put_pixel32( coloredSurface, x, y, pixel );
-                }
-            }
-
-            //Unlock surface
-            if( SDL_MUSTLOCK( coloredSurface ) )
-            {
-                SDL_UnlockSurface( coloredSurface );
-            }
-
-            //Return coloredSurface surface
-            record_error("Returning colored surface");
-            return coloredSurface;
-        }
-    }
-    record_error("Returning Null surface");
-    return NULL;
-}
-
-SDL_Surface * surface_flip( SDL_Surface *surface, int flags )
-{
-    if( surface!=NULL)
-    {
-        //Pointer to the soon to be flipped surface
-        SDL_Surface *flipped = NULL;
-
-        flipped = SDL_ConvertSurfaceFormat(surface,SDL_PIXELFORMAT_RGBA8888,0);
-        if( flipped!=NULL)
-        {
-            //If the surface must be locked
-            if( SDL_MUSTLOCK( flipped ) )
-            {
-                //Lock the surface
-                SDL_LockSurface( flipped );
-            }
-
-            //Go through columns
-            for( int x = 0, rx = flipped->w - 1; x < flipped->w; x++, rx-- )
-            {
-                //Go through rows
-                for( int y = 0, ry = flipped->h - 1; y < flipped->h; y++, ry-- )
-                {
-                    //Get pixel
-                    Uint32 pixel = get_pixel32( surface, x, y );
-
-                    //Copy pixel
-                    if( ( flags & FLIP_VERTICAL ) && ( flags & FLIP_HORIZONTAL ) )
-                    {
-                        put_pixel32( flipped, rx, ry, pixel );
-                    }
-                    else if( flags & FLIP_HORIZONTAL )
-                    {
-                        put_pixel32( flipped, rx, y, pixel );
-                    }
-                    else if( flags & FLIP_VERTICAL )
-                    {
-                        put_pixel32( flipped, x, ry, pixel );
-                    }
-                }
-            }
-
-            //Unlock surface
-            if( SDL_MUSTLOCK( flipped ) )
-            {
-                SDL_UnlockSurface( flipped );
-            }
-
-            //Return flipped surface
-            return flipped;
-        }
-    }
-    return NULL;
 }
