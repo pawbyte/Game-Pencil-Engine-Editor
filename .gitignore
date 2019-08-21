@@ -1,2 +1,5 @@
+# build files
+build/
+
 **/*.o
 Game_Pencil_Engine_IDE

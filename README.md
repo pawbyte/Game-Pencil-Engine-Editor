@@ -17,6 +17,17 @@ There is also a [PayPal](http://gamepencil.pawbyte.com/donate/) one time donatio
 
 I appreciate your generousity and moving this project forward. 
 
+
+Building
+========
+Building requires the following programs:
+
+ - meson
+ - ninja
+
+To build run `meson build` then go into the build directory and run `ninja`
+
+
 Documentation
 =============
 If you would like to see our documentation to this project, go [here](http://docs.pawbyte.com/)
