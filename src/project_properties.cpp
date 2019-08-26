@@ -267,7 +267,7 @@ projectPropertiesResource::projectPropertiesResource(GPE_GeneralResourceContaine
     html5nativeBuildTypeOptions = new GPE_RadioButtonControllerBasic("Build Type", true);
 
     windowsNativeBuildTypeOptions = new GPE_RadioButtonControllerBasic("Build Type", true);
-    //windowsNativeBuildTypeOptions->add_menu_option("Use GPE Native-Build[Experimental]","gpe_native",Native_GamePencil,false);
+    windowsNativeBuildTypeOptions->add_menu_option("Use GPE Executable","gpe_native",Native_GamePencil,false);
     windowsNativeBuildTypeOptions->add_menu_option("Use Electron","gpe_electron",Native_Electron,false);
     //windowsNativeBuildTypeOptions->add_menu_option("C++ Project","gpe_cpp",Native_GamePencil_CPP,false);
     windowsNativeBuildTypeOptions->add_menu_option("Do not Export...","gpe_no_native",Native_None,true);

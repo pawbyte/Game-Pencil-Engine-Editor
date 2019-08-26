@@ -37,6 +37,7 @@ SOFTWARE.
 #include "gpe_editor_helppage.h"
 #include "gpe_cpp_compiler_settings.h"
 #include "gpe_gamecontroller_tester.h"
+#include "gpe_cpp_compiler.h"
 
 int lastResTypeRendered = -1;
 
@@ -2578,12 +2579,12 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
 
                                     if( projectSettingsObject->projectGameWebsiteField->has_content() )
                                     {
-                                        indexHTML5FILE << "     <p> <a ahref='" << projectSettingsObject->projectGameWebsiteField->get_string() << "'>For more information on game click here</a></p>\n";
+                                        indexHTML5FILE << "     <p> <a href='" << projectSettingsObject->projectGameWebsiteField->get_string() << "'>For more information on game click here</a></p>\n";
                                     }
 
                                     if( projectSettingsObject->projectGameEmailField->has_content() )
                                     {
-                                        indexHTML5FILE << "     <p> Email <a ahref='mailto:" << projectSettingsObject->projectGameEmailField->get_string() << "?Subject=Hello'>"<< projectSettingsObject->projectGameEmailField->get_string() << " for assistance</a></p>\n";
+                                        indexHTML5FILE << "     <p> Email <a href='mailto:" << projectSettingsObject->projectGameEmailField->get_string() << "?Subject='Hello'>"<< projectSettingsObject->projectGameEmailField->get_string() << " for assistance</a></p>\n";
                                     }
                                 }
                             }
@@ -3358,7 +3359,7 @@ bool GPE_ProjectFolder::export_project_windows(std::string projectBuildDirectory
         GPE_Main_Logs->clear_build_log();
         GPE_Main_Logs->log_build_line("-------------- Building: ["+projectName+"] ["+GPE_BUILD_NAMES[GPE_BUILD_WINDOWS]+" Export] (Compiler: Pawbitious Compiler)---------------");
 
-        if( nativeBuildType!=Native_None)
+        if( nativeBuildType==Native_Electron)
         {
             GPE_Main_Logs->log_build_line("-------------- Building: ["+projectName+"] ["+GPE_BUILD_NAMES[GPE_BUILD_WINDOWS]+" Export] (Compiler: Pawbitious Compiler)---------------");
             if( GPE_LOADER != NULL )
@@ -3394,6 +3395,18 @@ bool GPE_ProjectFolder::export_project_windows(std::string projectBuildDirectory
                     GPE_OpenProgram(pBuildDirectory+"/../../electron"+appAddonFileName+".exe");
                 }
                 */
+            }
+        }
+        else if (nativeBuildType==Native_GamePencil)
+        {
+            GPE_Main_Logs->log_build_line("-------------- Building: ["+projectName+"] ["+GPE_BUILD_NAMES[GPE_BUILD_WINDOWS]+" Export] (Compiler: Environment Compiler)---------------");
+            GPE_Main_Logs->log_build_line("---Alpha Feature---");
+            GPE_Main_Logs->log_build_line("Initializing CPP compiler...");
+
+
+            if( GPE_LOADER != NULL )
+            {
+                GPE_LOADER->update_messages( "Generating ["+projectName+"][Environment]", "Please wait...", "DO NOT CLOSE");
             }
         }
         else
