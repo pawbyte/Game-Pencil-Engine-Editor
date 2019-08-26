@@ -38,10 +38,12 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add directory="C:/Apps/SDL2-2.0.9/i686-w64-mingw32/include/SDL2" />
 			<Add directory="C:/Apps/SDL2-2.0.9/x86_64-w64-mingw32/include/SDL2" />
 		</Compiler>
 		<Linker>
-			<Add option="-lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf" />
+			<Add option="-lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lcomdlg32" />
+			<Add directory="C:/Apps/SDL2-2.0.9/i686-w64-mingw32/lib" />
 			<Add directory="C:/Apps/SDL2-2.0.9/x86_64-w64-mingw32/lib" />
 		</Linker>
 		<Unit filename="resource.rc">
@@ -187,6 +189,8 @@
 		<Unit filename="src/game_scene_resource.h" />
 		<Unit filename="src/gpe_basic_resource_page.cpp" />
 		<Unit filename="src/gpe_basic_resource_page.h" />
+		<Unit filename="src/gpe_cpp_compiler.cpp" />
+		<Unit filename="src/gpe_cpp_compiler.h" />
 		<Unit filename="src/gpe_cpp_compiler_settings.cpp" />
 		<Unit filename="src/gpe_cpp_compiler_settings.h" />
 		<Unit filename="src/gpe_dock_system.cpp" />

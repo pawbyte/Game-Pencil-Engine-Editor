@@ -17,3 +17,4 @@ ShowTipOfDayAtStart=1
 TextAreaViewLineCount=1
 TextAreaViewSynthaxHighlighting=1
 ColorTheme=default.gpf
+CompilerPath="C:\Program Files (x86)\CodeBlocks\MinGW\bin\mingw32-g++.exe"
