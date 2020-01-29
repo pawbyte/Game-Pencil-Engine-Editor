@@ -1,0 +1,173 @@
+Game Pencil Engine Changelog
+
+Version 1.2.0[RELEASE CANDIDATE] Changelog
+Sections are now alphabetized after "Engine Changes"
+#3 KEY changes made a multitude of other great changes...
+
+[Critical Changes]
+-Fixed Scene Editor Critical Bug for Layer Panels
+-Fixed Mouse X/Y bug caused by render phase in html5 runtime
+-Fixed camera positioning bug in html5 runtime caused by render phase
+-Split up "JS Compiler" settings from User Settings resource for potential enlargement and structure.
+
+[General Stabilization  and Optimizations made.]
+-Replaced support center popup with link to https://github.com/pawbyte/Game-Pencil-Engine/issues 
+-Corrected replace all bug of "adkb_dton" to "add_option"
+-CONVERTED ALL .h and .cpp files to utf-8 format.
+-Began adding basic translation support to gui elements( Not yet fully implemented )
+
+[Engine changes]
+	-Html5 Export
+		-Added copy_rect() function to GPE_Rect class
+		-Corrected Mouse X/Y bug that set camera X/Y coordinates to 0,0 every frame
+		-Corrected Camera X/Y bug
+		-GPE_VERSION_UPDATE_NUMBER updated to 4
+		-GPR_PATCHLEVEL updated to 4
+		-Only strict mode allowed
+		-Corrected rendableCameraCount increment typo.
+		-inits imageObj in GPE_GameSprite to IS_NULL;
+		-GPE_JSFile close_file function updated.
+		-Removed unreachable return in find_nearest_object function
+		-Commented out "find_newest_object" function implementation temporarily
+		-Removed unreachbable code in "get_camera_mouse_x" and "get_camera_mouse_y" functions
+		-Processed "split_screen" function parameters from 1-8
+		-Removed unneccessary "this.fontFileName[iRes] reference" variable from  GPE_FontResource load_font function.
+		-Removed menuIcon variable from  GPE_MainMenu.
+		-Removed duplicate "under_mouse" function for GPE_GameObject.
+		-Removed legacy "set_depth" function for GPE_GameObject.
+		-Fixed "get_path_original_size" function for GPE_GameObject.
+		-Fixed "get_path_size" function for GPE_GameObject.
+		-Removed typo of "33" nearby "get_direction" function.
+		-When debugging now has "[DEBUG MODE]" in title-bar of HTML file
+	-Wii U Export
+		-Unchanged
+
+[C++ Changes in GPE_Engine folder]
+	-Added GPE_Translator class( GPE_Translator.h and GPE_Translator.cpp )
+	-Added get_file_ext_last_dot for detection of files that have extra dots in them. ( GPE_Functions.h and GPE_Functions.cpp )
+	-Added GPE_Translator *  mainTranslator to GPE_Shared_Resources.cpp and GPE_Shared_Resources.h
+	-Added render_only_text() function to GPE_Engine.cpp and GPE_Engine.h
+	-Modified all text-render functions to auto-translate when called.
+	-Initiates mainTranslator in bool init() in main.cpp .
+	-Added constants related to game controller input in GPE_Input.h .
+	-Added Game Controller class in GPE_Input.h and added array of them to input manager.
+	-Added CURRENT_RENDERER global variable in GPE_Globals.h and .cpp.
+	-Added CURRENT_SCREEN_TEXTURE global variable in GPE_Globals.h and .cpp.
+	-Modified all render functions to be aware of CURRENT_RENDERER or the CURRENT_SCREEN_TEXTURE
+	-Modified all render functions to be aware of the current camera position
+	
+
+[C++ Changes in AOSGUI(name pending) folder]
+	-Added GPE_Translator class( GPE_Translator.h and GPE_Translator.cpp )
+	-Added get_file_ext_last_dot for detection of files that have extra dots in them. ( GPE_Functions.h and GPE_Functions.cpp )
+	-PGUI_PATCHLEVEL updated to 2;
+	-Replaced all render_new_text() with render_only_text() in text_editor.cpp ( Code/Custom text is not translated on the fly ).
+	-TO DO( Translate read-only input in text_editor.cpp )
+	
+[About Page Changes]
+	-Credits updated. Thanks Patreon backers!
+	
+[Audio Editor Changes]
+	-Unchanged
+
+[Bottom Log/Search Panel]
+	-Unchanged
+
+[Class Editor Changes]
+	-NEW RESOURCE TYPE
+	-Exports .js files
+	-Exports meta data files
+	-Exports into project as just a "code dump"( not complicated at the moment)
+	
+[Code Editor Changes]
+	-Unchanged
+
+[Compiler Tab / Section]
+	-Removed "useStrictMode" checkbox
+
+[Examples Editors]
+	-Hello World Tutorial added
+	-flappy_crow updated.
+	-platformer example updated.
+	-super_crazy_battle_pong example updated.
+	
+[External Editors]
+	-Unchanged
+
+[File Open/Save Menu]
+	-Unchanged
+
+[Font Editor Changes]
+	-Unchanged
+
+[Functon Editor Changes]
+	-Function code integrated into Search System.
+
+[General Editor Changes]
+	-Unchanged
+	
+[Help Page Changes]
+	-Tutorials URL updated.
+	
+[Input Field Changes]
+	-Unchanged
+
+[Object Editor Changes]
+	-Unchanged
+
+[Path Editor Changes]
+	-Unchanged
+
+["Pawbituous Compiler" upgrades]
+	-Now processes custom classes(In early Beta)
+	-Handles debug mode by using "gpepower_strict_v1_1_4_debug.js"
+	-Now safety, non-strict mode removed
+	
+[Project Browser Changes]
+	-Added CTRL+T Shortcut to open up Project Browser
+	-Allow Examples Projects to appear in both Recent and Examples sections.
+	-Fixed laggy redraw issue.
+
+[Project Folder Class Changes]
+	-Modified constructor to take in 2 new optional parameters( projectLanguageIn and createBlankScene)
+	-Added std::string projectLanguage to the class' private variables
+	-Added std::string get_project_language() to the class' public functions
+	-Added GPE_ResourceContainer * RESC_CLASES to public variables.
+
+[Project Properties/Settings Changes]
+	-Unchanged
+
+[Scene Editor Changes]
+	-Fixed Panel bug in which Layer specific elements were not being processed and rendered.
+	-Corrected redraw problem for secondary layer when RedrawEveryFrame is disabled.
+
+[Sprite Editor Changes]
+	-Image dimensions text moved to be above max-dimensions text
+	
+[Syntax Highlighter Changes]
+	-Added layerBeingChanged as 1st parameter for set_background function
+
+[Text/Code Editor Changes]
+	-Sped up arrow keys to remove un-natrual delay time when typing.
+	
+[Texture Editor Changes]
+	-Image dimensions text moved to be above max-dimensions text
+
+[Themes]
+	-Unchanged
+	
+[Tilesheet Editor Changes]
+	-Image dimensions text moved to be above max-dimensions text
+
+[User Settings Changes]
+	-JS compiler split into new resource type
+	-Frame Cap now shows FPS_RATIO into as label
+	-Split Advanced Components into new tab
+	-Also added Input Delay fields into Advanced Tab
+	-Corrected "External Editors" section with bugged-padding issue
+	
+[Video Editor Changes]
+	-Unchanged
+	
+
+	

@@ -1,0 +1,93 @@
+Game Pencil Engine Changelog
+
+Version 1.3.1[RELEASE CANDIDATE] Changelog
+===========  Major Scene Editor updates & more!  ===========
+The good ole March 2019 polish!
+[Critical Changes]
+-Created a 5 X 2 dock system with main editor/logs being on the middle column.
+
+[General Stabilization  and Optimizations made.]
+-No Changes
+
+[C++ Changes in GPE_Engine folder / RUNTIME ]
+	-
+	[Non-Native Engine changes]
+	-Html5 Export
+		-No Changes
+	-Desktop Export
+		-No Changes
+	-Wii U Export
+		-No Changes
+
+[C++ Changes in AOSGUI(name pending) folder]
+	-Created new variable GPE_CONTEXT_ROW_HEIGHT
+	
+	-GPE_GeneralGuiElement changes
+		-
+	-GPE_GuiElementList changes
+		-
+	-GPE_GuiElementRow changes
+		-
+	-GPE_Slider_XAxis & GPE_Slider_YAxis changes
+		-
+	-GPE_Label_Paragraph
+		-Added std::string get_paragraph() 
+	-Updated GPE_ToolLabelButton changes
+		-
+
+	-GPE_Input_Field_Color changes
+		-
+
+	-GPE_TabBar changes
+		-
+	-GPE_ToolPushButton changes
+		-
+	-GPE_VerticalCardButton changes.
+		-
+	-GPE_TextAreaInputBasic changes
+		-
+	-GPE_WrappedTextArea changes.
+		-
+
+[Animation Editor Changes]
+	-
+		
+[About Page Changes]
+	-
+
+
+[Compiler Tab / Section]
+	-No Changes
+
+[Examples Editors]
+	-
+
+[Help Page Changes]
+	-
+
+[New Project Launcher Changes]
+	-
+	
+[Object Editor Changes]
+	-	
+[Other Editor Changes]
+	-
+[Project Browser Changes]
+	-
+[Project Properties/Settings Changes]
+	-
+	
+[Scene Editor Changes]
+	-
+	
+[Text/Code Editor Changes]
+	-
+	
+[Themes]
+	-
+[Texture Editor Changes]
+	-
+[Tilesheet Editor Changes]
+	-
+[User Settings Changes]
+	-

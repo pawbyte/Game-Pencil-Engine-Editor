@@ -1,0 +1,197 @@
+Game Pencil Engine Changelog
+
+Version 1.3.0[RELEASE CANDIDATE] Changelog
+===========  Major Scene Editor updates & more!  ===========
+The good ole March polish!
+
+[C++ Changes in GPE_Engine folder / RUNTIME ]
+	-Delta Time function added to gpe.
+	-FPS calculation and capping fixed.
+	-Moved the following functions from gpe_editor.h & gpe_editor.cpp to GPE_Engine/gpe_file_system.h & GPE_Engine/gpe_file_system
+		-clean_folder()
+		-copy_folder()
+		-get_user_settings_folder()
+			-Optimized through seek_user_settings_folder() being called at GPE_Init();
+		-get_user_temp_folder()
+		-get_user_screenshot_folder()
+	-Created seek_user_settings_folder()
+	-Renamed record_error() function to GPE_Report()
+		-Although name added to "GPE_" prefix space, GPE_Init() is not required to call this function.
+	-GPE_Init given std::string publisher, std::string title as parameters defauled to empty.
+		-These two parameters effect the GPE_Report() and any get_user_settings_folder() mainly.
+	-Temporarily disabled SDL_INIT_GAMECONTROLLER and SDL_INIT_HAPTIC until patch addresses windows slow down.
+	-Added new functions getFileSize() and getFileSizeString().
+	-Added (bool useLinearScaling = false ) to load_new_texture function for GPE_Texture( GPE_Texture.h &  GPE_Texture.cpp)
+	-Added mouse scroll inversion to GPE_InputManager_GameController class (GPE_Input.cpp & GPE_Input.h )
+	-Added color parameter to gpe->render_fps function ( GPE_Engine.cpp & GPE_Engine.h) 
+	-Replaced system call to create directory with WinApi function CreateDirectory in create_directory function ( GPE_Functions.cpp )
+		-console window no longer pops up and maintains 1 window( Tested on Windows 10 )
+		-Linux/OSX still uses mkdir
+	-OTF font support discovered thru SDL_TTF.
+		
+	[Non-Native Engine changes]
+	-Html5 Export
+		-Updated version number to match IDE.
+		-Created new rectangle to contain only ints where usage of floats/doubles may cause issue.
+		-Corrected bug with tile layer that causes weird spacing with camera.
+		-Copyright year updated.
+		-Deprecated "render_self" and "render_self_auto" for GPE_GameMapTile.
+		-Created "render_tile" and "render_tile_auto" for GPE_GameMapTile.
+	-Desktop Export
+		-No Changes
+	-Wii U Export
+		-No Changes
+
+[C++ Changes in AOSGUI(name pending) folder]
+	-Subdivided giant file into many smaller files.
+	-GPE_GeneralGuiElement changes
+		-Added isPressed variable to GPE_GeneralGuiElement class and is calculated in process_self() ( paw_gui_base.h & paw_gui_base.cpp)
+		-Added indentationLevel variable to GPE_GeneralGuiElement class and is calculated in process_self() ( paw_gui_base.h & paw_gui_base.cpp)
+		-protected variable isFullWidth added.
+		-public variable needsNewLine added.
+		-Added bool is_full_width(), void set_full_width( bool makeFullWidth ) and bool requires_newline() functions.
+	-GPE_GuiElementList changes
+		-Added add_gui_auto() function
+		-Properly goes to new line for elements who requires_newline().
+	-GPE_GuiElementRow changes
+		-Added int calculatedRowWidth &  calculatedRowHeight variables
+		-Added calculate_width() &  get_sub_width() functions.
+		-Properly resizes full-width elements.
+		-Properly goes to new line for elements who requires_newline().
+		-Corrected alignments
+	-GPE_Slider_XAxis & GPE_Slider_YAxis changes
+		-Triangles removed from render_self()
+		-elementBox removed and now calculated via parent class.
+	-Updated GPE_ToolLabelButton to render centered and removed buttonSize from last parameter ( ambitious_gui_library.h & ambitious_gui_library.cpp)
+		-Sizing also defaulted to 32px.
+	-Updated GPE_ToolPushButton to render centered and removed buttonSize from last parameter ( ambitious_gui_library.h & ambitious_gui_library.cpp)
+		-Sizing also defaulted to 48px.
+	-GPE_Input_Field_Color updated to look prettier by rendering 2 sections.
+		-prevelementBoxW and prevelementBoxH removed from class.
+		-set_width() and set_height() are now inherited from parent[ GPE_GeneralGuiElement ] properly.
+	-Changed "GPE_ToolPushButtonMultiLine" class to "GPE_VerticalCardButton" class.
+		-Removed int buttonX, int buttonY from start of parameters.	
+	-GPE_SelectBoxBasic changes
+		-If not in use it releases arrow control and scroll control back to higher panel.
+		-If ESC is pressed it exits control.
+	-GPE_TabBar changes
+		-Added contains_tab() and toggle_tab() function
+		-Added ability to close tabs via X-button using bool canCloseTabs
+	-GPE_ToolPushButton & GPE_VerticalCardButton changes
+		-Resized
+	-GPE_WrappedTextArea is now a child class of GPE_TextAreaInputBasic.
+		-Now responsive to the container it is held in.
+		-Now works fully as planned.
+
+[Animation Editor Changes]
+	-Mode 0 Changes
+		-No Changes
+	-Mode 1 Changes
+		-Fixed scrolling issue where one could scroll out of bounds before being auto-corrected in next frame.
+		-Removed vertical and horizontal lines displayed in the right panel.
+	-Other changes
+		-Added TabBar to top of right pane to switch between modes.
+		-Non-Linear scaling enabled.
+		
+[About Page Changes]
+	-Now defaults to full screen width.
+	-Credits updated. Thanks Patreon backers and Itch.io donors!
+	-3rd Party License Tab added.
+	-Information tab removed as its already in Help Page.
+	-Destructor fixed.
+
+
+[Compiler Tab / Section]
+	-Defaults to full screen width
+	-Last height now saved in settings
+
+[Examples Editors]
+	-Platformer example updated to correct player sprite collision data back to a rectangle instead of a circle.
+
+[Help Page Changes]
+	-Now defaults to full screen width.
+	-General Help content centered.
+
+[New Project Launcher Changes]
+	-Transformed "Project Location" input field to an Label_Text element.
+	-Changed Browse icon to Push button.
+	
+[Object Editor Changes]
+	-Horrendous bug that was not displaying Timed and special functions in right panel fixed.
+	
+[Other Editor Changes]
+	-GPE_TabManager tabs are now resized properly and unified when too many are on screen.
+	
+[Project Browser Changes]
+	--Now defaults to full screen width.
+	-Updated for new GPE_VerticalCardButton format.
+	-Updated "Scan Folder", "New Project","Load Project" and "Refresh" buttons.
+
+[Project Properties/Settings Changes]
+	-Now defaults to full screen width.
+	-Colors & Extras content added to Settings Tab.
+	-"Physics" Tab renamed to "Layers" tab.
+	-Tabs re-ordered.
+	-Scene Pane Buttonbar removed from variables.
+	-Main Toolbar removed and replaced with a left-sidebar.
+	-Platforms updated.
+		-Desktop section divided.
+			-Windows, Linux and Mac given separate sections.
+			-Removed platforms toolbar.
+		-HTML5 Section
+		-Custom HTML, CSS and header code removed.
+		-Header related export checkbox removed.
+		-Game Colors section moved from General to HTML5 settings.
+	
+[Scene Editor Changes]
+	-Corrected spacing issue when enabling layer-mode1.
+	-Tree/Branch Structure implemented.
+		Replaced layerMenu with SpecialTree object.
+		-Added new type for group containers.
+		-Added new type for tile-maps.
+		-Modified objects, tiles and backgrounds to be a child class of the SpecialBranch class.
+	-Corrected Object Angle from loading in as very negative number. Range is from -720 to +720.
+		-Added "Correct all angles button"
+	-Tile sheet selection preview now available at the mouse values in the editor pane.
+	-Selected Object Viewer changes
+		-Renders selected object's name on top of its bounding rectangle in the scene preview.
+		-Corrected preview rectangle to be aware of scaling.
+	-Corrected grid rendering
+		-New function created render_grid(double cellW, double cellH, GPE_Color * gridLineColor)
+		-Corrected camera issue with grid rendering for tile and object layers.
+	-Removed un-used "Statistics" button.
+	-Layers are now not shown in preview if unchecked in the layer-editor.
+	-Rename input field resized to match caption and hint width.
+	-Scene Width and Height width halved.
+	-Tile Width and Height width halved.
+	-Non-Linear scaling enabled.
+	-Scene Pane Buttonbar added to variables.
+	-Relative Movement for dragging resources around scene.
+		
+[Text/Code Editor Changes]
+	-Fast-speed delayed for first few characters[1/11/18 to-do list]
+	-Many un-needed dependencies ripped from include
+	-Optimized 
+
+[Themes]
+	-Colors added
+		-ButtonBoxShadow
+		-PopUpBoxShadow
+		-MainBoxFontShadow
+	-Colors corrected in GPE_Themes
+		-ButtonBoxHHighlightedAlt
+
+[Texture Editor Changes]
+	-Non-Linear scaling enabled.
+	
+[Tilesheet Editor Changes]
+	-Fixed scrolling issue where one could scroll out of bounds before being auto-corrected in next frame.
+	-Non-Linear scaling enabled.
+	
+[User Settings Changes]
+	-Settings are now centered.
+	-Version number added to editor settings file, restoring functionality.
+	-Tips of the Day pop up checkbox works again.
+	-Open User Settings Folder Button added.
+	-Invert mouse scroll button added.
+	
