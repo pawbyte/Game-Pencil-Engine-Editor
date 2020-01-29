@@ -3,10 +3,10 @@ paw_gui_selectbox.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,10 +45,10 @@ public:
     bool useGuiColor;
     bool isChecked;
     std::string optionName;
-    GPE_Texture * optionTexture;
-    GPE_Animation * optionSprite;
+    GPE_Texture_Base * optionTexture;
+    GPE_Animation * optionanimation;
     int subimageIndex;
-    double optionValue;
+    float optionValue;
     GPE_SelectBoxBasic_Option();
     ~GPE_SelectBoxBasic_Option();
     void prerender_self( );
@@ -59,9 +59,9 @@ class GPE_SelectBoxBasic: public GPE_GeneralGuiElement
 private:
     std::vector <GPE_SelectBoxBasic_Option * > subOptions;
     int intedPos;
-    double pos;
-    double startPos;
-    double maxOptionsInView;
+    float pos;
+    float startPos;
+    float maxOptionsInView;
     int maxHeight;
     int optionHeight;
     bool showHideOthersCheckboxToggle;
@@ -75,24 +75,25 @@ public:
     ~GPE_SelectBoxBasic();
     std::string get_data();
     void load_data(std::string dataString);
-    void add_option(std::string newOptionName, double newOpValue = -1,GPE_Texture * evRepIcon = NULL, GPE_Animation * evRepSprite=NULL, int subimageInIndex = 0, bool selectNew = false, bool useGuiColor = true);
+    void add_option(std::string newOptionName, float newOpValue = -1,GPE_Texture_Base * evRepIcon = NULL, GPE_Animation * evRepanimation=NULL, int subimageInIndex = 0, bool selectNew = false, bool useGuiColor = true);
     void correct_camera();
     void clear_list();
+    int get_option_id(std::string optionName );
     std::string get_selected_name();
-    double get_selected_value();
+    float get_selected_value();
     int get_selection();
     int get_size();
     GPE_SelectBoxBasic_Option * get_option(int optionId);
     std::string get_option_name(int optionId);
-    void insert_option(int optionId, std::string newName, GPE_Texture * evRepIcon = NULL, GPE_Animation * evRepSprite=NULL, int subimageInIndex = 0,bool selectNew = false);
+    void insert_option(int optionId, std::string newName, GPE_Texture_Base * evRepIcon = NULL, GPE_Animation * evRepanimation=NULL, int subimageInIndex = 0,bool selectNew = false);
     void limit_height(int newH);
     void alter_content( int optionId, bool sectionHasContent);
-    void alter_content_from_value( double valueId, bool sectionHasContent);
+    void alter_content_from_value( float valueId, bool sectionHasContent);
     bool move_down_space();
     bool move_up_space();
     void prerender_self( );
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void rename_option(int optionId, std::string newName);
     void remove_option(int optionId);
     void set_option_height( int newOptionHeight);

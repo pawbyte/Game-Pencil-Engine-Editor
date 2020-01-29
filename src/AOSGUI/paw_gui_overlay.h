@@ -3,10 +3,10 @@ paw_gui_overlay.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,17 +39,17 @@ SOFTWARE.
 class GPE_Overlay_System
 {
 private:
-    GPE_Texture * toolTipTexture;
+    GPE_Texture_Base * toolTipTexture;
     int toolTipX, toolTipY;
     int toolTip_halign, toolTip_valign;
-    GPE_Texture * previousScreenshot;
+    GPE_Texture_Base * previousScreenshot;
     bool tipTipJustUpdated;
     std::string tempUserMessageTitle;
     std::string tempUserMessageSubtitle;
     std::string tempUserMessageText;
     bool tempTopLeftMessage;
-    double temporayMessageDisplayTimer;
-    double temporayMessageDisplayStartTimer;
+    float temporayMessageDisplayTimer;
+    float temporayMessageDisplayStartTimer;
 public:
     std::string toolTipString;
     GPE_Overlay_System();
@@ -62,7 +62,7 @@ public:
     void render_temporary_message();
     void render_tooltip(int xPos = -1, int yPos = -1 );
     void take_frozen_screenshot();
-    void update_temporary_message(std::string mTitle="", std::string mSubTitle="", std::string mText="", double messDuration = 3, bool topLeftMessage = true );
+    void update_temporary_message(std::string mTitle="", std::string mSubTitle="", std::string mText="", float messDuration = 3, bool topLeftMessage = true );
 
 };
 

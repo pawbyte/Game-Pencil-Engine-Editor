@@ -3,10 +3,10 @@ paw_gui_resource_dropdown.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -38,6 +38,7 @@ SOFTWARE.
 #include "paw_gui_base.h"
 #include "ambitious_gui_library.h"
 #include "paw_gui_context.h"
+#include "paw_gui_general_resource_container.h"
 
 class GPE_DropDown_Resouce_Menu: public GPE_GeneralGuiElement
 {
@@ -48,8 +49,8 @@ private:
     GPE_PopUpMenu_Option * subOptions;
     std::string dropdownName;
     std::string displayedResult;
-    GPE_Animation * selectedSprite;
-    GPE_Texture *selectedImage;
+    GPE_Animation * selectedanimation;
+    GPE_Texture_Base *selectedImage;
     int opId;
     bool isSelectable;
     int selectedId;
@@ -71,7 +72,7 @@ public:
     //std::string get_name();
     void process_self(GPE_Rect * viewedSpace=NULL, GPE_Rect *cam=NULL);
     void add_folder_contents(GPE_GeneralResourceContainer * fFolder = NULL, GPE_PopUpMenu_Option * fOptionFolder = NULL);
-    void render_self( GPE_Rect * viewedSpace=NULL, GPE_Rect *cam=NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace=NULL, GPE_Rect *cam=NULL);
     void set_name(std::string newName);
     void set_selected_target(std::string newName);
     void set_selection(int newId);

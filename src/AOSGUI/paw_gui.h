@@ -3,10 +3,10 @@ paw_gui.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -38,6 +38,7 @@ SOFTWARE.
 #include "paw_gui_buttons.h"
 #include "paw_gui_checkbox.h"
 #include "paw_gui_color_picker.h"
+#include "paw_gui_content_selector.h"
 #include "paw_gui_context.h"
 #include "paw_gui_dropdown.h"
 #include "paw_gui_file_popups.h"

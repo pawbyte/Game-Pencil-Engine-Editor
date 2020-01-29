@@ -3,10 +3,10 @@ paw_gui_resource_dropdown.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -41,7 +41,7 @@ GPE_DropDown_Resouce_Menu::GPE_DropDown_Resouce_Menu( std::string name, GPE_Gene
     elementBox.y = 0;
     elementBox.w = 196;
     //int nameMinSize = name.size()*
-    elementBox.h = 24;
+    elementBox.h = 32;
     displayedResult = dropdownName = opName = name;
     containerTree = cTree;
     opId = id;
@@ -117,7 +117,7 @@ void GPE_DropDown_Resouce_Menu::add_folder_contents(GPE_GeneralResourceContainer
             cContainer = fFolder->get_resource_at(i);
             if( cContainer!=NULL)
             {
-                cOption = fOptionFolder->add_menu_option(cContainer->get_name(),cContainer->get_global_id(),cContainer->get_resource_texture(),0,cContainer->get_resource_sprite(),false,true,true);
+                cOption = fOptionFolder->add_menu_option(cContainer->get_name(),cContainer->get_global_id(),cContainer->get_resource_texture(),0,cContainer->get_resource_animation(),false,true,true);
                 cOption->isResourceOption = true;
                 if( cContainer->is_folder() )
                 {
@@ -229,7 +229,7 @@ void GPE_DropDown_Resouce_Menu::process_self(GPE_Rect * viewedSpace, GPE_Rect * 
                 {
                     FONT_TOOLBAR->get_metrics(dropdownName,&dropdownNameWidth, &dropdownNameHeight);
                 }
-                dropdownNameWidth+=GENERAL_ICON_WIDTH_AND_PADDING+GENERAL_GPE_PADDING;
+                dropdownNameWidth+=GENERAL_ICON_WIDTH_AND_PADDING+GENERAL_GPE_GUI_PADDING;
                 estimatedMenuSize = std::max( estimatedMenuSize, dropdownNameWidth );
                 MAIN_CONTEXT_MENU->set_width( estimatedMenuSize );
                 MAIN_CONTEXT_MENU->add_menu_option(dropdownName,-1,NULL,-1,NULL,false,true);
@@ -242,7 +242,7 @@ void GPE_DropDown_Resouce_Menu::process_self(GPE_Rect * viewedSpace, GPE_Rect * 
                         cContainer = containerTree->get_resource_at(i);
                         if( cContainer!=NULL)
                         {
-                            cOption = MAIN_CONTEXT_MENU->add_menu_option(cContainer->get_name(),cContainer->get_global_id(),cContainer->get_resource_texture(),cContainer->get_resource_image_frame(),cContainer->get_resource_sprite(),false,true);
+                            cOption = MAIN_CONTEXT_MENU->add_menu_option(cContainer->get_name(),cContainer->get_global_id(),cContainer->get_resource_texture(),cContainer->get_resource_image_frame(),cContainer->get_resource_animation(),false,true);
                             cOption->isResourceOption = true;
                             if( cContainer->is_folder() )
                             {
@@ -273,11 +273,11 @@ void GPE_DropDown_Resouce_Menu::process_self(GPE_Rect * viewedSpace, GPE_Rect * 
     }
 }
 
-void GPE_DropDown_Resouce_Menu::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
+void GPE_DropDown_Resouce_Menu::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( forceRedraw && cam!=NULL && viewedSpace!=NULL)
+    if( cam!=NULL && viewedSpace!=NULL)
     {
         gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Input_Color,false);
         if( selectedId >= 0)
@@ -285,7 +285,7 @@ void GPE_DropDown_Resouce_Menu::render_self(GPE_Rect * viewedSpace, GPE_Rect * c
             selectedResource = containerTree->find_resource_from_id(selectedId);
             if( selectedResource!=NULL)
             {
-                gfs->render_text_resized( elementBox.x+32+GENERAL_GPE_PADDING-cam->x,elementBox.y+elementBox.h/2-cam->y,selectedResource->get_name(),GPE_MAIN_THEME->Input_Font_Color,FONT_POPUP,FA_LEFT,FA_MIDDLE,elementBox.w-elementBox.h-12,-1);
+                gfs->render_text_resized( elementBox.x+32+GENERAL_GPE_GUI_PADDING-cam->x,elementBox.y+elementBox.h/2-cam->y,selectedResource->get_name(),GPE_MAIN_THEME->Input_Font_Color,FONT_POPUP,FA_LEFT,FA_MIDDLE,elementBox.w-elementBox.h-12,-1);
                 selectedResource->render_image( elementBox.x,elementBox.y,elementBox.h-2,elementBox.h-2,viewedSpace,cam);
             }
             else
@@ -295,7 +295,7 @@ void GPE_DropDown_Resouce_Menu::render_self(GPE_Rect * viewedSpace, GPE_Rect * c
         }
         else
         {
-            gfs->render_text_resized( elementBox.x+GENERAL_GPE_PADDING-cam->x,elementBox.y+elementBox.h/2-cam->y,opName,GPE_MAIN_THEME->Input_Font_Color,FONT_POPUP,FA_LEFT,FA_MIDDLE,elementBox.w-elementBox.h-12,-1);
+            gfs->render_text_resized( elementBox.x+GENERAL_GPE_GUI_PADDING-cam->x,elementBox.y+elementBox.h/2-cam->y,opName,GPE_MAIN_THEME->Input_Font_Color,FONT_POPUP,FA_LEFT,FA_MIDDLE,elementBox.w-elementBox.h-12,-1);
         }
         //gcanvas->render_rectangle( elementBox.x+elementBox.w-elementBox.h*3/4-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->Input_Outline_Color ,false);
         if( GPE_DROPDOWN_ARROW!=NULL )

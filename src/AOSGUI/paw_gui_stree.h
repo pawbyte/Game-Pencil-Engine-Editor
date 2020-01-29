@@ -3,10 +3,10 @@ paw_gui_stree.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -49,8 +49,8 @@ protected:
     int lastWidth;
     std::string name;
     int optionSuperType;
-    //GPE_Texture * textTexture;
-    GPE_Texture * iconTexture;
+    //GPE_Texture_Base * textTexture;
+    GPE_Texture_Base * iconTexture;
 public:
     int rightClickedId;
     int branchLevel;
@@ -89,7 +89,7 @@ public:
     void remove_branch( GPE_SpecialMenu_Branch * branch );
     void remove_all_branches();
     virtual void render_branch();
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     virtual bool save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn = 0);
     void set_global_id( int newId );
     virtual void set_name( std::string newName );
@@ -115,7 +115,7 @@ public:
     bool beingResized;
     bool treeResized;
     bool branchMoved;
-    GPE_Texture * opTexture;
+    GPE_Texture_Base * opTexture;
     std::string needleBranch;
     GPE_SpecialMenu_Tree( std::string menuName = "",  int optionSuperType = -1, int optionId = -1 );
     ~GPE_SpecialMenu_Tree( );
@@ -124,7 +124,7 @@ public:
     int increment_count();
     void process_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL );
     void render_branch();
-    void render_self( GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void toggle_self();
     bool save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn = 0);
     void select_branch(GPE_SpecialMenu_Branch * branch );

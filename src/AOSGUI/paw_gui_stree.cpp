@@ -3,10 +3,10 @@ paw_gui_stree.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -34,7 +34,7 @@ SOFTWARE.
 #include "paw_gui_stree.h"
 #include "paw_gui_popups.h"
 
-
+const int SPECIAL_BRANCH_HEIGHT = 24;
 GPE_SpecialMenu_Branch::GPE_SpecialMenu_Branch()
 {
     branchLevel = 1;
@@ -60,7 +60,7 @@ GPE_SpecialMenu_Branch::GPE_SpecialMenu_Branch()
     barXPadding = 0;
     barYPadding = 0;
     subMenuIsOpen = false;
-    elementBox.h = RESOURCE_AREA_HEIGHT;
+    elementBox.h = SPECIAL_BRANCH_HEIGHT;
 }
 
 GPE_SpecialMenu_Branch::~GPE_SpecialMenu_Branch()
@@ -198,7 +198,7 @@ bool GPE_SpecialMenu_Branch::hovering_openclose( GPE_Rect * viewedSpace, GPE_Rec
     viewedSpace = GPE_find_camera( viewedSpace );
     cam = GPE_find_camera( cam );
 
-    if( input->mouse_x <= viewedSpace->x - cam->x + elementBox.x + branchLevel *RESOURCE_AREA_HEIGHT+GENERAL_PLUSMINUX_ICON_SIZE )
+    if( input->mouse_x <= viewedSpace->x - cam->x + elementBox.x + elementBox.w ) //branchLevel * RESOURCE_AREA_HEIGHT+GENERAL_PLUSMINUX_ICON_SIZE )
     {
         return true;
     }
@@ -270,7 +270,7 @@ void GPE_SpecialMenu_Branch::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam 
     cam = GPE_find_camera( cam );
     GPE_GeneralGuiElement::process_self( viewedSpace, cam );
     elementBox.w = cam->w;
-    elementBox.h = RESOURCE_AREA_HEIGHT;
+    elementBox.h = SPECIAL_BRANCH_HEIGHT;
     if( isHovered )
     {
         if( isPressed )
@@ -391,24 +391,24 @@ void GPE_SpecialMenu_Branch::render_branch( )
     }
 }
 
-void GPE_SpecialMenu_Branch::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw   )
+void GPE_SpecialMenu_Branch::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam   )
 {
     bool selfIsInView = false;
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( cam!=NULL && viewedSpace!=NULL && forceRedraw )
+    if( cam!=NULL && viewedSpace!=NULL)
     {
-        int rendY = elementBox.x;
+        int rendY = elementBox.y;
         if( rendY>=cam->y && rendY <=cam->y+cam->h )
         {
             selfIsInView = true;
         }
-        else if( rendY+RESOURCE_AREA_HEIGHT >=cam->y && rendY+RESOURCE_AREA_HEIGHT <=cam->y+cam->h  )
+        else if( rendY+SPECIAL_BRANCH_HEIGHT >=cam->y && rendY+SPECIAL_BRANCH_HEIGHT <=cam->y+cam->h  )
         {
             selfIsInView = true;
         }
 
-        if( (selfIsInView || forceRedraw) )
+        if( selfIsInView )
         {
             if(treeParent!=NULL && treeParent->get_selected_id()==globalId && globalId > 0  )
             {
@@ -420,7 +420,7 @@ void GPE_SpecialMenu_Branch::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam,
         {
             if( subMenuIsOpen )
             {
-                if( (selfIsInView || forceRedraw) )
+                if( selfIsInView )
                 {
                     gfs->render_text( elementBox.x-cam->x, elementBox.y-cam->y,"-",GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STREE_BRANCH,FA_LEFT,FA_TOP);
                 }
@@ -433,7 +433,7 @@ void GPE_SpecialMenu_Branch::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam,
                     if(foundBranch!=NULL)
                     {
                         foundBranch->previouslySoughtId = selectedSubOption;
-                        foundBranch->render_self( viewedSpace,cam, forceRedraw);
+                        foundBranch->render_self( viewedSpace,cam);
 
                     }
                 }*/
@@ -442,7 +442,7 @@ void GPE_SpecialMenu_Branch::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam,
                                  "-",GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STREE_BRANCH,FA_LEFT,FA_TOP);
 
             }
-            else if( (selfIsInView || forceRedraw ) )
+            else if( (selfIsInView  ) )
             {
                 gfs->render_text( elementBox.x-cam->x,
                                  elementBox.y-cam->y,
@@ -451,20 +451,21 @@ void GPE_SpecialMenu_Branch::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam,
             }
         }
 
-        if( selfIsInView || forceRedraw)
+        if( selfIsInView )
         {
             if( iconTexture!=NULL )
             {
-                iconTexture->render_tex_resized(elementBox.x+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,elementBox.y-cam->y, RESOURCE_AREA_HEIGHT,RESOURCE_AREA_HEIGHT,NULL,  GPE_MAIN_THEME->Main_Box_Font_Color );
+                iconTexture->render_tex_resized(elementBox.x+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,elementBox.y-cam->y, SPECIAL_BRANCH_HEIGHT,SPECIAL_BRANCH_HEIGHT,NULL,  GPE_MAIN_THEME->Main_Box_Font_Color );
             }
-            gfs->render_text( elementBox.x+RESOURCE_AREA_HEIGHT+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,elementBox.y-cam->y+RESOURCE_AREA_HEIGHT/2, name,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STREE_BRANCH,FA_LEFT,FA_CENTER);
+            gfs->render_text( elementBox.x+SPECIAL_BRANCH_HEIGHT+GENERAL_PLUSMINUX_ICON_SIZE-cam->x,elementBox.y-cam->y+SPECIAL_BRANCH_HEIGHT/2, name,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STREE_BRANCH,FA_LEFT,FA_CENTER);
         }
     }
 }
 
 bool GPE_SpecialMenu_Branch::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn  )
 {
-
+    //Will add code later to fix.
+    return true;
 }
 
 void GPE_SpecialMenu_Branch::set_global_id( int newId )
@@ -601,8 +602,8 @@ void GPE_SpecialMenu_Tree::process_self( GPE_Rect * viewedSpace, GPE_Rect * cam 
             if( useMetaTop )
             {
                 addButton->set_coords( elementBox.x, elementBox.y );
-                searchField->set_coords( addButton->get_x2pos()+GENERAL_GPE_PADDING, elementBox.y );
-                searchField->set_width( elementBox.w - searchField->get_xpos()-GENERAL_GPE_PADDING );
+                searchField->set_coords( addButton->get_x2pos()+GENERAL_GPE_GUI_PADDING, elementBox.y );
+                searchField->set_width( elementBox.w - searchField->get_xpos()-GENERAL_GPE_GUI_PADDING );
                 addButton->process_self( viewedSpace, cam  );
                 searchField->process_self( viewedSpace, cam  );
             }
@@ -660,15 +661,12 @@ void GPE_SpecialMenu_Tree::render_branch()
     GPE_SpecialMenu_Branch::render_branch( );
 }
 
-void GPE_SpecialMenu_Tree::render_self( GPE_Rect * viewedSpace,GPE_Rect * cam, bool forceRedraw )
+void GPE_SpecialMenu_Tree::render_self( GPE_Rect * viewedSpace,GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera( viewedSpace );
     cam = GPE_find_camera( cam );
-    /*if( resourcebarMoved render_self)
-    {
-        forceRedraw = true;
-    }*/
-    if( isVisible && forceRedraw)
+
+    if( isVisible )
     {
 
         if( GPE_MAIN_THEME->themeBgTexture == NULL)
@@ -686,7 +684,7 @@ void GPE_SpecialMenu_Tree::render_self( GPE_Rect * viewedSpace,GPE_Rect * cam, b
         {
             gcanvas->render_rectangle( elementBox.x - cam->x, elementBox.y - cam->y,
                                    elementBox.x + elementBox.w, elementBox.y + barTitleHeight - cam->x,GPE_MAIN_THEME->PopUp_Box_Color,false);
-            gfs->render_text( elementBox.x +GENERAL_GPE_PADDING - cam->x, elementBox.y - cam->y, name, GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_STREE_BRANCH,FA_LEFT,FA_TOP);
+            gfs->render_text( elementBox.x +GENERAL_GPE_GUI_PADDING - cam->x, elementBox.y - cam->y, name, GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_STREE_BRANCH,FA_LEFT,FA_TOP);
         }
         if( hasScrollControl)
         {
@@ -702,7 +700,7 @@ void GPE_SpecialMenu_Tree::render_self( GPE_Rect * viewedSpace,GPE_Rect * cam, b
         if( treeList!=NULL )
         {
             ///cBranch->selectedSubOption = selectedSubOption;
-            treeList->render_self(viewedSpace, cam, forceRedraw);
+            treeList->render_self(viewedSpace, cam);
         }
     }
 }

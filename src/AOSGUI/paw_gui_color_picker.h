@@ -3,10 +3,10 @@ paw_gui_color_picker.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -38,7 +38,7 @@ SOFTWARE.
 #include "paw_gui_base.h"
 
 extern SDL_Surface * GPE_SURFACE_COLOR_PICKER_GRADIENT;
-extern GPE_Texture * GPE_TEXTURE_COLOR_PICKER_GRADIENT;
+extern GPE_Texture_Base * GPE_TEXTURE_COLOR_PICKER_GRADIENT;
 
 class GPE_Input_Field_Color: public GPE_GeneralGuiElement
 {
@@ -65,7 +65,7 @@ public:
     void set_name(std::string newName);
     void set_string(std::string newString);
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void set_color_from_rgb(GPE_Color *newColor);
     void set_color_from_rgb(std::string newColorStr);
     void set_color_from_hex(std::string newColorStr);

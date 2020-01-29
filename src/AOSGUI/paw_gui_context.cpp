@@ -3,10 +3,10 @@ paw_gui_context.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -97,9 +97,9 @@ GPE_PopUpMenu_Option::GPE_PopUpMenu_Option(std::string name, int id, bool select
     isTopOfMenu = false;
     isContext = makeContext;
     hoverOption = -1;
-    opSprite = NULL;
+    opanimation = NULL;
     opTexture = NULL;
-    spriteFrameNumber = 0;
+    animationFrameNumber = 0;
     optionBox.x = 0;
     optionBox.y = 0;
     optionBox.w = 0;
@@ -542,7 +542,7 @@ GPE_PopUpMenu_Option * GPE_PopUpMenu_Option::add_option( GPE_PopUpMenu_Option * 
     }
 }
 
-GPE_PopUpMenu_Option * GPE_PopUpMenu_Option::add_menu_option( std::string name, int id, GPE_Texture * gTexture, int spriteImgNumb,GPE_Animation * gSprite, bool endsSection, bool selectable, bool isResource, int kbS1, int kbS2, int kbS3 )
+GPE_PopUpMenu_Option * GPE_PopUpMenu_Option::add_menu_option( std::string name, int id, GPE_Texture_Base * gTexture, int animationImgNumb,GPE_Animation * ganimation, bool endsSection, bool selectable, bool isResource, int kbS1, int kbS2, int kbS3 )
 {
     GPE_PopUpMenu_Option * newOp = new GPE_PopUpMenu_Option(name,id,selectable,showShortCuts,false, kbS1, kbS2, kbS3);
     newOp->isTopOfMenu = false;
@@ -556,7 +556,7 @@ GPE_PopUpMenu_Option * GPE_PopUpMenu_Option::add_menu_option( std::string name, 
         //newOp->set_id( (int)subOptions.size() *-1);
         newOp->set_id(  -1 );
     }
-    newOp->set_image_data(gSprite, spriteImgNumb);
+    newOp->set_image_data(ganimation, animationImgNumb);
     newOp->set_texture(gTexture);
     add_option( newOp );
     return newOp;
@@ -578,7 +578,7 @@ int GPE_PopUpMenu_Option::process_menu_option()
     int returnAction = -1; //Negative values are out of range
     //defaults to negative 1 if nothing is selected
     //Returns if window resized, other mouse buttons or esc is pressed.
-    if( input->check_mouse_released(1) || input->check_mouse_released(2) || WINDOW_WAS_JUST_RESIZED || input->released[kb_esc])
+    if( input->check_mouse_released(1) || input->check_mouse_released(2) || GPE_MAIN_WINDOW->is_resized()  || input->released[kb_esc])
     {
         returnAction = -2;
     }
@@ -919,10 +919,10 @@ void GPE_PopUpMenu_Option::reset_suboptions()
     hoverOption = -1;*/
 }
 
-void GPE_PopUpMenu_Option::set_image_data(GPE_Animation * newSprite,int newId)
+void GPE_PopUpMenu_Option::set_image_data(GPE_Animation * newanimation,int newId)
 {
-    opSprite = newSprite;
-    spriteFrameNumber = newId;
+    opanimation = newanimation;
+    animationFrameNumber = newId;
 }
 //Slim Shady back in this mofo!!!
 
@@ -985,7 +985,7 @@ void GPE_PopUpMenu_Option::set_position(int xPos, int yPos)
     }
 }
 
-void GPE_PopUpMenu_Option::set_texture(GPE_Texture * newTexture)
+void GPE_PopUpMenu_Option::set_texture(GPE_Texture_Base * newTexture)
 {
     opTexture = newTexture;
 }
@@ -1009,9 +1009,9 @@ void GPE_PopUpMenu_Option::set_width(int newWidth)
     set_position( optionBox.x, optionBox.y );
 }
 
-void GPE_PopUpMenu_Option::render_self( GPE_Rect *cam, bool forceRedraw)
+void GPE_PopUpMenu_Option::render_self( GPE_Rect *cam)
 {
-    if( forceRedraw )
+    //if( forceRedraw )
     {
         int i = 0;
         //Renders the line if this is the end of a section
@@ -1082,7 +1082,7 @@ void GPE_PopUpMenu_Option::render_self( GPE_Rect *cam, bool forceRedraw)
                             {
                                 gcanvas->render_rect( &fOption->optionBox,GPE_MAIN_THEME->PopUp_Box_Highlight_Color, false);
                             }
-                            fOption->render_self( cam, true);
+                            fOption->render_self( cam );
                         }
                     }
                     if( isContext)
@@ -1108,7 +1108,7 @@ void GPE_PopUpMenu_Option::render_self( GPE_Rect *cam, bool forceRedraw)
                             gcanvas->render_rect( &fOption->optionBox,GPE_MAIN_THEME->PopUp_Box_Color, false);
 
                         }
-                        fOption->render_self(  cam,true);
+                        fOption->render_self( cam );
                     }
                     gcanvas->render_rectangle( optionBox.x,optionBox.y,optionBox.x+optionBox.w,optionBox.y+optionBox.h,GPE_MAIN_THEME->PopUp_Box_Color, false);
                 }
@@ -1118,11 +1118,11 @@ void GPE_PopUpMenu_Option::render_self( GPE_Rect *cam, bool forceRedraw)
             {
                 if( menuDirection == FA_RIGHT)
                 {
-                    gfs->render_text( optionBox.x+optionBox.w-GENERAL_GPE_PADDING,optionBox.y+optionBox.h/2,">",GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TOOLBAR,FA_RIGHT,FA_MIDDLE);
+                    gfs->render_text( optionBox.x+optionBox.w-GENERAL_GPE_GUI_PADDING,optionBox.y+optionBox.h/2,">",GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TOOLBAR,FA_RIGHT,FA_MIDDLE);
                 }
                 else
                 {
-                    gfs->render_text( optionBox.x+optionBox.w-GENERAL_GPE_PADDING,optionBox.y+optionBox.h/2,"<",GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TOOLBAR,FA_RIGHT,FA_MIDDLE);
+                    gfs->render_text( optionBox.x+optionBox.w-GENERAL_GPE_GUI_PADDING,optionBox.y+optionBox.h/2,"<",GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TOOLBAR,FA_RIGHT,FA_MIDDLE);
                 }
             }
         }
@@ -1148,28 +1148,28 @@ void GPE_PopUpMenu_Option::render_self( GPE_Rect *cam, bool forceRedraw)
                 gfs->render_text( optionBox.x+GENERAL_ICON_WIDTH_AND_PADDING,optionBox.y+GPE_CONTEXT_ROW_HEIGHT/2,opName,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TOOLBAR,FA_LEFT,FA_MIDDLE);
                 //opTexture->render_tex( optionBox.x+GENERAL_ICON_WIDTH_AND_PADDING, optionBox.y+16-(opTexture->get_height()/2),NULL);
             }
-            if ( opSprite!=NULL && opSprite->has_texture() )
+            if ( opanimation!=NULL && opanimation->has_texture() )
             {
-                gcanvas->render_animation_resized( opSprite,spriteFrameNumber,optionBox.x+GENERAL_GPE_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2);
+                gcanvas->render_animation_resized( opanimation,animationFrameNumber,optionBox.x+GENERAL_GPE_GUI_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2);
             }
             else if( opTexture!=NULL)
             {
                 if( isFolderOption)
                 {
-                    opTexture->render_tex_resized( optionBox.x+GENERAL_GPE_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2,NULL,GPE_MAIN_THEME->Main_Folder_Color );
+                    opTexture->render_tex_resized( optionBox.x+GENERAL_GPE_GUI_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2,NULL,GPE_MAIN_THEME->Main_Folder_Color );
                 }
                 else if( isResourceOption || renderWhite )
                 {
-                    opTexture->render_tex_resized(optionBox.x+GENERAL_GPE_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2,NULL, c_white );
+                    opTexture->render_tex_resized(optionBox.x+GENERAL_GPE_GUI_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2,NULL, c_white );
                 }
                 else
                 {
-                    opTexture->render_tex_resized(optionBox.x+GENERAL_GPE_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2,NULL,GPE_MAIN_THEME->PopUp_Box_Font_Color  );
+                    opTexture->render_tex_resized(optionBox.x+GENERAL_GPE_GUI_PADDING,optionBox.y+optionBox.h/4,optionBox.h/2,optionBox.h/2,NULL,GPE_MAIN_THEME->PopUp_Box_Font_Color  );
                 }
             }
             if( (int)shortcutString.size()>0 )
             {
-                gfs->render_text( optionBox.x+optionBox.w-GENERAL_GPE_PADDING,optionBox.y+optionBox.h/2,shortcutString,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TOOLBAR,FA_RIGHT,FA_MIDDLE);
+                gfs->render_text( optionBox.x+optionBox.w-GENERAL_GPE_GUI_PADDING,optionBox.y+optionBox.h/2,shortcutString,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TOOLBAR,FA_RIGHT,FA_MIDDLE);
             }
         }
 
@@ -1600,34 +1600,31 @@ void GPE_Toolbar::process_toolbar()
     }
 }
 
-void GPE_Toolbar::render_toolbar(GPE_Rect *renderCam, bool forceRedraw)
+void GPE_Toolbar::render_toolbar(GPE_Rect *renderCam)
 {
-    if( forceRedraw)
+    if( toolBarIsOpen)
     {
-        if( toolBarIsOpen)
+        MAIN_OVERLAY->render_frozen_screenshot();
+    }
+    //gcanvas->render_rect(&elementBox,GPE_MAIN_THEME->Program_Header_Color,false);
+    if( barOptions.size()==0)
+    {
+        gfs->render_text( elementBox.x+4,elementBox.y+8,"(Toolbar)",GPE_MAIN_THEME->Main_Box_Font_Color,NULL,FA_LEFT,FA_TOP);
+    }
+    else
+    {
+        GPE_PopUpMenu_Option * fOption = NULL;
+        int drawXPos = 0;
+        int y2 = elementBox.y+elementBox.h;
+        for(int i=0; i<(int)barOptions.size(); i++)
         {
-            MAIN_OVERLAY->render_frozen_screenshot();
-        }
-        //gcanvas->render_rect(&elementBox,GPE_MAIN_THEME->Program_Header_Color,false);
-        if( barOptions.size()==0)
-        {
-            gfs->render_text( elementBox.x+4,elementBox.y+8,"(Toolbar)",GPE_MAIN_THEME->Main_Box_Font_Color,NULL,FA_LEFT,FA_TOP);
-        }
-        else
-        {
-            GPE_PopUpMenu_Option * fOption = NULL;
-            int drawXPos = 0;
-            int y2 = elementBox.y+elementBox.h;
-            for(int i=0; i<(int)barOptions.size(); i++)
+            fOption = barOptions[i];
+            if(fOption->subMenuIsOpen || hoverOption==i)
             {
-                fOption = barOptions[i];
-                if(fOption->subMenuIsOpen || hoverOption==i)
-                {
-                    gcanvas->render_rectangle( drawXPos,elementBox.y,drawXPos+fOption->get_width()+TOOLKEY_OPTION_PADDING,y2,GPE_MAIN_THEME->PopUp_Box_Highlight_Color, false);
-                }
-                fOption->render_self(NULL,true);
-                drawXPos+=fOption->get_width()+TOOLKEY_OPTION_PADDING;
+                gcanvas->render_rectangle( drawXPos,elementBox.y,drawXPos+fOption->get_width()+TOOLKEY_OPTION_PADDING,y2,GPE_MAIN_THEME->PopUp_Box_Highlight_Color, false);
             }
+            fOption->render_self(NULL);
+            drawXPos+=fOption->get_width()+TOOLKEY_OPTION_PADDING;
         }
     }
 }
@@ -1679,8 +1676,7 @@ int GPE_Get_Context_Result(GPE_Rect * cam, bool redrawScreen, bool autoResize )
 {
     gpe->end_loop();
     //RESOURCE_TO_DRAG = NULL;
-    GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
-    MAIN_OVERLAY->process_cursor();
+    gpe->cursor_change("arrow");
     MAIN_OVERLAY->take_frozen_screenshot( );
     input->reset_all_input();
     int returnValue = -1;
@@ -1723,15 +1719,15 @@ int GPE_Get_Context_Result(GPE_Rect * cam, bool redrawScreen, bool autoResize )
 
     while(exitOperation==false)
     {
-        GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
+        gpe->cursor_change("arrow");
         //Start the frame timer
         gpe->start_loop();
         //GPE_Report("Viewing context menu...");
-        if( input->windowEventHappendInFrame || WINDOW_WAS_JUST_RESIZED )
+        if( input->windowEventHappendInFrame || GPE_MAIN_WINDOW->is_resized()  )
         {
             exitOperation = true;
             returnValue = -1;
-            MAIN_RENDERER->clear_renderer();
+            GPE_MAIN_RENDERER->clear_renderer( GPE_MAIN_WINDOW->is_minimized() );
         }
         else
         {
@@ -1746,7 +1742,7 @@ int GPE_Get_Context_Result(GPE_Rect * cam, bool redrawScreen, bool autoResize )
                         GPE_close_context_menu();
                         exitOperation = true;
                     }
-                    else if( WINDOW_WAS_JUST_RESIZED  )
+                    else if( GPE_MAIN_WINDOW->is_resized()   )
                     {
                         //GPE_Report("Releasing due to WINDOW_WAS_JUST_RESIZED...");
                         GPE_close_context_menu();
@@ -1764,11 +1760,11 @@ int GPE_Get_Context_Result(GPE_Rect * cam, bool redrawScreen, bool autoResize )
                     exitOperation = true;
                 }
 
-                MAIN_RENDERER->set_viewpoint( NULL );
-                MAIN_RENDERER->clear_renderer();
+                GPE_MAIN_RENDERER->set_viewpoint( NULL );
+                GPE_MAIN_RENDERER->clear_renderer( GPE_MAIN_WINDOW->is_minimized() );
                 MAIN_OVERLAY->render_frozen_screenshot( );
                 //Update screen
-                MAIN_CONTEXT_MENU->render_self(cam, true);
+                MAIN_CONTEXT_MENU->render_self(cam);
             }
             else
             {
@@ -1777,7 +1773,6 @@ int GPE_Get_Context_Result(GPE_Rect * cam, bool redrawScreen, bool autoResize )
             }
         }
 
-        MAIN_OVERLAY->process_cursor();
         firstFrame = false;
         gpe->end_loop();
     }

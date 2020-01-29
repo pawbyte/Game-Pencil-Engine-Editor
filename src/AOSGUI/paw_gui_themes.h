@@ -3,10 +3,10 @@ paw_gui_themes.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -33,17 +33,26 @@ SOFTWARE.
 #ifndef PAW_GUI_THEMES_H
 #define PAW_GUI_THEMES_H
 
-#include "../GPE_Engine/GPE_Engine.h"
-#include "../GPE_Engine/GPE_Fonts.h"
+#include "../GPE/GPE.h"
 
+const int GENERAL_GPE_GUI_PADDING = 8;
+const int GPE_AVERAGE_LINE_HEIGHT = 20;
+const int GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING = 32;
+const int GPE_TITLE_BPADDING = 16;
+const int TOOLKEY_SHORTCUT_WIDTH = 64;
+const int GENERAL_ICON_WIDTH = 24;
+const int GENERAL_THUMBNAIL_SIZE = 48;
+const int GENERAL_ICON_WIDTH_AND_PADDING = 32;
+const int GENERAL_PLUSMINUX_ICON_SIZE = 8;
+const int TOOLKEY_OPTION_PADDING = 16;
+const int TOOLKEY_ICON_X_PADDING = 4;
+const int GENERAL_NEAR_ICON_YPADDING = 8;
+const int GPE_MAX_RECENT_PROJECT_LIST_SIZE = 15;
 
 //Default Fonts [ BEGIN ]
 
 //The font that's going to be used
-extern GPE_Font * font;
-extern GPE_Font * textboxFont;
 extern GPE_Font * FONT_BUTTONS_FONT;
-extern GPE_Font * FONT_CATEGORY_BAR;
 extern GPE_Font * GPE_DEFAULT_FONT;
 extern GPE_Font * FONT_POPUP;
 extern GPE_Font * GUI_TAB_FONT;
@@ -65,13 +74,12 @@ extern GPE_Font * FONT_TERM_DESCRIPTION;
 extern GPE_Font * FONT_TERM_SCOPE;
 
 extern GPE_Font * FONT_DEFAULT_PROMPT;
-extern GPE_Font * FONT_CHECKBOX;
 
 extern GPE_Font * FONT_HEADER;
 extern GPE_Font * FONT_LABEL;
 extern GPE_Font * FONT_LABEL_ANCHOR;
 extern GPE_Font * FONT_LABEL_TITLE;
-extern GPE_Font * FONT_PARAGRAGH;
+extern GPE_Font * FONT_LABEL;
 extern GPE_Font * FONT_TOOLTIP;
 extern GPE_Font * FONT_STATUSBAR;
 extern GPE_Font * FONT_STREE_BRANCH;
@@ -90,9 +98,9 @@ public:
     std::string themeName;
     std::string themeLocalLocation;
     std::string themeBgFileLocation;
-    GPE_Texture * themeBgTexture;
+    GPE_Texture_Base * themeBgTexture;
 
-    GPE_Animation * Main_Menu_Sprite;
+    GPE_Animation * Main_Menu_animation;
 
     //main bg colors ( defaults everywhere)
     GPE_Color * Program_Color;

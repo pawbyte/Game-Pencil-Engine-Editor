@@ -3,10 +3,10 @@ paw_gui_checkbox.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -43,8 +43,8 @@ GPE_CheckBoxBasic::GPE_CheckBoxBasic(std::string name, std::string descriptor, b
 
     elementBox.x = 0;
     elementBox.y = 0;
-    elementBox.w = clickBoxW = 16;
-    elementBox.h = clickBoxH = 16;
+    elementBox.w = clickBoxW = 24;
+    elementBox.h = clickBoxH = 24;
     labelBoxW = 0;
     labelBoxH = 0;
     if( (int)opName.size()>0 && GPE_DEFAULT_FONT!=NULL )
@@ -52,7 +52,7 @@ GPE_CheckBoxBasic::GPE_CheckBoxBasic(std::string name, std::string descriptor, b
         GPE_DEFAULT_FONT->get_metrics(opName,&labelBoxW, &labelBoxH);
         elementBox.w+= labelBoxW;
     }
-    //elementBox.w+=+GENERAL_GPE_PADDING;
+    //elementBox.w+=+GENERAL_GPE_GUI_PADDING;
     isClicked = isChecked;
 }
 
@@ -83,6 +83,10 @@ void GPE_CheckBoxBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     isHovered = false;
+    if( windowInView == false )
+    {
+        return;
+    }
     if(viewedSpace!=NULL && cam!=NULL)
     {
         bool isChecked = isClicked;
@@ -102,11 +106,11 @@ void GPE_CheckBoxBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
     }
 }
 
-void GPE_CheckBoxBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw )
+void GPE_CheckBoxBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( cam!=NULL && forceRedraw )
+    if( cam!=NULL)
     {
         if( isInUse )
         {
@@ -127,7 +131,7 @@ void GPE_CheckBoxBasic::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam, bool
         {
             GPE_CHECKMARK_IMAGE->render_tex_resized( elementBox.x-cam->x,elementBox.y-cam->y,clickBoxW,clickBoxH,NULL, GPE_MAIN_THEME->Checkbox_Color );
         }
-        gfs->render_text( elementBox.x+clickBoxW+GENERAL_GPE_PADDING-cam->x,elementBox.y+elementBox.h-cam->y,opName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_CHECKBOX,FA_LEFT,FA_BOTTOM,255);
+        gfs->render_text( elementBox.x+clickBoxW+GENERAL_GPE_GUI_PADDING-cam->x,elementBox.y+elementBox.h/2-cam->y,opName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_LABEL,FA_LEFT,FA_MIDDLE,255);
     }
 }
 

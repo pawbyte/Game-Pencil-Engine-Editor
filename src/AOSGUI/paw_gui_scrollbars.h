@@ -3,10 +3,10 @@ paw_gui_scrollbars.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -43,13 +43,13 @@ class GPE_ScrollBar_XAxis: public GPE_GeneralGuiElement
 protected:
     bool isHeldOn;
     bool isOnScrollBox;
-    double mouseXScrolPos;
+    float mouseXScrolPos;
     bool hasMoved;
 public:
     bool autoCorrect;
     GPE_Rect contextRect;
     GPE_Rect fullRect;
-    double scrollWidth, scrollPercent, scrollPixels, scrollXPos, scrollDisplayPixels;
+    float scrollWidth, scrollPercent, scrollPixels, scrollXPos, scrollDisplayPixels;
     bool isNeeded;
     GPE_ScrollBar_XAxis();
     ~GPE_ScrollBar_XAxis();
@@ -60,7 +60,7 @@ public:
     bool is_held();
     bool is_scrolling();
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw  = true );
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL );
     void reset_scroller();
 };
 
@@ -69,14 +69,14 @@ class GPE_ScrollBar_YAxis: public GPE_GeneralGuiElement
 protected:
     bool isHeldOn;
     bool isOnScrollBox;
-    double mouseYScrolPos;
+    float mouseYScrolPos;
     bool hasMoved;
 public:
     bool autoCorrect;
     bool documentActions;
     GPE_Rect contextRect;
     GPE_Rect fullRect;
-    double scrollHeight, scrollPercent, scrollYPos, scrollDisplayPixels;
+    float scrollHeight, scrollPercent, scrollYPos, scrollDisplayPixels;
     bool isNeeded;
     GPE_ScrollBar_YAxis();
     ~GPE_ScrollBar_YAxis();
@@ -87,7 +87,7 @@ public:
     bool is_held();
     bool is_scrolling();
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL , bool forceRedraw  = true );
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL );
     void reset_scroller();
 };
 

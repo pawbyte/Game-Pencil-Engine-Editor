@@ -3,10 +3,10 @@ paw_gui_text_input.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -54,13 +54,13 @@ protected:
     int cursorTimer;
     bool showCursor;
     int maxLength;
-    double bscDelay;
-    double delDelay;
-    double enterDelay;
-    double upArrowDelay;
+    float bscDelay;
+    float delDelay;
+    float enterDelay;
+    float upArrowDelay;
     int downArrowDelay;
-    double leftArrowDelay;
-    double rightArrowDelay;
+    float leftArrowDelay;
+    float rightArrowDelay;
     int inputFieldPos;
     bool hasValidInput;
     int cursorHistoryPos;
@@ -73,7 +73,7 @@ public:
     std::string inputLabel;
     bool showLabel;
     bool showPlaceHolder;
-    int lastDoubleClickAction;
+    int lastfloatClickAction;
     int selectionCursorPos, selectionEndCursorPos;
     GPE_TextInputBasic(std::string startName="",std::string placeHolderText="");
     ~GPE_TextInputBasic();
@@ -92,12 +92,12 @@ public:
     void move_right(int xToMove = 1);
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void record_string( std::string strToRecord);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void reset_selection(int resetDirection = 0);
     void select_all();
     void set_height(int newHeight);
     void set_hovered(bool hoverVal);
-    void set_number( double numberIn);
+    void set_number( float numberIn);
     void set_max_width( int nMW);
     void set_max_height( int nMH);
     void set_width(int newWidth);
@@ -112,16 +112,16 @@ class GPE_TextInputNumber: public GPE_TextInputBasic
 {
 protected:
     bool onlyWholeNumbers;
-    double heldNumber;
-    double minInputNumber, maxInputNumber;
+    float heldNumber;
+    float minInputNumber, maxInputNumber;
 public:
     bool forceValidNumber;
-    GPE_TextInputNumber( std::string placeHolderText, bool onlyWholeNums = true, double hMin = INT_MIN+1, double = INT_MAX-1);
+    GPE_TextInputNumber( std::string placeHolderText, bool onlyWholeNums = true, float hMin = INT_MIN+1, float = INT_MAX-1);
     ~GPE_TextInputNumber();
     int get_held_int();
-    double get_held_number();
+    float get_held_number();
     std::string get_plain_string();
-    double make_valid_number(double fallbackNumber );
+    float make_valid_number(float fallbackNumber );
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
 };
 

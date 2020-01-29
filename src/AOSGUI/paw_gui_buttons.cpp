@@ -3,10 +3,10 @@ paw_gui_buttons.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,6 +36,7 @@ SOFTWARE.
 
 GPE_ToolIconButton::GPE_ToolIconButton( std::string buttonImgFile,std::string name, int id, int buttonSize, bool lastInCol)
 {
+    autoResizes = false;
     webUrl = "";
     wasClicked = false;
     guiListTypeName = "iconbutton";
@@ -61,7 +62,7 @@ GPE_ToolIconButton::~GPE_ToolIconButton()
 
 }
 
-void GPE_ToolIconButton::change_texture( GPE_Texture * newTexture)
+void GPE_ToolIconButton::change_texture( GPE_Texture_Base * newTexture)
 {
     buttonTexture = newTexture;
 }
@@ -87,10 +88,10 @@ void GPE_ToolIconButton::load_data(std::string dataString)
         elementBox.h = buttonSize;
     }
     std::string textureFileName = split_first_string(dataString,",,,");
-    int spriteWidth = split_first_int(dataString,',');
-    int spriteHeight = split_first_int(dataString,',');
-    elementBox.w = spriteWidth;
-    elementBox.h = spriteHeight;
+    int animationWidth = split_first_int(dataString,',');
+    int animationHeight = split_first_int(dataString,',');
+    elementBox.w = animationWidth;
+    elementBox.h = animationHeight;
     opId = split_first_int(dataString,',');
     buttonTexture = guiRCM->texture_add(textureFileName);
 }
@@ -109,6 +110,11 @@ void GPE_ToolIconButton::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 {
     set_clicked( false );
     GPE_GeneralGuiElement::process_self(viewedSpace,cam);
+    if( windowInView == false )
+    {
+        return;
+    }
+
     if( isInUse &&( input->check_keyboard_down( kb_enter ) || input->check_keyboard_down( kb_space )  ) )
     {
         isClicked = true;
@@ -125,6 +131,11 @@ void GPE_ToolIconButton::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     if( isClicked && (int)webUrl.size() > 3)
     {
         GPE_OpenURL(webUrl);
+    }
+
+    if( isHovered )
+    {
+        gpe->cursor_change( "asterisk");
     }
 }
 
@@ -145,14 +156,14 @@ void GPE_ToolIconButton::set_image( std::string buttonImgFile)
     //}
 }
 
-void GPE_ToolIconButton::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
+void GPE_ToolIconButton::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
 
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
-    if( forceRedraw && cam!=NULL && viewedSpace!=NULL)
+    if( cam!=NULL && viewedSpace!=NULL)
     {
         if( buttonTexture!=NULL)
         {
@@ -205,7 +216,7 @@ GPE_ToolIconButtonBar::GPE_ToolIconButtonBar( int buttonSize,bool useTabs )
     elementBox.w = 0;
     elementBox.h = buttonSize;
     barPadding = 8;
-    xPadding = GENERAL_GPE_PADDING;
+    xPadding = GENERAL_GPE_GUI_PADDING;
     newButtonXPos = barPadding;
     isTabBar = useTabs;
     tabPosition = 0;
@@ -415,12 +426,12 @@ void GPE_ToolIconButtonBar::recalculate_width()
     }
 }
 
-void GPE_ToolIconButtonBar::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_ToolIconButtonBar::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
 
-    if( forceRedraw && elementBox.h > 0)
+    if( elementBox.h > 0)
     {
         //gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y,GPE_MAIN_THEME->PopUp_Box_Color,false);
         GPE_ToolIconButton * cButton = NULL;
@@ -429,7 +440,7 @@ void GPE_ToolIconButtonBar::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam, 
             cButton = barOptions[i];
             if(cButton!=NULL)
             {
-                cButton->render_self( viewedSpace, cam,forceRedraw);
+                cButton->render_self( viewedSpace,cam);
             }
         }
         if( isInUse)
@@ -542,10 +553,10 @@ GPE_ToolLabelButton::GPE_ToolLabelButton( std::string name, std::string descript
         int textW = 0;
         int textH = 0;
         GPE_DEFAULT_FONT->get_metrics(name,&textW, &textH);
-        //opStringTexture->loadFromRenderedText(MAIN_RENDERER,newName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_POPUP);
+        //opStringTexture->loadFromRenderedText(GPE_MAIN_RENDERER,newName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_POPUP);
         if( textH > elementBox.h)
         {
-            elementBox.h=textH+GENERAL_GPE_PADDING*2;
+            elementBox.h=textH+GENERAL_GPE_GUI_PADDING*2;
         }
     }
     isEnabled = true;
@@ -567,8 +578,8 @@ void GPE_ToolLabelButton::prerender_self( )
         int textW = 0;
         int textH = 0;
         GPE_DEFAULT_FONT->get_metrics(opName,&textW, &textH);
-        //elementBox.w=textW+GENERAL_GPE_PADDING*2;
-        //opStringTexture->loadFromRenderedText(MAIN_RENDERER,newName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_POPUP);
+        //elementBox.w=textW+GENERAL_GPE_GUI_PADDING*2;
+        //opStringTexture->loadFromRenderedText(GPE_MAIN_RENDERER,newName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_POPUP);
         */
     }
 }
@@ -578,7 +589,7 @@ void GPE_ToolLabelButton::process_self(GPE_Rect * viewedSpace, GPE_Rect  * cam )
     GPE_GeneralGuiElement::process_self(viewedSpace,cam);
     if( isHovered)
     {
-        GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
+        gpe->cursor_change("hand");
     }
     if( isInUse &&( input->check_keyboard_down( kb_enter ) || input->check_keyboard_down( kb_space )  ) )
     {
@@ -586,11 +597,11 @@ void GPE_ToolLabelButton::process_self(GPE_Rect * viewedSpace, GPE_Rect  * cam )
     }
 }
 
-void GPE_ToolLabelButton::render_self( GPE_Rect * viewedSpace, GPE_Rect  * cam,bool forceRedraw )
+void GPE_ToolLabelButton::render_self( GPE_Rect * viewedSpace, GPE_Rect  * cam )
 {
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
-    if(cam!=NULL && viewedSpace!=NULL && forceRedraw )
+    if(cam!=NULL && viewedSpace!=NULL)
     {
         //Renders shadow
         if( isHovered || isInUse )
@@ -622,13 +633,13 @@ void GPE_ToolLabelButton::render_self( GPE_Rect * viewedSpace, GPE_Rect  * cam,b
             {
                 gfs->render_text( elementBox.x-cam->x+elementBox.w/2, elementBox.y-cam->y+elementBox.h/2,opName,GPE_MAIN_THEME->Button_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_MIDDLE);
             }
-            /*if( elementBox.w > opStringTexture->get_width()+GENERAL_GPE_PADDING*2 )
+            /*if( elementBox.w > opStringTexture->get_width()+GENERAL_GPE_GUI_PADDING*2 )
             {
-                opStringTexture->render_tex( elementBox.x-cam->x+(elementBox.w-opStringTexture->get_width() )/2,elementBox.y-cam->y+GENERAL_GPE_PADDING,NULL);
+                opStringTexture->render_tex( elementBox.x-cam->x+(elementBox.w-opStringTexture->get_width() )/2,elementBox.y-cam->y+GENERAL_GPE_GUI_PADDING,NULL);
             }
             else
             {
-                opStringTexture->render_tex( elementBox.x-cam->x+GENERAL_GPE_PADDING,elementBox.y-cam->y+GENERAL_GPE_PADDING,NULL);
+                opStringTexture->render_tex( elementBox.x-cam->x+GENERAL_GPE_GUI_PADDING,elementBox.y-cam->y+GENERAL_GPE_GUI_PADDING,NULL);
             }*/
         }
         /*
@@ -661,9 +672,9 @@ void GPE_ToolLabelButton::set_name(std::string newName)
         int textW = 0;
         int textH = 0;
         GPE_DEFAULT_FONT->get_metrics(newName,&textW, &textH);
-        //opStringTexture->loadFromRenderedText(MAIN_RENDERER,newName,GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT);
-        elementBox.w=textW+GENERAL_GPE_PADDING*2;
-        elementBox.h=textH+GENERAL_GPE_PADDING*2;
+        //opStringTexture->loadFromRenderedText(GPE_MAIN_RENDERER,newName,GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT);
+        elementBox.w=textW+GENERAL_GPE_GUI_PADDING*2;
+        elementBox.h=textH+GENERAL_GPE_GUI_PADDING*2;
     }
     opName = newName;
 }
@@ -677,11 +688,11 @@ GPE_ToolPushButton::GPE_ToolPushButton( std::string imgLocation,std::string name
     descriptionText = description;
     opId = -1;
     opTexture = guiRCM->texture_add(imgLocation);
-    iconPadding = GENERAL_GPE_PADDING;
+    iconPadding = GENERAL_GPE_GUI_PADDING;
     elementBox.x = 0;
     elementBox.y = 0;
     elementBox.w = 192;
-    elementBox.h = 24;
+    elementBox.h = 32;
     maxCharactersToRender = 0;
     buttonTextWidth = 0;
     buttonTextHeight = 0;
@@ -697,7 +708,7 @@ GPE_ToolPushButton::~GPE_ToolPushButton()
 
 }
 
-void GPE_ToolPushButton::change_texture( GPE_Texture * newTexture)
+void GPE_ToolPushButton::change_texture( GPE_Texture_Base * newTexture)
 {
     opTexture = newTexture;
 }
@@ -733,9 +744,10 @@ void GPE_ToolPushButton::process_self(GPE_Rect * viewedSpace, GPE_Rect  * cam )
     if(viewedSpace!=NULL && cam!=NULL)
     {
         GPE_GeneralGuiElement::process_self(viewedSpace,cam);
+        prerender_self();
         if( isHovered)
         {
-            GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
+            gpe->cursor_change("hand");
         }
         if( isInUse &&( input->check_keyboard_down( kb_enter ) || input->check_keyboard_down( kb_space )  ) )
         {
@@ -748,9 +760,9 @@ void GPE_ToolPushButton::process_self(GPE_Rect * viewedSpace, GPE_Rect  * cam )
     }
 }
 
-void GPE_ToolPushButton::render_self( GPE_Rect * viewedSpace, GPE_Rect  * cam,bool forceRedraw )
+void GPE_ToolPushButton::render_self( GPE_Rect * viewedSpace, GPE_Rect  * cam )
 {
-    if( forceRedraw && isEnabled)
+    if( isEnabled)
     {
         int nameSize = (int)opName.size();
         viewedSpace = GPE_find_camera(viewedSpace);
@@ -815,7 +827,7 @@ void GPE_ToolPushButton::render_self( GPE_Rect * viewedSpace, GPE_Rect  * cam,bo
                     opTexture->render_tex_resized( elementBox.x - cam->x + iconPadding, elementBox.y-cam->y,iconSize,iconSize,NULL,renderColor);
                     if( FONT_BUTTONS_FONT!=NULL)
                     {
-                        gfs->render_text( abs(elementBox.w-buttonTextWidth)/2+elementBox.x-cam->x+iconPadding, elementBox.y-cam->y+elementBox.h/2,opName,renderColor,FONT_BUTTONS_FONT,FA_LEFT,FA_MIDDLE);
+                        gfs->render_text( abs(elementBox.w-buttonTextWidth)/2+elementBox.x-cam->x+iconPadding, elementBox.y-cam->y+elementBox.h/2,opName,renderColor,FONT_LABEL,FA_LEFT,FA_MIDDLE);
                     }
                 }
             }
@@ -902,7 +914,7 @@ GPE_VerticalCardButton::GPE_VerticalCardButton( std::string imgLocation, std::st
     elementBox.x = 0;
     elementBox.y = 0;
     elementBox.w = buttonSize;
-    elementBox.h = buttonSize+(int)buttonLines.size() *(GENERAL_GPE_PADDING+lineHeight );
+    elementBox.h = buttonSize+(int)buttonLines.size() *(GENERAL_GPE_GUI_PADDING+lineHeight );
 
     isEnabled = true;
     wasClicked = false;
@@ -915,7 +927,7 @@ GPE_VerticalCardButton::~GPE_VerticalCardButton()
 
 }
 
-void GPE_VerticalCardButton::change_texture( GPE_Texture * newTexture)
+void GPE_VerticalCardButton::change_texture( GPE_Texture_Base * newTexture)
 {
     opTexture = newTexture;
 }
@@ -949,7 +961,7 @@ void GPE_VerticalCardButton::process_self(GPE_Rect * viewedSpace, GPE_Rect  * ca
         GPE_GeneralGuiElement::process_self(viewedSpace,cam);
         if( isHovered)
         {
-            GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
+            gpe->cursor_change("hand");
         }
         if( isInUse &&( input->check_keyboard_down( kb_enter ) || input->check_keyboard_down( kb_space )  ) )
         {
@@ -963,9 +975,9 @@ void GPE_VerticalCardButton::process_self(GPE_Rect * viewedSpace, GPE_Rect  * ca
     }
 }
 
-void GPE_VerticalCardButton::render_self( GPE_Rect * viewedSpace, GPE_Rect  * cam,bool forceRedraw )
+void GPE_VerticalCardButton::render_self( GPE_Rect * viewedSpace, GPE_Rect  * cam )
 {
-    if( forceRedraw && isEnabled)
+    if( isEnabled)
     {
         viewedSpace = GPE_find_camera(viewedSpace);
         cam = GPE_find_camera(cam);
@@ -1014,7 +1026,7 @@ void GPE_VerticalCardButton::render_self( GPE_Rect * viewedSpace, GPE_Rect  * ca
             {
                 for( int ipLine = 0; ipLine < (int)buttonLines.size(); ipLine++)
                 {
-                    gfs->render_text( elementBox.x+elementBox.w/2-cam->x, elementBox.y-cam->y + elementBox.w+GENERAL_GPE_PADDING+(ipLine * (GENERAL_GPE_PADDING+lineHeight) ), buttonLines[ipLine], textRenderColor, GPE_DEFAULT_FONT, FA_CENTER, FA_TOP );
+                    gfs->render_text( elementBox.x+elementBox.w/2-cam->x, elementBox.y-cam->y + elementBox.w+GENERAL_GPE_GUI_PADDING+(ipLine * (GENERAL_GPE_GUI_PADDING+lineHeight) ), buttonLines[ipLine], textRenderColor, GPE_DEFAULT_FONT, FA_CENTER, FA_TOP );
                 }
             }
 
@@ -1057,8 +1069,8 @@ void GPE_VerticalCardButton::set_name(std::string newName)
             buttonLines.push_back(newName);
         }
     }
-    //elementBox.h = GENERAL_GPE_PADDING*4+( (int)buttonLines.size() ) * (GENERAL_GPE_PADDING+lineHeight);
-    //elementBox.h = GENERAL_GPE_PADDING+( (int)buttonLines.size() *(lineHeight+GENERAL_GPE_PADDING) );
+    //elementBox.h = GENERAL_GPE_GUI_PADDING*4+( (int)buttonLines.size() ) * (GENERAL_GPE_GUI_PADDING+lineHeight);
+    //elementBox.h = GENERAL_GPE_GUI_PADDING+( (int)buttonLines.size() *(lineHeight+GENERAL_GPE_GUI_PADDING) );
     prerender_self();
 }
 

@@ -3,10 +3,10 @@ paw_gui_themes.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -38,10 +38,7 @@ GPE_Theme * GPE_MAIN_THEME = NULL;
 GPE_Theme * GPE_DEFAULT_TEMPLATE = NULL;
 
 //Define GUI fonts to NULL
-GPE_Font * font = NULL;
-GPE_Font * textboxFont = NULL;
 GPE_Font * FONT_BUTTONS_FONT = NULL;
-GPE_Font * FONT_CATEGORY_BAR = NULL;
 //
 GPE_Font * FONT_POPUP = NULL;
 GPE_Font * FONT_TOOLBAR = NULL;
@@ -64,11 +61,8 @@ GPE_Font * FONT_TERM_SCOPE = NULL;
 GPE_Font * FONT_TOOLTIP = NULL;
 
 GPE_Font * FONT_DEFAULT_PROMPT = NULL;
-GPE_Font * FONT_CHECKBOX = NULL;
-GPE_Font * FONT_PARAGRAGH = NULL;
 GPE_Font * FONT_LABEL = NULL;
 GPE_Font * FONT_LABEL_ANCHOR = NULL;
-GPE_Font * FONT_LABEL_PARAGRAPH = NULL;
 GPE_Font * FONT_STATUSBAR = NULL;
 GPE_Font * FONT_HEADER = NULL;
 GPE_Font * FONT_LABEL_TITLE = NULL;
@@ -91,8 +85,8 @@ GPE_Theme::GPE_Theme(std::string name, bool isCustomTheme)
     //Background info
     themeBgFileLocation = "";
     themeBgTexture = NULL;
-    //sprites
-    Main_Menu_Sprite = NULL;
+    //animations
+    Main_Menu_animation = NULL;
 
     //for bg and standard colors
     Program_Color = add_color("MainBackground",32,32,32);
@@ -310,9 +304,13 @@ bool GPE_Theme::load_background( std::string bgTextureLocation)
         themeBgFileLocation = get_local_from_global_file( bgTextureLocation );
         if( themeBgTexture== NULL)
         {
-            themeBgTexture = new GPE_Texture();
+            themeBgTexture = gpeph->get_new_texture();
         }
-        themeBgTexture->load_new_texture( bgTextureLocation );
+        if( themeBgTexture == NULL)
+        {
+            return false;
+        }
+        themeBgTexture->load_new_texture( GPE_MAIN_RENDERER,bgTextureLocation );
         if( themeBgTexture->get_width() > 0)
         {
             themeBgTexture->set_blend_mode( blend_mode_blend );
@@ -358,7 +356,7 @@ bool GPE_Theme::load_theme(std::string themeLocationIn)
             std::string subValString="";
             std::string currLine="";
             std::string currLineToBeProcessed;
-            //double foundFileVersion = 0;
+            //float foundFileVersion = 0;
             GPE_Color * foundColor = NULL;
             int rFound = 0, gFound = 0, bFound = 0;
             while ( templateFileIn.good() )
@@ -403,7 +401,7 @@ bool GPE_Theme::load_theme(std::string themeLocationIn)
                                     hashPos = valString.find_first_of("#");
                                     if(hashPos!=(int)std::string::npos)
                                     {
-                                        HEXtoRGB(valString,rFound,gFound, bFound);
+                                        GPE_COLOR_SYSTEM->hex_to_rgb(valString,rFound,gFound, bFound);
                                     }
                                     else
                                     {
@@ -499,18 +497,8 @@ bool GPE_Theme::save_theme_as(std::string themeLocationOut)
     templateFileOut.close();
 }
 
-void GPE_change_cursor(SDL_SystemCursor id)
-{
-    GPE_CurrentCursor = id;
-}
-
 bool PAW_GUI_LOAD_FONTS()
 {
-    if( GPE_Font_Init() == false )
-    {
-        GPE_Report("    Unable to properly initialize  GPE Font System!\n");
-        return false;
-    }
     std::string mainGuiFontLocation = APP_DIRECTORY_NAME+"resources/fonts/dejavu_sans_mono/DejaVuSansMono.ttf";
     std::string textEditorFontLocation = APP_DIRECTORY_NAME+"resources/fonts/dejavu_sans_mono/DejaVuSansMono.ttf";
     bool fontIsMonoSpaced = true;
@@ -532,11 +520,7 @@ bool PAW_GUI_LOAD_FONTS()
     }
     gpe->log_error("Using "+mainGuiFontLocation+" font..." );
     //Open the fonts
-    font = gfs->open_font( mainGuiFontLocation, 24,fontIsMonoSpaced, "Generic Font");
     FONT_BUTTONS_FONT = gfs->open_font(textEditorFontLocation,12,true, "Buttons Font");
-
-    textboxFont = gfs->open_font( mainGuiFontLocation, 24,fontIsMonoSpaced, "textboxFont");
-    FONT_CATEGORY_BAR = gfs->open_font( mainGuiFontLocation, 14,fontIsMonoSpaced, "FONT_CATEGORY_BAR");
 
     GPE_DEFAULT_FONT = gfs->open_font(mainGuiFontLocation,14,fontIsMonoSpaced, "GPE_DEFAULT_FONT");
     GUI_TAB_FONT = gfs->open_font(mainGuiFontLocation,11,fontIsMonoSpaced, "GPE_TAB_FONT");
@@ -545,7 +529,6 @@ bool PAW_GUI_LOAD_FONTS()
     FONT_TOOLBAR = gfs->open_font(mainGuiFontLocation,14,fontIsMonoSpaced, "FONT_TOOLBAR");
     FONT_RESOURCEBAR = gfs->open_font(mainGuiFontLocation,12,fontIsMonoSpaced, "FONT_RESOURCEBAR");
     FONT_STREE_BRANCH = gfs->open_font(mainGuiFontLocation,12,fontIsMonoSpaced, "FONT_STREE");
-
 
     FONT_TEXTINPUT = gfs->open_font(textEditorFontLocation,11,true, "FONT_TEXTINPUT_GENERAL");
     FONT_TEXTINPUT_COMMENT = gfs->open_font(textEditorFontLocation,11,true, "FONT_TEXTINPUT_COMMENT");
@@ -563,13 +546,11 @@ bool PAW_GUI_LOAD_FONTS()
     FONT_TOOLTIP = gfs->open_font(textEditorFontLocation,12,true, "FONT_TOOLTIP");
 
     FONT_DEFAULT_PROMPT = gfs->open_font(textEditorFontLocation,16,true, "FONT_DEFAULT_PROMPT");
-    FONT_CHECKBOX = gfs->open_font(mainGuiFontLocation,12,fontIsMonoSpaced, "FONT_CHECKBOX");
 
     FONT_HEADER = gfs->open_font( mainGuiFontLocation, 18,fontIsMonoSpaced, "FONT_HEADER");
     FONT_LABEL = gfs->open_font( mainGuiFontLocation, 14,fontIsMonoSpaced, "FONT_LABEL");
     FONT_LABEL_ANCHOR = gfs->open_font( mainGuiFontLocation, 14,fontIsMonoSpaced, "FONT_LABEL_ANCHOR");
     FONT_LABEL_TITLE = gfs->open_font( mainGuiFontLocation, 18,fontIsMonoSpaced, "FONT_LABEL_TITLE");
-    FONT_PARAGRAGH = gfs->open_font( textEditorFontLocation, 14,true, "FONT_PARAGRAGH" );
     FONT_STATUSBAR = gfs->open_font( textEditorFontLocation, 12,true, "FONT_STATUSBAR" );
 
     if(GPE_DEFAULT_FONT==NULL )
@@ -596,25 +577,7 @@ bool PAW_GUI_LOAD_FONTS()
 void cleanup_fonts()
 {
     //Close the fonts that was used
-    if( font!=NULL)
-    {
-        gfs->close_font(font);
-        font = NULL;
-    }
-
-    if( textboxFont!=NULL)
-    {
-        gfs->close_font( textboxFont );
-        textboxFont = NULL;
-    }
-
-    if( FONT_CATEGORY_BAR!=NULL)
-    {
-        gfs->close_font( FONT_CATEGORY_BAR );
-        FONT_CATEGORY_BAR = NULL;
-    }
     //
-
     if( FONT_POPUP!=NULL)
     {
         gfs->close_font( FONT_POPUP );
@@ -661,11 +624,6 @@ void cleanup_fonts()
         FONT_DEFAULT_PROMPT = NULL;
     }
 
-    if( FONT_CHECKBOX!=NULL)
-    {
-        gfs->close_font( FONT_CHECKBOX );
-        FONT_CHECKBOX = NULL;
-    }
     //
     if( FONT_HEADER!=NULL)
     {
@@ -684,21 +642,9 @@ void cleanup_fonts()
         FONT_LABEL_ANCHOR = NULL;
     }
 
-    if( FONT_LABEL_PARAGRAPH!=NULL)
-    {
-        gfs->close_font( FONT_LABEL_PARAGRAPH );
-        FONT_LABEL_PARAGRAPH = NULL;
-    }
-
     if( FONT_LABEL_TITLE!=NULL)
     {
         gfs->close_font( FONT_LABEL_TITLE );
         FONT_LABEL_TITLE = NULL;
-    }
-
-    if( FONT_PARAGRAGH!=NULL)
-    {
-        gfs->close_font( FONT_PARAGRAGH );
-        FONT_PARAGRAGH = NULL;
     }
 }

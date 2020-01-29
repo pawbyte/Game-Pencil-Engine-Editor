@@ -3,10 +3,10 @@ text_editor.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -83,29 +83,35 @@ public:
     GPE_TextAnchor(int lineN, int charN, std::string messageIn, std::string alertInfo, int anchorType = 0);
     ~GPE_TextAnchor();
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
 };
 
 //Added this here since the main logs class will just rob this guy :-)
-class GPE_TextAnchorGBCollector: public GPE_GeneralGuiElement
+class GPE_TextAnchorController: public GPE_GeneralGuiElement
 {
 public:
+    //For Find/Replace Box of TextArea
+    std::string searchResultProjectName;
+    std::string searchResultResourceName;
+    int searchResultResourceId;
+
+    //List of anchors found
     std::vector< GPE_TextAnchor * > loggedAnchors;
-    GPE_TextAnchorGBCollector();
-    ~GPE_TextAnchorGBCollector();
+    GPE_TextAnchorController();
+    ~GPE_TextAnchorController();
     void clear_list(bool deleteAnchors = false );
 };
 
-extern GPE_TextAnchorGBCollector * GPE_ANCHOR_GC;
+extern GPE_TextAnchorController * GPE_ANCHOR_GC;
 
 class GPE_TextAreaInputBasic: public GPE_GeneralGuiElement
 {
 protected:
-    double editorZoomLevel;
-    double defaultLineHeight;
+    float editorZoomLevel;
+    float defaultLineHeight;
     bool undoableActionOccurred;
     time_t lastUndoableActionTime;
-    int lastDoubleClickAction;
+    int lastfloatClickAction;
     int currentPositionInHistory;
     std::vector<GPE_TextAreaInputBasic *> savedHistory;
     bool isReadOnly;
@@ -128,22 +134,22 @@ protected:
     int lineCountBoxWidth;
     int longestString;
     int linesWithinView;
-    double prevLinesWithinView;
-    double lineStartXPos;
+    float prevLinesWithinView;
+    float lineStartXPos;
     int charactersWithinView;
     int prevCharactersWithinView;
-    double lineStartYPos;
+    float lineStartYPos;
 
     //Text Area Delays
-    double delDelay;
-    double bscDelay;
-    double tabDelay;
-    double enterDelay;
-    double upDelay;
-    double downDelay;
-    double leftDelay;
-    double rightDelay;
-    double dKeyDelay;
+    float delDelay;
+    float bscDelay;
+    float tabDelay;
+    float enterDelay;
+    float upDelay;
+    float downDelay;
+    float leftDelay;
+    float rightDelay;
+    float dKeyDelay;
 
     int TEXTBOX_FONT_SIZE_WIDTH, TEXTBOX_FONT_SIZE_HEIGHT;
     GPE_Font * editorFont;
@@ -257,7 +263,7 @@ public:
     void render_linebox( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void render_plain( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void render_code( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = false);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
 
 
     int replace_all_found(std::string strToReplace, std::string newString);

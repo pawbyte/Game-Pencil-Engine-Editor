@@ -1,5 +1,5 @@
 /*
-ambitious_gui_library.h
+paw_gui_content_selector.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
@@ -31,56 +31,52 @@ SOFTWARE.
 
 */
 
-#ifndef AMBITIUOS_GUI_LIBRARY_H
-#define AMBITIUOS_GUI_LIBRARY_H
+
+#ifndef PAW_GUI_CONTENT_SELECTOR_H
+#define PAW_GUI_CONTENT_SELECTOR_H
 
 #include "paw_gui_base.h"
-#include "paw_gui_scrollbars.h"
-#include "paw_gui_sliders.h"
-#include "paw_gui_panel_list.h"
-#include "paw_gui_popups.h"
-#include "paw_gui_tab_basic.h"
 
-//Once I remove the other files that require parsers remove the include for parsers
-#include "paw_gui_parsers.h"
-#include "paw_gui_general_resource.h"
-
-extern GPE_Texture_Base * GPE_LOGO;
-extern GPE_Texture_Base * GPE_TEXTURE_TRANSPARENT_BG;
-
-
-class GPE_StatusBar: public GPE_GeneralGuiElement
+typedef enum
 {
-private:
-    std::string codeEditorStatusBarString;
-    std::string insertModeString;
-public:
-    std::string statusBarLeftText;
-    GPE_StatusBar();
-    ~GPE_StatusBar();
-    void process_self(GPE_Rect * viewedSpace=NULL, GPE_Rect *cam=NULL);
-    void render_self( GPE_Rect * viewedSpace=NULL,GPE_Rect * cam = NULL);
-    void reset_statusbar();
-    void set_codestring(std::string newCodeString);
-    void set_insertmode(std::string newInsertMode);
-};
+    GPE_CS_TYPE_INT,     /**< Int */
+    GPE_CS_TYPE_float,     /**< float */
+    GPE_CS_TYPE_COLOR,     /**< Color */
+    GPE_CS_TYPE_STRING,     /**< String */
+} GPE_Content_Selector_Type;
 
-extern GPE_StatusBar * GPE_Main_Statusbar;
-
-class GPE_TextURL: public GPE_GeneralGuiElement
+class GPE_Content_Selector: public GPE_GeneralGuiElement
 {
+protected:
+    int fontSizeW, fontSizeH;
 public:
-    bool wasClicked;
-    std::string webUrl;
-    std::string webId;
-    GPE_TextURL(std::string nameIn="", std::string description="", std::string urlIn="" );
-    ~GPE_TextURL();
+    int selectorId;
+    int selectorType;
+    int selectorGroup; //Seperated groups will be used per level essentially
+    int storedInt;
+    float storeddfloat;
+    GPE_Color * storedColor;
+    std::string storedString;
+    GPE_Rect fieldElementBox;
+    GPE_Content_Selector(std::string name="",std::string description="" );
+    ~GPE_Content_Selector();
     std::string get_data();
-    std::string get_plain_string();
     void load_data(std::string dataString);
+    std::string get_plain_string();
+    void set_label(std::string newLabel);
+    void set_name(std::string newName);
+    void set_string(std::string newString);
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-    void set_name(std::string nameIn);
+    void set_color_from_rgb(GPE_Color *newColor);
+    void set_color_from_rgb(std::string newColorStr);
+    void set_color_from_hex(std::string newColorStr);
+    void set_r(int r);
+    void set_g(int g);
+    void set_b(int b);
+    void set_rgb(int r, int g, int b);
 };
 
-#endif
+extern GPE_Content_Selector * GPE_Content_Selector_Current;
+extern int GPE_Content_Selector_State; // -1, not active, 0 active, 1 just set
+#endif //PAW_GUI_CONTENT_SELECTOR_H

@@ -3,10 +3,10 @@ paw_gui_dropdown.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,18 +36,22 @@ SOFTWARE.
 #include "paw_gui_base.h"
 #include "paw_gui_parsers.h"
 #include "paw_gui_context.h"
-
+#include "../GPE/GPE_Parser.h"
 
 class GPE_DropDown_Menu: public GPE_GeneralGuiElement
 {
 private:
-    std::vector <GPE_KeyPair *> subOptions;
     int widestOptionSpace;
     int maxOptionsAllowed;
     std::string dropdownName;
     int opId;
     bool isSelectable;
     int selectedId;
+    std::string selectedName;
+    std::string selectedTag;
+    float selectedValue;
+    GPE_KeyPair * selectedPair;
+    GPE_KeyPair * dropDownParentPair;
     bool isOpen;
     bool justActivated;
     bool showJustOptions;
@@ -60,29 +64,34 @@ public:
     std::string get_data();
     void load_data(std::string dataString);
     void remove_data(std::string dataString);
-
-    void add_menu_option(std::string optionName, std::string optionSubStr= "",double optionValue = 0, bool selectOption = false);
+    bool add_to_context_menu( GPE_PopUpMenu_Option *  cLevel, GPE_KeyPair * cKey );
+    GPE_KeyPair * add_menu_option(std::string optionName, std::string optionSubStr= "",float optionValue = 0, bool selectOption = false);
+    void clear_dropdown();
+    GPE_KeyPair *  find_option_id(  int pairId );
+    GPE_KeyPair *  find_option_valie(  float pairValue );
+    GPE_KeyPair *  find_selected_pair( GPE_KeyPair *  pairIn, std::string pairName, int pairId = -1);
+    GPE_KeyPair *  find_selected_pair_sub( GPE_KeyPair *  pairIn, std::string pairSubString );
     std::string get_menu_option(int atNumb);
+    int get_menu_size();
     std::string get_plain_string();
     int get_selected_id();
     std::string get_selected_tag();
     std::string get_selected_name();
 
-    double get_selected_value();
+    float get_selected_value();
 
-    int get_menu_size();
+    std::string get_tag_from( std::string tagName, int tagId = -1);
     bool just_activated();
     void remove_option(std::string optionToRemove);
     void reset_suboptions();
     void set_id(int newId);
-    void set_option( std::string newSelectedOptionName );
+    void set_option_named( std::string newSelectedOptionName );
     void set_option_subvalue( std::string newSelectedOptionName );
-    void set_value(int valueToFind);
+    void set_option_value(float sValue);
     void show_just_options(bool justOptions);
     void process_self(GPE_Rect * viewedSpace=NULL, GPE_Rect *cam=NULL);
-    void render_self( GPE_Rect * viewedSpace=NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace=NULL,GPE_Rect * cam = NULL);
     void set_name(std::string newName);
-    void set_selection(int newId, bool autoCorrect = true);
 };
 
 #endif

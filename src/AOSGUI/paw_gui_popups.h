@@ -3,10 +3,10 @@ paw_gui_popups.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,10 +37,10 @@ SOFTWARE.
 class GPE_LoaderDiplay
 {
 private:
-    double item1Value;
-    double item1Max;
-    double item2Value;
-    double item2Max;
+    float item1Value;
+    float item1Max;
+    float item2Value;
+    float item2Max;
 public:
     std::string displayMessageTitle;
     std::string displayMessageSubtitle;
@@ -51,8 +51,8 @@ public:
     void increment_bar2();
     void increment_and_update( std::string subTitle, std::string message, int barNumber = 0, bool renderUpdate = true );
 
-    void set_bar1( double maxValue);
-    void set_bar2( double maxValue);
+    void set_bar1( float maxValue);
+    void set_bar2( float maxValue);
     void render_loader();
     void reset();
     void update_messages(std::string title, std::string subTitle, std::string message, bool renderUpdate = true );

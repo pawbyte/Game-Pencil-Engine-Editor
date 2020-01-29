@@ -3,10 +3,10 @@ paw_gui_sliders.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -40,52 +40,52 @@ class GPE_Slider_XAxis: public GPE_GeneralGuiElement
 {
 protected:
     bool isOnScrollBox;
-    int mouseXScrolPos;
+    float mouseXScrolPos;
     bool hasMoved;
     bool isHeldOn;
-    int myValue;
-    int minValue;
-    int maxValue;
-    int currentSliderXPos;
-    int scrollDisplayPixels;
+    float myValue;
+    float minValue;
+    float maxValue;
+    float currentSliderXPos;
+    float scrollDisplayPixels;
 public:
     bool isNeeded;
-    GPE_Slider_XAxis( int sVal  = 50, int sMin = 0, int sMax = 100 );
+    GPE_Slider_XAxis( float sVal  = 50, float sMin = 0, float sMax = 100 );
     ~GPE_Slider_XAxis();
-    int get_value();
+    float get_value();
     bool has_moved();
     bool is_held();
     bool is_scrolling();
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void reset_scroller();
-    void set_data( int sVal  = 50, int sMin = 0, int sMax = 100 );
-    bool set_value( int sVal );
+    void set_data( float sVal  = 50, float sMin = 0, float sMax = 100 );
+    bool set_value( float sVal );
 };
 
 class GPE_Slider_YAxis: public GPE_GeneralGuiElement
 {
 protected:
     bool isOnScrollBox;
-    int mouseYScrolPos;
+    float mouseYScrolPos;
     bool hasMoved;
     bool isHeldOn;
-    int scrollDisplayPixels;
+    float scrollDisplayPixels;
 public:
     bool isNeeded;
-    GPE_Slider_YAxis( int sVal  = 50, int sMin = 0, int sMax = 100 );
+    GPE_Slider_YAxis( float sVal  = 50, float sMin = 0, float sMax = 100 );
     ~GPE_Slider_YAxis();
-    int get_value();
-    int get_box_width();
-    int get_box_height();
+    float get_value();
+    float get_box_width();
+    float get_box_height();
     bool has_moved();
     bool is_held();
     bool is_scrolling();
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void reset_scroller();
-    void set_data( int sVal  = 50, int sMin = 0, int sMax = 100 );
-    bool set_value( int sVal );
+    void set_data( float sVal  = 50, float sMin = 0, float sMax = 100 );
+    bool set_value( float sVal );
 };
 
 #endif

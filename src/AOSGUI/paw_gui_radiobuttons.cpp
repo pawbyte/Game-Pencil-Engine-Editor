@@ -3,10 +3,10 @@ paw_gui_radiobuttons.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,7 +45,7 @@ GPE_RadioButtonControllerBasic::GPE_RadioButtonControllerBasic(std::string cName
     elementBox.x = 0;
     elementBox.y = 0;
     elementBox.w = 0;
-    elementBox.h = 24;
+    elementBox.h = 32;
     opWidth = elementBox.w;
     opHeight = elementBox.h;
 
@@ -57,7 +57,7 @@ GPE_RadioButtonControllerBasic::GPE_RadioButtonControllerBasic(std::string cName
         opWidth = textW;
         if( elementBox.w < textW )
         {
-            elementBox.w = textW+GENERAL_GPE_PADDING*2;
+            elementBox.w = textW+GENERAL_GPE_GUI_PADDING*2;
         }
     }
     allowDuplicates = false;
@@ -188,8 +188,8 @@ void GPE_RadioButtonControllerBasic::add_opton(std::string newOption)
         if( opWidth < textW )
         {
             opWidth = textW;
-            elementBox.w = textW+GENERAL_GPE_PADDING*2;
-            //newTex->loadFromRenderedText(MAIN_RENDERER,newOption,GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT);
+            elementBox.w = textW+GENERAL_GPE_GUI_PADDING*2;
+            //newTex->loadFromRenderedText(GPE_MAIN_RENDERER,newOption,GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT);
         }
         GPE_KeyPair * kp = NULL;
         GPE_KeyPair * newOptionPair = new GPE_KeyPair(-1,newOption,newOption);
@@ -230,8 +230,8 @@ void GPE_RadioButtonControllerBasic::add_menu_option(std::string optionName, std
         if( opWidth < textW )
         {
             opWidth = textW;
-            elementBox.w = textW+GENERAL_GPE_PADDING*2;
-            //newTex->loadFromRenderedText(MAIN_RENDERER,optionName,GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT);
+            elementBox.w = textW+GENERAL_GPE_GUI_PADDING*2;
+            //newTex->loadFromRenderedText(GPE_MAIN_RENDERER,optionName,GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT);
         }
         bool optionExists = false;
         GPE_KeyPair * tOption = NULL;
@@ -249,7 +249,7 @@ void GPE_RadioButtonControllerBasic::add_menu_option(std::string optionName, std
         }
         if( !optionExists)
         {
-            GPE_KeyPair * kp = new GPE_KeyPair(optionValue,optionName,optionSubStr);
+            GPE_KeyPair * kp = new GPE_KeyPair(optionValue,optionName,optionSubStr, optionValue );
             subOptions.push_back(kp);
             if( selectOption )
             {
@@ -318,8 +318,8 @@ int GPE_RadioButtonControllerBasic::get_selected_value()
 
 void GPE_RadioButtonControllerBasic::organize_options()
 {
-    elementBox.w = GENERAL_GPE_PADDING*2;
-    elementBox.h = 24;
+    elementBox.w = GENERAL_GPE_GUI_PADDING*2;
+    elementBox.h = 32;
     int maxWidthText = 0;
     int textW = 0;
     int textH = 0;
@@ -532,9 +532,9 @@ void GPE_RadioButtonControllerBasic::process_self(GPE_Rect * viewedSpace, GPE_Re
     }
 }
 
-void GPE_RadioButtonControllerBasic::render_self(  GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
+void GPE_RadioButtonControllerBasic::render_self(  GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
-    if( forceRedraw )
+    //if( forceRedraw )
     {
         viewedSpace = GPE_find_camera(viewedSpace);
         cam = GPE_find_camera(cam);

@@ -3,10 +3,10 @@ paw_gui_panel_list.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -64,7 +64,7 @@ void GPE_GuiElementRow::add_gui_element(GPE_GeneralGuiElement *  newElement )
 
 void GPE_GuiElementRow::calculate_width()
 {
-    calculatedRowWidth = (barXPadding)*2 + indentationLevel*GENERAL_GPE_PADDING;
+    calculatedRowWidth = (barXPadding)*2 + indentationLevel*GENERAL_GPE_GUI_PADDING;
     GPE_GeneralGuiElement * tempOption = NULL;
     int optionsSize = (int)subOptions.size();
     bool breakHappened = false;
@@ -124,16 +124,164 @@ void GPE_GuiElementRow::set_coords(int newX, int newY)
     elementBox.h = 0;
     //For now we just gonna assume is all fa_left until its time to fix it
     GPE_GeneralGuiElement * cContainer = NULL;
-    int indentWidth = indentationLevel*GENERAL_GPE_PADDING;
+    int indentWidth = indentationLevel*barXPadding;
     int tempX = newX + indentWidth;
     int tempY = newY;//+barYPadding;
     int i;
     int optionsSize = (int)subOptions.size();
+
+    if( optionsSize == 0)
+    {
+        return;
+    }
+
     int maxHeight = 0;
 
     //Does horizontal align calculations
     bool keepCalculatingWidth = true;
-    if( hAlign==FA_RIGHT || hAlign == FA_CENTER  )
+
+    int remainderWidth = indentWidth;
+    if( rowSizingStyle == GPE_PANEL_ALIGN_FULLROWS )
+    {
+        elementBox.w = outterWidth;
+        for( i=0; i<optionsSize; i++)
+        {
+            cContainer = subOptions[i];
+            if(cContainer!=NULL)
+            {
+                if( cContainer->autoResizes )
+                {
+                    cContainer->set_width( outterWidth - barXPadding*2 );
+                }
+            }
+        }
+    }
+    else if( rowSizingStyle == GPE_PANEL_ALIGN_FULL_LEFT)
+    {
+        elementBox.w = outterWidth;
+        if( optionsSize > 1)
+        {
+            for( i=optionsSize -1; i > 0; i--)
+            {
+                cContainer = subOptions[i];
+
+                if( cContainer->get_width() > outterWidth )
+                {
+                    cContainer->set_width( outterWidth );
+                }
+                if(cContainer!=NULL)
+                {
+                    remainderWidth+= cContainer->get_width() + barXPadding *2;
+                }
+            }
+            cContainer = subOptions[0];
+            if(cContainer->autoResizes )
+            {
+                if(cContainer->autoResizes )
+                {
+                    cContainer->set_width( outterWidth - remainderWidth -  barXPadding );
+                }
+                else
+                {
+                    cContainer->set_width( 0 );
+                }
+            }
+        }
+        else
+        {
+            //equal to 1, since function would've returned if 0
+            cContainer = subOptions[ 0 ];
+            if(cContainer->autoResizes )
+            {
+                cContainer->set_width( outterWidth - barXPadding*2 );
+            }
+            else if( cContainer->get_width() > outterWidth - barXPadding*2  )
+            {
+                cContainer->set_width( outterWidth - barXPadding*2 );
+            }
+        }
+    }
+    else if( rowSizingStyle == GPE_PANEL_ALIGN_FULL_RIGHT)
+    {
+        if( optionsSize > 1)
+        {
+            for( i=0; i < optionsSize -1; i++)
+            {
+                cContainer = subOptions[i];
+                if(cContainer!=NULL)
+                {
+                    remainderWidth+= cContainer->get_width()  + barXPadding*2;
+                }
+            }
+            cContainer = subOptions[optionsSize -1];
+            if(cContainer->autoResizes )
+            {
+                if( remainderWidth < outterWidth)
+                {
+                    cContainer->set_width( outterWidth - remainderWidth - barXPadding*2 );
+                }
+                else
+                {
+                    cContainer->set_width( 0 );
+                }
+            }
+        }
+        else
+        {
+            //equal to 1, since function would've returned if 0
+            cContainer = subOptions[ 0 ];
+            if(cContainer->autoResizes )
+            {
+                cContainer->set_width( outterWidth - barXPadding*2  );
+            }
+        }
+    }
+    else if( rowSizingStyle == GPE_PANEL_ALIGN_FULL_EQUAL)
+    {
+        elementBox.w = outterWidth;
+        if( optionsSize > 1)
+        {
+            for( i=optionsSize -1; i > 0; i--)
+            {
+                cContainer = subOptions[i];
+
+                if( cContainer->get_width() > outterWidth )
+                {
+                    cContainer->set_width( outterWidth );
+                }
+                if(cContainer!=NULL && !cContainer->autoResizes )
+                {
+                    remainderWidth+= cContainer->get_width() + barXPadding *2;
+                }
+            }
+            cContainer = subOptions[0];
+            if(cContainer->autoResizes )
+            {
+                if(cContainer->autoResizes )
+                {
+                    cContainer->set_width( outterWidth - remainderWidth -  barXPadding );
+                }
+                else
+                {
+                    cContainer->set_width( 0 );
+                }
+            }
+        }
+        else
+        {
+            //equal to 1, since function would've returned if 0
+            cContainer = subOptions[ 0 ];
+            if(cContainer->autoResizes )
+            {
+                cContainer->set_width( outterWidth - barXPadding*2 );
+            }
+            else if( cContainer->get_width() > outterWidth - barXPadding*2  )
+            {
+                cContainer->set_width( outterWidth - barXPadding*2 );
+            }
+        }
+    }
+    else if( hAlign==FA_RIGHT || hAlign == FA_CENTER  )
     {
         int foundRowWidth = 0;
         for( i=0; i<optionsSize; i++)
@@ -172,7 +320,7 @@ void GPE_GuiElementRow::set_coords(int newX, int newY)
             cContainer = subOptions[i];
             if(cContainer!=NULL)
             {
-                if( cContainer->is_full_width() )
+                if( cContainer->is_full_width() && cContainer->autoResizes )
                 {
                     cContainer->set_width( outterWidth );
                 }
@@ -274,7 +422,7 @@ void GPE_GuiElementRow::set_coords(int newX, int newY)
             if( cContainer!=NULL )
             {
                 cContainer->set_coords(tempX, tempY );
-                if(cContainer->autoResizes)
+                if( cContainer->autoResizes )
                 {
                     //cContainer->set_width( elementBox.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
                 }
@@ -321,6 +469,7 @@ void set_maxed_out_height()
 
 GPE_GuiElementList::GPE_GuiElementList()
 {
+    panelAlignType = GPE_PANEL_ALIGN_DEFAULT;
     usingFullSizeElement = false;
     selectedElement = NULL;
     needsNewLine = true;
@@ -332,12 +481,12 @@ GPE_GuiElementList::GPE_GuiElementList()
     cameraBox.x = menuBox.x = entireBox.x = elementBox.x = 0;
     cameraBox.y = menuBox.y = entireBox.y = elementBox.y = 0;
     cameraBox.w = menuBox.w = entireBox.w = elementBox.w;
-    cameraBox.h = menuBox.h = entireBox.h = elementBox.h = RESOURCE_AREA_HEIGHT*3;
+    cameraBox.h = menuBox.h = entireBox.h = elementBox.h = 32;
     xScroll = new GPE_ScrollBar_XAxis();
     yScroll = new GPE_ScrollBar_YAxis();
     cameraBox.w = menuBox.w = entireBox.w = elementBox.w - yScroll->get_box_width();
-    barXPadding = GENERAL_GPE_PADDING;
-    barYPadding = GENERAL_GPE_PADDING;
+    barXPadding = GENERAL_GPE_GUI_PADDING;
+    barYPadding = GENERAL_GPE_GUI_PADDING;
     barXMargin = 0;
     barYMargin = 0;
     isInUse = true;
@@ -379,7 +528,14 @@ void GPE_GuiElementList::add_gui_element(GPE_GeneralGuiElement *  newElement, bo
         {
             newRowRequested = true;
         }
+
+        if( panelAlignType == GPE_PANEL_ALIGN_FULLROWS )
+        {
+            isNLElement = true;
+        }
         newElement->hasLineBreak = isNLElement;
+
+
         int rowSize = (int)subRows.size();
 
         if(  rowSize == 0 || newRowRequested )
@@ -422,7 +578,7 @@ void GPE_GuiElementList::add_gui_auto(GPE_GeneralGuiElement *  newElement )
         newElement->hasLineBreak = false;
         int rowSize = (int)subRows.size();
 
-        if( newElement->requires_newline() || newElement->is_full_width() )
+        if( newElement->requires_newline() || newElement->is_full_width() || panelAlignType == GPE_PANEL_ALIGN_FULLROWS  )
         {
             newRowRequested = true;
             newElement->hasLineBreak = true;
@@ -627,13 +783,12 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         GPE_Report("Starting to process GPE_GuiElementList...");
     }
     GPE_GeneralGuiElement::process_self(viewedSpace,cam);
-    xScroll->set_coords( elementBox.x, elementBox.h-8);
+    xScroll->set_coords( elementBox.x, elementBox.h - xScroll->get_height() );
     xScroll->set_width( elementBox.w );
-    xScroll->set_height( 8 );
 
-    yScroll->set_coords( elementBox.w-8, elementBox.y );
-    yScroll->set_width( 8 );
+    yScroll->set_coords( elementBox.w - yScroll->get_width(), elementBox.y );
     yScroll->set_height( elementBox.h );
+
     //Handles row / option in view
     GPE_GuiElementRow * cRow = NULL;
     GPE_GeneralGuiElement * cContainer = NULL;
@@ -677,6 +832,9 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
 
     menuBox.x = elementBox.x+viewedSpace->x;
     menuBox.y = elementBox.y+viewedSpace->y;
+    menuBox.w = elementBox.w;
+    menuBox.h = elementBox.h;
+
     if( hideXScroll )
     {
         cameraBox.w = menuBox.w = elementBox.w;
@@ -806,16 +964,21 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
     int rowHeight = 0;
 
     xPos = barXMargin+barXPadding;
+
     for( i=0; i < currentRowCount; i++)
     {
         cRow = subRows[i];
         if( cRow!=NULL )
         {
-            cRow->barXPadding = barXPadding+barXMargin;
-            cRow->barYPadding = barYPadding+barYPadding;
+            cRow->rowSizingStyle = panelAlignType;
+            cRow->barXPadding = barXPadding;
+            cRow->barYPadding = barYPadding;
 
-            cRow->outterWidth = menuBox.w - barXMargin - barXPadding - yScroll->get_width();
-            cRow->outterHeight = menuBox.h - barYMargin - barYPadding - xScroll->get_height();
+            cRow->outterWidth  = menuBox.w - barXMargin - yScroll->get_width();
+
+            cRow->outterHeight = menuBox.h - barYMargin - xScroll->get_height();
+            cRow->set_width( menuBox.w );
+            cRow->set_height( menuBox.h );
             cRow->set_coords(xPos, y2Pos );
 
             rowHeight = cRow->get_height();
@@ -1106,7 +1269,7 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
     }
 
     xScroll->set_coords( elementBox.x, elementBox.y+elementBox.h-xScroll->get_height() );
-    xScroll->set_width( elementBox.w );
+    xScroll->set_width( elementBox.w - yScroll->get_width() );
 
     xScroll->fullRect.x = 0;
     xScroll->fullRect.y = 0;
@@ -1118,7 +1281,9 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
     xScroll->contextRect.w = cameraBox.w;
     xScroll->contextRect.h = cameraBox.h;
 
-    yScroll->update_box(  elementBox.x+elementBox.w-8, elementBox.y, 8,elementBox.h);
+    yScroll->set_coords( elementBox.x+elementBox.w-yScroll->get_width(), elementBox.y );
+    yScroll->set_height( elementBox.h - xScroll->get_height() );
+
     update_rectangle(&yScroll->fullRect, 0, 0, entireBox.w,entireBox.h);
     update_rectangle(&yScroll->contextRect, cameraBox.x, cameraBox.y, cameraBox.w,cameraBox.h);
 
@@ -1192,7 +1357,7 @@ void GPE_GuiElementList::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
     selectedElement = containerInControl;
 }
 
-void GPE_GuiElementList::render_self(GPE_Rect * viewedSpace,GPE_Rect * cam, bool forceRedraw )
+void GPE_GuiElementList::render_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -1204,8 +1369,8 @@ void GPE_GuiElementList::render_self(GPE_Rect * viewedSpace,GPE_Rect * cam, bool
         menuBox.w = elementBox.w;
         menuBox.h = elementBox.h;
         */
-        MAIN_RENDERER->reset_viewpoint();
-        MAIN_RENDERER->set_viewpoint( viewedSpace );
+        GPE_MAIN_RENDERER->reset_viewpoint();
+        GPE_MAIN_RENDERER->set_viewpoint( viewedSpace );
 
         GPE_GeneralGuiElement * cResource = NULL;
 
@@ -1214,15 +1379,15 @@ void GPE_GuiElementList::render_self(GPE_Rect * viewedSpace,GPE_Rect * cam, bool
             cResource = allElements[0];
             if( cResource!=NULL )
             {
-                cResource->set_coords(elementBox.x, elementBox.y);
+                cResource->set_coords( 0,0 );
                 cResource->set_width( elementBox.w);
                 cResource->set_height( elementBox.h);
-                cResource->render_self( viewedSpace, cam, forceRedraw );
+                cResource->render_self( viewedSpace, cam );
                 return;
             }
         }
 
-        MAIN_RENDERER->set_viewpoint( &menuBox);
+        GPE_MAIN_RENDERER->set_viewpoint( &menuBox);
         GPE_GuiElementRow * cRow = NULL;
         int i = 0,j = 0;
         for( i=0; i<(int)subRows.size(); i++)
@@ -1235,25 +1400,25 @@ void GPE_GuiElementList::render_self(GPE_Rect * viewedSpace,GPE_Rect * cam, bool
                     cResource = cRow->subOptions[j];
                     if(cResource!=NULL)
                     {
-                        cResource->render_self( &menuBox,&cameraBox,forceRedraw);
+                        cResource->render_self( &menuBox,&cameraBox);
                     }
                 }
             }
         }
 
-        MAIN_RENDERER->reset_viewpoint();
-        MAIN_RENDERER->set_viewpoint( viewedSpace);
-        //render_text_boxed( elementBox.x+elementBox.w-32,elementBox.y+GENERAL_GPE_PADDING,"Selection id:"+int_to_string(selectedId)+" / "+ int_to_string( (int)allElements.size() ),c_white,c_black,GPE_DEFAULT_FONT,FA_RIGHT,FA_TOP, 255 );
+        GPE_MAIN_RENDERER->reset_viewpoint();
+        GPE_MAIN_RENDERER->set_viewpoint( viewedSpace);
+        //render_text_boxed( elementBox.x+elementBox.w-32,elementBox.y+GENERAL_GPE_GUI_PADDING,"Selection id:"+int_to_string(selectedId)+" / "+ int_to_string( (int)allElements.size() ),c_white,c_black,GPE_DEFAULT_FONT,FA_RIGHT,FA_TOP, 255 );
         /*menuBox.w-=16;
         menuBox.h-=16;*/
-        if( xScroll!=NULL && forceRedraw && hideXScroll!=true )
+        if( xScroll!=NULL&& hideXScroll!=true )
         {
             //if( entireBox.w >elementBox.w)
             {
                 xScroll->render_self( viewedSpace,cam);
             }
         }
-        if( yScroll!=NULL && forceRedraw && hideYScroll!=true )
+        if( yScroll!=NULL&& hideYScroll!=true )
         {
             if( entireBox.h >elementBox.h )
             {
@@ -1261,19 +1426,8 @@ void GPE_GuiElementList::render_self(GPE_Rect * viewedSpace,GPE_Rect * cam, bool
             }
         }
 
-        /*if( isInUse && subElementsIsScrolling==false && hasScrollControl && forceRedraw)
-        {
-            gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->Button_Box_Highlighted_Color,true);
-        }
-        else
-        {
-            gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->Main_Box_Faded_Color,true);
-        }*/
-        if( forceRedraw)
-        {
-            gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->Main_Border_Color,true);
-        }
-        MAIN_RENDERER->reset_viewpoint();
+        GPE_MAIN_RENDERER->reset_viewpoint();
+        GPE_MAIN_RENDERER->set_viewpoint( viewedSpace);
     }
 }
 
@@ -1283,7 +1437,7 @@ void GPE_GuiElementList::reset_self()
     cameraBox.x = menuBox.x = entireBox.x = 0;
     cameraBox.y = menuBox.y = entireBox.y = 0;
     cameraBox.w = menuBox.w = entireBox.w = 32;
-    cameraBox.h = menuBox.h = entireBox.h = RESOURCE_AREA_HEIGHT*3;
+    cameraBox.h = menuBox.h = entireBox.h = 32;
 }
 
 void GPE_GuiElementList::set_horizontal_align(int hValue)

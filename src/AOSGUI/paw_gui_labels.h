@@ -3,10 +3,10 @@ paw_gui_labels.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -41,22 +41,22 @@ class GPE_Label_Image: public GPE_GeneralGuiElement
 {
 private:
     bool isHoldingCustomTexture;
-    GPE_Texture * imgSrc;
+    GPE_Texture_Base * imgSrc;
 public:
     bool allowOverSize;
-    double resizeAspect;
+    float resizeAspect;
     bool wasClicked;
     std::string webUrl;
-    GPE_Label_Image(GPE_Texture * imgIn = NULL,std::string nameIn = "", std::string description = "", std::string urlIn = "");
+    GPE_Label_Image(GPE_Texture_Base * imgIn = NULL,std::string nameIn = "", std::string description = "", std::string urlIn = "");
     ~GPE_Label_Image();
     void load_label_image(std::string fileNameIn);
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void set_name(std::string nameIn);
-    void set_image( GPE_Texture * imgIn);
+    void set_image( GPE_Texture_Base * imgIn);
     void set_width( int newW);
     void set_height( int newH);
-    void set_size( double newW, double newH);
+    void set_size( float newW, float newH);
 };
 
 class GPE_Label_Text: public GPE_GeneralGuiElement
@@ -68,7 +68,7 @@ public:
     std::string get_plain_string();
     void load_data(std::string dataString);
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void set_name(std::string nameIn);
 };
 
@@ -81,7 +81,7 @@ public:
     std::string get_plain_string();
     void load_data(std::string dataString);
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void set_name(std::string nameIn);
 };
 
@@ -94,7 +94,7 @@ public:
     std::string get_plain_string();
     void load_data(std::string dataString);
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void set_name(std::string nameIn);
 };
 
@@ -113,7 +113,7 @@ public:
     void clear_all_lines();
     std::string get_paragraph();
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void set_name(std::string nameIn);
     void set_width(int newWidth);
     void set_height(int newHeight);
@@ -132,7 +132,7 @@ public:
     std::string get_plain_string();
     void load_data(std::string dataString);
     void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void set_name(std::string nameIn);
 };
 

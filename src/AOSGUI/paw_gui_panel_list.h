@@ -3,10 +3,10 @@ paw_gui_panel_list.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,12 +36,22 @@ SOFTWARE.
 
 #include "paw_gui_scrollbars.h"
 
+typedef enum
+{
+    GPE_PANEL_ALIGN_DEFAULT,     /**< Panel elements not modified */
+    GPE_PANEL_ALIGN_FULLROWS,     /**< Panel elements modified to fit within panel */
+    GPE_PANEL_ALIGN_FULL_LEFT,     /**< Panel elements modified to fit within panel with left element getting most of space */
+    GPE_PANEL_ALIGN_FULL_RIGHT,     /**< Panel elements modified to fit within panel with right element getting most of space */
+    GPE_PANEL_ALIGN_FULL_EQUAL,     /**< Panel elements modified to resize equally after non-resizable elements */
+} GPE_Panel_Setup_Type;
+
 class GPE_GuiElementRow: public GPE_GeneralGuiElement
 {
 private:
     int calculatedRowWidth, calculatedRowHeight;
 public:
     bool inDebugMode;
+    int rowSizingStyle;
     int outterWidth, outterHeight;
     int barXPadding, barYPadding;
     std::vector < GPE_GeneralGuiElement * > subOptions;
@@ -65,13 +75,13 @@ class GPE_GuiElementList: public GPE_GeneralGuiElement
 {
 public:
     bool inDebugMode;
-    double tabDelay;
-    double leserKeyDelay;
-    double greaterKeyDelay;
-    double upDelay;
-    double downDelay;
-    double leftDelay;
-    double rightDelay;
+    float tabDelay;
+    float leserKeyDelay;
+    float greaterKeyDelay;
+    float upDelay;
+    float downDelay;
+    float leftDelay;
+    float rightDelay;
     GPE_Rect entireBox, cameraBox, menuBox;
     GPE_ScrollBar_XAxis * xScroll;
     GPE_ScrollBar_YAxis * yScroll;
@@ -81,6 +91,7 @@ public:
     std::vector < GPE_GuiElementRow * > subRows;
     std::vector < GPE_GeneralGuiElement * > allElements;
     bool usingFullSizeElement;
+    int panelAlignType;
     bool newRowRequested;
     bool isInUse;
     bool hideXScroll;
@@ -102,7 +113,7 @@ public:
     void scroll_down(int yToMove );
     void scroll_up(int yToMove );
     void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void reset_self();
     void set_horizontal_align(int hValue);
     void set_full_width();

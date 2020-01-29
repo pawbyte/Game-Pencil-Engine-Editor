@@ -3,10 +3,10 @@ paw_gui_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -56,13 +56,13 @@ extern int POPUP_FONT_SIZE_WIDTH;
 extern int POPUP_FONT_SIZE_HEIGHT;
 extern int POPUP_MENU_VALUE;
 
-extern std::string CURRENT_PROJECT_NAME;
 extern std::string GPE_Action_Message;
 extern int GPE_Action_ID;
 extern bool GPE_ACTION_IS_CONTEXT;
 
-extern GPE_Texture * GPE_CHECKMARK_IMAGE;
-extern GPE_Texture  * GPE_DROPDOWN_ARROW;
+extern GPE_Texture_Base * GPE_CHECKMARK_IMAGE;
+extern GPE_Texture_Base  * GPE_DROPDOWN_ARROW;
+extern GPE_Texture_Base  * GPE_EYE_DROPPER;
 
 class GPE_GUI_Settings
 {
@@ -72,10 +72,10 @@ public:
     GPE_Rect textAreaFindBox;
     bool useShortProjectNames;
     //Text Editor Related Settings [ BEGIN ]
-    double textInputDelayTime;
-    double normalInputDelayTime;
-    double textAreaDelayTime;
-    double cursorBlinkTime;
+    float textInputDelayTime;
+    float normalInputDelayTime;
+    float textAreaDelayTime;
+    float cursorBlinkTime;
     bool autoFindMouseTabs;
     int tabSpaceCount;
 
@@ -86,7 +86,7 @@ public:
     //Default Folder Related Settings [ BEGIN ]
     std::string fileOpenAudioDir;
     std::string fileOpenVideoDir;
-    std::string fileOpenSpriteDir;
+    std::string fileOpenanimationDir;
     std::string fileOpenTextureDir;
     std::string fileOpenTilesheetDir;
     std::string fileOpenFontDir;
@@ -111,6 +111,7 @@ extern GPE_DataManager * guiRCM;
 class GPE_GeneralGuiElement
 {
 protected:
+    bool windowInView;
     GPE_Rect elementBox;
     bool clickedOutside;
     bool isClicked;
@@ -125,6 +126,7 @@ protected:
     int guiListTypeId;
     int maxWidth, maxHeight;
     bool isFullWidth;
+    std::string renderPackageName;
 public:
     int hAlign, vAlign;
     int dynamicId;
@@ -172,11 +174,11 @@ public:
     virtual void set_coords(int newX = -1, int newY = -1);
     virtual void prerender_self( );
     virtual void process_self(GPE_Rect * viewedSpace = NULL, GPE_Rect *cam = NULL);
-    virtual void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    virtual void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     bool requires_newline();
-    void scale_height(double scaleH);
-    void scale_width(double scaleW);
-    void scale_object(double scaleValue );
+    void scale_height(float scaleH);
+    void scale_width(float scaleW);
+    void scale_object(float scaleValue );
     void set_full_width( bool makeFullWidth );
     virtual void set_name(std::string newName);
     virtual void set_max_width( int nMW);
@@ -185,12 +187,9 @@ public:
     bool is_inuse();
     bool is_modified();
     void switch_inuse(bool newUse);
-    void update_box( double nx, double ny, double nw, double nh);
+    void update_box( float nx, float ny, float nw, float nh);
     void update_paragraph(int foundMaxWidth = -1 );
 };
-
-
-void GPE_change_cursor(SDL_SystemCursor id);
 
 void update_action_message(std::string newMessage);
 void update_popup_info(std::string newMessage="", int selectedOpId=-1, bool popIsContext = false);

@@ -3,10 +3,10 @@ gpe_syntax_handler.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -591,7 +591,7 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_class("GPE_MainMenu");
     JSLang->add_language_class("GPE_GameController");
     JSLang->add_language_class("GPE_Rect");
-    JSLang->add_language_class("GPE_GameSprite");
+    JSLang->add_language_class("GPE_Gameanimation");
     JSLang->add_language_class("GPE_Tilesheet");
     JSLang->add_language_class("GPE_Texture");
     JSLang->add_language_class("GPE_Background");
@@ -613,16 +613,16 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_function("audio_stop_group","Stops all audio whose group-id is groupId","groupId","void","gpe");
     JSLang->add_language_function("audio_stop","Stops audio whose id is audioId","audioId","void","gpe");
     //math / collision functions
-    JSLang->add_language_function("abs","Returns 0 or a positive number","x","double","gpe");
+    JSLang->add_language_function("abs","Returns 0 or a positive number","x","float","gpe");
     JSLang->add_language_function("add_object","Returns a new object on the same layer as the current object","objectType, x, y","gameObject","GameObject");
     JSLang->add_language_function("add_new_object","Returns a new object","objectType, x, y, objectLayerId","gameObject","gpe");
-    JSLang->add_language_function("bound_number","Bounds x between min and max","minN, maxN","double","gpe");
+    JSLang->add_language_function("bound_number","Bounds x between min and max","minN, maxN","float","gpe");
     JSLang->add_language_function("camera_on","Returns true or false if the camera is on or -1 if the camera is invalid","camId","int","gpe");
     JSLang->add_language_function("center_camera","Centers camera at (x,y)","(camId, x,y","void","gpe");
     JSLang->add_language_function("check_collision_rect","Checks if two rectangles collide","rectA, rectB","bool","gpe");
     JSLang->add_language_function("check_collision_with_rect","Checks if a rectangle collides with a box","boxX, boxY, boxW, boxH, rectA","bool","gpe");
-    JSLang->add_language_function("degree","Converts an angle in radians to degrees","x","double","gpe");
-    JSLang->add_language_function("radian","Converts an angle in degrees to radians","x","double","gpe");
+    JSLang->add_language_function("degree","Converts an angle in radians to degrees","x","float","gpe");
+    JSLang->add_language_function("radian","Converts an angle in degrees to radians","x","float","gpe");
     JSLang->add_language_function("sign","Gets the sign of the variable","x","int","gpe");
 
     //input functions
@@ -677,8 +677,8 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_function("get_background","Gets the background texture id","bgId","int","gpe");
     JSLang->add_language_function("get_direction","Returns the direction from (x1,y1) and (x2,y2)","x1, y1, x2, y2","int","gpe");
     JSLang->add_language_function("get_distance","Returns the distance between (x1,y1) and (x2,y2)","x1, y1, x2, y2","int","gpe");
-    JSLang->add_language_function("get_mouse_x","Gets the global mouse x-position","","double","gpe");
-    JSLang->add_language_function("get_mouse_y","Gets the global mouse y-position","","double","gpe");
+    JSLang->add_language_function("get_mouse_x","Gets the global mouse x-position","","float","gpe");
+    JSLang->add_language_function("get_mouse_y","Gets the global mouse y-position","","float","gpe");
     JSLang->add_language_function("load_data","Loads data pack","dataIdentifier, dataTitle","string","gpe");
     JSLang->add_language_function("move_camera","Moves camera to (x,y)","(camId, x,y","void","gpe");
     JSLang->add_language_function("setup_camera","Moves camera to (x,y) with sizing (w,h)","camId, x,y, w, h","void","gpe");
@@ -690,10 +690,10 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_function("get_font_size","Get the size(pt) of the font assigned to fontId. Returns a blank string if out of bounds.","fontId","String","gpe");
     JSLang->add_language_function("get_font_width","Get the estimated width of the font assigned to fontId. Returns a blank string if out of bounds.","fontId,words","String","gpe");
 
-    JSLang->add_language_function("get_sprite_width","Get the width of the sprite assigned to animId. Returns 0 if out of bounds.","animId","int","gpe");
-    JSLang->add_language_function("get_sprite_height","Get the height of the sprite assigned to animId. Returns 0 if out of bounds","animId","int","gpe");
-    JSLang->add_language_function("get_sprite_length","Get the length of the sprite assigned to animId. Returns 0 if out of bounds","animId","int","gpe");
-    JSLang->add_language_function("get_sprite_object","Gets the actual sprite object attached to animId. Returns IS_NULL if out of bounds","animId","GameSprite","gpe");
+    JSLang->add_language_function("get_animation_width","Get the width of the animation assigned to animId. Returns 0 if out of bounds.","animId","int","gpe");
+    JSLang->add_language_function("get_animation_height","Get the height of the animation assigned to animId. Returns 0 if out of bounds","animId","int","gpe");
+    JSLang->add_language_function("get_animation_length","Get the length of the animation assigned to animId. Returns 0 if out of bounds","animId","int","gpe");
+    JSLang->add_language_function("get_animation_object","Gets the actual animation object attached to animId. Returns IS_NULL if out of bounds","animId","Gameanimation","gpe");
 
     JSLang->add_language_function("get_texture_width","Get the width of the texture assigned to textureId. Returns 0 if out of bounds.","textureId","int","gpe");
     JSLang->add_language_function("get_texture_height","Get the height of the texture assigned to textureId. Returns 0 if out of bounds","textureId","int","gpe");
@@ -715,13 +715,13 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_function("get_depth","Returns object depth","","int","GameObject");
     JSLang->add_language_function("get_my_direction","Returns the direction between object and (x2,y2)","x2, y2","int","GameObject");
     JSLang->add_language_function("get_my_distance","Returns the distance between object and (x2,y2)","x2, y2","int","GameObject");
-    JSLang->add_language_function("get_sprite","Returns sprite-id of game object","","int","GameObject");
-    JSLang->add_language_function("getx","Returns x-position of game object","","double","GameObject");
-    JSLang->add_language_function("getx2","Returns x2-position of game object","","double","GameObject");
-    JSLang->add_language_function("gety","Returns y-position of game object","","double","GameObject");
-    JSLang->add_language_function("gety2","Returns y2-position of game object","","double","GameObject");
+    JSLang->add_language_function("get_animation","Returns animation-id of game object","","int","GameObject");
+    JSLang->add_language_function("getx","Returns x-position of game object","","float","GameObject");
+    JSLang->add_language_function("getx2","Returns x2-position of game object","","float","GameObject");
+    JSLang->add_language_function("gety","Returns y-position of game object","","float","GameObject");
+    JSLang->add_language_function("gety2","Returns y2-position of game object","","float","GameObject");
     JSLang->add_language_function("gravity_use","Activates built in gravity","","void", "GameObject");
-    JSLang->add_language_function("init_sprite","Initiates the game object's sprite on creation","nextSprite","void","GameObject");
+    JSLang->add_language_function("init_animation","Initiates the game object's animation on creation","nextanimation","void","GameObject");
     JSLang->add_language_function("make_view_dependent","Makes this game object camera dependent","","void","GameObject");
     JSLang->add_language_function("make_view_independent","Makes this game object camera independent","","void","GameObject");
     JSLang->add_language_function("move_left","Moves this object left by m pixels","m","void","GameObject");
@@ -730,7 +730,7 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_function("move_down","Moves this object down by m pixels","m","void","GameObject");
     JSLang->add_language_function("move_towards","Moves this towards the point (x,y) at speed","x,y,speed","void","GameObject");
     JSLang->add_language_function("under_mouse","Checks if this object is under the mouse via the cameraId(defaults to 0).","cameraId","void","GameObject");
-    JSLang->add_language_function("set_sprite","Sets the sprite of this object","newSprite","void","GameObject");
+    JSLang->add_language_function("set_animation","Sets the animation of this object","newanimation","void","GameObject");
 
     //Added as of Version 1.12 [ BEGIN ]
     JSLang->add_language_function("path_begin","Makes the object begin a path","path, pathSpeed, continueOnEnd, relativePath","void","GameObject");
@@ -783,9 +783,9 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_function("gcanvas->render_line","Renders a line","x1, y1, x2, y2, lineColor, lineWidth, renderImmediately","void","gpe");
     JSLang->add_language_function("render_rectangle","Renders a rectangle","x1, y1, x2, y2,rectColor, outline,rectLineWidth,renderImmediately","void","gpe");
     JSLang->add_language_function("render_self","Renders this object onto scene","","void","gpe");
-    JSLang->add_language_function("render_animation_rotated","Renders a rotated sprite","animIdIn, frameNumb, xOn, yOn, rotationAngle,scaleX, scaleY","void","gpe");
+    JSLang->add_language_function("render_animation_rotated","Renders a rotated animation","animIdIn, frameNumb, xOn, yOn, rotationAngle,scaleX, scaleY","void","gpe");
 
-    JSLang->add_language_function("render_animation","Renders a sprite","animIdIn, frameNumb, xOn, yOn, scaleX, scaleY","void","gpe");
+    JSLang->add_language_function("render_animation","Renders a animation","animIdIn, frameNumb, xOn, yOn, scaleX, scaleY","void","gpe");
     JSLang->add_language_function("render_square","Renders a square","xOn, yOn, squareSize,squareColor, outline,squareLineWidth,renderImmediately","void","gpe");
     JSLang->add_language_function("render_text","Renders text","fontIdIn, xOn, yOn, textToRender, fontRenderColor, fontHalign, fontValign","void","gpe");
     JSLang->add_language_function("render_texture_rotated","Renders a rotated texture","texureIdIn, xDraw, yDraw, width, height, angle","void","gpe");
@@ -821,21 +821,21 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_function("warn","Writes a warning message into the console window.","text","void","console");
 
     //Math functions
-    JSLang->add_language_function("acos","Returns the arccosine of x.","radians x","double","Math");
-    JSLang->add_language_function("asin","Returns the arcsine  of x.","radians x","double","Math");
-    JSLang->add_language_function("atan","Returns the arctangent of x as a numeric value between -PI/2 and PI/2 radians","x","double","Math");
-    JSLang->add_language_function("atan2","Returns the arctangent of the quotient of its arguments","y,x","double","Math");
+    JSLang->add_language_function("acos","Returns the arccosine of x.","radians x","float","Math");
+    JSLang->add_language_function("asin","Returns the arcsine  of x.","radians x","float","Math");
+    JSLang->add_language_function("atan","Returns the arctangent of x as a numeric value between -PI/2 and PI/2 radians","x","float","Math");
+    JSLang->add_language_function("atan2","Returns the arctangent of the quotient of its arguments","y,x","float","Math");
 
-    JSLang->add_language_function("exp","Returns E ^X","x","double","Math");
-    JSLang->add_language_function("pow","Returns X ^Y","x,y","double","Math");
+    JSLang->add_language_function("exp","Returns E ^X","x","float","Math");
+    JSLang->add_language_function("pow","Returns X ^Y","x,y","float","Math");
     JSLang->add_language_function("log","Returns the natural logarithm (base E) of x","x","int","Math");
-    JSLang->add_language_function("cos","Returns cos( (radians)x )","(radians)x","double","Math");
-    JSLang->add_language_function("sin","Returns sin( (radians)x )","(radians)x","double","Math");
-    JSLang->add_language_function("tan","Returns tan( (angle)x )","x,y","double","Math");
-    JSLang->add_language_function("min","Returns the smallest NUMBER found","x,y,z...N","double","Math");
-    JSLang->add_language_function("max","Returns the highest NUMBER found","x,y,z...N","double","Math");
-    JSLang->add_language_function("sqrt","Returns the square root of x","x","double","Math");
-    JSLang->add_language_function("random","Returns a random number from 0 to 1","","double","Math");
+    JSLang->add_language_function("cos","Returns cos( (radians)x )","(radians)x","float","Math");
+    JSLang->add_language_function("sin","Returns sin( (radians)x )","(radians)x","float","Math");
+    JSLang->add_language_function("tan","Returns tan( (angle)x )","x,y","float","Math");
+    JSLang->add_language_function("min","Returns the smallest NUMBER found","x,y,z...N","float","Math");
+    JSLang->add_language_function("max","Returns the highest NUMBER found","x,y,z...N","float","Math");
+    JSLang->add_language_function("sqrt","Returns the square root of x","x","float","Math");
+    JSLang->add_language_function("random","Returns a random number from 0 to 1","","float","Math");
     JSLang->add_language_function("round","Rounds the number","","int","Math");
     JSLang->add_language_function("floor","Rounds the number downward","","int","Math");
     JSLang->add_language_function("ceil","Rounds the number upward","","int","Math");
@@ -1156,7 +1156,7 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     JSLang->add_language_variable("speed","An objects speed in pixels", "GameObject" );
     JSLang->add_language_variable("imageSpeed","An object's imageSpeed per game frame", "GameObject" );
     JSLang->add_language_variable("isVisible","A boolean if the object is visible", "GameObject" );
-    JSLang->add_language_variable("spriteFrame","The current frame of the object's current sprite", "GameObject" );
+    JSLang->add_language_variable("animationFrame","The current frame of the object's current animation", "GameObject" );
     JSLang->add_language_variable("xPast","The object's x-coordinate from last frame", "GameObject" );
     JSLang->add_language_variable("yPast","The object's y-coordinate from last frame", "GameObject" );
 
@@ -1186,8 +1186,8 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
 
     //actual datatypes used/allowed
     JSLang->add_language_data_type("char");
-    JSLang->add_language_data_type("double");
-    JSLang->add_language_data_type("double");
+    JSLang->add_language_data_type("float");
+    JSLang->add_language_data_type("float");
     JSLang->add_language_data_type("grid");
     JSLang->add_language_data_type("int");
     JSLang->add_language_data_type("string");
@@ -1239,7 +1239,7 @@ GPE_Syntax_Highlighter::GPE_Syntax_Highlighter()
     CSSLang->add_language_keyword("display");
     CSSLang->add_language_keyword("family");
     CSSLang->add_language_keyword("filter");
-    CSSLang->add_language_keyword("double");
+    CSSLang->add_language_keyword("float");
     CSSLang->add_language_keyword("font");
     CSSLang->add_language_keyword("height");
     CSSLang->add_language_keyword("horizontal");
@@ -1596,7 +1596,7 @@ bool GPE_Syntax_Highlighter::process_parameters_string( std::string paramToProce
     if( paramStrSize > 0)
     {
         bool isinSingleQuote = false;
-        bool isInDoubleQuote = false;
+        bool isInfloatQuote = false;
         int i = 0;
         int lastParamPos = 0;
         int foundEqualPos = -1;
@@ -1606,13 +1606,13 @@ bool GPE_Syntax_Highlighter::process_parameters_string( std::string paramToProce
         {
             if( !isinSingleQuote && paramToProcess[i]=='"' )
             {
-                isInDoubleQuote = !isInDoubleQuote;
+                isInfloatQuote = !isInfloatQuote;
             }
-            else if(!isInDoubleQuote && paramToProcess[i]=='\'')
+            else if(!isInfloatQuote && paramToProcess[i]=='\'')
             {
                 isinSingleQuote = !isinSingleQuote;
             }
-            else if( !isInDoubleQuote && !isinSingleQuote)
+            else if( !isInfloatQuote && !isinSingleQuote)
             {
                 if( paramToProcess[i]==',')
                 {
@@ -1773,12 +1773,12 @@ void GPE_Syntax_Highlighter::clear_suggestions()
     suggestedCompilerTerms.clear();
 }
 
-void GPE_Syntax_Highlighter::render_code_highlights( bool forceRedraw)
+void GPE_Syntax_Highlighter::render_code_highlights( )
 {
     if( highlightedTerm!=NULL)
     {
-        MAIN_RENDERER->set_viewpoint( NULL);
-        MAIN_RENDERER->reset_viewpoint( );
+        GPE_MAIN_RENDERER->set_viewpoint( NULL);
+        GPE_MAIN_RENDERER->reset_viewpoint( );
         std::string fullPhraseToRender;
         std::string fullTermScope = highlightedTerm->termScope;
         if( (int)fullTermScope.size()>1 )
@@ -1827,11 +1827,11 @@ void GPE_Syntax_Highlighter::render_code_highlights( bool forceRedraw)
 }
 
 
-void GPE_Syntax_Highlighter::render_code_suggestions( bool forceRedraw )
+void GPE_Syntax_Highlighter::render_code_suggestions(  )
 {
-    if( forceRedraw && (int)suggestedCompilerTerms.size() > 0 )
+    if( (int)suggestedCompilerTerms.size() > 0 )
     {
-        //MAIN_RENDERER->reset_viewpoint();
+        //GPE_MAIN_RENDERER->reset_viewpoint();
         int iRendSuggestion = 0;
         GPE_Compiler_Term * cTerm = NULL;
         std::string fullPhraseToRender = "";

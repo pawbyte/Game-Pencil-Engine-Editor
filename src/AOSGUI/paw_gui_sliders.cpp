@@ -3,10 +3,10 @@ paw_gui_sliders.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -34,7 +34,7 @@ SOFTWARE.
 #include "paw_gui_sliders.h"
 
 
-GPE_Slider_XAxis::GPE_Slider_XAxis( int sVal, int sMin, int sMax )
+GPE_Slider_XAxis::GPE_Slider_XAxis( float sVal, float sMin, float sMax )
 {
     elementBox.x = 0;
     elementBox.y = 0;
@@ -58,10 +58,11 @@ GPE_Slider_XAxis::~GPE_Slider_XAxis()
 
 }
 
-int GPE_Slider_XAxis::get_value()
+float GPE_Slider_XAxis::get_value()
 {
     return myValue;
 }
+
 bool GPE_Slider_XAxis::has_moved()
 {
     return hasMoved;
@@ -157,12 +158,12 @@ void GPE_Slider_XAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 
     if( doWork )
     {
-        set_value( minValue+ ( ( (double)currentSliderXPos)/elementBox.w )*( maxValue-minValue ) );
+        set_value( minValue+ ( ( (float)currentSliderXPos)/elementBox.w )*( maxValue-minValue ) );
     }
 
     if( hasArrowkeyControl )
     {
-        int scrollRenderPixels = 8;
+        float scrollRenderPixels = 8;
 
         if( input->check_keyboard_down(kb_left) && !input->check_keyboard_pressed(kb_left)  )
         {
@@ -175,21 +176,21 @@ void GPE_Slider_XAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     }
 }
 
-void GPE_Slider_XAxis::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+void GPE_Slider_XAxis::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( forceRedraw && cam!=NULL && viewedSpace!=NULL )
+    if( cam!=NULL && viewedSpace!=NULL )
     {
         gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y+4,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y-4,GPE_MAIN_THEME->Scroll_Box_Color,false);
         gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y+4,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y-4,GPE_MAIN_THEME->Scroll_Box_Border_Color,true);
 
-        int scrollRenderPixels = 24;
+        float scrollRenderPixels = 24.f;
         if( scrollRenderPixels < elementBox.h)
         {
             scrollRenderPixels = elementBox.h;
         }
-        int scrollPreviewX = std::min( currentSliderXPos, (int)(elementBox.w-scrollRenderPixels) );
+        float scrollPreviewX = std::min( currentSliderXPos, (float)(elementBox.w-scrollRenderPixels) );
 
         if( isOnScrollBox )
         {
@@ -206,7 +207,7 @@ void GPE_Slider_XAxis::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool 
     }
 }
 
-void GPE_Slider_XAxis::set_data( int sVal, int sMin, int sMax  )
+void GPE_Slider_XAxis::set_data( float sVal, float sMin, float sMax  )
 {
     minValue = sMin;
     maxValue = sMax;
@@ -218,7 +219,7 @@ void GPE_Slider_XAxis::set_data( int sVal, int sMin, int sMax  )
     set_value( sVal);
 }
 
-bool GPE_Slider_XAxis::set_value( int sVal )
+bool GPE_Slider_XAxis::set_value( float sVal )
 {
     myValue = sVal;
     if( myValue < minValue)
@@ -229,5 +230,6 @@ bool GPE_Slider_XAxis::set_value( int sVal )
     {
         myValue = maxValue;
     }
-    currentSliderXPos =  ( elementBox.w )*( ( (double)myValue-(double)minValue) / ( (double)maxValue-(double)minValue ) );
+    currentSliderXPos =  ( elementBox.w )*( ( (float)myValue-(float)minValue) / ( (float)maxValue-(float)minValue ) );
+    return true;
 }

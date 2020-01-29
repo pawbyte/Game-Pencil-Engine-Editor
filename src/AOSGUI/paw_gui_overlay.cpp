@@ -3,10 +3,10 @@ paw_gui_overlay.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -72,38 +72,16 @@ bool GPE_Overlay_System::overhead_used()
     return false;
 }
 
-void GPE_Overlay_System::process_cursor()
-{
-    if(GPE_CurrentCursor!=GPE_PreviousCursor)
-    {
-        if( GPE_Cursor!=NULL)
-        {
-            SDL_FreeCursor(GPE_Cursor);
-            GPE_Cursor = NULL;
-        }
-        if(GPE_CurrentCursor<0)
-        {
-            GPE_Cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
-        }
-        else
-        {
-            GPE_Cursor = SDL_CreateSystemCursor(GPE_CurrentCursor);
-        }
-        SDL_SetCursor(GPE_Cursor);
-    }
-    GPE_PreviousCursor = GPE_CurrentCursor;
-}
-
 void GPE_Overlay_System::take_frozen_screenshot()
 {
     if( previousScreenshot==NULL)
     {
-        previousScreenshot = new GPE_Texture();
+        previousScreenshot = gpeph->get_new_texture();
     }
-    if( previousScreenshot!=NULL && MAIN_RENDERER!=NULL)
+    if( previousScreenshot!=NULL && GPE_MAIN_RENDERER!=NULL)
     {
-        MAIN_RENDERER->save_screenshot( get_user_settings_folder() +"frozen_screenshot.png");
-        previousScreenshot->load_new_texture( get_user_settings_folder() +"frozen_screenshot.png");
+        GPE_MAIN_RENDERER->save_screenshot( get_user_settings_folder() +"frozen_screenshot.png");
+        previousScreenshot->load_new_texture( GPE_MAIN_RENDERER,get_user_settings_folder() +"frozen_screenshot.png");
     }
 }
 
@@ -114,17 +92,17 @@ void GPE_Overlay_System::update_tooltip(std::string newTip)
         toolTipString = newTip;
         if( toolTipTexture==NULL)
         {
-            toolTipTexture = new GPE_Texture();
+            toolTipTexture = gpeph->get_new_texture();
         }
         if( toolTipTexture!=NULL)
         {
-            //toolTipTexture->loadFromRenderedText(MAIN_RENDERER,newTip,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT);
+            //toolTipTexture->loadFromRenderedText(GPE_MAIN_RENDERER,newTip,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT);
         }
         tipTipJustUpdated = true;
     }
 }
 
-void GPE_Overlay_System::update_temporary_message(std::string mTitle, std::string mSubTitle, std::string mText, double messDuration, bool topLeftMessage)
+void GPE_Overlay_System::update_temporary_message(std::string mTitle, std::string mSubTitle, std::string mText, float messDuration, bool topLeftMessage)
 {
     if( messDuration >0 &&  ( (int)mTitle.size()>0 || (int)mSubTitle.size()>0 || (int)mText.size()>0 ) )
     {
@@ -145,7 +123,7 @@ void GPE_Overlay_System::update_temporary_message(std::string mTitle, std::strin
 
 void GPE_Overlay_System::render_frozen_screenshot()
 {
-    if( MAIN_RENDERER!=NULL &&  previousScreenshot!=NULL)
+    if( GPE_MAIN_RENDERER!=NULL &&  previousScreenshot!=NULL)
     {
         previousScreenshot->render_tex_resized(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
     }
@@ -161,18 +139,18 @@ void GPE_Overlay_System::render_temporary_message()
         {
             gcanvas->render_rectangle( 0,0,256,96,GPE_MAIN_THEME->PopUp_Box_Color,false, noticeAlphaValue);
             gcanvas->render_rectangle( 0,0,256,96,GPE_MAIN_THEME->PopUp_Box_Border_Color,true,noticeAlphaValue);
-            render_text( 0,GENERAL_GPE_PADDING,tempUserMessageTitle,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP,noticeAlphaValue);
-            render_text( 0,GENERAL_GPE_PADDING*2+GPE_AVERAGE_LINE_HEIGHT,tempUserMessageSubtitle,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP,noticeAlphaValue);
-            render_text( 0,GENERAL_GPE_PADDING*3+GPE_AVERAGE_LINE_HEIGHT*2,tempUserMessageText,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP,noticeAlphaValue);
+            render_text( 0,GENERAL_GPE_GUI_PADDING,tempUserMessageTitle,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP,noticeAlphaValue);
+            render_text( 0,GENERAL_GPE_GUI_PADDING*2+GPE_AVERAGE_LINE_HEIGHT,tempUserMessageSubtitle,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP,noticeAlphaValue);
+            render_text( 0,GENERAL_GPE_GUI_PADDING*3+GPE_AVERAGE_LINE_HEIGHT*2,tempUserMessageText,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP,noticeAlphaValue);
 
         }
         else
         {
             gcanvas->render_rectangle( SCREEN_WIDTH/2-256,SCREEN_HEIGHT-128,SCREEN_WIDTH/2+256,SCREEN_HEIGHT-32,GPE_MAIN_THEME->PopUp_Box_Color,false, noticeAlphaValue);
             gcanvas->render_rectangle( SCREEN_WIDTH/2-256,SCREEN_HEIGHT-128,SCREEN_WIDTH/2+256,SCREEN_HEIGHT-32,GPE_MAIN_THEME->PopUp_Box_Border_Color,true,noticeAlphaValue);
-            render_text( SCREEN_WIDTH/2,SCREEN_HEIGHT-128+GENERAL_GPE_PADDING,tempUserMessageTitle,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP,noticeAlphaValue);
-            render_text( SCREEN_WIDTH/2,SCREEN_HEIGHT-128+GENERAL_GPE_PADDING*2+GPE_AVERAGE_LINE_HEIGHT,tempUserMessageSubtitle,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP,noticeAlphaValue);
-            render_text( SCREEN_WIDTH/2,SCREEN_HEIGHT-128+GENERAL_GPE_PADDING*3+GPE_AVERAGE_LINE_HEIGHT*2,tempUserMessageText,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP,noticeAlphaValue);
+            render_text( SCREEN_WIDTH/2,SCREEN_HEIGHT-128+GENERAL_GPE_GUI_PADDING,tempUserMessageTitle,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP,noticeAlphaValue);
+            render_text( SCREEN_WIDTH/2,SCREEN_HEIGHT-128+GENERAL_GPE_GUI_PADDING*2+GPE_AVERAGE_LINE_HEIGHT,tempUserMessageSubtitle,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP,noticeAlphaValue);
+            render_text( SCREEN_WIDTH/2,SCREEN_HEIGHT-128+GENERAL_GPE_GUI_PADDING*3+GPE_AVERAGE_LINE_HEIGHT*2,tempUserMessageText,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP,noticeAlphaValue);
         }
         temporayMessageDisplayTimer--;
     }
@@ -187,7 +165,7 @@ void GPE_Overlay_System::render_tooltip(int xPos, int yPos)
         {
             xPos = input->mouse_x;
         }
-        if( yPos < 0 || yPos > SCREEN_HEIGHT-GENERAL_GPE_PADDING-toolTipTexture->get_height() )
+        if( yPos < 0 || yPos > SCREEN_HEIGHT-GENERAL_GPE_GUI_PADDING-toolTipTexture->get_height() )
         {
             yPos = input->mouse_y+32;
         }
@@ -200,9 +178,9 @@ void GPE_Overlay_System::render_tooltip(int xPos, int yPos)
         }
 
         int xPos2 = 0;
-        int yPos2 = yPos+TEXTBOX_FONT_SIZE_HEIGHT+GENERAL_GPE_PADDING/2;
+        int yPos2 = yPos+TEXTBOX_FONT_SIZE_HEIGHT+GENERAL_GPE_GUI_PADDING/2;
 
-        int maxLength = (SCREEN_WIDTH - GENERAL_GPE_PADDING*4)/TEXTBOX_FONT_SIZE_WIDTH;
+        int maxLength = (SCREEN_WIDTH - GENERAL_GPE_GUI_PADDING*4)/TEXTBOX_FONT_SIZE_WIDTH;
         int lineCountForTip = 1;
         std::vector< std::string > toolTipLines;
         std::string tempToolTipString = toolTipString;
@@ -215,29 +193,29 @@ void GPE_Overlay_System::render_tooltip(int xPos, int yPos)
                 toolTipLines.push_back( get_substring(tempToolTipString,0,maxLength) );
                 tempToolTipString = get_substring(tempToolTipString,maxLength);
             }
-            yPos2= yPos+TEXTBOX_FONT_SIZE_HEIGHT*( (int)toolTipLines.size() )+GENERAL_GPE_PADDING/2;
+            yPos2= yPos+TEXTBOX_FONT_SIZE_HEIGHT*( (int)toolTipLines.size() )+GENERAL_GPE_GUI_PADDING/2;
         }
         else
         {
             toolTipLines.push_back(toolTipString);
-            if(xPos+TEXTBOX_FONT_SIZE_WIDTH*(int)toolTipString.size()+GENERAL_GPE_PADDING*2 > SCREEN_WIDTH)
+            if(xPos+TEXTBOX_FONT_SIZE_WIDTH*(int)toolTipString.size()+GENERAL_GPE_GUI_PADDING*2 > SCREEN_WIDTH)
             {
-                xPos = SCREEN_WIDTH-( TEXTBOX_FONT_SIZE_WIDTH*(int)toolTipString.size() )-GENERAL_GPE_PADDING*2;
+                xPos = SCREEN_WIDTH-( TEXTBOX_FONT_SIZE_WIDTH*(int)toolTipString.size() )-GENERAL_GPE_GUI_PADDING*2;
                 if( xPos < 0)
                 {
                     xPos = 0;
                 }
             }
-            xPos2 = xPos+ TEXTBOX_FONT_SIZE_WIDTH*(int)toolTipString.size()+GENERAL_GPE_PADDING*2;
+            xPos2 = xPos+ TEXTBOX_FONT_SIZE_WIDTH*(int)toolTipString.size()+GENERAL_GPE_GUI_PADDING*2;
         }
 
-        gcanvas->render_rectangle( xPos-GENERAL_GPE_PADDING/2,yPos-GENERAL_GPE_PADDING/2,xPos2,yPos2,GPE_MAIN_THEME->PopUp_Box_Color,false);
+        gcanvas->render_rectangle( xPos-GENERAL_GPE_GUI_PADDING/2,yPos-GENERAL_GPE_GUI_PADDING/2,xPos2,yPos2,GPE_MAIN_THEME->PopUp_Box_Color,false);
         for( int i = 0; i < (int)toolTipLines.size(); i++)
         {
-            gfs->render_text( xPos+GENERAL_GPE_PADDING,yPos+TEXTBOX_FONT_SIZE_HEIGHT*i, toolTipLines[i],GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TOOLTIP,FA_LEFT,FA_TOP);
+            gfs->render_text( xPos+GENERAL_GPE_GUI_PADDING,yPos+TEXTBOX_FONT_SIZE_HEIGHT*i, toolTipLines[i],GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_TOOLTIP,FA_LEFT,FA_TOP);
         }
 
-        gcanvas->render_rectangle( xPos-GENERAL_GPE_PADDING/2,yPos-GENERAL_GPE_PADDING/2,xPos2,yPos2,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
+        gcanvas->render_rectangle( xPos-GENERAL_GPE_GUI_PADDING/2,yPos-GENERAL_GPE_GUI_PADDING/2,xPos2,yPos2,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
     }
     tipTipJustUpdated = false;
 }

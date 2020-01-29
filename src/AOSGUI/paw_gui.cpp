@@ -3,10 +3,10 @@ paw_gui.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -34,7 +34,8 @@ SOFTWARE.
 
 bool PAW_GUI_START()
 {
-    guiRCM = new GPE_DataManager();
+    //gpe->cursor_create_from_image( APP_DIRECTORY_NAME + "resources/gfx/iconpacks/fontawesome/asterisk.png" );
+    guiRCM = new GPE_DataManager( gpeph->get_default_render_package(), "Paw_GUI");
     if( PAW_GUI_LOAD_FONTS() )
     {
         GPE_Report("IDE properly added all GPE Editor Fonts... \n");
@@ -54,45 +55,48 @@ bool PAW_GUI_START()
         MAIN_CONTEXT_MENU = new GPE_PopUpMenu_Option("  ",-1,false,false,true);
         MAIN_CONTEXT_MENU->isTopOfMenu = true;
 
-        GPE_TEXTURE_COLOR_PICKER_GRADIENT = new GPE_Texture();
+        GPE_TEXTURE_COLOR_PICKER_GRADIENT = gpeph->get_new_texture();
         if( GPE_TEXTURE_COLOR_PICKER_GRADIENT!=NULL)
         {
-            GPE_TEXTURE_COLOR_PICKER_GRADIENT->load_new_texture(APP_DIRECTORY_NAME+"resources/gfx/textures/color_picker_gradient.png",-1,false);
+            GPE_TEXTURE_COLOR_PICKER_GRADIENT->load_new_texture( GPE_MAIN_RENDERER, APP_DIRECTORY_NAME+"resources/gfx/textures/color_picker_gradient.png",-1,false);
         }
 
-        GPE_SURFACE_COLOR_PICKER_GRADIENT = gpe_sdl->load_surface_image(APP_DIRECTORY_NAME+"resources/gfx/textures/color_picker_gradient.png");
+        std::string colorPickerFilename = APP_DIRECTORY_NAME+"resources/gfx/textures/color_picker_gradient.png";
+        GPE_SURFACE_COLOR_PICKER_GRADIENT = SDL_SurfaceEx::load_surface_image( colorPickerFilename.c_str() );
         if( SDL_MUSTLOCK( GPE_SURFACE_COLOR_PICKER_GRADIENT) )
         {
             SDL_LockSurface(GPE_SURFACE_COLOR_PICKER_GRADIENT);
         }
-        GPE_LOGO = new GPE_Texture();
+        GPE_LOGO = gpeph->get_new_texture();
         if( GPE_LOGO!=NULL)
         {
-            GPE_LOGO->load_new_texture(APP_DIRECTORY_NAME+"resources/gamepencil_icon_72dpi.png",-1,false);
+            GPE_LOGO->load_new_texture( GPE_MAIN_RENDERER,APP_DIRECTORY_NAME+"resources/gamepencil_icon_72dpi.png",-1,false);
         }
 
-        GPE_TEXTURE_TRANSPARENT_BG = new GPE_Texture();
+        GPE_TEXTURE_TRANSPARENT_BG = gpeph->get_new_texture();
         if( GPE_TEXTURE_TRANSPARENT_BG!=NULL)
         {
-            GPE_TEXTURE_TRANSPARENT_BG->load_new_texture(APP_DIRECTORY_NAME+"resources/gfx/textures/transparent_bg.png",-1,false);
+            GPE_TEXTURE_TRANSPARENT_BG->load_new_texture( GPE_MAIN_RENDERER,APP_DIRECTORY_NAME+"resources/gfx/textures/transparent_bg.png",-1,false);
         }
 
-        GPE_CHECKMARK_IMAGE = new GPE_Texture();
+        GPE_CHECKMARK_IMAGE = gpeph->get_new_texture();
         if( GPE_CHECKMARK_IMAGE!=NULL)
         {
-            GPE_CHECKMARK_IMAGE->load_new_texture(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/chevron-down.png",-1,false);
+            GPE_CHECKMARK_IMAGE->load_new_texture( GPE_MAIN_RENDERER,APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/chevron-down.png",-1,false);
         }
-        GPE_DROPDOWN_ARROW = new GPE_Texture();
+        GPE_DROPDOWN_ARROW = gpeph->get_new_texture();
         if( GPE_DROPDOWN_ARROW!=NULL)
         {
-            GPE_DROPDOWN_ARROW->load_new_texture(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/angle-down.png",-1,false);
+            GPE_DROPDOWN_ARROW->load_new_texture( GPE_MAIN_RENDERER,APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/angle-down.png",-1,false);
         }
-        GPE_SCROLLBAR_ARROW = guiRCM->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/caret-down.png",1,true,0,0,false);
 
-        GPE_Cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
-        GPE_HoverCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
-        GPE_LoadingCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT);
+        GPE_EYE_DROPPER = gpeph->get_new_texture();
+        if( GPE_EYE_DROPPER!=NULL)
+        {
+            GPE_EYE_DROPPER->load_new_texture( GPE_MAIN_RENDERER,APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/eyedropper.png",-1,false);
+        }
 
+        GPE_SCROLLBAR_ARROW = guiRCM->animation_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/caret-down.png",1,true,0,0,false);
         return true;
     }
     return false;
@@ -123,7 +127,7 @@ bool PAW_GUI_END()
         MAIN_GUI_SETTINGS = NULL;
     }
 
-    GPE_Report("Deleting mini-compiler....");
+    GPE_Report("Deleting mini-code-highlighter....");
     if( GPE_MAIN_HIGHLIGHTER!=NULL)
     {
         delete GPE_MAIN_HIGHLIGHTER;
@@ -134,4 +138,5 @@ bool PAW_GUI_END()
         delete guiRCM;
         guiRCM = NULL;
     }
+    return true;
 }

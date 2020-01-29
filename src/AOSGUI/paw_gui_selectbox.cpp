@@ -3,10 +3,10 @@ paw_gui_selectbox.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,7 +39,7 @@ GPE_SelectBoxBasic_Option::GPE_SelectBoxBasic_Option()
     optionValue = 0;
     optionName = "";
     optionTexture = NULL;
-    optionSprite = NULL;
+    optionanimation = NULL;
     subimageIndex = 0;
     isChecked = true;
     useGuiColor= false;
@@ -65,7 +65,7 @@ GPE_SelectBoxBasic::GPE_SelectBoxBasic( std::string name)
     elementBox.x = 0;
     elementBox.y = 0;
     elementBox.w = 192;
-    elementBox.h = GENERAL_GPE_PADDING;
+    elementBox.h = GENERAL_GPE_GUI_PADDING;
     maxHeight = -1;
     optionHeight = -1;
     opName = name;
@@ -73,7 +73,7 @@ GPE_SelectBoxBasic::GPE_SelectBoxBasic( std::string name)
     pos = 0;
     startPos = 0;
     maxOptionsInView = 10;
-    optionHeight = GPE_TITLE_BPADDING+GENERAL_GPE_PADDING*2;
+    optionHeight = GPE_TITLE_BPADDING+GENERAL_GPE_GUI_PADDING*2;
     optionIconWidth = GPE_AVERAGE_LINE_HEIGHT;
     showCheckboxes = false;
     showHideOthersCheckboxToggle = true;
@@ -103,7 +103,7 @@ GPE_SelectBoxBasic::~GPE_SelectBoxBasic()
 
 void GPE_SelectBoxBasic::correct_camera()
 {
-    maxOptionsInView = floor( (double)elementBox.h / (double)optionHeight );
+    maxOptionsInView = floor( (float)elementBox.h / (float)optionHeight );
     //checks if pos is no longer in view
     if( pos < 0 )
     {
@@ -124,9 +124,9 @@ void GPE_SelectBoxBasic::correct_camera()
     }
 
     //correctos the start pos if its out of view
-    if( startPos+maxOptionsInView > (double)subOptions.size() )
+    if( startPos+maxOptionsInView > (float)subOptions.size() )
     {
-        startPos = (double)subOptions.size() - maxOptionsInView;
+        startPos = (float)subOptions.size() - maxOptionsInView;
     }
     if( startPos < 0)
     {
@@ -134,8 +134,8 @@ void GPE_SelectBoxBasic::correct_camera()
     }
 
     optionsScroller->update_box(  elementBox.x+elementBox.w-16, elementBox.y, 16,elementBox.h);
-    update_rectangle(&optionsScroller->fullRect, 0, 0, 0,(double)subOptions.size() );
-    update_rectangle(&optionsScroller->contextRect, 0, (double)startPos,0, (double)maxOptionsInView );
+    update_rectangle(&optionsScroller->fullRect, 0, 0, 0,(float)subOptions.size() );
+    update_rectangle(&optionsScroller->contextRect, 0, (float)startPos,0, (float)maxOptionsInView );
 }
 
 std::string GPE_SelectBoxBasic::get_data()
@@ -149,17 +149,17 @@ void GPE_SelectBoxBasic::load_data(std::string dataString)
 }
 
 
-void GPE_SelectBoxBasic::add_option(std::string newOptionName, double newOpValue,GPE_Texture * evRepIcon, GPE_Animation * evRepSprite, int subimageInIndex, bool selectNew, bool useGuiColor )
+void GPE_SelectBoxBasic::add_option(std::string newOptionName, float newOpValue,GPE_Texture_Base * evRepIcon, GPE_Animation * evRepanimation, int subimageInIndex, bool selectNew, bool useGuiColor )
 {
-    if( (int)newOptionName.size() > 0 || evRepIcon!=NULL || evRepSprite!=NULL )
+    if( (int)newOptionName.size() > 0 || evRepIcon!=NULL || evRepanimation!=NULL )
     {
         GPE_SelectBoxBasic_Option * newOption = new GPE_SelectBoxBasic_Option();
         newOption->optionName = newOptionName;
         newOption->optionValue = newOpValue;
-        newOption->optionSprite = evRepSprite;
+        newOption->optionanimation = evRepanimation;
         newOption->optionTexture = evRepIcon;
         newOption->useGuiColor = useGuiColor;
-        //newOption->optionNameTexture->loadFromRenderedText(MAIN_RENDERER,newOptionName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_CATEGORY_BAR);
+        //newOption->optionNameTexture->loadFromRenderedText(GPE_MAIN_RENDERER,newOptionName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TEXTINPUT);
 
         newOption->subimageIndex = subimageInIndex;
 
@@ -191,6 +191,23 @@ void GPE_SelectBoxBasic::clear_list()
     subOptions.clear();
     pos = 0;
     startPos = 0;
+}
+
+int GPE_SelectBoxBasic::get_option_id(std::string optionName )
+{
+    GPE_SelectBoxBasic_Option * tempOption = NULL;
+    for( int i = (int)subOptions.size()-1; i >=0; i--)
+    {
+        tempOption = subOptions[i];
+        if( tempOption!=NULL)
+        {
+            if( tempOption->optionName == optionName )
+            {
+                return i;
+            }
+        }
+    }
+    return -1;
 }
 
 GPE_SelectBoxBasic_Option * GPE_SelectBoxBasic::get_option(int optionId)
@@ -232,7 +249,7 @@ std::string GPE_SelectBoxBasic::get_selected_name()
     return "";
 }
 
-double GPE_SelectBoxBasic::get_selected_value()
+float GPE_SelectBoxBasic::get_selected_value()
 {
     if( pos >=0 && pos < (int)subOptions.size() )
     {
@@ -255,13 +272,13 @@ int GPE_SelectBoxBasic::get_size()
     return (int)subOptions.size();
 }
 
-void GPE_SelectBoxBasic::insert_option(int optionId, std::string newOptionName, GPE_Texture * evRepIcon, GPE_Animation * evRepSprite, int subimageInIndex, bool selectNew )
+void GPE_SelectBoxBasic::insert_option(int optionId, std::string newOptionName, GPE_Texture_Base * evRepIcon, GPE_Animation * evRepanimation, int subimageInIndex, bool selectNew )
 {
-    if( (int)newOptionName.size() > 0 || evRepIcon!=NULL || evRepSprite!=NULL )
+    if( (int)newOptionName.size() > 0 || evRepIcon!=NULL || evRepanimation!=NULL )
     {
         GPE_SelectBoxBasic_Option * newOption = new GPE_SelectBoxBasic_Option();
         newOption->optionName = newOptionName;
-        newOption->optionSprite = evRepSprite;
+        newOption->optionanimation = evRepanimation;
         newOption->optionTexture = evRepIcon;
         newOption->subimageIndex = subimageInIndex;
 
@@ -300,7 +317,7 @@ void GPE_SelectBoxBasic::limit_height(int newH)
     {
         maxHeight = -1;
     }
-    maxOptionsInView = floor( (double)elementBox.h / (double)optionHeight );
+    maxOptionsInView = floor( (float)elementBox.h / (float)optionHeight );
 }
 
 void GPE_SelectBoxBasic::alter_content( int optionId, bool sectionHasContent)
@@ -314,7 +331,7 @@ void GPE_SelectBoxBasic::alter_content( int optionId, bool sectionHasContent)
     }
 }
 
-void GPE_SelectBoxBasic::alter_content_from_value( double valueId, bool sectionHasContent)
+void GPE_SelectBoxBasic::alter_content_from_value( float valueId, bool sectionHasContent)
 {
     for( int i = (int)subOptions.size()-1; i >=0; i--)
     {
@@ -377,7 +394,7 @@ void GPE_SelectBoxBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     if( maxOptionsInView <= (int)subOptions.size() )
     {
         optionsScroller->process_self( viewedSpace, cam );
-        startPos = (double)(optionsScroller->contextRect.y);
+        startPos = (float)(optionsScroller->contextRect.y);
     }
 
     bool scrollHappened = false;
@@ -455,9 +472,9 @@ void GPE_SelectBoxBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
         }
     }
 
-    if( startPos >= (double)subOptions.size()-maxOptionsInView )
+    if( startPos >= (float)subOptions.size()-maxOptionsInView )
     {
-        startPos = (double)subOptions.size()-maxOptionsInView;
+        startPos = (float)subOptions.size()-maxOptionsInView;
     }
 
     if( startPos < 0 )
@@ -469,7 +486,7 @@ void GPE_SelectBoxBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     if( isClicked )
     {
         isInUse = true;
-        int checkBoxWidth = optionHeight+GENERAL_GPE_PADDING;
+        int checkBoxWidth = optionHeight+GENERAL_GPE_GUI_PADDING;
         int checkBoxHeight = optionHeight;
         if( showCheckboxes==false)
         {
@@ -534,27 +551,37 @@ void GPE_SelectBoxBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     //GPE_Report("Success on select box...");
 }
 
-void GPE_SelectBoxBasic::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
+void GPE_SelectBoxBasic::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( forceRedraw && cam!=NULL && viewedSpace!=NULL )
+    if( cam!=NULL && viewedSpace!=NULL )
     {
         intedPos = (int)pos;
         int relativeOptionX = elementBox.x-cam->x;
         int relativeOptionY = elementBox.y-cam->y;
-        int foundIconWidth = std::max( optionIconWidth,optionHeight )*3/4;
-        gcanvas->render_rectangle( relativeOptionX,relativeOptionY,relativeOptionX+elementBox.w,relativeOptionY+elementBox.h,GPE_MAIN_THEME->PopUp_Box_Color, false);
-
-        if( pos>=startPos && pos < startPos+maxOptionsInView )
+        int foundIconWidth = 0;
+        if( optionIconWidth > 0 )
         {
-            if(pos==0 && (int)subOptions.size() > 0)
+            foundIconWidth = std::max( optionIconWidth,optionHeight )*3/4;
+        }
+        else
+        {
+            foundIconWidth = 0;
+        }
+        gcanvas->render_rectangle( relativeOptionX,relativeOptionY,relativeOptionX+elementBox.w,relativeOptionY+elementBox.h,GPE_MAIN_THEME->PopUp_Box_Color, false);
+        maxOptionsInView = elementBox.h / optionHeight;
+        int iStartPos = (int)startPos;
+
+        if( pos>=iStartPos && pos < iStartPos+maxOptionsInView )
+        {
+            if( (int)subOptions.size() > 0)
             {
-                gcanvas->render_rectangle( relativeOptionX,relativeOptionY+(pos-startPos)*optionHeight,relativeOptionX+elementBox.w,relativeOptionY+(pos-startPos+1)*optionHeight,GPE_MAIN_THEME->Button_Border_Color,false);
+                gcanvas->render_rectangle( relativeOptionX,relativeOptionY+(pos-iStartPos)*optionHeight,relativeOptionX+elementBox.w,relativeOptionY+(pos-iStartPos+1)*optionHeight,GPE_MAIN_THEME->Button_Border_Color,false);
             }
             else if( pos > 0)
             {
-                gcanvas->render_rectangle( relativeOptionX,relativeOptionY+(pos-startPos)*optionHeight,relativeOptionX+elementBox.w,relativeOptionY+(pos-startPos+1)*optionHeight,GPE_MAIN_THEME->Button_Border_Color,false);
+                gcanvas->render_rectangle( relativeOptionX,relativeOptionY+(pos-iStartPos)*optionHeight,relativeOptionX+elementBox.w,relativeOptionY+(pos-iStartPos+1)*optionHeight,GPE_MAIN_THEME->Button_Border_Color,false);
             }
         }
         else if( pos >= startPos+maxOptionsInView )
@@ -562,7 +589,7 @@ void GPE_SelectBoxBasic::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool
             //pos = startPos+maxOptionsInView -1;
         }
         GPE_SelectBoxBasic_Option * tOption = NULL;
-        int checkBoxWidth = optionHeight+GENERAL_GPE_PADDING;
+        int checkBoxWidth = optionHeight+GENERAL_GPE_GUI_PADDING;
         int checkBoxHeight = optionHeight;
         if( showCheckboxes==false)
         {
@@ -571,8 +598,7 @@ void GPE_SelectBoxBasic::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool
         }
 
         GPE_Color * fontRenderColor = GPE_MAIN_THEME->Main_Box_Faded_Font_Color;
-        int iStartPos = (int)startPos;
-        for( int i = iStartPos; i < (int)(iStartPos+maxOptionsInView) &&  i < (int)subOptions.size(); i++)
+        for( int i = iStartPos; i <= (int)(iStartPos+maxOptionsInView) &&  i < (int)subOptions.size(); i++)
         {
             tOption = subOptions.at( i );
             if( tOption!=NULL)
@@ -593,40 +619,40 @@ void GPE_SelectBoxBasic::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool
 
                 if( showCheckboxes)
                 {
-                    gcanvas->render_rectangle( relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING+optionHeight/8,relativeOptionY+1+(i-iStartPos)*optionHeight+optionHeight/8,relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING+optionHeight/2+optionHeight/8,relativeOptionY+(i-iStartPos)*optionHeight+optionHeight*5/8,GPE_MAIN_THEME->Button_Box_Color, false);
+                    gcanvas->render_rectangle( relativeOptionX+relativeOptionX+GENERAL_GPE_GUI_PADDING+optionHeight/8,relativeOptionY+1+(i-iStartPos)*optionHeight+optionHeight/8,relativeOptionX+relativeOptionX+GENERAL_GPE_GUI_PADDING+optionHeight/2+optionHeight/8,relativeOptionY+(i-iStartPos)*optionHeight+optionHeight*5/8,GPE_MAIN_THEME->Button_Box_Color, false);
                     if( tOption->isChecked && GPE_CHECKMARK_IMAGE!=NULL )
                     {
-                        GPE_CHECKMARK_IMAGE->render_tex_resized( relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING+optionHeight/8,relativeOptionY+(i-iStartPos)*optionHeight+optionHeight/8,optionHeight/2,optionHeight/2,NULL,GPE_MAIN_THEME->Checkbox_Color );
+                        GPE_CHECKMARK_IMAGE->render_tex_resized( relativeOptionX+relativeOptionX+GENERAL_GPE_GUI_PADDING+optionHeight/8,relativeOptionY+(i-iStartPos)*optionHeight+optionHeight/8,optionHeight/2,optionHeight/2,NULL,GPE_MAIN_THEME->Checkbox_Color );
                     }
-                    //gcanvas->render_rectangle( relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING,relativeOptionY+1+(i-iStartPos)*optionHeight,relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING+optionHeight,relativeOptionY+(i-iStartPos+1)*optionHeight,GPE_MAIN_THEME->Button_Box_Selected_Color, true);
-                    gcanvas->render_rectangle( relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING+optionHeight/8,relativeOptionY+1+(i-iStartPos)*optionHeight+optionHeight/8,relativeOptionX+relativeOptionX+GENERAL_GPE_PADDING+optionHeight/2+optionHeight/8,relativeOptionY+(i-iStartPos)*optionHeight+optionHeight*5/8,GPE_MAIN_THEME->Button_Box_Selected_Color, true);
+                    //gcanvas->render_rectangle( relativeOptionX+relativeOptionX+GENERAL_GPE_GUI_PADDING,relativeOptionY+1+(i-iStartPos)*optionHeight,relativeOptionX+relativeOptionX+GENERAL_GPE_GUI_PADDING+optionHeight,relativeOptionY+(i-iStartPos+1)*optionHeight,GPE_MAIN_THEME->Button_Box_Selected_Color, true);
+                    gcanvas->render_rectangle( relativeOptionX+relativeOptionX+GENERAL_GPE_GUI_PADDING+optionHeight/8,relativeOptionY+1+(i-iStartPos)*optionHeight+optionHeight/8,relativeOptionX+relativeOptionX+GENERAL_GPE_GUI_PADDING+optionHeight/2+optionHeight/8,relativeOptionY+(i-iStartPos)*optionHeight+optionHeight*5/8,GPE_MAIN_THEME->Button_Box_Selected_Color, true);
 
-                    gfs->render_text( relativeOptionX+GENERAL_GPE_PADDING+checkBoxWidth,relativeOptionY+(i-iStartPos)*optionHeight+optionHeight/2,tOption->optionName,fontRenderColor,FONT_CATEGORY_BAR,FA_LEFT,FA_CENTER,255);
+                    gfs->render_text( relativeOptionX+GENERAL_GPE_GUI_PADDING+checkBoxWidth,relativeOptionY+(i-iStartPos)*optionHeight+optionHeight/2,tOption->optionName,fontRenderColor,FONT_TEXTINPUT,FA_LEFT,FA_CENTER,255);
                 }
                 else
                 {
-                    gfs->render_text( relativeOptionX+foundIconWidth+GENERAL_GPE_PADDING*2,relativeOptionY+(i-iStartPos)*optionHeight+optionHeight/2,tOption->optionName,fontRenderColor,FONT_CATEGORY_BAR,FA_LEFT,FA_MIDDLE,255);
+                    gfs->render_text( relativeOptionX+foundIconWidth+GENERAL_GPE_GUI_PADDING*2,relativeOptionY+(i-iStartPos)*optionHeight+optionHeight/2,tOption->optionName,fontRenderColor,FONT_LABEL,FA_LEFT,FA_MIDDLE,255);
                 }
                 if( tOption->optionTexture!=NULL)
                 {
                     if( tOption->useGuiColor)
                     {
-                        tOption->optionTexture->render_align_resized( relativeOptionX+GENERAL_GPE_PADDING,relativeOptionY+(i-iStartPos)*optionHeight+(optionHeight)/2,foundIconWidth,foundIconWidth,FA_LEFT,FA_MIDDLE, NULL,GPE_MAIN_THEME->PopUp_Box_Font_Color );
+                        tOption->optionTexture->render_align_resized( relativeOptionX+GENERAL_GPE_GUI_PADDING,relativeOptionY+(i-iStartPos)*optionHeight+(optionHeight)/2,foundIconWidth,foundIconWidth,FA_LEFT,FA_MIDDLE, NULL,GPE_MAIN_THEME->PopUp_Box_Font_Color );
                     }
                     else
                     {
-                        tOption->optionTexture->render_align_resized( relativeOptionX+GENERAL_GPE_PADDING,relativeOptionY+(i-iStartPos)*optionHeight+(optionHeight)/2,foundIconWidth,foundIconWidth, FA_LEFT, FA_MIDDLE, NULL );
+                        tOption->optionTexture->render_align_resized( relativeOptionX+GENERAL_GPE_GUI_PADDING,relativeOptionY+(i-iStartPos)*optionHeight+(optionHeight)/2,foundIconWidth,foundIconWidth, FA_LEFT, FA_MIDDLE, NULL );
                     }
                 }
-                else if( tOption->optionSprite!=NULL)
+                else if( tOption->optionanimation!=NULL)
                 {
                     if( tOption->useGuiColor)
                     {
-                        //tOption->optionSprite->render_special( tOption->subimageIndex,relativeOptionX+GENERAL_GPE_PADDING+checkBoxWidth,relativeOptionY+(i-iStartPos)*optionHeight +(optionHeight-foundIconWidth)/2,foundIconWidth,foundIconWidth,GPE_MAIN_THEME->Main_Box_Font_Color,cam);
+                        //tOption->optionanimation->render_special( tOption->subimageIndex,relativeOptionX+GENERAL_GPE_GUI_PADDING+checkBoxWidth,relativeOptionY+(i-iStartPos)*optionHeight +(optionHeight-foundIconWidth)/2,foundIconWidth,foundIconWidth,GPE_MAIN_THEME->Main_Box_Font_Color,cam);
                     }
                     else
                     {
-                        //tOption->optionSprite->render_resized( tOption->subimageIndex,relativeOptionX+GENERAL_GPE_PADDING+checkBoxWidth,relativeOptionY+(i-iStartPos)*optionHeight +(optionHeight-foundIconWidth)/2,foundIconWidth,foundIconWidth,cam);
+                        //tOption->optionanimation->render_resized( tOption->subimageIndex,relativeOptionX+GENERAL_GPE_GUI_PADDING+checkBoxWidth,relativeOptionY+(i-iStartPos)*optionHeight +(optionHeight-foundIconWidth)/2,foundIconWidth,foundIconWidth,cam);
                     }
                 }
             }
@@ -651,7 +677,7 @@ void GPE_SelectBoxBasic::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool
 
         if( maxOptionsInView < (int)subOptions.size() )
         {
-            optionsScroller->render_self( viewedSpace, cam, forceRedraw );
+            optionsScroller->render_self( viewedSpace, cam );
         }
     }
 }
@@ -689,7 +715,7 @@ void GPE_SelectBoxBasic::set_option_height( int newOptionHeight)
     {
         optionHeight = newOptionHeight;
     }
-    maxOptionsInView = floor( (double)elementBox.h / (double)optionHeight );
+    maxOptionsInView = floor( (float)elementBox.h / (float)optionHeight );
 }
 
 void GPE_SelectBoxBasic::set_selected_option( std::string optionToSelect)

@@ -3,10 +3,10 @@ gpe_syntax_handler.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -34,7 +34,7 @@ SOFTWARE.
 #ifndef GPE_SYNTHAX_HANDLER_H
 #define GPE_SYNTHAX_HANDLER_H
 
-#include "../GPE_Engine/GPE_File_System.h"
+#include "../GPE/GPE_File_System.h"
 
 const int PROGRAM_LANGUAGE_JS = 0;
 const int PROGRAM_LANGUAGE_CPP = 1;
@@ -175,8 +175,8 @@ public:
     void clear_all();
     void clear_highlights();
     void clear_suggestions();
-    void render_code_highlights( bool forceRedraw = true );
-    void render_code_suggestions( bool forceRedraw = true );
+    void render_code_highlights( );
+    void render_code_suggestions( );
 };
 
 extern GPE_Syntax_Highlighter * GPE_MAIN_HIGHLIGHTER;

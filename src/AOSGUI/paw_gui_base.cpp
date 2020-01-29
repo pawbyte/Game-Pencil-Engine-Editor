@@ -3,10 +3,10 @@ paw_gui_base.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,10 +35,9 @@ SOFTWARE.
 
 GPE_GUI_Settings * MAIN_GUI_SETTINGS = NULL;
 GPE_DataManager * guiRCM = NULL;
-GPE_Texture * GPE_CHECKMARK_IMAGE = NULL;
-GPE_Texture  * GPE_DROPDOWN_ARROW = NULL;
-
-std::string CURRENT_PROJECT_NAME = "";
+GPE_Texture_Base * GPE_CHECKMARK_IMAGE = NULL;
+GPE_Texture_Base  * GPE_DROPDOWN_ARROW = NULL;
+GPE_Texture_Base  * GPE_EYE_DROPPER = NULL;
 
 int POPUP_FONT_SIZE_WIDTH = 12;
 int POPUP_FONT_SIZE_HEIGHT = 12;
@@ -68,7 +67,7 @@ GPE_GUI_Settings::GPE_GUI_Settings()
 
 
     fileOpenAudioDir = "";
-    fileOpenSpriteDir = "";
+    fileOpenanimationDir = "";
     fileOpenTextureDir = "";
     fileOpenTilesheetDir = "";
     fileOpenFontDir = "";
@@ -90,6 +89,7 @@ GPE_GUI_Settings::~GPE_GUI_Settings()
 
 GPE_GeneralGuiElement::GPE_GeneralGuiElement()
 {
+    renderPackageName = "";
     hAlign = FA_LEFT;
     vAlign = FA_TOP;
     dynamicId = -1;
@@ -102,7 +102,7 @@ GPE_GeneralGuiElement::GPE_GeneralGuiElement()
     elementBox.h = 0;
     maxWidth = 0;
     maxHeight = 0;
-    autoResizes = false;
+    autoResizes = true;
     clickedOutside = false;
     clickedOutside = false;
     hasScrollControl = false;
@@ -147,7 +147,7 @@ void GPE_GeneralGuiElement::switch_inuse(bool newUse)
     }
 }
 
-void GPE_GeneralGuiElement::update_box( double nx, double ny, double nw, double nh)
+void GPE_GeneralGuiElement::update_box( float nx, float ny, float nw, float nh)
 {
     set_coords( nx, ny);
     set_width( nw);
@@ -280,69 +280,83 @@ void GPE_GeneralGuiElement::move_pos(int newX, int newY)
 
 void GPE_GeneralGuiElement::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 {
-    if( isEnabled)
+    bool wasHovered = isHovered;
+    windowInView = false;
+    isClicked = false;
+    isPressed = false;
+    isRightClicked = false;
+    isHovered = false;
+    clickedOutside = false;
+    if( !isEnabled)
     {
-        if( isFullWidth )
+        return;
+    }
+    if( isFullWidth )
+    {
+        needsNewLine = true;
+    }
+
+    GPE_Render_Package * guiRenderPackage = gpeph->get_render_package_from_name( renderPackageName );
+    if( guiRenderPackage !=NULL && guiRenderPackage->packageWindow!=NULL )
+    {
+        windowInView = guiRenderPackage->packageWindow->has_focus();
+    }
+
+    if( !windowInView )
+    {
+        return;
+    }
+
+    viewedSpace = GPE_find_camera(viewedSpace);
+    cam = GPE_find_camera(cam);
+    if(viewedSpace!=NULL && cam!=NULL)
+    {
+        if( point_between(input->mouse_x,input->mouse_y,viewedSpace->x,viewedSpace->y,viewedSpace->x+viewedSpace->w,viewedSpace->y+viewedSpace->h) )
         {
-            needsNewLine = true;
-        }
-        bool wasHovered = isHovered;
-        isClicked = false;
-        isPressed = false;
-        isRightClicked = false;
-        isHovered = false;
-        clickedOutside = false;
-        viewedSpace = GPE_find_camera(viewedSpace);
-        cam = GPE_find_camera(cam);
-        if(viewedSpace!=NULL && cam!=NULL)
-        {
-            if( point_between(input->mouse_x,input->mouse_y,viewedSpace->x,viewedSpace->y,viewedSpace->x+viewedSpace->w,viewedSpace->y+viewedSpace->h) )
+            if (point_between(input->mouse_x,input->mouse_y,elementBox.x+viewedSpace->x-cam->x,elementBox.y+viewedSpace->y-cam->y,elementBox.x+elementBox.w+viewedSpace->x-cam->x,elementBox.y+elementBox.h+viewedSpace->y-cam->y) )
             {
-                if (point_between(input->mouse_x,input->mouse_y,elementBox.x+viewedSpace->x-cam->x,elementBox.y+viewedSpace->y-cam->y,elementBox.x+elementBox.w+viewedSpace->x-cam->x,elementBox.y+elementBox.h+viewedSpace->y-cam->y) )
+                isHovered = true;
+                if( MAIN_OVERLAY!=NULL)
                 {
-                    isHovered = true;
-                    if( MAIN_OVERLAY!=NULL)
+                    if( (int)descriptionText.size()>0 )
                     {
-                        if( (int)descriptionText.size()>0 )
-                        {
-                            MAIN_OVERLAY->update_tooltip(descriptionText);
-                        }
-                        else
-                        {
-                            MAIN_OVERLAY->update_tooltip(opName);
-                        }
+                        MAIN_OVERLAY->update_tooltip(descriptionText);
                     }
-                    if( input->check_mouse_pressed(0) )
+                    else
                     {
-                        isPressed = true;
-                        isInUse = true;
-                    }
-                    else if( input->check_mouse_released( mb_left))
-                    {
-                        isClicked = true;
-                        isInUse = true;
-                    }
-                    else if( input->check_mouse_pressed(1) )
-                    {
-                        isRightClicked = true;
-                        isInUse = true;
+                        MAIN_OVERLAY->update_tooltip(opName);
                     }
                 }
-                else if( input->check_mouse_pressed( mb_anybutton ) || input->check_mouse_released( mb_anybutton ) )
+                if( input->check_mouse_pressed(0) )
                 {
-                    clickedOutside = true;
-                    isInUse = false;
-                    hasScrollControl = false;
-                    hasArrowkeyControl = false;
+                    isPressed = true;
+                    isInUse = true;
+                }
+                else if( input->check_mouse_released( mb_left))
+                {
+                    isClicked = true;
+                    isInUse = true;
+                }
+                else if( input->check_mouse_pressed(1) )
+                {
+                    isRightClicked = true;
+                    isInUse = true;
                 }
             }
-            else if( input->check_mouse_pressed( mb_anybutton )  || input->check_mouse_released(  mb_anybutton ) )
+            else if( input->check_mouse_pressed( mb_anybutton ) || input->check_mouse_released( mb_anybutton ) )
             {
                 clickedOutside = true;
                 isInUse = false;
                 hasScrollControl = false;
                 hasArrowkeyControl = false;
             }
+        }
+        else if( input->check_mouse_pressed( mb_anybutton )  || input->check_mouse_released(  mb_anybutton ) )
+        {
+            clickedOutside = true;
+            isInUse = false;
+            hasScrollControl = false;
+            hasArrowkeyControl = false;
         }
     }
 }
@@ -352,7 +366,7 @@ void GPE_GeneralGuiElement::prerender_self( )
 
 }
 
-void GPE_GeneralGuiElement::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_GeneralGuiElement::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
 {
 
 }
@@ -362,17 +376,17 @@ bool GPE_GeneralGuiElement::requires_newline()
     return needsNewLine;
 }
 
-void GPE_GeneralGuiElement::scale_height(double scaleH)
+void GPE_GeneralGuiElement::scale_height(float scaleH)
 {
     set_height( elementBox.h * scaleH);
 }
 
-void GPE_GeneralGuiElement::scale_width(double scaleW)
+void GPE_GeneralGuiElement::scale_width(float scaleW)
 {
     set_width( elementBox.w* scaleW);
 }
 
-void GPE_GeneralGuiElement::scale_object(double scaleValue )
+void GPE_GeneralGuiElement::scale_object(float scaleValue )
 {
     scale_width( scaleValue);
     scale_height( scaleValue);

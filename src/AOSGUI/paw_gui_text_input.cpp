@@ -3,10 +3,10 @@ paw_gui_text_input.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -38,7 +38,7 @@ GPE_TextInputBasic::GPE_TextInputBasic( std::string startName,std::string placeH
 {
     resubmissionAllowed = false;
     opName = "";
-    lastDoubleClickAction = 0;
+    lastfloatClickAction = 0;
     guiListTypeName = "inputtext";
     cursorPos = 0;
     prevCursorPos =0;
@@ -302,7 +302,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     }
     if( isHovered)
     {
-        GPE_change_cursor(SDL_SYSTEM_CURSOR_IBEAM);
+        gpe->cursor_change("ibeam");
     }
     if(clickedOutside)
     {
@@ -311,9 +311,9 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     }
     if( isHovered)
     {
-        if( input->check_mouse_doubleclicked(0) )
+        if( input->check_mouse_floatclicked(0) )
         {
-            if( lastDoubleClickAction ==0)
+            if( lastfloatClickAction ==0)
             {
                 get_cursor_from_mouse(viewedSpace,cam);
                 selectionCursorPos = cursorPos;
@@ -400,12 +400,12 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                         }
                     }
                 }
-                lastDoubleClickAction = 1;
+                lastfloatClickAction = 1;
             }
             else
             {
                 select_all();
-                lastDoubleClickAction = 0;
+                lastfloatClickAction = 0;
             }
             input->reset_all_input();
 
@@ -462,7 +462,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
         {
             if( input->check_mouse_released( mb_left))
             {
-                GPE_change_cursor(SDL_SYSTEM_CURSOR_IBEAM);
+                gpe->cursor_change(GPE_CURSOR_IBEAM);
                 get_cursor_from_mouse(viewedSpace, cam);
                 if( cursorPos >=0 && cursorPos <= (int)textInputString.size() )
                 {
@@ -484,61 +484,61 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
         }
         //special control action happening
         //Process Input Field delay timers
-        if( input->down[kb_backspace]  && !input->pressed[kb_backspace]  && !input->released[kb_backspace] )
+        if( input->down[kb_backspace]  )
         {
             bscDelay+=gpe->get_delta_time();
         }
         else
         {
-            bscDelay = -1;
+            bscDelay = 0;
         }
-        if( input->down[kb_delete] && !input->pressed[kb_delete]   && !input->released[kb_delete] )
+        if( input->down[kb_delete] )
         {
             delDelay+=gpe->get_delta_time();
         }
         else
         {
-            delDelay = -1;
+            delDelay = 0;
         }
-        if( input->down[kb_up] && !input->pressed[kb_up]   && !input->released[kb_up] )
+        if( input->down[kb_up] )
         {
             upArrowDelay+=gpe->get_delta_time();
         }
         else
         {
-            upArrowDelay = -1;
+            upArrowDelay = 0;
         }
-        if( input->down[kb_down] && !input->pressed[kb_down]   && !input->released[kb_down] )
+        if( input->down[kb_down] )
         {
             downArrowDelay+=gpe->get_delta_time();
         }
         else
         {
-            downArrowDelay = -1;
+            downArrowDelay = 0;
         }
-        if( input->down[kb_left] && !input->pressed[kb_left]   && !input->released[kb_left] )
+        if( input->down[kb_left]  )
         {
             leftArrowDelay+=gpe->get_delta_time();
         }
         else
         {
-            leftArrowDelay = -1;
+            leftArrowDelay = 0;
         }
-        if( input->down[kb_right] && !input->pressed[kb_right]   && !input->released[kb_right] )
+        if( input->down[kb_right] )
         {
             rightArrowDelay+=gpe->get_delta_time();
         }
         else
         {
-            rightArrowDelay = -1;
+            rightArrowDelay = 0;
         }
-        if( input->down[kb_enter] && !input->pressed[kb_enter]   && !input->released[kb_enter] )
+        if( input->down[kb_enter] )
         {
             enterDelay+=gpe->get_delta_time();
         }
         else
         {
-            enterDelay = -1;
+            enterDelay = 0;
         }
 
         if( input->down[kb_ctrl]  )
@@ -567,19 +567,19 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                 showCursor = true;
                 cursorTimer = 0;
             }
-            else if( input->mouseScrollingUp > 0)
+            else if( input->mouseScrollingUp )
             {
                 move_left(4);
                 showCursor = true;
                 cursorTimer = 0;
             }
-            else if( input->mouseScrollingDown > 0)
+            else if( input->mouseScrollingDown )
             {
                 move_right(4);
                 showCursor = true;
                 cursorTimer = 0;
             }
-            else if( leftArrowDelay > MAIN_GUI_SETTINGS->textInputDelayTime )
+            else if( leftArrowDelay >= MAIN_GUI_SETTINGS->textInputDelayTime )
             {
                 leftArrowDelay = -1;
                 if( input->shiftKeyIsPressed)
@@ -629,7 +629,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                 }
                 leftArrowDelay = -1;
             }
-            else if( rightArrowDelay > MAIN_GUI_SETTINGS->textInputDelayTime )
+            else if( rightArrowDelay >= MAIN_GUI_SETTINGS->textInputDelayTime )
             {
                 rightArrowDelay = -1;
                 if( input->shiftKeyIsPressed)
@@ -680,13 +680,13 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                 rightArrowDelay = 0;
             }
         }
-        else if( input->mouseScrollingUp > 0)
+        else if( input->mouseScrollingUp )
         {
             move_left(4);
             showCursor = true;
             cursorTimer = 0;
         }
-        else if( input->mouseScrollingDown > 0)
+        else if( input->mouseScrollingDown )
         {
             move_right(4);
             showCursor = true;
@@ -698,7 +698,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
             showCursor = true;
             cursorTimer = 0;
         }
-        else if( bscDelay > MAIN_GUI_SETTINGS->textInputDelayTime )
+        else if( bscDelay >= MAIN_GUI_SETTINGS->textInputDelayTime )
         {
             bscDelay = 0;
             if( selectionCursorPos!=selectionEndCursorPos)
@@ -727,7 +727,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
             bscDelay = 0;
             //input->reset_all_input();
         }
-        else if( delDelay > MAIN_GUI_SETTINGS->textInputDelayTime  )
+        else if( delDelay >= MAIN_GUI_SETTINGS->textInputDelayTime   )
         {
             delDelay = 0;
             if( selectionCursorPos!=selectionEndCursorPos)
@@ -755,7 +755,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
             showCursor = true;
             cursorTimer = 0;
         }
-        else if( leftArrowDelay > MAIN_GUI_SETTINGS->textInputDelayTime  )
+        else if( leftArrowDelay >= MAIN_GUI_SETTINGS->textInputDelayTime  )
         {
             reset_selection();
             if( cursorPos > 0)
@@ -772,7 +772,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
             cursorTimer = 0;
             leftArrowDelay = -1;
         }
-        else if( rightArrowDelay > MAIN_GUI_SETTINGS->textInputDelayTime  )
+        else if( rightArrowDelay >= MAIN_GUI_SETTINGS->textInputDelayTime  )
         {
             reset_selection(1);
             if( cursorPos < (int)textInputString.size() )
@@ -789,7 +789,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
             cursorTimer = 0;
             rightArrowDelay = -1;
         }
-        else if( upArrowDelay > MAIN_GUI_SETTINGS->textInputDelayTime  )
+        else if( upArrowDelay >= MAIN_GUI_SETTINGS->textInputDelayTime  )
         {
             cursorHistoryPos--;
             cursorPos = 0;
@@ -805,7 +805,7 @@ void GPE_TextInputBasic::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
             cursorTimer = 0;
             upArrowDelay = -1;
         }
-        else if( downArrowDelay > MAIN_GUI_SETTINGS->textInputDelayTime )
+        else if( downArrowDelay >= MAIN_GUI_SETTINGS->textInputDelayTime  )
         {
             if( (int)listOfPastStrings.size() >0 && cursorHistoryPos>=-1 && cursorHistoryPos < (int)listOfPastStrings.size() -1 )
             {
@@ -914,63 +914,85 @@ void GPE_TextInputBasic::record_string( std::string strToRecord)
     }
 }
 
-void GPE_TextInputBasic::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
+void GPE_TextInputBasic::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( isEnabled && cam!=NULL)
     {
-        if( forceRedraw)
+        if(showBorderBox)
         {
-            if(showBorderBox)
+            if( hasValidInput )
             {
-                if( hasValidInput )
-                {
-                    gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Color,false, 128 );
-                }
-                else
-                {
-                    gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Error_Box_Color,false, 128 );
-                }
+                gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Color,false, 128 );
             }
-
-            if( showLabel && (int)inputLabel.size() > 0)
+            else
             {
-                if( hAlign == FA_CENTER)
-                {
-                    gfs->render_text( elementBox.x+elementBox.w/2-cam->x,elementBox.y-2-cam->y,inputLabel,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TEXTINPUT,FA_CENTER,FA_TOP);
-                }
-                else
-                {
-                    gfs->render_text( elementBox.x-cam->x,elementBox.y-2-cam->y,inputLabel,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP);
-                }
+                gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Error_Box_Color,false, 128 );
             }
+        }
 
-            if(selectionCursorPos!=selectionEndCursorPos )
+        if( showLabel && (int)inputLabel.size() > 0)
+        {
+            if( hAlign == FA_CENTER)
             {
-                int minHighlightPos = std::min(selectionCursorPos, selectionEndCursorPos);
-                if( minHighlightPos < startXPos)
-                {
-                    minHighlightPos = startXPos;
-                }
-                int maxHighlightPos = std::max(selectionCursorPos, selectionEndCursorPos);
-                if( maxHighlightPos < startXPos)
-                {
-                    maxHighlightPos = startXPos;
-                }
-                maxHighlightPos = std::min(startXPos+maxCharactersInView,maxHighlightPos);
-
-                gcanvas->render_rectangle(
-                    fieldElementBox.x+(minHighlightPos-startXPos)*fontSizeW - cam->x,
-                    fieldElementBox.y+1 - cam->y,
-                    fieldElementBox.x+2+(maxHighlightPos-startXPos)*fontSizeW- cam->x,
-                    fieldElementBox.y+fieldElementBox.h-1 - cam->y,
-                    GPE_MAIN_THEME->Input_Selected_Color,false, 128 );
+                gfs->render_text( elementBox.x+elementBox.w/2-cam->x,elementBox.y-2-cam->y,inputLabel,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TEXTINPUT,FA_CENTER,FA_TOP);
             }
-            int subLength = 0;
-            if( (int)textInputString.size() > maxCharactersInView)
+            else
             {
-                subLength = (int)textInputString.size()-startXPos;
+                gfs->render_text( elementBox.x-cam->x,elementBox.y-2-cam->y,inputLabel,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_TOP);
+            }
+        }
+
+        if(selectionCursorPos!=selectionEndCursorPos )
+        {
+            int minHighlightPos = std::min(selectionCursorPos, selectionEndCursorPos);
+            if( minHighlightPos < startXPos)
+            {
+                minHighlightPos = startXPos;
+            }
+            int maxHighlightPos = std::max(selectionCursorPos, selectionEndCursorPos);
+            if( maxHighlightPos < startXPos)
+            {
+                maxHighlightPos = startXPos;
+            }
+            maxHighlightPos = std::min(startXPos+maxCharactersInView,maxHighlightPos);
+
+            gcanvas->render_rectangle(
+                fieldElementBox.x+(minHighlightPos-startXPos)*fontSizeW - cam->x,
+                fieldElementBox.y+1 - cam->y,
+                fieldElementBox.x+2+(maxHighlightPos-startXPos)*fontSizeW- cam->x,
+                fieldElementBox.y+fieldElementBox.h-1 - cam->y,
+                GPE_MAIN_THEME->Input_Selected_Color,false, 128 );
+        }
+        int subLength = 0;
+        if( (int)textInputString.size() > maxCharactersInView)
+        {
+            subLength = (int)textInputString.size()-startXPos;
+            if( subLength >maxCharactersInView)
+            {
+                subLength = maxCharactersInView;
+            }
+        }
+        else
+        {
+            subLength =  (int)textInputString.size();
+        }
+
+        if( subLength < 0)
+        {
+            subLength = 0;
+        }
+
+        if( (int)textInputString.size()>0)
+        {
+            gfs->render_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2- cam->y,get_substring(textInputString,startXPos,subLength),GPE_MAIN_THEME->Input_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_MIDDLE,255);
+        }
+        else if(showPlaceHolder && (int)placeHolderString.size() > 0 )
+        {
+            if( (int)placeHolderString.size() > maxCharactersInView)
+            {
+                subLength = (int)placeHolderString.size()-startXPos;
                 if( subLength >maxCharactersInView)
                 {
                     subLength = maxCharactersInView;
@@ -978,65 +1000,40 @@ void GPE_TextInputBasic::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool
             }
             else
             {
-                subLength =  (int)textInputString.size();
+                subLength =  (int)placeHolderString.size();
             }
-
-            if( subLength < 0)
+            gfs->render_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2 - cam->y,get_substring(placeHolderString,0,subLength),GPE_MAIN_THEME->Input_Faded_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_MIDDLE);
+        }
+        if(showBorderBox)
+        {
+            if( isInUse )
             {
-                subLength = 0;
+                gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Highlight_Outline_Color,true);
             }
-
-            if( (int)textInputString.size()>0)
+            else if( isHovered )
             {
-                gfs->render_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2- cam->y,get_substring(textInputString,startXPos,subLength),GPE_MAIN_THEME->Input_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_MIDDLE,255);
+                gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Highlight_Alt_Color,true);
             }
-            else if(showPlaceHolder && (int)placeHolderString.size() > 0 )
+            else
             {
-                if( (int)placeHolderString.size() > maxCharactersInView)
-                {
-                    subLength = (int)placeHolderString.size()-startXPos;
-                    if( subLength >maxCharactersInView)
-                    {
-                        subLength = maxCharactersInView;
-                    }
-                }
-                else
-                {
-                    subLength =  (int)placeHolderString.size();
-                }
-                gfs->render_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2 - cam->y,get_substring(placeHolderString,0,subLength),GPE_MAIN_THEME->Input_Faded_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_MIDDLE);
-            }
-            if(showBorderBox)
-            {
-                if( isInUse )
-                {
-                    gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Highlight_Outline_Color,true);
-                }
-                else if( isHovered )
-                {
-                    gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Highlight_Alt_Color,true);
-                }
-                else
-                {
-                    gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Outline_Color,true);
-                }
+                gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Outline_Color,true);
             }
         }
 
         if(isInUse && prevCursorPos!=cursorPos && prevCursorPos >=startXPos && prevCursorPos <= startXPos+maxCharactersInView )
         {
-            gcanvas->render_vertical_line_color( fieldElementBox.x+GENERAL_GPE_PADDING/2+(prevCursorPos-startXPos)*fontSizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Color);
+            gcanvas->render_vertical_line_color( fieldElementBox.x+GENERAL_GPE_GUI_PADDING/2+(prevCursorPos-startXPos)*fontSizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Color);
         }
 
         if(isInUse && cursorPos >=startXPos && cursorPos <= startXPos+maxCharactersInView )
         {
             if(showCursor)
             {
-                gcanvas->render_vertical_line_color( fieldElementBox.x+GENERAL_GPE_PADDING/2+(cursorPos-startXPos)*fontSizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Font_Color);
+                gcanvas->render_vertical_line_color( fieldElementBox.x+GENERAL_GPE_GUI_PADDING/2+(cursorPos-startXPos)*fontSizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Font_Color);
             }
             else
             {
-                gcanvas->render_vertical_line_color( fieldElementBox.x+GENERAL_GPE_PADDING/2+(cursorPos-startXPos)*fontSizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Color);
+                gcanvas->render_vertical_line_color( fieldElementBox.x+GENERAL_GPE_GUI_PADDING/2+(cursorPos-startXPos)*fontSizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,GPE_MAIN_THEME->Input_Color);
             }
         }
     }
@@ -1114,9 +1111,9 @@ void GPE_TextInputBasic::set_name(std::string newName)
     }
 }
 
-void GPE_TextInputBasic::set_number( double numberIn)
+void GPE_TextInputBasic::set_number( float numberIn)
 {
-    std::string newString = double_to_string(numberIn);
+    std::string newString = float_to_string(numberIn);
     textInputString = newString;
     record_string(textInputString);
     cursorPos = (int) textInputString.size();
@@ -1187,7 +1184,7 @@ bool GPE_TextInputBasic::was_submitted()
 }
 
 
-GPE_TextInputNumber::GPE_TextInputNumber( std::string placeHolderText, bool onlyWholeNums, double hMin, double hMax)
+GPE_TextInputNumber::GPE_TextInputNumber( std::string placeHolderText, bool onlyWholeNums, float hMin, float hMax)
 {
     resubmissionAllowed = false;
     textInputString = "";
@@ -1241,26 +1238,26 @@ int GPE_TextInputNumber::get_held_int()
     return (int)get_held_number();
 }
 
-double GPE_TextInputNumber::get_held_number()
+float GPE_TextInputNumber::get_held_number()
 {
-    heldNumber = string_to_double(textInputString, INT_MIN);
+    heldNumber = string_to_float(textInputString, INT_MIN);
     return heldNumber;
 }
 
 std::string GPE_TextInputNumber::get_plain_string()
 {
-    heldNumber = string_to_double(textInputString, INT_MIN);
-    return double_to_string(heldNumber);
+    heldNumber = string_to_float(textInputString, INT_MIN);
+    return float_to_string(heldNumber);
 }
 
-double GPE_TextInputNumber::make_valid_number( double fallbackNumber )
+float GPE_TextInputNumber::make_valid_number( float fallbackNumber )
 {
-    heldNumber = string_to_double(textInputString, INT_MIN);
+    heldNumber = string_to_float(textInputString, INT_MIN);
     if( heldNumber== INT_MIN || heldNumber < minInputNumber || heldNumber > maxInputNumber)
     {
         heldNumber = fallbackNumber;
         hasValidInput = true;
-        set_string(""+double_to_string( fallbackNumber ) );
+        set_string(""+float_to_string( fallbackNumber ) );
     }
     return heldNumber;
 }
@@ -1286,7 +1283,7 @@ void GPE_TextInputNumber::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
         }
         else
         {
-            heldNumber = string_to_double(textInputString, INT_MIN);
+            heldNumber = string_to_float(textInputString, INT_MIN);
             if( heldNumber == INT_MIN || heldNumber < minInputNumber || heldNumber > maxInputNumber )
             {
                 heldNumber = 0;

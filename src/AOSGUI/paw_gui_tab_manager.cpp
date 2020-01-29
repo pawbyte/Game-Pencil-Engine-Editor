@@ -3,10 +3,10 @@ paw_gui_tab_manager.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -61,9 +61,9 @@ GPE_TabManager::GPE_TabManager()
     tabBox.y = 32;
     tabBox.w = SCREEN_WIDTH;
     tabBox.h = SCREEN_HEIGHT-elementBox.y;
-    barXPadding = 4;
-    barYPadding = 4;
-    tabXPAdding = 2;
+    barXPadding = GENERAL_GPE_GUI_PADDING;
+    barYPadding = GENERAL_GPE_GUI_PADDING;
+    tabXPAdding = GENERAL_GPE_GUI_PADDING;
 
     tabToClose = -1;
     tabXHover = -1;
@@ -540,15 +540,17 @@ void GPE_TabManager::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam )
             }
             if( cGenResource!=NULL)
             {
-                cGenResource->process_resource(&tabBox,&GPE_DEFAULT_CAMERA);
+                cGenResource->process_resource(&tabBox );
             }
         }
     }
 }
 
-void GPE_TabManager::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+void GPE_TabManager::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
-    if( forceRedraw && GPE_MAIN_THEME->themeBgTexture==NULL )
+    viewedSpace = GPE_find_camera( viewedSpace );
+    viewedSpace = GPE_find_camera( cam);
+    if( GPE_MAIN_THEME->themeBgTexture==NULL )
     {
         gcanvas->render_rect(&tabHeaderBox,GPE_MAIN_THEME->Program_Color,false);
         gcanvas->render_rect(&tabHeaderBox,GPE_MAIN_THEME->Main_Border_Color,true);
@@ -563,74 +565,72 @@ void GPE_TabManager::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam, bool f
         int maxCharactersAllowed = 0;
         GUI_TAB_FONT->get_metrics("A", &tabFontWidth, &tabFontHeight );
         maxCharactersAllowed = tabSize/tabFontWidth -1;
-        if( forceRedraw)
+
+        GPE_MAIN_RENDERER->set_viewpoint(&tabHeaderBox);
+        for(int i=tabPos; i< (int)subOptions.size() && i < tabsPerView+tabPos; i+=1)
         {
-            MAIN_RENDERER->set_viewpoint(&tabHeaderBox);
-            for(int i=tabPos; i< (int)subOptions.size() && i < tabsPerView+tabPos; i+=1)
+            fResource = subOptions[i];
+            if( tabInUse==i)
             {
-                fResource = subOptions[i];
-                if( tabInUse==i)
+                gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h,GPE_MAIN_THEME->Program_Header_Color,false);
+            }
+            else
+            {
+                gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h,GPE_MAIN_THEME->Program_Color,false);
+            }
+            if( fResource!=NULL)
+            {
+                if( fResource->is_modified() )
                 {
-                    gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h,GPE_MAIN_THEME->Program_Header_Color,false);
+                    tabOptionStr = "* "+fResource->get_name();
                 }
                 else
                 {
-                    gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h,GPE_MAIN_THEME->Program_Color,false);
+                    tabOptionStr = fResource->get_name();
                 }
-                if( fResource!=NULL)
+                if( (int)tabOptionStr.size() > maxCharactersAllowed )
                 {
-                    if( fResource->is_modified() )
+                    if( maxCharactersAllowed > 1 )
                     {
-                        tabOptionStr = "* "+fResource->get_name();
+                        tabOptionStr = get_substring( tabOptionStr,0,maxCharactersAllowed-1 )+"..";
                     }
                     else
                     {
-                        tabOptionStr = fResource->get_name();
-                    }
-                    if( (int)tabOptionStr.size() > maxCharactersAllowed )
-                    {
-                        if( maxCharactersAllowed > 1 )
-                        {
-                            tabOptionStr = get_substring( tabOptionStr,0,maxCharactersAllowed-1 )+"..";
-                        }
-                        else
-                        {
-                            tabOptionStr = get_substring( tabOptionStr,0, 1 );
-                        }
-                    }
-
-                    if( tabInUse==i)
-                    {
-                        gfs->render_text_resized(subPos*(tabSize+tabXPAdding)+GENERAL_GPE_PADDING,tabHeaderBox.h/2,tabOptionStr,GPE_MAIN_THEME->PopUp_Box_Font_Color, GUI_TAB_FONT,FA_LEFT,FA_MIDDLE,tabSize-tabXPAdding-16);
-                    }
-                    else
-                    {
-                        gfs->render_text_resized(subPos*(tabSize+tabXPAdding)+GENERAL_GPE_PADDING,tabHeaderBox.h/2,tabOptionStr,GPE_MAIN_THEME->Main_Box_Font_Color,GUI_TAB_FONT,FA_LEFT,FA_MIDDLE,tabSize-tabXPAdding-16);
+                        tabOptionStr = get_substring( tabOptionStr,0, 1 );
                     }
                 }
 
-                if( tabXHover==i)
+                if( tabInUse==i)
                 {
-                    gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding)+tabSize-GENERAL_ICON_WIDTH,0,+(subPos)*(tabSize+tabXPAdding)+tabSize,+tabHeaderBox.h,c_red,false);
+                    gfs->render_text_resized(subPos*(tabSize+tabXPAdding)+GENERAL_GPE_GUI_PADDING,tabHeaderBox.h/2,tabOptionStr,GPE_MAIN_THEME->PopUp_Box_Font_Color, GUI_TAB_FONT,FA_LEFT,FA_MIDDLE,tabSize-tabXPAdding-16);
                 }
-                gfs->render_text( (subPos)*(tabSize+tabXPAdding)+tabSize-GENERAL_GPE_PADDING,tabHeaderBox.h/2,"X",GPE_MAIN_THEME->Main_Box_Font_Color,GUI_TAB_FONT,FA_RIGHT,FA_MIDDLE);
-
-
-                /*if( i!=tabInUse)
+                else
                 {
-                    gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
-                    gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize-1,tabHeaderBox.h-1,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
-                }*/
-                subPos+=1;
+                    gfs->render_text_resized(subPos*(tabSize+tabXPAdding)+GENERAL_GPE_GUI_PADDING,tabHeaderBox.h/2,tabOptionStr,GPE_MAIN_THEME->Main_Box_Font_Color,GUI_TAB_FONT,FA_LEFT,FA_MIDDLE,tabSize-tabXPAdding-16);
+                }
             }
 
-            MAIN_RENDERER->reset_viewpoint();
-            if( forceRedraw )
-                gcanvas->render_horizontal_line_color(elementBox.y,elementBox.x, elementBox.x+elementBox.w, c_black );
-            if( useDockButton )
+            if( tabXHover==i)
             {
-                tabExpandButton->render_self(NULL, NULL, forceRedraw );
+                gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding)+tabSize-GENERAL_ICON_WIDTH,0,+(subPos)*(tabSize+tabXPAdding)+tabSize,+tabHeaderBox.h,c_red,false);
             }
+            //gfs->render_text( (subPos)*(tabSize+tabXPAdding)+tabSize-GENERAL_GPE_GUI_PADDING,tabHeaderBox.h/2,"×",GPE_MAIN_THEME->Main_Box_Font_Color,GUI_TAB_FONT,FA_RIGHT,FA_MIDDLE);
+
+
+            /*if( i!=tabInUse)
+            {
+                gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
+                gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize-1,tabHeaderBox.h-1,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
+            }*/
+            subPos+=1;
+        }
+
+        GPE_MAIN_RENDERER->reset_viewpoint();
+        //if( forceRedraw )
+            gcanvas->render_horizontal_line_color(elementBox.y,elementBox.x, elementBox.x+elementBox.w, c_black );
+        if( useDockButton )
+        {
+            tabExpandButton->render_self(NULL, NULL );
         }
 
         if(tabInUse>=0 && tabInUse < (int)subOptions.size() )
@@ -638,30 +638,26 @@ void GPE_TabManager::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam, bool f
             generalGameResource * cGenResource = subOptions.at(tabInUse);
             if( cGenResource!=NULL)
             {
-                if( input->input_received() || MAIN_RENDERER->screen_was_cleared() || forceRedraw)
-                {
-                    //gcanvas->render_rect(,&tabBox,GPE_MAIN_THEME->Program_Color,false);
-                }
-                MAIN_RENDERER->set_viewpoint( &tabBox );
-                cGenResource->render_resource(&tabBox,&GPE_DEFAULT_CAMERA,forceRedraw);
-                MAIN_RENDERER->reset_viewpoint();
+                GPE_MAIN_RENDERER->set_viewpoint( &tabBox );
+                cGenResource->render_resource(&tabBox, NULL);
+                GPE_MAIN_RENDERER->reset_viewpoint();
             }
         }
     }
-    else if( forceRedraw )
+    else
     {
-        MAIN_RENDERER->reset_viewpoint();
-        MAIN_RENDERER->set_viewpoint( viewedSpace );
+        GPE_MAIN_RENDERER->reset_viewpoint();
+        GPE_MAIN_RENDERER->set_viewpoint( viewedSpace );
 
         if( GPE_MAIN_THEME->themeBgTexture==NULL)
         {
             gcanvas->render_rect(&tabBox,GPE_MAIN_THEME->Program_Color,false);
         }
-        gfs->render_text(elementBox.w / 2, elementBox.h / 2,"No Tabs currently open",GPE_MAIN_THEME->PopUp_Box_Font_Color, GUI_TAB_FONT, FA_CENTER, FA_MIDDLE );
-        gfs->render_text(elementBox.w / 2, elementBox.h / 2 + 32,"Press CTRL+O to open a project",GPE_MAIN_THEME->PopUp_Box_Font_Color, GUI_TAB_FONT, FA_CENTER, FA_MIDDLE );
+        gfs->render_text(viewedSpace->w / 2, viewedSpace->h / 2,"No Tabs currently open",GPE_MAIN_THEME->PopUp_Box_Font_Color, GUI_TAB_FONT, FA_CENTER, FA_MIDDLE );
+        gfs->render_text(viewedSpace->w / 2, viewedSpace->h / 2 + 32,"Press CTRL+O to open a project",GPE_MAIN_THEME->PopUp_Box_Font_Color, GUI_TAB_FONT, FA_CENTER, FA_MIDDLE );
     }
     //gcanvas->render_rect(&tabBox,GPE_MAIN_THEME->Text_Box_Outline_Color,true);
-    MAIN_RENDERER->reset_viewpoint();
+    GPE_MAIN_RENDERER->reset_viewpoint();
 }
 
 bool GPE_TabManager::requests_fullscreen()

@@ -3,10 +3,10 @@ ambitious_gui_library.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -32,26 +32,10 @@ SOFTWARE.
 */
 #include "ambitious_gui_library.h"
 
-GPE_GeneralResourceContainer * RESOURCE_TO_DRAG = NULL;
-GPE_GeneralResourceContainer * LAST_CLICKED_RESOURCE = NULL;
-bool RESOURCEMENU_WAS_RIGHTCLICKED = false;
-GPE_GeneralResourceContainer * RESOURCE_BEINGRENAMED = NULL;
-
-int LAST_CLICKED_RESTYPE = -1;
-int DRAGGED_RESTYPE = -1;
 
 GPE_StatusBar * GPE_Main_Statusbar = NULL;
 
-GPE_Rect * GPE_find_camera(GPE_Rect * rectIn)
-{
-    if(rectIn==NULL)
-    {
-        return &GPE_DEFAULT_CAMERA;
-    }
-    return rectIn;
-}
-
-void update_rectangle(GPE_Rect * rectIn, double nx, double ny, double nw, double nh)
+void update_rectangle(GPE_Rect * rectIn, float nx, float ny, float nw, float nh)
 {
     if( rectIn!=NULL)
     {
@@ -79,51 +63,52 @@ void GPE_StatusBar::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     insertModeString = "";
 }
 
-void GPE_StatusBar::render_self( GPE_Rect * viewedSpace,GPE_Rect *cam, bool forceRedraw)
+void GPE_StatusBar::render_self( GPE_Rect * viewedSpace,GPE_Rect *cam)
 {
-    if( isEnabled && forceRedraw && elementBox.h >0 && FONT_STATUSBAR!=NULL)
+    if( isEnabled&& elementBox.h >0 && FONT_STATUSBAR!=NULL)
     {
         gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->Program_Color,false);
         int statusBarStringWidth = 0, statusBarStringHeight = 0;
         int projectNameWidth = 0, projectNameHeight = 0;
-        if( (int)CURRENT_PROJECT_NAME.size() > 0)
+        if( (int)statusBarLeftText.size() > 0)
         {
-            std::string  projectNameToRender = CURRENT_PROJECT_NAME;
-            if( MAIN_GUI_SETTINGS && MAIN_GUI_SETTINGS->useShortProjectNames )
+            std::string  projectNameToRender = statusBarLeftText;
+            if( file_exists( statusBarLeftText) )
             {
-                projectNameToRender = get_file_noext( get_local_from_global_file(CURRENT_PROJECT_NAME) );
-
+                if( MAIN_GUI_SETTINGS && MAIN_GUI_SETTINGS->useShortProjectNames )
+                {
+                    projectNameToRender = get_file_noext( get_local_from_global_file(statusBarLeftText) );
+                }
             }
-
             FONT_STATUSBAR->get_metrics(projectNameToRender,&projectNameWidth, &projectNameHeight);
 
             if( (int)codeEditorStatusBarString.size() > 0)
             {
                 FONT_STATUSBAR->get_numbered_metrics(codeEditorStatusBarString,&statusBarStringWidth, &statusBarStringHeight);
-                if( elementBox.w > statusBarStringWidth+projectNameWidth +GENERAL_GPE_PADDING )
+                if( elementBox.w > statusBarStringWidth+projectNameWidth +GENERAL_GPE_GUI_PADDING )
                 {
                     gfs->render_text( elementBox.x,elementBox.y+elementBox.h/2,projectNameToRender,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_MIDDLE);
                     //gcanvas->render_rectangle( elementBox.x+projectNameWidth,elementBox.y,elementBox.x+elementBox.w,elementBox.y+elementBox.h,GPE_MAIN_THEME->Button_Box_Color,false);
-                    gfs->render_bitmap_text( elementBox.x+projectNameWidth+GENERAL_GPE_PADDING,elementBox.y+elementBox.h/2,codeEditorStatusBarString,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_MIDDLE);
+                    gfs->render_text( elementBox.x+projectNameWidth+GENERAL_GPE_GUI_PADDING,elementBox.y+elementBox.h/2,codeEditorStatusBarString,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_MIDDLE);
                 }
                 else
                 {
-                    gfs->render_bitmap_text( elementBox.x+GENERAL_GPE_PADDING,elementBox.y+elementBox.h/2,codeEditorStatusBarString,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_MIDDLE);
+                    gfs->render_text( elementBox.x+GENERAL_GPE_GUI_PADDING,elementBox.y+elementBox.h/2,codeEditorStatusBarString,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_MIDDLE);
                 }
             }
-            else if( elementBox.w > projectNameWidth +GENERAL_GPE_PADDING )
+            else if( elementBox.w > projectNameWidth +GENERAL_GPE_GUI_PADDING )
             {
-                gfs->render_text( elementBox.x+GENERAL_GPE_PADDING,elementBox.y+elementBox.h/2,projectNameToRender,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_MIDDLE);
+                gfs->render_text( elementBox.x+GENERAL_GPE_GUI_PADDING,elementBox.y+elementBox.h/2,projectNameToRender,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_MIDDLE);
             }
             else
             {
-                gfs->render_text( elementBox.x+elementBox.w-GENERAL_GPE_PADDING/2,elementBox.y+elementBox.h/2,projectNameToRender,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_RIGHT,FA_MIDDLE);
+                gfs->render_text( elementBox.x+elementBox.w-GENERAL_GPE_GUI_PADDING/2,elementBox.y+elementBox.h/2,projectNameToRender,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_RIGHT,FA_MIDDLE);
             }
         }
         else if( (int)codeEditorStatusBarString.size() > 0)
         {
             FONT_STATUSBAR->get_numbered_metrics(codeEditorStatusBarString,&statusBarStringWidth, &statusBarStringHeight);
-            gfs->render_bitmap_text( elementBox.x+GENERAL_GPE_PADDING,elementBox.y+elementBox.h/2,codeEditorStatusBarString,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_MIDDLE );
+            gfs->render_text( elementBox.x+GENERAL_GPE_GUI_PADDING,elementBox.y+elementBox.h/2,codeEditorStatusBarString,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_STATUSBAR,FA_LEFT,FA_MIDDLE );
         }
         gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->Main_Border_Color,true);
     }
@@ -196,7 +181,7 @@ void GPE_TextURL::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     GPE_GeneralGuiElement::process_self(viewedSpace,cam);
     if( isHovered)
     {
-        GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
+        gpe->cursor_change("hand");
     }
     if( isInUse &&( input->check_keyboard_down( kb_enter ) || input->check_keyboard_down( kb_space )  ) )
     {
@@ -212,23 +197,23 @@ void GPE_TextURL::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     }
 }
 
-void GPE_TextURL::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_TextURL::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
 {
-    if( forceRedraw && (int)opName.size() > 0)
+    if( (int)opName.size() > 0)
     {
         if( wasClicked)
         {
-            gfs->render_text( elementBox.x-cam->x,elementBox.y-cam->y,opName,GPE_MAIN_THEME->Main_Box_Font_URL_Visited_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP);
+            gfs->render_text( elementBox.x-cam->x+ elementBox.w/2,elementBox.y-cam->y,opName,GPE_MAIN_THEME->Main_Box_Font_URL_Visited_Color,GPE_DEFAULT_FONT, FA_CENTER,FA_TOP);
             gcanvas->render_horizontal_line_color( elementBox.y+elementBox.h-cam->y,elementBox.x-cam->x,elementBox.x+elementBox.w-cam->x,GPE_MAIN_THEME->Main_Box_Font_URL_Visited_Color);
         }
         else if( isHovered)
         {
-            gfs->render_text( elementBox.x-cam->x,elementBox.y-cam->y,opName,GPE_MAIN_THEME->Main_Box_Font_URL_Hovered_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP);
+            gfs->render_text( elementBox.x-cam->x+ elementBox.w/2,elementBox.y-cam->y,opName,GPE_MAIN_THEME->Main_Box_Font_URL_Hovered_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP);
             gcanvas->render_horizontal_line_color( elementBox.y+elementBox.h-cam->y,elementBox.x-cam->x,elementBox.x+elementBox.w-cam->x,GPE_MAIN_THEME->Main_Box_Font_URL_Hovered_Color);
         }
         else
         {
-            gfs->render_text( elementBox.x-cam->x,elementBox.y-cam->y,opName,GPE_MAIN_THEME->Main_Box_Font_URL_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP);
+            gfs->render_text( elementBox.x-cam->x + elementBox.w/2,elementBox.y-cam->y,opName,GPE_MAIN_THEME->Main_Box_Font_URL_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP);
             gcanvas->render_horizontal_line_color( elementBox.y+elementBox.h-cam->y,elementBox.x-cam->x,elementBox.x+elementBox.w-cam->x,GPE_MAIN_THEME->Main_Box_Font_URL_Color);
         }
         if( isInUse)
@@ -250,25 +235,3 @@ void GPE_TextURL::set_name(std::string nameIn)
     }
     opName = nameIn;
 }
-
-
-
-
-
-
-
-
-
-/*
-    if( MAIN_CONTEXT_MENU!=NULL && MAIN_CONTEXT_MENU->subMenuIsOpen)
-    {
-        MAIN_CONTEXT_MENU->clear_menu();
-        MAIN_CONTEXT_MENU->subMenuIsOpen = false;
-        input->reset_all_input();
-        if( GPE_MAIN_GUI!=NULL)
-        {
-            MAIN_OVERLAY->render_frozen_screenshot( );
-        }
-    }
-}
-*/

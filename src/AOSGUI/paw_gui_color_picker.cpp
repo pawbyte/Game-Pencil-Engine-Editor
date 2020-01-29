@@ -3,10 +3,10 @@ paw_gui_color_picker.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,7 +37,7 @@ SOFTWARE.
 #include "paw_gui_labels.h"
 
 SDL_Surface * GPE_SURFACE_COLOR_PICKER_GRADIENT = NULL;
-GPE_Texture * GPE_TEXTURE_COLOR_PICKER_GRADIENT = NULL;
+GPE_Texture_Base * GPE_TEXTURE_COLOR_PICKER_GRADIENT = NULL;
 
 GPE_Input_Field_Color::GPE_Input_Field_Color( std::string name,std::string description, int r, int g, int b )
 {
@@ -50,7 +50,7 @@ GPE_Input_Field_Color::GPE_Input_Field_Color( std::string name,std::string descr
     elementBox.x = 0;
     elementBox.y = 0;
     elementBox.w = 196;
-    elementBox.h = 24;
+    elementBox.h = 32;
     fieldElementBox.x = elementBox.x+128;
     fieldElementBox.y = elementBox.y;
     fieldElementBox.w = elementBox.w-128;
@@ -111,7 +111,7 @@ std::string GPE_Input_Field_Color::get_hex_string()
 {
     if( storedColor!=NULL)
     {
-        return RGBtoHEX(storedColor->get_r(),storedColor->get_g(),storedColor->get_b() );
+        return GPE_COLOR_SYSTEM->rgb_to_hex(storedColor->get_r(),storedColor->get_g(),storedColor->get_b() );
     }
     return "000";
 }
@@ -283,35 +283,32 @@ void GPE_Input_Field_Color::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     }
 }
 
-void GPE_Input_Field_Color::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_Input_Field_Color::render_self( GPE_Rect * viewedSpace, GPE_Rect *cam)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( forceRedraw && isEnabled && cam!=NULL)
+    if( isEnabled && cam!=NULL)
     {
-        if( MAIN_RENDERER->screen_was_cleared() || input->input_received() || forceRedraw)
+        if( isInUse)
         {
-            if( isInUse)
+            gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y, GPE_MAIN_THEME->Main_Box_Highlighted_Color, false );
+            if( showLabel && (int)inputLabel.size() > 0)
             {
-                gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y, GPE_MAIN_THEME->Main_Box_Highlighted_Color, false );
-                if( showLabel && (int)inputLabel.size() > 0)
-                {
-                    gfs->render_text_resized( elementBox.x-cam->x+GENERAL_GPE_PADDING,elementBox.y+elementBox.h/2-cam->y,inputLabel,GPE_MAIN_THEME->Main_Box_Font_Highlight_Color,FONT_TEXTINPUT,FA_LEFT,FA_MIDDLE );
-                }
+                gfs->render_text_resized( elementBox.x-cam->x+GENERAL_GPE_GUI_PADDING,elementBox.y+elementBox.h/2-cam->y,inputLabel,GPE_MAIN_THEME->Main_Box_Font_Highlight_Color,FONT_TEXTINPUT,FA_LEFT,FA_MIDDLE );
             }
-            else
-            {
-                gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y, GPE_MAIN_THEME->Main_Box_Color, false );
-
-                if( showLabel && (int)inputLabel.size() > 0)
-                {
-                    gfs->render_text_resized( elementBox.x-cam->x+GENERAL_GPE_PADDING,elementBox.y+elementBox.h/2-cam->y,inputLabel,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_MIDDLE );
-                }
-            }
-            gcanvas->render_rectangle( fieldElementBox.x-cam->x,fieldElementBox.y-cam->y,fieldElementBox.x+fieldElementBox.w-cam->x,fieldElementBox.y+fieldElementBox.h-cam->y,storedColor,false);
-            //gcanvas->render_vertical_line_color( elementBox.x-cam->x,elementBox.y-cam->y, elementBox.y+elementBox.h-cam->y, GPE_MAIN_THEME->Main_Border_Color );
-            gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y, GPE_MAIN_THEME->Main_Border_Color, true );
         }
+        else
+        {
+            gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y, GPE_MAIN_THEME->Main_Box_Color, false );
+
+            if( showLabel && (int)inputLabel.size() > 0)
+            {
+                gfs->render_text_resized( elementBox.x-cam->x+GENERAL_GPE_GUI_PADDING,elementBox.y+elementBox.h/2-cam->y,inputLabel,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_TEXTINPUT,FA_LEFT,FA_MIDDLE );
+            }
+        }
+        gcanvas->render_rectangle( fieldElementBox.x-cam->x,fieldElementBox.y-cam->y,fieldElementBox.x+fieldElementBox.w-cam->x,fieldElementBox.y+fieldElementBox.h-cam->y,storedColor,false);
+        //gcanvas->render_vertical_line_color( elementBox.x-cam->x,elementBox.y-cam->y, elementBox.y+elementBox.h-cam->y, GPE_MAIN_THEME->Main_Border_Color );
+        gcanvas->render_rectangle( elementBox.x-cam->x,elementBox.y-cam->y,elementBox.x+elementBox.w-cam->x,elementBox.y+elementBox.h-cam->y, GPE_MAIN_THEME->Main_Border_Color, true );
     }
 }
 
@@ -361,7 +358,7 @@ void GPE_Input_Field_Color::set_color_from_rgb(std::string newColorStr)
 void GPE_Input_Field_Color::set_color_from_hex(std::string newColorStr)
 {
     int r = 0, g = 0, b = 0;
-    HEXtoRGB(newColorStr,r, g, b);
+    GPE_COLOR_SYSTEM->hex_to_rgb( newColorStr,r, g, b );
     if( storedColor==NULL)
     {
         storedColor = new GPE_Color( "custom",0,0,0 );
@@ -461,8 +458,8 @@ bool GPE_Change_Color_PopUp(std::string popUpCaption,GPE_Color * currColor)
     Uint32 foundPixelColor = 0;
     int foundColorPickerX = 0, foundColorPickerY = 0;
     int colorPickerShaderI = 0;
-    //double colorShadeDifference = 0;
-    double colorShadeDivision = 0;
+    //float colorShadeDifference = 0;
+    float colorShadeDivision = 0;
     int selectedColorShade = colorShadeBox.h/2;
     GPE_TextInputNumber * newColorRValue = new GPE_TextInputNumber("",true,0,255);
     newColorRValue->set_label("Red");
@@ -486,14 +483,11 @@ bool GPE_Change_Color_PopUp(std::string popUpCaption,GPE_Color * currColor)
     newColorRValue->set_string( int_to_string( currColor->get_r() ) );
     newColorGValue->set_string( int_to_string( currColor->get_g() ) );
     newColorBValue->set_string( int_to_string( currColor->get_b() ) );
-    newColorHexValue->set_string( RGBtoHEX(currColor->get_r(),currColor->get_g(),currColor->get_b() ) ); //Convert RGB to Hex here
+    newColorHexValue->set_string( GPE_COLOR_SYSTEM->rgb_to_hex( currColor->get_r(),currColor->get_g(),currColor->get_b() ) ); //Convert RGB to Hex here
 
     GPE_ToolLabelButton * yesButton = new GPE_ToolLabelButton( "Okay","Confirm Color Change");
     GPE_ToolLabelButton * cancelButton = new GPE_ToolLabelButton( "Cancel","Cancel Color Request");
 
-    MAIN_OVERLAY->render_frozen_screenshot( );
-    //currentState->render();
-    MAIN_RENDERER->update_renderer();
     while(exitOperation==false)
     {
         gpe->start_loop();
@@ -503,47 +497,47 @@ bool GPE_Change_Color_PopUp(std::string popUpCaption,GPE_Color * currColor)
         elementBox.w = promptBoxWidth;
         elementBox.h = promptBoxHeight;
 
-        colorShadeBox.x = elementBox.x+GENERAL_GPE_PADDING*2+GPE_TEXTURE_COLOR_PICKER_GRADIENT->get_width();
-        colorShadeBox.y = elementBox.y+GENERAL_GPE_PADDING+32;
+        colorShadeBox.x = elementBox.x+GENERAL_GPE_GUI_PADDING*2+GPE_TEXTURE_COLOR_PICKER_GRADIENT->get_width();
+        colorShadeBox.y = elementBox.y+GENERAL_GPE_GUI_PADDING+32;
 
         //GPE_MAIN_GUI->reset_gui_info();
-        yesButton->set_coords( elementBox.x+GENERAL_GPE_PADDING, elementBox.y+elementBox.h-32);
-        cancelButton->set_coords( yesButton->get_xpos()+yesButton->get_width()+GENERAL_GPE_PADDING,yesButton->get_ypos() );
+        yesButton->set_coords( elementBox.x+GENERAL_GPE_GUI_PADDING, elementBox.y+elementBox.h-32);
+        cancelButton->set_coords( yesButton->get_xpos()+yesButton->get_width()+GENERAL_GPE_GUI_PADDING,yesButton->get_ypos() );
 
-        newColorRValue->set_coords(colorShadeBox.x+colorShadeBox.w+GENERAL_GPE_PADDING,elementBox.y+GENERAL_GPE_PADDING+48);
+        newColorRValue->set_coords(colorShadeBox.x+colorShadeBox.w+GENERAL_GPE_GUI_PADDING,elementBox.y+GENERAL_GPE_GUI_PADDING+48);
         newColorRValue->set_width(128);
 
-        newColorGValue->set_coords(colorShadeBox.x+colorShadeBox.w+GENERAL_GPE_PADDING,newColorRValue->get_ypos()+newColorRValue->get_height()+GENERAL_GPE_PADDING);
+        newColorGValue->set_coords(colorShadeBox.x+colorShadeBox.w+GENERAL_GPE_GUI_PADDING,newColorRValue->get_ypos()+newColorRValue->get_height()+GENERAL_GPE_GUI_PADDING);
         newColorGValue->set_width(128);
 
-        newColorBValue->set_coords(colorShadeBox.x+colorShadeBox.w+GENERAL_GPE_PADDING,newColorGValue->get_ypos()+newColorGValue->get_height()+GENERAL_GPE_PADDING);
+        newColorBValue->set_coords(colorShadeBox.x+colorShadeBox.w+GENERAL_GPE_GUI_PADDING,newColorGValue->get_ypos()+newColorGValue->get_height()+GENERAL_GPE_GUI_PADDING);
         newColorBValue->set_width(128);
 
-        newColorHexValue->set_coords(colorShadeBox.x+colorShadeBox.w+GENERAL_GPE_PADDING,newColorBValue->get_ypos()+newColorBValue->get_height()+GENERAL_GPE_PADDING);
+        newColorHexValue->set_coords(colorShadeBox.x+colorShadeBox.w+GENERAL_GPE_GUI_PADDING,newColorBValue->get_ypos()+newColorBValue->get_height()+GENERAL_GPE_GUI_PADDING);
         newColorHexValue->set_width(128);
 
-        yesButton->process_self(&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-        cancelButton->process_self(&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-        newColorRValue->process_self(&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-        newColorGValue->process_self(&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-        newColorBValue->process_self(&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-        newColorHexValue->process_self(&GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
+        yesButton->process_self();
+        cancelButton->process_self();
+        newColorRValue->process_self();
+        newColorGValue->process_self();
+        newColorBValue->process_self();
+        newColorHexValue->process_self();
         if( newColorRValue->is_inuse() || newColorGValue->is_inuse() || newColorBValue->is_inuse() )
         {
             alteredColor->change_rgba(newColorRValue->get_held_number(),newColorGValue->get_held_number(),newColorBValue->get_held_number(),255 );
-            newColorHexValue->set_string( RGBtoHEX(alteredColor->get_r(),alteredColor->get_g(),alteredColor->get_b() ) ); //Convert RGB to Hex here
+            newColorHexValue->set_string( GPE_COLOR_SYSTEM->rgb_to_hex(alteredColor->get_r(),alteredColor->get_g(),alteredColor->get_b() ) ); //Convert RGB to Hex here
         }
         else if( newColorHexValue->is_inuse() )
         {
             //convert hex to rgb is possibre
-            HEXtoRGB(newColorHexValue->get_string(),rV,gV,bV);
+            GPE_COLOR_SYSTEM->hex_to_rgb(newColorHexValue->get_string(),rV,gV,bV);
             newColorRValue->set_number(rV);
             newColorGValue->set_number(gV);
             newColorBValue->set_number(bV);
             alteredColor->change_rgba(newColorRValue->get_held_number(),newColorGValue->get_held_number(),newColorBValue->get_held_number(),255 );
             //newColorHexValue->set_string( RGBtoHEX(currColor->get_r(),currColor->get_g(),currColor->get_b() ) ); //Convert RGB to Hex here
         }
-        if( input->check_keyboard_released(kb_esc) || cancelButton->is_clicked() || WINDOW_WAS_JUST_RESIZED )
+        if( input->check_keyboard_released(kb_esc) || cancelButton->is_clicked() || GPE_MAIN_WINDOW->is_resized() )
         {
             exitOperation = true;
             operationCancelled = true;
@@ -555,13 +549,13 @@ bool GPE_Change_Color_PopUp(std::string popUpCaption,GPE_Color * currColor)
         else if( input->check_mouse_down( mb_left ) )
         {
             if( point_within(input->mouse_x,input->mouse_y,
-                             elementBox.x+GENERAL_GPE_PADDING,elementBox.y+032+GENERAL_GPE_PADDING,
-                             elementBox.x+GPE_SURFACE_COLOR_PICKER_GRADIENT->w+GENERAL_GPE_PADDING,elementBox.y+GPE_SURFACE_COLOR_PICKER_GRADIENT->h+32+GENERAL_GPE_PADDING) )
+                             elementBox.x+GENERAL_GPE_GUI_PADDING,elementBox.y+032+GENERAL_GPE_GUI_PADDING,
+                             elementBox.x+GPE_SURFACE_COLOR_PICKER_GRADIENT->w+GENERAL_GPE_GUI_PADDING,elementBox.y+GPE_SURFACE_COLOR_PICKER_GRADIENT->h+32+GENERAL_GPE_GUI_PADDING) )
             {
                 //Gets "clicked color"
-                foundColorPickerX = input->mouse_x-elementBox.x-GENERAL_GPE_PADDING;
-                foundColorPickerY = input->mouse_y-elementBox.y-32-GENERAL_GPE_PADDING;
-                foundPixelColor = gpe_sdl->get_pixel32(GPE_SURFACE_COLOR_PICKER_GRADIENT,foundColorPickerX, foundColorPickerY );
+                foundColorPickerX = input->mouse_x-elementBox.x-GENERAL_GPE_GUI_PADDING;
+                foundColorPickerY = input->mouse_y-elementBox.y-32-GENERAL_GPE_GUI_PADDING;
+                foundPixelColor = SDL_SurfaceEx::get_pixel32(GPE_SURFACE_COLOR_PICKER_GRADIENT,foundColorPickerX, foundColorPickerY );
 
                 SDL_GetRGBA(foundPixelColor,GPE_SURFACE_COLOR_PICKER_GRADIENT->format,&rU8,&gU8,&bU8, &uU8 );
                 //sets new color to picked color
@@ -576,13 +570,13 @@ bool GPE_Change_Color_PopUp(std::string popUpCaption,GPE_Color * currColor)
                 newColorGValue->set_number(gV);
                 newColorBValue->set_number(bV);*/
 
-                colorShadeDivision = (double)selectedColorShade/(double)colorShadeBox.h;
+                colorShadeDivision = (float)selectedColorShade/(float)colorShadeBox.h;
 
                 newColorRValue->set_number( rV );
                 newColorGValue->set_number( gV);
                 newColorBValue->set_number( bV );
                 alteredColor->change_rgba(newColorRValue->get_held_number(),newColorGValue->get_held_number(),newColorBValue->get_held_number(),255 );
-                newColorHexValue->set_string( RGBtoHEX(alteredColor->get_r(),alteredColor->get_g(),alteredColor->get_b() ) ); //Convert RGB to Hex here
+                newColorHexValue->set_string( GPE_COLOR_SYSTEM->rgb_to_hex( alteredColor->get_r(),alteredColor->get_g(),alteredColor->get_b() ) ); //Convert RGB to Hex here
             }
 
         }
@@ -592,18 +586,19 @@ bool GPE_Change_Color_PopUp(std::string popUpCaption,GPE_Color * currColor)
             {
                 selectedColorShade = input->mouse_y - colorShadeBox.y;
 
-                colorShadeDivision = (double)selectedColorShade/(double)colorShadeBox.h;
+                colorShadeDivision = (float)selectedColorShade/(float)colorShadeBox.h;
 
-                newColorRValue->set_number( merge_channel(alteredColor->get_r(),(double)( -colorShadeDivision+1.f)*255.f,(double) fabs( colorShadeDivision-0.5f)+0.5 ) );
-                newColorGValue->set_number( merge_channel(alteredColor->get_g(),(double)( -colorShadeDivision+1.f)*255.f,(double) fabs( colorShadeDivision-0.5f)+0.5 ) );
-                newColorBValue->set_number( merge_channel(alteredColor->get_b(),(double)( -colorShadeDivision+1.f)*255.f,(double) fabs( colorShadeDivision-0.5f)+0.5 ) );
+                newColorRValue->set_number( GPE_COLOR_SYSTEM->merge_channel(alteredColor->get_r(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
+                newColorGValue->set_number( GPE_COLOR_SYSTEM->merge_channel(alteredColor->get_g(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
+                newColorBValue->set_number( GPE_COLOR_SYSTEM->merge_channel(alteredColor->get_b(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
 
                 alteredColor->change_rgba(newColorRValue->get_held_number(),newColorGValue->get_held_number(),newColorBValue->get_held_number(),255 );
-                newColorHexValue->set_string( RGBtoHEX(alteredColor->get_r(),alteredColor->get_g(),alteredColor->get_b() ) ); //Convert RGB to Hex here
+                newColorHexValue->set_string( GPE_COLOR_SYSTEM->rgb_to_hex(alteredColor->get_r(),alteredColor->get_g(),alteredColor->get_b() ) ); //Convert RGB to Hex here
 
             }
         }
-        if( !WINDOW_WAS_JUST_RESIZED)
+        GPE_MAIN_RENDERER->reset_viewpoint();
+        if( !GPE_MAIN_WINDOW->is_resized() )
         {
             MAIN_OVERLAY->render_frozen_screenshot( );
 
@@ -612,19 +607,19 @@ bool GPE_Change_Color_PopUp(std::string popUpCaption,GPE_Color * currColor)
             gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
             if( GPE_TEXTURE_COLOR_PICKER_GRADIENT!=NULL)
             {
-                GPE_TEXTURE_COLOR_PICKER_GRADIENT->render_tex( elementBox.x+GENERAL_GPE_PADDING,elementBox.y+32+GENERAL_GPE_PADDING );
+                GPE_TEXTURE_COLOR_PICKER_GRADIENT->render_tex( elementBox.x+GENERAL_GPE_GUI_PADDING,elementBox.y+32+GENERAL_GPE_GUI_PADDING );
             }
-            int preiewColorYPos = yesButton->get_ypos()-GENERAL_GPE_PADDING-64;
+            int preiewColorYPos = yesButton->get_ypos()-GENERAL_GPE_GUI_PADDING-64;
 
             gcanvas->render_rect( &colorShadeBox,GPE_MAIN_THEME->Program_Color,false);
             gcanvas->render_rect( &colorShadeBox,GPE_MAIN_THEME->Main_Border_Color,true);
 
             for( colorPickerShaderI = 0; colorPickerShaderI <= colorShadeBox.h; colorPickerShaderI++)
             {
-                colorShadeDivision = (double)colorPickerShaderI/(double)colorShadeBox.h;
-                colorShadeTempColor->change_r( merge_channel(alteredColor->get_r(),(double)( -colorShadeDivision+1.f)*255.f,(double) fabs( colorShadeDivision-0.5f)+0.5 ) );
-                colorShadeTempColor->change_g( merge_channel(alteredColor->get_g(),(double)( -colorShadeDivision+1.f)*255.f,(double) fabs( colorShadeDivision-0.5f)+0.5 ) );
-                colorShadeTempColor->change_b( merge_channel(alteredColor->get_b(),(double)( -colorShadeDivision+1.f)*255.f,(double) fabs( colorShadeDivision-0.5f)+0.5 ) );
+                colorShadeDivision = (float)colorPickerShaderI/(float)colorShadeBox.h;
+                colorShadeTempColor->change_r( GPE_COLOR_SYSTEM->merge_channel(alteredColor->get_r(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
+                colorShadeTempColor->change_g( GPE_COLOR_SYSTEM->merge_channel(alteredColor->get_g(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
+                colorShadeTempColor->change_b( GPE_COLOR_SYSTEM->merge_channel(alteredColor->get_b(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
 
                 gcanvas->render_horizontal_line_color( colorShadeBox.y+colorPickerShaderI,colorShadeBox.x,colorShadeBox.x+colorShadeBox.w,colorShadeTempColor);
             }
@@ -633,32 +628,29 @@ bool GPE_Change_Color_PopUp(std::string popUpCaption,GPE_Color * currColor)
 
             if( currColor!=NULL)
             {
-                preiewColorYPos = yesButton->get_ypos()-GENERAL_GPE_PADDING-40;
-                gfs->render_text( elementBox.x+GENERAL_GPE_PADDING,preiewColorYPos,"Older Color:",GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP);
+                preiewColorYPos = yesButton->get_ypos()-GENERAL_GPE_GUI_PADDING-40;
+                gfs->render_text( elementBox.x+GENERAL_GPE_GUI_PADDING,preiewColorYPos,"Older Color:",GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP);
                 gcanvas->render_rectangle( elementBox.x+128,preiewColorYPos,elementBox.x+256,preiewColorYPos+32,currColor,false);
 
-                preiewColorYPos = yesButton->get_ypos()-GENERAL_GPE_PADDING-80;
-                gfs->render_text( elementBox.x+GENERAL_GPE_PADDING,preiewColorYPos,"New Color:",GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP);
+                preiewColorYPos = yesButton->get_ypos()-GENERAL_GPE_GUI_PADDING-80;
+                gfs->render_text( elementBox.x+GENERAL_GPE_GUI_PADDING,preiewColorYPos,"New Color:",GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP);
                 gcanvas->render_rectangle( elementBox.x+128,preiewColorYPos,elementBox.x+256,preiewColorYPos+32,alteredColor,false);
             }
             else
             {
-                preiewColorYPos = yesButton->get_ypos()-GENERAL_GPE_PADDING-40;
-                gfs->render_text( elementBox.x+GENERAL_GPE_PADDING,preiewColorYPos,"New Color:",GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP);
+                preiewColorYPos = yesButton->get_ypos()-GENERAL_GPE_GUI_PADDING-40;
+                gfs->render_text( elementBox.x+GENERAL_GPE_GUI_PADDING,preiewColorYPos,"New Color:",GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP);
                 gcanvas->render_rectangle( elementBox.x+128,preiewColorYPos,elementBox.x+256,preiewColorYPos+32,alteredColor,false);
             }
             gcanvas->render_rectangle( elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+32,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
             gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
-            gfs->render_text( elementBox.x+elementBox.w/2,elementBox.y+GENERAL_GPE_PADDING,popUpCaption,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP);
-            yesButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-            cancelButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-            newColorRValue->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
-            newColorGValue->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
-            newColorBValue->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
-            newColorHexValue->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
-            //GPE_MAIN_GUI->render_tooltip(MAIN_RENDERER);
-            MAIN_OVERLAY->process_cursor();
-            //GPE_MAIN_GUI->render_gui_info(  true);
+            gfs->render_text( elementBox.x+elementBox.w/2,elementBox.y+GENERAL_GPE_GUI_PADDING,popUpCaption,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP);
+            yesButton->render_self( );
+            cancelButton->render_self( );
+            newColorRValue->render_self( );
+            newColorGValue->render_self( );
+            newColorBValue->render_self( );
+            newColorHexValue->render_self( );
         }
         gpe->end_loop();
     }

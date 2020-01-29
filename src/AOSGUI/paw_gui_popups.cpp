@@ -3,10 +3,10 @@ paw_gui_popups.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -83,7 +83,7 @@ void GPE_LoaderDiplay::increment_and_update( std::string subTitle, std::string m
     update_submessages( subTitle, message, renderUpdate );
 }
 
-void GPE_LoaderDiplay::set_bar1( double maxValue)
+void GPE_LoaderDiplay::set_bar1( float maxValue)
 {
     if( maxValue> 0 )
     {
@@ -96,7 +96,7 @@ void GPE_LoaderDiplay::set_bar1( double maxValue)
     }
 }
 
-void GPE_LoaderDiplay::set_bar2( double maxValue)
+void GPE_LoaderDiplay::set_bar2( float maxValue)
 {
     if( maxValue> 0 )
     {
@@ -114,7 +114,7 @@ void GPE_LoaderDiplay::render_loader()
     //if( input->input_received() )
     {
         //Update screen
-        gpe->end_loop( false,true );
+        gpe->end_loop( );
         gpe->start_loop();
         gcanvas->render_rectangle( 32,SCREEN_HEIGHT/2 - 48,SCREEN_WIDTH-32,SCREEN_HEIGHT/2 + 48,GPE_MAIN_THEME->PopUp_Box_Color,false);
         gfs->render_text( SCREEN_WIDTH/2,SCREEN_HEIGHT/2 - 32,displayMessageTitle,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP);
@@ -122,7 +122,7 @@ void GPE_LoaderDiplay::render_loader()
         gfs->render_text( SCREEN_WIDTH/2,SCREEN_HEIGHT/2 + 32,displayMessageString,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP);
         gcanvas->render_rectangle( 32,SCREEN_HEIGHT/2 - 48,SCREEN_WIDTH-32,SCREEN_HEIGHT/2 + 48,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
 
-        gpe->end_loop( false,true );
+        gpe->end_loop();
         gpe->start_loop();
     }
 }
@@ -157,8 +157,7 @@ void display_user_alert(std::string messageTitle, std::string messageContent, in
 {
     gpe->end_loop();
     //RESOURCE_TO_DRAG = NULL;
-    GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
-    MAIN_OVERLAY->process_cursor();
+    gpe->cursor_change("arrow");
     //GPE_MAIN_GUI->reset_gui_info();
     MAIN_OVERLAY->update_tooltip("");
     MAIN_OVERLAY->take_frozen_screenshot( );
@@ -168,8 +167,8 @@ void display_user_alert(std::string messageTitle, std::string messageContent, in
 
     GPE_Rect elementBox;
 
-    elementBox.w = SCREEN_WIDTH*3/4 -128 - GENERAL_GPE_PADDING*4;
-    elementBox.h = SCREEN_HEIGHT*3/4 - 64 - GENERAL_GPE_PADDING*4;
+    elementBox.w = SCREEN_WIDTH*3/4 -128 - GENERAL_GPE_GUI_PADDING*4;
+    elementBox.h = SCREEN_HEIGHT*3/4 - 64 - GENERAL_GPE_GUI_PADDING*4;
     elementBox.x = SCREEN_WIDTH - elementBox.w;
     elementBox.y = SCREEN_HEIGHT - elementBox.h;
     int maxMessageWidth = 0;
@@ -188,7 +187,7 @@ void display_user_alert(std::string messageTitle, std::string messageContent, in
     if( defaultFontWidth > 0 && defaultFontHeight > 0)
     {
         maxMessageWidth = (elementBox.w-64) / defaultFontWidth;
-        maxMessageHeight = (elementBox.h-64) / (defaultFontHeight+GENERAL_GPE_PADDING);
+        maxMessageHeight = (elementBox.h-64) / (defaultFontHeight+GENERAL_GPE_GUI_PADDING);
         if( (int)messageTitle.size() > 0)
         {
             if((int)messageTitle.size() > maxMessageWidth )
@@ -213,12 +212,12 @@ void display_user_alert(std::string messageTitle, std::string messageContent, in
 
         if( (int) messageSubTitles.size() < maxMessageHeight )
         {
-            elementBox.h = messageSubTitles.size()*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
+            elementBox.h = messageSubTitles.size()*(defaultFontHeight+GENERAL_GPE_GUI_PADDING)+GENERAL_GPE_GUI_PADDING*4+64;
             elementBox.y = (SCREEN_HEIGHT - elementBox.h)/2;
         }
         else
         {
-            elementBox.h = maxMessageHeight*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
+            elementBox.h = maxMessageHeight*(defaultFontHeight+GENERAL_GPE_GUI_PADDING)+GENERAL_GPE_GUI_PADDING*4+64;
             elementBox.y = (SCREEN_HEIGHT - elementBox.h)/2;
         }
 
@@ -231,18 +230,18 @@ void display_user_alert(std::string messageTitle, std::string messageContent, in
             }
         }
 
-        elementBox.w = (maxMessageWidth*defaultFontWidth)+128 + GENERAL_GPE_PADDING*4;
+        elementBox.w = (maxMessageWidth*defaultFontWidth)+128 + GENERAL_GPE_GUI_PADDING*4;
         elementBox.x = (SCREEN_WIDTH - elementBox.w)/2;
 
         while( exitOperation==false )
         {
-            GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
+            gpe->cursor_change("arrow");
             gpe->start_loop();
             //GPE_MAIN_GUI->reset_gui_info();
 
             if( windowBeingDragged )
             {
-                GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZEALL);
+                gpe->cursor_change("sizeall");
                 if( input->check_mouse_down( mb_left ) )
                 {
                     elementBox.x = input->mouse_x-elementBox.w/2;
@@ -292,19 +291,19 @@ void display_user_alert(std::string messageTitle, std::string messageContent, in
             }
             if( okButton!=NULL)
             {
-                okButton->set_coords(elementBox.x+( elementBox.w-okButton->get_width() )/2,elementBox.y+elementBox.h-GENERAL_GPE_PADDING-okButton->get_height() );
+                okButton->set_coords(elementBox.x+( elementBox.w-okButton->get_width() )/2,elementBox.y+elementBox.h-GENERAL_GPE_GUI_PADDING-okButton->get_height() );
                 okButton->process_self( NULL, NULL);
                 if( okButton->is_clicked() && !windowBeingDragged )
                 {
                     exitOperation = true;
                 }
             }
-            if( input->check_keyboard_released(kb_esc) || input->check_keyboard_released(kb_space) || input->check_keyboard_released(kb_enter) || WINDOW_WAS_JUST_RESIZED)
+            if( input->check_keyboard_released(kb_esc) || input->check_keyboard_released(kb_space) || input->check_keyboard_released(kb_enter) || GPE_MAIN_WINDOW->is_resized() )
             {
                 exitOperation = true;
             }
 
-            MAIN_RENDERER->reset_viewpoint();
+            GPE_MAIN_RENDERER->reset_viewpoint();
             //if( WINDOW_WAS_JUST_RESIZED )
             {
                 gcanvas->render_rectangle( 0,0,SCREEN_WIDTH,SCREEN_HEIGHT,GPE_MAIN_THEME->Program_Color, false, 255);
@@ -315,16 +314,16 @@ void display_user_alert(std::string messageTitle, std::string messageContent, in
 
             gcanvas->render_rectangle( elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+32,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
 
-            gfs->render_text( elementBox.x+elementBox.w/2,elementBox.y+GENERAL_GPE_PADDING,messageTitle,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP);
-            gfs->render_text( elementBox.x+elementBox.w-GENERAL_GPE_PADDING,elementBox.y+GENERAL_GPE_PADDING,"X",GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_TOP);
+            gfs->render_text( elementBox.x+elementBox.w/2,elementBox.y+GENERAL_GPE_GUI_PADDING,messageTitle,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP);
+            gfs->render_text( elementBox.x+elementBox.w-GENERAL_GPE_GUI_PADDING,elementBox.y+GENERAL_GPE_GUI_PADDING,"×",GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_TOP);
 
             for( iSubMessage = 0; iSubMessage < (int)messageSubTitles.size(); iSubMessage++)
             {
-                gfs->render_text( elementBox.x+32,elementBox.y+GENERAL_GPE_PADDING+32+iSubMessage*(defaultFontHeight+GENERAL_GPE_PADDING),messageSubTitles.at(iSubMessage),GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
+                gfs->render_text( elementBox.x+32,elementBox.y+GENERAL_GPE_GUI_PADDING+32+iSubMessage*(defaultFontHeight+GENERAL_GPE_GUI_PADDING),messageSubTitles.at(iSubMessage),GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
             }
             if( okButton!=NULL)
             {
-                okButton->render_self(  NULL, NULL, true);
+                okButton->render_self(  NULL, NULL);
             }
             if( point_within_rect(input->mouse_x,input->mouse_y,&elementBox) )
             {
@@ -334,7 +333,6 @@ void display_user_alert(std::string messageTitle, std::string messageContent, in
             {
                 gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
             }
-            MAIN_OVERLAY->process_cursor();
             gpe->end_loop();
         }
     }
@@ -356,8 +354,7 @@ int GPE_Display_Basic_Prompt(std::string messageTitle, std::string messageConten
     int defaultFontHeight = 12;
     std::vector < std::string > messageSubTitles;
     int iSubMessage = 0;
-    GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
-    MAIN_OVERLAY->process_cursor();
+    gpe->cursor_change("arrow");
     MAIN_OVERLAY->take_frozen_screenshot( );
     input->reset_all_input();
     bool exitOperation = false;
@@ -396,7 +393,7 @@ int GPE_Display_Basic_Prompt(std::string messageTitle, std::string messageConten
     elementBox.x = (SCREEN_WIDTH - elementBox.w)/2;
     elementBox.y = 72;
     maxMessageWidth = (elementBox.w-32) / defaultFontWidth;
-    maxMessageHeight = (elementBox.h-64) / (defaultFontHeight+GENERAL_GPE_PADDING);
+    maxMessageHeight = (elementBox.h-64) / (defaultFontHeight+GENERAL_GPE_GUI_PADDING);
     int newBarX2Pos = elementBox.x+elementBox.w;
     int newBarY2Pos = elementBox.w+elementBox.h;
     MAIN_OVERLAY->render_frozen_screenshot( );
@@ -404,7 +401,7 @@ int GPE_Display_Basic_Prompt(std::string messageTitle, std::string messageConten
     if( defaultFontWidth > 0 && defaultFontHeight > 0)
     {
         maxMessageWidth = (elementBox.w-32) / defaultFontWidth;
-        maxMessageHeight = (elementBox.h-64) / (defaultFontHeight+GENERAL_GPE_PADDING);
+        maxMessageHeight = (elementBox.h-64) / (defaultFontHeight+GENERAL_GPE_GUI_PADDING);
 
         messageSubTitles.clear();
         if( (int)messageTitle.size() > 0)
@@ -431,11 +428,11 @@ int GPE_Display_Basic_Prompt(std::string messageTitle, std::string messageConten
 
         if( (int) messageSubTitles.size() < maxMessageHeight )
         {
-            elementBox.h = messageSubTitles.size()*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
+            elementBox.h = messageSubTitles.size()*(defaultFontHeight+GENERAL_GPE_GUI_PADDING)+GENERAL_GPE_GUI_PADDING*4+64;
         }
         else
         {
-            elementBox.h = maxMessageHeight*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
+            elementBox.h = maxMessageHeight*(defaultFontHeight+GENERAL_GPE_GUI_PADDING)+GENERAL_GPE_GUI_PADDING*4+64;
         }
 
         maxMessageWidth = (int)messageTitle.size();
@@ -455,7 +452,7 @@ int GPE_Display_Basic_Prompt(std::string messageTitle, std::string messageConten
 
         while(exitOperation==false )
         {
-            GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
+            gpe->cursor_change("arrow");
             //Start the frame timer
             gpe->start_loop();
             //GPE_MAIN_GUI->reset_gui_info();
@@ -464,13 +461,13 @@ int GPE_Display_Basic_Prompt(std::string messageTitle, std::string messageConten
             {
                 if( boxIsMoving)
                 {
-                    GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZEALL);
+                    gpe->cursor_change("sizeall");
                     elementBox.x = input->mouse_x-elementBox.w/2;
                     elementBox.y = input->mouse_y;
                 }
                 else if( boxBeingResized)
                 {
-                    GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZENWSE);
+                    gpe->cursor_change("sizenwse");
                     newBarX2Pos = input->mouse_x;
                     if( newBarX2Pos > elementBox.x+elementBoxMinWidth && newBarX2Pos < SCREEN_WIDTH-32 && newBarX2Pos> 0 )
                     {
@@ -488,7 +485,7 @@ int GPE_Display_Basic_Prompt(std::string messageTitle, std::string messageConten
 
             if( point_between(input->mouse_x,input->mouse_y,elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+32) )
             {
-                GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZEALL);
+                gpe->cursor_change("sizeall");
                 if( input->check_mouse_pressed(0) )
                 {
                     boxIsMoving = true;
@@ -496,7 +493,7 @@ int GPE_Display_Basic_Prompt(std::string messageTitle, std::string messageConten
             }
             else if( point_between(input->mouse_x,input->mouse_y,elementBox.x+elementBox.w-32,elementBox.y+elementBox.h-32,elementBox.x+elementBox.w,elementBox.y+elementBox.h) )
             {
-                GPE_change_cursor(SDL_SYSTEM_CURSOR_SIZENWSE);
+                gpe->cursor_change("sizenwse");
                 if( input->check_mouse_pressed( mb_left ) )
                 {
                     boxBeingResized = true;
@@ -507,7 +504,7 @@ int GPE_Display_Basic_Prompt(std::string messageTitle, std::string messageConten
             {
                 boxIsMoving = false;
                 boxBeingResized = false;
-                GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
+                gpe->cursor_change("arrow");
             }
             if( elementBox.w < elementBoxMinWidth)
             {
@@ -542,7 +539,7 @@ int GPE_Display_Basic_Prompt(std::string messageTitle, std::string messageConten
             if( boxWasResized)
             {
                 maxMessageWidth = (elementBox.w-32) / defaultFontWidth;
-                maxMessageHeight = (elementBox.h-64) / (defaultFontHeight+GENERAL_GPE_PADDING);
+                maxMessageHeight = (elementBox.h-64) / (defaultFontHeight+GENERAL_GPE_GUI_PADDING);
 
                 messageSubTitles.clear();
                 /*if( (int)messageTitle.size() > 0)
@@ -568,11 +565,11 @@ int GPE_Display_Basic_Prompt(std::string messageTitle, std::string messageConten
                 }
                 /*if( (int) messageSubTitles.size() < maxMessageHeight )
                 {
-                    elementBox.h = messageSubTitles.size()*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
+                    elementBox.h = messageSubTitles.size()*(defaultFontHeight+GENERAL_GPE_GUI_PADDING)+GENERAL_GPE_GUI_PADDING*4+64;
                 }
                 else
                 {
-                    elementBox.h = maxMessageHeight*(defaultFontHeight+GENERAL_GPE_PADDING)+GENERAL_GPE_PADDING*4+64;
+                    elementBox.h = maxMessageHeight*(defaultFontHeight+GENERAL_GPE_GUI_PADDING)+GENERAL_GPE_GUI_PADDING*4+64;
                 }*/
 
                 maxMessageWidth = (int)messageTitle.size();
@@ -586,18 +583,18 @@ int GPE_Display_Basic_Prompt(std::string messageTitle, std::string messageConten
                 boxWasResized = false;
             }
 
-            yesButton->set_coords( GENERAL_GPE_PADDING+64,elementBox.h-32);
-            noButon->set_coords(yesButton->get_xpos()+yesButton->get_width()+GENERAL_GPE_PADDING,yesButton->get_ypos() );
+            yesButton->set_coords( GENERAL_GPE_GUI_PADDING+64,elementBox.h-32);
+            noButon->set_coords(yesButton->get_xpos()+yesButton->get_width()+GENERAL_GPE_GUI_PADDING,yesButton->get_ypos() );
             if( cancelButton!=NULL)
             {
-                cancelButton->set_coords( noButon->get_xpos()+noButon->get_width()+GENERAL_GPE_PADDING,noButon->get_ypos() );
-                cancelButton->process_self(&elementBox,&GPE_DEFAULT_CAMERA);
+                cancelButton->set_coords( noButon->get_xpos()+noButon->get_width()+GENERAL_GPE_GUI_PADDING,noButon->get_ypos() );
+                cancelButton->process_self(&elementBox);
             }
-            yesButton->process_self(&elementBox,&GPE_DEFAULT_CAMERA);
-            noButon->process_self(&elementBox,&GPE_DEFAULT_CAMERA) ;
+            yesButton->process_self(&elementBox);
+            noButon->process_self(&elementBox) ;
 
 
-            if( input->check_keyboard_released(kb_esc) || MAIN_RENDERER->windowClosed )
+            if( input->check_keyboard_released(kb_esc) || GPE_MAIN_WINDOW->windowClosed )
             {
                 if( cancelButton!=NULL)
                 {
@@ -630,43 +627,41 @@ int GPE_Display_Basic_Prompt(std::string messageTitle, std::string messageConten
                 exitOperation = true;
                 returnVal = DISPLAY_QUERY_YES;
             }
-            if( !WINDOW_WAS_JUST_RESIZED)
+            if( !GPE_MAIN_WINDOW->is_resized() )
             {
-                MAIN_RENDERER->reset_viewpoint();
+                GPE_MAIN_RENDERER->reset_viewpoint();
                 //Update screen
                 //if( input->windowEventHappendInFrame )
                 {
                     MAIN_OVERLAY->render_frozen_screenshot( );
                 }
-                MAIN_RENDERER->set_viewpoint( &elementBox);
+                GPE_MAIN_RENDERER->set_viewpoint( &elementBox);
 
                 gcanvas->render_rectangle( 0,0,elementBox.w,elementBox.h,GPE_MAIN_THEME->PopUp_Box_Color,false);
                 gcanvas->render_rectangle( 0,0,elementBox.w,32,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
 
-                gfs->render_text( GENERAL_GPE_PADDING*2,GENERAL_GPE_PADDING,messageTitle,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
-                //render_text( elementBox.x+GENERAL_GPE_PADDING+32,elementBox.y+64,messageContent,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
+                gfs->render_text( GENERAL_GPE_GUI_PADDING*2,GENERAL_GPE_GUI_PADDING,messageTitle,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
+                //render_text( elementBox.x+GENERAL_GPE_GUI_PADDING+32,elementBox.y+64,messageContent,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
                 for( iSubMessage = 0; iSubMessage < (int)messageSubTitles.size(); iSubMessage++)
                 {
-                    gfs->render_text( 32,GENERAL_GPE_PADDING+32+iSubMessage*(defaultFontHeight+GENERAL_GPE_PADDING),messageSubTitles.at(iSubMessage),GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
+                    gfs->render_text( 32,GENERAL_GPE_GUI_PADDING+32+iSubMessage*(defaultFontHeight+GENERAL_GPE_GUI_PADDING),messageSubTitles.at(iSubMessage),GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
                 }
 
-                yesButton->render_self( &elementBox,&GPE_DEFAULT_CAMERA);
-                noButon->render_self( &elementBox,&GPE_DEFAULT_CAMERA);
+                yesButton->render_self( &elementBox );
+                noButon->render_self( &elementBox );
                 if( cancelButton!=NULL)
                 {
-                    cancelButton->render_self( &elementBox,&GPE_DEFAULT_CAMERA);
+                    cancelButton->render_self( &elementBox );
                 }
                 gcanvas->render_rectangle( 1,1,elementBox.w-1,elementBox.h-1,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
                 gcanvas->render_rectangle( 0,0,elementBox.w,elementBox.h,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,true);
-                //GPE_MAIN_GUI-render_gui_info(MAIN_RENDERER, true);
-                MAIN_OVERLAY->process_cursor();
+                //GPE_MAIN_GUI-render_gui_info(GPE_MAIN_RENDERER, true);
             }
             gpe->end_loop();
         }
     }
 
-    MAIN_RENDERER->reset_viewpoint();
-    //GPE_MAIN_GUI->render_gui_info(MAIN_RENDERER, true);
+    GPE_MAIN_RENDERER->reset_viewpoint();
     if( FONT_DEFAULT_PROMPT!=NULL)
     {
         FONT_DEFAULT_PROMPT->clear_cache();
@@ -698,8 +693,7 @@ std::string get_string_from_popup(std::string messageTitle, std::string messageC
     gpe->end_loop();
     //RESOURCE_TO_DRAG = NULL;
     MAIN_OVERLAY->update_tooltip("");
-    GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
-    MAIN_OVERLAY->process_cursor();
+    gpe->cursor_change("arrow");
     MAIN_OVERLAY->take_frozen_screenshot( );
     input->reset_all_input();
     bool exitOperation = false;
@@ -724,32 +718,32 @@ std::string get_string_from_popup(std::string messageTitle, std::string messageC
     {
         promptBoxWidth =biggestStringWidth;
     }
-    promptBoxWidth+=GENERAL_GPE_PADDING*3;
+    promptBoxWidth+=GENERAL_GPE_GUI_PADDING*3;
     GPE_Rect elementBox;
-    elementBox.x = (SCREEN_WIDTH-promptBoxWidth)/2-GENERAL_GPE_PADDING;
-    elementBox.y = SCREEN_HEIGHT/2-64-GENERAL_GPE_PADDING;
+    elementBox.x = (SCREEN_WIDTH-promptBoxWidth)/2-GENERAL_GPE_GUI_PADDING;
+    elementBox.y = SCREEN_HEIGHT/2-64-GENERAL_GPE_GUI_PADDING;
     elementBox.w = promptBoxWidth+128;
     elementBox.h = 192;
     MAIN_OVERLAY->render_frozen_screenshot( );
     while(exitOperation==false)
     {
-        GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
+        gpe->cursor_change("arrow");
         gpe->start_loop();
 
         //GPE_MAIN_GUI->reset_gui_info();
 
-        elementBox.x = (SCREEN_WIDTH-promptBoxWidth)/2-GENERAL_GPE_PADDING;
-        elementBox.y = SCREEN_HEIGHT/2-64-GENERAL_GPE_PADDING;
+        elementBox.x = (SCREEN_WIDTH-promptBoxWidth)/2-GENERAL_GPE_GUI_PADDING;
+        elementBox.y = SCREEN_HEIGHT/2-64-GENERAL_GPE_GUI_PADDING;
 
-        newStringBox->set_coords( elementBox.x+GENERAL_GPE_PADDING,elementBox.y+64);
+        newStringBox->set_coords( elementBox.x+GENERAL_GPE_GUI_PADDING,elementBox.y+64);
         newStringBox->set_width(elementBox.w - 64);
 
-        yesButton->set_coords( elementBox.x+GENERAL_GPE_PADDING,newStringBox->get_ypos()+newStringBox->get_height() + GENERAL_GPE_PADDING);
-        cancelButton->set_coords( yesButton->get_xpos()+yesButton->get_width()+GENERAL_GPE_PADDING,yesButton->get_ypos() );
+        yesButton->set_coords( elementBox.x+GENERAL_GPE_GUI_PADDING,newStringBox->get_ypos()+newStringBox->get_height() + GENERAL_GPE_GUI_PADDING);
+        cancelButton->set_coords( yesButton->get_xpos()+yesButton->get_width()+GENERAL_GPE_GUI_PADDING,yesButton->get_ypos() );
 
-        newStringBox->process_self(&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-        yesButton->process_self(&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-        cancelButton->process_self(&GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
+        newStringBox->process_self();
+        yesButton->process_self();
+        cancelButton->process_self();
 
         if( input->check_keyboard_released(kb_esc) || cancelButton->is_clicked() )
         {
@@ -773,15 +767,12 @@ std::string get_string_from_popup(std::string messageTitle, std::string messageC
         gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Color,false);
         gcanvas->render_rectangle( elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+32,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,false);
 
-        gfs->render_text( (SCREEN_WIDTH-promptBoxWidth)/2+GENERAL_GPE_PADDING,SCREEN_HEIGHT/2-64,messageTitle,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
-        gfs->render_text( (SCREEN_WIDTH-promptBoxWidth)/2+GENERAL_GPE_PADDING,SCREEN_HEIGHT/2-32,messageContent,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP);
-        yesButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-        cancelButton->render_self( &GPE_DEFAULT_CAMERA,&GPE_DEFAULT_CAMERA);
-        newStringBox->render_self( &GPE_DEFAULT_CAMERA, &GPE_DEFAULT_CAMERA);
-        gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
-        //GPE_MAIN_GUI-render_gui_info(MAIN_RENDERER, true);
-        MAIN_OVERLAY->process_cursor();
-        //GPE_MAIN_GUI->render_gui_info(MAIN_RENDERER, true);
+        gfs->render_text( (SCREEN_WIDTH-promptBoxWidth)/2+GENERAL_GPE_GUI_PADDING,SCREEN_HEIGHT/2-64,messageTitle,GPE_MAIN_THEME->PopUp_Box_Highlight_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_CENTER );
+        gfs->render_text( (SCREEN_WIDTH-promptBoxWidth)/2+GENERAL_GPE_GUI_PADDING,SCREEN_HEIGHT/2-32,messageContent,GPE_MAIN_THEME->PopUp_Box_Font_Color,FONT_DEFAULT_PROMPT,FA_LEFT,FA_TOP );
+        yesButton->render_self( );
+        cancelButton->render_self( );
+        newStringBox->render_self( );
+        gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Border_Color,true );
         gpe->end_loop();
     }
     if( yesButton!=NULL)

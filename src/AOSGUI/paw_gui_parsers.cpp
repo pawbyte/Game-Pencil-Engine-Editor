@@ -3,10 +3,10 @@ paw_gui_parsers.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,17 +35,6 @@ SOFTWARE.
 #include "paw_gui_themes.h"
 
 
-GPE_KeyPair::GPE_KeyPair(double idNumb, std::string str, std::string ksubstr)
-{
-    keyString = str;
-    keyValue = idNumb;
-    keySubString = ksubstr;
-}
-
-GPE_KeyPair::~GPE_KeyPair()
-{
-
-}
 
 GPE_ParsedText::GPE_ParsedText(int nStart, int nEnd)
 {
@@ -128,7 +117,7 @@ void GPE_SyntaxLine::render_tokens(GPE_Font * fontIn, std::string sIn,int xPos, 
                     rString = get_substring(sIn,tempParseContent->textStart,tempParseContent->textEnd-tempParseContent->textStart );
                     if( isNumber)
                     {
-                        gfs->render_bitmap_text( xPos+fontWidth*(tempParseContent->textStart-lineStartPos),yPos, rString,renderColor,fontIn,FA_LEFT,FA_TOP );
+                        gfs->render_text( xPos+fontWidth*(tempParseContent->textStart-lineStartPos),yPos, rString,renderColor,fontIn,FA_LEFT,FA_TOP );
                     }
                     else
                     {

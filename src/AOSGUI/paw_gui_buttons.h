@@ -3,10 +3,10 @@ paw_gui_buttons.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -42,7 +42,7 @@ class GPE_ToolIconButton: public GPE_GeneralGuiElement
 private:
     bool endsSection;
     int opId;
-    GPE_Texture * buttonTexture;
+    GPE_Texture_Base * buttonTexture;
     std::string webUrl;
     bool wasClicked;
 public:
@@ -51,14 +51,14 @@ public:
     GPE_ToolIconButton(std::string buttonImgFile="",std::string name="", int id = -1, int buttonSize = 24, bool lastInCol = false);
     ~GPE_ToolIconButton();
     std::string get_data();
-    void change_texture( GPE_Texture * newTexture);
+    void change_texture( GPE_Texture_Base * newTexture);
     void load_data(std::string dataString);
     bool ends_section();
     int get_id();
     void set_id(int newId);
     void process_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void set_image( std::string buttonImgFile);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void set_website(std::string urlIn);
 };
 
@@ -87,7 +87,7 @@ public:
     GPE_ToolIconButton * add_option( std::string buttonImgFile,std::string name, int id = -1, bool endsSection = false);
     void process_self(GPE_Rect * viewedSpace =NULL, GPE_Rect *renderCam = NULL);
     void recalculate_width();
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
     void set_coords(int newX = -1, int newY = -1);
     void set_height(int newXH);
     void set_selection(int newSelection);
@@ -104,7 +104,7 @@ public:
     void process_self(GPE_Rect * viewedSpace =NULL, GPE_Rect *renderCam = NULL);
     void set_id(int newId);
     void set_name(std::string newName);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
 };
 
 class GPE_ToolPushButton: public GPE_GeneralGuiElement
@@ -112,7 +112,7 @@ class GPE_ToolPushButton: public GPE_GeneralGuiElement
 private:
     int opId;
     int maxCharactersToRender;
-    GPE_Texture * opTexture;
+    GPE_Texture_Base * opTexture;
     int iconPadding;
     bool wasClicked;
     std::string webUrl;
@@ -122,20 +122,20 @@ public:
     bool showBackground;
     GPE_ToolPushButton( std::string imgLocation,std::string name, std::string description = "",int id = -1);
     ~GPE_ToolPushButton();
-    void change_texture( GPE_Texture * newTexture);
+    void change_texture( GPE_Texture_Base * newTexture);
     void set_id(int newId);
     void set_name(std::string newName);
     void set_website(std::string urlIn);
     void prerender_self( );
     void process_self(GPE_Rect * viewedSpace =NULL, GPE_Rect *renderCam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
 };
 
 class GPE_VerticalCardButton: public GPE_GeneralGuiElement
 {
 private:
     int opId;
-    GPE_Texture * opTexture;
+    GPE_Texture_Base * opTexture;
     int iconPadding;
     bool wasClicked;
     std::string webUrl;
@@ -150,7 +150,7 @@ public:
     std::string stringValue;
     GPE_VerticalCardButton(std::string imgLocation,std::string parsedLines, std::string strValue,int id = -1, int buttonSize = 128 );
     ~GPE_VerticalCardButton();
-    void change_texture( GPE_Texture * newTexture);
+    void change_texture( GPE_Texture_Base * newTexture);
     void enable_background( bool enableValue);
     void enable_border( bool enableValue);
     int get_id();
@@ -159,7 +159,7 @@ public:
     void set_website(std::string urlIn);
     void prerender_self( );
     void process_self(GPE_Rect * viewedSpace =NULL, GPE_Rect *renderCam = NULL);
-    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL);
 };
 
 #endif

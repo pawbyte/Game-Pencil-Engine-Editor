@@ -3,10 +3,10 @@ paw_gui_scrollbars.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -40,11 +40,11 @@ GPE_ScrollBar_XAxis::GPE_ScrollBar_XAxis()
     autoCorrect = true;
     elementBox.x = contextRect.x =  fullRect.x = 0;
     elementBox.y = contextRect.y =  fullRect.y = 0;
-    elementBox.w = contextRect.w =  fullRect.w = 32;
-    elementBox.h = contextRect.h =  fullRect.h = 8;
+    elementBox.w = contextRect.w =  fullRect.w = GENERAL_GPE_GUI_PADDING / 2;
+    elementBox.h = contextRect.h =  fullRect.h = GENERAL_GPE_GUI_PADDING / 2;
 
 
-    scrollWidth = 32;
+    scrollWidth = GENERAL_GPE_GUI_PADDING;
     scrollPercent = 100;
     scrollPixels = 16;
     scrollXPos = 0;
@@ -67,9 +67,9 @@ bool GPE_ScrollBar_XAxis::calculate_sizing()
     {
         if( contextRect.w < fullRect.w)
         {
-            scrollPercent =  (double)contextRect.w/(double)fullRect.w;
-            scrollDisplayPixels = (double)(elementBox.w)*scrollPercent;
-            scrollXPos = (double)(contextRect.x)/(double)(fullRect.w)*(double)elementBox.w;
+            scrollPercent =  (float)contextRect.w/(float)fullRect.w;
+            scrollDisplayPixels = (float)(elementBox.w)*scrollPercent;
+            scrollXPos = (float)(contextRect.x)/(float)(fullRect.w)*(float)elementBox.w;
         }
         else
         {
@@ -117,7 +117,7 @@ void GPE_ScrollBar_XAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
     calculate_sizing();
 
 
-    double prevPosition = scrollXPos;
+    float prevPosition = scrollXPos;
     hasMoved = false;
     isHeldOn = false;
     if( doWork)
@@ -202,7 +202,7 @@ void GPE_ScrollBar_XAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 
 }
 
-void GPE_ScrollBar_XAxis::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+void GPE_ScrollBar_XAxis::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
@@ -249,17 +249,17 @@ GPE_ScrollBar_YAxis::GPE_ScrollBar_YAxis()
     documentActions = false;
     elementBox.x = 0;
     elementBox.y = 0;
-    elementBox.w = 8;
-    elementBox.h = 16;
+    elementBox.w = GENERAL_GPE_GUI_PADDING/2;
+    elementBox.h = GENERAL_GPE_GUI_PADDING/2;
 
     contextRect.x = fullRect.x = 0;
     contextRect.y = fullRect.y = 0;
-    contextRect.w = fullRect.w = 8;
-    contextRect.h = fullRect.h = 32;
+    contextRect.w = fullRect.w = GENERAL_GPE_GUI_PADDING/2;
+    contextRect.h = fullRect.h = GENERAL_GPE_GUI_PADDING/2;
 
-    scrollHeight = 32;
+    scrollHeight = GENERAL_GPE_GUI_PADDING;
     scrollPercent = 100;
-    scrollDisplayPixels = 16;
+    scrollDisplayPixels = GENERAL_GPE_GUI_PADDING/2;
     scrollYPos = 0;
 
     scrollYPos = 0;
@@ -376,7 +376,7 @@ void GPE_ScrollBar_YAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
                 isOnScrollBox = false;
                 isHeldOn = false;
             }
-            double prevPosition = contextRect.y;
+            float prevPosition = contextRect.y;
             //if( scrollPercent)
             {
                 if( scrollYPos+scrollDisplayPixels > elementBox.h )
@@ -418,7 +418,7 @@ void GPE_ScrollBar_YAxis::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
     }
 }
 
-void GPE_ScrollBar_YAxis::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam , bool forceRedraw )
+void GPE_ScrollBar_YAxis::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam  )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);

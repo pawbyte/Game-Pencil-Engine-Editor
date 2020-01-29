@@ -3,10 +3,10 @@ paw_gui_labels.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include "paw_gui_labels.h"
 
-GPE_Label_Image::GPE_Label_Image(GPE_Texture * imgIn,std::string nameIn, std::string description, std::string urlIn)
+GPE_Label_Image::GPE_Label_Image(GPE_Texture_Base * imgIn,std::string nameIn, std::string description, std::string urlIn)
 {
     allowOverSize = true;
     resizeAspect = 1;
@@ -68,17 +68,17 @@ void GPE_Label_Image::load_label_image(std::string fileNameIn)
     {
         if( imgSrc==NULL )
         {
-            imgSrc = new GPE_Texture();
+            imgSrc = gpeph->get_new_texture();
         }
     }
     else
     {
-        imgSrc = new GPE_Texture();
+        imgSrc = gpeph->get_new_texture();
         isHoldingCustomTexture = true;
     }
     if( imgSrc!=NULL )
     {
-        imgSrc->load_new_texture(fileNameIn);
+        imgSrc->load_new_texture( GPE_MAIN_RENDERER,fileNameIn);
         elementBox.w = imgSrc->get_width();
         elementBox.h = imgSrc->get_height();
     }
@@ -93,7 +93,7 @@ void GPE_Label_Image::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     {
         if( isHovered && (int)webUrl.size() > 3)
         {
-            GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
+            gpe->cursor_change("hand");
         }
         if( isInUse &&( input->check_keyboard_down( kb_enter ) || input->check_keyboard_down( kb_space )  ) )
         {
@@ -110,11 +110,11 @@ void GPE_Label_Image::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     }
 }
 
-void GPE_Label_Image::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_Label_Image::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( forceRedraw && cam!=NULL )
+    if( cam!=NULL )
     {
         if( imgSrc!=NULL )
         {
@@ -135,7 +135,7 @@ void GPE_Label_Image::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool fo
     }
 }
 
-void GPE_Label_Image::set_image( GPE_Texture * imgIn )
+void GPE_Label_Image::set_image( GPE_Texture_Base * imgIn )
 {
     imgSrc = imgIn;
     if( imgSrc!=NULL )
@@ -151,7 +151,7 @@ void GPE_Label_Image::set_width( int newW )
     {
         if( newW > 0)
         {
-            double newH = 0;
+            float newH = 0;
             if( imgSrc!=NULL && imgSrc->get_width() > 0)
             {
                 if( !allowOverSize && !isFullWidth )
@@ -165,7 +165,7 @@ void GPE_Label_Image::set_width( int newW )
                 elementBox.w = newW*resizeAspect;
                 if( imgSrc!=NULL && imgSrc->get_width()!=0 )
                 {
-                    elementBox.h =  ( elementBox.w ) *  ( (double) imgSrc->get_height() / (double)imgSrc->get_width() );
+                    elementBox.h =  ( elementBox.w ) *  ( (float) imgSrc->get_height() / (float)imgSrc->get_width() );
                 }
             }
         }
@@ -196,7 +196,7 @@ void GPE_Label_Image::set_height( int newH)
         elementBox.h = newH*resizeAspect;
         if( imgSrc!=NULL )
         {
-            elementBox.w = resizeAspect * ceil( (double)newH * (double)imgSrc->get_width()/(double)imgSrc->get_height() );
+            elementBox.w = resizeAspect * ceil( (float)newH * (float)imgSrc->get_width()/(float)imgSrc->get_height() );
         }
     }
     else
@@ -206,7 +206,7 @@ void GPE_Label_Image::set_height( int newH)
     }
 }
 
-void GPE_Label_Image::set_size( double newW, double newH)
+void GPE_Label_Image::set_size( float newW, float newH)
 {
     elementBox.w = newW;
     elementBox.h = newH;
@@ -226,7 +226,7 @@ GPE_Label_Text::GPE_Label_Text(std::string nameIn, std::string description)
     guiListTypeName = "labeltext";
     guiListTypeId = 7;
     opName = nameIn;
-    descriptionText = descriptionText;
+    descriptionText = description;
     if( FONT_LABEL!=NULL)
     {
         int bWid = 0;
@@ -265,7 +265,7 @@ void GPE_Label_Text::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     /*
     if( isHovered)
     {
-        GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
+        gpe->cursor_change(GPE_CURSOR_HAND);
     }
     if( isClicked )
     {
@@ -285,11 +285,11 @@ void GPE_Label_Text::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     }
 }
 
-void GPE_Label_Text::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_Label_Text::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( forceRedraw && (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
+    if( (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
     {
         gfs->render_text( elementBox.x-cam->x,elementBox.y-cam->y,opName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_LABEL,FA_LEFT,FA_TOP);
 
@@ -321,7 +321,7 @@ GPE_Label_Error::GPE_Label_Error(std::string nameIn, std::string description)
     guiListTypeName = "labelerror";
     guiListTypeId = 7;
     opName = nameIn;
-    descriptionText = descriptionText;
+    descriptionText = description;
     if( FONT_LABEL!=NULL)
     {
         int bWid = 0;
@@ -360,7 +360,7 @@ void GPE_Label_Error::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     /*
     if( isHovered)
     {
-        GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
+        gpe->cursor_change(GPE_CURSOR_HAND);
     }
     if( isClicked )
     {
@@ -380,11 +380,11 @@ void GPE_Label_Error::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     }
 }
 
-void GPE_Label_Error::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_Label_Error::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( forceRedraw && (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
+    if( (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
     {
         gfs->render_text( elementBox.x-cam->x,elementBox.y-cam->y,opName,GPE_MAIN_THEME->Input_Error_Font_Color,FONT_LABEL,FA_LEFT,FA_TOP);
 
@@ -415,7 +415,7 @@ GPE_Label_90Degree::GPE_Label_90Degree(std::string nameIn, std::string descripti
     guiListTypeName = "labeltext";
     guiListTypeId = 7;
     opName = nameIn;
-    descriptionText = descriptionText;
+    descriptionText = description;
     if( FONT_LABEL!=NULL)
     {
         int bWid = 0;
@@ -454,7 +454,7 @@ void GPE_Label_90Degree::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     /*
     if( isHovered)
     {
-        GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
+        gpe->cursor_change(GPE_CURSOR_HAND);
     }
     if( isClicked )
     {
@@ -474,11 +474,11 @@ void GPE_Label_90Degree::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     }
 }
 
-void GPE_Label_90Degree::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_Label_90Degree::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( forceRedraw && (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
+    if( (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
     {
         gfs->render_text_rotated( elementBox.x-cam->x,elementBox.y-cam->y+elementBox.h,opName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_LABEL,90);
 
@@ -517,9 +517,9 @@ GPE_Label_Paragraph::GPE_Label_Paragraph(std::string nameIn, std::string paragra
 GPE_Label_Paragraph::~GPE_Label_Paragraph()
 {
     paragraphLines.clear();
-    if( FONT_PARAGRAGH!=NULL )
+    if( FONT_LABEL!=NULL )
     {
-        FONT_PARAGRAGH->clear_cache();
+        FONT_LABEL->clear_cache();
     }
 }
 
@@ -552,31 +552,31 @@ void GPE_Label_Paragraph::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
     }
 }
 
-void GPE_Label_Paragraph::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw )
+void GPE_Label_Paragraph::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( forceRedraw && viewedSpace!=NULL && cam!=NULL )
+    if( viewedSpace!=NULL && cam!=NULL )
     {
         if( hAlign == FA_CENTER)
         {
             for( int i =0; i < (int)paragraphLines.size(); i++)
             {
-                gfs->render_text( elementBox.x-cam->x + cam->w/2,elementBox.y-cam->y+(GENERAL_GPE_PADDING+defaultFontHeight)*i,paragraphLines[i],GPE_MAIN_THEME->Main_Box_Font_Color,FONT_PARAGRAGH,FA_CENTER,FA_TOP);
+                gfs->render_text( elementBox.x-cam->x + cam->w/2,elementBox.y-cam->y+(GENERAL_GPE_GUI_PADDING+defaultFontHeight)*i,paragraphLines[i],GPE_MAIN_THEME->Main_Box_Font_Color,FONT_LABEL,FA_CENTER,FA_TOP);
             }
         }
         else if( hAlign == FA_RIGHT)
         {
             for( int i =0; i < (int)paragraphLines.size(); i++)
             {
-                gfs->render_text( elementBox.x-cam->x + elementBox.w,elementBox.y-cam->y+(GENERAL_GPE_PADDING+defaultFontHeight)*i,paragraphLines[i],GPE_MAIN_THEME->Main_Box_Font_Color,FONT_PARAGRAGH,FA_RIGHT,FA_TOP);
+                gfs->render_text( elementBox.x-cam->x + elementBox.w,elementBox.y-cam->y+(GENERAL_GPE_GUI_PADDING+defaultFontHeight)*i,paragraphLines[i],GPE_MAIN_THEME->Main_Box_Font_Color,FONT_LABEL,FA_RIGHT,FA_TOP);
             }
         }
         else
         {
             for( int i =0; i < (int)paragraphLines.size(); i++)
             {
-                gfs->render_text( elementBox.x-cam->x,elementBox.y-cam->y+(GENERAL_GPE_PADDING+defaultFontHeight)*i,paragraphLines[i],GPE_MAIN_THEME->Main_Box_Font_Color,FONT_PARAGRAGH,FA_LEFT,FA_TOP);
+                gfs->render_text( elementBox.x-cam->x,elementBox.y-cam->y+(GENERAL_GPE_GUI_PADDING+defaultFontHeight)*i,paragraphLines[i],GPE_MAIN_THEME->Main_Box_Font_Color,FONT_LABEL,FA_LEFT,FA_TOP);
             }
         }
 
@@ -640,17 +640,17 @@ void GPE_Label_Paragraph::update_paragraph()
             defaultFontWidth = 0;
             defaultFontHeight = 0;
             int iSubMessage = 0;
-            if( FONT_PARAGRAGH!=NULL)
+            if( FONT_LABEL!=NULL)
             {
-                FONT_PARAGRAGH->get_metrics("A",&defaultFontWidth, &defaultFontHeight);
-                FONT_PARAGRAGH->clear_cache();
+                FONT_LABEL->get_metrics("A",&defaultFontWidth, &defaultFontHeight);
+                FONT_LABEL->clear_cache();
             }
 
             std::vector < std::string > messageSubTitles;
 
             if( defaultFontWidth > 0 && defaultFontHeight > 0)
             {
-                maxMessageWidth = ( elementBox.w -GENERAL_GPE_PADDING*2)/ defaultFontWidth;
+                maxMessageWidth = ( elementBox.w -GENERAL_GPE_GUI_PADDING*2)/ defaultFontWidth;
 
                 if( (int)paragraphText.size() > 0)
                 {
@@ -670,7 +670,7 @@ void GPE_Label_Paragraph::update_paragraph()
                     {
                         add_line( messageSubTitles.at(iSubMessage) );
                     }
-                    elementBox.h = ( (int)messageSubTitles.size() ) *(GENERAL_GPE_PADDING+defaultFontHeight);
+                    elementBox.h = ( (int)messageSubTitles.size() ) *(GENERAL_GPE_GUI_PADDING+defaultFontHeight);
                 }
             }
         }
@@ -691,7 +691,7 @@ GPE_Label_Title::GPE_Label_Title(std::string nameIn, std::string description)
     guiListTypeName = "labeltitle";
     needsNewLine = true;
     opName = nameIn;
-    descriptionText = descriptionText;
+    descriptionText = description;
     if( FONT_LABEL_TITLE!=NULL)
     {
         int bWid = 0;
@@ -737,7 +737,7 @@ void GPE_Label_Title::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     /*
     if( isHovered)
     {
-        GPE_change_cursor(SDL_SYSTEM_CURSOR_HAND);
+        gpe->cursor_change(GPE_CURSOR_HAND);
     }
     if( isClicked )
     {
@@ -750,11 +750,11 @@ void GPE_Label_Title::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     */
 }
 
-void GPE_Label_Title::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_Label_Title::render_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( forceRedraw && (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
+    if( (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
     {
         gfs->render_text( elementBox.x-cam->x,elementBox.y+elementBox.h/2-cam->y,opName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_LABEL_TITLE,FA_LEFT,FA_MIDDLE);
 

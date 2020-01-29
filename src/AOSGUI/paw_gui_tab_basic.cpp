@@ -3,10 +3,10 @@ paw_gui_tab_basic.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -47,7 +47,7 @@ GPE_TabBar::GPE_TabBar( bool dynamicClosing )
     elementBox.w = 32;
     elementBox.h = 18;
 
-    barXPadding = GENERAL_GPE_PADDING;
+    barXPadding = GENERAL_GPE_GUI_PADDING;
     barYPadding = 4;
     fontTextWidth = 12;
     fontTextHeight = 12;
@@ -277,11 +277,14 @@ bool GPE_TabBar::remove_tab( int tabId )
     {
         subOptions.erase(subOptions.begin()+tabId );
         calculate_tabs();
+        return true;
     }
+    return false;
 }
 
 bool GPE_TabBar::remove_tab( std::string tabName )
 {
+    bool tabRemoved = false;
     //Reverse iterate for safety
     for( int i = (int)subOptions.size()-1; i >=0; i--)
     {
@@ -289,17 +292,19 @@ bool GPE_TabBar::remove_tab( std::string tabName )
         {
             subOptions.erase(subOptions.begin()+i );
             calculate_tabs();
+            tabRemoved = true;
         }
     }
+    return tabRemoved;
 }
 
-void GPE_TabBar::render_self( GPE_Rect * viewedSpace,GPE_Rect * cam, bool forceRedraw)
+void GPE_TabBar::render_self( GPE_Rect * viewedSpace,GPE_Rect * cam)
 {
     //gcanvas->render_rect(&elementBox,barColor,false);
     //gcanvas->render_rect(&elementBox,barOutlineColor,true);
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if(forceRedraw && viewedSpace!=NULL && cam!=NULL)
+    if(viewedSpace!=NULL && cam!=NULL)
     {
         if( (int)subOptions.size() >0 )
         {
@@ -345,11 +350,11 @@ void GPE_TabBar::render_self( GPE_Rect * viewedSpace,GPE_Rect * cam, bool forceR
                 {
                     if( point_between(input->mouse_x, input->mouse_y,viewedSpace->x+cTabX2Pos-32,viewedSpace->y+cTabY1Pos, viewedSpace->x+cTabX2Pos,viewedSpace->y+cTabY2Pos) )
                     {
-                        gfs->render_text( cTabXPos+tabSize-GENERAL_GPE_PADDING,elementBox.y+elementBox.h/2-cam->y, "X", GPE_MAIN_THEME->Main_Box_Font_Highlight_Color,GUI_TAB_FONT,FA_RIGHT,FA_MIDDLE);
+                        gfs->render_text( cTabXPos+tabSize-GENERAL_GPE_GUI_PADDING,elementBox.y+elementBox.h/2-cam->y, "×", GPE_MAIN_THEME->Main_Box_Font_Highlight_Color,GUI_TAB_FONT,FA_RIGHT,FA_MIDDLE);
                     }
                     else
                     {
-                        gfs->render_text( cTabXPos+tabSize-GENERAL_GPE_PADDING,elementBox.y+elementBox.h/2-cam->y, "X", GPE_MAIN_THEME->Main_Box_Font_Color,GUI_TAB_FONT,FA_RIGHT,FA_MIDDLE);
+                        gfs->render_text( cTabXPos+tabSize-GENERAL_GPE_GUI_PADDING,elementBox.y+elementBox.h/2-cam->y, "×", GPE_MAIN_THEME->Main_Box_Font_Color,GUI_TAB_FONT,FA_RIGHT,FA_MIDDLE);
                     }
                 }
                 cTabXPos = cTabX2Pos;

@@ -3,10 +3,10 @@ paw_gui_context.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,9 +45,9 @@ private:
     bool showShortCuts;
     std::string opName;
     int opId;
-    GPE_Animation * opSprite;
-    GPE_Texture * opTexture;
-    int spriteFrameNumber;
+    GPE_Animation * opanimation;
+    GPE_Texture_Base * opTexture;
+    int animationFrameNumber;
     int startYPos;
     int rowsInView;
     int maxRowsInView;
@@ -56,10 +56,10 @@ private:
     int optionWidth;
 public:
     int menuDirection;
-    double downDelay;
-    double upDelay;
-    double leftDelay;
-    double rightDelay;
+    float downDelay;
+    float upDelay;
+    float leftDelay;
+    float rightDelay;
     bool isResourceOption;
     bool renderWhite;
     bool isFolderOption;
@@ -82,7 +82,7 @@ public:
     GPE_PopUpMenu_Option(std::string name = "", int id = -1,bool selectable = true, bool seeShortCut = true, bool makeContext = false, int kbS1 = -1, int kbS2 = -1, int kbS3 = -1 );
     ~GPE_PopUpMenu_Option();
     GPE_PopUpMenu_Option * add_option( GPE_PopUpMenu_Option * otherOption);
-    GPE_PopUpMenu_Option * add_menu_option( std::string name, int id = -1, GPE_Texture * gTexture = NULL,int spriteImgNumb = -1,GPE_Animation * gSprite=NULL, bool endsSection=false, bool selectable = true, bool isResource = false, int kbS1 = -1, int kbS2 = -1, int kbS3 = -1 );
+    GPE_PopUpMenu_Option * add_menu_option( std::string name, int id = -1, GPE_Texture_Base * gTexture = NULL,int animationImgNumb = -1,GPE_Animation * ganimation=NULL, bool endsSection=false, bool selectable = true, bool isResource = false, int kbS1 = -1, int kbS2 = -1, int kbS3 = -1 );
     int activate_hovered();
     void clear_menu();
     int get_width();
@@ -96,16 +96,16 @@ public:
     bool push_down();
     void reset_suboptions();
     void set_id(int newId);
-    void set_image_data(GPE_Animation * newSprite,int newId);
+    void set_image_data(GPE_Animation * newanimation,int newId);
     void set_position(int xPos = -1, int yPos = -1);
     void set_width(int newWidth);
-    void set_texture(GPE_Texture * newTexture);
+    void set_texture(GPE_Texture_Base * newTexture);
     void open_menu();
     void prerender_self(  );
     int process_menu_option();
     void resize_self();
     void update_selectability(bool selectable);
-    void render_self( GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * cam = NULL);
 };
 
 extern GPE_PopUpMenu_Option * MAIN_CONTEXT_MENU;
@@ -120,10 +120,10 @@ private:
     bool justClosed;
     bool openRequested;
 public:
-    double downDelay;
-    double upDelay;
-    double leftDelay;
-    double rightDelay;
+    float downDelay;
+    float upDelay;
+    float leftDelay;
+    float rightDelay;
     int hoverOption;
     int selectedOption;
     GPE_Toolbar();
@@ -138,7 +138,7 @@ public:
     void open_toolbar();
     void prerender_self(  );
     void process_toolbar();
-    void render_toolbar( GPE_Rect *renderCam = NULL, bool forceRedraw = true );
+    void render_toolbar( GPE_Rect *renderCam = NULL );
 };
 
 void GPE_open_context_menu(int menuXPos=-1,int menuYPos=-1, int newWidth = 128);
