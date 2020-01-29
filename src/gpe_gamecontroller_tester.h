@@ -3,10 +3,10 @@ gpe_gamecontroller_tester.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -51,7 +51,7 @@ public:
     GPE_CheckBoxBasic * showControllerInfo;
     GPE_Label_Title * playerStats;
     int playerRadius[gc_max_devices];
-    double playerDeadZone[gc_max_devices];
+    float playerDeadZone[gc_max_devices];
     GPE_TextInputNumber * playerDeadZoneField[gc_max_devices];
     GPE_TextInputNumber * playerSizeRadius[gc_max_devices];
     GPE_Input_Field_Color * playerTestColor[gc_max_devices];
@@ -73,13 +73,15 @@ public:
     std::string projectFolderListLocation;
     gamePencilgamecontrollerTesterResource();
     ~gamePencilgamecontrollerTesterResource();
+    bool include_local_files( std::string pBuildDir , int buildType );
+
     void prerender_self( );
     void preprocess_self(std::string alternatePath = "");
     void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void save_resource(std::string alternatePath = "", int backupId = -1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 
-extern gamePencilgamecontrollerTesterResource * MAIN_GameController_TESTER;
+extern gamePencilgamecontrollerTesterResource * MAIN_CONTROLLER_TESTER;
 #endif // GPE_gamecontroller_TESTER_H

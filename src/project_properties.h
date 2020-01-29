@@ -3,10 +3,10 @@ project_properties.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,6 +35,7 @@ SOFTWARE.
 #define GPE_PROJECT_PROOPERTIES_H
 
 #include "gpe_basic_resource_page.h"
+#include "gpe_cpp_builder_settings.h"
 
 class projectPropertiesResource: public standardEditableGameResource
 {
@@ -59,6 +60,9 @@ public:
     GPE_CheckBoxBasic * minifyCodeCheckbox;
     GPE_CheckBoxBasic * warnOnCloseCheckbox;
 
+    GPE_ToolPushButton * buildToSourceButton; //used to create projects to raw CPP files / dependencies
+    GPE_DropDown_Menu  * buildPlatformdropdown; //used to select which "build script we use for building thru source"
+    GPE_TextURL * buildPlatformRefreshLabel;
     GPE_ToolPushButton * exportPushButton;
     GPE_ToolPushButton * exportAndPlayPushButton;
     GPE_ToolPushButton * cleanBuildFolderPushButton;
@@ -76,23 +80,17 @@ public:
     GPE_CheckBoxBasic * linux64BitCheckbox;
 
     GPE_CheckBoxBasic * html5DebugModeCheckbox;
-    GPE_CheckBoxBasic * wiiuDebugModeCheckbox;
-    GPE_CheckBoxBasic * winDebugModeCheckbox;
     GPE_CheckBoxBasic * osxDebugModeCheckbox;
+    GPE_CheckBoxBasic * winDebugModeCheckbox;
     GPE_CheckBoxBasic * linuxDebugModeCheckbox;
 
     GPE_RadioButtonControllerBasic * html5nativeBuildTypeOptions;
     GPE_RadioButtonControllerBasic * windowsNativeBuildTypeOptions;
     GPE_RadioButtonControllerBasic * osxNativeBuildTypeOptions;
     GPE_RadioButtonControllerBasic * linuxNativeBuildTypeOptions;
-    GPE_RadioButtonControllerBasic * wiiuNativeBuildTypeOptions;
     GPE_RadioButtonControllerBasic * switchNativeBuildTypeOptions;
     GPE_Label_Text * electronCompileNote;
     GPE_TextURL * electronCompileUrl;
-
-    GPE_Label_Title * comingSoonTitle;
-    GPE_Label_Text * wiiuCompileNote;
-    GPE_TextURL * wiiuCompileUrl;
 
     GPE_Label_Paragraph * switchComingSoonNote;
     GPE_Label_Paragraph * nSwitchSideNote;
@@ -106,6 +104,12 @@ public:
     GPE_Label_Paragraph * xboxOneComingSoonNote;
     GPE_Label_Paragraph * xboxOneSideNote;
     GPE_TextURL * xboxOneContactUrl;
+
+    //Other Platform label notes
+    GPE_Label_Text * otherPlatformLabel;
+    GPE_Label_Paragraph * otherPlatformLabelParagraph;
+    GPE_TextURL * otherPlatformLabelURL;
+
 
     //Settings Tab
     GPE_TextInputNumber * projectScreenWidthField;
@@ -143,6 +147,7 @@ public:
     GPE_Rect subViewedSpace;
 
     GPE_GuiElementList * projectSettingsList;
+    GPE_GuiElementList * collisionLayerMatrixList;
     GPE_CheckBoxBasic * projectCollisionLayerMatrix[1024];
     GPE_Label_90Degree * projectLayerNamesColumnTitles[32];
     GPE_Label_Text * projectLayerNamesRowTitles[32];
@@ -156,11 +161,13 @@ public:
     void compile_cpp();
     bool export_and_play_native( bool launchProgram = true);
     void integrate_into_syntax();
+    bool include_local_files( std::string pBuildDir , int buildType );
     void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
     void prerender_self( );
     void preprocess_self(std::string alternatePath = "");
     void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void refresh_build_to_source_targets();
+    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void save_resource(std::string alternatePath = "", int backupId = -1);
     int search_for_string(std::string needle);
     int search_and_replace_string(std::string needle, std::string newStr = "");

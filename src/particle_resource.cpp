@@ -3,10 +3,10 @@ particle_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -43,7 +43,7 @@ particleResource::particleResource(GPE_GeneralResourceContainer * pFolder)
     myEmitter->showBox = true;
     myEmitter->set_emission_rate( 60 );
     emitterTexture = NULL;
-    //emitterTexture->load_new_texture(APP_DIRECTORY_NAME+"resources/gfx/sprites/c_snow.png",-1,true );
+    //emitterTexture->load_new_texture( GPE_MAIN_RENDERER,APP_DIRECTORY_NAME+"resources/gfx/animations/c_snow.png",-1,true );
     myEmitter->change_texture( emitterTexture, blend_mode_blend );
     transformResourceButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/magic.png","Transform the Image",-1);
     openExternalEditorButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens Texture Image In External Editor");
@@ -178,8 +178,8 @@ bool particleResource::get_mouse_coords(GPE_Rect * viewedSpace, GPE_Rect * cam )
                             viewedSpace->y + viewedSpace->h - cam->y ) )
         {
             /*
-            areaMouseXPos = (input->mouse_x-spritePreviewCam->x )/zoomValue +animCameraRect.x - cam->x;
-            areaMouseYPos = (input->mouse_y-spritePreviewCam->y )/zoomValue +animCameraRect.y - cam->y;
+            areaMouseXPos = (input->mouse_x-animationPreviewCam->x )/zoomValue +animCameraRect.x - cam->x;
+            areaMouseYPos = (input->mouse_y-animationPreviewCam->y )/zoomValue +animCameraRect.y - cam->y;
             */
             return true;
         }
@@ -192,6 +192,12 @@ void particleResource::handle_scrolling()
 
 }
 
+bool particleResource::include_local_files( std::string pBuildDir , int buildType )
+{
+    return true;
+}
+
+
 void particleResource::load_image(std::string newFileName, bool autoProcess )
 {
     if( newFileName.size() > 4 && file_exists( newFileName ) )
@@ -199,12 +205,12 @@ void particleResource::load_image(std::string newFileName, bool autoProcess )
         textureLocationField->set_string( newFileName );
         if( emitterTexture==NULL )
         {
-            emitterTexture = new GPE_Texture();
+            emitterTexture = gpeph->get_new_texture();
         }
-        emitterTexture->load_new_texture( newFileName );
+        emitterTexture->load_new_texture( GPE_MAIN_RENDERER,newFileName );
         if( emitterTexture->get_width() > 512 || emitterTexture->get_height() > 512 )
         {
-            emitterTexture->prerender_circle(128, c_white, 255 );
+            emitterTexture->prerender_circle( GPE_MAIN_RENDERER, 128, c_white, 255 );
             if( GPE_Main_Logs!=NULL )
             {
                 GPE_Main_Logs->log_general_error("Particle Emitter is too large. Texture must be 512x512px or smaller." );
@@ -222,7 +228,7 @@ void particleResource::load_image(std::string newFileName, bool autoProcess )
         texturePreviewImgLabel->set_height( 64 );
         if( autoProcess )
         {
-            copy_file( newFileName, fileToDir(parentProjectName)+"/gpe_project/resources/particles/"+ get_local_from_global_file(newFileName) );
+            copy_file( newFileName, file_to_dir(parentProjectName)+"/gpe_project/resources/particles/"+ get_local_from_global_file(newFileName) );
         }
     }
     else
@@ -243,7 +249,7 @@ void particleResource::preprocess_self(std::string alternatePath )
         std::string otherColContainerName = "";
 
         std::string newFileIn = "";
-        std::string soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/particles/";
+        std::string soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/particles/";
         if( file_exists(alternatePath) )
         {
             newFileIn = alternatePath;
@@ -255,12 +261,12 @@ void particleResource::preprocess_self(std::string alternatePath )
         }
         std::ifstream gameResourceFileIn( newFileIn.c_str() );
 
-        //GPE_Report("Loading sprite - "+newFileIn);
+        //GPE_Report("Loading animation - "+newFileIn);
         //If the level file could be loaded
-        double foundFileVersion = -1;
+        float foundFileVersion = -1;
         if( !gameResourceFileIn.fail() )
         {
-            //GPE_Report("Procesing sprite file...");
+            //GPE_Report("Procesing animation file...");
             //makes sure the file is open
             if (gameResourceFileIn.is_open() )
             {
@@ -296,7 +302,7 @@ void particleResource::preprocess_self(std::string alternatePath )
                                     valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
                                     if( keyString=="Version")
                                     {
-                                        foundFileVersion = string_to_double(valString);
+                                        foundFileVersion = string_to_float(valString);
                                     }
                                 }
                             }
@@ -392,11 +398,11 @@ void particleResource::preprocess_self(std::string alternatePath )
                                 }
                                 else  if( keyString=="BlendType")
                                 {
-                                    blendTypeMenu->set_value( string_to_int(valString) );
+                                    blendTypeMenu->set_option_value( string_to_int(valString) );
                                 }
                                 else  if( keyString=="EmitterShape")
                                 {
-                                    shapeMenu->set_value( string_to_int(valString) );
+                                    shapeMenu->set_option_value( string_to_int(valString) );
                                 }
                                 else  if( keyString=="ShowDebugInfo")
                                 {
@@ -408,7 +414,7 @@ void particleResource::preprocess_self(std::string alternatePath )
                                 }
                                 else  if( keyString=="FallbackShape")
                                 {
-                                    emitterBackupTextureMenu->set_value( string_to_bool(valString) );
+                                    emitterBackupTextureMenu->set_option_value( string_to_bool(valString) );
                                 }
                                 else  if( keyString=="ShapeW" || keyString=="ShapeR" )
                                 {
@@ -432,7 +438,7 @@ void particleResource::prerender_self( )
 
 }
 
-void particleResource::process_data_fields(double versionToProcess )
+void particleResource::process_data_fields(float versionToProcess )
 {
 
 }
@@ -445,6 +451,7 @@ void particleResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
     if( PANEL_GENERAL_EDITOR!=NULL )
     {
         int previousBlendMode = blendTypeMenu->get_selected_value();
+        myEmitter->set_fallback_shape( emitterBackupTextureMenu->get_selected_value() );
         PANEL_GENERAL_EDITOR->clear_panel();
 
         PANEL_GENERAL_EDITOR->add_gui_element(renameBox,true);
@@ -511,8 +518,8 @@ void particleResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         {
             if(  emitterTexture!=NULL )
             {
-                std::string currentFileToRefresh = getShortFileName (emitterTexture->get_filename(),true );
-                currentFileToRefresh = fileToDir(parentProjectName)+"/gpe_project/resources/textures/"+currentFileToRefresh;
+                std::string currentFileToRefresh = get_short_filename (emitterTexture->get_filename(),true );
+                currentFileToRefresh = file_to_dir(parentProjectName)+"/gpe_project/resources/textures/"+currentFileToRefresh;
                 load_image(currentFileToRefresh);
             }
         }
@@ -543,7 +550,8 @@ void particleResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
                 int menuSelection = GPE_Get_Context_Result();
                 if( menuSelection>=0 && menuSelection <=3)
                 {
-                    SDL_Surface * oTempSurface = gpe_sdl->load_surface_image(emitterTexture->get_filename() );
+                    std::string tempStr = emitterTexture->get_filename();
+                    SDL_Surface * oTempSurface = SDL_SurfaceEx::load_surface_image( tempStr.c_str());
                     SDL_Surface *nTempSurface = NULL;
                     if( oTempSurface!=NULL)
                     {
@@ -555,7 +563,7 @@ void particleResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
                                 if( GPE_Display_Basic_Prompt("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
                                 {
                                     GPE_Report("Modifying image at: "+emitterTexture->get_filename()+".");
-                                    nTempSurface = gpe_sdl->surface_remove_color(oTempSurface,foundBGColor->get_sdl_color() );
+                                    nTempSurface = SDL_SurfaceEx::surface_remove_color(oTempSurface,foundBGColor->get_sdl_color() );
                                     delete foundBGColor;
                                     foundBGColor = NULL;
                                 }
@@ -566,14 +574,14 @@ void particleResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
                         {
                             if( GPE_Display_Basic_Prompt("Are you sure you want to invert your image's colors?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
                             {
-                                nTempSurface= gpe_sdl->surface_invert(oTempSurface);
+                                nTempSurface= SDL_SurfaceEx::surface_invert(oTempSurface);
                             }
                         }
                         else if( menuSelection==2 )
                         {
                             if( GPE_Display_Basic_Prompt("Are you sure you want to grayscale your image?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
                             {
-                                nTempSurface= gpe_sdl->surface_grayscale(oTempSurface);
+                                nTempSurface= SDL_SurfaceEx::surface_grayscale(oTempSurface);
                             }
                         }
                         if( nTempSurface!=NULL)
@@ -656,8 +664,8 @@ void particleResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         myEmitter->shapeW = shapeWField->get_held_number();
         myEmitter->shapeH = shapeHField->get_held_number();
 
-        myEmitter->xRandom = xRandomField->get_held_int();
-        myEmitter->yRandom = yRandomField->get_held_int();
+        myEmitter->xRandom = xRandomField->get_held_number();
+        myEmitter->yRandom = yRandomField->get_held_number();
 
         if(emitterBackupTextureMenu->just_activated() )
         {
@@ -665,11 +673,11 @@ void particleResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         }
         if( emissionRateField->is_inuse() == false )
         {
-            myEmitter->set_emission_rate( emissionRateField->get_held_int() );
+            myEmitter->set_emission_rate( emissionRateField->get_held_number() );
         }
         if( particleCountField->is_inuse() == false )
         {
-            myEmitter->set_max_particles( particleCountField->get_held_int(), true );
+            myEmitter->set_max_particles( particleCountField->get_held_number(), true );
         }
 
         if( input->check_keyboard_down( kb_space ) )
@@ -684,16 +692,16 @@ void particleResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
     }
 }
 
-void particleResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+void particleResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera( viewedSpace);
     cam = GPE_find_camera( cam );
     gcanvas->render_rectangle( 0,0,viewedSpace->w, viewedSpace->h, GPE_MAIN_THEME->Program_Color, false, 255 );
-    //if( forceRedraw && myEmitter!=NULL )
+    //if( myEmitter!=NULL )
     {
-        myEmitter->render_emitter( NULL );
+        myEmitter->render( );
     }
-    gfs->render_text( viewedSpace->w/2, viewedSpace->h-32, "C++ Feature. Currently not supported in HTML5 runtime",GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT, FA_CENTER, FA_BOTTOM, 255);
+    //gfs->render_text( viewedSpace->w/2, viewedSpace->h-32, "C++ Feature. Currently not supported in HTML5 runtime",GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT, FA_CENTER, FA_BOTTOM, 255);
 }
 
 void particleResource::revert_data_fields()
@@ -718,7 +726,7 @@ void particleResource::save_resource(std::string alternatePath, int backupId )
     }
     else
     {
-        soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/particles/";
+        soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/particles/";
         newFileOut = soughtDir + resourceName+".gpf";
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
@@ -748,7 +756,7 @@ void particleResource::save_resource(std::string alternatePath, int backupId )
 
             if( lifeMinField!=NULL )
             {
-                newSaveDataFile << "LifeMin=" + double_to_string( lifeMinField->get_held_number() )+"\n";
+                newSaveDataFile << "LifeMin=" + float_to_string( lifeMinField->get_held_number() )+"\n";
             }
             else
             {
@@ -757,7 +765,7 @@ void particleResource::save_resource(std::string alternatePath, int backupId )
 
             if( lifeMaxField!=NULL )
             {
-                newSaveDataFile << "LifeMax=" + double_to_string(lifeMaxField->get_held_number() )+"\n";
+                newSaveDataFile << "LifeMax=" + float_to_string(lifeMaxField->get_held_number() )+"\n";
             }
             else
             {
@@ -837,7 +845,7 @@ void particleResource::save_resource(std::string alternatePath, int backupId )
 
             if( directionMin!=NULL )
             {
-                newSaveDataFile << "DirectionMin=" + double_to_string(directionMin->get_held_number() )+"\n";
+                newSaveDataFile << "DirectionMin=" + float_to_string(directionMin->get_held_number() )+"\n";
             }
             else
             {
@@ -846,7 +854,7 @@ void particleResource::save_resource(std::string alternatePath, int backupId )
 
             if( directionMax!=NULL )
             {
-                newSaveDataFile << "DirectionMax=" + double_to_string(directionMax->get_held_number() )+"\n";
+                newSaveDataFile << "DirectionMax=" + float_to_string(directionMax->get_held_number() )+"\n";
             }
             else
             {
@@ -873,7 +881,7 @@ void particleResource::save_resource(std::string alternatePath, int backupId )
 
             if( gravityXValue!=NULL )
             {
-                newSaveDataFile << "GravityXValue=" + double_to_string(gravityXValue->get_held_number() )+"\n";
+                newSaveDataFile << "GravityXValue=" + float_to_string(gravityXValue->get_held_number() )+"\n";
             }
             else
             {
@@ -883,7 +891,7 @@ void particleResource::save_resource(std::string alternatePath, int backupId )
 
             if( gravityYValue!=NULL )
             {
-                newSaveDataFile << "GravityYValue=" + double_to_string(gravityYValue->get_held_number() )+"\n";
+                newSaveDataFile << "GravityYValue=" + float_to_string(gravityYValue->get_held_number() )+"\n";
             }
             else
             {

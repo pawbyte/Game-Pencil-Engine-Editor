@@ -3,10 +3,10 @@ game_scene_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -113,9 +113,13 @@ gameSceneResource::gameSceneResource(GPE_GeneralResourceContainer * pFolder )
     shortcutButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/mouse-pointer.png","Select-Mode(Q)", SCENE_MODE_SELECT,false);
     shortcutButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/pencil.png","Place-Mode(W)", SCENE_MODE_PLACE,false);
     shortcutButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/eraser.png","Erase-Mode(E)",SCENE_MODE_ERASE,false);
-    shortcutButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/rotate-left.png","Rotation-Mode(R)",SCENE_MODE_ROTATION,false);
+
+    //Temporarily disabbled until collision check system incorporates rotated rectangles
+    //shortcutButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/rotate-left.png","Rotation-Mode(R)",SCENE_MODE_ROTATION,false);
+
     shortcutButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/arrows.png","Movement-Mode(T)",SCENE_MODE_MOVE,false);
     shortcutButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/arrows-alt.png","Scale-Mode(Y)",SCENE_MODE_SCALE,false);
+    shortcutButtonBar->add_option(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/paperclip.png","Assign-Mode(U)",SCENE_MODE_ASSIGN,false);
 
     gridToggleButtton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/th-large.png","Toggle Grid(G)" );
     rotationButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/random.png","Flip/ Rotate(H)");
@@ -130,7 +134,7 @@ gameSceneResource::gameSceneResource(GPE_GeneralResourceContainer * pFolder )
     cancelResourceButton->set_name("Undo Changes  ");
     cancelResourceButton->descriptionText = "Revert Level Settings to previous save";
     //Start Variables used for the settings tab
-    renameBox->set_coords(GENERAL_GPE_PADDING,64);
+    renameBox->set_coords(GENERAL_GPE_GUI_PADDING,64);
     renameBox->set_label("Scene Title");
     renameBox->set_height(24);
     renameBox->disable_self();
@@ -204,23 +208,7 @@ gameSceneResource::gameSceneResource(GPE_GeneralResourceContainer * pFolder )
     if( projectParentFolder!=NULL)
     {
         addNewComponentDropDown = new GPE_DropDown_Menu( "Add Component",false);
-        addNewComponentDropDown->add_menu_option("Check-Box","checkbox",1,false);
-        addNewComponentDropDown->add_menu_option("Color-Picker","colorpicker",2,false);
-        addNewComponentDropDown->add_menu_option("Drop-Down","dropdown",3,false);
-        addNewComponentDropDown->add_menu_option("Input-Text","inputtext",4,false);
-        addNewComponentDropDown->add_menu_option("Input-Number","inputnumber",5,false);
-        addNewComponentDropDown->add_menu_option("Radio Button","radio",6,false);
-        addNewComponentDropDown->add_menu_option("Text Label","labeltext",7,false);
-        addNewComponentDropDown->add_menu_option("Text URL","texturl",8,false);
-        addNewComponentDropDown->add_menu_option("Texture","Textures-resourcedropdown",50,false);
-        addNewComponentDropDown->add_menu_option("Tilesheet","Tilesheets-resourcedropdown",51,false);
-        addNewComponentDropDown->add_menu_option("Animation","Animations-resourcedropdown",52,false);
-        addNewComponentDropDown->add_menu_option("Audio","Audio-resourcedropdown",53,false);
-        addNewComponentDropDown->add_menu_option("Video","Videos-resourcedropdown",54,false);
-        addNewComponentDropDown->add_menu_option("Function","Functions-resourcedropdown",55,false);
-        addNewComponentDropDown->add_menu_option("Object","Objects-resourcedropdown",56,false);
-        addNewComponentDropDown->add_menu_option("Scene","Scenes-resourcedropdown",57,false);
-        addNewComponentDropDown->add_menu_option("Font","Fonts-resourcedropdown",58,false);
+        setup_object_components( addNewComponentDropDown );
         addNewComponentDropDown->set_width(128);
         animationInEditor = new GPE_DropDown_Resouce_Menu( "Change  Animation",projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_ANIMATION]+"s"),-1,true);
         objectInEditor = new GPE_DropDown_Resouce_Menu( "New Branch",projectParentFolder,-1,true);
@@ -904,7 +892,7 @@ GPE_SceneBasicClass *  gameSceneResource::add_new_resource_from_menu()
 
                     case BRANCH_TYPE_OBJECT:
                     {
-                        GPE_SceneGameObject * newGameObject = new GPE_SceneGameObject(  );
+                        GPE_SceneGameObject * newGameObject = new GPE_SceneGameObject( spm->chosenName  );
                         newGameObject->set_name( spm->chosenName );
                         newGameObject->set_position( newBranchXPos, newBranchYPos );
                         selectedSceneBranch->add_scene_branch( newGameObject, true, true );
@@ -1002,9 +990,9 @@ void gameSceneResource::adjust_object_offsets( GPE_SpecialMenu_Branch *  basicOb
                 if( fObjType!=NULL && fObjType->get_held_resource()!=NULL )
                 {
                     currentTypeObj = (gameObjectResource *) fObjType->get_held_resource();
-                    if( currentTypeObj!=NULL && currentTypeObj->spriteIndex > 0  )
+                    if( currentTypeObj!=NULL && currentTypeObj->animationIndex > 0  )
                     {
-                        fAnimType = allAnimationsFolder->find_resource_from_id( currentTypeObj->spriteIndex );
+                        fAnimType = allAnimationsFolder->find_resource_from_id( currentTypeObj->animationIndex );
                         if( fAnimType!=NULL && fAnimType->get_held_resource()!=NULL )
                         {
                             currentTypeAnim = (animationResource * )fAnimType->get_held_resource();
@@ -1302,7 +1290,7 @@ void gameSceneResource::handle_scrolling()
             if( input->check_keyboard_down(kb_ctrl)  )
             {
                 //Zoom In
-                if( input->mouseScrollingDown > 0 )
+                if( input->mouseScrollingDown )
                 {
                     zoomValue -= 0.0625;
                 }
@@ -1484,7 +1472,7 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
 
         std::string otherColContainerName = "";
         std::string newScnFilename = "";
-        std::string soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/scenes/";
+        std::string soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/scenes/";
         if( file_exists(alternatePath) )
         {
             newScnFilename = alternatePath;
@@ -1497,15 +1485,15 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
         std::ifstream gameScnFileIn( newScnFilename.c_str() );
         //GPE_Report("Loading scene - "+newScnFilename);
         //If the level file could be loaded
-        double foundFileVersion = 0;
+        float foundFileVersion = 0;
 
         if( !gameScnFileIn.fail() )
         {
             //makes sure the file is open
             if (gameScnFileIn.is_open())
             {
-                double foundXPos = 0;
-                double foundYPos = 0;
+                float foundXPos = 0;
+                float foundYPos = 0;
                 int equalPos = 0;
                 int commaPos = 0;
                 int newSceneLayerWantedId = 0;
@@ -1583,8 +1571,8 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
                                     valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
                                     if( keyString=="Version")
                                     {
-                                        foundFileVersion = string_to_double(valString);
-                                        if( !compare_doubles(foundFileVersion, GPE_VERSION_DOUBLE_NUMBER) && foundFileVersion < GPE_VERSION_DOUBLE_NUMBER && !olderVersionImportBegan )
+                                        foundFileVersion = string_to_float(valString);
+                                        if( !gpemath::compare_floats(foundFileVersion, GPE_VERSION_FLOAT_NUMBER) && foundFileVersion < GPE_VERSION_FLOAT_NUMBER && !olderVersionImportBegan )
                                         {
                                             if( defaultBackgroundLayer == NULL)
                                             {
@@ -1697,7 +1685,7 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
                                         defaultTileWidth= foundNumberToRead;
                                         if(defaultTileWidth!=0)
                                         {
-                                            defaultTileAmountX = ceil( std::abs( (double)sceneRect.w/defaultTileWidth) );
+                                            defaultTileAmountX = ceil( std::abs( (float)sceneRect.w/defaultTileWidth) );
                                         }
                                     }
                                     else if( keyString=="TileHeight" || keyString=="DefaultTileHeight" )
@@ -1710,7 +1698,7 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
                                         defaultTileHeight = foundNumberToRead;
                                         if(defaultTileHeight!=0)
                                         {
-                                            defaultTileAmountY = ceil( std::abs( (double)sceneRect.h/defaultTileHeight) );
+                                            defaultTileAmountY = ceil( std::abs( (float)sceneRect.h/defaultTileHeight) );
                                         }
                                     }
                                     else if( keyString=="Preload" && preloadCheckBox!=NULL)
@@ -1909,7 +1897,7 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
                                         {
                                             //Version 1.22 and up object importing
                                             foundObjName = split_first_string(valString,',');
-                                            newGameObject = new GPE_SceneGameObject();
+                                            newGameObject = new GPE_SceneGameObject( "object");
                                             //newGameObject->localMenuBranch =
                                             if( allObjsFolder!=NULL)
                                             {
@@ -1969,7 +1957,7 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
                                         {
                                             //Version 1.21 and below object importing
                                             foundObjName = split_first_string(valString,',');
-                                            newGameObject = new GPE_SceneGameObject();
+                                            newGameObject = new GPE_SceneGameObject("object");
                                             //newGameObject->localMenuBranch =
                                             if( allObjsFolder!=NULL)
                                             {
@@ -1998,9 +1986,9 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
                                             newGameObject->set_angle( split_first_int(valString,',') );
                                             newGameObject->xScale = split_first_int(valString,',');
                                             newGameObject->yScale = split_first_int(valString,',');
-                                            foundR = bound_number( split_first_int(valString,','), 0,255);
-                                            foundG = bound_number( split_first_int(valString,','), 0,255);
-                                            foundB = bound_number( split_first_int(valString,','), 0,255);
+                                            foundR = gpemath::bound_number( split_first_int(valString,','), 0,255);
+                                            foundG = gpemath::bound_number( split_first_int(valString,','), 0,255);
+                                            foundB = gpemath::bound_number( split_first_int(valString,','), 0,255);
                                             newGameObject->branchColor->set_rgb(foundR,foundG,foundB);
                                             foundNickname = split_first_string(valString,",,,");
                                             newGameObject->branchNameField->set_string( foundNickname );
@@ -2080,7 +2068,7 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
                                                 foundNumberToRead = split_first_int(valString,',');
                                                 if( foundNumberToRead > 0)
                                                 {
-                                                    newGameObject = new GPE_SceneGameObject();
+                                                    newGameObject = new GPE_SceneGameObject("object");
                                                     newGameObject->objTypeId = foundNumberToRead;
                                                     if( allObjsFolder!=NULL)
                                                     {
@@ -2096,9 +2084,9 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
                                                     newGameObject->set_angle( split_first_int(valString,',') );
                                                     newGameObject->xScale = split_first_int(valString,',');
                                                     newGameObject->yScale = split_first_int(valString,',');
-                                                    foundR = bound_number( split_first_int(valString,','), 0,255);
-                                                    foundG = bound_number( split_first_int(valString,','), 0,255);
-                                                    foundB = bound_number( split_first_int(valString,','), 0,255);
+                                                    foundR = gpemath::bound_number( split_first_int(valString,','), 0,255);
+                                                    foundG = gpemath::bound_number( split_first_int(valString,','), 0,255);
+                                                    foundB = gpemath::bound_number( split_first_int(valString,','), 0,255);
                                                     newGameObject->branchColor->set_rgb(foundR,foundG,foundB);
                                                     newGameObject->branchNameField->set_string( split_first_string(valString,",,,") );
                                                     customObjAllFieldData = split_first_string(valString,"[/GPECustomFields]");
@@ -2345,7 +2333,7 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
                     }
                     else
                     {
-                        GPE_Report("Invalid FoundFileVersion ="+double_to_string(foundFileVersion)+".");
+                        GPE_Report("Invalid FoundFileVersion ="+float_to_string(foundFileVersion)+".");
                     }
                 }
 
@@ -2362,6 +2350,10 @@ void gameSceneResource::preprocess_self(std::string alternatePath)
     }
 }
 
+bool gameSceneResource::include_local_files( std::string pBuildDir , int buildType )
+{
+    return true;
+}
 
 void gameSceneResource::inherit_components( GPE_SceneBasicClass * objectToInherit, standardEditableGameResource * objParent)
 {
@@ -2486,6 +2478,8 @@ void gameSceneResource::process_components()
                                 }
                             }
                         }
+
+                        //Checks if the compoent name is not in use already...
                         if( !componentNameInUseAlready)
                         {
                             std::string newComponentData = newComponentType+":"+newComponentName+"==|||==";
@@ -2518,16 +2512,17 @@ void gameSceneResource::process_components()
                                 }
                                 extraDataString+="[/menu]0,0";
                             }
-                            else
+                            else if( newComponentType=="resourcedropdown")
                             {
                                 int dropdownResPos = newComponentType.find("-resourcedropdown");
-                                if( dropdownResPos!=(int)std::string::npos)
+                                if( dropdownResPos!=(int)std::string::npos )
                                 {
                                     std::string newDropDownType = get_substring(newComponentType,0,dropdownResPos);
                                     newComponentData = "resourcedropdown:"+newComponentName+"==|||==";
                                     extraDataString = newDropDownType+",,,-1,";
                                 }
                             }
+
                             newComponentData = newComponentData+extraDataString;
                             GPE_GeneralGuiElement * newComponentField = add_gui_component(newComponentData);
 
@@ -2551,7 +2546,7 @@ void gameSceneResource::process_components()
                         display_user_alert("Invalid Component Name Entered","Please enter a unique component name with alpha-numeric values and no spaces!");
                     }
                 }
-                addNewComponentDropDown->set_selection(-1,false);
+                addNewComponentDropDown->set_option_value(-1);
                 input->reset_all_input();
             }
         }
@@ -2658,7 +2653,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     preprocess_self();
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( cam==NULL || viewedSpace==NULL || sceneXScroll==NULL && sceneYScroll==NULL )
+    if( cam==NULL || viewedSpace==NULL || sceneXScroll==NULL || sceneYScroll==NULL || spm == NULL )
     {
         return;
     }
@@ -2749,12 +2744,13 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                     else if( RESOURCE_TO_DRAG->get_resource_type()==RESOURCE_TYPE_OBJECT )
                     {
                         MAIN_OVERLAY->update_tooltip("Placing Object");
-                        GPE_SceneGameObject * newPlacedObject = new GPE_SceneGameObject();
+                        GPE_SceneGameObject * newPlacedObject = new GPE_SceneGameObject( RESOURCE_TO_DRAG->get_name() );
                         lastCreatedObjXPos = sceneObjMouseX;
                         lastCreatedObjYPos = sceneObjMouseY;
                         newPlacedObject->set_position( sceneObjMouseX, sceneObjMouseY );
                         newPlacedObject->objTypeId = RESOURCE_TO_DRAG->get_global_id();
                         newPlacedObject->objTypeName = RESOURCE_TO_DRAG->get_name();
+                        newPlacedObject->set_name(  RESOURCE_TO_DRAG->get_name() );
 
                         selectedSceneBranch->add_scene_branch( newPlacedObject );
                         lastCreatedObjTypeId=RESOURCE_TO_DRAG->get_global_id();
@@ -2819,9 +2815,11 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                     GPE_Report("Unable to place dragged resource ["+RESOURCE_TO_DRAG->projectParentFileName+"] with ["+CURRENT_PROJECT_NAME+"]...");
                 }
                 RESOURCE_TO_DRAG = NULL;
+                return;
             }
         }
     }
+
     if( input->check_mouse_released( mb_anybutton)  )
     {
         sceneInFocus = mouseIsInScene;
@@ -2835,7 +2833,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     sceneTopBarList->set_coords(0, 0 );
     sceneTopBarList->set_width( viewedSpace->w );
     sceneTopBarList->set_height( 32 );
-    sceneTopBarList->barXPadding = GENERAL_GPE_PADDING*2;
+    sceneTopBarList->barXPadding = GENERAL_GPE_GUI_PADDING;
     sceneTopBarList->barYPadding = 0;
     sceneTopBarList->barXMargin = 0;
     sceneTopBarList->barYMargin = 0;
@@ -2845,19 +2843,13 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     int prevEditorMode = editorMode;
     sceneTopBarList->add_gui_element(editorButtonBar, false );
 
-    if( editorMode == LEDITOR_MODE_LAYERS )
-    {
-        sceneTopBarList->add_gui_element(shortcutButtonBar, false );
-        //Arranged alphabetically by type
-        sceneTopBarList->add_gui_element( gridToggleButtton, false );
-        sceneTopBarList->add_gui_element( rotationButton, false );
 
-        sceneTopBarList->add_gui_element( objectLockStateButton, false );
-    }
-    else
-    {
-        sceneTopBarList->add_gui_element( gridToggleButtton, false );
-    }
+    sceneTopBarList->add_gui_element(shortcutButtonBar, false );
+    //Arranged alphabetically by type
+    sceneTopBarList->add_gui_element( gridToggleButtton, false );
+    sceneTopBarList->add_gui_element( rotationButton, false );
+
+    sceneTopBarList->add_gui_element( objectLockStateButton, false );
     sceneTopBarList->add_gui_element( lightingStateButton, false );
 
     objectLockStateButton->set_clicked( false );
@@ -2903,7 +2895,8 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
         }
         else if( input->check_keyboard_released(kb_r) )
         {
-            shortcutButtonBar->set_selection( SCENE_MODE_ROTATION);
+            //temporarily disabled until update to add rotated collisions
+            //shortcutButtonBar->set_selection( SCENE_MODE_ROTATION);
         }
         else if( input->check_keyboard_released(kb_t) )
         {
@@ -2914,15 +2907,18 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
             shortcutButtonBar->set_selection( SCENE_MODE_SCALE );
         }
     }
+
     if( spm!=NULL )
     {
         spm->editMode = shortcutButtonBar->get_tab_id();
     }
+
     gpeEditorDockPanel * gridSettingsPanel = NULL;
     if( GPE_DOCK!=NULL)
     {
         gridSettingsPanel = GPE_DOCK->find_panel("Grid Settings");
     }
+
     if( gridSettingsPanel!=NULL )
     {
         gridSettingsPanel->add_gui_element(useObjGridCheckBox, true);
@@ -2966,21 +2962,22 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
         }
         else if( rotationOption == 5 )
         {
-            selectedSceneBranch->xScale*=-1.d;
+            selectedSceneBranch->xScale*=-1.f;
         }
         else if( rotationOption==6 )
         {
-            selectedSceneBranch->yScale*=-1.d;
+            selectedSceneBranch->yScale*=-1.f;
         }
         GPE_close_context_menu();
     }
+
     scenePane.x = 0;
     scenePane.y = sceneTopBarList->get_height();
 
     editorView.x = viewedSpace->x+scenePane.x;
     editorView.y = viewedSpace->y+sceneTopBarList->get_height();
 
-    editorCameraRect.w = scenePane.w = (int)(viewedSpace->w -sceneYScroll->get_box_width() );
+    editorCameraRect.w = scenePane.w = (int)(viewedSpace->w -sceneYScroll->get_width() );
     editorView.w = scenePane.w;
 
     scenePane.h = viewedSpace->h;
@@ -3015,7 +3012,6 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
 
 
     editorCameraRect.h = editorView.h = viewedSpace->h-shortcutButtonBar->get_height() - sceneXScroll->get_height();
-
 
     //Checks if the mouse is in the scene for all editor related tasks below
     mouseIsInScene = get_mouse_coords();
@@ -3145,6 +3141,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
         else
         {
             selectedSceneBranch = NULL;
+            unselect_object( false );
         }
 
         if( selectedSceneBranch!=NULL )
@@ -3208,8 +3205,9 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
             {
                 selectedSceneBranch->process_elements();
             }
+
             //Now lets play around in the scene some
-            if( mouseIsInScene && RESOURCE_TO_DRAG!=NULL )
+            if( mouseIsInScene && RESOURCE_TO_DRAG == NULL )
             {
                 if( shortcutButtonBar->get_tab_id()== SCENE_MODE_SELECT && isLayerOrGroup  )
                 {
@@ -3227,7 +3225,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                             if( ( lastCreatedObjXPos < 0 || lastCreatedObjYPos < 0 || lastCreatedObjTypeId < 0) || sceneObjMouseX!=lastCreatedObjXPos && lastCreatedObjXPos|| sceneObjMouseY!=lastCreatedObjYPos || lastCreatedObjTypeId!=objTypeBeingPlaced )
                             {
                                 MAIN_OVERLAY->update_tooltip("Placing Object");
-                                GPE_SceneGameObject * newPlacedObject = new GPE_SceneGameObject();
+                                GPE_SceneGameObject * newPlacedObject = new GPE_SceneGameObject("object");
                                 newPlacedObject->set_position( sceneObjMouseX, sceneObjMouseY);
                                 lastCreatedObjXPos = sceneObjMouseX;
                                 lastCreatedObjYPos = sceneObjMouseY;
@@ -3263,7 +3261,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                     //Temporarily disabled until I fix this calculation
                     if( input->check_mouse_down( mb_left ) )
                     {
-                        selectedSceneBranch->set_angle( round( gpe->get_direction( selectedSceneBranch->xPos,selectedSceneBranch->yPos,sceneMouseXPos,sceneMouseYPos ) ) );
+                        selectedSceneBranch->set_angle( round( gpemath::get_direction( selectedSceneBranch->xPos,selectedSceneBranch->yPos,sceneMouseXPos,sceneMouseYPos ) ) );
                     }
                     else
                     {
@@ -3294,22 +3292,22 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                     }
                     if( scaleChanged )
                     {
-                        if( selectedSceneBranch->xScale > 16.d )
+                        if( selectedSceneBranch->xScale > 16.f )
                         {
-                            selectedSceneBranch->xScale = 16.d;
+                            selectedSceneBranch->xScale = 16.f;
                         }
-                        if( selectedSceneBranch->xScale < -16.d )
+                        if( selectedSceneBranch->xScale < -16.f )
                         {
-                            selectedSceneBranch->xScale = -16.d;
+                            selectedSceneBranch->xScale = -16.f;
                         }
 
-                        if( selectedSceneBranch->yScale > 16.d )
+                        if( selectedSceneBranch->yScale > 16.f )
                         {
-                            selectedSceneBranch->yScale = 16.d;
+                            selectedSceneBranch->yScale = 16.f;
                         }
-                        if( selectedSceneBranch->yScale < -16.d)
+                        if( selectedSceneBranch->yScale < -16.f)
                         {
-                            selectedSceneBranch->yScale = -16.d;
+                            selectedSceneBranch->yScale = -16.f;
                         }
                         selectedSceneBranch->xScaleField->set_number( selectedSceneBranch->xScale );
                         selectedSceneBranch->yScaleField->set_number( selectedSceneBranch->yScale );
@@ -3358,7 +3356,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
                 }
                 else if( shortcutButtonBar->get_tab_id()== SCENE_MODE_ERASE  )
                 {
-                    //delete objscts
+                    //delete objects
                     if( input->check_mouse_down( mb_right ) && sceneXScroll->is_scrolling()==false && sceneYScroll->is_scrolling()==false )
                     {
                         //reset_placement_info();
@@ -3417,7 +3415,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     {
         if( mouseIsInScene )
         {
-            GPE_change_cursor(SDL_SYSTEM_CURSOR_NO );
+            gpe->cursor_change("no" );
             MAIN_OVERLAY->update_tooltip("Select Layer-Mode to edit layer");
         }
         //Edits the settings of the scene
@@ -3478,24 +3476,24 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
         //Horizontal scrolling
         sceneXScroll->set_coords( scenePane.x,scenePane.h - sceneXScroll->get_height() );
         sceneXScroll->set_width( editorView.w );
-        update_rectangle(&sceneXScroll->fullRect,0,0,(double)sceneRect.w, (double)sceneRect.h );
-        update_rectangle(&sceneXScroll->contextRect,(double)editorCameraRect.x,(double)editorCameraRect.y, (double)editorCameraRect.w/zoomValue, (double)editorCameraRect.h/zoomValue );
+        update_rectangle(&sceneXScroll->fullRect,0,0,(float)sceneRect.w, (float)sceneRect.h );
+        update_rectangle(&sceneXScroll->contextRect,(float)editorCameraRect.x,(float)editorCameraRect.y, (float)editorCameraRect.w/zoomValue, (float)editorCameraRect.h/zoomValue );
         sceneXScroll->process_self(viewedSpace,cam );
         //if( sceneXScroll->has_moved() )
         {
-            editorCameraRect.x = (double)(sceneXScroll->contextRect.x);
+            editorCameraRect.x = (float)(sceneXScroll->contextRect.x);
         }
 
         //Vertical Scrolling
         sceneYScroll->set_coords( scenePane.x+scenePane.w, scenePane.y );
         sceneYScroll->set_height( scenePane.h);
-        update_rectangle(&sceneYScroll->fullRect,0,0,(double)sceneRect.w, (double)sceneRect.h );
-        update_rectangle(&sceneYScroll->contextRect,(double)editorCameraRect.x,(double)editorCameraRect.y, (double)editorCameraRect.w/zoomValue, (double)editorCameraRect.h/zoomValue );
+        update_rectangle(&sceneYScroll->fullRect,0,0,(float)sceneRect.w, (float)sceneRect.h );
+        update_rectangle(&sceneYScroll->contextRect,(float)editorCameraRect.x,(float)editorCameraRect.y, (float)editorCameraRect.w/zoomValue, (float)editorCameraRect.h/zoomValue );
         //sceneYScroll->contextRect.h = scenePane.h;
         sceneYScroll->process_self(viewedSpace,cam );
         //if( sceneYScroll->has_moved() )
         {
-            editorCameraRect.y = double(sceneYScroll->contextRect.y);
+            editorCameraRect.y = float(sceneYScroll->contextRect.y);
         }
     }
 
@@ -3536,7 +3534,7 @@ void gameSceneResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     if( GPE_Main_Statusbar!=NULL)
     {
         GPE_Main_Statusbar->set_codestring( "Mouse( "+int_to_string(sceneMouseXPos )+" , "+int_to_string(sceneMouseYPos)+")"+
-                                            "Camera( "+double_to_string(editorCameraRect.x )+" , "+double_to_string(editorCameraRect.y)+") Zoom:"+double_to_string(zoomValue) );
+                                            "Camera( "+float_to_string(editorCameraRect.x )+" , "+float_to_string(editorCameraRect.y)+") Zoom:"+float_to_string(zoomValue) );
     }
     clickedSceneBranch = NULL;
 }
@@ -3564,7 +3562,7 @@ void gameSceneResource::render_grid( int xStart, int yStart, int cellW, int cell
     gridRenderRect->y -= editorCameraRect.y* zoomValue;
     j = gridRenderRect->y;
 
-    double jStart = j;
+    float jStart = j;
     gridRenderRect->w = cellW * zoomValue;
     gridRenderRect->h = cellH * zoomValue;
 
@@ -3592,75 +3590,72 @@ void gameSceneResource::render_grid( int xStart, int yStart, int cellW, int cell
     }
 }
 
-void gameSceneResource::render_scene_layers(GPE_Rect * viewedSpace, GPE_Rect * cam, GPE_Rect * sceneCamera,double renderScale, bool showEditorPreviews,  bool checkListDependent, bool forceRedraw )
+void gameSceneResource::render_scene_layers(GPE_Rect * viewedSpace, GPE_Rect * cam, GPE_Rect * sceneCamera,float renderScale, bool showEditorPreviews,  bool checkListDependent )
 {
-    if( forceRedraw)
+    viewedSpace = GPE_find_camera( viewedSpace );
+    cam = GPE_find_camera( cam );
+    if( renderScale <=0 )
     {
-        viewedSpace = GPE_find_camera( viewedSpace );
-        cam = GPE_find_camera( cam );
-        if( renderScale <=0 )
-        {
-            renderScale = zoomValue;
-        }
-        else
-        {
-            zoomValue = renderScale;
-        }
-        currentSceneToRender = this;
-        /*
-        renderZone = GPE_find_camera( renderZone );
-        if( renderZone==NULL)
-        {
-            renderZone = &editorView;
-        }
+        renderScale = zoomValue;
+    }
+    else
+    {
+        zoomValue = renderScale;
+    }
+    currentSceneToRender = this;
+    /*
+    renderZone = GPE_find_camera( renderZone );
+    if( renderZone==NULL)
+    {
+        renderZone = &editorView;
+    }
 
-        MAIN_RENDERER->reset_viewpoint();
-        MAIN_RENDERER->set_viewpoint( viewedSpace );
-        */
+    GPE_MAIN_RENDERER->reset_viewpoint();
+    GPE_MAIN_RENDERER->set_viewpoint( viewedSpace );
+    */
 
-        if( sceneCamera==NULL)
+    if( sceneCamera==NULL)
+    {
+        sceneCamera = &editorCameraRect;
+    }
+    spm->currentCamera->update_box( sceneCamera->x, sceneCamera->y, sceneCamera->w, sceneCamera->h );
+    spm->cSceneAnimtList = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_ANIMATION]+"s", false );
+    spm->cSceneObjList = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_OBJECT]+"s", false );
+    spm->cSceneTexList = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_TEXTURE]+"s", false );
+    spm->cSceneTstList = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_TILESHEET]+"s", false );
+
+    /*if( input->check_keyboard_down(kb_ctrl) )
+    {
+        if( input->check_keyboard_released(kb_r) )
         {
-            sceneCamera = &editorCameraRect;
+            GPE_Report("Editor View:("+int_to_string(sceneCamera->x)+","+int_to_string(sceneCamera->y)+","+int_to_string(sceneCamera->x+sceneCamera.w)+","+int_to_string(sceneCamera->y+sceneCamera.h)+")");
+            GPE_Report("Tiles View:("+int_to_string(tileXStartPos)+","+int_to_string(tileYStartPos)+","+int_to_string(tileXEndPos)+","+int_to_string(tileYEndPos)+")");
         }
-        spm->currentCamera->update_box( sceneCamera->x, sceneCamera->y, sceneCamera->w, sceneCamera->h );
-        spm->cSceneAnimtList = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_ANIMATION]+"s", false );
-        spm->cSceneObjList = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_OBJECT]+"s", false );
-        spm->cSceneTexList = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_TEXTURE]+"s", false );
-        spm->cSceneTstList = projectParentFolder->find_resource_from_name(RESOURCE_TYPE_NAMES[RESOURCE_TYPE_TILESHEET]+"s", false );
+    }
+    */
 
-        /*if( input->check_keyboard_down(kb_ctrl) )
+    int tempMax = 0;
+    spm->zoomValue = zoomValue;
+    //GPE_Report("Attempting to render scene...");
+    spm->cameraFloorXPos = floor( sceneCamera->x );
+    spm->cameraFloorYPos = floor( sceneCamera->y );
+    int layerCount = (int)sceneResourceTree->subElements.size();
+    GPE_SpecialMenu_Branch * cBranch = NULL;
+    for(  int layerItr = 0; layerItr < layerCount; layerItr++ )
+    {
+        cBranch = sceneResourceTree->subElements[layerItr];
+        if( cBranch!=NULL)
         {
-            if( input->check_keyboard_released(kb_r) )
-            {
-                GPE_Report("Editor View:("+int_to_string(sceneCamera->x)+","+int_to_string(sceneCamera->y)+","+int_to_string(sceneCamera->x+sceneCamera.w)+","+int_to_string(sceneCamera->y+sceneCamera.h)+")");
-                GPE_Report("Tiles View:("+int_to_string(tileXStartPos)+","+int_to_string(tileYStartPos)+","+int_to_string(tileXEndPos)+","+int_to_string(tileYEndPos)+")");
-            }
-        }
-        */
-
-        int tempMax = 0;
-        spm->zoomValue = zoomValue;
-        //GPE_Report("Attempting to render scene...");
-        spm->cameraFloorXPos = floor( sceneCamera->x );
-        spm->cameraFloorYPos = floor( sceneCamera->y );
-        int layerCount = (int)sceneResourceTree->subElements.size();
-        GPE_SpecialMenu_Branch * cBranch = NULL;
-        for(  int layerItr = 0; layerItr < layerCount; layerItr++ )
-        {
-            cBranch = sceneResourceTree->subElements[layerItr];
-            if( cBranch!=NULL)
-            {
-                cBranch->render_branch();
-            }
+            cBranch->render_branch();
         }
     }
 }
 
-void gameSceneResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+void gameSceneResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    double i = 0, j = 0, k = 0;
+    float i = 0, j = 0, k = 0;
     int gridX1 = 0;
     int gridX2 = 0;
     int gridY1 = 0;
@@ -3675,10 +3670,10 @@ void gameSceneResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool
     //renders the background
 
     int bgI = 0;
-    if( forceRedraw && allTexturesFolder!=NULL)
+    if( allTexturesFolder!=NULL)
     {
-        CURRENT_RENDERER->reset_viewpoint(  );
-        CURRENT_RENDERER->set_viewpoint( &editorView );
+        GPE_MAIN_RENDERER->reset_viewpoint(  );
+        GPE_MAIN_RENDERER->set_viewpoint( &editorView );
 
         if( sceneBackgroundColor!=NULL)
         {
@@ -3705,29 +3700,29 @@ void gameSceneResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool
         }
 
         //Renders the scene layers( tiles, backgrounds, objects, etc)
-        render_scene_layers( viewedSpace, cam, &editorCameraRect,zoomValue,true, true, forceRedraw );
+        render_scene_layers( viewedSpace, cam, &editorCameraRect,zoomValue,true, true );
 
         int mousePreviewXPos = floor( (sceneMouseXPos*zoomValue-editorCameraRect.x*zoomValue) );
         int mousePreviewYPos = floor( (sceneMouseYPos*zoomValue-editorCameraRect.y*zoomValue) );
 
-        if( useLighting && forceRedraw )
+        if( useLighting)
         {
             gcanvas->resize_ligting_overlay( editorView.w, editorView.h );
             gcanvas->switch_ligting_overlay( true );
-            CURRENT_RENDERER->reset_viewpoint( );
+            GPE_MAIN_RENDERER->reset_viewpoint( );
             gcanvas->render_rectangle(0,0,editorView.w, editorView.h, c_black, false, 255 );
             spm->lightCircleTexture->render_tex_resized( editorView.w/2-128, editorView.h/2-128, 256,256, NULL, c_white, 128 );
 
             gcanvas->render_rectangle(mousePreviewXPos-64,mousePreviewYPos-64,mousePreviewXPos+64,mousePreviewYPos+64, c_orangered, false, 192 );
             //gcanvas->render_circle_color( editorView.w/2, editorView.h/2, 256, 128, 128, 255, 255 );
             gcanvas->switch_ligting_overlay( false );
-            CURRENT_RENDERER->reset_viewpoint( );
-            CURRENT_RENDERER->set_viewpoint( &editorView );
+            GPE_MAIN_RENDERER->reset_viewpoint( );
+            GPE_MAIN_RENDERER->set_viewpoint( &editorView );
 
             gcanvas->render_ligting_overlay( 0,0 );
         }
-        //MAIN_RENDERER->reset_viewpoint();
-        //MAIN_RENDERER->set_viewpoint( &editorView );
+        //GPE_MAIN_RENDERER->reset_viewpoint();
+        //GPE_MAIN_RENDERER->set_viewpoint( &editorView );
 
         //Renders the selected scene object above the scene at mouse coordinates
         //###SELECTED_SCENE_RENDER ###
@@ -3770,42 +3765,17 @@ void gameSceneResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool
                         GPE_GeneralResourceContainer * hObj = objectInEditor->get_selected_container();
                         if( hObj!=NULL && hObj->get_held_resource() )
                         {
-                            generalGameResource * actualHGameObject= (gameObjectResource*) hObj->get_held_resource();
-
-                            if( actualHGameObject!=NULL)
+                            if( hObj->get_resource_type() == RESOURCE_TYPE_OBJECT || hObj->get_resource_type() == RESOURCE_TYPE_ANIMATION )
                             {
-                                /*
-                                double renderWSize = 32*zoomValue;
-                                double renderHSize = 32*zoomValue;
-                                if( actualHGameObject->spriteField!=NULL && actualHGameObject->spriteField->get_selected_container()!=NULL )
-                                {
-                                    GPE_GeneralResourceContainer * tempSpriteContainer = actualHGameObject->spriteField->get_selected_container();
-                                    if( tempSpriteContainer!=NULL && tempSpriteContainer->get_held_resource() )
-                                    {
-                                        animationResource * tempSpriteObj = (animationResource * )tempSpriteContainer->get_held_resource();
-                                        if( tempSpriteObj!=NULL )
-                                        {
-                                            if( tempSpriteObj->animInEditor!=NULL )
-                                            {
-                                                renderWSize = ceil(tempSpriteObj->animInEditor->get_width()*zoomValue);
-                                                renderHSize = ceil(tempSpriteObj->animInEditor->get_height()*zoomValue);
-                                            }
-                                        }
-                                    }
-                                }
-                                */
-                                if( hObj->get_resource_type() == RESOURCE_TYPE_OBJECT || hObj->get_resource_type() == RESOURCE_TYPE_ANIMATION )
-                                {
-                                    hObj->render_image_scaled( objRenderXPos, objRenderYPos, zoomValue, zoomValue, NULL, NULL, c_gray );
-                                }
-                                else if( sceneGridX>=32 && sceneGridY>=32  )
-                                {
-                                    hObj->render_image( objRenderXPos, objRenderYPos, sceneGridX*zoomValue, sceneGridY*zoomValue, NULL, NULL, c_gray );
-                                }
-                                else
-                                {
-                                    hObj->render_image( objRenderXPos, objRenderYPos,32*zoomValue, 32*zoomValue, NULL, NULL, c_gray );
-                                }
+                                hObj->render_image_scaled( objRenderXPos, objRenderYPos, zoomValue, zoomValue, NULL, NULL, c_gray );
+                            }
+                            else if( sceneGridX>=32 && sceneGridY>=32  )
+                            {
+                                hObj->render_image( objRenderXPos, objRenderYPos, sceneGridX*zoomValue, sceneGridY*zoomValue, NULL, NULL, c_gray );
+                            }
+                            else
+                            {
+                                hObj->render_image( objRenderXPos, objRenderYPos,32*zoomValue, 32*zoomValue, NULL, NULL, c_gray );
                             }
                         }
                     }
@@ -3819,16 +3789,16 @@ void gameSceneResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool
                 }
             }
 
-            //Temporarily disabled until I fix this calculation
+            int objPivotX = floor( selectedSceneBranch->xPivot*zoomValue );
+            int objPivotY = floor( selectedSceneBranch->yPivot*zoomValue );
             if( shortcutButtonBar->get_tab_id()== SCENE_MODE_ROTATION && !isLayerOrGroup  )
             {
                 if( input->check_mouse_down( mb_left ) && mouseIsInScene )
                 {
-                    int objPivotX = floor( (selectedSceneBranch->xPos*zoomValue-editorCameraRect.x*zoomValue) );
-                    int objPivotY = floor( (selectedSceneBranch->yPos*zoomValue-editorCameraRect.y*zoomValue) );
-                    gcanvas->render_line_color( objPivotX, objPivotY,draggedResourceX,draggedResourceY, c_red  );
+
+                    gcanvas->render_line_color( branchTempRect->x, branchTempRect->y, draggedResourceX,draggedResourceY, c_red  );
                     gcanvas->render_circle_color( draggedResourceX, draggedResourceY,4, c_red,255 );
-                    gcanvas->render_circle_color( objPivotX, objPivotY,4, c_red,255 );
+                    gcanvas->render_circle_color( branchTempRect->x , branchTempRect->y,4, c_red,255 );
                 }
             }
 
@@ -3836,8 +3806,8 @@ void gameSceneResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool
             {
                 if( spm->highlightRect!=NULL )
                 {
-                    spm->highlightRect->render_tex_special(branchTempRect->x-2,branchTempRect->y-2,selectedSceneBranch->angle,branchTempRect->w+2,branchTempRect->h+2, c_white, NULL,192 );
-                    spm->highlightRect->render_tex_special(branchTempRect->x,branchTempRect->y,selectedSceneBranch->angle,branchTempRect->w,branchTempRect->h, c_blue, NULL, 192 );
+                    //spm->highlightRect->render_tex_special( branchTempRect->x + objPivotX/2, branchTempRect->y + objPivotY/2, selectedSceneBranch->angle, branchTempRect->w,branchTempRect->h, c_blue, NULL, 192 );
+                    spm->highlightRect->render_tex_special( branchTempRect->x , branchTempRect->y , selectedSceneBranch->angle, branchTempRect->w,branchTempRect->h, c_maroon, NULL, 192 );
                 }
                 gfs->render_text_boxed(branchTempRect->x, branchTempRect->y,selectedSceneBranch->get_name(), c_white, c_black, FONT_LABEL, FA_LEFT, FA_BOTTOM );
             }
@@ -3871,11 +3841,11 @@ void gameSceneResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool
         //"Editor View:("+int_to_string(editorCameraRect.x)+","+int_to_string(editorCameraRect.y)+","+int_to_string(editorCameraRect.w)+","+int_to_string(editorCameraRect.h)+")",
         //gcanvas->render_rectangle( sceneYScroll->elementBox.x+sceneYScroll->elementBox.w,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_THEME->Program_Color,false);
         //gcanvas->render_rectangle( sceneXScroll->elementBox.x,sceneXScroll->elementBox.y,viewedSpace->w,viewedSpace->h,GPE_MAIN_THEME->Program_Color,false);
-        CURRENT_RENDERER->reset_viewpoint(  );
-        CURRENT_RENDERER->set_viewpoint( viewedSpace );
+        GPE_MAIN_RENDERER->reset_viewpoint(  );
+        GPE_MAIN_RENDERER->set_viewpoint( viewedSpace );
     }
 
-    if( forceRedraw )
+    //if( forceRedraw )
     {
         if( sceneXScroll!=NULL)
         {
@@ -3919,7 +3889,7 @@ void gameSceneResource::save_resource(std::string alternatePath, int backupId)
     }
     else
     {
-        soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/scenes/";
+        soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/scenes/";
         newFileOut = soughtDir + resourceName+".gpf";
     }
     std::ofstream newSceneFile( newFileOut.c_str() );
@@ -4094,6 +4064,7 @@ bool gameSceneResource::seek_placeable_branch()
     }
     return false;
 }
+
 void gameSceneResource::select_object( GPE_SceneGameObject * objToSelect )
 {
     unselect_object();

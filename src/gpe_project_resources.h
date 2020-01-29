@@ -3,10 +3,10 @@ gpe_project_resources.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -51,31 +51,7 @@ SOFTWARE.
 #include "gpe_extra_tools.h"
 #include "game_object_resource.h"
 #include "game_scene_resource.h"
+#include "gpe_gamecontroller_tester.h"
 
-class GPE_Editor_State : public GPE_ProgramState
-{
-private:
-    //Intro message
-    GPE_Texture * message;
-    GPE_Toolbar * mainToolBar;
-    GPE_ToolIconButtonBar * mainButtonBar;
-protected:
-    //Intro background
-    GPE_Texture *background;
-public:
-    GPE_Texture * country_language_image;
-    SDL_version SDL_compiled_version;
-    std::string SDL_VersionText;
-    //Loads intro resources
-    GPE_Editor_State();
-    //Frees intro resources
-    ~GPE_Editor_State();
-
-    //Main loop functions
-    void process_input();
-    void apply_logic();
-    void clean_up();
-    void render();
-};
 
 #endif

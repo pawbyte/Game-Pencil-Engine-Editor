@@ -3,10 +3,10 @@ gpe_basic_resource_page.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,7 +37,7 @@ SOFTWARE.
 GPE_ObjectComponent::GPE_ObjectComponent()
 {
     component = NULL;
-    settingsGear = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/cogs.png","settings" );
+    settingsGear = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/cogs.png","settings",-1,16 );
 }
 
 GPE_ObjectComponent::~GPE_ObjectComponent()
@@ -159,6 +159,7 @@ standardEditableGameResource::standardEditableGameResource(GPE_GeneralResourceCo
     resourceName = "";
     globalResouceIdNumber = -1;
     commonButtonAlignment = 0;
+    resourcePostProcessed = false;
     justOpenedThisFrame = false;
     parentProjectName = "";
     projectParentFolder = ppFolder;
@@ -256,6 +257,30 @@ GPE_GeneralGuiElement * standardEditableGameResource::add_gui_component(std::str
                 newColorField->set_label(newComponentName);
                 newComponentField = newColorField;
             }
+            else if( newComponentType == "contentselector-int")
+            {
+                GPE_Content_Selector * newContentSelector = new GPE_Content_Selector( newComponentName, "");
+                newContentSelector->selectorType = GPE_CS_TYPE_INT;
+                newComponentField = newContentSelector;
+            }
+            else if( newComponentType == "contentselector-float")
+            {
+                GPE_Content_Selector * newContentSelector = new GPE_Content_Selector( newComponentName, "");
+                newContentSelector->selectorType = GPE_CS_TYPE_float;
+                newComponentField = newContentSelector;
+            }
+            else if( newComponentType == "contentselector-string")
+            {
+                GPE_Content_Selector * newContentSelector = new GPE_Content_Selector( newComponentName, "");
+                newContentSelector->selectorType = GPE_CS_TYPE_STRING;
+                newComponentField = newContentSelector;
+            }
+            else if( newComponentType == "contentselector-color")
+            {
+                GPE_Content_Selector * newContentSelector = new GPE_Content_Selector( newComponentName, "");
+                newContentSelector->selectorType = GPE_CS_TYPE_COLOR;
+                newComponentField = newContentSelector;
+            }
             else if( newComponentType=="dropdown")
             {
                 newComponentField = new GPE_DropDown_Menu( newComponentName,false);
@@ -322,6 +347,11 @@ void standardEditableGameResource::compile_cpp( )
 
 }
 
+bool standardEditableGameResource::include_local_files( std::string pBuildDir , int buildType )
+{
+    return true;
+}
+
 void standardEditableGameResource::prerender_self( )
 {
     if( loadResourceButton!=NULL)
@@ -375,17 +405,17 @@ void standardEditableGameResource::process_resource(GPE_Rect * viewedSpace,GPE_R
     {
         if( commonButtonAlignment==1)
         {
-            cancelResourceButton->set_coords(viewedSpace->w-cancelResourceButton->get_width()-GENERAL_GPE_PADDING,viewedSpace->h-cancelResourceButton->get_height()-GPE_AVERAGE_LINE_HEIGHT);
+            cancelResourceButton->set_coords(viewedSpace->w-cancelResourceButton->get_width()-GENERAL_GPE_GUI_PADDING,viewedSpace->h-cancelResourceButton->get_height()-GPE_AVERAGE_LINE_HEIGHT);
             cancelResourceButton->process_self(viewedSpace,cam);
             if( confirmResourceButton!=NULL)
             {
                 if( confirmResourceButton->is_enabled() )
                 {
-                    confirmResourceButton->set_coords(cancelResourceButton->get_xpos()-confirmResourceButton->get_width()-GENERAL_GPE_PADDING,cancelResourceButton->get_ypos());
+                    confirmResourceButton->set_coords(cancelResourceButton->get_xpos()-confirmResourceButton->get_width()-GENERAL_GPE_GUI_PADDING,cancelResourceButton->get_ypos());
                 }
                 else
                 {
-                    confirmResourceButton->set_coords(cancelResourceButton->get_xpos()-confirmResourceButton->get_width()-GENERAL_GPE_PADDING,cancelResourceButton->get_ypos());
+                    confirmResourceButton->set_coords(cancelResourceButton->get_xpos()-confirmResourceButton->get_width()-GENERAL_GPE_GUI_PADDING,cancelResourceButton->get_ypos());
                 }
                 confirmResourceButton->process_self(viewedSpace,cam);
                 if( confirmResourceButton->is_clicked() && editorMode==0 )
@@ -449,7 +479,7 @@ void standardEditableGameResource::process_export()
 
     if( exportCalled )
     {
-        if( resourceType >=0 && resourceType < res_type_count )
+        if( resourceType >=0 && resourceType < RESOURCE_TYPE_MAX )
         {
             std::string fileToExportName = GPE_GetSaveFileName( "Export "+RESOURCE_TYPE_NAMES[resourceType]+" to file",".gpf", MAIN_GUI_SETTINGS->fileSaveExportFileDir );
             if( (int)fileToExportName.size() > 0)
@@ -474,7 +504,7 @@ void standardEditableGameResource::integrate_into_syntax()
 {
     if( CURRENT_PROJECT!=NULL)
     {
-        if( resourceType >=0 && resourceType < res_type_count)
+        if( resourceType >=0 && resourceType < RESOURCE_TYPE_MAX)
         {
             CURRENT_PROJECT->add_project_keyword(resourceName,"Project "+RESOURCE_TYPE_NAMES[resourceType]+" Resource",-1,"");
         }
@@ -491,7 +521,7 @@ void standardEditableGameResource::process_self(GPE_Rect * viewedSpace,GPE_Rect 
 
 }
 
-void standardEditableGameResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw  )
+void standardEditableGameResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam  )
 {
 
 }

@@ -59,10 +59,11 @@ public:
     std::string projectFolderListLocation;
     gameJSCompilerSettingsResource(GPE_GeneralResourceContainer * pFolder = NULL);
     ~gameJSCompilerSettingsResource();
+    bool include_local_files( std::string pBuildDir , int buildType );
     void prerender_self( );
     void preprocess_self(std::string alternatePath = "");
     void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void save_resource(std::string alternatePath = "", int backupId = -1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };

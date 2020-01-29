@@ -3,10 +3,10 @@ gpe_scene_tilemap_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -341,8 +341,8 @@ void GPE_SceneTileMap::process_elements()
                     tsRes = (tilesheetResource*) tsTypeContainer->get_held_resource();
                     tSPreviewer->tileSheetToPreview = tsRes->tilesheetInEditor;
                 }
-                tSPreviewer->set_width( PANEL_TS_RESOURCE->get_width()-GENERAL_GPE_PADDING );
-                tSPreviewer->set_height( PANEL_TS_RESOURCE->get_height()-GENERAL_GPE_PADDING-tilesheetDropDown->get_height() );
+                tSPreviewer->set_width( PANEL_TS_RESOURCE->get_width()-GENERAL_GPE_GUI_PADDING );
+                tSPreviewer->set_height( PANEL_TS_RESOURCE->get_height()-GENERAL_GPE_GUI_PADDING-tilesheetDropDown->get_height() );
                 PANEL_TS_RESOURCE->add_gui_element(tSPreviewer,true);
             }
             PANEL_TS_RESOURCE->process_self( );
@@ -543,8 +543,8 @@ void GPE_SceneTileMap::set_map_size( int newW, int newH )
 {
     if( tileWidth !=0 & tileHeight!=0 )
     {
-        int expectedNewSizeX = ceil( (double)newW/tileWidth );
-        int expectedNewSizeY = ceil( (double)newW/tileHeight );
+        int expectedNewSizeX = ceil( (float)newW/tileWidth );
+        int expectedNewSizeY = ceil( (float)newW/tileHeight );
         if( prevTileAmountX <  tileAmountX || prevTileAmountX <  tileAmountY )
         {
             resize_tilemap( expectedNewSizeX, expectedNewSizeY);
@@ -621,7 +621,7 @@ void GPE_SceneTileMap::render_branch()
                                         foundHeldTSRes->tilesheetInEditor->tsImage->render_tex_scaled( cTileXPos,cTileYPos, spm->zoomValue,spm->zoomValue,&foundTsRect,branchColor->get_color(), branchAlpha->get_value() );
                                         /*if( renderOutlines )
                                         {
-                                            gcanvas->render_rectangle( cTileXPos,cTileYPos, cTileXPos+ceil( (double)foundTsRect.w*spm->zoomValue),cTileYPos+ceil( (double)foundTsRect.h*spm->zoomValue ), c_red, true, 255 );
+                                            gcanvas->render_rectangle( cTileXPos,cTileYPos, cTileXPos+ceil( (float)foundTsRect.w*spm->zoomValue),cTileYPos+ceil( (float)foundTsRect.h*spm->zoomValue ), c_red, true, 255 );
                                             //render_text( cTileXPos,cTileYPos, int_to_string(fSceneTile->tilesheetIndexId)+"-"+int_to_string(fSceneTile->tileIndexId),c_red,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP, 255 );
                                         }
                                         */
@@ -660,11 +660,11 @@ void GPE_SceneTileMap::render_branch()
 
                     if( isLocked )
                     {
-                        tSPreviewer->render_selection( sceneTileMouseX,sceneTileMouseY, NULL,NULL, true, spm->zoomValue, c_orangered );
+                        tSPreviewer->render_selection( sceneTileMouseX,sceneTileMouseY, NULL,NULL, spm->zoomValue, c_orangered );
                     }
                     else if( sceneTileMouseX >=0 && sceneTileMouseY >=0 )
                     {
-                        tSPreviewer->render_selection( sceneTileMouseX,sceneTileMouseY,NULL,NULL,true,spm->zoomValue,c_white);
+                        tSPreviewer->render_selection( sceneTileMouseX,sceneTileMouseY,NULL,NULL,spm->zoomValue,c_white);
                     }
                     /*
                     else if( spm->mouseXPos < 0 || spm->mouseYPos < 0 || spm->mouseXPos > spm->tempRect->w || spm->mouseYPos > spm->tempRect->h )

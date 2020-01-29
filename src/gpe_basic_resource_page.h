@@ -3,10 +3,10 @@ gpe_basic_resource_page.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -80,6 +80,7 @@ public:
     virtual bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     virtual bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     virtual void compile_cpp();
+    virtual bool include_local_files( std::string pBuildDir , int buildType );
     virtual void integrate_into_syntax();
     void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
     virtual void preprocess_self(std::string alternatePath = "" );
@@ -87,7 +88,7 @@ public:
     void process_export();
     virtual void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     virtual void process_resource(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-    virtual void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    virtual void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void seek_parent_name();
     void set_name(std::string newName);
     void set_parent_name(std::string newName);

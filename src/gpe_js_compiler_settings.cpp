@@ -3,10 +3,10 @@ gpe_js_compiler_settings.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -52,7 +52,8 @@ gameJSCompilerSettingsResource::gameJSCompilerSettingsResource(GPE_GeneralResour
     sidePanelRect = new GPE_Rect();
 
     editorPageList = new GPE_GuiElementList();
-    editorPageList->barXPadding = GENERAL_GPE_PADDING;
+    editorPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
+    editorPageList->panelAlignType = GPE_PANEL_ALIGN_FULL_LEFT;
     editorPageList->barXMargin = 0;
 
     editorPageTabBar = new GPE_TabBar();
@@ -142,6 +143,11 @@ gameJSCompilerSettingsResource::~gameJSCompilerSettingsResource()
     }
 }
 
+bool gameJSCompilerSettingsResource::include_local_files( std::string pBuildDir , int buildType )
+{
+
+}
+
 void gameJSCompilerSettingsResource::prerender_self( )
 {
 
@@ -175,7 +181,7 @@ void gameJSCompilerSettingsResource::preprocess_self(std::string alternatePath)
             std::string currLine="";
             std::string currLineToBeProcessed;
             std::string colorThemeName;
-            double foundFileVersion = 0;
+            float foundFileVersion = 0;
             int textDelTime = 0;
             int foundFPSValue = FPS_CAP;
             while ( gameResourceFileIn.good() )
@@ -201,7 +207,7 @@ void gameJSCompilerSettingsResource::preprocess_self(std::string alternatePath)
                                 valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
                                 if( keyString=="Version")
                                 {
-                                    foundFileVersion = string_to_double(valString);
+                                    foundFileVersion = string_to_float(valString);
                                 }
                             }
                         }
@@ -266,8 +272,8 @@ void gameJSCompilerSettingsResource::process_self(GPE_Rect * viewedSpace,GPE_Rec
         editorPageList->set_coords( subViewedSpace.x, subViewedSpace.y );
         editorPageList->set_width(subViewedSpace.w);
         editorPageList->set_height(subViewedSpace.h );
-        editorPageList->barXPadding = GENERAL_GPE_PADDING;
-        editorPageList->barXMargin = GENERAL_GPE_PADDING;
+        editorPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
+        editorPageList->barXMargin = GENERAL_GPE_GUI_PADDING;
         int i = 0;
         if(sideAreaPanel->get_selected_name()=="General")
         {
@@ -301,19 +307,19 @@ void gameJSCompilerSettingsResource::process_self(GPE_Rect * viewedSpace,GPE_Rec
     }
 }
 
-void gameJSCompilerSettingsResource::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+void gameJSCompilerSettingsResource::render_self( GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
     if( cam!=NULL && viewedSpace!=NULL)
     {
-        if( forceRedraw && sideAreaPanel!=NULL && PANEL_GENERAL_EDITOR==NULL )
+        if( sideAreaPanel!=NULL && PANEL_GENERAL_EDITOR==NULL )
         {
-            sideAreaPanel->render_self( viewedSpace,cam, forceRedraw);
+            sideAreaPanel->render_self( viewedSpace,cam);
         }
         if( editorPageList!=NULL )
         {
-            editorPageList->render_self( viewedSpace,cam, forceRedraw);
+            editorPageList->render_self( viewedSpace,cam);
         }
     }
 }

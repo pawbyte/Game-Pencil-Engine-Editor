@@ -3,10 +3,10 @@ gpe_resource_tree.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -63,8 +63,8 @@ GPE_ResourceTree::GPE_ResourceTree()
     viewBox.w = 128;
     viewBox.h = 128;
 
-    barXPadding = 8;
-    barYPadding = 8;
+    barXPadding = GENERAL_GPE_GUI_PADDING;
+    barYPadding = GENERAL_GPE_GUI_PADDING;
     elementBox.h = SCREEN_HEIGHT-elementBox.y;
     subMenuIsOpen = true;
     selectedSubOption = -1;
@@ -76,7 +76,6 @@ GPE_ResourceTree::GPE_ResourceTree()
     barTitleHeight = 24;
     GPE_DEFAULT_FONT->get_metrics("Project Resources",&barTitleWidth,&barTitleHeight);
     barTitleHeight= 24;
-    //menuNameTexture->loadFromRenderedText(MAIN_RENDERER,"Project Resources",GPE_MAIN_THEME->Main_Box_Font_Color,FONT_CATEGORY_BAR);
     lastWidth = elementBox.w;
 }
 
@@ -171,7 +170,7 @@ void GPE_ResourceTree::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
     {
         entireBox.x = 0;
         entireBox.y = 0;
-        entireBox.w = cameraBox.w - GENERAL_GPE_PADDING;
+        entireBox.w = cameraBox.w - GENERAL_GPE_GUI_PADDING;
         entireBox.h = RESOURCE_AREA_HEIGHT*3;
         GPE_GeneralResourceContainer * cContainer = NULL;
 
@@ -266,8 +265,8 @@ void GPE_ResourceTree::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
             xScroll->process_self();
         }
 
-        yScroll->set_coords( elementBox.x+elementBox.w - yScroll->get_width() -4, elementBox.y );
-        yScroll->set_height( elementBox.h );
+        yScroll->set_coords( elementBox.x+elementBox.w - yScroll->get_width(), elementBox.y );
+        yScroll->set_height( elementBox.h - xScroll->get_height() );
 
         yScroll->fullRect.x = 0;
         yScroll->fullRect.y = 0;
@@ -339,7 +338,7 @@ void GPE_ResourceTree::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
         if( !LAST_CLICKED_RESOURCE->is_folder() && !LAST_CLICKED_RESOURCE->is_super_project_folder() && !LAST_CLICKED_RESOURCE->is_super_project_folder() )
         {
             int tempResType= LAST_CLICKED_RESOURCE->get_resource_type() ;
-            if( tempResType!=RESOURCE_TYPE_TEXTURE && tempResType!=RESOURCE_TYPE_TILESHEET && tempResType!=RESOURCE_TYPE_SPRITE && tempResType!=RESOURCE_TYPE_AUDIO && tempResType!=RESOURCE_TYPE_VIDEO && tempResType!=RESOURCE_TYPE_PROJECT_SETTINGS )
+            if( tempResType!=RESOURCE_TYPE_TEXTURE && tempResType!=RESOURCE_TYPE_TILESHEET && tempResType!=RESOURCE_TYPE_ANIMATION && tempResType!=RESOURCE_TYPE_AUDIO && tempResType!=RESOURCE_TYPE_VIDEO && tempResType!=RESOURCE_TYPE_PROJECT_SETTINGS )
             {
                 MAIN_CONTEXT_MENU->add_menu_option("Duplicate Resource",-1,NULL,-1,NULL,false,true);
             }
@@ -356,8 +355,6 @@ void GPE_ResourceTree::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
             //MAIN_CONTEXT_MENU->add_menu_option("Debug Project",-1,NULL,-1,NULL,false,true);
             GPE_PopUpMenu_Option *cleanFolderOptions =  MAIN_CONTEXT_MENU->add_menu_option("Clean Project",-1,NULL,-1,NULL,true,false);
             cleanFolderOptions->add_menu_option("Clean [HTML5] Build Folder",-1);
-            //if( GPE_MAIN_GUI->includeNintendoWiiUExport )
-            cleanFolderOptions->add_menu_option("Clean [WiiU] Build Folder",-1);
             cleanFolderOptions->add_menu_option("Clean [Windows] Build Folder",-1);
             cleanFolderOptions->add_menu_option("Clean [Linux] Build Folder",-1);
             cleanFolderOptions->add_menu_option("Clean [OSX] Build Folder",-1);
@@ -385,7 +382,7 @@ void GPE_ResourceTree::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
         else if( LAST_CLICKED_RESOURCE->is_folder()==false)
         {
             int tempResType= LAST_CLICKED_RESOURCE->get_resource_type() ;
-            if( tempResType!=RESOURCE_TYPE_TEXTURE && tempResType!=RESOURCE_TYPE_TILESHEET && tempResType!=RESOURCE_TYPE_SPRITE && tempResType!=RESOURCE_TYPE_AUDIO && tempResType!=RESOURCE_TYPE_VIDEO && tempResType!=RESOURCE_TYPE_PROJECT_SETTINGS )
+            if( tempResType!=RESOURCE_TYPE_TEXTURE && tempResType!=RESOURCE_TYPE_TILESHEET && tempResType!=RESOURCE_TYPE_ANIMATION && tempResType!=RESOURCE_TYPE_AUDIO && tempResType!=RESOURCE_TYPE_VIDEO && tempResType!=RESOURCE_TYPE_PROJECT_SETTINGS )
             {
                 MAIN_CONTEXT_MENU->add_menu_option("Duplicate Resource",-1,NULL,-1,NULL,false,true);
             }
@@ -434,58 +431,57 @@ void GPE_ResourceTree::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
     }
 }
 
-void GPE_ResourceTree::render_self( GPE_Rect *viewedSpace, GPE_Rect *cam, bool forceRedraw)
+void GPE_ResourceTree::render_self( GPE_Rect *viewedSpace, GPE_Rect *cam)
 {
     viewedSpace = GPE_find_camera( viewedSpace );
     cam = GPE_find_camera( cam );
-    MAIN_RENDERER->set_viewpoint( NULL );
-    MAIN_RENDERER->set_viewpoint( viewedSpace);
+    GPE_MAIN_RENDERER->reset_viewpoint( );
+    GPE_MAIN_RENDERER->set_viewpoint( viewedSpace);
 
-    //if( forceRedraw)
+    if( GPE_MAIN_THEME->themeBgTexture == NULL)
     {
-        if( GPE_MAIN_THEME->themeBgTexture == NULL)
+        gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->Program_Color,false);
+    }
+    GPE_GeneralResourceContainer * cResource = NULL;
+    int xDrawPos = 0;
+    int yDrawPos = 0;
+    int optionSize = (int)subOptions.size();
+    for(int i=0; i< optionSize; i++ )
+    {
+        cResource = subOptions[i];
+        if(cResource!=NULL)
         {
-            gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->Program_Color,false);
-        }
-        GPE_GeneralResourceContainer * cResource = NULL;
-        int xDrawPos = 0;
-        int yDrawPos = 0;
-        for(int i=0; i<(int)subOptions.size(); i+=1)
-        {
-            cResource = subOptions[i];
-            if(cResource!=NULL)
-            {
-                cResource->render_option(xDrawPos,yDrawPos,selectedSubOption, viewedSpace,&cameraBox, true, forceRedraw );
-                yDrawPos+=cResource->optionBox.h;
-            }
-        }
-
-        MAIN_RENDERER->set_viewpoint( NULL );
-        MAIN_RENDERER->set_viewpoint( viewedSpace );
-        if( xScroll!=NULL)
-        {
-            xScroll->render_self( viewedSpace, cam , forceRedraw);
-        }
-        if( yScroll!=NULL)
-        {
-            yScroll->render_self(viewedSpace, cam, forceRedraw  );
-            //if( RENDER_RESOURCEBAR_LEFT)
-            {
-                //gcanvas->render_rectangle( yScroll->elementBox.x+yScroll->elementBox.w,yScroll->elementBox.y,elementBox.x+elementBox.w,elementBox.h,barColor,false);
-            }
-        }
-
-        if( hasScrollControl)
-        {
-            gcanvas->render_rectangle( elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+elementBox.h,GPE_MAIN_THEME->Button_Box_Highlighted_Color,true);
-        }
-        else
-        {
-            gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->Text_Box_Outline_Color,true);
+            cResource->render_option(xDrawPos,yDrawPos,selectedSubOption, viewedSpace,&cameraBox, true );
+            yDrawPos+=cResource->optionBox.h;
         }
     }
-    //gcanvas->render_rectangle(0,0,viewedSpace->w, viewedSpace->h, c_blue, false );
-    MAIN_RENDERER->set_viewpoint( &elementBox);
+
+    GPE_MAIN_RENDERER->set_viewpoint( NULL );
+    GPE_MAIN_RENDERER->set_viewpoint( viewedSpace );
+    if( xScroll!=NULL)
+    {
+        xScroll->render_self( viewedSpace, cam );
+    }
+    if( yScroll!=NULL)
+    {
+        yScroll->render_self(viewedSpace, cam  );
+        //if( RENDER_RESOURCEBAR_LEFT)
+        {
+            //gcanvas->render_rectangle( yScroll->elementBox.x+yScroll->elementBox.w,yScroll->elementBox.y,elementBox.x+elementBox.w,elementBox.h,barColor,false);
+        }
+    }
+
+    if( hasScrollControl)
+    {
+        gcanvas->render_rectangle( elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+elementBox.h,GPE_MAIN_THEME->Button_Box_Highlighted_Color,true);
+    }
+    else
+    {
+        gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->Text_Box_Outline_Color,true);
+    }
+
+    GPE_MAIN_RENDERER->reset_viewpoint( );
+    GPE_MAIN_RENDERER->set_viewpoint( NULL);
 
 }
 

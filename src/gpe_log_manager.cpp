@@ -3,10 +3,10 @@ gpe_log_manager.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -32,6 +32,7 @@ SOFTWARE.
 */
 
 #include "gpe_log_manager.h"
+#include "gpe_editor.h"
 
 GPE_LogManager * GPE_Main_Logs = NULL;
 
@@ -49,7 +50,7 @@ GPE_LogManager::GPE_LogManager()
 
     if( GPE_ANCHOR_GC==NULL  )
     {
-        GPE_ANCHOR_GC = new GPE_TextAnchorGBCollector();
+        GPE_ANCHOR_GC = new GPE_TextAnchorController();
     }
 
     minLogHeight = 64;
@@ -260,7 +261,7 @@ void GPE_LogManager::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                 }
                 else
                 {
-                    logTabs->set_coords(elementBox.x, elementBox.y+GENERAL_GPE_PADDING );
+                    logTabs->set_coords(elementBox.x, elementBox.y );
                 }
                 logTabs->process_self(viewedSpace,cam);
 
@@ -414,12 +415,12 @@ void GPE_LogManager::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                             }
                             else
                             {
-                                bottomInfoList->set_coords(elementBox.x,elementBox.y + logTabs->get_height() +GENERAL_GPE_PADDING );
+                                bottomInfoList->set_coords(elementBox.x,elementBox.y + logTabs->get_height() );
                             }
                             bottomInfoList->set_width(elementBox.w);
                             bottomInfoList->set_height(elementBox.h-32);
-                            bottomInfoList->barYMargin = bottomInfoList->barYPadding = GENERAL_GPE_PADDING/2;
-                            bottomInfoList->barXMargin = bottomInfoList->barXPadding = GENERAL_GPE_PADDING;
+                            bottomInfoList->barYMargin = bottomInfoList->barYPadding = GENERAL_GPE_GUI_PADDING/2;
+                            bottomInfoList->barXMargin = bottomInfoList->barXPadding = GENERAL_GPE_GUI_PADDING;
                             bottomInfoList->clear_list();
                             switch( MAIN_SEARCH_CONTROLLER->textSearchMode )
                             {
@@ -487,7 +488,6 @@ void GPE_LogManager::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                                                 log_general_comment("Searching Tabs for ["+MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string()+"]...");
                                                 GPE_Main_TabManager->search_for_string(MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string() );
                                             }
-                                            /*
                                             else if( MAIN_SEARCH_CONTROLLER->findScope->get_selected_tag()=="Project Resources" && CURRENT_PROJECT!=NULL )
                                             {
                                                 if( CURRENT_PROJECT->RESC_PROJECT_FOLDER!=NULL)
@@ -496,7 +496,6 @@ void GPE_LogManager::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                                                     CURRENT_PROJECT->RESC_PROJECT_FOLDER->search_for_string(MAIN_SEARCH_CONTROLLER->findTextStringBox->get_string() );
                                                 }
                                             }
-                                            */
                                             input->reset_all_input();
                                             open_search_results();
                                         }
@@ -519,7 +518,7 @@ void GPE_LogManager::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                             }
                             else
                             {
-                                bottomInfoList->set_coords(elementBox.x,elementBox.y + logTabs->get_height() +GENERAL_GPE_PADDING );
+                                bottomInfoList->set_coords(elementBox.x,elementBox.y + logTabs->get_height() );
                             }
                             bottomInfoList->set_width(elementBox.w);
                             bottomInfoList->set_height(elementBox.h-32);
@@ -535,6 +534,7 @@ void GPE_LogManager::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                                 for( int iAnchor = 0; iAnchor < (int)searchAnchors.size(); iAnchor++)
                                 {
                                     fAnchor = searchAnchors[iAnchor];
+                                    fAnchor->set_width( elementBox.w );
                                     if( fAnchor!=NULL)
                                     {
                                         bottomInfoList->add_gui_element(fAnchor,true);
@@ -543,6 +543,8 @@ void GPE_LogManager::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                             }
                             bottomInfoList->set_full_width();
                             bottomInfoList->process_self(viewedSpace,cam);
+
+                            process_anchors();
                         }
                         else
                         {
@@ -554,14 +556,14 @@ void GPE_LogManager::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
                     {
                         if( tabsAtBottom )
                         {
-                            logToView->set_coords(elementBox.x,elementBox.y+GENERAL_GPE_PADDING );
+                            logToView->set_coords(elementBox.x,elementBox.y );
                         }
                         else
                         {
                             logToView->set_coords(elementBox.x,logTabs->get_y2pos() );
                         }
                         logToView->set_width( elementBox.w );
-                        logToView->set_height(elementBox.h-logTabs->get_height()- GENERAL_GPE_PADDING );
+                        logToView->set_height(elementBox.h-logTabs->get_height() );
                         logToView->process_self(viewedSpace,cam);
                     }
                 }
@@ -575,9 +577,9 @@ void GPE_LogManager::process_self(GPE_Rect * viewedSpace, GPE_Rect *cam)
     }
 }
 
-void GPE_LogManager::render_self( GPE_Rect * viewedSpace,GPE_Rect *cam, bool forceRedraw)
+void GPE_LogManager::render_self( GPE_Rect * viewedSpace,GPE_Rect *cam)
 {
-    MAIN_RENDERER->reset_viewpoint();
+    GPE_MAIN_RENDERER->reset_viewpoint();
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( isEnabled && elementBox.h >8 )
@@ -589,18 +591,18 @@ void GPE_LogManager::render_self( GPE_Rect * viewedSpace,GPE_Rect *cam, bool for
             {
                 if( logToView!=NULL)
                 {
-                    logToView->render_self( viewedSpace,cam,forceRedraw);
+                    logToView->render_self( viewedSpace,cam);
                 }
                 else if( bottomInfoList!=NULL)
                 {
-                    bottomInfoList->render_self( viewedSpace,cam,forceRedraw);
+                    bottomInfoList->render_self( viewedSpace,cam);
                 }
             }
-            logTabs->render_self( viewedSpace,cam,forceRedraw);
+            logTabs->render_self( viewedSpace,cam);
         }
         gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->Text_Box_Outline_Color,true);
     }
-    MAIN_RENDERER->reset_viewpoint();
+    GPE_MAIN_RENDERER->reset_viewpoint();
 }
 
 void GPE_LogManager::clear_all_logs()
@@ -841,6 +843,53 @@ void GPE_LogManager::open_search_results()
     }
 }
 
+void GPE_LogManager::process_anchors()
+{
+    int anchorCount = (int)searchAnchors.size();
+    if(anchorCount ==  0  || GPE_ANCHOR_GC== NULL )
+    {
+        return;
+    }
+    GPE_TextAnchor * tAnchor = NULL;
+    for( int i = 0; i < anchorCount; i++)
+    {
+        tAnchor = searchAnchors[i];
+        if( tAnchor!=NULL && tAnchor->is_clicked() )
+        {
+            if( (int) tAnchor->anchorProjectName.size() > 0 )
+            {
+                GPE_ProjectFolder * foundProject = GPE_MAIN_GUI->find_project_from_filename( tAnchor->anchorProjectName);
+                GPE_GeneralResourceContainer * foundResContainer = NULL;
+                generalGameResource * foundGameResource = NULL;
+                if( foundProject!=NULL && foundProject->RESC_PROJECT_FOLDER!=NULL )
+                {
+                    if( tAnchor->anchorProjectResourceId >=0 )
+                    {
+                        foundResContainer = foundProject->RESC_PROJECT_FOLDER->find_resource_from_id( tAnchor->anchorProjectResourceId,true,false);
+                    }
+                    else if( tAnchor->anchorProjectResourceId < 0 )
+                    {
+                        foundResContainer = foundProject->RESC_PROJECT_SETTINGS;
+                    }
+                }
+
+                if( foundResContainer!=NULL)
+                {
+                    foundGameResource = foundResContainer->get_held_resource();
+                }
+                if( foundGameResource!=NULL)
+                {
+                    foundGameResource->open_code( tAnchor->lineNumber, tAnchor->characterNumber, tAnchor->lineMessage );
+                    if( GPE_Main_TabManager!=NULL)
+                    {
+                        GPE_Main_TabManager->add_new_tab(foundGameResource);
+                    }
+                }
+            }
+            //input->reset_all_input();
+        }
+    }
+}
 void GPE_LogManager::toggle_manager()
 {
     if( isEnabled )

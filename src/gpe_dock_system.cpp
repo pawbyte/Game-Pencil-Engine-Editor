@@ -3,10 +3,10 @@ gpe_dock_system.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -31,10 +31,7 @@ SOFTWARE.
 
 */
 
-
 #include "gpe_dock_system.h"
-
-
 
 gpeEditorDock * GPE_DOCK = NULL;
 gpeEditorDockPanel * PANEL_RESOURCE_TREE = NULL;
@@ -51,7 +48,8 @@ gpeEditorDockPanel::gpeEditorDockPanel()
     wasProcessed = false;
     panelGuiList = new GPE_GuiElementList();
     panelGuiList->set_horizontal_align(FA_LEFT);
-    panelGuiList->barXPadding = GENERAL_GPE_PADDING;
+    panelGuiList->panelAlignType = GPE_PANEL_ALIGN_FULL_LEFT;
+    panelGuiList->barXPadding = GENERAL_GPE_GUI_PADDING;
     panelGuiList->barXMargin = 0;
     containerRect = new GPE_Rect();
     dockSettingsButton = new GPE_ToolIconButton(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/bars.png","Panel Settings");
@@ -92,13 +90,9 @@ gpeEditorDockPanel::~gpeEditorDockPanel()
 
 bool gpeEditorDockPanel::add_container( std::string name, bool openNew )
 {
-    if( (int)name.size() > 0 && specialPanelElement == NULL )
+    if( (int)name.size() > 0  )
     {
         panelBar->add_new_tab( name, openNew );
-        if( elementBox.w <= DOCK_COLUMN_MIN_WIDTH )
-        {
-            elementBox.w = DOCK_COLUMN_MIN_WIDTH;
-        }
         return true;
     }
     return false;
@@ -134,6 +128,7 @@ void gpeEditorDockPanel::clear_panel()
     {
         panelGuiList->clear_list();
     }
+    wasProcessed = false;
 }
 
 bool gpeEditorDockPanel::container_in_view( std::string name )
@@ -179,6 +174,7 @@ void gpeEditorDockPanel::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam  )
 {
     viewedSpace = GPE_find_camera( viewedSpace );
     cam = GPE_find_camera( cam );
+    setup_panel( false, false );
     if( panelBar!=NULL)
     {
         panelRect->x = elementBox.x;
@@ -190,10 +186,10 @@ void gpeEditorDockPanel::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam  )
         {
             if( specialPanelElement!=NULL )
             {
-                specialPanelElement->set_coords(elementBox.x, elementBox.y );
+                specialPanelElement->set_coords( elementBox.x, elementBox.y);
                 specialPanelElement->set_width( elementBox.w );
                 specialPanelElement->set_height( elementBox.h );
-                specialPanelElement->process_self( NULL, cam );
+                specialPanelElement->process_self( viewedSpace, cam );
             }
             else
             {
@@ -201,22 +197,23 @@ void gpeEditorDockPanel::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam  )
                 //Processes the gui element list
                 if( panelGuiList!=NULL )
                 {
-                    panelGuiList->set_coords(0, 0);
+                    panelGuiList->set_coords( 0,0 );
                     panelGuiList->set_width( panelRect->w );
                     panelGuiList->set_height( panelRect->h );
+                    panelGuiList->barXMargin = GENERAL_GPE_GUI_PADDING;
+                    panelGuiList->barYMargin = GENERAL_GPE_GUI_PADDING;
+                    panelGuiList->barXPadding = GENERAL_GPE_GUI_PADDING;
+                    panelGuiList->barYPadding = GENERAL_GPE_GUI_PADDING;
                     panelGuiList->process_self( panelRect, cam  );
                 }
-                //Processes the settings button on normal panel
-                if( dockSettingsButton!=NULL && panelBar->get_tab_count()!=0 )
+
+                if( panelBar!=NULL )
                 {
-                    if( wasProcessed==false )
-                    {
-                        dockSettingsButton->set_clicked( false );
-                    }
-                    dockSettingsButton->set_coords( elementBox.w-panelBar->get_height(), 0 );
-                    dockSettingsButton->set_width(  panelBar->get_height() );
-                    dockSettingsButton->set_height(  panelBar->get_height() );
-                    dockSettingsButton->process_self( &elementBox );
+                    panelBar->process_self( viewedSpace, cam);
+                }
+                if( dockSettingsButton!=NULL )
+                {
+                    dockSettingsButton->process_self( viewedSpace, cam);
                 }
             }
         }
@@ -240,37 +237,42 @@ bool gpeEditorDockPanel::remove_container( std::string name )
     return false;
 }
 
-void gpeEditorDockPanel::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw   )
+void gpeEditorDockPanel::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam   )
 {
-    viewedSpace = GPE_find_camera( viewedSpace );
-    cam = GPE_find_camera( cam );
     if( has_content() == false)
     {
         return;
     }
-    MAIN_RENDERER->reset_viewpoint();
-    if( specialPanelElement !=NULL )
+
+    viewedSpace = GPE_find_camera( viewedSpace );
+    cam = GPE_find_camera( cam );
+    GPE_MAIN_RENDERER->reset_viewpoint();
+    GPE_MAIN_RENDERER->set_viewpoint( viewedSpace);
+
+    if( specialPanelElement!=NULL )
     {
-        specialPanelElement->render_self( NULL, NULL, forceRedraw );
+        specialPanelElement->render_self( NULL,NULL );
     }
-    else if( panelBar!=NULL )
+    else
     {
-        MAIN_RENDERER->reset_viewpoint();
-        //MAIN_RENDERER->set_viewpoint( panelRect );
+        if( panelBar!=NULL  )
+        {
+            panelBar->render_self( NULL, NULL );
+        }
+        if( dockSettingsButton!=NULL )
+        {
+            dockSettingsButton->render_self( NULL, NULL );
+        }
+
+        GPE_MAIN_RENDERER->reset_viewpoint();
+        GPE_MAIN_RENDERER->set_viewpoint( panelRect );
         if( panelGuiList!=NULL )
         {
-            panelGuiList->render_self( panelRect, NULL, forceRedraw );
+            panelGuiList->render_self( panelRect, cam );
         }
-        MAIN_RENDERER->reset_viewpoint();
-        MAIN_RENDERER->set_viewpoint( &elementBox);
-        if( dockSettingsButton!=NULL && panelBar->get_tab_count()!=0 )
-        {
-            dockSettingsButton->render_self( &elementBox, NULL, forceRedraw );
-        }
-        panelBar->render_self( &elementBox, NULL, forceRedraw );
+        GPE_MAIN_RENDERER->reset_viewpoint();
+
     }
-    MAIN_RENDERER->reset_viewpoint();
-    //gcanvas->render_rectangle( tPanel->get_xpos(), input->mouse_y-4, tPanel->get_x2pos(),input->mouse_y+4, GPE_MAIN_THEME->PopUp_Box_Border_Color, false );
 }
 
 void gpeEditorDockPanel::reset_panel()
@@ -287,49 +289,80 @@ void gpeEditorDockPanel::reset_panel()
     }
 }
 
+bool gpeEditorDockPanel::save_panel_data_to_file(std::ofstream * fileTarget)
+{
+    if( fileTarget!=NULL && fileTarget->is_open() )
+    {
+        *fileTarget << "#    Created automatically via the Game Pencil Engine Editor \n";
+    }
+}
+
 void gpeEditorDockPanel::setup_panel(  bool addSpacing, bool clearList  )
 {
-    wasProcessed = false;
+    panelRect->x = elementBox.x;
+    panelRect->y = elementBox.y+panelBar->get_height();
+    panelRect->w = elementBox.w;
+    panelRect->h = elementBox.h - panelBar->get_height();
+
     if( specialPanelElement!=NULL )
     {
         specialPanelElement->set_coords(elementBox.x, elementBox.y );
         specialPanelElement->set_width( elementBox.w );
         specialPanelElement->set_height( elementBox.h );
     }
-    else if( panelBar!=NULL)
+    else if( panelGuiList!=NULL )
     {
-        panelBar->set_coords(0, 0);
-        panelBar->set_width( elementBox.w -32);
-        panelBar->process_self( &elementBox );
-
-        panelRect->x = elementBox.x;
-        panelRect->y = elementBox.y+panelBar->get_height();
-        panelRect->w = elementBox.w;
-        panelRect->h = elementBox.h - panelBar->get_height();
-
-        if( panelGuiList!=NULL )
+        panelGuiList->set_horizontal_align( FA_LEFT );
+        panelGuiList->set_coords( panelRect->x, panelRect->y );
+        panelGuiList->set_width( panelRect->w );
+        panelGuiList->set_height( panelRect->h );
+        if( clearList )
         {
-            panelGuiList->set_horizontal_align( FA_LEFT );
-            panelGuiList->set_coords( panelRect->x, panelRect->y );
-            panelGuiList->set_width( panelRect->w );
-            panelGuiList->set_height( panelRect->h );
-            if( clearList )
-            {
-                panelGuiList->clear_list();
-            }
-            if( addSpacing )
-            {
-                panelGuiList->barXPadding = GENERAL_GPE_PADDING;
-                panelGuiList->barYPadding = GENERAL_GPE_PADDING;
-                panelGuiList->barXMargin = GENERAL_GPE_PADDING;
-                panelGuiList->barYMargin = GENERAL_GPE_PADDING;
-            }
+            panelGuiList->clear_list();
         }
+        if( addSpacing )
+        {
+            panelGuiList->barXPadding = GENERAL_GPE_GUI_PADDING;
+            panelGuiList->barYPadding = GENERAL_GPE_GUI_PADDING;
+            panelGuiList->barXMargin = GENERAL_GPE_GUI_PADDING;
+            panelGuiList->barYMargin = GENERAL_GPE_GUI_PADDING;
+        }
+    }
+
+    if( panelBar!=NULL)
+    {
+        panelBar->set_width( elementBox.w - panelBar->get_height() - GENERAL_GPE_GUI_PADDING );
+        panelBar->set_coords( elementBox.x, elementBox.y );
+
+        if( dockSettingsButton!=NULL )
+        {
+            if( wasProcessed==false )
+            {
+                dockSettingsButton->set_clicked( false );
+            }
+            dockSettingsButton->set_coords( panelBar->get_x2pos() + GENERAL_GPE_GUI_PADDING, panelBar->get_ypos() );
+            dockSettingsButton->set_width(  panelBar->get_height() );
+            dockSettingsButton->set_height(  panelBar->get_height() );
+        }
+
+
+    }
+    else if( dockSettingsButton!=NULL )
+    {
+        if( wasProcessed==false )
+        {
+            dockSettingsButton->set_clicked( false );
+        }
+        dockSettingsButton->set_coords(elementBox.w - 32 - GENERAL_GPE_GUI_PADDING, 0 );
+        dockSettingsButton->set_width(  32 );
+        dockSettingsButton->set_height(  32 );
     }
 }
 
 gpeEditorDock::gpeEditorDock()
 {
+    dockHorizontalPadding = 16;
+    dockVerticalPadding = 16;
     toolbarOptonsHolder = new GPE_PopUpMenu_Option("Manage Dock Panels",-1,false, false, false );
     toolbarOptonsHolder->set_texture( guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/cogs.png") );
     toolbarOptonsHolder->add_menu_option("Toggle Logs",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
@@ -341,26 +374,20 @@ gpeEditorDock::gpeEditorDock()
     isHidden = false;
     columnBeingResizedId = -1;
     horiResizeStartX = 0;
+    resizePanelX1 = 0; resizePanelX2 = 0;
     justResized = beingResized = horizontalResize = verticalResize = false;
 
-    for( int iColumn = 0; iColumn < DOCK_MAX_COLUMN_COUNT; iColumn++ )
-    {
-        panelColumnWidth[iColumn] = DOCK_COLUMN_DEFAULT_WIDTH;
-        panelWidthPercentages[ iColumn ] = 1.d / (double)DOCK_MAX_COLUMN_COUNT;
-    }
-    if( SCREEN_WIDTH > DOCK_COLUMN_DEFAULT_WIDTH * DOCK_MAX_COLUMN_COUNT)
-    {
-        panelColumnWidth[DOCK_COLUMN_DEFAULT_WIDTH * DOCK_MAX_COLUMN_COUNT] = SCREEN_WIDTH - ( DOCK_COLUMN_DEFAULT_WIDTH * (DOCK_MAX_COLUMN_COUNT-1) );
-    }
 
     GPE_Report( "Attempt to create ["+int_to_string(DOCK_MAX_PANEL_COUNT)+"] panels...");
     for( int iPanel = 0; iPanel < DOCK_MAX_PANEL_COUNT; iPanel++ )
     {
         GPE_Report("Adding Pane["+ int_to_string(iPanel) +"]..");
-        panelHeightPercentages[iPanel] = 0.d;
+        panelHeightPercentages[iPanel] = 0.f;
         defaultPanelNames[ iPanel ] = "";
         panels[ iPanel ] = new gpeEditorDockPanel();
     }
+    reset_dock();
+
 
     defaultPanelNames[DOCK_TOP_LEFT] = "DOCK_TOP_LEFT";
     defaultPanelNames[DOCK_BOTTOM_LEFT] = "DOCK_BOTTOM_LEFT";
@@ -379,28 +406,44 @@ gpeEditorDock::gpeEditorDock()
 
     panels[ DOCK_TOP_MIDDLE ]->specialPanelElement = GPE_Main_TabManager;
     panels[ DOCK_BOTTOM_MIDDLE ]->specialPanelElement = GPE_Main_Logs;
-    GPE_Report("Resettings Panels for first time..");
-    reset_dock();
 }
 
 gpeEditorDock::~gpeEditorDock()
 {
+    PANEL_RESOURCE_TREE = NULL;
+    PANEL_GENERAL_EDITOR = NULL;
+    PANEL_INSPECTOR = NULL;
+    PANEL_META = NULL;
 
+    clear_defaults();
+
+    gpeEditorDockPanel * tempPanel = NULL;
+
+    for( int i =DOCK_MAX_PANEL_COUNT -1;  i >=0; i--)
+    {
+        tempPanel = panels[i];
+        if(tempPanel != NULL )
+        {
+            delete tempPanel;
+            tempPanel = NULL;
+        }
+        panels[i] = NULL;
+    }
 }
 
 
-void gpeEditorDock::add_default_panel( std::string name, int panelId, bool open )
+void gpeEditorDock::add_default_panel( std::string name, int panelId, bool open, bool saveToSettings )
 {
-    GPE_KeyPair * newPair = new GPE_KeyPair( panelId, name, name);
+    GPE_KeyPair * newPair = new GPE_KeyPair( panelId, name, name, panelId );
     defaultPanels.push_back( newPair);
     if( open)
     {
-        add_to_panel( name, panelId, open);
+        add_to_panel( name, panelId, open, saveToSettings );
     }
     update_toolbar();
 }
 
-void gpeEditorDock::add_to_panel( std::string name, int panelId, bool open )
+void gpeEditorDock::add_to_panel( std::string name, int panelId, bool open, bool saveToSettings )
 {
     if( panelId >=0 && panelId < DOCK_MAX_PANEL_COUNT && (int)name.size() > 0 )
     {
@@ -415,7 +458,7 @@ void gpeEditorDock::add_to_panel( std::string name, int panelId, bool open )
                 currentPanel->remove_container( name );
             }
         }
-        //Resizes the width to DOCK_COLUMN_MIN_WIDTH if its "unopen"
+        //Resizes the width to dockMinimumColumnPercentage * dockWidthMinusColumnPadding if its "unopen"
         int assignedColumn = get_column( panelId );
         if( assignedColumn < 0 )
         {
@@ -437,46 +480,61 @@ void gpeEditorDock::add_to_panel( std::string name, int panelId, bool open )
         //panels[assignedColumn + DOCK_MAX_COLUMN_COUNT];
 
         //If we are adding this panel to an empty column
-        if( panelColumnWidth[assignedColumn] < DOCK_COLUMN_MIN_WIDTH )
+        if( panelWidthPercentages[assignedColumn] < dockMinimumColumnPercentage )
         {
-            panelColumnWidth[assignedColumn] = DOCK_COLUMN_MIN_WIDTH;
+            panelWidthPercentages[assignedColumn] = dockMinimumColumnPercentage;
         }
 
-        currentPanel->set_width( panelColumnWidth[assignedColumn] );
-        otherPanel->set_width( panelColumnWidth[assignedColumn] );
-
+        currentPanel->add_container( name, open );
 
         if( !currentPanel->has_content() && !otherPanel->has_content() )
         {
             if( panelId < DOCK_MAX_COLUMN_COUNT )
             {
-                panelHeightPercentages[panelId ] = 1.0;
+                panelHeightPercentages[panelId ] = 100.f;
                 panelHeightPercentages[panelId + DOCK_MAX_COLUMN_COUNT ] = 0.0d;
             }
             else
             {
-                panelHeightPercentages[panelId ] = 1.0;
+                panelHeightPercentages[panelId ] = 100.f;
                 panelHeightPercentages[panelId - DOCK_MAX_COLUMN_COUNT ] = 0.0d;
             }
         }
-        else if( panelHeightPercentages[panelId ] <= 0.2 )
+        else if( panelHeightPercentages[panelId ] <= 20.f )
         {
             //If our panel is on the top
             if( panelId < DOCK_MAX_COLUMN_COUNT )
             {
-                panelHeightPercentages[panelId ] = 0.2;
-                panelHeightPercentages[panelId + DOCK_MAX_COLUMN_COUNT ] = 0.8;
+                panelHeightPercentages[panelId ] = 20.f;
+                panelHeightPercentages[panelId + DOCK_MAX_COLUMN_COUNT ] = 80.f;
             }
             else
             {
                 //If our panel is on the bottom,
-                panelHeightPercentages[panelId ] = 0.2;
-                panelHeightPercentages[panelId - DOCK_MAX_COLUMN_COUNT ] = 0.8;
+                panelHeightPercentages[panelId ] = 20.f;
+                panelHeightPercentages[panelId - DOCK_MAX_COLUMN_COUNT ] = 80.f;
             }
         }
-        //Makes the column visible if closed;
-        currentPanel->add_container( name, open );
 
+        setup_dock();
+        //Makes the column visible if closed;
+        if( saveToSettings )
+        {
+            save_dock_setings( "dock_settings.gpf" );
+        }
+    }
+}
+
+void gpeEditorDock::clear_all_panels()
+{
+    gpeEditorDockPanel * tempPanel = NULL;
+    for( int i = 0; i < DOCK_MAX_PANEL_COUNT; i++)
+    {
+        tempPanel = panels[i];
+        if( tempPanel!=NULL)
+        {
+            tempPanel->clear_panel();
+        }
     }
 }
 
@@ -509,6 +567,20 @@ bool gpeEditorDock::container_in_view( std::string name )
     return false;
 }
 
+gpeEditorDockPanel * gpeEditorDock::find_panel( std::string name )
+{
+    gpeEditorDockPanel *  tPanel = NULL;
+    for( int iPanel = 0; iPanel < DOCK_MAX_PANEL_COUNT; iPanel++ )
+    {
+        tPanel = panels[iPanel];
+        if( tPanel!=NULL && tPanel->container_in_view(name) )
+        {
+            return tPanel;
+        }
+    }
+    return NULL;
+}
+
 int gpeEditorDock::get_column(int panelId)
 {
     if( panelId < DOCK_MAX_COLUMN_COUNT )
@@ -524,9 +596,9 @@ int gpeEditorDock::get_column(int panelId)
 
 int gpeEditorDock::get_dock_left_width()
 {
-    if( panelColumnWidth[0] + panelColumnWidth[1] >= DOCK_COLUMN_MIN_WIDTH )
+    if( panelColumnWidth[0] + panelColumnWidth[1] >= dockMinimumColumnPercentage * dockWidthMinusColumnPadding )
     {
-        return (panelColumnWidth[0] + panelColumnWidth[1] + GENERAL_GPE_PADDING);
+        return (panelColumnWidth[0] + panelColumnWidth[1] + GENERAL_GPE_GUI_PADDING);
     }
     else
     {
@@ -547,9 +619,9 @@ int gpeEditorDock::get_dock_left_width()
 
 int gpeEditorDock::get_dock_right_width()
 {
-    if( panelColumnWidth[3] + panelColumnWidth[4] >= DOCK_COLUMN_MIN_WIDTH )
+    if( panelColumnWidth[3] + panelColumnWidth[4] >= dockMinimumColumnPercentage * dockWidthMinusColumnPadding )
     {
-        return (panelColumnWidth[3] + panelColumnWidth[4] + GENERAL_GPE_PADDING);
+        return (panelColumnWidth[3] + panelColumnWidth[4] + GENERAL_GPE_GUI_PADDING);
     }
     else
     {
@@ -578,6 +650,7 @@ int gpeEditorDock::handle_resizing()
             justResized = beingResized = horizontalResize = verticalResize = false;
             horiResizeStartX = 0;
             columnBeingResizedId = -1;
+            resizePanelX1 = resizePanelX2 = 0;
             return -1;
         }
         else if( point_between_rect( input->mouse_x, input->mouse_y, &elementBox ) )
@@ -587,7 +660,7 @@ int gpeEditorDock::handle_resizing()
             bool resizeExited = false;
             if( horizontalResize )
             {
-                GPE_change_cursor( SDL_SYSTEM_CURSOR_SIZEWE );
+                gpe->cursor_change( "sizewe" );
 
                 //The code, below may appear unoptimized, but it rarely is executed since it only happens on ending of resize of dock...
                 if( input->check_mouse_released( mb_left) )
@@ -597,7 +670,7 @@ int gpeEditorDock::handle_resizing()
                     {
                         gpeEditorDockPanel * foundTPanel = NULL;
                         gpeEditorDockPanel * foundBPanel = NULL;
-                        int panelNewSize = 0;
+                        float panelResizeDifference = 0;
                         int currentPanelX = 0;
                         int lastPanelWidth = 0;
                         int lastLeftPanel = -1;
@@ -615,7 +688,7 @@ int gpeEditorDock::handle_resizing()
                                 {
                                     lastLeftPanel = iCol;
                                     lastPanelWidth = panelColumnWidth[iCol];
-                                    currentPanelX+= lastPanelWidth + GENERAL_GPE_PADDING;
+                                    currentPanelX+= lastPanelWidth + GENERAL_GPE_GUI_PADDING;
                                     panelsUsedOnLeft++;
                                 }
                             }
@@ -626,58 +699,38 @@ int gpeEditorDock::handle_resizing()
                         {
                             //We will move to the left
                             //If the mouse is to the right of the last panel to the left
-                            if( input->mouse_x > currentPanelX - lastPanelWidth - GENERAL_GPE_PADDING  )
+                            if( input->mouse_x > currentPanelX - lastPanelWidth - GENERAL_GPE_GUI_PADDING  )
                             {
                                 //Only going to interact with the panel on the immediate left
-                                panelNewSize = panelColumnWidth[lastLeftPanel] - (currentPanelX - input->mouse_x );
-                                if( panelNewSize >= DOCK_COLUMN_MIN_WIDTH )
+                                panelResizeDifference = (currentPanelX - input->mouse_x - GENERAL_GPE_GUI_PADDING );
+
+                                panelResizeDifference = (float)panelResizeDifference / (  dockWidthMinusColumnPadding / 100.000000d);
+                                if( panelResizeDifference >= 0.0001 )
                                 {
-                                    panelColumnWidth[ columnBeingResizedId ] += currentPanelX - input->mouse_x ;
-                                    panelColumnWidth[ lastLeftPanel ] = panelNewSize;
-                                }
-                                else
-                                {
-                                    //We do not have enough space, so let's work with the minimums here.
-                                    panelColumnWidth[columnBeingResizedId] += panelColumnWidth[lastLeftPanel] - DOCK_COLUMN_MIN_WIDTH;
-                                    panelColumnWidth[ lastLeftPanel] = DOCK_COLUMN_MIN_WIDTH;
+                                    panelWidthPercentages[ columnBeingResizedId ] +=  panelResizeDifference;
+                                    panelWidthPercentages[ lastLeftPanel ] -= panelResizeDifference;
                                 }
                             }
                             else
                             {
                                 //A more complex resize operation not needed for 1.3.0 RC
-                                /*
-                                if( input->mouse_x < panelsUsedOnLeft * ( DOCK_COLUMN_MIN_WIDTH+GENERAL_GPE_PADDING)
-                                {
-                                    for( iCol = 0; iCol < columnBeingResizedId; iCol++)
-                                    {
-                                        if( panelColumnWidth[iCol] > 0 )
-                                        {
-                                            panelColumnWidth[iCol] = DOCK_COLUMN_MIN_WIDTH;
-                                        }
-                                    }
-                                    panelColumnWidth[iCol] += currentPanelX - input->mouse_x;
-                                }
-                                */
+
                             }
                         }
                         //Move the panel to the right, where possible.
                         else if( panelsUsedOnLeft > 0 && lastLeftPanel >=0  )
                         {
                             //We will add to the panel
-                            if( input->mouse_x <= currentPanelX + panelColumnWidth[columnBeingResizedId] )
+                            if( input->mouse_x > currentPanelX )
                             {
+                                panelResizeDifference = ( input->mouse_x - currentPanelX );
+
                                 //Panel resizing only is between two panels, so let's calculate the differences;
-                                panelNewSize = panelColumnWidth[columnBeingResizedId] - (input->mouse_x - currentPanelX);
-                                if( panelNewSize >= DOCK_COLUMN_MIN_WIDTH )
+                                panelResizeDifference = (float)panelResizeDifference / (  dockWidthMinusColumnPadding / 100.00000d);
+                                if( panelResizeDifference >= 0.0001 )
                                 {
-                                    panelColumnWidth[lastLeftPanel] += input->mouse_x - currentPanelX;
-                                    panelColumnWidth[columnBeingResizedId] = panelNewSize;
-                                }
-                                else
-                                {
-                                    //We do not have enough space, so let's work with the minimums here.
-                                    panelColumnWidth[lastLeftPanel] += panelColumnWidth[columnBeingResizedId] - DOCK_COLUMN_MIN_WIDTH;
-                                    panelColumnWidth[columnBeingResizedId] = DOCK_COLUMN_MIN_WIDTH;
+                                    panelWidthPercentages[ columnBeingResizedId ] -=  panelResizeDifference;
+                                    panelWidthPercentages[ lastLeftPanel ] += panelResizeDifference;
                                 }
                             }
                             else
@@ -694,19 +747,21 @@ int gpeEditorDock::handle_resizing()
             }
             else if( verticalResize )
             {
-                GPE_change_cursor( SDL_SYSTEM_CURSOR_SIZENS );
+                gpe->cursor_change( "sizens" );
                 if( input->check_mouse_released( mb_left) )
                 {
                     //Last check to make sure we are not out of bounds...
                     if( columnBeingResizedId >= 0 && columnBeingResizedId < DOCK_MAX_COLUMN_COUNT )
                     {
-                        panelHeightPercentages[columnBeingResizedId] = ( (double) input->mouse_y - elementBox.y ) / ( elementBox.h - (double)GENERAL_GPE_PADDING );
-                        panelHeightPercentages[columnBeingResizedId + DOCK_MAX_COLUMN_COUNT] = 1.0 - panelHeightPercentages[columnBeingResizedId];
+                        panelHeightPercentages[columnBeingResizedId] = ( (float) input->mouse_y - elementBox.y ) / ( elementBox.h - (float)GENERAL_GPE_GUI_PADDING ) * 100.f;
+                        panelHeightPercentages[columnBeingResizedId + DOCK_MAX_COLUMN_COUNT] = 100.f - panelHeightPercentages[columnBeingResizedId];
                     }
                     resizeExited = true;
                     horiResizeStartX = 0;
                     columnBeingResizedId = -1;
                     beingResized = horizontalResize = verticalResize = false;
+                    resizePanelX1 = 0;
+                    resizePanelX2 = 0;
                 }
             }
             else
@@ -718,7 +773,7 @@ int gpeEditorDock::handle_resizing()
             }
             if( resizeExited)
             {
-                setup_dock();
+                save_dock_setings( "dock_settings.gpf" );
                 return 1;
             }
         }
@@ -726,8 +781,9 @@ int gpeEditorDock::handle_resizing()
         {
             //Exits the resize if we get out of range
             justResized = beingResized = horizontalResize = verticalResize = false;
-            horiResizeStartX = 0;
+            resizePanelX1 = resizePanelX2 = 0;
             columnBeingResizedId = -1;
+            horiResizeStartX = 0;
             return -2;
         }
     }
@@ -738,6 +794,7 @@ int gpeEditorDock::handle_resizing()
         gpeEditorDockPanel * bPanel = NULL;
 
         int panelX = 0;
+        resizePanelX1 = resizePanelX2 = 0;
         for( int iColumn = 0; iColumn < DOCK_MAX_COLUMN_COUNT; iColumn++)
         {
             if( panelColumnWidth[iColumn] > 0 )
@@ -749,11 +806,14 @@ int gpeEditorDock::handle_resizing()
                     //Checks to see if user is attempting to resize panels vertically
                     if( tPanel->has_content() && bPanel->has_content() )
                     {
-                        if( point_between(input->mouse_x, input->mouse_y,tPanel->get_xpos(),tPanel->get_y2pos(), tPanel->get_x2pos(),tPanel->get_y2pos()+GENERAL_GPE_PADDING ) )
+                        //NS resize
+                        if( point_between(input->mouse_x, input->mouse_y,tPanel->get_xpos(),tPanel->get_y2pos(), tPanel->get_x2pos(),tPanel->get_y2pos()+dockVerticalPadding ) )
                         {
-                            GPE_change_cursor( SDL_SYSTEM_CURSOR_SIZENS );
+                            gpe->cursor_change( "sizens" );
                             if(input->check_mouse_pressed(0) )
                             {
+                                resizePanelX1 = tPanel->get_xpos();
+                                resizePanelX2 = tPanel->get_x2pos();
                                 columnBeingResizedId = iColumn;
                                 verticalResize = beingResized = true;
                                 horizontalResize = false;
@@ -771,9 +831,9 @@ int gpeEditorDock::handle_resizing()
                     if( !horizontalResize && ( tPanel->has_content() ||  bPanel->has_content() ) )
                     {
                         //Unlike vertical check, we only require one panel to be visible(top or bottom)
-                        if( point_between( input->mouse_x, input->mouse_y, panelX - GENERAL_GPE_PADDING,elementBox.y, panelX, elementBox.y2Pos ) )
+                        if( point_between( input->mouse_x, input->mouse_y, panelX - dockHorizontalPadding,elementBox.y, panelX, elementBox.y2Pos ) )
                         {
-                            GPE_change_cursor( SDL_SYSTEM_CURSOR_SIZEWE );
+                            gpe->cursor_change( "sizewe" );
                             if(input->check_mouse_pressed(0) )
                             {
                                 columnBeingResizedId = iColumn;
@@ -798,7 +858,7 @@ int gpeEditorDock::handle_resizing()
                     //IF the above else has not kicked in, we add to panelX for next column
                     if( panelColumnWidth[iColumn] > 0 )
                     {
-                        panelX += panelColumnWidth[iColumn] + GENERAL_GPE_PADDING;
+                        panelX += panelColumnWidth[iColumn] + dockHorizontalPadding;
                     }
                 }
             }
@@ -833,6 +893,124 @@ bool gpeEditorDock::is_hidden()
     return isHidden;
 }
 
+bool gpeEditorDock::load_dock_setings( std::string filename )
+{
+    //showStatupTipsBox->set_clicked( GPE_MAIN_GUI->showTipsAtStartUp );
+    if( GPE_LOADER != NULL )
+    {
+        GPE_LOADER->update_submessages( "Loading Editor Settings", "Please wait..." );
+    }
+
+    std::string otherColContainerName = "";
+
+    std::string newFileIn = get_user_settings_folder()+filename;
+    std::ifstream gameResourceFileIn( newFileIn.c_str() );
+
+    GPE_Report("Loading Local Dock settings - "+newFileIn);
+    //If the level file could be loaded
+
+    int iLoop = 0;
+
+    //If the file failed to read we return false
+    if( gameResourceFileIn.fail() )
+    {
+        GPE_Report("Failed to open dock settings!");
+        return false;
+    }
+    //makes sure the file is open
+    if ( !gameResourceFileIn.is_open())
+    {
+        GPE_Report("Failed to read dock settings!");
+        return false;
+    }
+
+    int equalPos = 0;
+    std::string firstChar="";
+    std::string keyString="";
+    std::string valString="";
+    std::string subValString="";
+    std::string currLine="";
+    std::string currLineToBeProcessed;
+    std::string colorThemeName;
+    float foundFileVersion = 0;
+    int foundDelayTime = 0;
+    int foundFPSValue = FPS_CAP;
+    while ( gameResourceFileIn.good() )
+    {
+        getline (gameResourceFileIn,currLine); //gets the next line of the file
+        currLineToBeProcessed = trim_left_inplace(currLine);
+        currLineToBeProcessed = trim_right_inplace(currLineToBeProcessed);
+
+        if( foundFileVersion <=0)
+        {
+            //Empty Line skipping is only allowed at the top of the file
+            if(!currLineToBeProcessed.empty() )
+            {
+                //Comment skipping is only allowed at the top of the file
+                if( currLineToBeProcessed[0]!= '#' && currLineToBeProcessed[0]!='/'  )
+                {
+                    //searches for an equal character and parses through the variable
+                    equalPos=currLineToBeProcessed.find_first_of("=");
+                    if(equalPos!=(int)std::string::npos)
+                    {
+                        //if the equalPos is present, then parse on through and carryon
+                        keyString = currLineToBeProcessed.substr(0,equalPos);
+                        valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                        if( keyString=="Version")
+                        {
+                            foundFileVersion = string_to_float(valString);
+                        }
+                    }
+                }
+            }
+        }
+        else if( foundFileVersion <= 2)
+        {
+            //Begin processing the file.
+            if(!currLineToBeProcessed.empty() )
+            {
+                equalPos=currLineToBeProcessed.find_first_of("=");
+                if(equalPos!=(int)std::string::npos)
+                {
+                    //if the equalPos is present, then parse on through and carryon
+                    keyString = currLineToBeProcessed.substr(0,equalPos);
+                    valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+
+                    //GPE_Report("Detected Key:     "+keyString);
+                    if( keyString == "DockHidden")
+                    {
+                        isHidden = string_to_bool( valString);
+                    }
+                    else if( string_starts(keyString, "PanelWidthPercent[" ) )
+                    {
+                        for( int iLoop = 0; iLoop < DOCK_MAX_COLUMN_COUNT; iLoop++)
+                        {
+                            if( keyString == "PanelWidthPercent["+int_to_string(iLoop)+"]" )
+                            {
+                                panelWidthPercentages[ iLoop ] = string_to_float( valString);
+                            }
+                        }
+                    }
+                    else if( string_starts(keyString, "PanelHeightPercent[" ) )
+                    {
+                        for( int iLoop = 0; iLoop < DOCK_MAX_PANEL_COUNT; iLoop++)
+                        {
+                            if( keyString == "PanelHeightPercent["+int_to_string(iLoop)+"]" )
+                            {
+                                panelHeightPercentages[ iLoop ] = string_to_float( valString);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    GPE_Report("Loaded in dock settings..");
+    GPE_Report("Setting up new dock..");
+    return true;
+}
+
 void gpeEditorDock::process_dock( GPE_Rect * viewedSpace, GPE_Rect * cam  )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
@@ -845,21 +1023,31 @@ void gpeEditorDock::process_dock( GPE_Rect * viewedSpace, GPE_Rect * cam  )
     {
         panels[DOCK_BOTTOM_MIDDLE]->process_self( viewedSpace, cam );
     }
+
+    if( GPE_MAIN_GUI->mainResourceTree!=NULL && PANEL_RESOURCE_TREE!=NULL )
+    {
+        PANEL_RESOURCE_TREE->clear_panel();
+        PANEL_RESOURCE_TREE->add_gui_element_fullsize(  GPE_MAIN_GUI->mainResourceTree );
+    }
     //Process all of the remaining panels
     gpeEditorDockPanel *  tPanel = NULL;
+    gpeEditorDockPanel *  bPanel = NULL;
     int tPanelButtonHitID = -1;
     int iPanel = 0;
     for( iPanel = 0; iPanel < DOCK_MAX_PANEL_COUNT; iPanel++ )
     {
-        tPanel = panels[iPanel];
-        if( tPanel!=NULL )
+        if( iPanel!= DOCK_TOP_MIDDLE && iPanel!=DOCK_BOTTOM_MIDDLE)
         {
-            tPanel->process_self(  viewedSpace, cam );
-            if( tPanel->dockSettingsButton!=NULL && tPanel->dockSettingsButton->is_clicked() )
+            tPanel = panels[iPanel];
+            if( tPanel!=NULL )
             {
-                tPanelButtonHitID = iPanel;
-                tPanel->dockSettingsButton->set_clicked( false );
-                input->reset_all_input();
+                tPanel->process_self(  viewedSpace, cam );
+                if( tPanel->dockSettingsButton!=NULL && tPanel->dockSettingsButton->is_clicked() )
+                {
+                    tPanelButtonHitID = iPanel;
+                    tPanel->dockSettingsButton->set_clicked( false );
+                    input->reset_all_input();
+                }
             }
         }
     }
@@ -876,11 +1064,12 @@ void gpeEditorDock::process_dock( GPE_Rect * viewedSpace, GPE_Rect * cam  )
                 MAIN_CONTEXT_MENU->add_menu_option("Move to "+defaultPanelNames[iPanel], iPanel,NULL,-1,NULL,true,true);
             }
         }
+
         int closePanelId = 128;
         MAIN_CONTEXT_MENU->add_menu_option("Close Content", closePanelId,NULL,-1,NULL,true,true);
         //tPanel->dockSettingsButton->set_clicked( false );
         int menuSelection = GPE_Get_Context_Result();
-        if( menuSelection >= 0 && menuSelection < DOCK_MAX_PANEL_COUNT)
+        if( menuSelection >= 0 && menuSelection < DOCK_MAX_PANEL_COUNT )
         {
             //Add content to new panel
             std::string selectedPanelName = panels[tPanelButtonHitID]->get_selected_container();
@@ -894,17 +1083,20 @@ void gpeEditorDock::process_dock( GPE_Rect * viewedSpace, GPE_Rect * cam  )
             GPE_Main_Logs->log_general_line("Removing panel ["+int_to_string(tPanelButtonHitID)+"]");
         }
         input->reset_all_input();
-        setup_dock();
     }
 }
 
 void gpeEditorDock::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam  )
 {
-    //setup_dock();
+    viewedSpace = GPE_find_camera( viewedSpace );
+    cam = GPE_find_camera( cam );
+
+
+    setup_dock();
     //If no sort of resizing occurred
     if( handle_resizing() < 0 )
     {
-        process_dock();
+        process_dock( viewedSpace, cam );
     }
 }
 
@@ -939,20 +1131,20 @@ void gpeEditorDock::remove_panel( std::string name )
     }
 }
 
-void gpeEditorDock::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw   )
+void gpeEditorDock::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam   )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
 
     if( isHidden )
     {
-        //return;
+        return;
     }
 
     if( beingResized && columnBeingResizedId >=0 )
     {
-        MAIN_RENDERER->reset_viewpoint();
-        if( forceRedraw )
+        GPE_MAIN_RENDERER->reset_viewpoint();
+        //if( forceRedraw )
         {
             MAIN_OVERLAY->render_frozen_screenshot( );
         }
@@ -962,43 +1154,45 @@ void gpeEditorDock::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool for
         }
         else if( verticalResize)
         {
-            gcanvas->render_rectangle( get_xpos(),input->mouse_y+4, get_x2pos(), input->mouse_y-4, GPE_MAIN_THEME->PopUp_Box_Border_Color, false );
+            gcanvas->render_rectangle( resizePanelX1,input->mouse_y+4, resizePanelX2, input->mouse_y-4, GPE_MAIN_THEME->PopUp_Box_Border_Color, false );
         }
     }
     else
     {
-        MAIN_RENDERER->reset_viewpoint();
+        GPE_MAIN_RENDERER->reset_viewpoint();
         gpeEditorDockPanel *  tPanel = NULL;
         for( int iPanel = 0; iPanel < DOCK_MAX_PANEL_COUNT; iPanel++ )
         {
-            //if( iPanel != DOCK_TOP_MIDDLE && iPanel!= DOCK_BOTTOM_MIDDLE)
+            tPanel = panels[iPanel];
+            if( tPanel!=NULL && tPanel->has_content() )
             {
-                tPanel = panels[iPanel];
-                if( tPanel!=NULL )
-                {
-                    tPanel->render_self( viewedSpace, cam, forceRedraw);
-                }
+                tPanel->render_self( viewedSpace, cam);
             }
+        }
+
+        if( GPE_DEFAULT_FONT == NULL )
+        {
+            return;
         }
     }
 }
 
 void gpeEditorDock::reset_dock()
 {
+    currentColumnCount = 0;
+    dockWidthMinusColumnPadding = SCREEN_WIDTH;
+    dockMinimumColumnPercentage = 5;
     for( int iColumn = 0; iColumn < DOCK_MAX_COLUMN_COUNT; iColumn++ )
     {
-        panelColumnWidth[iColumn] = DOCK_COLUMN_DEFAULT_WIDTH;
-        panelWidthPercentages[iColumn] = 1.d/ (double)DOCK_MAX_COLUMN_COUNT;
+        panelWidthPercentages[ iColumn ] = 100.f / (float)DOCK_MAX_COLUMN_COUNT;
+        panelColumnWidth[iColumn] = dockMinimumColumnPercentage * panelWidthPercentages[ iColumn ];
     }
+
     for( int iPanels = 0; iPanels < DOCK_MAX_PANEL_COUNT; iPanels++ )
     {
-        panelHeightPercentages[iPanels] = 1.d/ (double)DOCK_MAX_ROW_COUNT;
+        panelHeightPercentages[iPanels] = 100.f/ (float)DOCK_MAX_ROW_COUNT;
     }
-    //Calculates the middle width
-    if( SCREEN_WIDTH > DOCK_COLUMN_DEFAULT_WIDTH * DOCK_MAX_COLUMN_COUNT)
-    {
-        panelColumnWidth[DOCK_COLUMN_DEFAULT_WIDTH * DOCK_MAX_COLUMN_COUNT] = SCREEN_WIDTH - ( DOCK_COLUMN_DEFAULT_WIDTH * (DOCK_MAX_COLUMN_COUNT-1) );
-    }
+
     gpeEditorDockPanel *  tPanel = NULL;
     for( int iPanel = 0; iPanel < DOCK_MAX_PANEL_COUNT; iPanel++ )
     {
@@ -1031,117 +1225,192 @@ void gpeEditorDock::reset_dock()
     //defaultPanels.clear();
 }
 
+bool gpeEditorDock::save_dock_setings( std::string filename )
+{
+    if( (int)filename.size() < 5 )
+    {
+        filename = "dock_settings.gpf";
+    }
+    std::string newSaveDataFilename = get_user_settings_folder()+filename;
+    std::ofstream newSaveDataFile( newSaveDataFilename.c_str() );
+    //If the scene file could be saved
+    if( !newSaveDataFile.fail() )
+    {
+        //makes sure the file is open
+        if (newSaveDataFile.is_open() )
+        {
+            newSaveDataFile << "Version=" << GPE_VERSION_FLOAT_NUMBER << "\n";
+            newSaveDataFile << "#     \n";
+            newSaveDataFile << "DockHidden=" << isHidden << "\n";
+            int i = 0;
+            for ( i = 0; i < DOCK_MAX_COLUMN_COUNT; i++)
+            {
+                newSaveDataFile << "PanelWidth["+ int_to_string(i)+ "]=" << panelColumnWidth[i] << "\n";
+                newSaveDataFile << "PanelWidthPercent["+ int_to_string(i)+ "]=" << panelWidthPercentages[i] << "\n";
+            }
+            for ( i = 0; i < DOCK_MAX_PANEL_COUNT; i++)
+            {
+                newSaveDataFile << "PanelHeightPercent["+ int_to_string(i)+ "]=" << panelHeightPercentages[i] << "\n";
+            }
+            newSaveDataFile << "\n";
+        }
+    }
+}
+
 void gpeEditorDock::setup_dock()
 {
     panels[ DOCK_TOP_MIDDLE ]->specialPanelElement = GPE_Main_TabManager;
     panels[ DOCK_BOTTOM_MIDDLE ]->specialPanelElement = GPE_Main_Logs;
-    gpeEditorDockPanel *  tPanel = NULL;
-    gpeEditorDockPanel *  bPanel = NULL;
 
-    //Manages the heights of the panels
-    int iPanelCol = 0;
-    int panelColumnCount = 1;
-    for( iPanelCol = 0; iPanelCol < DOCK_MAX_COLUMN_COUNT; iPanelCol++ )
+    dockWidthMinusColumnPadding = elementBox.w;
+    currentColumnCount = 0;
+    //checks the column max widths
+    gpeEditorDockPanel * tPanel = NULL;
+    gpeEditorDockPanel * bPanel = NULL;
+    bool columnFound = false;
+    float calculatedPercentages = 0;
+    int iCol = 0;
+    for(  iCol = 0; iCol < DOCK_MAX_COLUMN_COUNT; iCol++)
     {
-        tPanel = panels[iPanelCol];
-        bPanel = panels[iPanelCol + DOCK_MAX_COLUMN_COUNT ];
-        if( tPanel!=NULL ) //&& iPanelCol != DOCK_TOP_MIDDLE )
+        tPanel = panels[ iCol ];
+        bPanel = panels[ iCol + DOCK_MAX_COLUMN_COUNT ];
+
+        if( tPanel!=NULL && tPanel->has_content() )
         {
-            //Resets the panel's settings button
-            if( tPanel->dockSettingsButton==NULL )
-            {
-                tPanel->dockSettingsButton->set_clicked( false );
-            }
-            //Checks to make sure heights are not out of the ordinary
-            if( panelHeightPercentages[iPanelCol] < 0.d )
-            {
-                panelHeightPercentages[iPanelCol] = 0.d;
-                panelHeightPercentages[iPanelCol + DOCK_MAX_COLUMN_COUNT  ] = 1.0;
-            }
-            else if(  panelHeightPercentages[iPanelCol]  > 1.d)
-            {
-                panelHeightPercentages[iPanelCol] = 1.0;
-                panelHeightPercentages[iPanelCol + DOCK_MAX_COLUMN_COUNT  ] = 0.d;
-            }
+            columnFound = true;
+        }
 
-            if( panelHeightPercentages[iPanelCol  + DOCK_MAX_COLUMN_COUNT  ] < 0.0 )
+        if( bPanel != NULL &&  bPanel->has_content() )
+        {
+            columnFound = true;
+        }
+        if( columnFound )
+        {
+            currentColumnCount++;
+            //panelWidthPercentages[iCol]  =  panelWidthPercentages[iCol]  );
+            if( panelWidthPercentages[iCol] < dockMinimumColumnPercentage )
             {
-                panelHeightPercentages[iPanelCol] = 1.0;
-                panelHeightPercentages[iPanelCol + DOCK_MAX_COLUMN_COUNT  ] = 0.0;
+                panelWidthPercentages[iCol] = dockMinimumColumnPercentage;
             }
-            else if(  panelHeightPercentages[iPanelCol  + DOCK_MAX_COLUMN_COUNT ]  > 1.0)
-            {
-                panelHeightPercentages[iPanelCol] = 0.0;
-                panelHeightPercentages[iPanelCol  + DOCK_MAX_COLUMN_COUNT ] = 1.0;
-            }
+            calculatedPercentages += panelWidthPercentages[iCol];
 
-            //Resets the panel's settings button
-            if( bPanel!=NULL )
-            {
-                if( bPanel->dockSettingsButton==NULL )
-                {
-                    bPanel->dockSettingsButton->set_clicked( false );
-                }
-                //Cuts Column from view if both panels has no content
-                if( !tPanel->has_content() && !bPanel->has_content() )
-                {
-                    panelColumnWidth[iPanelCol] = 0;
-                    panelHeightPercentages[iPanelCol + DOCK_MAX_COLUMN_COUNT ] = 0.d;
-                    panelHeightPercentages[ iPanelCol ] = 0.d;
-                    //panelColumnWidth[iPanelCol + DOCK_MAX_COLUMN_COUNT] = 0;
-                }
-                else
-                {
-                    if( panelColumnWidth[iPanelCol] < DOCK_COLUMN_MIN_WIDTH )
-                    {
-                         panelColumnWidth[iPanelCol] = DOCK_COLUMN_MIN_WIDTH;
-                    }
-                    if( tPanel->has_content() && !bPanel->has_content())
-                    {
-                        //cuts bottom panel from view
-                        panelHeightPercentages[iPanelCol] = 1;
-                        panelHeightPercentages[iPanelCol + DOCK_MAX_COLUMN_COUNT ] = 0;
-                        tPanel->set_height( elementBox.h );
-                    }
-                    else if( bPanel->has_content() && !tPanel->has_content())
-                    {
-                        //cuts top panel from view
-                        panelHeightPercentages[iPanelCol] = 0;
-                        panelHeightPercentages[iPanelCol + DOCK_MAX_COLUMN_COUNT ] = 1;
-                        bPanel->set_height( elementBox.h );
-                    }
-                    tPanel->set_height( (elementBox.h-GENERAL_GPE_PADDING) * panelHeightPercentages[iPanelCol] );
-                    bPanel->set_height( (elementBox.h-GENERAL_GPE_PADDING) * ( panelHeightPercentages[iPanelCol + DOCK_MAX_COLUMN_COUNT] ) );
-                    panelColumnCount++;
-                }
-            }
-            else
-            {
-                //This should not occur, since we should always have col*row panels
-                //But here is the fuzzy code in case this rare case happens(Maybe low memory or something..
-                //Defaults to top panel being 100% in height
-                panelHeightPercentages[iPanelCol] = 1.0;
-                panelHeightPercentages[iPanelCol + DOCK_MAX_COLUMN_COUNT ] = 0;
-                if( tPanel->has_content() )
-                {
-                    if( panelColumnWidth[iPanelCol] < DOCK_COLUMN_MIN_WIDTH )
-                    {
-                         panelColumnWidth[iPanelCol] = DOCK_COLUMN_MIN_WIDTH;
-                    }
-                    panelColumnCount++;
-                }
-                tPanel->set_height( elementBox.h );
-            }
         }
         else
         {
-            //Would be weird if this happens, since we should have all panels as non-nulls
-            //panelColumnWidth[iPanelCol] = 0;
+            panelWidthPercentages[ iCol ] = 0.f;
+            panelHeightPercentages[iCol + DOCK_MAX_COLUMN_COUNT ] = 0.f;
+            panelHeightPercentages[ iCol ] = 0.f;
         }
+        columnFound = false;
+    }
+
+    dockWidthMinusColumnPadding -=  (currentColumnCount -1) * (float)dockHorizontalPadding;
+
+    float percentageDifference = 0;
+    if( calculatedPercentages < 100.f )
+    {
+        percentageDifference = 100.f - calculatedPercentages;
+        panelWidthPercentages[DOCK_TOP_MIDDLE] += percentageDifference;
+        return;
+    }
+    else if( calculatedPercentages > 100.f )
+    {
+        percentageDifference =  calculatedPercentages -100.f;
+        panelWidthPercentages[DOCK_TOP_MIDDLE] -= percentageDifference;
+        return;
+    }
+    //Manages the heights of the panels
+    for( iCol = 0; iCol < DOCK_MAX_COLUMN_COUNT; iCol++ )
+    {
+        tPanel = panels[iCol];
+        bPanel = panels[iCol + DOCK_MAX_COLUMN_COUNT ];
+
+        tPanel->clear_panel();
+        bPanel->clear_panel();
+
+        //Resets the panel's settings button
+        if( tPanel->dockSettingsButton!=NULL )
+        {
+            tPanel->dockSettingsButton->set_clicked( false );
+        }
+
+        if( bPanel->dockSettingsButton!=NULL )
+        {
+            bPanel->dockSettingsButton->set_clicked( false );
+        }
+
+        panelColumnWidth[iCol] =  floor( dockWidthMinusColumnPadding * panelWidthPercentages[iCol]/100.f );
+
+        //Checks to make sure heights are not out of the ordinary
+        panelHeightPercentages[iCol] =  floor( panelHeightPercentages[iCol] );
+        panelHeightPercentages[iCol + DOCK_MAX_COLUMN_COUNT ] =  floor( panelHeightPercentages[iCol + DOCK_MAX_COLUMN_COUNT ] );
+        if( panelHeightPercentages[iCol] < 0.f )
+        {
+            panelHeightPercentages[iCol] = 0.f;
+            panelHeightPercentages[iCol + DOCK_MAX_COLUMN_COUNT  ] = 100.f;
+        }
+        else if(  panelHeightPercentages[iCol]  > 100.f)
+        {
+            panelHeightPercentages[iCol] = 100.f;
+            panelHeightPercentages[iCol + DOCK_MAX_COLUMN_COUNT  ] = 0.f;
+        }
+
+        if( panelHeightPercentages[iCol  + DOCK_MAX_COLUMN_COUNT  ] < 0.f )
+        {
+            panelHeightPercentages[iCol] = 100.f;
+            panelHeightPercentages[iCol + DOCK_MAX_COLUMN_COUNT  ] = 0.f;
+        }
+        else if(  panelHeightPercentages[iCol  + DOCK_MAX_COLUMN_COUNT ]  > 100.f)
+        {
+            panelHeightPercentages[iCol] = 0.f;
+            panelHeightPercentages[iCol  + DOCK_MAX_COLUMN_COUNT ] = 100.f;
+        }
+
+
+        if( tPanel->has_content() && bPanel->has_content())
+        {
+            tPanel->set_width( panelColumnWidth[ iCol ] );
+            bPanel->set_width( panelColumnWidth[ iCol ] );
+
+        }
+        //If the botton doesnt have any content
+        else if( tPanel->has_content() && !bPanel->has_content())
+        {
+            //cuts bottom panel from view
+            panelHeightPercentages[iCol] = 100.f;
+            panelHeightPercentages[iCol + DOCK_MAX_COLUMN_COUNT ] = 0.f;
+            tPanel->set_width( panelColumnWidth[ iCol ] );
+            tPanel->set_height( elementBox.h );
+
+        }
+        else if( bPanel->has_content() && !tPanel->has_content())
+        {
+            //cuts top panel from view
+            bPanel->set_width( panelColumnWidth[ iCol ] );
+
+            panelHeightPercentages[iCol] = 0.f;
+            panelHeightPercentages[iCol + DOCK_MAX_COLUMN_COUNT ] = 100.f;
+            bPanel->set_height( elementBox.h );
+        }
+        else
+        {
+            //This should not occur, since we should always have col*row panels
+            //But here is the fuzzy code in case this rare case happens(Maybe low memory or something..
+            //Defaults to top panel being 100% in height
+            panelHeightPercentages[iCol] = 100.f;
+            panelHeightPercentages[iCol + DOCK_MAX_COLUMN_COUNT ] = 0.f;
+            if( tPanel->has_content() )
+            {
+                tPanel->set_width( panelColumnWidth[ iCol ] );
+                tPanel->set_height( elementBox.h );
+            }
+        }
+
+        tPanel->set_height( (elementBox.h-dockVerticalPadding) * panelHeightPercentages[iCol]/100.f );
+        bPanel->set_height( (elementBox.h-dockVerticalPadding) * ( panelHeightPercentages[iCol + DOCK_MAX_COLUMN_COUNT] )/100.f );
     }
 
     //Horizontally Resizing panels;
-    gpeEditorDockPanel * currPanel;
     bool panelBeingHovered = false;
 
     //Let's set the position of the  panels
@@ -1149,65 +1418,28 @@ void gpeEditorDock::setup_dock()
     int panelY = 0;
     int cPanel = 0;
 
-
-    for( iPanelCol = 0; iPanelCol < DOCK_MAX_COLUMN_COUNT ; iPanelCol++)
+    //Places the panels on the docks
+    for( iCol = 0; iCol < DOCK_MAX_COLUMN_COUNT ; iCol++)
     {
         for( int jPanelRow = 0; jPanelRow < DOCK_MAX_ROW_COUNT ; jPanelRow++)
         {
-            cPanel = iPanelCol + jPanelRow*DOCK_MAX_COLUMN_COUNT;
-            tPanel =panels[cPanel];
+            cPanel = iCol + jPanelRow*DOCK_MAX_COLUMN_COUNT;
+            tPanel = panels[cPanel];
             if( tPanel!=NULL && tPanel->has_content() )
             {
                 tPanel->set_coords(panelX, elementBox.y + panelY );
-                tPanel->set_width( panelColumnWidth[ iPanelCol ] );
 
                 //Basically only add to PanelY if its not the bottom one
-                panelY+= panels[ cPanel]->get_height() + GENERAL_GPE_PADDING;
-                tPanel->setup_panel( !beingResized, true );
-            }
-        }
-        if( panelColumnWidth[iPanelCol] > 0 )
-        {
-            if( panelColumnCount > 1 )
-            {
-                panelX+= panelColumnWidth[ iPanelCol ] + GENERAL_GPE_PADDING;
-            }
-            else
-            {
-                panelX = SCREEN_WIDTH;
+                panelY+= panels[ cPanel]->get_height() + dockVerticalPadding;
             }
         }
         panelY = 0;
+        if( panelColumnWidth[iCol] > 0.f )
+        {
+            panelX+= panelColumnWidth[ iCol ] + dockHorizontalPadding;
+        }
     }
 
-    //Readjust middle column if more space is available
-    if( panelX < SCREEN_WIDTH)
-    {
-        panelColumnWidth[ DOCK_TOP_MIDDLE] += SCREEN_WIDTH - panelX;
-        /*setup_dock(); //Performs recursion to set the new true coords
-        return; */
-    }
-    else if( panelX > SCREEN_WIDTH && panelColumnCount > 0 )
-    {
-        if( panelColumnCount == 1 )
-        {
-            for( iPanelCol = 0; iPanelCol < DOCK_MAX_COLUMN_COUNT ; iPanelCol++)
-            {
-                panelColumnWidth[iPanelCol] = 0;
-            }
-            panelColumnWidth[DOCK_TOP_MIDDLE] = SCREEN_WIDTH;
-        }
-        else
-        {
-            int adjustedColumnWidth = SCREEN_WIDTH / panelColumnCount - (GENERAL_GPE_PADDING*panelColumnCount) - GENERAL_GPE_PADDING;
-            for( iPanelCol = 0; iPanelCol < DOCK_MAX_COLUMN_COUNT ; iPanelCol++)
-            {
-                panelColumnWidth[iPanelCol] = adjustedColumnWidth;
-            }
-        }
-        //setup_dock();
-        //return;
-    }
     PANEL_RESOURCE_TREE = find_panel("Resources");
     PANEL_GENERAL_EDITOR = find_panel("Editor");
     PANEL_INSPECTOR = find_panel("Inspector");
@@ -1225,6 +1457,7 @@ void gpeEditorDock::toggle_default_pane( std::string name )
         {
             if( tempPair->keyString == name || tempPair->keySubString == name )
             {
+                GPE_Report("Panel["+float_to_string(tempPair->keyValue)+"] found to toggle...");
                 toggle_panel( tempPair->keyString, tempPair->keyValue, true );
             }
         }
@@ -1233,16 +1466,18 @@ void gpeEditorDock::toggle_default_pane( std::string name )
 
 void gpeEditorDock::toggle_panel(  std::string name, int panelId,  bool open  )
 {
-    if( (int)name.size() == 0)
+    if( (int)name.size() == 0 )
     {
         return;
     }
     if( find_panel( name) != NULL )
     {
+        GPE_Report("Panel already found, so removing...");
         remove_panel( name );
     }
     else
     {
+        GPE_Report("Adding toggled panel to dock...");
         add_to_panel( name, panelId, open );
     }
 }
@@ -1287,19 +1522,5 @@ void gpeEditorDock::update_toolbar()
         }
     }
     toolbarOptonsHolder->add_menu_option("Reset Dock",-1,NULL,-1,NULL,false);
-}
-
-gpeEditorDockPanel * gpeEditorDock::find_panel( std::string name )
-{
-    gpeEditorDockPanel *  tPanel = NULL;
-    for( int iPanel = 0; iPanel < DOCK_MAX_PANEL_COUNT; iPanel++ )
-    {
-        tPanel = panels[iPanel];
-        if( tPanel!=NULL && tPanel->container_in_view(name) )
-        {
-            return tPanel;
-        }
-    }
-    return NULL;
 }
 

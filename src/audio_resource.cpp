@@ -3,10 +3,10 @@ audio_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -59,7 +59,7 @@ audioResource::audioResource(GPE_GeneralResourceContainer * pFolder)
     audioTypeButtonController->add_opton("Background Music");
     if( saveResourceButton!=NULL)
     {
-        audioTypeButtonController->set_coords(-1,saveResourceButton->get_ypos()+saveResourceButton->get_height()+GENERAL_GPE_PADDING);
+        audioTypeButtonController->set_coords(-1,saveResourceButton->get_ypos()+saveResourceButton->get_height()+GENERAL_GPE_GUI_PADDING);
     }
     openExternalEditorButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/rocket.png","Use External Editor" );
     refreshResourceDataButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/refresh.png"," Refreshes this resource's media files");
@@ -151,7 +151,7 @@ bool audioResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTab
         {
             if( (int)audioFileName[i].size() > 3)
             {
-                *fileTarget << "'resources/audio/"+getShortFileName( audioFileName[i] )+"',";
+                *fileTarget << "'resources/audio/"+get_short_filename( audioFileName[i] )+"',";
             }
             else
             {
@@ -216,7 +216,7 @@ bool audioResource::copy_audio_source(std::string outDirectoryName)
     {
         if((int)audioFileName[i].size() > 0)
         {
-            copyDestinationStr = outDirectoryName+"/"+ getShortFileName(audioFileName[i],true);
+            copyDestinationStr = outDirectoryName+"/"+ get_short_filename(audioFileName[i],true);
             if( copy_file(audioFileName[i],copyDestinationStr )==false)
             {
                 copyErrorFound = true;
@@ -224,6 +224,11 @@ bool audioResource::copy_audio_source(std::string outDirectoryName)
         }
     }
     return copyErrorFound;
+}
+
+bool audioResource::include_local_files( std::string pBuildDir , int buildType )
+{
+    return true;
 }
 
 void audioResource::load_audio(std::string newFileName)
@@ -273,7 +278,7 @@ void audioResource::load_audio(std::string newFileName)
         }
         if( isAudioFile)
         {
-            copy_audio_source( fileToDir(parentProjectName)+"/gpe_project/resources/audio" );
+            copy_audio_source( file_to_dir(parentProjectName)+"/gpe_project/resources/audio" );
         }
     }
     else
@@ -284,138 +289,139 @@ void audioResource::load_audio(std::string newFileName)
 
 void audioResource::preprocess_self(std::string alternatePath )
 {
-    if( resourcePostProcessed ==false  || file_exists(alternatePath) )
+
+    if( GPE_LOADER != NULL )
     {
-        if( GPE_LOADER != NULL )
-        {
-            GPE_LOADER->update_submessages( "Processing Audio", resourceName );
-        }
-        std::string otherColContainerName = "";
+        GPE_LOADER->update_submessages( "Processing Audio", resourceName );
+    }
+    std::string otherColContainerName = "";
 
-        std::string newFileIn ="";
-        std::string soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/audio/";
-        if( file_exists(alternatePath) )
-        {
-            newFileIn = alternatePath;
-            soughtDir = get_path_from_file(newFileIn);
-        }
-        else
-        {
-            newFileIn = soughtDir + resourceName+".gpf";
-        }
-        std::ifstream gameResourceFileIn( newFileIn.c_str() );
+    std::string newFileIn ="";
+    std::string soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/audio/";
+    if( file_exists(alternatePath) )
+    {
+        newFileIn = alternatePath;
+        soughtDir = get_path_from_file(newFileIn);
+    }
+    else
+    {
+        newFileIn = soughtDir + resourceName+".gpf";
+    }
+    std::ifstream gameResourceFileIn( newFileIn.c_str() );
 
-        GPE_Report("Loading audio resource - "+newFileIn);
-        if( !gameResourceFileIn.fail() )
-            //If the level file could be loaded
+    GPE_Report("Loading audio resource - "+newFileIn);
+    if( gameResourceFileIn.fail() )
+    {
+        gameResourceFileIn.close();
+        return;
+    }
+    //makes sure the file is open
+    if ( !gameResourceFileIn.is_open())
+    {
+        gameResourceFileIn.close();
+        return;
+    }
+    int equalPos = 0;
+    std::string firstChar="";
+    std::string section="";
+    std::string keyString="";
+    std::string valString="";
+    std::string subValString="";
+    std::string currLine="";
+    std::string currLineToBeProcessed;
+    float foundFileVersion = 0;
+    std::string fFontFile = "";
+    while ( gameResourceFileIn.good() )
+    {
+        getline (gameResourceFileIn,currLine); //gets the next line of the file
+        currLineToBeProcessed = trim_left_inplace(currLine);
+        currLineToBeProcessed = trim_right_inplace(currLineToBeProcessed);
+
+        if( foundFileVersion <=0)
         {
-            //makes sure the file is open
-            if (gameResourceFileIn.is_open())
+            //Empty Line skipping is only allowed at the top of the file
+            if(!currLineToBeProcessed.empty() )
             {
-                int equalPos = 0;
-                std::string firstChar="";
-                std::string section="";
-                std::string keyString="";
-                std::string valString="";
-                std::string subValString="";
-                std::string currLine="";
-                std::string currLineToBeProcessed;
-                double foundFileVersion = 0;
-                std::string fFontFile = "";
-                while ( gameResourceFileIn.good() )
+                //Comment skipping is only allowed at the top of the file
+                if( currLineToBeProcessed[0]!= '#' && currLineToBeProcessed[0]!='/'  )
                 {
-                    getline (gameResourceFileIn,currLine); //gets the next line of the file
-                    currLineToBeProcessed = trim_left_inplace(currLine);
-                    currLineToBeProcessed = trim_right_inplace(currLineToBeProcessed);
-
-                    if( foundFileVersion <=0)
+                    //searches for an equal character and parses through the variable
+                    equalPos = currLineToBeProcessed.find_first_of("=");
+                    if(equalPos!=(int)std::string::npos)
                     {
-                        //Empty Line skipping is only allowed at the top of the file
-                        if(!currLineToBeProcessed.empty() )
+                        //if the equalPos is present, then parse on through and carryon
+                        keyString = currLineToBeProcessed.substr(0,equalPos);
+                        valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                        if( keyString=="Version")
                         {
-                            //Comment skipping is only allowed at the top of the file
-                            if( currLineToBeProcessed[0]!= '#' && currLineToBeProcessed[0]!='/'  )
-                            {
-                                //searches for an equal character and parses through the variable
-                                equalPos = currLineToBeProcessed.find_first_of("=");
-                                if(equalPos!=(int)std::string::npos)
-                                {
-                                    //if the equalPos is present, then parse on through and carryon
-                                    keyString = currLineToBeProcessed.substr(0,equalPos);
-                                    valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                                    if( keyString=="Version")
-                                    {
-                                        foundFileVersion = string_to_double(valString);
-                                    }
-                                }
-                            }
+                            foundFileVersion = string_to_float(valString);
                         }
-                    }
-                    else if( foundFileVersion <= 2)
-                    {
-                        //Begin processing the file.
-                        if(!currLineToBeProcessed.empty() )
-                        {
-                            equalPos=currLineToBeProcessed.find_first_of("=");
-                            if(equalPos!=(int)std::string::npos)
-                            {
-                                //if the equalPos is present, then parse on through and carryon
-                                keyString = currLineToBeProcessed.substr(0,equalPos);
-                                valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-
-                                if( keyString=="ResourceName")
-                                {
-                                    renameBox->set_string(valString);
-                                }
-                                else if( keyString=="AudioFileLocation")
-                                {
-                                    load_audio( soughtDir+valString );
-                                }
-                                else if( keyString=="Preload")
-                                {
-                                    isPreloaded = string_to_bool(valString);
-                                    preloadCheckBox->set_clicked(isPreloaded );
-                                }
-                                else if( keyString=="AudioGroup")
-                                {
-                                    audioGroupName->set_string(valString);
-                                }
-                                else if( keyString=="AudioType")
-                                {
-                                    audioType = string_to_int(valString,0);
-                                    audioTypeButtonController->set_selection(audioType);
-                                }
-                                else if( keyString=="DefaultVolume")
-                                {
-                                    defaultVolume->set_number(string_to_int(valString,100));
-                                }
-                                else
-                                {
-                                    for(int i = 0; i < SUPPORTED_AUDIO_FORMAT_COUNT; i++)
-                                    {
-                                        if( keyString=="AudioFile["+SUPPORTED_AUDIO_EXT[i]+"]")
-                                        {
-                                            //to at least include if a file type is available in string
-                                            if( (int)valString.size() > 3 )
-                                            {
-                                                load_audio( soughtDir+valString );
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        GPE_Report("Invalid FoundFileVersion ="+double_to_string(foundFileVersion)+".");
                     }
                 }
             }
         }
-    }
-    GPE_Report("Audio resource loaded...");
+        else if( foundFileVersion <= 2)
+        {
+            //Begin processing the file.
+            if(!currLineToBeProcessed.empty() )
+            {
+                equalPos=currLineToBeProcessed.find_first_of("=");
+                if(equalPos!=(int)std::string::npos)
+                {
+                    //if the equalPos is present, then parse on through and carryon
+                    keyString = currLineToBeProcessed.substr(0,equalPos);
+                    valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
+                    if( keyString=="ResourceName")
+                    {
+                        renameBox->set_string(valString);
+                    }
+                    else if( keyString=="AudioFileLocation")
+                    {
+                        load_audio( soughtDir+valString );
+                    }
+                    else if( keyString=="Preload")
+                    {
+                        isPreloaded = string_to_bool(valString);
+                        preloadCheckBox->set_clicked(isPreloaded );
+                    }
+                    else if( keyString=="AudioGroup")
+                    {
+                        audioGroupName->set_string(valString);
+                    }
+                    else if( keyString=="AudioType")
+                    {
+                        audioType = string_to_int(valString,0);
+                        audioTypeButtonController->set_selection(audioType);
+                    }
+                    else if( keyString=="DefaultVolume")
+                    {
+                        defaultVolume->set_number(string_to_int(valString,100));
+                    }
+                    else
+                    {
+                        for(int i = 0; i < SUPPORTED_AUDIO_FORMAT_COUNT; i++)
+                        {
+                            if( keyString=="AudioFile["+SUPPORTED_AUDIO_EXT[i]+"]")
+                            {
+                                //to at least include if a file type is available in string
+                                if( (int)valString.size() > 3 )
+                                {
+                                    load_audio( soughtDir+valString );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            GPE_Report("Invalid FoundFileVersion ="+float_to_string(foundFileVersion)+".");
+        }
+    }
+
+    GPE_Report("Audio resource loaded...");
 }
 
 void audioResource::prerender_self( )
@@ -600,21 +606,21 @@ void audioResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
     }
 }
 
-void audioResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw )
+void audioResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if(cam!=NULL && viewedSpace!=NULL && forceRedraw)
+    if(cam!=NULL && viewedSpace!=NULL)
     {
         for( int i = 0; i < SUPPORTED_AUDIO_FORMAT_COUNT; i++)
         {
             if( audioFileName[i].size()> 0)
             {
-                gfs->render_text( viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_AUDIO_EXT[i]+" attatched",GPE_MAIN_THEME->Main_Box_Font_Highlight_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_TOP);
+                gfs->render_text( viewedSpace->w-GENERAL_GPE_GUI_PADDING*3,GENERAL_GPE_GUI_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_AUDIO_EXT[i]+" attatched",GPE_MAIN_THEME->Main_Box_Font_Highlight_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_TOP);
             }
             else
             {
-                gfs->render_text( viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_AUDIO_EXT[i]+" not attatched",GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_TOP);
+                gfs->render_text( viewedSpace->w-GENERAL_GPE_GUI_PADDING*3,GENERAL_GPE_GUI_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_AUDIO_EXT[i]+" not attatched",GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_TOP);
             }
         }
     }
@@ -638,7 +644,7 @@ void audioResource::save_resource(std::string alternatePath, int backupId)
     }
     else
     {
-        soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/audio/";
+        soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/audio/";
         newFileOut = soughtDir + resourceName+".gpf";
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
@@ -655,11 +661,11 @@ void audioResource::save_resource(std::string alternatePath, int backupId)
             {
                 if( (int)audioFileName[i].size() > 3)
                 {
-                    resFileLocation = getShortFileName (audioFileName[i],true );
+                    resFileLocation = get_short_filename (audioFileName[i],true );
                     newSaveDataFile << "AudioFile["+SUPPORTED_AUDIO_EXT[i]+"]="+resFileLocation+"\n";
                     if( (int)resFileLocation.size() > 0 && usingAltSaveSource )
                     {
-                        resFileCopySrc = fileToDir(parentProjectName)+"/gpe_project/resources/audio/"+resFileLocation;
+                        resFileCopySrc = file_to_dir(parentProjectName)+"/gpe_project/resources/audio/"+resFileLocation;
                         resFileCopyDest = soughtDir+resFileLocation;
                         if( file_exists(resFileCopyDest) )
                         {

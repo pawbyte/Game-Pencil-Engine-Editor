@@ -3,10 +3,10 @@ gpe_scene_helper_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -124,13 +124,13 @@ GPE_SceneEditorHelper::GPE_SceneEditorHelper()
     currentCamera = new GPE_Rect();
     tempRect = new GPE_Rect();
     cameraFloorXPos = cameraFloorYPos = 0;
-    lightCircleTexture = new GPE_Texture();
-    lightCircleTexture->prerender_circle(256, c_white, 255 );
+    lightCircleTexture = gpeph->get_new_texture();
+    lightCircleTexture->prerender_circle( GPE_MAIN_RENDERER,256, c_white, 255 );
     lightCircleTexture->set_blend_mode( blend_mode_add);
     lightCircleTexture->change_alpha( 255 );
 
-    highlightRect = new GPE_Texture();
-    highlightRect->prerender_rectangle(256, 256, c_blue );
+    highlightRect = gpeph->get_new_texture();
+    highlightRect->prerender_rectangle( GPE_MAIN_RENDERER, 256, 256, c_blue );
     highlightRect->set_blend_mode( blend_mode_add );
     highlightRect->change_alpha( 255 );
 
@@ -213,13 +213,12 @@ gameScenePopupCategories *  GPE_SceneEditorHelper::add_category( std::string nam
 int GPE_SceneEditorHelper::get_new_resource(std::string title )
 {
     reset_meta();
-    if( GPE_MAIN_GUI!=NULL && MAIN_RENDERER!=NULL )
+    if( GPE_MAIN_GUI!=NULL && GPE_MAIN_RENDERER!=NULL )
     {
         gpe->end_loop();
         currentLabel->set_name("Select an option below for a new type in your scene");
         RESOURCE_TO_DRAG = NULL;
-        GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
-        MAIN_OVERLAY->process_cursor();
+        gpe->cursor_change( gpe->cursor_system_name( GPE_CURSOR_ARROW) );
         GPE_MAIN_GUI->reset_gui_info();
         MAIN_OVERLAY->take_frozen_screenshot( );
 
@@ -238,14 +237,14 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
         bool exitOperation = false;
         input->reset_all_input();
 
-        MAIN_RENDERER->reset_viewpoint();
+        GPE_MAIN_RENDERER->reset_viewpoint();
         //MAIN_OVERLAY->render_frozen_screenshot( );
         int selectedOptionId = -1;
         std::string selectedOptionStr = "";
         GPE_VerticalCardButton * selectedButton = NULL;
         while(exitOperation==false)
         {
-            GPE_change_cursor(SDL_SYSTEM_CURSOR_ARROW);
+            gpe->cursor_change( gpe->cursor_system_name( GPE_CURSOR_ARROW) );
             //GPE_Report("Processing tip of the day");
             gpe->start_loop();
 
@@ -262,8 +261,8 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
 
             topList->barXMargin = 0;
             topList->barYMargin = 0;
-            topList->barXPadding = GENERAL_GPE_PADDING;
-            topList->barYPadding = GENERAL_GPE_PADDING;
+            topList->barXPadding = GENERAL_GPE_GUI_PADDING;
+            topList->barYPadding = GENERAL_GPE_GUI_PADDING;
             topList->clear_list();
             topList->add_gui_element(currentLabel,true);
             topList->add_gui_element(searchField,true);
@@ -272,10 +271,10 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
             middleList->set_coords(elementBox.x, topList->get_y2pos() );
             middleList->set_width(elementBox.w);
             middleList->set_height(elementBox.h - middleList->get_ypos() - bottomList->get_height());
-            middleList->barXMargin = GENERAL_GPE_PADDING;
-            middleList->barYMargin = GENERAL_GPE_PADDING;
-            middleList->barXPadding = GENERAL_GPE_PADDING;
-            middleList->barYPadding = GENERAL_GPE_PADDING;
+            middleList->barXMargin = GENERAL_GPE_GUI_PADDING;
+            middleList->barYMargin = GENERAL_GPE_GUI_PADDING;
+            middleList->barXPadding = GENERAL_GPE_GUI_PADDING;
+            middleList->barYPadding = GENERAL_GPE_GUI_PADDING;
 
             GPE_MAIN_GUI->reset_gui_info();
             middleList->clear_list();
@@ -306,8 +305,8 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
             bottomList->set_width(elementBox.w);
             bottomList->barXMargin = 0;
             bottomList->barYMargin = 0;
-            bottomList->barXPadding = GENERAL_GPE_PADDING;
-            bottomList->barYPadding = GENERAL_GPE_PADDING;
+            bottomList->barXPadding = GENERAL_GPE_GUI_PADDING;
+            bottomList->barYPadding = GENERAL_GPE_GUI_PADDING;
 
             bottomList->clear_list();
             bottomList->add_gui_element(descriptionLabel,true);
@@ -323,7 +322,7 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
             bottomList->add_gui_auto(cancelButton );
             bottomList->process_self( NULL, NULL );
 
-            if( input->check_keyboard_released(kb_esc) || cancelButton->is_clicked() || WINDOW_WAS_JUST_RESIZED )
+            if( input->check_keyboard_released(kb_esc) || cancelButton->is_clicked() || GPE_MAIN_WINDOW->is_resized()  )
             {
                 exitOperation = true;
                 selectedOptionId = -1;
@@ -336,8 +335,8 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
             }
 
             //GPE_Report("Rendering tip of the day");
-            MAIN_RENDERER->reset_viewpoint();
-            if( !WINDOW_WAS_JUST_RESIZED)
+            GPE_MAIN_RENDERER->reset_viewpoint();
+            if( !GPE_MAIN_WINDOW->is_resized() )
             {
                 //if( input->windowEventHappendInFrame )
                 {
@@ -348,21 +347,21 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
 
                 gcanvas->render_rectangle( elementBox.x,elementBox.y,elementBox.x+elementBox.w,elementBox.y+32,GPE_MAIN_THEME->PopUp_Box_Color,false);
                 gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Highlight_Color,true);
-                gfs->render_text( elementBox.x+elementBox.w/2,elementBox.y+GENERAL_GPE_PADDING,title,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP);
+                gfs->render_text( elementBox.x+elementBox.w/2,elementBox.y+GENERAL_GPE_GUI_PADDING,title,GPE_MAIN_THEME->PopUp_Box_Font_Color,GPE_DEFAULT_FONT,FA_CENTER,FA_TOP);
                 topList->render_self( NULL, NULL );
                 middleList->render_self( NULL, NULL );
                 bottomList->render_self( NULL, NULL );
                 //GPE_MAIN_GUI-render_gui_info(  true);
 
                 gcanvas->render_rect( &elementBox,GPE_MAIN_THEME->PopUp_Box_Border_Color,true);
-                MAIN_OVERLAY->process_cursor();
-                GPE_MAIN_GUI->render_gui_info(  true);
+                if( GPE_MAIN_GUI!= NULL )
+                {
+                    GPE_MAIN_GUI->render_gui_info();
+                }
             }
             gpe->end_loop();
         }
         input->reset_all_input();
-        MAIN_OVERLAY->render_frozen_screenshot( );
-        MAIN_RENDERER->update_renderer();
         return selectedOptionId;
     }
     return -1;

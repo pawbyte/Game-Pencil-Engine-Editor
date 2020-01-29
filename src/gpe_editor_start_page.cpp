@@ -3,10 +3,10 @@ gpe_editor_start_page.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -183,7 +183,7 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
     projectsCategoryTabs->add_new_tab("Example Projects",false);
     projectsCategoryTabs->add_new_tab("Favorites Folder",false);
 
-    headerSpaceHeight = 160;
+    headerSpaceHeight = 192;
     headerViewedSpace->x = 0;
     headerViewedSpace->y = 0;
     headerViewedSpace->w = SCREEN_WIDTH;
@@ -198,9 +198,9 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
 
     headerPageList = new GPE_GuiElementList();
     headerPageList->set_horizontal_align(FA_LEFT);
-    headerPageList->barXMargin = GENERAL_GPE_PADDING;
+    headerPageList->barXMargin = GENERAL_GPE_GUI_PADDING;
     headerPageList->barYMargin = 0;
-    headerPageList->barYPadding = GENERAL_GPE_PADDING/2;
+    headerPageList->barYPadding = GENERAL_GPE_GUI_PADDING/2;
     headerPageList->hideXScroll = true;
     headerPageList->hideYScroll = true;
     //Added as of Version 1.1.3 [ END ]
@@ -212,7 +212,7 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
 
     startPageList = new GPE_GuiElementList();
     startPageList->set_horizontal_align(FA_CENTER);
-    startPageList->barXPadding = GENERAL_GPE_PADDING;
+    startPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
     startPageList->barXMargin = 128;
     labelEditorShortcuts = new GPE_Label_Title("Editor Shortcuts","Editor Shortcuts");
 
@@ -307,11 +307,11 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
 
     if( GPE_VERSION_UPDATE_NUMBER==0)
     {
-        copyRightInfoString = double_to_string(GPE_VERSION_DOUBLE_NUMBER)+".0.0";
+        copyRightInfoString = float_to_string(GPE_VERSION_FLOAT_NUMBER)+".0.0";
     }
     else
     {
-        copyRightInfoString = double_to_string(GPE_VERSION_DOUBLE_NUMBER);
+        copyRightInfoString = float_to_string(GPE_VERSION_FLOAT_NUMBER);
     }
     if( GPE_MAIN_GUI!=NULL)
     {
@@ -333,9 +333,9 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
 
     startPageList = new GPE_GuiElementList();
     startPageList->set_horizontal_align(FA_LEFT);
-    startPageList->barXMargin = GENERAL_GPE_PADDING;
+    startPageList->barXMargin = GENERAL_GPE_GUI_PADDING;
     startPageList->barYMargin = 0;
-    startPageList->barYPadding = GENERAL_GPE_PADDING/2;
+    startPageList->barYPadding = GENERAL_GPE_GUI_PADDING/2;
 
     emptyProjectsListLabel = new GPE_Label_Text("No Recent projects","No Recent projects");
 
@@ -400,8 +400,8 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
 gamePencilStartPageResource::~gamePencilStartPageResource()
 {
     GPE_Report("Starting to delete start page...");
-    subViewedSpace->x = GENERAL_GPE_PADDING;
-    subViewedSpace->x = GENERAL_GPE_PADDING;
+    subViewedSpace->x = GENERAL_GPE_GUI_PADDING;
+    subViewedSpace->x = GENERAL_GPE_GUI_PADDING;
     subViewedSpace->w = 400;
     subViewedSpace->h = 400;
     resourceType = -2;
@@ -499,6 +499,11 @@ void gamePencilStartPageResource::add_communitylink( GPE_ToolIconButton * newLin
         newLink->scale_object( 2 );
         communityButtons.push_back(newLink);
     }
+}
+
+bool gamePencilStartPageResource::include_local_files( std::string pBuildDir , int buildType )
+{
+    return true;
 }
 
 void gamePencilStartPageResource::load_example_projects_folder( )
@@ -714,7 +719,7 @@ void gamePencilStartPageResource::process_self(GPE_Rect * viewedSpace, GPE_Rect 
 
     if( viewedSpace!=NULL && cam!=NULL && startPageList!=NULL)
     {
-        headerSpaceHeight = 96;
+        headerSpaceHeight = 100;
 
 
         if( PANEL_GENERAL_EDITOR!=NULL )
@@ -754,13 +759,13 @@ void gamePencilStartPageResource::process_self(GPE_Rect * viewedSpace, GPE_Rect 
         headerPageList->set_coords( headerViewedSpace->x, headerViewedSpace->y );
         headerPageList->set_width(headerViewedSpace->w);
         headerPageList->set_height(headerViewedSpace->h );
-        headerPageList->barXPadding = GENERAL_GPE_PADDING;
+        headerPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
         headerPageList->barXMargin = 0;
         headerPageList->add_gui_element(labelCopyrightInfo,true);
         headerPageList->add_gui_element(loadProjectButton,false);
         headerPageList->add_gui_element(newProjectButton,false);
         headerPageList->add_gui_element(refreshButton,true);
-        projectsCategoryTabs->set_width( headerViewedSpace->w - GENERAL_GPE_PADDING * 5 );
+        projectsCategoryTabs->set_width( headerViewedSpace->w - GENERAL_GPE_GUI_PADDING * 5 );
         headerPageList->add_gui_element(projectsCategoryTabs,true);
         headerPageList->process_self( viewedSpace,cam);
 
@@ -774,8 +779,8 @@ void gamePencilStartPageResource::process_self(GPE_Rect * viewedSpace, GPE_Rect 
         startPageList->set_coords(subViewedSpace->x, subViewedSpace->y);
         startPageList->set_width(subViewedSpace->w);
         startPageList->set_height(subViewedSpace->h );
-        startPageList->barXPadding = GENERAL_GPE_PADDING;
-        startPageList->barXMargin = GENERAL_GPE_PADDING;
+        startPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
+        startPageList->barXMargin = GENERAL_GPE_GUI_PADDING;
         startPageList->set_horizontal_align( FA_CENTER );
         startPageList->yScroll->documentActions = true;
         //Recent Projects
@@ -1019,8 +1024,8 @@ void gamePencilStartPageResource::process_self(GPE_Rect * viewedSpace, GPE_Rect 
             sidePanelList->set_coords(sidePanelRect->x,sidePanelRect->y);
             sidePanelList->set_width(sidePanelRect->w);
             sidePanelList->set_height(sidePanelRect->h);
-            sidePanelList->barXPadding = GENERAL_GPE_PADDING;
-            sidePanelList->barXMargin = GENERAL_GPE_PADDING;
+            sidePanelList->barXPadding = GENERAL_GPE_GUI_PADDING;
+            sidePanelList->barXMargin = GENERAL_GPE_GUI_PADDING;
 
             sidePanelList->clear_list();
             sidePanelList->add_gui_element(labelImgGPELogo,true );
@@ -1049,34 +1054,28 @@ void gamePencilStartPageResource::process_self(GPE_Rect * viewedSpace, GPE_Rect 
     }
 }
 
-void gamePencilStartPageResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+void gamePencilStartPageResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if( viewedSpace!=NULL && cam!=NULL )
     {
-        //gcanvas->render_rect( &subViewedSpace,GPE_MAIN_THEME->Program_Header_Color,false);
-        //render_text( subViewedSpace->x+GENERAL_GPE_PADDING,subViewedSpace->y+GENERAL_GPE_PADDING,"Recent Projects",GPE_MAIN_THEME->Main_Box_Font_Color,textboxFont,FA_LEFT,FA_TOP);
-        if( forceRedraw)
+        if( startPageList!=NULL)
         {
-            if( headerPageList!=NULL)
-            {
-                headerPageList->render_self( viewedSpace,cam,forceRedraw);
-            }
+            startPageList->render_self( viewedSpace,cam);
+        }
 
-            if( startPageList!=NULL)
-            {
-                startPageList->render_self( viewedSpace,cam,forceRedraw);
-            }
+        if( sidePanelList!=NULL && PANEL_GENERAL_EDITOR==NULL )
+        {
+            sidePanelList->render_self( viewedSpace,cam );
+        }
 
-            if( sidePanelList!=NULL && PANEL_GENERAL_EDITOR==NULL )
-            {
-                sidePanelList->render_self( viewedSpace,cam,forceRedraw );
-            }
+        if( headerPageList!=NULL)
+        {
+            headerPageList->render_self( viewedSpace,cam);
         }
     }
 }
-
 void gamePencilStartPageResource::save_resource(std::string alternatePath, int backupId)
 {
     bool usingAltSaveSource = false;

@@ -3,10 +3,10 @@ gpe_editor_aboutpage.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -42,7 +42,7 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
     resourceName = "About Page";
     parentProjectName = "";
     parentProjectDirectory = "";
-    //GPE_Animation * mainMenuSprite = guiRCM->sprite_add(APP_DIRECTORY_NAME+"resources/gfx/sprites/gpe_main_icons_big.png",70,true,0,0,false);
+    //GPE_Animation * mainMenuanimation = guiRCM->animation_add(APP_DIRECTORY_NAME+"resources/gfx/animations/gpe_main_icons_big.png",70,true,0,0,false);
 
     sideAreaPanel = new GPE_SelectBoxBasic("Mode");
     sideAreaPanel->set_width(256);
@@ -93,7 +93,6 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
     pencilCredits->add_line("The Font Awesome font is licensed under the SIL OFL 1.1:");
     pencilCredits->add_line("http://scripts.sil.org/OFL  ");
     pencilCredits->add_line("Font-Awesome-SVG-PNG is licensed under the MIT license  ");
-    pencilCredits->add_line("Rowan @greenturtwig:       Created wiiU white icon ");
 
 
     pencilCredits->add_line("");
@@ -106,6 +105,7 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
     pencilCredits->add_line("RequestFrameAnimation:                         http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/");
     pencilCredits->add_line("Simple DirectMedia Layer(SDL):                 http://www.libsdl.org");
     pencilCredits->add_line("SDL_GFX:                                       http://www.ferzkopp.net/wordpress/2016/01/02/sdl_gfx-sdl2_gfx/");
+    pencilCredits->add_line("FPS_CAP & FPS_Calculator functions:            https://davidgow.net/handmadepenguin/ch18.html/");
 
 
     pencilCredits->add_line("");
@@ -277,14 +277,14 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
     thirdPartyLicenses->import_text(APP_DIRECTORY_NAME+"third_party_licenses.txt");
     thirdPartyLicenses->set_height(640);
 
-    aboutPageList->barXPadding = GENERAL_GPE_PADDING;
+    aboutPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
     aboutPageList->barXMargin = 0;
 }
 
 gamePencilAboutPageResource::~gamePencilAboutPageResource()
 {
-    subViewedSpace.x = GENERAL_GPE_PADDING;
-    subViewedSpace.y = GENERAL_GPE_PADDING;
+    subViewedSpace.x = GENERAL_GPE_GUI_PADDING;
+    subViewedSpace.y = GENERAL_GPE_GUI_PADDING;
     subViewedSpace.w = 400;
     subViewedSpace.h = 400;
     resourceType = -2;
@@ -321,6 +321,11 @@ gamePencilAboutPageResource::~gamePencilAboutPageResource()
         delete pencilMissionStatement;
         pencilMissionStatement = NULL;
     }
+}
+
+bool gamePencilAboutPageResource::include_local_files( std::string pBuildDir , int buildType )
+{
+
 }
 
 void gamePencilAboutPageResource::prerender_self( )
@@ -371,7 +376,7 @@ void gamePencilAboutPageResource::process_self(GPE_Rect * viewedSpace, GPE_Rect 
         aboutPageList->set_coords(subViewedSpace.x,subViewedSpace.y );
         aboutPageList->set_width(subViewedSpace.w);
         aboutPageList->set_height(subViewedSpace.h );
-        aboutPageList->barXPadding = GENERAL_GPE_PADDING;
+        aboutPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
         aboutPageList->barXMargin = subViewedSpace.w/8;
 
         aboutPageList->clear_list();
@@ -395,7 +400,7 @@ void gamePencilAboutPageResource::process_self(GPE_Rect * viewedSpace, GPE_Rect 
     }
 }
 
-void gamePencilAboutPageResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+void gamePencilAboutPageResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -403,11 +408,11 @@ void gamePencilAboutPageResource::render_self(GPE_Rect * viewedSpace, GPE_Rect *
     {
         if( sideAreaPanel!=NULL && PANEL_GENERAL_EDITOR==NULL )
         {
-            sideAreaPanel->render_self( viewedSpace,cam, forceRedraw);
+            sideAreaPanel->render_self( viewedSpace,cam);
         }
         if( aboutPageList!=NULL )
         {
-            aboutPageList->render_self( viewedSpace,cam, forceRedraw);
+            aboutPageList->render_self( viewedSpace,cam);
         }
     }
 }

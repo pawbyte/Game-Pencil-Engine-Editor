@@ -3,10 +3,10 @@ animation_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,29 +36,26 @@ SOFTWARE.
 
 #include "gpe_basic_resource_page.h"
 
-const double ZOOM_LEVEL_MIN = 0.0625;
-const double ZOOM_LEVEL_MAX = 16;
+const float ZOOM_LEVEL_MIN = 0.0625;
+const float ZOOM_LEVEL_MAX = 16;
 
-const int SPRITE_DATA_FIELD_COUNT = 7;
+const int ANIMATION_DATA_FIELD_COUNT = 7;
 
-extern std::string spriteDataLabels[SPRITE_DATA_FIELD_COUNT];
-extern int spriteDataLabelWidth;
+extern std::string GPE_ANIMATION_LABELS[ANIMATION_DATA_FIELD_COUNT];
 
 
-const double GPE_ANIM_FCOUNT_VERSION = 1.04;
+const float GPE_ANIM_FCOUNT_VERSION = 1.04;
 
 class animationResource: public standardEditableGameResource
 {
 public:
     bool areaIsScrollable;
-    double animationSpeed;
+    float animationSpeed;
     bool isPreloaded;
-    double editor0ZoomValue;
-    double editor1ZoomValue;
-    double minZoomValue;
-    double maxZoomValue;
+    float editorZoomValue;
+    float minZoomValue;
+    float maxZoomValue;
     int autoAnimationPos;
-    GPE_TabBar * animationModeToolBar;
     GPE_Slider_XAxis * animationTrackBar;
     GPE_Animation * animInEditor;
 
@@ -68,17 +65,18 @@ public:
 
     GPE_ScrollBar_XAxis * animXScroll;
     GPE_ScrollBar_YAxis * animYScroll;
+
     //Right pane
-    GPE_Rect  * spritePreviewCam;
-    GPE_GuiElementList * topPanel;
+    GPE_Rect  * animatonPreviewRect;
+    GPE_Rect  * animationPreviewCam;
     GPE_Label_Text * animationSpeedLabel;
-    GPE_Slider_XAxis * animationSpeedSlider;
     GPE_CheckBoxBasic * previewZoomLevel;
     GPE_CheckBoxBasic * previewSubImageNumbers;
-    //Left pane
-    GPE_Label_Text * labelSpriteDimensions;
+
+    //Editor panel elements
+    GPE_Label_Text * labelanimationDimensions;
     GPE_Label_Text * labelFrameInfo;
-    GPE_Label_Text * labelSpriteMessage;
+    GPE_Label_Text * labelanimationMessage;
     GPE_ToolIconButton * editResourceButton;
     GPE_ToolIconButton * transformResourceButton;
     GPE_ToolIconButton * playPauseResourceButton;
@@ -88,44 +86,47 @@ public:
     GPE_CheckBoxBasic * showCollisionShapeCheckBox;
     GPE_CheckBoxBasic * showAnimationCheckBox;
 
-    GPE_TextInputNumber * spriteDataFields[SPRITE_DATA_FIELD_COUNT];
+    GPE_TextInputNumber * animationDataFields[ANIMATION_DATA_FIELD_COUNT];
 
-    GPE_TextInputNumber * spriteCollisionRectX;
-    GPE_TextInputNumber * spriteCollisionRectY;
-    GPE_TextInputNumber * spriteCollisionRectW;
-    GPE_TextInputNumber * spriteCollisionRectH;
+    GPE_TextInputNumber * animationCollisionRectX;
+    GPE_TextInputNumber * animationCollisionRectY;
+    GPE_TextInputNumber * animationCollisionRectW;
+    GPE_TextInputNumber * animationCollisionRectH;
 
-    GPE_TextInputNumber * spriteCollisionCircleX;
-    GPE_TextInputNumber * spriteCollisionCircleY;
-    GPE_TextInputNumber * spriteCollisionCircleR;
+    GPE_TextInputNumber * animationCollisionCircleX;
+    GPE_TextInputNumber * animationCollisionCircleY;
+    GPE_TextInputNumber * animationCollisionCircleR;
 
-    GPE_ToolLabelButton * spriteCenterCollisionButton;
+    GPE_ToolLabelButton * animationCenterCollisionButton;
 
-    GPE_DropDown_Menu * spriteCollisionShapeMenu;
+    GPE_DropDown_Menu * animationCollisionShapeMenu;
 
     GPE_ToolIconButton * previousSubImageButton;
     GPE_ToolIconButton * nextSubImageButton;
     GPE_TextInputNumber * subImageNumberField;
     GPE_TextInputNumber * subImageEditorPreviewId;
     int subImagePreviewNumber;
-    double subImageMiniAnimationNumber;
+    float subImageMiniAnimationNumber;
     GPE_Label_Text * labelInfoMaxTextureSize;
 
     animationResource(GPE_GeneralResourceContainer * pFolder = NULL);
     ~animationResource();
+
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
     bool get_mouse_coords(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     int get_preview_frame();
+    GPE_Animation * get_resource_animation();
     void handle_scrolling();
+    bool include_local_files( std::string pBuildDir , int buildType );
     void load_image(std::string newFileName, bool autoProcess = false);
     void preprocess_self(std::string alternatePath = "");
     void prerender_self( );
     void process_collision_box();
-    void process_data_fields(double versionToProcess = -1);
+    void process_data_fields(float versionToProcess = -1);
     void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void revert_data_fields();
     void save_resource(std::string alternatePath = "", int backupId = -1);
     void update_box(int newX=-1, int newY=-1, int newW=-1, int newH=-1);

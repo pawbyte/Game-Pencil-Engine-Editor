@@ -3,10 +3,10 @@ video_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -104,7 +104,7 @@ bool videoResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTab
         {
             if( (int)videoFileName[i].size() > 3)
             {
-                *fileTarget << "'resources/videos/"+getShortFileName( videoFileName[i] )+"',";
+                *fileTarget << "'resources/videos/"+get_short_filename( videoFileName[i] )+"',";
             }
             else
             {
@@ -153,7 +153,7 @@ bool videoResource::copy_video_source(std::string outDirectoryName)
     {
         if((int)videoFileName[i].size() > 0)
         {
-            copyDestinationStr = outDirectoryName+"/"+ getShortFileName(videoFileName[i],true);
+            copyDestinationStr = outDirectoryName+"/"+ get_short_filename(videoFileName[i],true);
             GPE_Report(videoFileName[i]+" attempted to copy to "+copyDestinationStr);
             if( copy_file(videoFileName[i],copyDestinationStr )==false)
             {
@@ -163,6 +163,13 @@ bool videoResource::copy_video_source(std::string outDirectoryName)
     }
     return copyErrorFound;
 }
+
+bool videoResource::include_local_files( std::string pBuildDir , int buildType )
+{
+    appendToFile(get_user_settings_folder()+"resources_check.txt", get_name() +"...");
+    return true;
+}
+
 
 void videoResource::load_video(std::string newFileName)
 {
@@ -189,7 +196,7 @@ void videoResource::load_video(std::string newFileName)
         }
         if( isvideoFile)
         {
-            copy_video_source( fileToDir(parentProjectName)+"/gpe_project/resources/videos" );
+            copy_video_source( file_to_dir(parentProjectName)+"/gpe_project/resources/videos" );
         }
     }
 }
@@ -206,7 +213,7 @@ void videoResource::preprocess_self(std::string alternatePath)
         std::string otherColContainerName = "";
 
         std::string newFileIn ="";
-        std::string soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/videos/";
+        std::string soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/videos/";
         if( file_exists(alternatePath) )
         {
             newFileIn = alternatePath;
@@ -229,7 +236,7 @@ void videoResource::preprocess_self(std::string alternatePath)
             std::string subValString="";
             std::string currLine="";
             std::string currLineToBeProcessed;
-            double foundFileVersion = 0;
+            float foundFileVersion = 0;
             std::string fFontFile = "";
             while ( gameResourceFileIn.good() )
             {
@@ -253,7 +260,7 @@ void videoResource::preprocess_self(std::string alternatePath)
                                 valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
                                 if( keyString=="Version")
                                 {
-                                    foundFileVersion = string_to_double(valString);
+                                    foundFileVersion = string_to_float(valString);
                                 }
                             }
                         }
@@ -305,7 +312,7 @@ void videoResource::preprocess_self(std::string alternatePath)
                 }
                 else
                 {
-                    GPE_Report("Invalid FoundFileVersion ="+double_to_string(foundFileVersion)+".");
+                    GPE_Report("Invalid FoundFileVersion ="+float_to_string(foundFileVersion)+".");
                 }
             }
 
@@ -416,21 +423,21 @@ void videoResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
     }
 }
 
-void videoResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw )
+void videoResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( cam!=NULL && viewedSpace!=NULL && forceRedraw )
+    if( cam!=NULL && viewedSpace!=NULL)
     {
         for( int i = 0; i < SUPPORTED_VIDEO_FORMAT_COUNT; i++)
         {
             if( videoFileName[i].size()> 0)
             {
-                gfs->render_text( viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_VIDEO_EXT[i]+" is attatched",GPE_MAIN_THEME->Main_Box_Font_Highlight_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_TOP);
+                gfs->render_text( viewedSpace->w-GENERAL_GPE_GUI_PADDING*3,GENERAL_GPE_GUI_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_VIDEO_EXT[i]+" is attatched",GPE_MAIN_THEME->Main_Box_Font_Highlight_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_TOP);
             }
             else
             {
-                gfs->render_text( viewedSpace->w-GENERAL_GPE_PADDING*3,GENERAL_GPE_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_VIDEO_EXT[i]+" not attatched",GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_TOP);
+                gfs->render_text( viewedSpace->w-GENERAL_GPE_GUI_PADDING*3,GENERAL_GPE_GUI_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_VIDEO_EXT[i]+" not attatched",GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_TOP);
             }
         }
         gfs->render_text( viewedSpace->w/2, viewedSpace->h-32, "HTML5 Feature. Currently not supported in C++/Native runtime",GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT, FA_CENTER, FA_BOTTOM, 255);
@@ -455,7 +462,7 @@ void videoResource::save_resource(std::string alternatePath, int backupId)
     }
     else
     {
-        soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/videos/";
+        soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/videos/";
         newFileOut = soughtDir + resourceName+".gpf";
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
@@ -472,11 +479,11 @@ void videoResource::save_resource(std::string alternatePath, int backupId)
         {
             if( (int)videoFileName[i].size() > 3)
             {
-                resFileLocation = getShortFileName (videoFileName[i],true );
+                resFileLocation = get_short_filename (videoFileName[i],true );
                 newSaveDataFile << "videoFile["+SUPPORTED_VIDEO_EXT[i]+"]="+resFileLocation+"\n";
                 if( (int)resFileLocation.size() > 0 && usingAltSaveSource )
                 {
-                    resFileCopySrc = fileToDir(parentProjectName)+"/gpe_project/resources/video/"+resFileLocation;
+                    resFileCopySrc = file_to_dir(parentProjectName)+"/gpe_project/resources/video/"+resFileLocation;
                     resFileCopyDest = soughtDir+resFileLocation;
                     if( file_exists(resFileCopyDest) )
                     {

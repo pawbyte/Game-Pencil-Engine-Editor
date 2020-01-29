@@ -3,10 +3,10 @@ gpe_resource_tree.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -53,7 +53,7 @@ public:
     int barXPadding, barYPadding;
     bool subMenuIsOpen;
     int selectedSubOption;
-    GPE_Texture * opTexture;
+    GPE_Texture_Base * opTexture;
     GPE_ResourceTree();
     ~GPE_ResourceTree();
     GPE_GeneralResourceContainer * add_resource_folder(int resourceType, std::string projFolderName,std::string resourceTypeName);
@@ -61,7 +61,7 @@ public:
     void delete_project_resources(std::string projectFileName );
     void prerender_self( );
     void process_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL );
-    void render_self( GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void remove_project_resources(std::string projectFileName );
 };
 

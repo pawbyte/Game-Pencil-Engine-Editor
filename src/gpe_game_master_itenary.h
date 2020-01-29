@@ -1,5 +1,5 @@
 /*
-main.cpp
+gpe_game_master_itenary.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
@@ -40,43 +40,7 @@ SDL 2.0.9 used for this version...
 */
 
 #include "GPE/GPE.h"
-#include "gpe_game_master_itenary.h"
+#include "gpe_editor_state.h"
 
-int main( int argc, char* args[] )
-{
-
-    int gameFailed = 0;
-    GPE_Init_Settings(argc, args , "PawByte","GPE_Editor");
-
-    //Initialize
-    if( GPE_Init(argc, args ) == false )
-    {
-        GPE_Report("    Unable to properly initialize GPE!\n");
-        gameFailed = 1;
-    }
-
-    gpe->set_fps( GPE_ENGINE_SETTINGS->defaultFPS );
-
-    if( GPE_Init_Master_Itenary( argc, args) == false )
-    {
-        gameFailed = 1;
-    }
-
-    if(gameFailed==1)
-    {
-        GPE_Quit();
-        return -1;
-    }
-
-    if( gpe->game_loop() )
-    {
-        GPE_Report("Completed Game Loop....");
-    }
-
-    //Clean up
-    GPE_Quit_Master_Itenary();
-    GPE_Report("Deleting GPE...");
-    GPE_Quit();
-    GPE_Report("Program Exited with Return Status 0...");
-    return 0;
-}
+bool GPE_Init_Master_Itenary( int argc, char* args[] );
+bool GPE_Quit_Master_Itenary();

@@ -3,10 +3,10 @@ gpe_editor_settings.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -213,10 +213,24 @@ gamePencilEditorSettingsResource::gamePencilEditorSettingsResource()
     sideAreaPanel->set_option_height(64);
     sideAreaPanel->add_option("General",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/cubes.png"),NULL,2, false, false);
     sideAreaPanel->add_option("External Editors",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/external-link-square.png"),NULL,2, false, false);
+    sideAreaPanel->add_option("Coding Languages",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/code-fork.png"),NULL,2, false, false);
     sideAreaPanel->add_option("Themes",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/eye.png"),NULL,2, false, false);
     sideAreaPanel->add_option("Advanced",-1,guiRCM->texture_add(APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/stethoscope.png"),NULL,2, false, false);
 
     sidePanelRect = new GPE_Rect();
+
+    CodingLanguageTitle = new GPE_Label_Title("Coding Language Editor","Modify how the editor reacts to your language" );
+    CodingLanguageLabel = new GPE_Label_Text("Basic language syntax");
+    CodingLanguageParagraph = new GPE_Label_Paragraph("Coding Language","Unsure how to add a new language to the editor? Click the link below to add a new language. Please note to use new languages you may need to reset the editor.");
+    CodingLanguageURL = new GPE_TextURL("See our online guide for editing languages","Opens in browser","https://docs.pawbyte.com/");
+    codingLanguageSelector = new GPE_SelectBoxBasic("CodingLanguages");
+    codingLanguageSelector->set_width( 96 );
+    codingLanguageSelector->add_option("JavaScript",PROGRAM_LANGUAGE_JS );
+    codingLanguageSelector->add_option("C++",PROGRAM_LANGUAGE_CPP );
+    codingLanguageSelector->add_option("C#",PROGRAM_LANGUAGE_CS );
+    codingLanguageSelector->add_option("TypeScript",PROGRAM_LANGUAGE_TST );
+    codingLanguageSelector->add_option("Haxe",PROGRAM_LANGUAGE_HAXE );
+    codingLanguageSelector->add_option("Lua",PROGRAM_LANGUAGE_LUA );
 
     openEditorFolder = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/folder-open.png","Open Editor Folder...","Be very super careful!");
     openLocalSettingsFolder = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/folder-open.png","Open Settings Folder...","Be very super careful!");
@@ -264,17 +278,38 @@ gamePencilEditorSettingsResource::gamePencilEditorSettingsResource()
     showHiddenFilesInBrowser = new GPE_CheckBoxBasic("Show Hidden Files in Browser","(Linux only feature", true);
     clearCacheButton = new GPE_ToolPushButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/close.png","Clear Font Cache","Clears the cache of pre-rendered texts");
     ideSettingsFPSRateLabel = new GPE_Label_Title("IDE Frame Rate","Sets the (max) framerate set for the IDE(Usually 30 or 60)");
-    ideFPSRatioLabel = new GPE_Label_Text(double_to_string(FPS_RATIO*100)+"%","The FPS Ratio compared to 30 FPS");
+    ideFPSRatioLabel = new GPE_Label_Text(float_to_string(FPS_RATIO*100)+"%","The FPS Ratio compared to 30 FPS");
     ideSettingsFPSRate = new GPE_DropDown_Menu( "FPS Cap",true);
+    ideSettingsFPSRate->add_menu_option("20 FPS","",20);
+    ideSettingsFPSRate->add_menu_option("24 FPS","",24);
+    ideSettingsFPSRate->add_menu_option("25 FPS","",25);
     ideSettingsFPSRate->add_menu_option("30 FPS","",30,true);
+    ideSettingsFPSRate->add_menu_option("45 FPS","",45);
     ideSettingsFPSRate->add_menu_option("48 FPS","",48);
     ideSettingsFPSRate->add_menu_option("50 FPS","",50);
+    ideSettingsFPSRate->add_menu_option("55 FPS","",55);
+    ideSettingsFPSRate->add_menu_option("58 FPS","",58);
+    ideSettingsFPSRate->add_menu_option("59 FPS","",59);
     ideSettingsFPSRate->add_menu_option("60 FPS","",60);
     ideSettingsFPSRate->add_menu_option("72 FPS","",72);
+    ideSettingsFPSRate->add_menu_option("88 FPS","",88);
+    ideSettingsFPSRate->add_menu_option("89 FPS","",89);
     ideSettingsFPSRate->add_menu_option("90 FPS","",90);
+    ideSettingsFPSRate->add_menu_option("100 FPS","",100);
     ideSettingsFPSRate->add_menu_option("125 FPS","",125);
+    ideSettingsFPSRate->add_menu_option("150 FPS","",150);
+    ideSettingsFPSRate->add_menu_option("200 FPS","",200);
+    ideSettingsFPSRate->add_menu_option("225 FPS","",225);
     ideSettingsFPSRate->add_menu_option("250 FPS","",250);
+    ideSettingsFPSRate->add_menu_option("275 FPS","",275);
     ideSettingsFPSRate->add_menu_option("300 FPS","",300);
+    ideSettingsFPSRate->add_menu_option("400 FPS","",400);
+    ideSettingsFPSRate->add_menu_option("500 FPS","",500);
+    ideSettingsFPSRate->add_menu_option("600 FPS","",600);
+    ideSettingsFPSRate->add_menu_option("700 FPS","",700);
+    ideSettingsFPSRate->add_menu_option("800 FPS","",800);
+    ideSettingsFPSRate->add_menu_option("900 FPS","",900);
+    ideSettingsFPSRate->add_menu_option("1000 FPS","",1000);
     showFPSOnEditor = new GPE_CheckBoxBasic("Show FPS Counter","Show FPS Counter", SHOW_FPS_COUNTER );
 
     ideButtonBarSizeLabel= new GPE_Label_Text("Buttonbar Size","Changes the size of the buttonbar");
@@ -346,7 +381,8 @@ gamePencilEditorSettingsResource::gamePencilEditorSettingsResource()
     MAIN_GUI_SETTINGS->tabSpaceCount = 4;
 
     editorPageList = new GPE_GuiElementList();
-    editorPageList->barXPadding = GENERAL_GPE_PADDING;
+    editorPageList->panelAlignType = GPE_PANEL_ALIGN_FULL_LEFT;
+    editorPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
     editorPageList->barXMargin = 0;
 
     subViewedSpace.x = 0;
@@ -530,6 +566,11 @@ gamePencilEditorSettingsResource::~gamePencilEditorSettingsResource()
     }
 }
 
+bool gamePencilEditorSettingsResource::include_local_files( std::string pBuildDir , int buildType )
+{
+    return true;
+}
+
 void gamePencilEditorSettingsResource::load_themes_from_folder( std::string themeFolder )
 {
     //Used for searching directories
@@ -566,6 +607,7 @@ void gamePencilEditorSettingsResource::load_themes_from_folder( std::string them
         dir = NULL;
     }
 }
+
 void gamePencilEditorSettingsResource::prerender_self( )
 {
 
@@ -600,7 +642,7 @@ void gamePencilEditorSettingsResource::preprocess_self(std::string alternatePath
             std::string currLine="";
             std::string currLineToBeProcessed;
             std::string colorThemeName;
-            double foundFileVersion = 0;
+            float foundFileVersion = 0;
             int foundDelayTime = 0;
             int foundFPSValue = FPS_CAP;
             while ( gameResourceFileIn.good() )
@@ -626,7 +668,7 @@ void gamePencilEditorSettingsResource::preprocess_self(std::string alternatePath
                                 valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
                                 if( keyString=="Version")
                                 {
-                                    foundFileVersion = string_to_double(valString);
+                                    foundFileVersion = string_to_float(valString);
                                 }
                             }
                         }
@@ -708,10 +750,6 @@ void gamePencilEditorSettingsResource::preprocess_self(std::string alternatePath
                             {
                                 showHiddenFilesInBrowser->set_clicked( string_to_bool( valString ) );
                             }
-                            else if( keyString=="ForceRedraw")
-                            {
-                                forceFrameRedraw->set_clicked( string_to_bool( valString ) );
-                            }
                             else if( keyString=="ProjectFolderList" )
                             {
                                 projectFolderListLocation = valString;
@@ -778,28 +816,28 @@ void gamePencilEditorSettingsResource::preprocess_self(std::string alternatePath
                                 foundFPSValue = std::max( foundFPSValue, 30);
                                 foundFPSValue = std::min( foundFPSValue, 300);
                                 gpe->set_fps(foundFPSValue);
-                                ideSettingsFPSRate->set_value(foundFPSValue);
+                                ideSettingsFPSRate->set_option_value(foundFPSValue);
                             }
                             else if( keyString=="ButtonBarSize")
                             {
-                                ideButtonBarSize->set_value( string_to_int( valString) );
+                                ideButtonBarSize->set_option_value( string_to_int( valString) );
                             }
                             else if( keyString=="ButtonBarAlignment")
                             {
-                                ideButtonBarAlignment->set_value( string_to_int( valString) );
+                                ideButtonBarAlignment->set_selection( string_to_int( valString) );
                             }
                         }
                     }
                 }
                 else
                 {
-                    GPE_Report("Invalid FoundFileVersion ="+double_to_string(foundFileVersion)+".");
+                    GPE_Report("Invalid FoundFileVersion ="+float_to_string(foundFileVersion)+".");
                 }
             }
             //Sets default value based on new found current theme
             if( GPE_MAIN_THEME!=NULL && themePicker!=NULL )
             {
-                themePicker->set_option( GPE_MAIN_THEME->themeName );
+                themePicker->set_option_named( GPE_MAIN_THEME->themeName );
             }
         }
     }
@@ -842,8 +880,8 @@ void gamePencilEditorSettingsResource::process_self(GPE_Rect * viewedSpace,GPE_R
         editorPageList->set_coords( subViewedSpace.x, subViewedSpace.y );
         editorPageList->set_width(subViewedSpace.w);
         editorPageList->set_height(subViewedSpace.h );
-        editorPageList->barXPadding = GENERAL_GPE_PADDING;
-        editorPageList->barXMargin = GENERAL_GPE_PADDING;
+        editorPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
+        editorPageList->barXMargin = GENERAL_GPE_GUI_PADDING;
         editorPageList->hAlign = FA_CENTER;
         int i = 0;
         GPE_Theme_Holder * currentThemeBeingEdited = NULL;
@@ -865,7 +903,7 @@ void gamePencilEditorSettingsResource::process_self(GPE_Rect * viewedSpace,GPE_R
 
             editorPageList->add_gui_element(ideSettingsFPSRateLabel,true);
             editorPageList->add_gui_element(ideSettingsFPSRate,true);
-            ideFPSRatioLabel->set_name("FPS Ratio: "+double_to_string(FPS_RATIO*100)+"%");
+            ideFPSRatioLabel->set_name("FPS Ratio: "+float_to_string(FPS_RATIO*100)+"%");
             editorPageList->add_gui_element(ideFPSRatioLabel,true);
             editorPageList->add_gui_element(showFPSOnEditor,true);
 
@@ -900,7 +938,7 @@ void gamePencilEditorSettingsResource::process_self(GPE_Rect * viewedSpace,GPE_R
             }
 
             //256 is an estimated width of a color picker with a label...
-            /*int colorsPerLine = (subViewedSpace.w-GENERAL_GPE_PADDING*4)/256;
+            /*int colorsPerLine = (subViewedSpace.w-GENERAL_GPE_GUI_PADDING*4)/256;
             int colorsInLine = 0;*/
             bool goToNextColorLine = false;
 
@@ -944,6 +982,24 @@ void gamePencilEditorSettingsResource::process_self(GPE_Rect * viewedSpace,GPE_R
             }
             editorPageList->add_gui_element(confirmResourceButton,true);
         }
+        else if( sideAreaPanel->get_selected_name()=="Coding Languages")
+        {
+            codingLanguageSelector->set_coords(subViewedSpace.x, 0 );
+            codingLanguageSelector->set_height(subViewedSpace.h);
+            codingLanguageSelector->optionIconWidth = 0;
+            codingLanguageSelector->process_self(viewedSpace,cam);
+            subViewedSpace.x+= codingLanguageSelector->get_width();
+            subViewedSpace.w-= codingLanguageSelector->get_width();
+
+            editorPageList->set_coords( subViewedSpace.x, subViewedSpace.y );
+            editorPageList->set_width( subViewedSpace.w  );
+            editorPageList->set_height(subViewedSpace.h );
+
+            editorPageList->add_gui_element(CodingLanguageTitle,true);
+            editorPageList->add_gui_element(CodingLanguageLabel,true);
+            editorPageList->add_gui_element(CodingLanguageParagraph,true);
+            editorPageList->add_gui_element(CodingLanguageURL,true);
+        }
         else if( sideAreaPanel->get_selected_name()=="Advanced")
         {
             editorPageList->add_gui_element(advancedAreaLabel,true);
@@ -965,7 +1021,10 @@ void gamePencilEditorSettingsResource::process_self(GPE_Rect * viewedSpace,GPE_R
         }
         else
         {
-
+            editorPageList->add_gui_element(CodingLanguageTitle,true);
+            editorPageList->add_gui_element(CodingLanguageLabel,true);
+            editorPageList->add_gui_element(CodingLanguageParagraph,true);
+            editorPageList->add_gui_element(CodingLanguageURL,true);
         }
 
         editorPageList->process_self( viewedSpace,cam);
@@ -976,7 +1035,7 @@ void gamePencilEditorSettingsResource::process_self(GPE_Rect * viewedSpace,GPE_R
             bool themeChanged = false;
             if( themePicker!=NULL )
             {
-                int potentiallySelectedTheme = themePicker->get_selected_id();
+                int potentiallySelectedTheme = themePicker->get_selected_value();
                 if( currentThemeInEdit!= potentiallySelectedTheme && potentiallySelectedTheme >=0 && potentiallySelectedTheme < (int)themeHolders.size() )
                 {
                     currentThemeInEdit = potentiallySelectedTheme;
@@ -1159,19 +1218,25 @@ void gamePencilEditorSettingsResource::process_self(GPE_Rect * viewedSpace,GPE_R
     }
 }
 
-void gamePencilEditorSettingsResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam, bool forceRedraw)
+void gamePencilEditorSettingsResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam)
 {
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
     if( cam!=NULL && viewedSpace!=NULL)
     {
-        if( forceRedraw && sideAreaPanel!=NULL && PANEL_GENERAL_EDITOR==NULL )
+        if( sideAreaPanel!=NULL && PANEL_GENERAL_EDITOR==NULL )
         {
-            sideAreaPanel->render_self( viewedSpace,cam, forceRedraw);
+            sideAreaPanel->render_self( viewedSpace,cam);
         }
+
+        if(  codingLanguageSelector!=NULL && sideAreaPanel!=NULL  && sideAreaPanel->get_selected_name()=="Coding Languages" )
+        {
+            codingLanguageSelector->render_self( viewedSpace,cam);
+        }
+
         if( editorPageList!=NULL )
         {
-            editorPageList->render_self( viewedSpace,cam, forceRedraw);
+            editorPageList->render_self( viewedSpace,cam);
         }
     }
 }
@@ -1208,7 +1273,6 @@ void gamePencilEditorSettingsResource::save_resource(std::string alternatePath, 
             newSaveDataFile << "CursorBlinkDelayMS=" << editorCursorBlinkDelayTime->get_held_number() << "\n";
             newSaveDataFile << "NormalDelayMS=" << editorNormalDelayTime->get_held_number() << "\n";
             newSaveDataFile << "BrowseHiddenFiles=" << showHiddenFilesInBrowser->is_clicked() << "\n";
-            newSaveDataFile << "ForceRedraw=" << forceFrameRedraw->is_clicked() << "\n";
             newSaveDataFile << "PreviewSceneBGColor=" << renderSceneBGColor->is_clicked() << "\n";
             newSaveDataFile << "FPS="+int_to_string( ideSettingsFPSRate->get_selected_value() ) << "\n";
             newSaveDataFile << "ProjectFolderList="+projectFolderListLocation << "\n";

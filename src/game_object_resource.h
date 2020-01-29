@@ -3,10 +3,10 @@ game_object_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -38,54 +38,7 @@ SOFTWARE.
 #include "gpe_editor_settings.h"
 #include "gpe_js_compiler_settings.h"
 
-
-class collisionContainer
-{
-public:
-    int otherObjectType;
-    std::string otherObjectName;
-    GPE_TextAreaInputBasic * textEditor;
-    collisionContainer();
-    ~collisionContainer();
-
-};
-
-class customFunctionContainer
-{
-public:
-    std::string functionName;
-    std::string functionReturnType;
-    std::string functionParameters;
-    GPE_TextInputBasic * returnTypeField;
-    GPE_TextInputBasic * parametersField;
-    GPE_TextAreaInputBasic * textEditor;
-    customFunctionContainer();
-    ~customFunctionContainer();
-
-};
-
-const int DEFAULT_OBJECT_FUNCTIONS_COUNT = 16;
-const int DEFAULT_OBJECT_TIMED_FUNCTIONS_COUNT = 10;
-const int DEFAULT_SPECIAL_FUNCTIONS_COUNT= 6;
-
-
 const int objectFunctionTypes = 5; //normal, timed, collisions, user added, special funcions
-extern std::string DEFAULT_OBJECT_FUNCTIONS_NAMES[DEFAULT_OBJECT_FUNCTIONS_COUNT];
-extern std::string DEFAULT_OBJECT_SPECIALS_NAMES[DEFAULT_SPECIAL_FUNCTIONS_COUNT];
-
-extern std::string DEFAULT_OBJECT_FUNCTIONS_HTML5_NAMES[DEFAULT_OBJECT_FUNCTIONS_COUNT];
-extern std::string DEFAULT_OBJECT_SPECIALS_HTML5_NAMES[DEFAULT_SPECIAL_FUNCTIONS_COUNT];
-
-
-const int FUNC_ID_PRELOGIC = 2;
-const int FUNC_ID_LOGIC = 3;
-const int FUNC_ID_ENDLOGIC = 5;
-
-
-const int FUNC_ID_PRERENDER = 6;
-const int FUNC_ID_RENDER = 7;
-const int FUNC_ID_POSTRENDER = 8;
-const int FUNC_ID_HUD_RENDER = 9;
 
 class objectResParentChainLink
 {
@@ -99,48 +52,29 @@ public:
 };
 
 
-
-const int OBJ_EDITOR_MODE_COMPONENTS = 0;
-const int OBJ_EDITOR_MODE_BASIC = 1;
-const int OBJ_EDITOR_MODE_TIMED = 2;
-const int OBJ_EDITOR_MODE_COLLISIONS = 3;
-const int OBJ_EDITOR_MODE_CUSTOM = 4;
-const int OBJ_EDITOR_MODE_SPECIAL = 5;
+const int OBJ_MODE_COMPONENTS = 0;
+const int OBJ_MODE_HEADER = 1;
+const int OBJ_MODE_SOURCE = 2;
 
 class gameObjectResource: public standardEditableGameResource
 {
 public:
     GPE_Label_Title * resourceNameLabel;
-    GPE_ToolIconButtonBar * editorButtonBar;
-    GPE_SelectBoxBasic * basicFunctionsSelector;
-    GPE_SelectBoxBasic * timedFunctionsSelector;
-    GPE_SelectBoxBasic * colliderFunctionsSelector;
-    GPE_SelectBoxBasic * customFunctionsSelector;
-    GPE_SelectBoxBasic * specialFunctionsSelector;
+
+    GPE_SelectBoxBasic * objModeSelector;
     GPE_CheckBoxBasic * checkBoxNeedsCamera;
     GPE_CheckBoxBasic * checkBoxIsMoveable;
     GPE_CheckBoxBasic * checkBoxIsVisible;
     GPE_CheckBoxBasic * checkBoxIsContinuous;
-    GPE_TextAreaInputBasic * classDeclarationBox;
-    GPE_TextAreaInputBasic * objectFunctions [DEFAULT_OBJECT_FUNCTIONS_COUNT];
-    GPE_TextAreaInputBasic * timedObjectFunctions [DEFAULT_OBJECT_TIMED_FUNCTIONS_COUNT];
-    GPE_TextAreaInputBasic * specialObjectFunctions [DEFAULT_SPECIAL_FUNCTIONS_COUNT];
-    int objectFunctionInEdit[objectFunctionTypes];
-    std::vector< collisionContainer * > collisionFunctions;
-    std::vector< customFunctionContainer * > customFunctions;
-    int spriteIndex;
+    GPE_TextAreaInputBasic * headerCodeArea;
+    GPE_TextAreaInputBasic * sourceCodeArea;
+    int animationIndex;
     int imageIndex;
-    int codeSection;
+    int selectedMode;
     int parentObjectId;
     GPE_Animation * animInEditor;
-    GPE_DropDown_Resouce_Menu * spriteField;
+    GPE_DropDown_Resouce_Menu * animationField;
     GPE_DropDown_Resouce_Menu * parentObjectField;
-    GPE_DropDown_Resouce_Menu * newObjectToCollideDropDown;
-    GPE_DropDown_Resouce_Menu * changeObjectToCollideDropDown;
-    GPE_ToolPushButton * removeCollideFunctionButton;
-    GPE_ToolIconButton * newCustomObjectFunctionButton;
-    GPE_ToolIconButton * newCustomObjectFunctionSettingsButton;
-    GPE_ToolIconButton * removeCustomObjectFunctionButton;
 
     //Component Related Variables
     GPE_GuiElementList * customComponentsGuiList;
@@ -159,17 +93,17 @@ public:
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
-    collisionContainer *  find_collision_event( int otherObjId);
-    customFunctionContainer * find_custom_function( std::string functionNameIn, bool createNewOne = true);
-    GPE_TextAreaInputBasic * find_function_textarea(std::string functionNameIn,int functionTypeIn = 0);
     GPE_GeneralResourceContainer * get_parent_resource();
+    GPE_Animation * get_resource_animation();
+    bool include_local_files( std::string pBuildDir , int buildType );
     void integrate_into_syntax();
     void manage_components(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
     void prerender_self( );
     void preprocess_self(std::string alternatePath = "");
     void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
+
     void save_resource(std::string alternatePath = "", int backupId = -1);
     int search_for_string(std::string needle);
     int search_and_replace_string(std::string needle, std::string newStr = "");
@@ -177,4 +111,5 @@ public:
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 
+void setup_object_components( GPE_DropDown_Menu * componentMenu);
 #endif

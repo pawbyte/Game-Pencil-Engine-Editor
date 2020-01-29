@@ -19,7 +19,8 @@ gamePencilExtraTools::gamePencilExtraTools()
     sidePanelRect = new GPE_Rect();
 
     editorPageList = new GPE_GuiElementList();
-    editorPageList->barXPadding = GENERAL_GPE_PADDING;
+    editorPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
+    editorPageList->panelAlignType = GPE_PANEL_ALIGN_FULL_LEFT;
     editorPageList->barXMargin = 0;
 
     sectionTitleExtras = new GPE_Label_Title("Extras","Extras");
@@ -39,6 +40,11 @@ gamePencilExtraTools::~gamePencilExtraTools()
         delete transformImageDirectoryButton;
         transformImageDirectoryButton = NULL;
     }
+}
+
+bool gamePencilExtraTools::include_local_files( std::string pBuildDir , int buildType )
+{
+
 }
 
 void gamePencilExtraTools::prerender_self( )
@@ -87,8 +93,8 @@ void gamePencilExtraTools::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam)
         editorPageList->set_coords( subViewedSpace.x, subViewedSpace.y );
         editorPageList->set_width(subViewedSpace.w);
         editorPageList->set_height(subViewedSpace.h );
-        editorPageList->barXPadding = GENERAL_GPE_PADDING;
-        editorPageList->barXMargin = GENERAL_GPE_PADDING;
+        editorPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
+        editorPageList->barXMargin = GENERAL_GPE_GUI_PADDING;
         int i = 0;
         if( sideAreaPanel->get_selected_name()=="General")
         {
@@ -118,19 +124,19 @@ void gamePencilExtraTools::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam)
     }
 }
 
-void gamePencilExtraTools::render_self(GPE_Rect * viewedSpace,GPE_Rect * cam, bool forceRedraw)
+void gamePencilExtraTools::render_self(GPE_Rect * viewedSpace,GPE_Rect * cam)
 {
     cam = GPE_find_camera(cam);
     viewedSpace = GPE_find_camera(viewedSpace);
     if( cam!=NULL && viewedSpace!=NULL)
     {
-        if( forceRedraw && sideAreaPanel!=NULL && PANEL_GENERAL_EDITOR==NULL )
+        if( sideAreaPanel!=NULL && PANEL_GENERAL_EDITOR==NULL )
         {
-            sideAreaPanel->render_self( viewedSpace,cam, forceRedraw);
+            sideAreaPanel->render_self( viewedSpace,cam);
         }
         if( editorPageList!=NULL )
         {
-            editorPageList->render_self( viewedSpace,cam, forceRedraw);
+            editorPageList->render_self( viewedSpace,cam);
         }
     }
 }

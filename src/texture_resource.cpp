@@ -3,10 +3,10 @@ texture_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -99,7 +99,7 @@ bool textureResource::build_intohtml5_file(std::ofstream * fileTarget, int leftT
         {
             *fileTarget << nestedTabsStr << "var " << html5TSName << " =  GPE.rsm.add_texture(";
             *fileTarget << int_to_string (exportBuildGlobalId ) +",";
-            *fileTarget << "'resources/textures/"+getShortFileName (textureInEditor->get_filename(),true )+"'";
+            *fileTarget << "'resources/textures/"+get_short_filename (textureInEditor->get_filename(),true )+"'";
             *fileTarget << "); \n";
         }
         else
@@ -120,6 +120,28 @@ void textureResource::compile_cpp()
 
 }
 
+GPE_Texture_Base * textureResource::get_resource_texture()
+{
+    if( textureInEditor!=NULL && textureInEditor->get_width() > 0 )
+    {
+        return textureInEditor;
+    }
+    return NULL;
+}
+
+bool textureResource::include_local_files( std::string pBuildDir , int buildType )
+{
+    appendToFile(get_user_settings_folder()+"resources_check.txt",get_name() +"...");
+
+    if( ( textureInEditor!=NULL) && ( textureInEditor->get_width() > 0 ) )
+    {
+        return textureInEditor->copy_image_source(pBuildDir+"/resources/textures");
+    }
+    appendToFile(get_user_settings_folder()+"resources_check.txt","Does not contain texture...");
+    return true;
+}
+
+
 int textureResource::load_image(std::string newFileName)
 {
     if( file_exists(newFileName) )
@@ -130,8 +152,8 @@ int textureResource::load_image(std::string newFileName)
             {
                 delete textureInEditor;
             }
-            textureInEditor = new GPE_Texture();
-            textureInEditor->load_new_texture( newFileName,-1,false);
+            textureInEditor = gpeph->get_new_texture();
+            textureInEditor->load_new_texture( GPE_MAIN_RENDERER,newFileName,-1,false);
             if( textureInEditor->get_width() <1 || textureInEditor->get_width()>4096 || textureInEditor->get_height() <1 || textureInEditor->get_height()>4096)
             {
                 display_user_alert("Unable to load image","Editor Error: Unable to load ["+newFileName+"] please check file and make sure it is between 1x1 and 4096x4096 pixels and is a valid image");
@@ -143,7 +165,7 @@ int textureResource::load_image(std::string newFileName)
             }
             else
             {
-                textureInEditor->copy_image_source( fileToDir(parentProjectName)+"/gpe_project/resources/textures");
+                textureInEditor->copy_image_source( file_to_dir(parentProjectName)+"/gpe_project/resources/textures");
             }
             return true;
         }
@@ -168,7 +190,7 @@ void textureResource::preprocess_self(std::string alternatePath)
 
         std::string newFileIn ="";
 
-        std::string soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/textures/";
+        std::string soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/textures/";
         if( file_exists(alternatePath) )
         {
             newFileIn = alternatePath;
@@ -195,7 +217,7 @@ void textureResource::preprocess_self(std::string alternatePath)
                 std::string subValString="";
                 std::string currLine="";
                 std::string currLineToBeProcessed;
-                double foundFileVersion = 0;
+                float foundFileVersion = 0;
                 while ( gameResourceFileIn.good() )
                 {
                     getline (gameResourceFileIn,currLine); //gets the next line of the file
@@ -219,7 +241,7 @@ void textureResource::preprocess_self(std::string alternatePath)
                                     valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
                                     if( keyString=="Version")
                                     {
-                                        foundFileVersion = string_to_double(valString);
+                                        foundFileVersion = string_to_float(valString);
                                     }
                                 }
                             }
@@ -258,7 +280,7 @@ void textureResource::preprocess_self(std::string alternatePath)
                     }
                     else
                     {
-                        GPE_Report("Invalid FoundFileVersion ="+double_to_string(foundFileVersion)+".");
+                        GPE_Report("Invalid FoundFileVersion ="+float_to_string(foundFileVersion)+".");
                     }
                 }
             }
@@ -284,16 +306,17 @@ void textureResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         /*
         if( textureInEditor!=NULL)
             {
-                render_text( GENERAL_GPE_PADDING,GENERAL_GPE_PADDING*2+preloadCheckBox->get_ypos()+preloadCheckBox->get_height(),
+                render_text( GENERAL_GPE_GUI_PADDING,GENERAL_GPE_GUI_PADDING*2+preloadCheckBox->get_ypos()+preloadCheckBox->get_height(),
                 int_to_string(textureInEditor->get_width() )+" x "+int_to_string(textureInEditor->get_height() )+"px",
                 GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP);
             }
             else
             {
-                render_text( GENERAL_GPE_PADDING,GENERAL_GPE_PADDING*2+preloadCheckBox->get_ypos()+preloadCheckBox->get_height(),
+                render_text( GENERAL_GPE_GUI_PADDING,GENERAL_GPE_GUI_PADDING*2+preloadCheckBox->get_ypos()+preloadCheckBox->get_height(),
                 "Image not loaded",GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT,FA_LEFT,FA_TOP);
             }
         */
+        PANEL_GENERAL_EDITOR->clear_panel();
 
         PANEL_GENERAL_EDITOR->add_gui_element(renameBox,true);
         PANEL_GENERAL_EDITOR->add_gui_element(refreshResourceDataButton,false);
@@ -317,7 +340,7 @@ void textureResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         PANEL_GENERAL_EDITOR->add_gui_element(confirmResourceButton,true);
         PANEL_GENERAL_EDITOR->add_gui_element(cancelResourceButton,true);
         //PANEL_GENERAL_EDITOR->set_maxed_out_width();
-        PANEL_GENERAL_EDITOR->process_self(NULL, NULL);
+        //PANEL_GENERAL_EDITOR->process_self(NULL, NULL);
         if( editorMode==0)
         {
             if( loadResourceButton!=NULL && loadResourceButton->is_clicked() )
@@ -340,8 +363,8 @@ void textureResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
             {
                 if(  textureInEditor!=NULL )
                 {
-                    std::string currentFileToRefresh = getShortFileName (textureInEditor->get_filename(),true );
-                    currentFileToRefresh = fileToDir(parentProjectName)+"/gpe_project/resources/textures/"+currentFileToRefresh;
+                    std::string currentFileToRefresh = get_short_filename (textureInEditor->get_filename(),true );
+                    currentFileToRefresh = file_to_dir(parentProjectName)+"/gpe_project/resources/textures/"+currentFileToRefresh;
                     load_image(currentFileToRefresh);
                 }
             }
@@ -391,8 +414,8 @@ void textureResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
                         int menuSelection = GPE_Get_Context_Result();
                         if( menuSelection>=0 && menuSelection <=3)
                         {
-
-                            SDL_Surface * oTempSurface = gpe_sdl->load_surface_image(textureInEditor->get_filename() );
+                            std::string tempStr = textureInEditor->get_filename();
+                            SDL_Surface * oTempSurface = SDL_SurfaceEx::load_surface_image( tempStr.c_str());
                             SDL_Surface *nTempSurface = NULL;
                             if( oTempSurface!=NULL)
                             {
@@ -404,7 +427,7 @@ void textureResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
                                         if( GPE_Display_Basic_Prompt("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
                                         {
                                             GPE_Report("Modifying image at: "+textureInEditor->get_filename()+".");
-                                            nTempSurface = gpe_sdl->surface_remove_color(oTempSurface,foundBGColor->get_sdl_color() );
+                                            nTempSurface = SDL_SurfaceEx::surface_remove_color(oTempSurface,foundBGColor->get_sdl_color() );
                                             delete foundBGColor;
                                             foundBGColor = NULL;
                                         }
@@ -415,14 +438,14 @@ void textureResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
                                 {
                                     if( GPE_Display_Basic_Prompt("Are you sure you want to invert your image's colors?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
                                     {
-                                        nTempSurface= gpe_sdl->surface_invert(oTempSurface);
+                                        nTempSurface= SDL_SurfaceEx::surface_invert(oTempSurface);
                                     }
                                 }
                                 else if( menuSelection==2 )
                                 {
                                     if( GPE_Display_Basic_Prompt("Are you sure you want to grayscale your image?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
                                     {
-                                        nTempSurface= gpe_sdl->surface_grayscale(oTempSurface);
+                                        nTempSurface= SDL_SurfaceEx::surface_grayscale(oTempSurface);
                                     }
                                 }
                                 if( nTempSurface!=NULL)
@@ -465,14 +488,14 @@ void textureResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
     }
 }
 
-void textureResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw )
+void textureResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if(cam!=NULL && viewedSpace!=NULL && forceRedraw )
+    if(cam!=NULL && viewedSpace!=NULL)
     {
         //renders the right side of the area, mainly preview of tilesheet
-        //MAIN_RENDERER->set_viewpoint( &texturePreviewCam );
+        //GPE_MAIN_RENDERER->set_viewpoint( &texturePreviewCam );
         if( GPE_TEXTURE_TRANSPARENT_BG!=NULL && GPE_MAIN_THEME->themeBgTexture==NULL )
         {
             for(int iPV= 0; iPV< viewedSpace->w; iPV+=GPE_TEXTURE_TRANSPARENT_BG->get_width() )
@@ -493,7 +516,7 @@ void textureResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam,bool forc
             }
             else
             {
-                double neededTextureScale= (double)std::min( (double)viewedSpace->w/ (double)textureInEditor->get_width(),  (double)viewedSpace->h / (double)textureInEditor->get_height() );
+                float neededTextureScale= (float)std::min( (float)viewedSpace->w/ (float)textureInEditor->get_width(),  (float)viewedSpace->h / (float)textureInEditor->get_height() );
                 textureInEditor->render_tex_scaled( 0, 0,neededTextureScale,neededTextureScale,NULL);
             }
         }
@@ -518,7 +541,7 @@ void textureResource::save_resource(std::string alternatePath, int backupId)
     else
     {
         //GPE_Main_Logs->log_general_error("Path ["+soughtDir+"] does not exist");
-        soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/textures/";
+        soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/textures/";
         newFileOut = soughtDir + resourceName+".gpf";
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
@@ -533,11 +556,11 @@ void textureResource::save_resource(std::string alternatePath, int backupId)
 
             if( textureInEditor!=NULL)
             {
-                std::string resFileLocation = getShortFileName (textureInEditor->get_filename(),true );
+                std::string resFileLocation = get_short_filename (textureInEditor->get_filename(),true );
                 newSaveDataFile << "ImageLocation="+resFileLocation+"\n";
                 if( (int)resFileLocation.size() > 0 && usingAltSaveSource )
                 {
-                    std::string resFileCopySrc = fileToDir(parentProjectName)+"/gpe_project/resources/textures/"+resFileLocation;
+                    std::string resFileCopySrc = file_to_dir(parentProjectName)+"/gpe_project/resources/textures/"+resFileLocation;
                     std::string resFileCopyDest = soughtDir+resFileLocation;
                     if( file_exists(resFileCopyDest) )
                     {

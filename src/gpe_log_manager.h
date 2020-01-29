@@ -3,10 +3,10 @@ gpe_log_manager.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -70,7 +70,7 @@ public:
     void clear_defaults();
     void clear_search_anchors();
     void process_self(GPE_Rect * viewedSpace=NULL, GPE_Rect *cam=NULL);
-    void render_self( GPE_Rect * viewedSpace=NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self( GPE_Rect * viewedSpace=NULL,GPE_Rect * cam = NULL);
     void clear_all_logs();
     void clear_debug_log();
     void clear_build_log();
@@ -98,6 +98,7 @@ public:
     void open_replace_mode();
     void open_search_mode();
     void open_search_results();
+    void process_anchors();
     void remove_default_tab( std::string name );
     void toggle_manager();
 };

@@ -3,10 +3,10 @@ gpe_gamecontroller_tester.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -32,7 +32,7 @@ SOFTWARE.
 */
 #include "gpe_gamecontroller_tester.h"
 
-gamePencilgamecontrollerTesterResource * MAIN_GameController_TESTER = NULL;
+gamePencilgamecontrollerTesterResource * MAIN_CONTROLLER_TESTER = NULL;
 
 
 gamePencilgamecontrollerTesterResource::gamePencilgamecontrollerTesterResource()
@@ -112,6 +112,11 @@ gamePencilgamecontrollerTesterResource::~gamePencilgamecontrollerTesterResource(
     }
 }
 
+bool gamePencilgamecontrollerTesterResource::include_local_files( std::string pBuildDir , int buildType )
+{
+
+}
+
 void gamePencilgamecontrollerTesterResource::prerender_self( )
 {
 
@@ -182,14 +187,14 @@ void gamePencilgamecontrollerTesterResource::process_self(GPE_Rect * viewedSpace
         playerRadius[iController] = std::min( playerRadiusMax, playerRadius[iController] );
 
         playerDeadZone[iController] = playerDeadZoneField[iController]->get_held_number() ;
-        if(playerDeadZone[iController] > 1.d )
+        if(playerDeadZone[iController] > 1.f )
         {
-            playerDeadZone[iController] = 1.d;
+            playerDeadZone[iController] = 1.f;
         }
 
-        if(playerDeadZone[iController] < 0.d )
+        if(playerDeadZone[iController] < 0.f )
         {
-            playerDeadZone[iController] = 0.d;
+            playerDeadZone[iController] = 0.f;
         }
 
         if( input->gamecontroller_get_axis_value( iController, 0) < -playerDeadZone[iController] )
@@ -231,12 +236,9 @@ void gamePencilgamecontrollerTesterResource::process_self(GPE_Rect * viewedSpace
     }
 }
 
-void gamePencilgamecontrollerTesterResource::render_self(GPE_Rect * viewedSpace,GPE_Rect * cam, bool forceRedraw )
+void gamePencilgamecontrollerTesterResource::render_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
 {
-    if( !forceRedraw)
-    {
-        return;
-    }
+
     viewedSpace = GPE_find_camera( viewedSpace);
     cam = GPE_find_camera( cam );
 
@@ -269,7 +271,7 @@ void gamePencilgamecontrollerTesterResource::render_self(GPE_Rect * viewedSpace,
             controllerOutputString = "Axis: ";
             for(int iCAxis = 0; iCAxis < gc_axes_count; iCAxis++)
             {
-                controllerOutputString+= "["+double_to_string( input->gamecontroller_get_axis_value( controllerInView, iCAxis) ) +"], ";
+                controllerOutputString+= "["+float_to_string( input->gamecontroller_get_axis_value( controllerInView, iCAxis) ) +"], ";
             }
             gfs->render_text( 32, 96, controllerOutputString,GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT, FA_LEFT, FA_BOTTOM, 255);
 

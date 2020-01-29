@@ -3,10 +3,10 @@ game_scene_basic_class.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -62,22 +62,23 @@ const int SCENE_MODE_MOVE = 3;
 const int SCENE_MODE_ROTATION = 4;
 const int SCENE_MODE_SCALE = 5;
 const int SCENE_MODE_ERASE = 6;
+const int SCENE_MODE_ASSIGN = 7;
 
 class GPE_SceneBasicClass: public GPE_SpecialMenu_Branch
 {
 protected:
     bool dualScaleClass;
     GPE_GeneralResourceContainer * projectParentFolder;
-
 public:
     GPE_SceneBasicClass * parentSceneBranch;
     bool isBeingMoved;
     int layerParentId;
-    double xPos, yPos;
-    double xScale, yScale;
-    double angle;
+    float xPos, yPos;
+    float xScale, yScale;
+    float angle;
     int xPivot, yPivot;
     int width, height;
+    GPE_Label_Text * branchGlobalId;
     GPE_TextInputNumber * angleField;
     GPE_TextInputNumber * xPosField;
     GPE_TextInputNumber * yPosField;
@@ -95,16 +96,17 @@ public:
     GPE_ObjectComponent *  add_variable(GPE_GeneralGuiElement * newVariable);
     virtual bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController );
     virtual void calculate_size();
-    void reset_components();
-    double rotx( double rx, double ry);
-    double roty( double rx, double ry);
-    virtual void render_branch();
     virtual void process_elements();
+    void refresh_branch();
+    void reset_components();
+    float rotx( float rx, float ry);
+    float roty( float rx, float ry);
+    virtual void render_branch();
     bool save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn = 0);
-    void set_angle( double newAngle );
+    void set_angle( float newAngle );
     void set_name( std::string newName );
-    void set_position( double x, double y);
-    bool under_mouse(double mx, double my);
+    void set_position( float x, float y);
+    bool under_mouse(float mx, float my);
 };
 
 #endif //GPE_SCENE_BASIC_CLASS_H

@@ -3,10 +3,10 @@ gpe_scene_animation_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,7 +37,7 @@ SOFTWARE.
 #include "gpe_scene_basic_class.h"
 #include "animation_resource.h"
 
-//Hooray Sprites/Animations in the scene on their own and such!!!!
+//Hooray animations/Animations in the scene on their own and such!!!!
 class GPE_SceneAnimation: public GPE_SceneBasicClass
 {
 public:
@@ -46,9 +46,9 @@ public:
     GPE_TextInputNumber * animationSpeedField;
     GPE_CheckBoxBasic * useCustomSpeed;
     int animationId;
-    double animationSpeed;
-    double frameStartPosition;
-    double framePosition;
+    float animationSpeed;
+    float frameStartPosition;
+    float framePosition;
     animationResource * animRes;
     int animSpeed;
     GPE_SceneAnimation( GPE_GeneralResourceContainer *pFolder = NULL );

@@ -1,5 +1,5 @@
 /*
-main.cpp
+gpe_editor_state.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
@@ -28,55 +28,52 @@ SOFTWARE.
 
 -Game Pencil Engine <https://create.pawbyte.com>
 
- ____                ____        _
-|  _ \ __ ___      _| __ ) _   _| |_ ___
-| |_) / _` \ \ /\ / /  _ \| | | | __/ _ \
-|  __/ (_| |\ V  V /| |_) | |_| | ||  __/
-|_|   \__,_| \_/\_/ |____/ \__, |\__\___|
-                           |___/
-Created By PawByte
-Attribution required at start of program and in credits.
-SDL 2.0.9 used for this version...
+
 */
 
-#include "GPE/GPE.h"
-#include "gpe_game_master_itenary.h"
+#ifndef GPE_EDITOR_STATE_H
+#define GPE_EDITOR_STATE_H
 
-int main( int argc, char* args[] )
+#include "GPE/GPE_Program_State.h"
+#include "AOSGUI/paw_gui.h"
+#include "gpe_editor.h"
+#include "gpe_editor_settings.h"
+#include "project_properties.h"
+#include "AOSGUI/paw_gui.h"
+
+#include "gpe_log_manager.h"
+#include "gpe_resource_tree.h"
+#include "gpe_project_resources.h"
+#include "GPE/GPE_Texture_SDL.h"
+
+class GPE_Editor_State : public GPE_ProgramState
 {
+private:
+    //Intro message
+    GPE_Texture_Base * message;
+    GPE_Toolbar * mainToolBar;
+    GPE_ToolIconButtonBar * mainButtonBar;
+protected:
+    //Intro background
+    GPE_Texture_Base *background;
+public:
+    GPE_Texture_Base * country_language_image;
+    SDL_version SDL_compiled_version;
+    std::string SDL_VersionText;
+    //Loads intro resources
+    GPE_Editor_State( std::string sName = "");
+    //Frees intro resources
+    ~GPE_Editor_State();
 
-    int gameFailed = 0;
-    GPE_Init_Settings(argc, args , "PawByte","GPE_Editor");
+    //Main loop functions
+    void process_input();
+    void apply_logic();
+    void clean_up();
+    void end_state();
+    void render();
+    void start_state();
+};
 
-    //Initialize
-    if( GPE_Init(argc, args ) == false )
-    {
-        GPE_Report("    Unable to properly initialize GPE!\n");
-        gameFailed = 1;
-    }
+bool GPE_Editor_Init( int argc, char* args[]);
 
-    gpe->set_fps( GPE_ENGINE_SETTINGS->defaultFPS );
-
-    if( GPE_Init_Master_Itenary( argc, args) == false )
-    {
-        gameFailed = 1;
-    }
-
-    if(gameFailed==1)
-    {
-        GPE_Quit();
-        return -1;
-    }
-
-    if( gpe->game_loop() )
-    {
-        GPE_Report("Completed Game Loop....");
-    }
-
-    //Clean up
-    GPE_Quit_Master_Itenary();
-    GPE_Report("Deleting GPE...");
-    GPE_Quit();
-    GPE_Report("Program Exited with Return Status 0...");
-    return 0;
-}
+#endif // GPE_EDITOR_STATE_H

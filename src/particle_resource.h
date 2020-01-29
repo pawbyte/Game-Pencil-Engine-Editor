@@ -3,10 +3,10 @@ particle_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,7 +36,7 @@ SOFTWARE.
 #ifndef GPE_PARTICLE_RESOURCES_H
 #define GPE_PARTICLE_RESOURCES_H
 
-#include "GPE_Engine/GPE_Particles.h"
+#include "GPE/GPE_Particles.h"
 #include "gpe_basic_resource_page.h"
 
 
@@ -82,7 +82,7 @@ public:
     GPE_TextInputNumber * gravityXValue;
     GPE_TextInputNumber * gravityYValue;
 
-    GPE_Texture * emitterTexture;
+    GPE_Texture_Base * emitterTexture;
 
     GPE_DropDown_Menu * blendTypeMenu;
     GPE_DropDown_Menu * shapeMenu;
@@ -97,13 +97,14 @@ public:
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
     bool get_mouse_coords(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
+    bool include_local_files( std::string pBuildDir , int buildType );
     void handle_scrolling();
     void load_image(std::string newFileName, bool autoProcess = false);
     void preprocess_self(std::string alternatePath = "");
     void prerender_self( );
-    void process_data_fields(double versionToProcess = -1);
+    void process_data_fields(float versionToProcess = -1);
     void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void revert_data_fields();
     void save_resource(std::string alternatePath = "", int backupId = -1);
     void update_box(int newX=-1, int newY=-1, int newW=-1, int newH=-1);

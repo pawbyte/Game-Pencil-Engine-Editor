@@ -3,10 +3,10 @@ game_scene_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -34,7 +34,7 @@ SOFTWARE.
 #ifndef GAME_SCENE_RESOURCE_H
 #define GAME_SCENE_RESOURCE_H
 
-#include "GPE_Engine/GPE_Layers.h"
+#include "GPE/GPE_Layers.h"
 #include "animation_resource.h"
 #include "font_resource.h"
 #include "game_object_resource.h"
@@ -74,15 +74,15 @@ extern std::string DEFAULT_SCENE_SUBEDITOR_NAMES[5];
 //This class will essentially manage all of the pop ups that can be created with the scene editor
 //Made a global to avoid duplicating data
 
-const double GPE_SCENE_ALIGN_VERSION = 1.30;
+const float GPE_SCENE_ALIGN_VERSION = 1.30;
 
 class gameSceneResource: public standardEditableGameResource
 {
 protected:
-    double objSelectedX1;
-    double objSelectedY1;
-    double objSelectedX2;
-    double objSelectedY2;
+    float objSelectedX1;
+    float objSelectedY1;
+    float objSelectedX2;
+    float objSelectedY2;
     bool mouseIsInScene;
     std::vector< GPE_SceneBasicClass * > selectedBranchList;
     GPE_Rect * gridRenderRect;
@@ -137,7 +137,7 @@ protected:
     int bgIdInEdit;
     animationResource * animRes;
     textureResource * texRes;
-    double zoomValue;
+    float zoomValue;
 
     //used for the object placement tab
     GPE_ToolLabelButton * inheritParentComponentButton;
@@ -187,8 +187,8 @@ protected:
 
 
     int layerInEdit;
-    double sceneMouseXPos, sceneMouseYPos;
-    double sceneObjMouseX, sceneObjMouseY;
+    float sceneMouseXPos, sceneMouseYPos;
+    float sceneObjMouseX, sceneObjMouseY;
     int lastCreatedObjXPos, lastCreatedObjYPos;
     int lastCreatedObjTypeId;
     GPE_Rect tsCameraRect;
@@ -228,10 +228,10 @@ public:
 
     GPE_ToolIconButton * saveButton;
     //Used to calculate the derotated/scaled box of an resource
-    double rmx;
-    double rmy;
-    double lmx;
-    double lmy;
+    float rmx;
+    float rmy;
+    float lmx;
+    float lmy;
     gameSceneResource(GPE_GeneralResourceContainer * pFolder = NULL);
     ~gameSceneResource();
     sceneLayer * add_retro_layer(int layerType, int newLayerProjectLayerId, bool selectedLayer = false );
@@ -248,6 +248,7 @@ public:
 
     bool get_mouse_coords( );
     void handle_scrolling();
+    bool include_local_files( std::string pBuildDir , int buildType );
     void inherit_components( GPE_SceneBasicClass * objectToInherit, standardEditableGameResource * objParent);
     void manage_components( bool processComponentsToo = true );
 
@@ -256,8 +257,8 @@ public:
     void process_components();
     void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void render_grid( int xStart, int yStart, int cellW, int cellH, int xMax = -1, int yMax = -1, GPE_Color * gridLineColor = NULL, int gridLineAlpha = 128 );
-    void render_scene_layers(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, GPE_Rect * sceneCamera = NULL, double renderScale = -1,bool showEditorPreviews = true, bool checkListDependent = true,  bool forceRedraw = true);
-    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_scene_layers(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, GPE_Rect * sceneCamera = NULL, float renderScale = -1,bool showEditorPreviews = true, bool checkListDependent = true);
+    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void reset_placement_info();
     void save_resource(std::string alternatePath = "", int backupId = -1);
     bool seek_placeable_branch();

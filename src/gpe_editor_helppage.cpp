@@ -3,10 +3,10 @@ gpe_editor_helppage.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -73,11 +73,11 @@ gamePencilHelpPageResource::gamePencilHelpPageResource()
     std::string versionInfoLine = "";
     if( GPE_VERSION_UPDATE_NUMBER==0)
     {
-        versionInfoLine = "Version:                       "+double_to_string(GPE_VERSION_DOUBLE_NUMBER)+"0";
+        versionInfoLine = "Version:                       "+float_to_string(GPE_VERSION_FLOAT_NUMBER)+"0";
     }
     else
     {
-        versionInfoLine = "Version:                       "+double_to_string(GPE_VERSION_DOUBLE_NUMBER);
+        versionInfoLine = "Version:                       "+float_to_string(GPE_VERSION_FLOAT_NUMBER);
     }
     if( GPE_MAIN_GUI!=NULL)
     {
@@ -100,9 +100,11 @@ gamePencilHelpPageResource::gamePencilHelpPageResource()
     }
     pencilInformation->add_line( versionInfoLine+"." );
     pencilInformation->add_line("SDL Version:                   "+int_to_string(SDL_MAJOR_VERSION)+"."+int_to_string(SDL_MINOR_VERSION)+"."+int_to_string(SDL_PATCHLEVEL)+"." );
+    pencilInformation->add_line("Renderer:                      "+GPE_MAIN_RENDERER->get_renderer_name() + " - " + GPE_MAIN_RENDERER->get_renderer_type() + "." );
     pencilInformation->add_line("PGUI Version:                  "+int_to_string(PGUI_MAJOR_VERSION)+"."+int_to_string(PGUI_MINOR_VERSION)+"."+int_to_string(PGUI_PATCHLEVEL)+"." );
     pencilInformation->add_line("GPE(runtime) Version:          "+int_to_string(GPR_MAJOR_VERSION)+"."+int_to_string(GPR_MINOR_VERSION)+"."+int_to_string(GPR_PATCHLEVEL)+"." );
-    pencilInformation->add_line("Release Date:                  03-18-2019");
+
+    pencilInformation->add_line("Release Date:                  03-18-2020");
     pencilInformation->add_line("Author:                        PawByte");
     pencilInformation->add_line("Lead Developer:                Nathan Hurde aka theweirdn8");
     pencilInformation->add_line("Email:                         help@pawbyte.com");
@@ -121,7 +123,7 @@ gamePencilHelpPageResource::gamePencilHelpPageResource()
     pencilShortkeys->set_height(640);
 
 
-    helpPageList->barXPadding = GENERAL_GPE_PADDING;
+    helpPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
     helpPageList->barXMargin = 0;
 
     helpfulLinksTitle = new GPE_Label_Title("Helpful Links","Some links you might find useful while using GPE.");
@@ -188,8 +190,8 @@ gamePencilHelpPageResource::gamePencilHelpPageResource()
 
 gamePencilHelpPageResource::~gamePencilHelpPageResource()
 {
-    subViewedSpace.x = GENERAL_GPE_PADDING;
-    subViewedSpace.y = GENERAL_GPE_PADDING;
+    subViewedSpace.x = GENERAL_GPE_GUI_PADDING;
+    subViewedSpace.y = GENERAL_GPE_GUI_PADDING;
     subViewedSpace.w = 400;
     subViewedSpace.h = 400;
     resourceType = -2;
@@ -251,6 +253,10 @@ void gamePencilHelpPageResource::add_communitylink( GPE_ToolIconButton * newLink
     }
 }
 
+bool gamePencilHelpPageResource::include_local_files( std::string pBuildDir , int buildType )
+{
+    return true;
+}
 
 void gamePencilHelpPageResource::prerender_self( )
 {
@@ -294,8 +300,8 @@ void gamePencilHelpPageResource::process_self(GPE_Rect * viewedSpace, GPE_Rect *
             helpPageList->reset_self();
         }
 
-        helpPageList->barXPadding = GENERAL_GPE_PADDING;
-        helpPageList->barYPadding = GENERAL_GPE_PADDING;
+        helpPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
+        helpPageList->barYPadding = GENERAL_GPE_GUI_PADDING;
         helpPageList->hAlign = FA_CENTER;
         helpPageList->clear_list();
 
@@ -348,7 +354,7 @@ void gamePencilHelpPageResource::process_self(GPE_Rect * viewedSpace, GPE_Rect *
     }
 }
 
-void gamePencilHelpPageResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+void gamePencilHelpPageResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
@@ -356,11 +362,11 @@ void gamePencilHelpPageResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * 
     {
         if(  sideAreaPanel!=NULL && PANEL_GENERAL_EDITOR==NULL )
         {
-            sideAreaPanel->render_self( viewedSpace,cam, forceRedraw);
+            sideAreaPanel->render_self( viewedSpace,cam);
         }
         if( helpPageList!=NULL )
         {
-            helpPageList->render_self( viewedSpace,cam, forceRedraw);
+            helpPageList->render_self( viewedSpace,cam);
         }
     }
 }

@@ -3,10 +3,10 @@ gpe_scene_object_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include "gpe_scene_object_class.h"
 
-GPE_SceneGameObject::GPE_SceneGameObject()
+GPE_SceneGameObject::GPE_SceneGameObject( std::string nName)
 {
     isLocked = false;
     branchType = BRANCH_TYPE_OBJECT;
@@ -50,8 +50,8 @@ GPE_SceneGameObject::GPE_SceneGameObject()
     xPivot = width/2;
     yPivot = height/2;
 
-    branchNameField->set_name("Nickname");
-    branchNameField->set_label("Nickname");
+    branchNameField->set_name(nName );
+    branchNameField->set_label( nName );
 }
 
 GPE_SceneGameObject::~GPE_SceneGameObject()
@@ -106,18 +106,18 @@ void GPE_SceneGameObject::render_branch()
     spm->tempRect->y = ceil( (yPos*spm->zoomValue-spm->currentCamera->y*spm->zoomValue) );
     if( objTypeId > 0 && spm->cSceneObjList!=NULL )
     {
-        //renders the object's sprite
+        //renders the object's animation
         GPE_GeneralResourceContainer * objTypeContainer = spm->cSceneObjList->find_resource_from_id(objTypeId);
         if( objTypeContainer!=NULL && objTypeContainer->get_held_resource()!=NULL )
         {
-            bool objectSpriteRender = false;
+            bool objectanimationRender = false;
             gameObjectResource*tempGameObj = (gameObjectResource*) objTypeContainer->get_held_resource();
             if( tempGameObj!=NULL)
             {
                 //fangle = angleField->get_held_number();
                 //if( fangle!=0 && fangle!=360 && fangle!=720)
                 {
-                    GPE_GeneralResourceContainer * sprTypeContainer = tempGameObj->spriteField->get_selected_container();
+                    GPE_GeneralResourceContainer * sprTypeContainer = tempGameObj->animationField->get_selected_container();
                     if( sprTypeContainer!=NULL)
                     {
                         animationResource*animRes = (animationResource*) sprTypeContainer->get_held_resource();
@@ -131,7 +131,7 @@ void GPE_SceneGameObject::render_branch()
                             animRes->animInEditor->render_special( animRes->get_preview_frame(),spm->tempRect->x,spm->tempRect->y, xScale*spm->zoomValue,yScale*spm->zoomValue,angle, branchColor->get_color(),branchAlpha->get_value(), NULL );
                             //gfs->render_text( spm->tempRect->x, spm->tempRect->y-48, "XOff:"+int_to_string(xOffset)+",YOff:"+int_to_string(yOffset),c_red,GPE_DEFAULT_FONT,FA_CENTER,FA_BOTTOM, 255 );
                             //gfs->render_text( spm->tempRect->x, spm->tempRect->y-16, "W:"+int_to_string(width)+",H:"+int_to_string(height),c_red,GPE_DEFAULT_FONT,FA_CENTER,FA_BOTTOM, 255 );
-                            objectSpriteRender = true;
+                            objectanimationRender = true;
                         }
                     }
                 }
@@ -141,9 +141,9 @@ void GPE_SceneGameObject::render_branch()
                 xPos = 16;
                 yPos = 16;
             }
-            if( !objectSpriteRender )
+            if( !objectanimationRender )
             {
-                //objTypeContainer->render_image( spm->tempRect->x,spm->tempRect->y,ceil( (double)spm->tempRect->w*xScale*spm->zoomValue),ceil( (double)spm->tempRect->h*yScale*spm->zoomValue ),viewedSpace,cam);
+                //objTypeContainer->render_image( spm->tempRect->x,spm->tempRect->y,ceil( (float)spm->tempRect->w*xScale*spm->zoomValue),ceil( (float)spm->tempRect->h*yScale*spm->zoomValue ),viewedSpace,cam);
             }
         }
         else

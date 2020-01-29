@@ -3,10 +3,10 @@ fontResource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -60,7 +60,7 @@ fontResource::fontResource(GPE_GeneralResourceContainer * pFolder)
     fontSizeField->set_label("Font Size");
     if( saveResourceButton!=NULL)
     {
-        fontSizeField->set_coords(-1,saveResourceButton->get_ypos()+saveResourceButton->get_height()+GENERAL_GPE_PADDING+48);
+        fontSizeField->set_coords(-1,saveResourceButton->get_ypos()+saveResourceButton->get_height()+GENERAL_GPE_GUI_PADDING+48);
     }
     fontTypeButtonController = new GPE_RadioButtonControllerBasic("Font Type", true,1);
     fontTypeButtonController->add_opton("Normal Font");
@@ -119,10 +119,10 @@ bool fontResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabA
         }
         for( int i = 0; i < FONT_FILE_TYPES; i++)
         {
-            //*fileTarget  << "'resources/animations/"+getShortFileName (animInEditor->fileName,true )+"',";
+            //*fileTarget  << "'resources/animations/"+get_short_filename (animInEditor->fileName,true )+"',";
             if( (int)storedFontFileNames[i].size() > 4)
             {
-                *fileTarget << "'resources/fonts/"+getShortFileName( storedFontFileNames[i],true) <<  "',";
+                *fileTarget << "'resources/fonts/"+get_short_filename( storedFontFileNames[i],true) <<  "',";
             }
             else
             {
@@ -182,21 +182,21 @@ bool fontResource::build_css3_file(std::ofstream * fileTarget, int leftTabAmount
             *fileTarget << nestedTabsStr << "font-family: '"+fontFamilyName+"';\n";
             if( (int)storedFontFileNames[FONT_EOT].size() > 0)
             {
-                *fileTarget << nestedTabsStr << "src: url('../resources/fonts/" << getShortFileName(storedFontFileNames[FONT_EOT],true)   << "'),\n";
-                *fileTarget << nestedTabsStr << "src: url('../resources/fonts/" << getShortFileName(storedFontFileNames[FONT_EOT],true ) << "?#iefix') format('embedded-opentype'),\n,";
+                *fileTarget << nestedTabsStr << "src: url('../resources/fonts/" << get_short_filename(storedFontFileNames[FONT_EOT],true)   << "'),\n";
+                *fileTarget << nestedTabsStr << "src: url('../resources/fonts/" << get_short_filename(storedFontFileNames[FONT_EOT],true ) << "?#iefix') format('embedded-opentype'),\n,";
             }
             *fileTarget << nestedTabsStr << "src: local('☺')";
             if( (int)storedFontFileNames[FONT_WOFF].size() > 0)
             {
-                *fileTarget << nestedTabsStr << ",\n" << "url('../resources/fonts/" << getShortFileName(storedFontFileNames[FONT_WOFF],true)   << "') format('woff')";
+                *fileTarget << nestedTabsStr << ",\n" << "url('../resources/fonts/" << get_short_filename(storedFontFileNames[FONT_WOFF],true)   << "') format('woff')";
             }
             if( (int)storedFontFileNames[FONT_TTF].size() > 0)
             {
-                *fileTarget << nestedTabsStr << ",\n" << "url('../resources/fonts/" << getShortFileName(storedFontFileNames[FONT_TTF],true)   << "') format('truetype')";
+                *fileTarget << nestedTabsStr << ",\n" << "url('../resources/fonts/" << get_short_filename(storedFontFileNames[FONT_TTF],true)   << "') format('truetype')";
             }
             if( (int)storedFontFileNames[FONT_SVG].size() > 0)
             {
-                *fileTarget << nestedTabsStr << "\n" << "url('../resources/fonts/" << getShortFileName(storedFontFileNames[FONT_SVG],true)   << "#" << fontFamilyName << "') format('svg')";
+                *fileTarget << nestedTabsStr << "\n" << "url('../resources/fonts/" << get_short_filename(storedFontFileNames[FONT_SVG],true)   << "#" << fontFamilyName << "') format('svg')";
             }
             *fileTarget << nestedTabsStr << ";\n" << "font-weight: normal;\n";
             *fileTarget << nestedTabsStr << "font-style: normal;\n";
@@ -215,6 +215,29 @@ void fontResource::compile_cpp()
 {
 
 }
+
+bool fontResource::include_local_files( std::string pBuildDir , int buildType )
+{
+    appendToFile(get_user_settings_folder()+"resources_check.txt",get_name() +"...");
+
+    bool fontNotCopied = false;
+    std::string copyFileDestination;
+    for( int jFontType = 0; jFontType < FONT_FILE_TYPES; jFontType++)
+    {
+        if( (int)storedFontFileNames[jFontType].size() > 3 )
+        {
+            copyFileDestination = pBuildDir+"/resources/fonts/"+get_short_filename(storedFontFileNames[jFontType],true);
+            if( copy_file( storedFontFileNames[jFontType],copyFileDestination)==false )
+            {
+                appendToFile(get_user_settings_folder()+"resources_check.txt","Unable to copy ["+storedFontFileNames[jFontType]+"] to ["+copyFileDestination+"]...");
+                return fontNotCopied;
+            }
+        }
+    }
+
+    return !fontNotCopied;
+}
+
 void fontResource::load_font(std::string newFileName, int newFontSize )
 {
     if( (int)newFileName.size() > 0)
@@ -237,13 +260,13 @@ void fontResource::load_font(std::string newFileName, int newFontSize )
         //Saves the font where possible...
         if( get_file_ext(newFileName)=="eot" || get_file_ext(newFileName)=="EOT" )
         {
-            std::string copyDestinationStr = fileToDir(parentProjectName)+"/gpe_project/resources/fonts/"+ getShortFileName(newFileName,true);
+            std::string copyDestinationStr = file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ get_short_filename(newFileName,true);
             storedFontFileNames[FONT_EOT] = copyDestinationStr;
             copy_file(newFileName.c_str(),copyDestinationStr );
         }
         else if( get_file_ext(newFileName)=="svg" || get_file_ext(newFileName)=="SVG" )
         {
-            std::string copyDestinationStr = fileToDir(parentProjectName)+"/gpe_project/resources/fonts/"+ getShortFileName(newFileName,true);
+            std::string copyDestinationStr = file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ get_short_filename(newFileName,true);
             storedFontFileNames[FONT_SVG] = copyDestinationStr;
             copy_file(newFileName.c_str(),copyDestinationStr );
         }
@@ -254,8 +277,8 @@ void fontResource::load_font(std::string newFileName, int newFontSize )
                 gfs->close_font(fontInEditor);
                 fontInEditor = NULL;
             }
-            fontInEditorFileName = getShortFileName(newFileName,true);
-            std::string copyDestinationStr = fileToDir(parentProjectName)+"/gpe_project/resources/fonts/"+ fontInEditorFileName;
+            fontInEditorFileName = get_short_filename(newFileName,true);
+            std::string copyDestinationStr = file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ fontInEditorFileName;
             copy_file(newFileName.c_str(),copyDestinationStr );
 
             fontInEditor = gfs->open_font(copyDestinationStr.c_str(),newFontSize,false,"Custom Font");
@@ -266,10 +289,10 @@ void fontResource::load_font(std::string newFileName, int newFontSize )
             }
             else
             {
-                fontInEditorFileName = getShortFileName(newFileName,true);
+                fontInEditorFileName = get_short_filename(newFileName,true);
                 fontInEditor->get_metrics( "AgyW", &fontWidth, &fontHeight);
                 fontWidth/=4;
-                std::string copyDestinationStr = fileToDir(parentProjectName)+"/gpe_project/resources/fonts/"+ getShortFileName(newFileName,true);
+                std::string copyDestinationStr = file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ get_short_filename(newFileName,true);
                 storedFontFileNames[FONT_OTF] = copyDestinationStr;
                 fontInEditor->get_metrics( "AgyW", &fontWidth, &fontHeight);
                 fontWidth/=4;
@@ -283,8 +306,8 @@ void fontResource::load_font(std::string newFileName, int newFontSize )
                 gfs->close_font(fontInEditor);
                 fontInEditor = NULL;
             }
-            fontInEditorFileName = getShortFileName(newFileName,true);
-            std::string copyDestinationStr = fileToDir(parentProjectName)+"/gpe_project/resources/fonts/"+ fontInEditorFileName;
+            fontInEditorFileName = get_short_filename(newFileName,true);
+            std::string copyDestinationStr = file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ fontInEditorFileName;
             copy_file(newFileName.c_str(),copyDestinationStr );
 
             fontInEditor = gfs->open_font(copyDestinationStr.c_str(),newFontSize,false,"Custom Font");
@@ -295,10 +318,10 @@ void fontResource::load_font(std::string newFileName, int newFontSize )
             }
             else
             {
-                fontInEditorFileName = getShortFileName(newFileName,true);
+                fontInEditorFileName = get_short_filename(newFileName,true);
                 fontInEditor->get_metrics( "AgyW", &fontWidth, &fontHeight);
                 fontWidth/=4;
-                std::string copyDestinationStr = fileToDir(parentProjectName)+"/gpe_project/resources/fonts/"+ getShortFileName(newFileName,true);
+                std::string copyDestinationStr = file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ get_short_filename(newFileName,true);
                 storedFontFileNames[FONT_TTF] = copyDestinationStr;
                 fontInEditor->get_metrics( "AgyW", &fontWidth, &fontHeight);
                 fontWidth/=4;
@@ -307,13 +330,13 @@ void fontResource::load_font(std::string newFileName, int newFontSize )
         }
         else if( get_file_ext(newFileName)=="woff" || get_file_ext(newFileName)=="WOFF" )
         {
-            std::string copyDestinationStr = fileToDir(parentProjectName)+"/gpe_project/resources/fonts/"+ getShortFileName(newFileName,true);
+            std::string copyDestinationStr = file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ get_short_filename(newFileName,true);
             storedFontFileNames[FONT_WOFF] = copyDestinationStr;
             copy_file(newFileName.c_str(),copyDestinationStr );
         }
         else if( get_file_ext(newFileName)=="woff2" || get_file_ext(newFileName)=="WOFF2" )
         {
-            std::string copyDestinationStr = fileToDir(parentProjectName)+"/gpe_project/resources/fonts/"+ getShortFileName(newFileName,true);
+            std::string copyDestinationStr = file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ get_short_filename(newFileName,true);
             storedFontFileNames[FONT_WOFF2] = copyDestinationStr;
             copy_file(newFileName.c_str(),copyDestinationStr );
         }
@@ -336,7 +359,7 @@ void fontResource::preprocess_self(std::string alternatePath)
         std::string otherColContainerName = "";
 
         std::string newFileIn ="";
-        std::string soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/fonts/";
+        std::string soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/";
         if( file_exists(alternatePath) )
         {
             newFileIn = alternatePath;
@@ -363,7 +386,7 @@ void fontResource::preprocess_self(std::string alternatePath)
                 std::string subValString="";
                 std::string currLine="";
                 std::string currLineToBeProcessed;
-                double foundFileVersion = 0;
+                float foundFileVersion = 0;
                 std::string fFontFile = "";
                 int tFontSize = 12;
                 while ( gameResourceFileIn.good() )
@@ -389,7 +412,7 @@ void fontResource::preprocess_self(std::string alternatePath)
                                     valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
                                     if( keyString=="Version")
                                     {
-                                        foundFileVersion = string_to_double(valString);
+                                        foundFileVersion = string_to_float(valString);
                                     }
                                 }
                             }
@@ -439,7 +462,7 @@ void fontResource::preprocess_self(std::string alternatePath)
                     }
                     else
                     {
-                        GPE_Report("Invalid FoundFileVersion ="+double_to_string(foundFileVersion)+".");
+                        GPE_Report("Invalid FoundFileVersion ="+float_to_string(foundFileVersion)+".");
                     }
                 }
             }
@@ -551,7 +574,7 @@ void fontResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
     }
 }
 
-bool fontResource::render_held_font( int xPos, int yPos, std::string textureText, GPE_Color * textColor,int hAlign,int vAlign, double renderAngle, double renderScale, int renderAlpha  )
+bool fontResource::render_held_font( int xPos, int yPos, std::string textureText, GPE_Color * textColor,int hAlign,int vAlign, float renderAngle, float renderScale, int renderAlpha  )
 {
     if( fontInEditor!=NULL )
     {
@@ -560,11 +583,11 @@ bool fontResource::render_held_font( int xPos, int yPos, std::string textureText
     return false;
 }
 
-void fontResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRedraw )
+void fontResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    if( cam!=NULL && viewedSpace!=NULL &&  forceRedraw )
+    if( cam!=NULL && viewedSpace!=NULL  )
     {
         if(fontTypeButtonController!=NULL)
         {
@@ -572,22 +595,22 @@ void fontResource::render_self(GPE_Rect * viewedSpace,GPE_Rect *cam,bool forceRe
         }
         if( fontInEditor!=NULL)
         {
-            gfs->render_text( GENERAL_GPE_PADDING,GENERAL_GPE_PADDING,"Font Preview: "+getShortFileName(storedFontFileNames[FONT_TTF],true)+" | "+fontFamilyName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_CATEGORY_BAR,FA_LEFT,FA_TOP);
-            gfs->render_text( GENERAL_GPE_PADDING,GENERAL_GPE_PADDING+32,fontPreviewTextField->get_string(),GPE_MAIN_THEME->Main_Box_Font_Color,fontInEditor,FA_LEFT,FA_TOP);
+            gfs->render_text( GENERAL_GPE_GUI_PADDING,GENERAL_GPE_GUI_PADDING,"Font Preview: "+get_short_filename(storedFontFileNames[FONT_TTF],true)+" | "+fontFamilyName,GPE_MAIN_THEME->Main_Box_Font_Color,FONT_LABEL,FA_LEFT,FA_TOP);
+            gfs->render_text( GENERAL_GPE_GUI_PADDING,GENERAL_GPE_GUI_PADDING+32,fontPreviewTextField->get_string(),GPE_MAIN_THEME->Main_Box_Font_Color,fontInEditor,FA_LEFT,FA_TOP);
         }
         else
         {
-            gfs->render_text( GENERAL_GPE_PADDING,GENERAL_GPE_PADDING,"Please Select A Font",GPE_MAIN_THEME->Main_Box_Font_Color,FONT_CATEGORY_BAR,FA_LEFT,FA_TOP);
+            gfs->render_text( GENERAL_GPE_GUI_PADDING,GENERAL_GPE_GUI_PADDING,"Please Select A Font",GPE_MAIN_THEME->Main_Box_Font_Color,FONT_LABEL,FA_LEFT,FA_TOP);
         }
         for( int i = FONT_FILE_TYPES-1; i >=0; i--)
         {
             if( storedFontFileNames[i].size()> 3)
             {
-                gfs->render_text( viewedSpace->w-GENERAL_GPE_PADDING*2,viewedSpace->h-GENERAL_GPE_PADDING-GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_FONT_EXT[i]+" is used",GPE_MAIN_THEME->Main_Suggestion_Font_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_BOTTOM);
+                gfs->render_text( viewedSpace->w-GENERAL_GPE_GUI_PADDING*2,viewedSpace->h-GENERAL_GPE_GUI_PADDING-GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_FONT_EXT[i]+" is used",GPE_MAIN_THEME->Main_Suggestion_Font_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_BOTTOM);
             }
             else
             {
-                gfs->render_text( viewedSpace->w-GENERAL_GPE_PADDING*2,viewedSpace->h-GENERAL_GPE_PADDING-GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_FONT_EXT[i]+" not used",GPE_MAIN_THEME->Main_Error_Font_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_BOTTOM);
+                gfs->render_text( viewedSpace->w-GENERAL_GPE_GUI_PADDING*2,viewedSpace->h-GENERAL_GPE_GUI_PADDING-GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_FONT_EXT[i]+" not used",GPE_MAIN_THEME->Main_Error_Font_Color,GPE_DEFAULT_FONT,FA_RIGHT,FA_BOTTOM);
             }
         }
     }
@@ -610,7 +633,7 @@ void fontResource::save_resource(std::string alternatePath, int backupId)
     }
     else
     {
-        soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/fonts/";
+        soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/";
         newFileOut = soughtDir + resourceName+".gpf";
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
@@ -638,7 +661,7 @@ void fontResource::save_resource(std::string alternatePath, int backupId)
                 newSaveDataFile << SUPPORTED_FONT_EXT[i]+"_File=" << resFileLocation <<"\n";
                 if( (int)resFileLocation.size() > 0 && usingAltSaveSource )
                 {
-                    resFileCopySrc = fileToDir(parentProjectName)+"/gpe_project/resources/fonts/"+resFileLocation;
+                    resFileCopySrc = file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+resFileLocation;
                     resFileCopyDest = soughtDir+resFileLocation;
                     if( file_exists(resFileCopyDest) )
                     {

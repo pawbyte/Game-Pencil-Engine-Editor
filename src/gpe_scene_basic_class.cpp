@@ -3,10 +3,10 @@ gpe_scene_basic_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,34 +39,32 @@ GPE_SceneBasicClass::GPE_SceneBasicClass()
     dualScaleClass = true;
     projectParentFolder = NULL;
     parentSceneBranch = NULL;
-    branchType = BRANCH_TYPE_BASIC_SCENE_ELEMENT;
-    width = 32;
-    height = 32;
-    xPivot = width/2;
-    yPivot = height/2;
-    isLocked = false;
     isBeingMoved = false;
     layerParentId = -1;
     xPos = yPos = 0;
+    width = height = 32;
     xScale = yScale = 1;
     angle =  0;
+    branchType = BRANCH_TYPE_BASIC_SCENE_ELEMENT;
+    xPivot = width/2;
+    yPivot = height/2;
+    isLocked = false;
+
+    branchGlobalId = new GPE_Label_Text("Global Id:" + int_to_string(globalId),"Automatically assigned on create...");
+    angleField = new GPE_TextInputNumber("",false,-720,720);
+    angleField->set_name("Angle");
+    angleField->set_label("Angle");
+    angleField->set_number(angle);
 
     xPosField = new GPE_TextInputNumber("","");
     xPosField->set_label("X-Pos");
     xPosField->set_label("X-Start");
     xPosField->scale_width( 0.4 );
 
-
     yPosField = new GPE_TextInputNumber("","");
     yPosField->set_label("Y-Pos");
     yPosField->set_label("Y-Start");
     yPosField->scale_width( 0.4 );
-
-    angleField = new GPE_TextInputNumber("",false,-720,720);
-    angleField->set_name("Angle");
-    angleField->set_label("Angle");
-    angleField->set_number(angle);
-
 
     xScaleField = new GPE_TextInputNumber("",false);
     xScaleField->set_string("1.0");
@@ -85,10 +83,9 @@ GPE_SceneBasicClass::GPE_SceneBasicClass()
     branchColor = new GPE_Input_Field_Color();
     branchColor->set_name("Color");
     branchColor->set_label("Color");
+
     branchAlpha = new GPE_Slider_XAxis(255, 0, 255);
-
     iconTexture = guiRCM->texture_add( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/tree.png") ;
-
 }
 
 GPE_SceneBasicClass::~GPE_SceneBasicClass()
@@ -140,8 +137,6 @@ GPE_SceneBasicClass::~GPE_SceneBasicClass()
         delete branchNameField;
         branchNameField = NULL;
     }
-
-
 }
 
 void GPE_SceneBasicClass::add_basic_elements()
@@ -152,6 +147,7 @@ void GPE_SceneBasicClass::add_basic_elements()
         {
             PANEL_INSPECTOR->add_gui_element(branchNameField , true );
         }
+        PANEL_INSPECTOR->add_gui_element( branchGlobalId , true );
 
         if( branchType != BRANCH_TYPE_LAYER && branchType!= BRANCH_TYPE_GROUP)
         {
@@ -162,7 +158,10 @@ void GPE_SceneBasicClass::add_basic_elements()
             }
             if( dualScaleClass )
             {
+                /*
+                Temporarily disabled
                 PANEL_INSPECTOR->add_gui_element( angleField , true );
+                */
                 PANEL_INSPECTOR->add_gui_element( xScaleField , false );
                 PANEL_INSPECTOR->add_gui_element( yScaleField , true );
                 PANEL_INSPECTOR->add_gui_element( branchColor  , true );
@@ -170,8 +169,11 @@ void GPE_SceneBasicClass::add_basic_elements()
             }
             else
             {
-                PANEL_INSPECTOR->add_gui_element( xScaleField , false );
+                /*
+                Temporarily disabled
                 PANEL_INSPECTOR->add_gui_element( angleField , true );
+                */
+                PANEL_INSPECTOR->add_gui_element( xScaleField , true );
                 PANEL_INSPECTOR->add_gui_element( branchColor  , true );
                 PANEL_INSPECTOR->add_gui_element( branchAlpha  , true );
             }
@@ -197,6 +199,7 @@ bool GPE_SceneBasicClass::add_scene_branch( GPE_SceneBasicClass * branch, bool c
             {
                 open_and_view();
             }
+            branch->refresh_branch();
             return true;
         }
         else if( parentSceneBranch!=NULL )
@@ -308,6 +311,14 @@ void GPE_SceneBasicClass::process_elements()
     angle = angleField->get_held_number();
 }
 
+void GPE_SceneBasicClass::refresh_branch()
+{
+    if( branchGlobalId!=NULL)
+    {
+        branchGlobalId->set_name( "Global Id:" + int_to_string(globalId) );
+    }
+}
+
 void GPE_SceneBasicClass::reset_components()
 {
     GPE_ObjectComponent * tField = NULL;
@@ -337,14 +348,14 @@ void GPE_SceneBasicClass::render_branch()
     }
 }
 
-double GPE_SceneBasicClass::rotx( double rx, double ry )
+float GPE_SceneBasicClass::rotx( float rx, float ry )
 {
-    return xPos + gpe->lengthdir_x(rx, angle) * xScale - gpe->lengthdir_x(ry, angle - 90) * yScale;
+    return xPos + gpemath::lengthdir_x(rx, angle) * xScale - gpemath::lengthdir_x(ry, angle - 90) * yScale;
 }
 
-double GPE_SceneBasicClass::roty( double rx, double ry )
+float GPE_SceneBasicClass::roty( float rx, float ry )
 {
-    return yPos + gpe->lengthdir_y(rx, angle) * xScale - gpe->lengthdir_y(ry, angle - 90) * yScale;
+    return yPos + gpemath::lengthdir_y(rx, angle) * xScale - gpemath::lengthdir_y(ry, angle - 90) * yScale;
 }
 
 bool GPE_SceneBasicClass::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn )
@@ -373,7 +384,7 @@ bool GPE_SceneBasicClass::save_branch_data(std::ofstream * fileTarget, int neste
     return false;
 }
 
-void GPE_SceneBasicClass::set_angle( double newAngle )
+void GPE_SceneBasicClass::set_angle( float newAngle )
 {
     angle = newAngle;
     if( angle < -720 )
@@ -396,7 +407,7 @@ void GPE_SceneBasicClass::set_name( std::string newName )
     }
 }
 
-void GPE_SceneBasicClass::set_position( double x, double y)
+void GPE_SceneBasicClass::set_position( float x, float y)
 {
     x = round(x);
     y = round(y);
@@ -406,14 +417,14 @@ void GPE_SceneBasicClass::set_position( double x, double y)
     yPosField->set_number( yPos );
 }
 
-bool GPE_SceneBasicClass::under_mouse(double mx, double my )
+bool GPE_SceneBasicClass::under_mouse(float mx, float my )
 {
     if( branchType > BRANCH_TYPE_GROUP )
     {
-        double relativeMouseX = mx - xPos;
-        double relativeMouseY = my - yPos;
-        int lmx = ( gpe->lengthdir_x( relativeMouseX, -angle) - gpe->lengthdir_x( relativeMouseY, -(angle - 90) ) ) / abs( xScale );
-        int lmy = ( gpe->lengthdir_y( relativeMouseX, -angle)  - gpe->lengthdir_y( relativeMouseY, -(angle - 90) ) ) / abs( yScale );
+        float relativeMouseX = mx - xPos;
+        float relativeMouseY = my - yPos;
+        int lmx = ( gpemath::lengthdir_x( relativeMouseX, -angle) - gpemath::lengthdir_x( relativeMouseY, -(angle - 90) ) ) / abs( xScale );
+        int lmy = ( gpemath::lengthdir_y( relativeMouseX, -angle)  - gpemath::lengthdir_y( relativeMouseY, -(angle - 90) ) ) / abs( yScale );
         if (lmx >= -xPivot && lmx <= width-xPivot)
         {
             if(  lmy >= -yPivot && lmy <= height-yPivot)

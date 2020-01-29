@@ -3,10 +3,10 @@ class_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -54,7 +54,7 @@ classResource::classResource(GPE_GeneralResourceContainer * pFolder)
     loadResourceButton->disable_self();
     saveResourceButton->disable_self();*/
     //textEditorButtonBar->set_width(256);
-    renameBox->set_coords(GENERAL_GPE_PADDING,-1 );
+    renameBox->set_coords(GENERAL_GPE_GUI_PADDING,-1 );
     saveButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/save.png","Save Changes",-1,24);
     classEditorList = new GPE_GuiElementList();
     //saveResourceButton->disable_self();
@@ -113,6 +113,12 @@ void classResource::compile_cpp()
 
 }
 
+bool classResource::include_local_files( std::string pBuildDir , int buildType )
+{
+    return true;
+}
+
+
 void classResource::integrate_into_syntax()
 {
     if( CURRENT_PROJECT!=NULL)
@@ -151,7 +157,7 @@ void classResource::preprocess_self(std::string alternatePath)
 
         bool usingAltSaveSource = false;
         std::string newFileIn ="";
-        std::string soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/classes/";
+        std::string soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/classes/";
         if( file_exists(alternatePath) )
         {
             newFileIn = alternatePath;
@@ -203,7 +209,7 @@ void classResource::preprocess_self(std::string alternatePath)
                 std::string subValString="";
                 std::string currLine="";
                 std::string currLineToBeProcessed;
-                double foundFileVersion = 0;
+                float foundFileVersion = 0;
                 int fCursorX = 0;
                 int fCursorY = 0;
                 while ( gameResourceFileIn.good() )
@@ -229,7 +235,7 @@ void classResource::preprocess_self(std::string alternatePath)
                                     valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
                                     if( keyString=="Version")
                                     {
-                                        foundFileVersion = string_to_double(valString);
+                                        foundFileVersion = string_to_float(valString);
                                     }
                                 }
                             }
@@ -269,7 +275,7 @@ void classResource::preprocess_self(std::string alternatePath)
                     }
                     else
                     {
-                        GPE_Report("Invalid FoundFileVersion ="+double_to_string(foundFileVersion)+".");
+                        GPE_Report("Invalid FoundFileVersion ="+float_to_string(foundFileVersion)+".");
                     }
                 }
             }
@@ -352,13 +358,13 @@ void classResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     }
 }
 
-void classResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
+void classResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if(cam!=NULL && viewedSpace!=NULL)
     {
-        classEditorList->render_self( viewedSpace,cam, forceRedraw );
+        classEditorList->render_self( viewedSpace,cam );
     }
 }
 
@@ -379,7 +385,7 @@ void classResource::save_resource(std::string alternatePath, int backupId)
     }
     else
     {
-        soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/classes/";
+        soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/classes/";
         newFileOut = soughtDir + resourceName+".gpf";
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
@@ -442,12 +448,12 @@ int classResource::search_for_string(std::string needle)
 {
     int foundStrings = 0;
     GPE_Main_Logs->log_general_comment("Searching ["+resourceName+"] class..");
-    if( classSourceCode!=NULL && GPE_MAIN_GUI!=NULL && classSourceCode->has_content() )
+    if( classSourceCode!=NULL && GPE_ANCHOR_GC!=NULL && classSourceCode->has_content() )
     {
-        GPE_MAIN_GUI->searchResultProjectName = parentProjectName;
-        GPE_MAIN_GUI->searchResultResourceId = globalResouceIdNumber;
-        GPE_MAIN_GUI->searchResultResourceName = resourceName;
-        foundStrings=classSourceCode->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked(),true);
+        GPE_ANCHOR_GC->searchResultProjectName = parentProjectName;
+        GPE_ANCHOR_GC->searchResultResourceId = globalResouceIdNumber;
+        GPE_ANCHOR_GC->searchResultResourceName = resourceName;
+        foundStrings=classSourceCode->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked(),true,"class");
     }
     return foundStrings;
 }

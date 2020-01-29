@@ -3,10 +3,10 @@ path_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,7 +36,7 @@ SOFTWARE.
 
 #include "gpe_basic_resource_page.h"
 #include "game_scene_resource.h"
-#include "GPE_Engine/GPE_Paths.h"
+#include "GPE/GPE_Paths.h"
 
 class gamePathResource: public standardEditableGameResource
 {
@@ -53,7 +53,7 @@ public:
     GPE_Rect editorCommentPane;
     GPE_DropDown_Resouce_Menu * sceneToPreview;
     GPE_DropDown_Menu * sceneZoomLevel;
-    double zoomValue;
+    float zoomValue;
     std::vector <GPE_PathPoint * >  pathPoints;
     GPE_SelectBoxBasic * pathOptions;
     GPE_ToolIconButton * pointSettingsButtton;
@@ -69,11 +69,11 @@ public:
     GPE_ScrollBar_XAxis * sceneXScroll;
     GPE_ScrollBar_YAxis * sceneYScroll;
     bool areaIsScrollable;
-    double sceneMouseXPos, sceneMouseYPos;
+    float sceneMouseXPos, sceneMouseYPos;
     GPE_GuiElementList * bottomPaneList;
     gamePathResource(GPE_GeneralResourceContainer * pFolder = NULL);
     ~gamePathResource();
-    GPE_PathPoint * add_point( int pointX, int pointY, double pointSpeed = 1);
+    GPE_PathPoint * add_point( int pointX, int pointY, float pointSpeed = 1);
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void clear_points();
@@ -82,12 +82,13 @@ public:
     bool get_mouse_coords(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void handle_scrolling();
     void integrate_into_syntax();
+    bool include_local_files( std::string pBuildDir , int buildType );
     void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
     void prerender_self( );
     void preprocess_self(std::string alternatePath = "");
     void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     bool remove_point( int pointId );
-    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void save_resource(std::string alternatePath = "", int backupId = -1);
     int search_for_string(std::string needle);
     int search_and_replace_string(std::string needle, std::string newStr = "");

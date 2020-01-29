@@ -3,10 +3,10 @@ light_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -44,7 +44,7 @@ lightResource::lightResource(GPE_GeneralResourceContainer * pFolder)
     myDirectionLight = new GPE_Directionight();
     myPointLight = new GPE_PointLight();
 
-    //emitterTexture->load_new_texture(APP_DIRECTORY_NAME+"resources/gfx/sprites/c_snow.png",-1,true );
+    //emitterTexture->load_new_texture( GPE_MAIN_RENDERER,APP_DIRECTORY_NAME+"resources/gfx/animations/c_snow.png",-1,true );
     browseTextureButton = new GPE_ToolLabelButton("Browse...","Browse for texture image" );
     clearTextureButton = new GPE_ToolLabelButton("Clear Image...","Clears texture and reverts to shape" );
 
@@ -161,6 +161,12 @@ void lightResource::handle_scrolling()
 
 }
 
+bool lightResource::include_local_files( std::string pBuildDir , int buildType )
+{
+    return true;
+}
+
+
 void lightResource::load_image(std::string newFileName, bool autoProcess )
 {
     if( newFileName.size() <= 4)
@@ -170,9 +176,9 @@ void lightResource::load_image(std::string newFileName, bool autoProcess )
     textureLocationField->set_string( newFileName );
     if( directionLightTexture==NULL )
     {
-        directionLightTexture = new GPE_Texture();
+        directionLightTexture = gpeph->get_new_texture();
     }
-    directionLightTexture->load_new_texture( newFileName );
+    directionLightTexture->load_new_texture( GPE_MAIN_RENDERER,newFileName );
     directionLightTexture->set_blend_mode( blend_mode_add );
     myDirectionLight->lightTexture = directionLightTexture;
     texturePreviewImgLabel->set_image( directionLightTexture );
@@ -180,7 +186,7 @@ void lightResource::load_image(std::string newFileName, bool autoProcess )
     texturePreviewImgLabel->set_height( 64 );
     if( autoProcess)
     {
-        copy_file( newFileName, fileToDir(parentProjectName)+"/gpe_project/resources/lights/"+ get_local_from_global_file(newFileName) );
+        copy_file( newFileName, file_to_dir(parentProjectName)+"/gpe_project/resources/lights/"+ get_local_from_global_file(newFileName) );
     }
 }
 
@@ -196,7 +202,7 @@ void lightResource::preprocess_self(std::string alternatePath )
         std::string otherColContainerName = "";
 
         std::string newFileIn = "";
-        std::string soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/lights/";
+        std::string soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/lights/";
         if( file_exists(alternatePath) )
         {
             newFileIn = alternatePath;
@@ -208,12 +214,12 @@ void lightResource::preprocess_self(std::string alternatePath )
         }
         std::ifstream gameResourceFileIn( newFileIn.c_str() );
 
-        //GPE_Report("Loading sprite - "+newFileIn);
+        //GPE_Report("Loading animation - "+newFileIn);
         //If the level file could be loaded
-        double foundFileVersion = -1;
+        float foundFileVersion = -1;
         if( !gameResourceFileIn.fail() )
         {
-            //GPE_Report("Procesing sprite file...");
+            //GPE_Report("Procesing animation file...");
             //makes sure the file is open
             if (gameResourceFileIn.is_open())
             {
@@ -249,7 +255,7 @@ void lightResource::preprocess_self(std::string alternatePath )
                                     valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
                                     if( keyString=="Version")
                                     {
-                                        foundFileVersion = string_to_double(valString);
+                                        foundFileVersion = string_to_float(valString);
                                     }
                                 }
                             }
@@ -289,7 +295,7 @@ void lightResource::prerender_self( )
 
 }
 
-void lightResource::process_data_fields(double versionToProcess )
+void lightResource::process_data_fields(float versionToProcess )
 {
 
 }
@@ -381,15 +387,15 @@ void lightResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         }
     }
 
-    tempAngleExtra+=1;
+    tempAngleExtra+= gpe->get_delta_time() / 25.f;
 
-    while( tempAngleExtra < -360.d  )
+    while( tempAngleExtra < -360.f  )
     {
-        tempAngleExtra += 360.d ;
+        tempAngleExtra += 360.f ;
     }
-    while( tempAngleExtra >= 360.d )
+    while( tempAngleExtra >= 360.f )
     {
-        tempAngleExtra -= 360.d;
+        tempAngleExtra -= 360.f;
     }
 
     if( myAmbientLight!=NULL )
@@ -425,7 +431,7 @@ void lightResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         if( lightUseFlicker!=NULL && lightUseFlicker->is_clicked() )
         {
             myPointLight->setup_flicker( lightFlickerTimeField->get_held_int(), lightFlickerAmountField->get_held_int() );
-            myPointLight->update_light( GPE->get_delta_time() );
+            myPointLight->update_light( gpe->get_delta_time() );
 
         }
         else
@@ -435,56 +441,52 @@ void lightResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
     }
 }
 
-void lightResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+void lightResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera( viewedSpace);
     cam = GPE_find_camera( cam );
     gcanvas->render_rectangle( 0,0,viewedSpace->w, viewedSpace->h, GPE_MAIN_THEME->Program_Color, false, 255 );
-    //if( forceRedraw )
+
+    GPE_LOGO->render_align( viewedSpace->w/2, viewedSpace->h/2,FA_CENTER, FA_MIDDLE, NULL, NULL, 255 );
+    gcanvas->resize_ligting_overlay( viewedSpace->w, viewedSpace->h );
+    gcanvas->switch_ligting_overlay( true );
+    GPE_MAIN_RENDERER->reset_viewpoint( );
+    gcanvas->render_rectangle(0,0,viewedSpace->w, viewedSpace->h, c_black, false, 255 );
+    //gcanvas->set_artist_blend_mode( blend_mode_add );
+    bool mouseInView = get_mouse_coords( viewedSpace, cam );
+    if( lightType->get_selected_value() == gpe_light_type_direction )
     {
-        GPE_LOGO->render_align( viewedSpace->w/2, viewedSpace->h/2,FA_CENTER, FA_MIDDLE, NULL, NULL, 255 );
-        gcanvas->resize_ligting_overlay( viewedSpace->w, viewedSpace->h );
-        gcanvas->switch_ligting_overlay( true );
-        CURRENT_RENDERER->reset_viewpoint( );
-        gcanvas->render_rectangle(0,0,viewedSpace->w, viewedSpace->h, c_black, false, 255 );
-        //gcanvas->set_artist_blend_mode( blend_mode_add );
-        bool mouseInView = get_mouse_coords( viewedSpace, cam );
-        if( lightType->get_selected_value() == gpe_light_type_direction )
+        if(  mouseInView && !tempAngleExtra )
         {
-            if(  mouseInView && !tempAngleExtra )
-            {
-                myDirectionLight->render_light_at( areaMouseXPos, areaMouseYPos, 1 );
-            }
-            else
-            {
-                myDirectionLight->render_light_at( viewedSpace->w/2, viewedSpace->h/2, 1 );
-            }
+            myDirectionLight->render_light_at( areaMouseXPos, areaMouseYPos, 1 );
         }
-        else if( lightType->get_selected_value() == gpe_light_type_point )
+        else
         {
-            if(  mouseInView )
-            {
-                myPointLight->render_light_at( areaMouseXPos, areaMouseYPos, 1 );
-
-            }
-            else
-            {
-                myPointLight->render_light_at( viewedSpace->w/2, viewedSpace->h/2, 1 );
-            }
+            myDirectionLight->render_light_at( viewedSpace->w/2, viewedSpace->h/2, 1 );
         }
-        else if( myAmbientLight!=NULL )
-        {
-            myAmbientLight->render_light( 1, viewedSpace );
-        }
-
-        //gcanvas->render_circle_color( editorView.w/2, editorView.h/2, c_white, 255 );
-        gcanvas->switch_ligting_overlay( false );
-        CURRENT_RENDERER->reset_viewpoint( );
-        CURRENT_RENDERER->set_viewpoint( viewedSpace );
-        gcanvas->render_ligting_overlay( 0,0 );
-        gfs->render_text( viewedSpace->w/2, viewedSpace->h-32, "C++ Feature. Currently not supported in HTML5 runtime",GPE_MAIN_THEME->Main_Box_Font_Color,GPE_DEFAULT_FONT, FA_CENTER, FA_BOTTOM, 255);
-
     }
+    else if( lightType->get_selected_value() == gpe_light_type_point )
+    {
+        if(  mouseInView )
+        {
+            myPointLight->render_light_at( areaMouseXPos, areaMouseYPos, 1 );
+
+        }
+        else
+        {
+            myPointLight->render_light_at( viewedSpace->w/2, viewedSpace->h/2, 1 );
+        }
+    }
+    else if( myAmbientLight!=NULL )
+    {
+        myAmbientLight->render_light( 1, viewedSpace );
+    }
+
+    //gcanvas->render_circle_color( editorView.w/2, editorView.h/2, c_white, 255 );
+    gcanvas->switch_ligting_overlay( false );
+    GPE_MAIN_RENDERER->reset_viewpoint( );
+    GPE_MAIN_RENDERER->set_viewpoint( viewedSpace );
+    gcanvas->render_ligting_overlay( 0,0 );
 }
 
 void lightResource::revert_data_fields()
@@ -509,7 +511,7 @@ void lightResource::save_resource(std::string alternatePath, int backupId )
     }
     else
     {
-        soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/lights/";
+        soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/lights/";
         newFileOut = soughtDir + resourceName+".gpf";
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );

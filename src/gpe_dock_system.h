@@ -3,10 +3,10 @@ gpe_dock_system.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -62,9 +62,10 @@ public:
     std::string get_selected_container();
     bool has_content();
     void process_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL );
+    bool save_panel_data_to_file(std::ofstream * fileTarget);
     void setup_panel( bool addSpacing = true, bool clearList = true );
     bool remove_container( std::string name );
-    void render_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true );
+    void render_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL );
     void reset_panel();
 };
 
@@ -89,26 +90,30 @@ const int DOCK_MAX_COLUMN_COUNT = 5;
 const int DOCK_MAX_ROW_COUNT = 2;
 const int DOCK_MAX_PANEL_COUNT = DOCK_MAX_COLUMN_COUNT * DOCK_MAX_ROW_COUNT;
 
-const int DOCK_COLUMN_DEFAULT_WIDTH = 228;
-const int DOCK_COLUMN_MIN_WIDTH = 98;
-
 class gpeEditorDock: public GPE_GeneralGuiElement
 {
 private:
     bool isHidden;
     std::vector< GPE_KeyPair * > defaultPanels;
+    int panelColumnWidth[ DOCK_MAX_COLUMN_COUNT ];
+    float panelWidthPercentages[ DOCK_MAX_COLUMN_COUNT ];
+    float panelHeightPercentages[ DOCK_MAX_PANEL_COUNT ];
 public:
+    int dockVerticalPadding;
+    int dockHorizontalPadding;
+    float dockMinimumColumnPercentage;
+    int currentColumnCount;
+    float dockWidthMinusColumnPadding;
     GPE_PopUpMenu_Option * toolbarOptonsHolder;
     bool justResized;
     bool beingResized;
     int horiResizeStartX;
+    int resizePanelX1, resizePanelX2;
+
     bool horizontalResize;
     bool verticalResize;
 
-    int panelColumnWidth[ DOCK_MAX_COLUMN_COUNT ];
 
-    double panelWidthPercentages[ DOCK_MAX_COLUMN_COUNT ];
-    double panelHeightPercentages[ DOCK_MAX_PANEL_COUNT ];
 
     //Reside related Data [ panelHeightPercentagesSTART ]
     int columnBeingResizedId;
@@ -118,8 +123,9 @@ public:
 
     gpeEditorDock();
     ~gpeEditorDock();
-    void add_to_panel(  std::string name, int panelId = 0,  bool open = true );
-    void add_default_panel(  std::string name, int panelId = 0,  bool open = true );
+    void add_to_panel(  std::string name, int panelId = 0,  bool open = true, bool saveToSettings = false );
+    void add_default_panel(  std::string name, int panelId = 0,  bool open = true , bool saveToSettings = false );
+    void clear_all_panels();
     void clear_defaults();
     bool container_in_view( std::string name );
     gpeEditorDockPanel * find_panel( std::string name );
@@ -131,12 +137,14 @@ public:
     int handle_resizing();
     void hide_dock();
     bool is_hidden();
+    bool load_dock_setings( std::string filename );
     void process_dock( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL );
     void process_self( GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL );
     void remove_panel( std::string name );
     void remove_default_panel( std::string name );
-    void render_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL, bool forceRedraw = true );
+    void render_self(GPE_Rect * viewedSpace = NULL, GPE_Rect * cam = NULL );
     void reset_dock();
+    bool save_dock_setings( std::string filename );
     void setup_dock();
     void toggle_default_pane( std::string name );
     void toggle_panel(  std::string name, int panelId = 0,  bool open = true );

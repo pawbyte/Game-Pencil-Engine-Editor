@@ -3,10 +3,10 @@ functionResource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -47,7 +47,7 @@ functionResource::functionResource(GPE_GeneralResourceContainer * pFolder)
     parametersField = new GPE_TextInputBasic("","parameter1, parameter2, etc");
     parametersField->set_label("Function Parameters");
     functionCode = new GPE_TextAreaInputBasic(false);
-    renameBox->set_coords(GENERAL_GPE_PADDING,-1 );
+    renameBox->set_coords(GENERAL_GPE_GUI_PADDING,-1 );
     saveButton = new GPE_ToolIconButton( APP_DIRECTORY_NAME+"resources/gfx/iconpacks/fontawesome/save.png","Save Changes",-1,24);
     saveButton->set_height(parametersField->get_height() );
     saveButton->set_width(parametersField->get_height() );
@@ -110,6 +110,11 @@ void functionResource::compile_cpp()
 
 }
 
+bool functionResource::include_local_files( std::string pBuildDir , int buildType )
+{
+    return true;
+}
+
 void functionResource::integrate_into_syntax()
 {
     if( CURRENT_PROJECT!=NULL)
@@ -164,7 +169,7 @@ void functionResource::preprocess_self(std::string alternatePath)
 
         bool usingAltSaveSource = false;
         std::string newFileIn ="";
-        std::string soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/functions/";
+        std::string soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/functions/";
         if( file_exists(alternatePath) )
         {
             newFileIn = alternatePath;
@@ -204,7 +209,7 @@ void functionResource::preprocess_self(std::string alternatePath)
                 std::string subValString="";
                 std::string currLine="";
                 std::string currLineToBeProcessed;
-                double foundFileVersion = 0;
+                float foundFileVersion = 0;
                 int fCursorX = 0;
                 int fCursorY = 0;
                 while ( gameResourceFileIn.good() )
@@ -230,7 +235,7 @@ void functionResource::preprocess_self(std::string alternatePath)
                                     valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
                                     if( keyString=="Version")
                                     {
-                                        foundFileVersion = string_to_double(valString);
+                                        foundFileVersion = string_to_float(valString);
                                     }
                                 }
                             }
@@ -271,7 +276,7 @@ void functionResource::preprocess_self(std::string alternatePath)
                     }
                     else
                     {
-                        GPE_Report("Invalid FoundFileVersion ="+double_to_string(foundFileVersion)+".");
+                        GPE_Report("Invalid FoundFileVersion ="+float_to_string(foundFileVersion)+".");
                     }
                 }
             }
@@ -302,6 +307,7 @@ void functionResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
             functionCode->set_height(viewedSpace->h );
 
             //Process function parameter elements in the Editor Panel
+            PANEL_GENERAL_EDITOR->clear_panel();
             PANEL_GENERAL_EDITOR->add_gui_element(renameBox,true);
             PANEL_GENERAL_EDITOR->add_gui_element(parametersField,true);
             PANEL_GENERAL_EDITOR->add_gui_element(confirmResourceButton,true);
@@ -325,11 +331,11 @@ void functionResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
         }
         else
         {
-            functionEditorList->barXMargin = functionEditorList->barYMargin = GENERAL_GPE_PADDING;
-            functionEditorList->barXPadding = functionEditorList->barYPadding = GENERAL_GPE_PADDING;
+            functionEditorList->barXMargin = functionEditorList->barYMargin = GENERAL_GPE_GUI_PADDING;
+            functionEditorList->barXPadding = functionEditorList->barYPadding = GENERAL_GPE_GUI_PADDING;
             functionEditorList->set_coords( 0,0 );
-            functionCode->set_width(viewedSpace->w-GENERAL_GPE_PADDING*4 );
-            functionCode->set_height(viewedSpace->h - GENERAL_GPE_PADDING*4 - 32 );
+            functionCode->set_width(viewedSpace->w-GENERAL_GPE_GUI_PADDING*4 );
+            functionCode->set_height(viewedSpace->h - GENERAL_GPE_GUI_PADDING*4 - 32 );
             functionEditorList->add_gui_element(saveButton,false);
             functionEditorList->add_gui_element(renameBox,false);
             functionEditorList->add_gui_element(parametersField,true);
@@ -345,13 +351,13 @@ void functionResource::process_self(GPE_Rect * viewedSpace, GPE_Rect * cam)
     }
 }
 
-void functionResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam,bool forceRedraw )
+void functionResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
     if(cam!=NULL && viewedSpace!=NULL && functionEditorList!=NULL )
     {
-        functionEditorList->render_self( viewedSpace, cam, forceRedraw );
+        functionEditorList->render_self( viewedSpace, cam );
     }
 }
 
@@ -372,7 +378,7 @@ void functionResource::save_resource(std::string alternatePath, int backupId)
     }
     else
     {
-        soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/functions/";
+        soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/functions/";
         newFileOut = soughtDir + resourceName+".gpf";
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
@@ -446,12 +452,12 @@ int functionResource::search_for_string(std::string needle)
 {
     int foundStrings = 0;
     GPE_Main_Logs->log_general_comment("Searching ["+resourceName+"] function..");
-    if( functionCode!=NULL && GPE_MAIN_GUI!=NULL && functionCode->has_content() )
+    if( functionCode!=NULL && GPE_ANCHOR_GC!=NULL && functionCode->has_content() )
     {
-        GPE_MAIN_GUI->searchResultProjectName = parentProjectName;
-        GPE_MAIN_GUI->searchResultResourceId = globalResouceIdNumber;
-        GPE_MAIN_GUI->searchResultResourceName = resourceName;
-        foundStrings=functionCode->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked(),true);
+        GPE_ANCHOR_GC->searchResultProjectName = parentProjectName;
+        GPE_ANCHOR_GC->searchResultResourceId = globalResouceIdNumber;
+        GPE_ANCHOR_GC->searchResultResourceName = resourceName;
+        foundStrings=functionCode->find_all_strings(needle,MAIN_SEARCH_CONTROLLER->findMatchCase->is_clicked(),true, "function");
     }
     return foundStrings;
 }

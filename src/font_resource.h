@@ -3,10 +3,10 @@ audio_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -68,12 +68,13 @@ public:
     bool build_css3_file(std::ofstream * fileTarget, int leftTabAmount);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
+    bool include_local_files( std::string pBuildDir , int buildType );
     void load_font(std::string newFileName, int newFontSize = 12);
     void preprocess_self(std::string alternatePath = "");
     void prerender_self( );
     void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-    bool render_held_font( int xPos, int yPos, std::string textureText, GPE_Color * textColor = NULL,int hAlign=FA_LEFT,int vAlign=FA_TOP, double renderAngle = 0.d, double renderScale = 1, int renderAlpha = 255 );
-    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    bool render_held_font( int xPos, int yPos, std::string textureText, GPE_Color * textColor = NULL,int hAlign=FA_LEFT,int vAlign=FA_TOP, float renderAngle = 0.f, float renderScale = 1, int renderAlpha = 255 );
+    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void save_resource(std::string alternatePath = "", int backupId = -1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };

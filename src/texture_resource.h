@@ -3,10 +3,10 @@ texture_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,7 +39,7 @@ class textureResource: public standardEditableGameResource
 {
 public:
     bool isPreloaded;
-    GPE_Texture * textureInEditor;
+    GPE_Texture_Base * textureInEditor;
     GPE_CheckBoxBasic * preloadCheckBox;
     GPE_Label_Text * labelImageDimensions;
     GPE_Label_Text * labelTextureMessage;
@@ -52,11 +52,13 @@ public:
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
+    GPE_Texture_Base * get_resource_texture();
+    bool include_local_files( std::string pBuildDir , int buildType );
     int load_image(std::string newFileName);
     void preprocess_self(std::string alternatePath = "");
     void prerender_self( );
     void process_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
-    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL, bool forceRedraw = true);
+    void render_self(GPE_Rect * viewedSpace = NULL,GPE_Rect * cam = NULL);
     void save_resource(std::string alternatePath = "", int backupId = -1);
     void update_box(int newX=-1, int newY=-1, int newW=-1, int newH=-1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);

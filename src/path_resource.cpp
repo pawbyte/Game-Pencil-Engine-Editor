@@ -3,10 +3,10 @@ path_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://create.pawbyte.com
-Copyright (c) 2014-2019 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2019 PawByte LLC.
-Copyright (c) 2014-2019 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -177,7 +177,7 @@ gamePathResource::~gamePathResource()
     clear_points();
 }
 
-GPE_PathPoint * gamePathResource::add_point( int pointX, int pointY, double pointSpeed )
+GPE_PathPoint * gamePathResource::add_point( int pointX, int pointY, float pointSpeed )
 {
     if( pathOptions !=NULL )
     {
@@ -185,14 +185,14 @@ GPE_PathPoint * gamePathResource::add_point( int pointX, int pointY, double poin
         if( pointPos >=0 && pointPos < (int)pathPoints.size() )
         {
             pathPoints.insert( pathPoints.begin()+pointPos+1,newPoint );
-            pathOptions->insert_option(pointPos+1,"X:"+int_to_string(pointX)+" Y:"+int_to_string(pointY)+" Spd:"+double_to_string(pointSpeed),NULL,NULL,-1, true );
+            pathOptions->insert_option(pointPos+1,"X:"+int_to_string(pointX)+" Y:"+int_to_string(pointY)+" Spd:"+float_to_string(pointSpeed),NULL,NULL,-1, true );
         }
         else
         {
             pathPoints.push_back( newPoint );
             if( pathOptions!=NULL)
             {
-                pathOptions->add_option("X:"+int_to_string(pointX)+"Y:"+int_to_string(pointY)+"Spd:"+double_to_string(pointSpeed),pointPos+1,NULL,NULL,-1,true );
+                pathOptions->add_option("X:"+int_to_string(pointX)+"Y:"+int_to_string(pointY)+"Spd:"+float_to_string(pointSpeed),pointPos+1,NULL,NULL,-1,true );
             }
         }
         pointPos =  pathOptions->get_selection();
@@ -223,9 +223,9 @@ bool gamePathResource::build_intohtml5_file(std::ofstream * fileTarget, int left
             if( tempPoint!=NULL )
             {
                 *fileTarget << nestedTabsStr+html5PathName+".add_original_point( ";
-                *fileTarget << double_to_string(tempPoint->xPos)+",";
-                *fileTarget << double_to_string(tempPoint->yPos)+",";
-                *fileTarget << double_to_string(tempPoint->pointSpeed)+");\n";
+                *fileTarget << float_to_string(tempPoint->xPos)+",";
+                *fileTarget << float_to_string(tempPoint->yPos)+",";
+                *fileTarget << float_to_string(tempPoint->pointSpeed)+");\n";
             }
         }
         return true;
@@ -322,14 +322,14 @@ void gamePathResource::handle_scrolling()
         if( input->check_keyboard_down(kb_ctrl) && sceneZoomLevel!=NULL )
         {
             //Zoom In
-            if( input->mouseScrollingDown > 0 )
+            if( input->mouseScrollingDown )
             {
-                sceneZoomLevel->set_selection(sceneZoomLevel->get_selected_id()-1 );
+                sceneZoomLevel->set_id(sceneZoomLevel->get_selected_id()-1 );
             }
             else if( input->mouseScrollingUp)
             {
                 //zoom out
-                sceneZoomLevel->set_selection(sceneZoomLevel->get_selected_id()+1 );
+                sceneZoomLevel->set_id(sceneZoomLevel->get_selected_id()+1 );
             }
 
         }
@@ -433,6 +433,12 @@ void gamePathResource::handle_scrolling()
     }
 }
 
+bool gamePathResource::include_local_files( std::string pBuildDir , int buildType )
+{
+    return true;
+}
+
+
 void gamePathResource::integrate_into_syntax()
 {
 
@@ -459,7 +465,7 @@ void gamePathResource::preprocess_self(std::string alternatePath )
         std::string otherColContainerName = "";
 
         std::string newFileIn ="";
-        std::string soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/paths/";
+        std::string soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/paths/";
         if( file_exists(alternatePath) )
         {
             newFileIn = alternatePath;
@@ -485,7 +491,7 @@ void gamePathResource::preprocess_self(std::string alternatePath )
                 std::string subValString="";
                 std::string currLine="";
                 std::string currLineToBeProcessed;
-                double foundFileVersion = 0;
+                float foundFileVersion = 0;
                 int foundX = 0;
                 int foundY = 0;
                 int foundSpeed = 0;
@@ -514,7 +520,7 @@ void gamePathResource::preprocess_self(std::string alternatePath )
                                     valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
                                     if( keyString=="Version")
                                     {
-                                        foundFileVersion = string_to_double(valString);
+                                        foundFileVersion = string_to_float(valString);
                                     }
                                 }
                             }
@@ -586,7 +592,7 @@ void gamePathResource::preprocess_self(std::string alternatePath )
                     }
                     else
                     {
-                        GPE_Report("Invalid FoundFileVersion ="+double_to_string(foundFileVersion)+".");
+                        GPE_Report("Invalid FoundFileVersion ="+float_to_string(foundFileVersion)+".");
                     }
                 }
             }
@@ -651,10 +657,10 @@ void gamePathResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
             bottomPaneList->set_height( viewedSpace->h - editorCommentPane.y );
             bottomPaneList->hAlign = FA_LEFT;
             bottomPaneList->vAlign = FA_MIDDLE;
-            bottomPaneList->barXPadding = GENERAL_GPE_PADDING;
+            bottomPaneList->barXPadding = GENERAL_GPE_GUI_PADDING;
             bottomPaneList->barYPadding = 0;
-            bottomPaneList->barXMargin  = GENERAL_GPE_PADDING;
-            bottomPaneList->barYMargin  = GENERAL_GPE_PADDING;
+            bottomPaneList->barXMargin  = GENERAL_GPE_GUI_PADDING;
+            bottomPaneList->barYMargin  = GENERAL_GPE_GUI_PADDING;
             bottomPaneList->add_gui_element( sceneToPreview, false );
             bottomPaneList->add_gui_element( sceneZoomLevel, false );
             bottomPaneList->add_gui_element( pathTypeIsClosed, false );
@@ -666,7 +672,7 @@ void gamePathResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
                 if( zoomValue < 0)
                 {
                     zoomValue = 1;
-                    sceneZoomLevel->set_value(100);
+                    sceneZoomLevel->set_option_value(100);
                 }
                 zoomValue/=100;
             }
@@ -767,23 +773,23 @@ void gamePathResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         {
             //Horizontal scrolling
             sceneXScroll->update_box( 0,sceneEditorView.h,sceneEditorView.w,16);
-            update_rectangle(&sceneXScroll->fullRect,0,0,(double)sceneRect.w, (double)sceneRect.h );
-            update_rectangle(&sceneXScroll->contextRect,(double)scenePreviewRect.x,(double)scenePreviewRect.y, (double)scenePreviewRect.w/zoomValue, (double)scenePreviewRect.h/zoomValue );
+            update_rectangle(&sceneXScroll->fullRect,0,0,(float)sceneRect.w, (float)sceneRect.h );
+            update_rectangle(&sceneXScroll->contextRect,(float)scenePreviewRect.x,(float)scenePreviewRect.y, (float)scenePreviewRect.w/zoomValue, (float)scenePreviewRect.h/zoomValue );
             sceneXScroll->process_self(viewedSpace,cam );
             //if( sceneXScroll->has_moved() )
             {
-                scenePreviewRect.x = (double)(sceneXScroll->contextRect.x);
+                scenePreviewRect.x = (float)(sceneXScroll->contextRect.x);
             }
 
             //Vertical Scrolling
             sceneYScroll->update_box( sceneEditorView.w,0,16,sceneEditorView.h );
-            update_rectangle(&sceneYScroll->fullRect,0,0,(double)sceneRect.w, (double)sceneRect.h );
-            update_rectangle(&sceneYScroll->contextRect,(double)scenePreviewRect.x,(double)scenePreviewRect.y, (double)scenePreviewRect.w/zoomValue, (double)scenePreviewRect.h/zoomValue );
+            update_rectangle(&sceneYScroll->fullRect,0,0,(float)sceneRect.w, (float)sceneRect.h );
+            update_rectangle(&sceneYScroll->contextRect,(float)scenePreviewRect.x,(float)scenePreviewRect.y, (float)scenePreviewRect.w/zoomValue, (float)scenePreviewRect.h/zoomValue );
             //sceneYScroll->contextRect.h = sceneEditorView.h;
             sceneYScroll->process_self(viewedSpace,cam );
             //if( sceneYScroll->has_moved() )
             {
-                scenePreviewRect.y = double(sceneYScroll->contextRect.y);
+                scenePreviewRect.y = float(sceneYScroll->contextRect.y);
             }
         }
 
@@ -853,7 +859,7 @@ void gamePathResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
                     }
                     if( pathOptions!=NULL)
                     {
-                        pathOptions->rename_option( selectedPointPos, "X:"+int_to_string(selectedPathPoint->xPos)+" Y:"+int_to_string(selectedPathPoint->yPos)+" Spd:"+double_to_string(selectedPathPoint->pointSpeed) );
+                        pathOptions->rename_option( selectedPointPos, "X:"+int_to_string(selectedPathPoint->xPos)+" Y:"+int_to_string(selectedPathPoint->yPos)+" Spd:"+float_to_string(selectedPathPoint->pointSpeed) );
                     }
                 }
                 else
@@ -923,7 +929,7 @@ void gamePathResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
         else if( selectedPathPoint!=NULL)
         {
             bool foundPointChange = false;
-            double foundNumber = 0;
+            float foundNumber = 0;
             if( currentPointX!=NULL && currentPointX->is_valid() )
             {
                 foundNumber = currentPointX->get_held_number();
@@ -946,7 +952,7 @@ void gamePathResource::process_self(GPE_Rect * viewedSpace,GPE_Rect * cam )
 
             if( pathOptions!=NULL && foundPointChange)
             {
-                pathOptions->rename_option( selectedPointPos, "X:"+int_to_string(selectedPathPoint->xPos)+" Y:"+int_to_string(selectedPathPoint->yPos)+" Spd:"+double_to_string( selectedPathPoint->pointSpeed) );
+                pathOptions->rename_option( selectedPointPos, "X:"+int_to_string(selectedPathPoint->xPos)+" Y:"+int_to_string(selectedPathPoint->yPos)+" Spd:"+float_to_string( selectedPathPoint->pointSpeed) );
             }
         }
         handle_scrolling();
@@ -987,13 +993,13 @@ bool gamePathResource::remove_point( int pointId )
     return false;
 }
 
-void gamePathResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool forceRedraw )
+void gamePathResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam )
 {
     viewedSpace = GPE_find_camera(viewedSpace);
     cam = GPE_find_camera(cam);
-    MAIN_RENDERER->reset_viewpoint(  );
-    MAIN_RENDERER->set_viewpoint( &sceneEditorView );
-    if( cam!=NULL && viewedSpace!=NULL && forceRedraw )
+    GPE_MAIN_RENDERER->reset_viewpoint(  );
+    GPE_MAIN_RENDERER->set_viewpoint( &sceneEditorView );
+    if( cam!=NULL && viewedSpace!=NULL)
     {
         GPE_GeneralResourceContainer * sceneTypeContainer =  sceneToPreview->get_selected_container();
         if( sceneTypeContainer!=NULL && sceneTypeContainer->get_held_resource()!=NULL )
@@ -1005,7 +1011,7 @@ void gamePathResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool 
                 if( foundSceneObject!=NULL)
                 {
 
-                    foundSceneObject->render_scene_layers( viewedSpace, cam, &scenePreviewRect,zoomValue,false, false, forceRedraw);
+                    foundSceneObject->render_scene_layers( viewedSpace, cam, &scenePreviewRect,zoomValue,false, false);
                 }
             }
         }
@@ -1138,8 +1144,8 @@ void gamePathResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool 
         }
         //"Editor View:("+int_to_string(editorCameraRect.x)+","+int_to_string(editorCameraRect.y)+","+int_to_string(editorCameraRect.w)+","+int_to_string(editorCameraRect.h)+")",
 
-        MAIN_RENDERER->reset_viewpoint(  );
-        MAIN_RENDERER->set_viewpoint( viewedSpace );
+        GPE_MAIN_RENDERER->reset_viewpoint(  );
+        GPE_MAIN_RENDERER->set_viewpoint( viewedSpace );
         gcanvas->render_rect( &editorCommentPane,GPE_MAIN_THEME->Program_Color,false);
         //gcanvas->render_rectangle( sceneYScroll->elementBox.x+sceneYScroll->elementBox.w,0,viewedSpace->w,viewedSpace->h,GPE_MAIN_THEME->Program_Color,false);
         //gcanvas->render_rectangle( sceneXScroll->elementBox.x,sceneXScroll->elementBox.y,viewedSpace->w,viewedSpace->h,GPE_MAIN_THEME->Program_Color,false);
@@ -1156,7 +1162,7 @@ void gamePathResource::render_self(GPE_Rect * viewedSpace, GPE_Rect * cam, bool 
 
     if( bottomPaneList!=NULL )
     {
-        bottomPaneList->render_self(  viewedSpace, cam, forceRedraw );
+        bottomPaneList->render_self(  viewedSpace, cam );
     }
 }
 
@@ -1177,7 +1183,7 @@ void gamePathResource::save_resource(std::string alternatePath, int backupId )
     }
     else
     {
-        soughtDir = fileToDir(parentProjectName)+"/gpe_project/resources/paths/";
+        soughtDir = file_to_dir(parentProjectName)+"/gpe_project/resources/paths/";
         newFileOut = soughtDir + resourceName+".gpf";
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
@@ -1218,7 +1224,7 @@ void gamePathResource::save_resource(std::string alternatePath, int backupId )
             tempPoint = pathPoints[i];
             if( tempPoint!=NULL )
             {
-                newSaveDataFile << "Point="+int_to_string( tempPoint->xPos )+","+int_to_string( tempPoint->yPos )+","+ double_to_string( tempPoint->pointSpeed )+",\n";
+                newSaveDataFile << "Point="+int_to_string( tempPoint->xPos )+","+int_to_string( tempPoint->yPos )+","+ float_to_string( tempPoint->pointSpeed )+",\n";
             }
         }
 
