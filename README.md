@@ -1,5 +1,8 @@
 The Game Pencil Engine Version 1.2.1 and beyond!
 ================================================
+
+*New files added to github, but does not currently compile to C++, pending a few changes*
+
 Please look at our [Website](http://create.pawbyte.com/) and take a look around!
 
 If you have any questions or comments: feel free to email us at <help@pawbyte.com>
