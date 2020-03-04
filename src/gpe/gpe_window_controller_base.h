@@ -1,0 +1,104 @@
+/*
+gpe_window_controller_base.h
+This file is part of:
+GAME PENCIL ENGINE
+https://www.pawbyte.com/gamepencilengine
+Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+
+Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-Game Pencil Engine <https://www.pawbyte.com/gamepencilengine>
+
+
+*/
+
+#ifndef gpe_window_base_h
+#define gpe_window_base_h
+
+#include "gpe_common_includes.h"
+#include "gpe_input_event.h"
+#include "gpe_shapes.h"
+#include "gpe_renderer_base.h"
+#include "gpe_settings.h"
+
+namespace gpe
+{
+    class window_controller_base
+    {
+        protected:
+            bool windowed;
+            //Whether the window is windowed or not
+            int position_x, position_y;
+            //Whether the window is fine
+            std::string local_window_name;
+            bool minimized;
+            bool resized;
+            renderer_base * window_base_renderer;
+            bool window_error_occurred;
+            int window_id;
+            int window_width, window_height;
+        public:
+            bool window_has_focus;
+            bool window_has_mouse;
+            bool window_closed;
+            bool resize_happened;
+
+            window_controller_base();
+            virtual ~window_controller_base();
+
+            //Check if anything's wrong with the window
+            bool error_check();
+
+            //Window getters
+            int get_blend_mode();
+            int get_window_id();
+            int get_window_width();
+            int get_window_height();
+            std::string get_window_name();
+
+            bool has_focus();
+            bool has_mouse();
+            virtual bool hide_window();
+            bool is_fullscreen();
+            bool is_minimized();
+            bool is_resized();
+
+            virtual void process_event( input_event_container * event_holder );
+
+            virtual void reset_input();
+            virtual void resize_window();
+            virtual void set_renderer( renderer_base * new_renderer, bool remove_current );
+            virtual bool show_window();
+            virtual void set_window_title(std::string new_title);
+            virtual std::string save_screenshot(std::string file_location = "");
+
+            virtual void start_loop();
+            //Turn fullscreen on/off
+            virtual void toggle_fullscreen();
+
+            bool window_changed();
+
+    };
+
+    extern window_controller_base * window_controller_main;
+}
+#endif //gpe_window_base_h
