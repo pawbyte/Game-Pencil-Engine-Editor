@@ -43,8 +43,8 @@ SOFTWARE.
 #include "gpe_resource_tree.h"
 #include "gpe_project_resources.h"
 #include "../gpe/gpe_program_state.h"
-#include "../pawguipaw_gui.h"
-#include "../pawguipaw_gui.h"
+#include "../paw_gui/paw_gui.h"
+#include "../paw_gui/paw_gui.h"
 
 class GPE_Editor_State : public gpe::program_state
 {

@@ -34,7 +34,7 @@ SOFTWARE.
 #ifndef GPE_EDITOR_LOGS_H
 #define GPE_EDITOR_LOGS_H
 
-#include "../pawguipaw_gui.h"
+#include "../paw_gui/paw_gui.h"
 
 
 //Glorious
