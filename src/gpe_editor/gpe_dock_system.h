@@ -35,9 +35,9 @@ SOFTWARE.
 #ifndef GPE_DOCK_SYSTEM_H
 #define GPE_DOCK_SYSTEM_H
 
-#include "../paw_gui/paw_gui.h"
-#include "../paw_gui/paw_gui_resource_dropdown.h"
-#include "../paw_gui/paw_gui_general_resource.h"
+#include "../pawgui/paw_gui.h"
+#include "../pawgui/paw_gui_resource_dropdown.h"
+#include "../pawgui/paw_gui_general_resource.h"
 #include "gpe_log_manager.h"
 
 class gpeEditorDockPanel: public GPE_GeneralGuiElement
