@@ -3,7 +3,7 @@ The Game Pencil Engine Version 1.2.1 and beyond!
 
 *New files added to github, but does not currently compile to C++, pending a few changes*
 
-Please look at our [Website](http://create.pawbyte.com/) and take a look around!
+Please look at our [Website](https://pawbyte.com/gamepencilengine/) and take a look around!
 
 If you have any questions or comments: feel free to email us at <help@pawbyte.com>
 
@@ -45,11 +45,11 @@ Become a member on our [forum](http://community.pawbyte.com/)!  Here, you can fi
 
 Download Newest Version
 =======================
-If you would like to download the newest version of the engine, go [here](http://gamepencil.pawbyte.com/get-game-pencil-engine/)
+If you would like to download the newest version of the engine, go [here](https://pawbyte.com/gamepencilengine/)
 
 Building Game Pencil From Source Code
 =====================================
-We have made a helpful guide on how to compile Game Pencil from source [here](http://gamepencil.pawbyte.com/building-source-code/)
+We have made a helpful guide on how to compile Game Pencil from source [here](https://pawbyte.com/building-game-pencil-from-source-code/)
 
 **This editor is coded completely in C/C++ and uses the SDL Library for display, input, output and audio.**
 
