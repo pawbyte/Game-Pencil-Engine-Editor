@@ -39,8 +39,8 @@ SOFTWARE.
 #include "gpe_dock_system.h"
 #include "gpe_editor_globals.h"
 #include "gpe_editor_project.h"
-#include "../paw_gui/paw_gui_general_resource.h"
-#include "../paw_gui/paw_gui.h"
+#include "../pawgui/paw_gui_general_resource.h"
+#include "../pawgui/paw_gui.h"
 #include "../sdl_libs/gpe_sdl_converter.h"
 #include "../sdl_libs/sdl_surface_ex.h"
 
