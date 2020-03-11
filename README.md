@@ -16,7 +16,7 @@ Work on this engine is not possible without funding. The amount of time it takes
 
 We have a [Patron Page](https://www.patreon.com/pawbyte?ty=h) that you can help fund future developments of Pencil Engine and to help us kickstart new projects!
 
-There is also a [PayPal](http://gamepencil.pawbyte.com/donate/) one time donation method as well. 
+There is also a [PayPal](http://www.pawbyte.com/donate/) one time donation method as well. 
 
 I appreciate your generousity and moving this project forward. 
 
