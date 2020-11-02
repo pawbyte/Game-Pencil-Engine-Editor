@@ -38,14 +38,27 @@ namespace gpe
     renderer_base * renderer_main = NULL;
     renderer_base::renderer_base()
     {
-
+        previously_scaled = false;
+        renderer_scaling = false;
+        use_integer_scaling = false;
+        scale_percentage_x = 0;
+        scale_percentage_y = 0;
+        scale_source_width = 0;
+        scale_source_height = 0;
     }
 
     renderer_base::renderer_base(int rId, int widthStart, int heightStart )
     {
-        renderId = rId;
-        rWidth = widthStart;
-        rHeight = heightStart;
+        render_id = rId;
+        r_width = widthStart;
+        r_height = heightStart;
+        renderer_scaling = false;
+        previously_scaled = false;
+        use_integer_scaling = false;
+        scale_percentage_x = 0;
+        scale_percentage_y = 0;
+        scale_source_width = 0;
+        scale_source_height = 0;
     }
 
     renderer_base::~renderer_base()
@@ -63,6 +76,16 @@ namespace gpe
 
     }
 
+    bool renderer_base::disable_scaling()
+    {
+        return false;
+    }
+
+    bool renderer_base::enable_scaling()
+    {
+        return false;
+    }
+
 
     //Check if anything's wrong with the window
     bool renderer_base::error_check()
@@ -72,17 +95,52 @@ namespace gpe
 
     int renderer_base::get_blend_mode()
     {
-        return renderBlendMode;
+        return render_blend_mode;
     }
 
     std::string renderer_base::get_renderer_name()
     {
-        return rendererName;
+        return r_name;
     }
 
     std::string renderer_base::get_renderer_type()
     {
-        return renderType;
+        return r_type;
+    }
+
+    int renderer_base::get_scale_width()
+    {
+        return scale_source_width;
+    }
+
+    int renderer_base::get_scale_height()
+    {
+        return scale_source_height;
+    }
+
+    bool renderer_base::get_scaled_previous()
+    {
+        return previously_scaled;
+    }
+
+    float renderer_base::get_scale_x()
+    {
+        return scale_percentage_x;
+    }
+
+    float renderer_base::get_scale_y()
+    {
+        return scale_percentage_y;
+    }
+
+    bool renderer_base::is_integer_scaling()
+    {
+        return use_integer_scaling;
+    }
+
+    bool renderer_base::is_scaled()
+    {
+        return renderer_scaling;
     }
 
     //Some Shape Stuff
@@ -113,8 +171,8 @@ namespace gpe
 
     void renderer_base::resize_renderer(int newW, int newH )
     {
-        rWidth = newW;
-        rHeight =newH;
+        r_width = newW;
+        r_height =newH;
     }
 
     std::string renderer_base::save_screenshot(std::string file_location )
@@ -122,9 +180,19 @@ namespace gpe
         return "";
     }
 
+    bool renderer_base::scale_renderer( int s_width, int s_height , bool scale_int )
+    {
+        return false;
+    }
+
+    bool renderer_base::scale_renderer_factor( float s_width, float s_height, bool scale_int )
+    {
+        return false;
+    }
+
     bool renderer_base::screen_was_cleared()
     {
-        return screenClearedOnFrame;
+        return cleared_this_frame;
     }
 
     void renderer_base::set_render_blend_mode( int newBlendMode )

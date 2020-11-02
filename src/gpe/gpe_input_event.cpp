@@ -37,6 +37,29 @@ namespace gpe
 {
     input_event_container::input_event_container()
     {
+        event_time = 0;
+        event_type = input_event_type::event_none;
+
+        input_string = "";
+        keyboard_button_id = -1;
+
+
+        gamepad_axis_id = -1;
+        gamepad_axis_value = 0;
+        gamepad_button_id = -1;
+        gamepad_id = -1;
+
+        input_string = "";
+
+        mouse_button_id = -1;
+        mouse_position_x = -1;
+        mouse_position_y = -1;
+        mouse_wheel_id = -1;
+        mouse_wheel_value = 0;
+
+        window_id = -1;
+        window_resize_w = -1;
+        window_resize_h = -1;
         reset_event();
     }
 

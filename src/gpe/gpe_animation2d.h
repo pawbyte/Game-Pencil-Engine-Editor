@@ -38,7 +38,7 @@ SOFTWARE.
 #include <string>
 #include <cmath>
 #include <sstream>
-#include "GPE_Collisions.h"
+#include "gpe_collisions.h"
 #include "../other_libs\stg_ex.h"
 #include "gpe_globals.h"
 #include "gpe_branch.h"
@@ -46,6 +46,21 @@ SOFTWARE.
 
 namespace gpe
 {
+    enum class animation2d_collision_zone
+    {
+        colzone_top_left = 0,
+        colzone_top_center = 1,
+        colzone_top_right = 2,
+
+        colzone_middle_left = 3,
+        colzone_middle_center = 4,
+        colzone_middle_right = 5,
+
+        colzone_bottom_left = 6,
+        colzone_bottom_center = 7,
+        colzone_bottom_right = 8,
+    };
+
     class animaton2d : public branch
     {
         private:
@@ -61,6 +76,7 @@ namespace gpe
             int animId;
             int colRadius;
             shape_rect * colBox;
+            animation2d_collision_zone collision_zone;
             animaton2d( render_package * renderPackage, std::string animName= "", std::string animFileName = "", bool imgTransparent=false);
             ~animaton2d();
             void change_name(std::string animName);

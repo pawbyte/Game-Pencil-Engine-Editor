@@ -34,6 +34,7 @@ SOFTWARE.
 #ifndef gpe_program_state_h
 #define gpe_program_state_h
 
+#include "gpe_artist_base.h"
 #include "gpe_common_includes.h"
 #include "gpe_render_package_handler.h"
 
@@ -43,17 +44,36 @@ namespace gpe
     class program_state
     {
         protected:
-            std::string stateName;
+            color * bg_color;
+            texture_base * bg_texture;
+            std::string error_message;
+            int error_number;
+            bool error_occurred;
+            std::string state_name;
+            //These are used to easily transition from one state to another
+            std::string state_next_name;
+            std::string state_previous_name;
         public:
-            int randomVariable;
             program_state();
             virtual ~program_state();
-            virtual void process_input() = 0;
+
             virtual void apply_logic() = 0;
-            std::string get_state_name();
-            virtual void render() = 0;
             virtual void clean_up() = 0;
             virtual void end_state() = 0;
+
+            std::string get_state_name();
+            std::string get_state_name_next();
+            std::string get_state_name_previous();
+
+            virtual void process_input() = 0;
+
+            virtual void render();
+
+            virtual void set_background_color( uint8_t r , uint8_t g, uint8_t b, uint8_t a=255 );
+            virtual void set_background_image( std::string bg_file );
+
+            virtual bool set_state_name_next( std::string s_name );
+            virtual bool set_state_name_previous( std::string s_name );
             virtual void start_state() = 0;
     };
 }

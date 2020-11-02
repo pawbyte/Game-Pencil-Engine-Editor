@@ -1,5 +1,5 @@
 /*
-fonts.h
+gpe_font_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -65,6 +65,7 @@ namespace gpe
             int customFontId;
             std::string fontFileLocation;
             std::string fontFamilyName;
+            std::string font_system_type;
             int fontSize;
             bool fontIsMonoSpaced;
             int monoWidth;
@@ -79,9 +80,11 @@ namespace gpe
             virtual font_base * create_new(std::string fFileLocation, int fSize, bool isMonospaced = false, const std::string fNickName = "", int fontIdNumb =-1);
             virtual void get_metrics(std::string textToRender, int * wVal, int *hVal);
             virtual void get_numbered_metrics(std::string textToRender, int * wVal, int *hVal);
+            virtual void get_wrapped_string_metrics( const std::string strIn, int lineWidth, int linePadding, int * wVal, int *hVal);
             int get_mono_height();
             int get_mono_width();
             std::string get_family_name();
+            std::string get_font_type();
             virtual int get_cache_count();
             int get_font_id();
             virtual font_pair_base * find_character_texture( const std::string numbId);

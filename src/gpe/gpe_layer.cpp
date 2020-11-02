@@ -86,7 +86,7 @@ namespace gpe
 
     }
 
-    void scene_layer::init_spatialpartioning( int cSceneWidth, int cSceneHeight )
+    void scene_layer::init_collision_handler( int cSceneWidth, int cSceneHeight )
     {
         if(spatialGridIsCreated && spatialMapWidthSize == cSceneWidth && spatialMapHeightSize == cSceneHeight)
         {
@@ -95,9 +95,9 @@ namespace gpe
 
         if( cSceneWidth>0 && cSceneHeight>0 )
         {
-            if( GPE_SPATIAL_GRID!=NULL )
+            if( main_spatial_grid!=NULL )
             {
-                GPE_SPATIAL_GRID->init_spatialpartioning( cSceneWidth, cSceneHeight );
+                main_spatial_grid->init_system( cSceneWidth, cSceneHeight );
             }
         }
 
@@ -133,9 +133,9 @@ namespace gpe
 
     void scene_layer::clear_spaces()
     {
-        if( GPE_SPATIAL_GRID !=NULL )
+        if( main_spatial_grid !=NULL )
         {
-            GPE_SPATIAL_GRID->deactivate_layer( layerId );
+            main_spatial_grid->deactivate_layer( layerId );
         }
     }
 

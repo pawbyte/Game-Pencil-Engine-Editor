@@ -34,6 +34,7 @@ SOFTWARE.
 #ifndef gpe_input_base_h
 #define gpe_input_base_h
 
+#include <ctime>
 #include <string>
 #include <vector>
 #include "gpe_error_logger.h"
@@ -325,7 +326,7 @@ namespace gpe
 
             bool clipboard_empty();
             virtual bool clipboard_set( std::string new_clipboard_string);
-            std::string clipboard_string();
+            virtual std::string clipboard_string();
 
             bool check_kb_only_down(int button_id = -1 );
             bool check_kb_only_released(int button_id = -1 );

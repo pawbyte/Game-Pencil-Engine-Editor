@@ -1,5 +1,5 @@
 /*
-gpe_font.cpp
+gpe_font_base.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -74,6 +74,7 @@ namespace gpe
 
     font_base::font_base()
     {
+        font_system_type = "base";
         fontFamilyName = "";
         fontNickName = "";
         last_used_halign = fa_left;
@@ -141,6 +142,11 @@ namespace gpe
         }
     }
 
+    void font_base::get_wrapped_string_metrics( const std::string strIn, int lineWidth, int linePadding, int * wVal, int *hVal )
+    {
+
+    }
+
     int font_base::get_mono_height()
     {
         return monoHeight;
@@ -156,6 +162,11 @@ namespace gpe
         return fontFamilyName;
     }
 
+    std::string font_base::get_font_type()
+    {
+        return font_system_type;
+    }
+
     font_pair_base * font_base::find_character_texture( const std::string numbId )
     {
         return NULL;
@@ -168,31 +179,37 @@ namespace gpe
 
     void font_base::render_bitmapped_text( int xPos, int yPos, std::string numberToRender, color * textColor, int hAlign,int vAlign, int renderAlpha )
     {
+        error_log->report("Base class rendering font bitmapped!");
     }
 
     void font_base::render_text( int xPos, int yPos, std::string textureText, color * textColor, int hAlign,int vAlign, int renderAlpha )
     {
+        error_log->report("Base class rendering font!");
     }
 
     void font_base::render_text_scaled( int xPos, int yPos, std::string textureText, color * textColor, float textScale, int hAlign,int vAlign, int renderAlpha )
     {
-
+        error_log->report("Base class rendering font scaled!");
     }
 
     void font_base::render_text_resized( int xPos, int yPos, std::string textureText, color * textColor, int hAlign,int vAlign, int rendWid, int rendHeight, int renderAlpha )
     {
+        error_log->report("Base class rendering font resized!");
     }
 
     void font_base::render_text_boxed( int xPos, int yPos, std::string textureText, color * textColor,color * boxColor,int hAlign,int vAlign, int renderAlpha )
     {
+        error_log->report("Base class rendering font boxed!");
     }
 
     void font_base::render_text_rotated( int xPos, int yPos, std::string textureText, color * textColor, float textAngle, int renderAlpha )
     {
+        error_log->report("Base class rendering font rotated!");
     }
 
     bool font_base::render_text_special( int xPos, int yPos, std::string textureText, color * textColor, int hAlign,int vAlign, float renderAngle , float renderScale, int renderAlpha )
     {
+        error_log->report("Base class rendering font special!");
         return false;
     }
 
@@ -373,13 +390,17 @@ namespace gpe
         }
         if( (int)textureText.size() > 0 && textFont!=NULL )
         {
+            //error_log->report("Rendering Text["+ textureText+"]");
             textFont->render_text( xPos,yPos,textureText,textColor,hAlign,vAlign,renderAlpha);
             return true;
         }
-        else if( textFont!=NULL )
+        else if( (int)textureText.size() > 0 )
         {
             // std::cout << "Unable to render text (" << textureText << ").\n";
+            error_log->report("Unable to render text [" + textureText + "]");
+            return false;
         }
+
         return false;
     }
 

@@ -74,12 +74,12 @@ namespace gpe
             int showFPSX, showFPSY;
             engine_settings( std::string app_publisher, std::string app_title );
             ~engine_settings();
-            float get_setting_float( std::string sName );
-            int get_setting_int( std::string sName );
-            std::string get_setting_string( std::string sName );
-            void set_setting_float( std::string sName , float sVal );
-            void set_setting_int( std::string sName , int sVal );
-            void set_setting_string( std::string sName , std::string sVal );
+            float get_setting_float( std::string s_name );
+            int get_setting_int( std::string s_name );
+            std::string get_setting_string( std::string s_name );
+            void set_setting_float( std::string s_name , float s_val );
+            void set_setting_int( std::string s_name , int s_val );
+            void set_setting_string( std::string s_name , std::string s_val );
     };
 
     extern engine_settings * settings;

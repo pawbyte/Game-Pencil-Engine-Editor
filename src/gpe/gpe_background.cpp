@@ -44,7 +44,7 @@ namespace gpe
         bgYOffset = 0;
         bgXSpeed = 0;
         bgYSpeed = 0;
-        bgColor = c_black;
+        bg_color = c_black;
         renderBgSpeed = 0;
         loopBGHori = 0;
         loopBGVert = 0;
@@ -57,7 +57,7 @@ namespace gpe
 
     color * background::get_scene_background_color()
     {
-        return bgColor;
+        return bg_color;
     }
 
 
@@ -217,7 +217,7 @@ namespace gpe
 
     void background::set_background_color( color * colorIn)
     {
-        bgColor=colorIn;
+        bg_color=colorIn;
     }
 
     void background::update()

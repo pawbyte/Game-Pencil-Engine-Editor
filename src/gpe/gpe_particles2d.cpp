@@ -31,7 +31,7 @@ SOFTWARE.
 
 */
 
-#include "GPE_Artist_Base.h"
+#include "gpe_artist_base.h"
 #include "gpe_runtime.h"
 #include "gpe_particles2d.h"
 

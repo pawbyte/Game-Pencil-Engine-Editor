@@ -30,25 +30,35 @@ SOFTWARE.
 
 
 */
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
-
-#include "gpe_common_includes.h"
-
-//Version INFO VARIABLES
+#ifndef gpe_constants_h
+#define gpe_constants_h
 
 namespace gpe
 {
-    //Game Pencil Runtime
-    const int gpe_major_version = 1;
-    const int gpr_minor_version =3;
-    const int gpr_patch_level = 1;
+    enum class render_system
+    {
+        render_sys_sdl = 3,
+        render_sys_opengl = 3,
+        render_sys_directx = 3,
+        render_sys_vulkan = 3,
+        render_sys_other = 4,
+    };
 
-    //Game Pencil Engine Editor
-    const float version_nuber_key = 1;
-    const float version_number_sub = 3;
+    enum class render_mode
+    {
+        rmode_1d = 0,
+        rmode_2d = 1,
+        rmode_25d = 2,
+        rmode_3d = 2,
+        rmode_4d = 4,
+        rmode_other = 6,
+    };
+
+    //Game Pencil Runtime
+    const float version_number_major = 1;
+    const float version_number_minor = 4;
     const float version_number_update = 1;
-    const float version_number_total = version_nuber_key + version_number_sub/10.f + version_number_update/100.f;
+    const float version_number_total = version_number_major + version_number_minor/10.f + version_number_update/100.f;
 
     const int is_null = -1;
 
@@ -114,4 +124,4 @@ namespace gpe
     const int resource_type_max = 22;
 }
 
-#endif
+#endif //gpe_constants_h

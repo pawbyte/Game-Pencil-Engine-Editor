@@ -39,14 +39,32 @@ SOFTWARE.
 
 namespace gpe
 {
+    struct shape_point2d
+    {
+        float x, y;
+    };
+
+    struct shape_point3d
+    {
+        float x, y, z;
+    };
+
     class shape_circle
     {
         public:
-            float x;
-            float y;
+            shape_point2d position;
             float radius;
             shape_circle(float xpos, float ypos, float radiusIn);
             ~shape_circle();
+    };
+
+    class shape_sphere
+    {
+        public:
+            shape_point3d position;
+            float radius;
+            shape_sphere(float xpos, float ypos, float zpos, float radiusIn);
+            ~shape_sphere();
     };
 
     class shape_rect
@@ -54,10 +72,6 @@ namespace gpe
         public:
             float x;
             float y;
-            float xCenter;
-            float x2Pos;
-            float yMiddle;
-            float y2Pos;
             float w;
             float h;
             shape_rect( float rX= 0, float rY= 0, float rW= 0, float rH = 0);
@@ -84,6 +98,17 @@ namespace gpe
             void update_shape( float xNew, float yNew, float widNew, float hgtNew);
             void update_size( float widNew, float hgtNew);
     };
+
+    class shape_triangle2d
+    {
+        public:
+            shape_point2d vertices[3];
+            shape_triangle2d();
+            ~shape_triangle2d();
+            void sort_by_x();
+            void sort_by_y();
+    };
+
 }
 
 #endif //gpe_shapes_h

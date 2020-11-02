@@ -1,5 +1,5 @@
 /*
-gpe_globals.cpp
+gpe_collision_controller_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,25 +31,40 @@ SOFTWARE.
 
 */
 
-//The headers
+#ifndef gpe_collision_controller_base_h
+#define gpe_collision_controller_base_h
 
-#include "gpe_globals.h"
+#include "gpe_basic_object.h"
+#include <string>
 
 namespace gpe
 {
-    //The event structure
-    int args_processed = 0;
+    extern int collision_controller_counter;
 
+    class collision_controller_base
+    {
+        protected:
+            int controller_id;
+            std::string controller_name;
+            std::string controller_type;
+        public:
+            collision_controller_base();
+            virtual ~collision_controller_base();
+            virtual void activate_layer(int layer_id );
+            virtual void activate_all_layers();
+            virtual void add_object( game_object * g_obj, int layer_id = -1 );
+            virtual void check_collisions();
+            virtual void clear_all();
+            virtual void clear_layer( int layer_id );
+            int compare( collision_controller_base * other );
+            virtual void deactivate_layer(int layer_id );
+            virtual void deactivate_all_layers();
+            virtual bool init_system( int scene_width, int scene_height );
+            virtual void remove_object( game_object * g_obj );
+            virtual bool quit_system();
+    };
 
-    bool debug_mode_active = false;
-    bool fps_show_counter = false;
-
-    std::string app_file_name = "";
-    std::string app_directory_name = "";
-    std::string settings_app_folder = "";
-
-    int screen_width = 500;
-    int screen_height = 300;
-
-    int system_found_os = -1;
+    extern collision_controller_base * main_collision_controller;
 }
+
+#endif //gpe_collision_controller_base_h

@@ -36,10 +36,16 @@ SOFTWARE.
 namespace gpe
 {
     cursor_controller_base * cursor_main_controller = NULL;
+    int cursor_controller_counter = 0;
 
     cursor_controller_base::cursor_controller_base()
     {
-        for( int iC = 0; iC <= cursor_default_type::max_default_cursor; iC ++ )
+        cursor_controller_counter++;
+        cursor_window_id = cursor_controller_counter;
+        cursor_controller_type = "base";
+        cursor_window_id = -1;
+
+        for( int i_cursor = 0; i_cursor < cursor_default_type::max_default_cursor; i_cursor++ )
         {
             cursor_default_names.push_back("");
         }
@@ -102,6 +108,40 @@ namespace gpe
     std::string cursor_controller_base::cursor_system_name( int cId )
     {
         return "";
+    }
+
+    int cursor_controller_base::equals( cursor_controller_base * other )
+    {
+        if( other !=NULL )
+        {
+            if( other->get_id() == cursor_controller_id )
+            {
+                if( other->cursor_controller_type == cursor_controller_type )
+                {
+                    if( other->cursor_window_id == cursor_window_id )
+                    {
+                        return true;
+                    }
+                }
+            }
+            return 0;
+        }
+        return -1;
+    }
+
+    std::string cursor_controller_base::get_type()
+    {
+        return cursor_controller_type;
+    }
+
+    int cursor_controller_base::get_id()
+    {
+        return cursor_controller_id;
+    }
+
+    int cursor_controller_base::get_window_id()
+    {
+        return cursor_window_id;
     }
 
     void cursor_controller_base::process_cursors()

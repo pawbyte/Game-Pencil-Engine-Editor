@@ -332,7 +332,7 @@ namespace gpe
 
     }
 
-    void artist_base::render_rotated_rectangle(int xCenter, int yCenter, int w, int h, int angle, color * rendColor , int alphaChannel )
+    void artist_base::render_rotated_rectangle(int get_center(), int yCenter, int w, int h, int angle, color * rendColor , int alphaChannel )
     {
 
     }
@@ -350,26 +350,45 @@ namespace gpe
     //Rectangles Rendering [ END ]
 
     //Triangle Rendering [ BEGIN ]
-    void artist_base::render_triangle( int x1, int y1, int x2, int y2, int x3, int y3, bool isOutlne, int lineWidth )
+    void artist_base::render_triangle( shape_triangle2d * tri )
     {
 
     }
 
-    void artist_base::render_triangle_color( int x1, int y1, int x2, int y2, int x3, int y3, color * rendColor , int alphaChannel , bool isOutlne, int lineWidth )
+    void artist_base::render_triangle_color( shape_triangle2d * tri, color * rendColor , int alphaChannel )
     {
 
     }
 
-    void artist_base::render_triangle_flatbottom( float x1, float y1, float x2, float y2, float x3, float y3, color * rendColor , int alphaChannel )
+    void artist_base::render_triangle_color_coords( int x1, int y1, int x2, int y2, int x3, int y3, color * rendColor , int alphaChannel )
     {
 
     }
 
-    void artist_base::render_triangle_flattop( float x1, float y1, float x2, float y2, float x3, float y3, color * rendColor, int alphaChannel )
+    void artist_base::render_triangle_coords( int x1, int y1, int x2, int y2, int x3, int y3)
     {
 
     }
 
+    void artist_base::render_triangle_outline( shape_triangle2d * tri, int lineWidth )
+    {
+
+    }
+
+    void artist_base::render_triangle_outline_coords( int x1, int y1, int x2, int y2, int x3, int y3, int lineWidth )
+    {
+
+    }
+
+    void artist_base::render_triangle_outline_color( shape_triangle2d * tri, color * rendColor , int alphaChannel ,int lineWidth )
+    {
+
+    }
+
+    void artist_base::render_triangle_outline_color_coords( int x1, int y1, int x2, int y2, int x3, int y3, color * rendColor, int alphaChannel,int lineWidth )
+    {
+
+    }
     //Triangle Rendering [ END ]
 
 

@@ -74,36 +74,6 @@ namespace gpe
         frames_passed_counter = 0;
     }
 
-    time_keeper_base::time_keeper_base( std::string t_name  )
-    {
-        timer_keeper_id = time_keeper_count;
-        time_keeper_count++;
-        keeper_name = t_name;
-        time_past = 0;
-        fps_average_count = 5;
-        system_cap_on = false;
-        min_delay_ms = 16;
-        //Initialize the variables
-        my_fps = 0;
-        paused = false;
-        started = false;
-        if( fps_cap <=0 )
-        {
-            fps_cap = 20;
-        }
-        ticks_per_frame = (float)(1000.f / fps_cap);
-        seconds_per_frame = 1.f/fps_cap;
-        delta_ticks = ticks_per_frame;
-        delta_performance =  ticks_per_frame;
-        time_past = 0;
-        ticks_now =0;
-        time_now = 0;
-        ticks_paused = 0;
-        timer_frequency = 0;
-        ticks_elapsed = 0;
-        frames_passed_counter = 0;
-    }
-
     time_keeper_base::~time_keeper_base()
     {
         recorded_fps.clear();
@@ -223,6 +193,10 @@ namespace gpe
         return my_fps;
     }
 
+    std::string time_keeper_base::get_name()
+    {
+        return keeper_name;
+    }
     float time_keeper_base::get_needed_ticks()
     {
         return ticks_per_frame;

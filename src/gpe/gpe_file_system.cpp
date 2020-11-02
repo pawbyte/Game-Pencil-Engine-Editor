@@ -365,7 +365,7 @@ namespace gpe
                         if(new_file_name!=".." && new_file_name!=".")
                         {
                             newFileIsDirectory = sff_ex::path_exists(directoryIn+"/"+ent->d_name);
-                            //if( ( main_EDITOR_SETTINGS!=NULL && main_EDITOR_SETTINGS->showHiddenFilesInBrowser->is_clicked() ) || system_found_os!=GPE_IDE_LINUX || (system_found_os==GPE_IDE_LINUX && new_file_name.find_first_of(".",0)!=0) )
+                            //if( ( main_editor_settings!=NULL && main_editor_settings->showHiddenFilesInBrowser->is_clicked() ) || system_found_os!=GPE_IDE_LINUX || (system_found_os==GPE_IDE_LINUX && new_file_name.find_first_of(".",0)!=0) )
                             {
                                 newFile = new GPE_File(new_file_name, newFileIsDirectory);
                                 if( newFile!=NULL)
@@ -670,7 +670,7 @@ namespace gpe
     }
 
 
-    bool GPE_Seek_Settings_Folder()
+    bool seek_settings_folder()
     {
         //Sets the folder used in all  get_user_settings_folder() calls based on the 2 parameters above
         settings_app_folder = app_directory_name;

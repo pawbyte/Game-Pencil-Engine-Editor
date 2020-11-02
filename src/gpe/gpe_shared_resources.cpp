@@ -31,7 +31,7 @@ SOFTWARE.
 
 */
 
-#include "GPE_Shared_Resources.h"
+#include "gpe_shared_resources.h"
 
 namespace gpe
 {

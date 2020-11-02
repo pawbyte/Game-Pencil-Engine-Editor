@@ -38,7 +38,7 @@ SOFTWARE.
 #include <string>
 #include <cmath>
 #include <sstream>
-#include "GPE_Collisions.h"
+#include "gpe_collisions.h"
 #include "gpe_globals.h"
 #include "gpe_texture_base.h"
 #include "gpe_runtime.h"

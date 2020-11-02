@@ -60,7 +60,7 @@ namespace gpe
             virtual void change_color( color * newColor);
             virtual void change_color( uint8_t red, uint8_t green, uint8_t blue );
             virtual bool copy_image_source(std::string outDirectoryName);
-
+            virtual texture_base * create_new();
 
             std::string get_filename();
             int get_height();
@@ -74,11 +74,10 @@ namespace gpe
 
             //pre-render functions...
             virtual void prerender_circle( renderer_base * renderer, int rad, color * circleColor,  uint8_t alpha = 255,int id = -1, bool transparent = true, bool useLinearScaling = true, bool isOutline = false  );
+            virtual void prerender_triangle( renderer_base * renderer, shape_triangle2d,  color * circleColor,  uint8_t alpha = 255 );
             virtual void prerender_rectangle( renderer_base * renderer, int w, int h, color * newColor, int id = -1, bool transparent = true, bool useLinearScaling = true , bool isOutline = false);
 
             //
-            virtual texture_base * create_new();
-
             virtual void render_align(  int x, int y, int hAlign, int vAlign, shape_rect* clip = NULL, color * rendColor = NULL, int alpha = 255  );
             virtual void render_align_resized(  int x, int y,int newWidth, int newHeight, int hAlign, int vAlign, shape_rect* clip = NULL, color * rendColor = NULL, int alpha = 255 );
             virtual void render_tex(  int x, int y, shape_rect* clip = NULL, int alpha = 255  );

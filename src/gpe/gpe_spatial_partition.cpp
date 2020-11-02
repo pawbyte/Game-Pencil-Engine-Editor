@@ -31,7 +31,7 @@ SOFTWARE.
 
 */
 
-#include "GPE_Spatial_Partition.h"
+#include "gpe_spatial_partition.h"
 
 namespace gpe
 {

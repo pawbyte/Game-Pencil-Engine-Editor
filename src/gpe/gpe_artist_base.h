@@ -126,16 +126,23 @@ namespace gpe
             virtual void render_rect(  shape_rect * rendRect,color * rendColor,bool outline = false, int alphaChannel = 255);
             virtual void render_rectangle( int x1, int y1, int x2, int y2,  color *rendColor,bool outline = false, int alphaChannel = 255);
             virtual void render_square( int x, int y, int squareSize,  color *rendColor,bool outline = false, int alphaChannel = 255);
-            virtual void render_rotated_rectangle(int xCenter, int yCenter, int w, int h, int angle, color * rendColor = NULL, int alphaChannel = 255);
+            virtual void render_rotated_rectangle(int get_center(), int yCenter, int w, int h, int angle, color * rendColor = NULL, int alphaChannel = 255);
             virtual void render_roundrect(int x1, int y1, int x2, int y2, int rad, bool outline = false);
             virtual void render_roundrect_color( int x1, int y1,int x2, int y2, int rad, bool outline = false,color * rendColor = NULL, int alphaChannel  = 255);
             //Rectangles Rendering [ END ]
 
-             //Triangle Rendering [ BEGIN ]
-            virtual void render_triangle( int x1, int y1, int x2, int y2, int x3, int y3, bool isOutlne = false, int lineWidth = 1);
-            virtual void render_triangle_color( int x1, int y1, int x2, int y2, int x3, int y3, color * rendColor = NULL, int alphaChannel = 255, bool isOutlne = false, int lineWidth = 1);
-            virtual void render_triangle_flatbottom( float x1, float y1, float x2, float y2, float x3, float y3, color * rendColor = NULL, int alphaChannel = 255);
-            virtual void render_triangle_flattop( float x1, float y1, float x2, float y2, float x3, float y3, color * rendColor = NULL, int alphaChannel = 255);
+            //Triangle Rendering [ BEGIN ]
+            virtual void render_triangle( shape_triangle2d * tri );
+
+            virtual void render_triangle_color( shape_triangle2d * tri, color * rendColor = NULL, int alphaChannel = 255 );
+
+            virtual void render_triangle_color_coords( int x1, int y1, int x2, int y2, int x3, int y3, color * rendColor = NULL, int alphaChannel = 255 );
+            virtual void render_triangle_coords( int x1, int y1, int x2, int y2, int x3, int y3);
+
+            virtual void render_triangle_outline( shape_triangle2d * tri, int lineWidth = 1);
+            virtual void render_triangle_outline_coords( int x1, int y1, int x2, int y2, int x3, int y3, int lineWidth = 1);
+            virtual void render_triangle_outline_color( shape_triangle2d * tri, color * rendColor = NULL, int alphaChannel = 255,int lineWidth = 1);
+            virtual void render_triangle_outline_color_coords( int x1, int y1, int x2, int y2, int x3, int y3, color * rendColor = NULL, int alphaChannel = 255,int lineWidth = 1);
             //Triangle Rendering [ END ]
 
             //Color / blend related functions

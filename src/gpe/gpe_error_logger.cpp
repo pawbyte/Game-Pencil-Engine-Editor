@@ -78,11 +78,13 @@ namespace gpe
 
     void error_log_system::log_ms_action( std::string output_string, int ms_in, int ms_required )
     {
+        /*
         if( ms_in > ms_required )
         {
             output_string += " elapsed " + stg_ex::int_to_string( ms_in ) + "ms";
             report( output_string );
         }
+        */
     }
 
     void error_log_system::report(std::string output_string)

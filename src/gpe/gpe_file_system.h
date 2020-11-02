@@ -33,6 +33,7 @@ SOFTWARE.
 #ifndef gpe_file_system_h
 #define gpe_file_system_h
 
+#include "gpe_common_includes.h"
 #include "gpe_constants.h"
 #include "gpe_globals.h"
 #include "gpe_settings.h"
@@ -112,7 +113,7 @@ namespace gpe
     int copy_folder(std::string folderName, std::string targetFolder, bool copySubFolders = false, bool overwriteExistingFiles = false );
 
     std::string  get_user_settings_folder();
-    bool GPE_Seek_Settings_Folder();
+    bool seek_settings_folder();
     std::string get_user_temp_folder();
     std::string get_user_screenshot_folder();
     bool delete_file( std::string fName);

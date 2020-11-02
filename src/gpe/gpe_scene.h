@@ -65,7 +65,7 @@ namespace gpe
             std::map<std::string, std::vector< branch * > > branchesByTags;
 
             //background data
-            color * bgColor;
+            color * bg_color;
             int sceneVersion;
             int bgMusic;
             int startAudio;
@@ -75,7 +75,7 @@ namespace gpe
             bool sceneResourcesAreProcessed;
             bool sceneIsSpatiallyPartitioned;
         public:
-            game_scene(int sId, std::string sName, std::string sFile);
+            game_scene(int sId, std::string s_name, std::string sFile);
             ~game_scene();
             void add_branch( branch * newBranch );
             scene_layer * add_layer( int newLayerId, float newLayerAlpha );
@@ -89,7 +89,7 @@ namespace gpe
 
             void reset_scene_meta();
             bool add_to_persistent_objects( game_object * nObject);
-            void init_spatialpartioning();
+            void init_collision_handler();
 
             scene_layer * find_layer ( int layerIdIn);
             scene_layer * get_layer ( int layerIdI );

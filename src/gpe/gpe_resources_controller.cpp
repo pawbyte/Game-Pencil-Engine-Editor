@@ -171,7 +171,7 @@ namespace gpe
         else if( sff_ex::file_exists( texture_file_name) )
         {
             gpe::error_log->report("Attempting to add Texture["+resource_name+"+,"+texture_file_name+"]" );
-            //error_log->report("Loading "+texture_file_name+" texture image.");
+            error_log->report("Loading "+texture_file_name+" texture image.");
             //loads in the animation's texture
             newTexture = rRenderPackage->create_texture();
             if( newTexture!=NULL)
@@ -231,7 +231,7 @@ namespace gpe
 
     std::string asset_manager::get_last_tilesheet_name()
     {
-        last_tilesheet_loaded;
+        return last_tilesheet_loaded;
     }
 
     std::string asset_manager::get_name()

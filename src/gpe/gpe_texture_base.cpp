@@ -116,6 +116,11 @@ namespace gpe
 
     }
 
+    void texture_base::prerender_triangle( renderer_base * renderer, shape_triangle2d,  color * circleColor,  uint8_t alpha )
+    {
+
+    }
+
     void texture_base::prerender_rectangle( renderer_base * renderer,int w, int h, color * newColor, int id , bool transparent, bool useLinearScaling, bool isOutline  )
     {
 
