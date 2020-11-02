@@ -35,6 +35,8 @@ SOFTWARE.
 #define gpe_renderer_sdl_h
 
 //The headers
+
+#include <ctime>
 #include "../gpe/gpe_common_includes.h"
 #include "../gpe/gpe_shapes.h"
 #include "../gpe/gpe_renderer_base.h"
@@ -46,17 +48,17 @@ namespace gpe
     class renderer_system_sdl: public renderer_base
     {
         private:
-            int renderCount;
-            int renderId;
+            int render_count;
+            int render_id;
             //Whether the window is windowed or not
-            bool screenClearedOnFrame;
-            int lastRenderedWidth, lastRenderedHeight;
-            int rWidth, rHeight;
-            int lastIdForScreenshot;
+            bool cleared_this_frame;
+            int last_rendered_width, last_rendered_height;
+            int r_width, r_height;
+            int last_screenshot_id;
 
             //SDL_SysWMinfo sdl_sys;
-            bool screenRenderedBefore;
-            int renderBlendMode;
+            bool rendered_once;
+            int render_blend_mode;
             SDL_Renderer * sdlRenderer;
             SDL_Texture * renderTexture;
         public:
@@ -66,10 +68,13 @@ namespace gpe
             SDL_Point  defaultPoint;
             bool resize_happened;
             //SDL_SysWMinfo * get_sys_info();
-            renderer_system_sdl(int rId, int wWidth, int wHeight, SDL_Window * cWindow );
+            renderer_system_sdl(int rId, int wWidth, int wHeight, SDL_Window * window_ptr );
             ~renderer_system_sdl();
 
             void clear_renderer( bool windowIsMinimized );
+
+            bool disable_scaling();
+            bool enable_scaling();
 
             //Check if anything's wrong with the window
             bool error_check();
@@ -91,6 +96,9 @@ namespace gpe
             void resize_renderer(int newW, int newH );
 
             std::string save_screenshot(std::string file_location = "");
+            bool scale_renderer( int s_width, int s_height, bool scale_int );
+            bool scale_renderer_factor( float s_width, float s_height, bool scale_int );
+
             bool screen_was_cleared();
             void set_render_blend_mode( int newBlendMode );
             void set_viewpoint( shape_rect * newViewPoint = NULL);

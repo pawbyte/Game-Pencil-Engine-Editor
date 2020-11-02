@@ -68,7 +68,7 @@ namespace gpe
         keeper_name = t_name;
         time_past = 0;
         fps_average_count = 5;
-        system_cap_on = false;
+        system_cap_on = true;
         min_delay_ms = 16;
         //Initialize the variables
         my_fps = 0;
@@ -94,51 +94,6 @@ namespace gpe
     time_keeper_sdl::~time_keeper_sdl()
     {
         recorded_fps.clear();
-    }
-
-    void time_keeper_sdl::calculate_avg_fps( bool is_minimized )
-    {
-        //Returns if the window is minimized to prevent strange behaviors
-        if( is_minimized)
-        {
-            frames_passed_counter = 0.f;
-            ticks_elapsed = 0.f;
-            return;
-        }
-
-        //Adds the current delta to elapsed ticks
-        ticks_elapsed+= delta_ticks;
-        //Increments our framecount
-        frames_passed_counter += 1.f;
-
-        //Once our ticks have reached 1000ms or more we calculate
-        if( ticks_elapsed >= 1000.f )
-        {
-            //Our FPS is simple its now our frame counter
-            fps_current = frames_passed_counter;
-            //We add this to our vector/list of frames
-            recorded_fps.push_back( frames_passed_counter );
-
-            //If our list is now greater than our average
-            int fpsSize =  (int)recorded_fps.size();
-            if(  fpsSize >= fps_average_count )
-            {
-                float avgFPS = 0.f;
-                for(int i = 0; i < fpsSize; i++)
-                {
-                    avgFPS += recorded_fps[i];
-                }
-                my_fps = avgFPS / (float)fpsSize;
-                delta_current = 1000.f / my_fps;
-
-                //We erase the top of the list
-                recorded_fps.erase( recorded_fps.begin()  );
-            }
-
-            //Reset our counter and elapsticks
-            ticks_elapsed = 0.f;
-            frames_passed_counter = 0;
-        }
     }
 
     void time_keeper_sdl::cap_fps( bool is_minimized )

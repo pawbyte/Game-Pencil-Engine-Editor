@@ -1,8 +1,8 @@
 /*
 sdl_surface_ex.cpp
 This file is part of:
-sdl_surface_ex
-https://www.pawbyte.com/opensource
+SDL_SurfaceEx
+https://www.pawbyte.com/sdl_surface_ex
 Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
 Copyright (c) 2014-2020 PawByte LLC.
@@ -25,7 +25,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
--Game Pencil Engine <https://www.pawbyte.com/opensource>
+-Game Pencil Engine <https://www.pawbyte.com/sdl_surface_ex>
 
 
 */

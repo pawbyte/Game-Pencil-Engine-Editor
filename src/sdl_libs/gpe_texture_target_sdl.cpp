@@ -356,11 +356,15 @@ namespace gpe
         {
             case blend_mode_add:
                 SDL_SetTextureBlendMode(sdlTargetTexture,SDL_BLENDMODE_ADD );
-                break;
+            break;
 
             case blend_mode_mod:
                 SDL_SetTextureBlendMode(sdlTargetTexture, SDL_BLENDMODE_MOD);
-                break;
+            break;
+
+            case blend_mode_mul:
+                SDL_SetTextureBlendMode(sdlTargetTexture, SDL_BLENDMODE_MUL);
+            break;
 
             case blend_mode_none:
                 SDL_SetTextureBlendMode(sdlTargetTexture, SDL_BLENDMODE_NONE  );

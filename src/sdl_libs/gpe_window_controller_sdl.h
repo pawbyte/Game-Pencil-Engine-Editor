@@ -36,6 +36,7 @@ SOFTWARE.
 
 //The headers
 
+#include "../gpe/gpe_globals.h"
 #include "../gpe/gpe_window_controller_base.h"
 #include "sdl_surface_ex.h"
 
@@ -53,6 +54,8 @@ namespace gpe
             window_controller_sdl(std::string windowTitle,int wWidth, int wHeight,bool showBorder, bool fullScreen, bool maximized, bool isResizable );
             ~window_controller_sdl();
 
+            bool disable_scaling();
+            bool enable_scaling();
             SDL_Window * get_sdl_window();
 
             //Handle window events
@@ -62,6 +65,9 @@ namespace gpe
             //SDL_SysWMinfo * get_info();
             void reset_input();
             void resize_window();
+
+            bool scale_window( int s_width, int s_height , bool scale_int );
+            bool scale_window_factor( float s_width, float s_height, bool scale_int );
 
             void set_renderer( renderer_base * new_renderer, bool remove_current );
             //std::string save_screenshot(std::string file_location = "");

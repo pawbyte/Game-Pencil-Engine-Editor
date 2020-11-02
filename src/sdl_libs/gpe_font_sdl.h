@@ -53,7 +53,6 @@ namespace gpe
         private:
             std::string str;
             SDL_Texture * strTexture;
-            int textWidth, textHeight;
         public:
             int lastAlphaRendered;
             font_pair_sdl(TTF_Font * fontIn, std::string strIn);
@@ -64,8 +63,8 @@ namespace gpe
     class font_sdl_tff: public font_base
     {
         private:
-            std::map < std::string, font_pair_sdl * > textPairs;
-            std::map <std::string, font_pair_sdl * > characterPairs;
+            std::map < const std::string, font_pair_sdl * > textPairs;
+            std::map <const std::string, font_pair_sdl * > characterPairs;
             TTF_Font * heldSDLFont;
         public:
             font_sdl_tff( const std::string fFileLocation, int fSize, bool isMonospaced = false, const std::string fNickName = "", int fontIdNumb =-1);
@@ -74,6 +73,7 @@ namespace gpe
             font_base * create_new(std::string fFileLocation, int fSize, bool isMonospaced = false, const std::string fNickName = "", int fontIdNumb =-1);
             void get_metrics(std::string textToRender, int * wVal, int *hVal);
             void get_numbered_metrics(std::string textToRender, int * wVal, int *hVal);
+            void get_wrapped_string_metrics( const std::string strIn, int lineWidth, int linePadding, int * wVal, int *hVal);
             TTF_Font * get_sdl_font();
             int get_cache_count();
             int get_font_id();

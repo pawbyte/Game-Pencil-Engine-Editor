@@ -60,15 +60,15 @@ namespace gpe
             void change_color( Uint8 red, Uint8 green, Uint8 blue );
             void change_texture(SDL_Texture * newTexture);
             bool copy_image_source(std::string outDirectoryName);
+            texture_base * create_new();
 
             renderer_system_sdl * get_gpe_renderer_sdl(renderer_base * renderer);
             SDL_Renderer * get_sdl_renderer(renderer_base * renderer);
             SDL_Texture * get_sdl_texture();
             void load_new_texture( renderer_base * renderer, std::string fileName, int id = -1, bool transparent = true, bool useLinearScaling = false );
             void prerender_circle( renderer_base * renderer, int rad, color * circleColor,  Uint8 alpha = 255,int id = -1, bool transparent = true, bool useLinearScaling = true , bool isOutline = false );
+            void prerender_triangle( renderer_base * renderer, shape_triangle2d,  color * circleColor,  uint8_t alpha = 255 );
             void prerender_rectangle( renderer_base * renderer, int w, int h, color * newColor, int id = -1, bool transparent = true, bool useLinearScaling = true  , bool isOutline = false);
-
-            texture_base * create_new();
 
             void render_align(  int x, int y, int hAlign, int vAlign, gpe::shape_rect* clip = NULL, color * rendColor = NULL, int alpha = 255  );
             void render_align_resized(  int x, int y,int newWidth, int newHeight, int hAlign, int vAlign, gpe::shape_rect* clip = NULL, color * rendColor = NULL, int alpha = 255 );

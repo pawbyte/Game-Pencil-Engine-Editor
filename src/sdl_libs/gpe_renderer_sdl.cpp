@@ -41,35 +41,34 @@ namespace gpe
 {
     renderer_system_sdl * renderer_main_sdl = NULL;
 
-    renderer_system_sdl::renderer_system_sdl( int rId, int wWidth, int wHeight, SDL_Window * cWindow )
+    renderer_system_sdl::renderer_system_sdl( int rId, int wWidth, int wHeight, SDL_Window * window_ptr )
     {
-        renderType = "sdl";
-        rendererName = "SDL_Renderer";
+        r_type = "sdl";
+        r_name = "SDL_Renderer";
         renderTexture = NULL;
         bothFlip = (SDL_RendererFlip)(SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL);
         horiFlip = (SDL_RendererFlip)(SDL_FLIP_HORIZONTAL );
         vertFlip = (SDL_RendererFlip)( SDL_FLIP_VERTICAL);
         defaultPoint.x = 0;// = {0,0};
         defaultPoint.y = 0;// = {0,0};
-        renderBlendMode = blend_mode_blend;
-        lastRenderedWidth = 0;
-        lastRenderedHeight = 0;
-        screenRenderedBefore = false;
+        render_blend_mode = blend_mode_blend;
+        last_rendered_width = 0;
+        last_rendered_height = 0;
+        rendered_once = false;
         SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
         SDL_SetHint(SDL_HINT_FRAMEBUFFER_ACCELERATION, "1");
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-        SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
+        //SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
         sdlRenderer = NULL;
-        screenClearedOnFrame = false;
-        rWidth = wWidth;
-        rHeight = wHeight;
-        lastIdForScreenshot = 0;
+        cleared_this_frame = false;
+        r_width = wWidth;
+        r_height = wHeight;
+        last_screenshot_id = 0;
 
-        sdlRenderer = SDL_CreateRenderer( cWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE );//  | SDL_RENDERER_PRESENTVSYNC );
-
+        sdlRenderer = SDL_CreateRenderer( window_ptr, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE );//  | SDL_RENDERER_PRESENTVSYNC );
+        SDL_RenderClear( sdlRenderer );
         SDL_SetRenderTarget(sdlRenderer,NULL);
         SDL_SetRenderDrawBlendMode(sdlRenderer,SDL_BLENDMODE_BLEND);
-
     }
 
     renderer_system_sdl::~renderer_system_sdl()
@@ -87,9 +86,21 @@ namespace gpe
         }
     }
 
+    bool renderer_system_sdl::disable_scaling()
+    {
+        SDL_RenderSetScale( sdlRenderer, 1.f, 1.f);
+        renderer_scaling = false;
+        return false;
+    }
+
+    bool renderer_system_sdl::enable_scaling()
+    {
+        return true;
+    }
+
     int renderer_system_sdl::get_blend_mode()
     {
-        return renderBlendMode;
+        return render_blend_mode;
     }
 
     SDL_Renderer * renderer_system_sdl::get_sdl_renderer()
@@ -99,7 +110,7 @@ namespace gpe
 
     void renderer_system_sdl::reset_input()
     {
-        screenClearedOnFrame = false;
+        cleared_this_frame = false;
     }
 
     void renderer_system_sdl::reset_viewpoint()
@@ -109,13 +120,18 @@ namespace gpe
 
     void renderer_system_sdl::resize_renderer(int newW, int newH )
     {
-        if( newW == rWidth || newH == rHeight)
+        if( newW == r_width || newH == r_height)
         {
             return;
         }
-        rWidth = newW;
-        rHeight = newH;
+        r_width = newW;
+        r_height = newH;
 
+        if( previously_scaled && !renderer_scaling )
+        {
+            SDL_RenderSetLogicalSize( sdlRenderer, newW, newH );
+            SDL_RenderSetScale( sdlRenderer, 1.f, 1.f );
+        }
         if( renderTexture!=NULL )
         {
             SDL_DestroyTexture( renderTexture );
@@ -123,7 +139,8 @@ namespace gpe
         }
         renderTexture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, newW, newH );
         SDL_SetRenderTarget(sdlRenderer, NULL );
-
+        SDL_RenderClear( sdlRenderer );
+        SDL_RenderPresent(sdlRenderer);
     }
 
     void renderer_system_sdl::set_viewpoint( shape_rect * newViewPoint)
@@ -145,24 +162,24 @@ namespace gpe
 
     std::string renderer_system_sdl::get_renderer_name()
     {
-        //if( (int)rendererName.size() == 0 )
+        //if( (int)r_name.size() == 0 )
         {
             SDL_RendererInfo SDLRenderInfo;
             SDL_GetRendererInfo(sdlRenderer, &SDLRenderInfo);
-            rendererName = SDLRenderInfo.name;
+            r_name = SDLRenderInfo.name;
         }
-        return rendererName;
+        return r_name;
     }
 
     std::string renderer_system_sdl::get_renderer_type()
     {
-        if( (int)renderType.size() == 0 )
+        if( (int)r_type.size() == 0 )
         {
             SDL_RendererInfo SDLRenderInfo = {0};
             SDL_GetRendererInfo(sdlRenderer, &SDLRenderInfo);
-            renderType = SDLRenderInfo.name;
+            r_type = SDLRenderInfo.name;
         }
-        return renderType;
+        return r_type;
     }
 
     /*
@@ -177,6 +194,8 @@ namespace gpe
         {
             return;
         }
+        SDL_RenderClear( sdlRenderer);
+        return;
         Uint32 sTicks = SDL_GetTicks();
         set_render_blend_mode( blend_mode_blend );
         if( sdlRenderer!=NULL)
@@ -185,7 +204,7 @@ namespace gpe
             SDL_Rect fillRect = {0,0,screen_width, screen_height};
             SDL_SetRenderDrawColor( sdlRenderer, 0, 0, 0, 255 );
             SDL_RenderFillRect( sdlRenderer, &fillRect );
-            screenClearedOnFrame = true;
+            cleared_this_frame = true;
         }
         Uint32 eTicks = SDL_GetTicks();
         error_log->log_ms_action("renderer_system_sdl::clear_renderer()",eTicks - sTicks,10 );
@@ -305,9 +324,9 @@ namespace gpe
     std::string renderer_system_sdl::save_screenshot(std::string file_location)
     {
         std::string returnString = "";
-        if( sdlRenderer!=NULL && screenRenderedBefore )
+        if( sdlRenderer!=NULL && rendered_once )
         {
-            if( lastRenderedWidth==rWidth && lastRenderedHeight==rHeight)
+            if( last_rendered_width==r_width && last_rendered_height==r_height)
             {
                 //Credits: http://stackoverflow.com/questions/22315980/sdl2-c-taking-a-screenshot
                 //TalesM - http://stackoverflow.com/users/2312760/talesm
@@ -319,12 +338,12 @@ namespace gpe
                     SDL_GetRendererOutputSize(sdlRenderer, &ssW, &ssH);
                     if( ssW > 0 && ssH > 0)
                     {
-                        if( ssW !=lastRenderedWidth || ssH!=lastRenderedHeight)
+                        if( ssW !=last_rendered_width || ssH!=last_rendered_height)
                         {
                             error_log->report("Unable to record screenshot of pixels ["+ stg_ex::int_to_string(ssW)+","+ stg_ex::int_to_string(ssH)+"]..");
 
-                            ssW = lastRenderedWidth;
-                            ssH = lastRenderedHeight;
+                            ssW = last_rendered_width;
+                            ssH = last_rendered_height;
                         }
                         SDL_Surface *sshot = NULL;
                         //sshot = SDL_GetWindowSurface(gpeWindow);
@@ -436,33 +455,84 @@ namespace gpe
         return returnString;
     }
 
+    bool renderer_system_sdl::scale_renderer( int s_width, int s_height, bool scale_int )
+    {
+        if( sdlRenderer != NULL )
+        {
+            if( scale_int )
+            {
+                SDL_RenderSetIntegerScale( sdlRenderer, SDL_TRUE );
+                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+
+            }
+            else
+            {
+                SDL_RenderSetIntegerScale( sdlRenderer, SDL_FALSE );
+                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nonlinear");
+
+            }
+            SDL_RenderSetLogicalSize( sdlRenderer, s_width, s_height );
+            previously_scaled = true;
+            renderer_scaling = true;
+            return true;
+        }
+        return false;
+    }
+
+    bool renderer_system_sdl::scale_renderer_factor( float s_width, float s_height, bool scale_int )
+    {
+        if( sdlRenderer != NULL )
+        {
+            SDL_RenderSetLogicalSize( sdlRenderer, s_width, s_height );
+            if( scale_int )
+            {
+                SDL_RenderSetIntegerScale( sdlRenderer, SDL_TRUE );
+            }
+            else
+            {
+                SDL_RenderSetIntegerScale( sdlRenderer, SDL_FALSE );
+            }
+            if( s_width != 1.f && s_height !=1.f )
+            {
+                previously_scaled = true;
+            }
+            renderer_scaling = true;
+            return true;
+        }
+        return false;
+    }
+
     bool renderer_system_sdl::screen_was_cleared()
     {
-        return screenClearedOnFrame;
+        return cleared_this_frame;
     }
 
     void renderer_system_sdl::set_render_blend_mode( int newBlendMode )
     {
-        if( renderBlendMode!=newBlendMode)
+        if( render_blend_mode!=newBlendMode)
         {
-            renderBlendMode = newBlendMode;
+            render_blend_mode = newBlendMode;
             switch( newBlendMode)
             {
                 case blend_mode_add:
                     SDL_SetRenderDrawBlendMode(sdlRenderer,SDL_BLENDMODE_ADD );
-                    break;
+                break;
 
                 case blend_mode_mod:
                     SDL_SetRenderDrawBlendMode(sdlRenderer, SDL_BLENDMODE_MOD);
-                    break;
+                break;
+
+                case blend_mode_mul:
+                    SDL_SetRenderDrawBlendMode(sdlRenderer, SDL_BLENDMODE_MUL);
+                break;
 
                 case blend_mode_none:
                     SDL_SetRenderDrawBlendMode( sdlRenderer, SDL_BLENDMODE_NONE  );
-                    break;
+                break;
 
                 default:
                     SDL_SetRenderDrawBlendMode(sdlRenderer, SDL_BLENDMODE_BLEND);
-                    renderBlendMode = blend_mode_blend;
+                    render_blend_mode = blend_mode_blend;
                 break;
             }
         }
@@ -471,19 +541,20 @@ namespace gpe
     void renderer_system_sdl::update_renderer( bool windowIsMinimized )
     {
         Uint32 sTicks = SDL_GetTicks();
-        lastRenderedWidth = rWidth;
-        lastRenderedHeight = rHeight;
+        last_rendered_width = r_width;
+        last_rendered_height = r_height;
         if( windowIsMinimized == false )
         {
             set_render_blend_mode( blend_mode_blend );
             //SDL_RenderCopy( sdlRenderer, renderTexture, NULL, NULL );
 
-            SDL_RenderPresent( sdlRenderer );
             SDL_SetRenderTarget( sdlRenderer, NULL );
+            SDL_RenderPresent( sdlRenderer );
 
             //SDL_SetRenderTarget( sdlRenderer, renderTexture );
-            screenClearedOnFrame = false;
-            screenRenderedBefore = true;
+            cleared_this_frame = false;
+            rendered_once = true;
+            SDL_SetRenderDrawColor( sdlRenderer,0,0,0, 255 );
         }
         Uint32 eTicks = SDL_GetTicks();
         error_log->log_ms_action("renderer_system_sdl::update_renderer()",eTicks - sTicks,10 );

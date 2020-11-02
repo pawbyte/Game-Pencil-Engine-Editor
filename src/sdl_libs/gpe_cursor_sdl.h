@@ -1,5 +1,5 @@
 /*
-gpe_timer.h
+gpe_cursor_sdl.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,56 +31,45 @@ SOFTWARE.
 
 */
 
-#ifndef gpe_timer_sdl_h
-#define gpe_timer_sdl_h
+#ifndef gpe_cursor_sdl_h
+#define gpe_cursor_sdl_h
 
-#include "../gpe/gpe_runtime.h"
-#include "../gpe/gpe_timer_base.h"
-#include <math.h>
+#include <string>
+#include <map>
+
 #include <SDL2/SDL.h>
+#include "sdl_surface_ex.h"
+#include "../gpe/gpe_cursor_base.h"
+#include "../gpe/gpe_error_logger.h"
+#include "../other_libs/sff_ex.h"
+#include "../other_libs/stg_ex.h"
 
 namespace gpe
 {
-    //The timer
-    class time_keeper_sdl: public time_keeper_base
+    class cursor_controller_sdl: public gpe::cursor_controller_base
     {
         protected:
+            SDL_Cursor * cursor_sdl;
+           std::map <std::string, SDL_Cursor *> cursor_sdl_map;
         public:
-            time_keeper_sdl( std::string t_name );
-            ~time_keeper_sdl();
-
-            void cap_fps( bool is_minimized );
-
-            void delay( float delay_time );
-            void finish_timer();
-
-            float get_needed_ticks();
-            void start_timer();
-            void stop_timer();
-            void pause_timer();
-            void unpause_timer();
-
-            float get_delta_performance();
-            float get_delta_ticks();
-
-            float get_fps();
-            float get_performance_ms();
-            float get_performance_seconds();
-            uint64_t get_ticks();
-            float get_time_difference( uint64_t time_p, uint64_t time_c );
-
-            bool is_started();
-            bool is_paused();
-
-            void reset_timer();
-
-            void set_fps( float fps_new = 30 );
-            void set_average_fps_count( int new_count );
+            cursor_controller_sdl( int window_id = -1 );
+            virtual ~cursor_controller_sdl();
+            //Cursor logic
+            void cursor_change( std::string newCursor );
+            void cursor_change_system( int system_cursor_id );
+            void cursor_clear_dynamic();
+            bool cursor_contains( std::string cursorName );
+            bool cursor_create_from_image(std::string fName );
+            int cursor_map_size();
+            std::string cursor_system_name( int cId );
+            void name_default_cursors();
+            void process_cursors();
     };
 
-    bool init_sdl_time_system();
-    void quit_sdl_time_system();
+    extern cursor_controller_sdl * cursor_main_sdl_controller;
+
+    bool init_sdl_cursor_system();
+    void quit_sdl_cursor_system();
 }
 
-//The frames per second timer
-#endif //gpe_timer_sdl_h
+#endif //gpe_cursor_sdl_h

@@ -62,7 +62,6 @@ namespace gpe
             window_controller_main_sdl = NULL;
         }
         window_controller_main = NULL;
-
     }
 
     window_controller_sdl::window_controller_sdl(std::string windowTitle, int wWidth, int wHeight,bool showBorder, bool fullScreen, bool maximized, bool isResizable )
@@ -127,6 +126,23 @@ namespace gpe
 
     }
 
+    bool window_controller_sdl::disable_scaling()
+    {
+        window_scaling = window_base_renderer->disable_scaling();
+        if( !window_scaling )
+        {
+            gpe::screen_width = window_width;
+            gpe::screen_height = window_height;
+        }
+
+        return true;
+    }
+
+    bool window_controller_sdl::enable_scaling()
+    {
+        return true;
+    }
+
     SDL_Window * window_controller_sdl::get_sdl_window()
     {
         return local_sdl_window;
@@ -148,12 +164,13 @@ namespace gpe
 
         if( event_holder == NULL )
         {
+            error_log->report("Event holder = null!");
             return;
         }
 
         if( event_holder->window_id != window_id )
         {
-            //return;
+            return;
         }
 
         switch( event_holder->event_type )
@@ -179,8 +196,8 @@ namespace gpe
                     }
                     else
                     {
-                        //gpe::screen_width = rWidth = window_width;
-                        //gpe::screen_height = rHeight = window_height;
+                        window_width = event_holder->window_resize_w;
+                        window_height = event_holder->window_resize_h;
                         resize_window();
                         gpe::error_log->report("Window resized with improper data");
                     }
@@ -284,18 +301,55 @@ namespace gpe
         if( local_sdl_window!=NULL && window_base_renderer!=NULL)
         {
             SDL_GetWindowSize( local_sdl_window, &window_width, &window_height );
-            window_base_renderer->resize_renderer( window_width, window_height );
+            //window_base_renderer->resize_renderer( window_width, window_height );
             window_base_renderer->reset_input();
         }
     }
 
     void window_controller_sdl::resize_window()
     {
+        if( !window_scaling )
+        {
+            gpe::screen_width = window_width;
+            gpe::screen_height = window_height;
+        }
         if( window_base_renderer!=NULL )
         {
             window_base_renderer->resize_renderer( window_width, window_height );
         }
         minimized = false;
+    }
+
+    bool window_controller_sdl::scale_window( int s_width, int s_height , bool scale_int )
+    {
+        if( window_base_renderer !=NULL )
+        {
+            window_scaling = window_base_renderer->scale_renderer(s_width, s_height, scale_int );
+
+            if( window_scaling )
+            {
+                gpe::screen_width = s_width;
+                gpe::screen_height = s_height;
+                previously_scaled = true;
+            }
+            else
+            {
+                gpe::screen_width = window_width;
+                gpe::screen_height = window_height;
+            }
+            return window_scaling;
+        }
+        return false;
+    }
+
+    bool window_controller_sdl::scale_window_factor( float s_width, float s_height, bool scale_int )
+    {
+        if( window_base_renderer !=NULL )
+        {
+            window_scaling = window_base_renderer->scale_renderer_factor(s_width, s_height, scale_int );
+            return window_scaling;
+        }
+        return false;
     }
 
     void window_controller_sdl::set_renderer( renderer_base * new_renderer, bool remove_current )
