@@ -35,7 +35,7 @@ SOFTWARE.
 
 namespace pawgui
 {
-    widget_slide_xaxis::widget_slide_xaxis( float sVal, float sMin, float sMax )
+    widget_slide_xaxis::widget_slide_xaxis( float s_val, float sMin, float sMax )
     {
         widget_box.x = 0;
         widget_box.y = 0;
@@ -50,8 +50,8 @@ namespace pawgui
         //Will let the function do optimizations needed below
         minValue = sMin;
         max_value = sMax;
-        myValue = sVal;
-        set_data( sVal, sMin, sMax );
+        myValue = s_val;
+        set_data( s_val, sMin, sMax );
     }
 
     widget_slide_xaxis::~widget_slide_xaxis()
@@ -79,16 +79,16 @@ namespace pawgui
         return isOnScrollBox;
     }
 
-    void widget_slide_xaxis::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam)
+    void widget_slide_xaxis::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
     {
         cam = gpe::camera_find(cam);
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         bool doWork = false;
         //calculates the height needed to be scrolled.
         hasMoved = false;
         isHeldOn = false;
 
-        if( gpe::point_within(gpe::input->mouse_position_x,gpe::input->mouse_position_y,viewedSpace->x+widget_box.x-cam->x,viewedSpace->y+widget_box.y-cam->y,viewedSpace->x+widget_box.x+widget_box.w-cam->x,viewedSpace->y+widget_box.y+widget_box.h-cam->y) )
+        if( gpe::point_within(gpe::input->mouse_position_x,gpe::input->mouse_position_y,view_space->x+widget_box.x-cam->x,view_space->y+widget_box.y-cam->y,view_space->x+widget_box.x+widget_box.w-cam->x,view_space->y+widget_box.y+widget_box.h-cam->y) )
         {
             if( gpe::input->check_mouse_pressed( mb_left ) )
             {
@@ -115,11 +115,11 @@ namespace pawgui
             hasScrollControl = false;
         }
 
-        if(viewedSpace->x+widget_box.x-cam->x <= gpe::input->mouse_position_x && gpe::input->mouse_position_x <= viewedSpace->x+widget_box.x+widget_box.w-cam->x )
+        if(view_space->x+widget_box.x-cam->x <= gpe::input->mouse_position_x && gpe::input->mouse_position_x <= view_space->x+widget_box.x+widget_box.w-cam->x )
         {
             if( gpe::input->check_mouse_down(0 ) && isOnScrollBox)
             {
-                mouseXScrolPos = gpe::input->mouse_position_x - viewedSpace->x-widget_box.x-cam->x; //translates mouse coords to viewed space coords
+                mouseXScrolPos = gpe::input->mouse_position_x - view_space->x-widget_box.x-cam->x; //translates mouse coords to viewed space coords
                 if( isOnScrollBox)
                 {
                     currentSliderXPos = mouseXScrolPos;
@@ -177,11 +177,11 @@ namespace pawgui
         }
     }
 
-    void widget_slide_xaxis::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+    void widget_slide_xaxis::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( cam!=NULL && viewedSpace!=NULL )
+        if( cam!=NULL && view_space!=NULL )
         {
             gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y+4,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y-4,pawgui::theme_main->scroll_box_color,false);
             gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y+4,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y-4,pawgui::theme_main->scroll_box_border_color,true);
@@ -208,7 +208,7 @@ namespace pawgui
         }
     }
 
-    void widget_slide_xaxis::set_data( float sVal, float sMin, float sMax  )
+    void widget_slide_xaxis::set_data( float s_val, float sMin, float sMax  )
     {
         minValue = sMin;
         max_value = sMax;
@@ -217,12 +217,12 @@ namespace pawgui
             minValue = sMax;
             max_value = sMin;
         }
-        set_value( sVal);
+        set_value( s_val);
     }
 
-    bool widget_slide_xaxis::set_value( float sVal )
+    bool widget_slide_xaxis::set_value( float s_val )
     {
-        myValue = sVal;
+        myValue = s_val;
         if( myValue < minValue)
         {
             myValue = minValue;

@@ -65,8 +65,8 @@ namespace pawgui
             void set_label(std::string newLabel);
             void set_name(std::string new_name);
             void set_string(std::string newString);
-            void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-            void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             void set_color_from_rgb( gpe::color *newColor);
             void set_color_from_rgb(std::string newColorStr);
             void set_color_from_hex(std::string newColorStr);

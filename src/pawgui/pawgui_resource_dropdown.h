@@ -70,9 +70,9 @@ namespace pawgui
             int get_menu_size();
             bool just_activated();
             //std::string get_name();
-            void process_self( gpe::shape_rect * viewedSpace=NULL, gpe::shape_rect *cam=NULL);
+            void process_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect *cam=NULL);
             void add_folder_contents(widget_resource_container * fFolder = NULL, popup_menu_option * fOptionFolder = NULL);
-            void render_self( gpe::shape_rect * viewedSpace=NULL, gpe::shape_rect *cam=NULL);
+            void render_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect *cam=NULL);
             void set_name(std::string new_name);
             void set_selected_target(std::string new_name);
             void set_selection(int new_id);

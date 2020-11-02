@@ -47,7 +47,7 @@ namespace pawgui
         isExpanded = false;
         tabExpandButton = new widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/expand.png","Undock View",-1,18);
         selectedResource = NULL;
-        guiListTypeName = "tabmanager";
+        widget_type = "tabmanager";
         widget_box.x = 16;
         widget_box.y = 16;
         widget_box.w = gpe::screen_width/2;
@@ -347,11 +347,11 @@ namespace pawgui
         return NULL;
     }
 
-    void widget_tab_resource_bar::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam )
+    void widget_tab_resource_bar::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam )
     {
-        viewedSpace = gpe::camera_find( viewedSpace );
+        view_space = gpe::camera_find( view_space );
         cam = gpe::camera_find( cam );
-        widget_basic::process_self( viewedSpace, cam );
+        widget_basic::process_self( view_space, cam );
         add_new_tab( selectedResource );
         set_selected_gresource( NULL );
         update_tabsizes();
@@ -546,10 +546,10 @@ namespace pawgui
         }
     }
 
-    void widget_tab_resource_bar::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+    void widget_tab_resource_bar::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
-        viewedSpace = gpe::camera_find( viewedSpace );
-        viewedSpace = gpe::camera_find( cam);
+        view_space = gpe::camera_find( view_space );
+        view_space = gpe::camera_find( cam);
         if( pawgui::theme_main->theme_texture_bg==NULL )
         {
             gpe::gcanvas->render_rect(&tabHeaderBox,pawgui::theme_main->program_color,false);
@@ -563,7 +563,7 @@ namespace pawgui
             int tabFontWidth = 0;
             int tabFontHeight = 0;
             int maxCharactersAllowed = 0;
-            GUI_TAB_FONT->get_metrics("A", &tabFontWidth, &tabFontHeight );
+            font_tab->get_metrics("A", &tabFontWidth, &tabFontHeight );
             maxCharactersAllowed = tabSize/tabFontWidth -1;
 
             gpe::renderer_main->set_viewpoint(&tabHeaderBox);
@@ -602,11 +602,11 @@ namespace pawgui
 
                     if( tabInUse==i)
                     {
-                        gpe::gfs->render_text_resized(subPos*(tabSize+tabXPAdding)+padding_default,tabHeaderBox.h/2,tabOptionStr,pawgui::theme_main->popup_box_font_color, GUI_TAB_FONT,gpe::fa_left,gpe::fa_middle,tabSize-tabXPAdding-16);
+                        gpe::gfs->render_text_resized(subPos*(tabSize+tabXPAdding)+padding_default,tabHeaderBox.h/2,tabOptionStr,pawgui::theme_main->popup_box_font_color, font_tab,gpe::fa_left,gpe::fa_middle,tabSize-tabXPAdding-16);
                     }
                     else
                     {
-                        gpe::gfs->render_text_resized(subPos*(tabSize+tabXPAdding)+padding_default,tabHeaderBox.h/2,tabOptionStr,pawgui::theme_main->main_box_font_color,GUI_TAB_FONT,gpe::fa_left,gpe::fa_middle,tabSize-tabXPAdding-16);
+                        gpe::gfs->render_text_resized(subPos*(tabSize+tabXPAdding)+padding_default,tabHeaderBox.h/2,tabOptionStr,pawgui::theme_main->main_box_font_color,font_tab,gpe::fa_left,gpe::fa_middle,tabSize-tabXPAdding-16);
                     }
                 }
 
@@ -614,7 +614,7 @@ namespace pawgui
                 {
                     gpe::gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding)+tabSize-default_icon_width,0,+(subPos)*(tabSize+tabXPAdding)+tabSize,+tabHeaderBox.h,gpe::c_red,false);
                 }
-                //gpe::gfs->render_text( (subPos)*(tabSize+tabXPAdding)+tabSize-padding_default,tabHeaderBox.h/2,"×",pawgui::theme_main->main_box_font_color,GUI_TAB_FONT,gpe::fa_right,gpe::fa_middle);
+                //gpe::gfs->render_text( (subPos)*(tabSize+tabXPAdding)+tabSize-padding_default,tabHeaderBox.h/2,"×",pawgui::theme_main->main_box_font_color,font_tab,gpe::fa_right,gpe::fa_middle);
 
 
                 /*if( i!=tabInUse)
@@ -647,14 +647,14 @@ namespace pawgui
         else
         {
             gpe::renderer_main->reset_viewpoint();
-            gpe::renderer_main->set_viewpoint( viewedSpace );
+            gpe::renderer_main->set_viewpoint( view_space );
 
             if( pawgui::theme_main->theme_texture_bg==NULL)
             {
                 gpe::gcanvas->render_rect(&tabBox,pawgui::theme_main->program_color,false);
             }
-            gpe::gfs->render_text(viewedSpace->w / 2, viewedSpace->h / 2,"No Tabs currently open",pawgui::theme_main->popup_box_font_color, GUI_TAB_FONT, gpe::fa_center, gpe::fa_middle );
-            gpe::gfs->render_text(viewedSpace->w / 2, viewedSpace->h / 2 + 32,"Press CTRL+O to open a project",pawgui::theme_main->popup_box_font_color, GUI_TAB_FONT, gpe::fa_center, gpe::fa_middle );
+            gpe::gfs->render_text(view_space->w / 2, view_space->h / 2,"No Tabs currently open",pawgui::theme_main->popup_box_font_color, font_tab, gpe::fa_center, gpe::fa_middle );
+            gpe::gfs->render_text(view_space->w / 2, view_space->h / 2 + 32,"Press CTRL+O to open a project",pawgui::theme_main->popup_box_font_color, font_tab, gpe::fa_center, gpe::fa_middle );
         }
         //gpe::gcanvas->render_rect(&tabBox,pawgui::theme_main->text_box_outline_color,true);
         gpe::renderer_main->reset_viewpoint();

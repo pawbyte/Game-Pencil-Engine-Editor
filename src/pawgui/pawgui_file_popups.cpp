@@ -128,7 +128,7 @@ namespace pawgui
             main_overlay_system->take_frozen_screenshot( );
             int fontSizeH = 12;
             int fontSizeW = 12;
-            FONT_TEXTINPUT->get_metrics("A",&fontSizeW,&fontSizeH);
+            font_textinput->get_metrics("A",&fontSizeW,&fontSizeH);
             if( fontSizeW<=0)
             {
                 fontSizeW = 12;
@@ -159,13 +159,13 @@ namespace pawgui
 
             int DRIVER_FONT_SIZE_WIDTH = 24;
             int DRIVER_FONT_SIZE_HEIGHT = 24;
-            if( FONT_TEXTINPUT!=NULL)
+            if( font_textinput!=NULL)
             {
-                FONT_TEXTINPUT->get_metrics("A",&TEXTBOX_FONT_SIZE_WIDTH,&TEXTBOX_FONT_SIZE_HEIGHT);
+                font_textinput->get_metrics("A",&TEXTBOX_FONT_SIZE_WIDTH,&TEXTBOX_FONT_SIZE_HEIGHT);
             }
-            if( FONT_TEXTINPUT!=NULL)
+            if( font_textinput!=NULL)
             {
-                FONT_TEXTINPUT->get_metrics("A",&DRIVER_FONT_SIZE_WIDTH,&DRIVER_FONT_SIZE_HEIGHT);
+                font_textinput->get_metrics("A",&DRIVER_FONT_SIZE_WIDTH,&DRIVER_FONT_SIZE_HEIGHT);
             }
             std::string returnVal = "";
             std::string fileToClick = "";
@@ -533,14 +533,14 @@ namespace pawgui
                 newStringBox->set_coords( fileBrowserBox.x+padding_default,fileBrowserBox.y+fileBrowserBox.h+padding_default);
                 newStringBox->set_width(fileBrowserBox.w-128 );
 
-                fileTypeDropDown->set_coords( fileBrowserBox.x+padding_default,newStringBox->get_y2pos()+padding_default);
+                fileTypeDropDown->set_coords( fileBrowserBox.x+padding_default,newStringBox->get_y2()+padding_default);
                 fileTypeDropDown->set_width(fileBrowserBox.w-128 );
 
 
                 directoryViewBox->set_coords( widget_box.x+padding_default+32,widget_box.y+32);
                 directoryViewBox->set_width(widget_box.w - 192);
 
-                fileBrowserModeBar->set_coords(directoryViewBox->get_x2pos(),directoryViewBox->get_ypos() );
+                fileBrowserModeBar->set_coords(directoryViewBox->get_x2(),directoryViewBox->get_ypos() );
                 fileBrowserModeBar->set_width(128);
 
                 backButton->set_width(128);
@@ -557,7 +557,7 @@ namespace pawgui
                 //tutorialsDirectoryButton->set_width(128);
 
                 yesButton->set_coords(  widget_box.x+widget_box.w-buttonsWidth,widget_box.h-48);
-                cancelButton->set_coords( widget_box.x+yesButton->get_x2pos()+padding_default,widget_box.h-48);
+                cancelButton->set_coords( widget_box.x+yesButton->get_x2()+padding_default,widget_box.h-48);
 
                 if( shortCutGList!=NULL)
                 {
@@ -574,9 +574,9 @@ namespace pawgui
                     Commmented out temporarily in 1.13
                     //if( gpe::system_found_os== gpe::system_os_linux)
                     {
-                        if( main_EDITOR_SETTINGS!=NULL)
+                        if( main_editor_settings!=NULL)
                         {
-                            shortCutGList->add_gui_element(main_EDITOR_SETTINGS->showHiddenFilesInBrowser,true);
+                            shortCutGList->add_gui_element(main_editor_settings->showHiddenFilesInBrowser,true);
                         }
                     }*/
                     shortCutGList->add_gui_element(backButton,true);
@@ -1057,7 +1057,7 @@ namespace pawgui
                             {
                                 textRepHarddrive->render_tex_resized( currFileRect.x,currFileRect.y,default_thumbnal_size,default_thumbnal_size,NULL, pawgui::theme_main->folder_color );
                             }
-                            gpe::gfs->render_text( currFileRect.x+default_thumbnal_size+padding_default,currFileRect.y+default_thumbnal_size/2,mountedDriversList[iDirectory],pawgui::theme_main->main_box_font_color,FONT_TEXTINPUT,gpe::fa_left,gpe::fa_middle);
+                            gpe::gfs->render_text( currFileRect.x+default_thumbnal_size+padding_default,currFileRect.y+default_thumbnal_size/2,mountedDriversList[iDirectory],pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_left,gpe::fa_middle);
 
                             jContentRow += 1;
                         }
@@ -1286,9 +1286,9 @@ namespace pawgui
                                         {
                                             currentFIleTexture->render_tex_resized( currFileRect.x+(currFileRect.w-default_thumbnal_size)/2,currFileRect.y,default_thumbnal_size,default_thumbnal_size,NULL, fileIconColor );
                                         }
-                                        gpe::gfs->render_text( currFileRect.x+currFileRect.w/2,currFileRect.y+default_thumbnal_size,fileRenderName[0],pawgui::theme_main->main_box_font_color,FONT_TEXTINPUT,gpe::fa_center,gpe::fa_top);
-                                        gpe::gfs->render_text( currFileRect.x+currFileRect.w/2,currFileRect.y+default_thumbnal_size+TEXTBOX_FONT_SIZE_HEIGHT,fileRenderName[1],pawgui::theme_main->main_box_font_color,FONT_TEXTINPUT,gpe::fa_center,gpe::fa_top);
-                                        gpe::gfs->render_text( currFileRect.x+currFileRect.w/2,currFileRect.y+default_thumbnal_size+TEXTBOX_FONT_SIZE_HEIGHT*2,fileRenderName[2],pawgui::theme_main->main_box_font_color,FONT_TEXTINPUT,gpe::fa_center,gpe::fa_top);
+                                        gpe::gfs->render_text( currFileRect.x+currFileRect.w/2,currFileRect.y+default_thumbnal_size,fileRenderName[0],pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_center,gpe::fa_top);
+                                        gpe::gfs->render_text( currFileRect.x+currFileRect.w/2,currFileRect.y+default_thumbnal_size+TEXTBOX_FONT_SIZE_HEIGHT,fileRenderName[1],pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_center,gpe::fa_top);
+                                        gpe::gfs->render_text( currFileRect.x+currFileRect.w/2,currFileRect.y+default_thumbnal_size+TEXTBOX_FONT_SIZE_HEIGHT*2,fileRenderName[2],pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_center,gpe::fa_top);
                                     }
                                     else
                                     {
@@ -1299,7 +1299,7 @@ namespace pawgui
                                                                     currFileRect.x,currFileRect.y+(currFileRect.h-default_icon_width)/2,
                                                                     default_icon_width,default_icon_width,NULL, fileIconColor );
                                         }
-                                        gpe::gfs->render_text( currFileRect.x+default_icon_width,currFileRect.y+currFileRect.h/2,fileRenderName[0],pawgui::theme_main->main_box_font_color,FONT_TEXTINPUT,gpe::fa_left,gpe::fa_middle );
+                                        gpe::gfs->render_text( currFileRect.x+default_icon_width,currFileRect.y+currFileRect.h/2,fileRenderName[0],pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_left,gpe::fa_middle );
                                     }
 
                                     filesProcessedCount++;

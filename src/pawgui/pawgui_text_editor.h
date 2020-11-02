@@ -82,8 +82,8 @@ namespace pawgui
             int anchorProjectResourceId;
             widget_text_anchor(int lineN, int charN, std::string messageIn, std::string alertInfo, int anchorType = 0);
             ~widget_text_anchor();
-            void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-            void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     };
 
     //Added this here since the main logs class will just rob this guy :-)
@@ -230,7 +230,7 @@ namespace pawgui
             std::string get_string();
             std::string get_string_spaces();
             std::vector <std::string> get_all_strings();
-            void handle_scrolling( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL );
+            void handle_scrolling( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
             bool has_content();
             bool has_selection();
             void init_save_history();
@@ -247,7 +247,7 @@ namespace pawgui
             void export_text(std::string new_file_name);
             void export_text_anchors(std::string new_file_name);
             int find_all_strings(std::string strTarget, bool matchCase = true, bool addAnchor = false, std::string areaTitle = "");
-            void find_mouse_cursor(int *mXCursor, int *mYCursor, gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+            void find_mouse_cursor(int *mXCursor, int *mYCursor, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             bool find_string(std::string strTarget, bool searchDown = true, bool matchCase = true, bool startAtFront = false);
             void find_documentation_description(int tCursorX = -1, int tCursorY = -1);
             void find_suggested_text();
@@ -256,14 +256,14 @@ namespace pawgui
             bool import_text(std::string new_file_name);
             void paste_clipboard();
             bool parse_code_javascript();
-            void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             void redo_edit();
             void reset_selection(int resetDirection = 0);
             void reset_self();
-            void render_linebox( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-            void render_plain( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-            void render_code( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-            void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+            void render_linebox( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void render_plain( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void render_code( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
 
 
             int replace_all_found(std::string strToReplace, std::string newString);
@@ -279,10 +279,10 @@ namespace pawgui
             void set_placeholder(std::string newString);
             void set_xcursor(int newPos);
             void set_ycursor(int newPos);
-            void set_highlight_pos( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL );
-            void setup_editor( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL );
+            void set_highlight_pos( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
+            void setup_editor( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
             void undo_edit();
-            void update_cursor_to_mouse( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+            void update_cursor_to_mouse( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     };
 
     class widget_text_editor_wrapped: public widget_text_editor

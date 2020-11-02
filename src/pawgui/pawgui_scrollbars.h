@@ -61,8 +61,8 @@ namespace pawgui
             bool has_moved();
             bool is_held();
             bool is_scrolling();
-            void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-            void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL );
+            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
             void reset_scroller();
     };
 
@@ -88,8 +88,8 @@ namespace pawgui
             bool has_moved();
             bool is_held();
             bool is_scrolling();
-            void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-            void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL );
+            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
             void reset_scroller();
     };
 }

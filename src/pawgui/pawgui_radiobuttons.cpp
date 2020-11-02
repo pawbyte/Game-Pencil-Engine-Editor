@@ -38,11 +38,11 @@ namespace pawgui
 {
     widget_radio_button_controller::widget_radio_button_controller(std::string cName, bool alphabetize, int colNum)
     {
-        guiListTypeName = "radio";
-        guiListTypeId = 5;
+        widget_type = "radio";
+        widget_type_id = 5;
         hoveredOption = -1;
         selectedId = 0;
-        opName = cName;
+        widget_name = cName;
         widget_box.x = 0;
         widget_box.y = 0;
         widget_box.w = 0;
@@ -50,11 +50,11 @@ namespace pawgui
         opWidth = widget_box.w;
         opHeight = widget_box.h;
 
-        if( (int)opName.size()>0)
+        if( (int)widget_name.size()>0)
         {
             int textW = 0;
             int textH = 0;
-            gpe::font_default->get_metrics(opName,&textW, &textH);
+            gpe::font_default->get_metrics(widget_name,&textW, &textH);
             opWidth = textW;
             if( widget_box.w < textW )
             {
@@ -85,7 +85,7 @@ namespace pawgui
 
     std::string widget_radio_button_controller::get_data()
     {
-        std::string dataString = guiListTypeName+":"+opName+"==|||==[menu]";
+        std::string dataString = widget_type+":"+widget_name+"==|||==[menu]";
         gpe::key_pair * tPair = NULL;
         for( int i = 0; i < (int)subOptions.size(); i++ )
         {
@@ -324,11 +324,11 @@ namespace pawgui
         int maxWidthText = 0;
         int textW = 0;
         int textH = 0;
-        if( (int)opName.size()>0)
+        if( (int)widget_name.size()>0)
         {
             textW = 0;
             textH = 0;
-            gpe::font_default->get_metrics(opName,&textW, &textH);
+            gpe::font_default->get_metrics(widget_name,&textW, &textH);
             opWidth = textW;
             maxWidthText = textW;
             widget_box.w += maxWidthText;
@@ -467,16 +467,16 @@ namespace pawgui
 
     }
 
-    void widget_radio_button_controller::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+    void widget_radio_button_controller::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
         cam = gpe::camera_find(cam);
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         hoveredOption = -1;
-        if( cam!=NULL && viewedSpace!=NULL)
+        if( cam!=NULL && view_space!=NULL)
         {
-            int buttonXPos = widget_box.x+viewedSpace->x+16-cam->x;
-            int buttonYPos = widget_box.y+viewedSpace->y+32-cam->y;
-            widget_basic::process_self(viewedSpace,cam);
+            int buttonXPos = widget_box.x+view_space->x+16-cam->x;
+            int buttonYPos = widget_box.y+view_space->y+32-cam->y;
+            widget_basic::process_self(view_space,cam);
             bool selectionClicked = false;
             if( isInUse)
             {
@@ -533,19 +533,19 @@ namespace pawgui
         }
     }
 
-    void widget_radio_button_controller::render_self(  gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+    void widget_radio_button_controller::render_self(  gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
         //if( forceRedraw )
         {
-            viewedSpace = gpe::camera_find(viewedSpace);
+            view_space = gpe::camera_find(view_space);
             cam = gpe::camera_find(cam);
-            if( viewedSpace!=NULL && cam!=NULL)
+            if( view_space!=NULL && cam!=NULL)
             {
                 int buttonXPos = widget_box.x-cam->x;
                 int buttonYPos = widget_box.y-cam->y;
                 if(showBorderBox)
                 {
-                    if((int)opName.size()>0 )
+                    if((int)widget_name.size()>0 )
                     {
                         gpe::gcanvas->render_line_color( buttonXPos,buttonYPos+default_padding_title,buttonXPos+default_padding_title,buttonYPos+default_padding_title,pawgui::theme_main->button_box_color,255);
                         gpe::gcanvas->render_line_color( buttonXPos+default_padding_title*2+opWidth,buttonYPos+default_padding_title,
@@ -554,7 +554,7 @@ namespace pawgui
                         gpe::gcanvas->render_line_color( buttonXPos,buttonYPos+default_padding_title,buttonXPos,buttonYPos+widget_box.h,pawgui::theme_main->button_box_color,255);
                         gpe::gcanvas->render_line_color( buttonXPos,buttonYPos+widget_box.h,buttonXPos+widget_box.w,buttonYPos+widget_box.h,pawgui::theme_main->button_box_color,255);
                         gpe::gcanvas->render_line_color( buttonXPos+widget_box.w,buttonYPos+default_padding_title,buttonXPos+widget_box.w,buttonYPos+widget_box.h,pawgui::theme_main->button_box_color,255);
-                        gpe::gfs->render_text(  buttonXPos+default_padding_title*1.5,buttonYPos+default_padding_title/2,opName,pawgui::theme_main->main_box_font_color,gpe::font_default,gpe::fa_left,gpe::fa_top,255);
+                        gpe::gfs->render_text(  buttonXPos+default_padding_title*1.5,buttonYPos+default_padding_title/2,widget_name,pawgui::theme_main->main_box_font_color,gpe::font_default,gpe::fa_left,gpe::fa_top,255);
                     }
                     else
                     {

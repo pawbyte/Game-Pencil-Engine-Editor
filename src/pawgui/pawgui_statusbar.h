@@ -47,8 +47,8 @@ namespace pawgui
             std::string statusBarLeftText;
             widget_statusbar();
             ~widget_statusbar();
-            void process_self( gpe::shape_rect * viewedSpace=NULL, gpe::shape_rect *cam=NULL);
-            void render_self( gpe::shape_rect * viewedSpace=NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect *cam=NULL);
+            void render_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect * cam = NULL);
             void reset_statusbar();
             void set_codestring(std::string newCodeString);
             void set_insertmode(std::string newInsertMode);

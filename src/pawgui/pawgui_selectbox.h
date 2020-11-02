@@ -44,7 +44,7 @@ namespace pawgui
         public:
             bool sectionHasContent;
             bool useGuiColor;
-            bool isChecked;
+            bool isClicked;
             std::string optionName;
             gpe::texture_base * optionTexture;
             gpe::animaton2d * optionanimation;
@@ -93,8 +93,8 @@ namespace pawgui
             bool move_down_space();
             bool move_up_space();
             void prerender_self( );
-            void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-            void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             void rename_option(int optionId, std::string new_name);
             void remove_option(int optionId);
             void set_option_height( int newOptionHeight);

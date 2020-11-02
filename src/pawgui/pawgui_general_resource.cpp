@@ -153,23 +153,23 @@ namespace pawgui
 
     }
 
-    void general_resource::process_resource( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void general_resource::process_resource( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        process_self(viewedSpace,cam);
+        process_self(view_space,cam);
     }
 
-    void general_resource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void general_resource::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
 
     }
 
-    void general_resource::render_resource( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void general_resource::render_resource( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        render_self( viewedSpace,cam);
+        render_self( view_space,cam);
         justOpenedThisFrame = false;
     }
 
-    void general_resource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void general_resource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
 
     }

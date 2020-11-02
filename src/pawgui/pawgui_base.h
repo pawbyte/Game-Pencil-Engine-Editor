@@ -53,9 +53,9 @@ namespace pawgui
             bool isHovered;
             bool isModified;
             bool isInUse;
-            std::string opName;
-            std::string guiListTypeName;
-            int guiListTypeId;
+            std::string widget_name;
+            std::string widget_type;
+            int widget_type_id;
             int maxWidth, maxHeight;
             bool isFullWidth;
             std::string renderPackageName;
@@ -83,9 +83,9 @@ namespace pawgui
             int get_max_height();
             int get_max_width();
             int get_xpos();
-            int get_x2pos();
+            int get_x2();
             int get_ypos();
-            int get_y2pos();
+            int get_y2();
             std::string get_name();
             std::string get_element_type();
             virtual std::string get_data();
@@ -105,8 +105,8 @@ namespace pawgui
             virtual void set_width(int newWidth);
             virtual void set_coords(int newX = -1, int newY = -1);
             virtual void prerender_self( );
-            virtual void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect *cam = NULL);
-            virtual void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+            virtual void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect *cam = NULL);
+            virtual void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             bool requires_newline();
             void scale_height(float scaleH);
             void scale_width(float scaleW);

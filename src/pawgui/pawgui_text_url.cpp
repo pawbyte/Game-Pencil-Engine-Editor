@@ -38,8 +38,8 @@ namespace pawgui
     widget_text_url::widget_text_url(std::string name_param, std::string description, std::string urlIn)
     {
         webId = "";
-        guiListTypeName = "texturl";
-        opName = name_param;
+        widget_type = "texturl";
+        widget_name = name_param;
         descriptionText = description;
         wasClicked = false;
         webUrl = urlIn;
@@ -60,7 +60,7 @@ namespace pawgui
 
     std::string widget_text_url::get_data()
     {
-        return guiListTypeName+":"+opName+"==|||=="+descriptionText+",,,"+webUrl+",,,";
+        return widget_type+":"+widget_name+"==|||=="+descriptionText+",,,"+webUrl+",,,";
     }
 
     std::string widget_text_url::get_plain_string()
@@ -74,9 +74,9 @@ namespace pawgui
         webUrl = stg_ex::split_first_string(dataString,",,,");
     }
 
-    void widget_text_url::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void widget_text_url::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        widget_basic::process_self(viewedSpace,cam);
+        widget_basic::process_self(view_space,cam);
         if( isHovered)
         {
             gpe::cursor_main_controller->cursor_change("hand");
@@ -96,23 +96,23 @@ namespace pawgui
         }
     }
 
-    void widget_text_url::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void widget_text_url::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        if( (int)opName.size() > 0)
+        if( (int)widget_name.size() > 0)
         {
             if( wasClicked)
             {
-                gpe::gfs->render_text( widget_box.x-cam->x+ widget_box.w/2,widget_box.y-cam->y,opName,pawgui::theme_main->main_box_font_url_visited_color,gpe::font_default, gpe::fa_center,gpe::fa_top);
+                gpe::gfs->render_text( widget_box.x-cam->x+ widget_box.w/2,widget_box.y-cam->y,widget_name,pawgui::theme_main->main_box_font_url_visited_color,gpe::font_default, gpe::fa_center,gpe::fa_top);
                 gpe::gcanvas->render_horizontal_line_color( widget_box.y+widget_box.h-cam->y,widget_box.x-cam->x,widget_box.x+widget_box.w-cam->x,pawgui::theme_main->main_box_font_url_visited_color);
             }
             else if( isHovered)
             {
-                gpe::gfs->render_text( widget_box.x-cam->x+ widget_box.w/2,widget_box.y-cam->y,opName,pawgui::theme_main->main_box_font_url_hovered_color,gpe::font_default,gpe::fa_center,gpe::fa_top);
+                gpe::gfs->render_text( widget_box.x-cam->x+ widget_box.w/2,widget_box.y-cam->y,widget_name,pawgui::theme_main->main_box_font_url_hovered_color,gpe::font_default,gpe::fa_center,gpe::fa_top);
                 gpe::gcanvas->render_horizontal_line_color( widget_box.y+widget_box.h-cam->y,widget_box.x-cam->x,widget_box.x+widget_box.w-cam->x,pawgui::theme_main->main_box_font_url_hovered_color);
             }
             else
             {
-                gpe::gfs->render_text( widget_box.x-cam->x + widget_box.w/2,widget_box.y-cam->y,opName,pawgui::theme_main->main_box_font_url_color,gpe::font_default,gpe::fa_center,gpe::fa_top);
+                gpe::gfs->render_text( widget_box.x-cam->x + widget_box.w/2,widget_box.y-cam->y,widget_name,pawgui::theme_main->main_box_font_url_color,gpe::font_default,gpe::fa_center,gpe::fa_top);
                 gpe::gcanvas->render_horizontal_line_color( widget_box.y+widget_box.h-cam->y,widget_box.x-cam->x,widget_box.x+widget_box.w-cam->x,pawgui::theme_main->main_box_font_url_color);
             }
             if( isInUse)
@@ -132,6 +132,6 @@ namespace pawgui
             widget_box.w = bWid;
             widget_box.h = bHgt;
         }
-        opName = name_param;
+        widget_name = name_param;
     }
 }

@@ -1,5 +1,5 @@
 /*
-pawgui_sliders.h
+pawgui_notifications.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
@@ -31,63 +31,60 @@ SOFTWARE.
 
 */
 
-#ifndef PAWGUI_SLIDERS_H
-#define PAWGUI_SLIDERS_H
+#ifndef pawgui_notificatons_h
+#define pawgui_notificatons_h
 
 #include "pawgui_base.h"
 
 namespace pawgui
 {
-    class widget_slide_xaxis: public widget_basic
+    class widget_notifcation_base: public widget_basic
     {
         protected:
-            bool isOnScrollBox;
-            float mouseXScrolPos;
-            bool hasMoved;
-            bool isHeldOn;
-            float myValue;
-            float minValue;
-            float max_value;
-            float currentSliderXPos;
-            float scrollDisplayPixels;
+            std::string notification_text;
+            gpe::texture_base * notification_icon;
+            int max_text_width;
+            std::vector < std::string > text_vector;
+            bool hovering_over_action;
+            bool hovering_over_x;
+            int text_wid, text_height;
+            gpe::shape_rect * box_action;
+            gpe::shape_rect * box_close_x;
         public:
-            bool isNeeded;
-            widget_slide_xaxis( float s_val  = 50, float sMin = 0, float sMax = 100 );
-            ~widget_slide_xaxis();
-            float get_value();
-            bool has_moved();
-            bool is_held();
-            bool is_scrolling();
+            bool remove_requested;
+            gpe::color * notification_bg_color;
+            gpe::color * notification_bg_hover_color;
+            gpe::color * notification_font_color;
+            gpe::color * notification_font_hover_color;
+            std::string notification_action;
+            std::string notification_parameter;
+
+            widget_notifcation_base(std::string name_param, std::string description = "");
+            ~widget_notifcation_base();
+            std::string get_data();
+            std::string get_plain_string();
+            void load_data(std::string dataString);
             void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void refresh_notification();
             void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-            void reset_scroller();
-            void set_data( float s_val  = 50, float sMin = 0, float sMax = 100 );
-            bool set_value( float s_val );
+
+            void set_name(std::string name_param);
+            void set_width(int newWidth);
     };
 
-    class widget_slider_yaxis: public widget_basic
+    class widget_notfications_holder: public widget_basic
     {
-        protected:
-            bool isOnScrollBox;
-            float mouseYScrolPos;
-            bool hasMoved;
-            bool isHeldOn;
-            float scrollDisplayPixels;
         public:
-            bool isNeeded;
-            widget_slider_yaxis( float s_val  = 50, float sMin = 0, float sMax = 100 );
-            ~widget_slider_yaxis();
-            float get_value();
-            float get_box_width();
-            float get_box_height();
-            bool has_moved();
-            bool is_held();
-            bool is_scrolling();
+            int notifications_in_view_max;
+            std::vector < widget_notifcation_base* > notifications;
+            widget_notfications_holder();
+            ~widget_notfications_holder();
+            widget_notifcation_base * add_notification_simple( std::string name, std::string description);
+            bool remove_notification( std::string name );
             void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-            void reset_scroller();
-            void set_data( float s_val  = 50, float sMin = 0, float sMax = 100 );
-            bool set_value( float s_val );
+            void set_width(int newWidth);
     };
 }
-#endif //PAWGUI_SLIDERS_H
+
+#endif //pawgui_notificatons_h

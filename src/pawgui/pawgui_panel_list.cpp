@@ -496,7 +496,7 @@ namespace pawgui
         subElementsIsScrolling = false;
         hAlign = gpe::fa_left;
         vAlign = gpe::fa_top;
-        guiListTypeName = "guilist";
+        widget_type = "guilist";
         tabDelay = 0;
         leserKeyDelay = 0;
         greaterKeyDelay = 0;
@@ -775,16 +775,16 @@ namespace pawgui
         }
     }
 
-    void widget_panel_list::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+    void widget_panel_list::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
         selectedElement = NULL;
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
         if( inDebugMode)
         {
             gpe::error_log->report("Starting to process widget_panel_list...");
         }
-        widget_basic::process_self(viewedSpace,cam);
+        widget_basic::process_self(view_space,cam);
         xScroll->set_coords( widget_box.x, widget_box.h - xScroll->get_height() );
         xScroll->set_width( widget_box.w );
 
@@ -832,8 +832,8 @@ namespace pawgui
         entireBox.w = (barXMargin)*2;
         entireBox.h = (barYMargin)*2;
 
-        menuBox.x = widget_box.x+viewedSpace->x;
-        menuBox.y = widget_box.y+viewedSpace->y;
+        menuBox.x = widget_box.x+view_space->x;
+        menuBox.y = widget_box.y+view_space->y;
         menuBox.w = widget_box.w;
         menuBox.h = widget_box.h;
 
@@ -954,7 +954,7 @@ namespace pawgui
             cContainer->set_coords(widget_box.x, widget_box.y);
             cContainer->set_width( widget_box.w);
             cContainer->set_height( widget_box.h);
-            cContainer->process_self( viewedSpace, cam );
+            cContainer->process_self( view_space, cam );
             return;
         }
         int xPos = barXMargin+barXPadding;
@@ -1293,7 +1293,7 @@ namespace pawgui
         {
             if( entireBox.w >=widget_box.w  && hideXScroll!=true )
             {
-                xScroll->process_self(viewedSpace,cam);
+                xScroll->process_self(view_space,cam);
             }
             else
             {
@@ -1317,7 +1317,7 @@ namespace pawgui
             if( hideYScroll!=true )
             {
                 yScroll->autoCorrect = false;
-                yScroll->process_self(viewedSpace,cam );
+                yScroll->process_self(view_space,cam );
             }
             else
             {
@@ -1353,26 +1353,26 @@ namespace pawgui
         }
         else
         {
-            xScroll->process_self(viewedSpace, cam);
-            yScroll->process_self(viewedSpace, cam);
+            xScroll->process_self(view_space, cam);
+            yScroll->process_self(view_space, cam);
         }
         selectedElement = containerInControl;
     }
 
-    void widget_panel_list::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+    void widget_panel_list::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( viewedSpace!=NULL && cam!=NULL )
+        if( view_space!=NULL && cam!=NULL )
         {
             /*
-            menuBox.x = viewedSpace->x+ widget_box.x;
-            menuBox.y = viewedSpace->x+ widget_box.y;
+            menuBox.x = view_space->x+ widget_box.x;
+            menuBox.y = view_space->x+ widget_box.y;
             menuBox.w = widget_box.w;
             menuBox.h = widget_box.h;
             */
             gpe::renderer_main->reset_viewpoint();
-            gpe::renderer_main->set_viewpoint( viewedSpace );
+            gpe::renderer_main->set_viewpoint( view_space );
 
             widget_basic * cResource = NULL;
 
@@ -1384,7 +1384,7 @@ namespace pawgui
                     cResource->set_coords( 0,0 );
                     cResource->set_width( widget_box.w);
                     cResource->set_height( widget_box.h);
-                    cResource->render_self( viewedSpace, cam );
+                    cResource->render_self( view_space, cam );
                     return;
                 }
             }
@@ -1409,26 +1409,26 @@ namespace pawgui
             }
 
             gpe::renderer_main->reset_viewpoint();
-            gpe::renderer_main->set_viewpoint( viewedSpace);
+            gpe::renderer_main->set_viewpoint( view_space);
             /*menuBox.w-=16;
             menuBox.h-=16;*/
             if( xScroll!=NULL&& hideXScroll!=true )
             {
                 //if( entireBox.w >widget_box.w)
                 {
-                    xScroll->render_self( viewedSpace,cam);
+                    xScroll->render_self( view_space,cam);
                 }
             }
             if( yScroll!=NULL&& hideYScroll!=true )
             {
                 if( entireBox.h >widget_box.h )
                 {
-                    yScroll->render_self( viewedSpace,cam);
+                    yScroll->render_self( view_space,cam);
                 }
             }
 
             gpe::renderer_main->reset_viewpoint();
-            gpe::renderer_main->set_viewpoint( viewedSpace);
+            gpe::renderer_main->set_viewpoint( view_space);
         }
         clear_list();
     }

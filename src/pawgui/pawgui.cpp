@@ -34,18 +34,18 @@ SOFTWARE.
 
 namespace pawgui
 {
-    bool init_gui()
+    bool init_gui(  std::string mono_font_location, int font_min_size )
     {
         //gpe::cursor_main_controller->cursor_create_from_image( gpe::app_directory_name + "resources/gfx/iconpacks/fontawesome/asterisk.png" );
         rsm_gui = new gpe::asset_manager( gpe::rph->get_default_render_package(), "pawgui");
-        if( load_default_fonts() )
+        if( load_default_fonts( mono_font_location, font_min_size) )
         {
             gpe::error_log->report("IDE properly added all PawGUI Fonts... \n");
             popup_font_size_width = 12;
             popup_font_size_height = 12;
-            if( FONT_POPUP!=NULL)
+            if( font_popup!=NULL)
             {
-                FONT_POPUP->get_metrics("A",&popup_font_size_width,&popup_font_size_height);
+                font_popup->get_metrics("A",&popup_font_size_width,&popup_font_size_height);
             }
 
         }
@@ -80,11 +80,8 @@ namespace pawgui
     bool quit_gui()
     {
         gpe::error_log->report("Deleting PAWGUI ....");
-        if( texture_color_picker_gradient!=NULL)
-        {
-            delete texture_color_picker_gradient;
-            texture_color_picker_gradient = NULL;
-        }
+        texture_color_picker_gradient = NULL;
+
         if( main_overlay_system !=NULL)
         {
             delete main_overlay_system;

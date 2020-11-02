@@ -39,11 +39,11 @@ namespace pawgui
 
     widget_content_selector::widget_content_selector(std::string name,std::string description)
     {
-        opName = name;
+        widget_name = name;
         set_label( name );
         descriptionText = description;
-        guiListTypeName = "contentselector";
-        guiListTypeId = 2;
+        widget_type = "contentselector";
+        widget_type_id = 2;
         storedInt = -1;
         storeddfloat = -1;
         storedString = "";
@@ -96,7 +96,7 @@ namespace pawgui
 
     }
 
-    void widget_content_selector::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam)
+    void widget_content_selector::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
     {
         fieldElementBox.x = widget_box.x+widget_box.w-32;
         fieldElementBox.y = widget_box.y;
@@ -119,12 +119,12 @@ namespace pawgui
             fieldElementBox.x = widget_box.x+widget_box.w-64;
             fieldElementBox.w = 64;
         }
-        widget_basic::process_self(viewedSpace,cam);
+        widget_basic::process_self(view_space,cam);
 
         if( isEnabled)
         {
 
-            viewedSpace = gpe::camera_find(viewedSpace);
+            view_space = gpe::camera_find(view_space);
             cam = gpe::camera_find(cam);
         }
 
@@ -156,27 +156,27 @@ namespace pawgui
         }
     }
 
-    void widget_content_selector::render_self( gpe::shape_rect * viewedSpace , gpe::shape_rect * cam  )
+    void widget_content_selector::render_self( gpe::shape_rect * view_space , gpe::shape_rect * cam  )
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
         if( isEnabled && cam!=NULL)
         {
             if( isInUse)
             {
                 gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y, pawgui::theme_main->main_box_highlight_color, false );
-                if( (int)opName.size() > 0)
+                if( (int)widget_name.size() > 0)
                 {
-                    gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.h+padding_default,widget_box.y+widget_box.h/2-cam->y,opName+":",pawgui::theme_main->main_box_font_highlight_color,FONT_TEXTINPUT,gpe::fa_left,gpe::fa_middle );
+                    gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.h+padding_default,widget_box.y+widget_box.h/2-cam->y,widget_name+":",pawgui::theme_main->main_box_font_highlight_color,font_textinput,gpe::fa_left,gpe::fa_middle );
                 }
             }
             else
             {
                 gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y, pawgui::theme_main->main_box_color, false );
 
-                if( (int)opName.size() > 0 )
+                if( (int)widget_name.size() > 0 )
                 {
-                    gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.h+padding_default,widget_box.y+widget_box.h/2-cam->y,opName+":",pawgui::theme_main->main_box_font_color,FONT_TEXTINPUT,gpe::fa_left,gpe::fa_middle );
+                    gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.h+padding_default,widget_box.y+widget_box.h/2-cam->y,widget_name+":",pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_left,gpe::fa_middle );
                 }
             }
 
@@ -186,12 +186,12 @@ namespace pawgui
             }
             if( selectorType == content_selector_type::cs_type_int )
             {
-                gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.w,widget_box.y+widget_box.h/2-cam->y, stg_ex::int_to_string(storedInt),pawgui::theme_main->main_box_font_highlight_color,FONT_TEXTINPUT,gpe::fa_right,gpe::fa_middle );
+                gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.w,widget_box.y+widget_box.h/2-cam->y, stg_ex::int_to_string(storedInt),pawgui::theme_main->main_box_font_highlight_color,font_textinput,gpe::fa_right,gpe::fa_middle );
 
             }
             else if( selectorType == content_selector_type::cs_type_float )
             {
-                gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.w,widget_box.y+widget_box.h/2-cam->y,stg_ex::float_to_string(storeddfloat),pawgui::theme_main->main_box_font_highlight_color,FONT_TEXTINPUT,gpe::fa_right,gpe::fa_middle );
+                gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.w,widget_box.y+widget_box.h/2-cam->y,stg_ex::float_to_string(storeddfloat),pawgui::theme_main->main_box_font_highlight_color,font_textinput,gpe::fa_right,gpe::fa_middle );
             }
             else if( selectorType == content_selector_type::cs_type_color )
             {
@@ -203,16 +203,16 @@ namespace pawgui
             {
                 if( (int)storedString.size() > 0  )
                 {
-                    gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.w,widget_box.y+widget_box.h/2-cam->y,storedString,pawgui::theme_main->main_box_font_highlight_color,FONT_TEXTINPUT,gpe::fa_right,gpe::fa_middle );
+                    gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.w,widget_box.y+widget_box.h/2-cam->y,storedString,pawgui::theme_main->main_box_font_highlight_color,font_textinput,gpe::fa_right,gpe::fa_middle );
                 }
                 else
                 {
-                    gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.w,widget_box.y+widget_box.h/2-cam->y,"undefined",pawgui::theme_main->main_box_font_highlight_color,FONT_TEXTINPUT,gpe::fa_right,gpe::fa_middle );
+                    gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.w,widget_box.y+widget_box.h/2-cam->y,"undefined",pawgui::theme_main->main_box_font_highlight_color,font_textinput,gpe::fa_right,gpe::fa_middle );
                 }
             }
             else
             {
-                gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.w,widget_box.y+widget_box.h/2-cam->y,"[invalid]",pawgui::theme_main->main_box_font_highlight_color,FONT_TEXTINPUT,gpe::fa_right,gpe::fa_middle );
+                gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.w,widget_box.y+widget_box.h/2-cam->y,"[invalid]",pawgui::theme_main->main_box_font_highlight_color,font_textinput,gpe::fa_right,gpe::fa_middle );
             }
         }
     }

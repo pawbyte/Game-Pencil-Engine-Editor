@@ -44,6 +44,7 @@ SOFTWARE.
 #include "pawgui_file_popups.h"
 #include "pawgui_globals.h"
 #include "pawgui_labels.h"
+#include "pawgui_notifications.h"
 #include "pawgui_overlay.h"
 #include "pawgui_panel_list.h"
 #include "pawgui_parsers.h"
@@ -67,7 +68,7 @@ SOFTWARE.
 
 namespace pawgui
 {
-    bool init_gui();
+    bool init_gui( std::string mono_font_location, int font_min_size );
     bool quit_gui();
 }
 
