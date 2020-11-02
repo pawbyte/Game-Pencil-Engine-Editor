@@ -37,7 +37,7 @@ GPE_SceneGameObject::GPE_SceneGameObject( std::string nName)
 {
     isLocked = false;
     branchType = gpe::branch_type::OBJECT;
-    iconTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/automobile.png") ;
+    iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/automobile.png") ;
 
     objTypeName = "";
     isBeingMoved = false;
@@ -60,20 +60,20 @@ GPE_SceneGameObject::~GPE_SceneGameObject()
 
 void GPE_SceneGameObject::add_typed_elements()
 {
-    if( PANEL_INSPECTOR!=NULL )
+    if( panel_inspector!=NULL )
     {
-        //PANEL_INSPECTOR->add_gui_element( objBeingPlaced, true );
+        //panel_inspector->add_gui_element( objBeingPlaced, true );
     }
 }
 
-bool GPE_SceneGameObject::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController )
+bool GPE_SceneGameObject::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
 {
 
-    GPE_GeneralResourceContainer * allObjsFolder = localResTypeController->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_object]+"s");
-    GPE_GeneralResourceContainer * fObjToPlace = NULL;
+    pawgui::widget_resource_container * allObjsFolder = localResTypeController->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_object]+"s");
+    pawgui::widget_resource_container * fObjToPlace = NULL;
 
     fObjToPlace = allObjsFolder->find_resource_from_id( objTypeId);
-    std::string nestedTabsStr = generate_tabs( leftTabAmount  );
+    std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
     if( fObjToPlace!=NULL)
     {
         *fileTarget << nestedTabsStr << "newBranch = _scn_temp_layer.scnStartObjects.push( {objId:" <<stg_ex::int_to_string(fObjToPlace->exportBuildGlobalId) << "} ); \n";
@@ -107,7 +107,7 @@ void GPE_SceneGameObject::render_branch()
     if( objTypeId > 0 && spm->cSceneObjList!=NULL )
     {
         //renders the object's animation
-        GPE_GeneralResourceContainer * objTypeContainer = spm->cSceneObjList->find_resource_from_id(objTypeId);
+        pawgui::widget_resource_container * objTypeContainer = spm->cSceneObjList->find_resource_from_id(objTypeId);
         if( objTypeContainer!=NULL && objTypeContainer->get_held_resource()!=NULL )
         {
             bool objectanimationRender = false;
@@ -117,7 +117,7 @@ void GPE_SceneGameObject::render_branch()
                 //fangle = angleField->get_held_number();
                 //if( fangle!=0 && fangle!=360 && fangle!=720)
                 {
-                    GPE_GeneralResourceContainer * sprTypeContainer = tempGameObj->animationField->get_selected_container();
+                    pawgui::widget_resource_container * sprTypeContainer = tempGameObj->animationField->get_selected_container();
                     if( sprTypeContainer!=NULL)
                     {
                         animationResource*animRes = (animationResource*) sprTypeContainer->get_held_resource();
@@ -129,8 +129,8 @@ void GPE_SceneGameObject::render_branch()
                             height = animRes->animInEditor->get_height();
                             //animRes->animInEditor->render_rotated( animRes->get_preview_frame(),spm->tempRect->x,spm->tempRect->y, angle, xScale*spm->zoomValue,yScale*spm->zoomValue, NULL );
                             animRes->animInEditor->render_special( animRes->get_preview_frame(),spm->tempRect->x,spm->tempRect->y, xScale*spm->zoomValue,yScale*spm->zoomValue,angle, branchColor->get_color(),branchAlpha->get_value(), NULL );
-                            //gpe::gfs->render_text( spm->tempRect->x, spm->tempRect->y-48, "XOff:"+ stg_ex::int_to_string(xOffset)+",YOff:"+ stg_ex::int_to_string(yOffset),c_red,font_default,gpe::fa_center,gpe::fa_bottom, 255 );
-                            //gpe::gfs->render_text( spm->tempRect->x, spm->tempRect->y-16, "W:"+ stg_ex::int_to_string(width)+",H:"+ stg_ex::int_to_string(height),c_red,font_default,gpe::fa_center,gpe::fa_bottom, 255 );
+                            //gpe::gfs->render_text( spm->tempRect->x, spm->tempRect->y-48, "XOff:"+ stg_ex::int_to_string(xOffset)+",YOff:"+ stg_ex::int_to_string(yOffset),c_red,gpe::font_default,gpe::fa_center,gpe::fa_bottom, 255 );
+                            //gpe::gfs->render_text( spm->tempRect->x, spm->tempRect->y-16, "W:"+ stg_ex::int_to_string(width)+",H:"+ stg_ex::int_to_string(height),c_red,gpe::font_default,gpe::fa_center,gpe::fa_bottom, 255 );
                             objectanimationRender = true;
                         }
                     }
@@ -143,28 +143,28 @@ void GPE_SceneGameObject::render_branch()
             }
             if( !objectanimationRender )
             {
-                //objTypeContainer->render_image( spm->tempRect->x,spm->tempRect->y,ceil( (float)spm->tempRect->w*xScale*spm->zoomValue),ceil( (float)spm->tempRect->h*yScale*spm->zoomValue ),viewedSpace,cam);
+                //objTypeContainer->render_image( spm->tempRect->x,spm->tempRect->y,ceil( (float)spm->tempRect->w*xScale*spm->zoomValue),ceil( (float)spm->tempRect->h*yScale*spm->zoomValue ),view_space,cam);
             }
         }
         else
         {
             gpe::gcanvas->render_rectangle( spm->tempRect->x,spm->tempRect->y,spm->tempRect->x+spm->tempRect->w*spm->zoomValue,spm->tempRect->y+spm->tempRect->h*spm->zoomValue, gpe::c_maroon,false);
-            gpe::gfs->render_text(  spm->tempRect->x, spm->tempRect->y,"Unknown Game Id["+ stg_ex::int_to_string( objTypeId )+"]", gpe::c_red,font_default,gpe::fa_left,gpe::fa_top);
+            gpe::gfs->render_text(  spm->tempRect->x, spm->tempRect->y,"Unknown Game Id["+ stg_ex::int_to_string( objTypeId )+"]", gpe::c_red,gpe::font_default,gpe::fa_left,gpe::fa_top);
         }
     }
     else
     {
         gpe::gcanvas->render_rectangle( spm->tempRect->x,spm->tempRect->y,spm->tempRect->x+spm->tempRect->w*spm->zoomValue,spm->tempRect->y+spm->tempRect->h*spm->zoomValue,gpe::c_maroon,false);
-        gpe::gfs->render_text(  spm->tempRect->x, spm->tempRect->y,"Unknown Game Object", gpe::c_red,font_default,gpe::fa_left,gpe::fa_top);
+        gpe::gfs->render_text(  spm->tempRect->x, spm->tempRect->y,"Unknown Game Object", gpe::c_red,gpe::font_default,gpe::fa_left,gpe::fa_top);
     }
-    GPE_SpecialMenu_Branch::render_branch();
+    pawgui::widget_branch::render_branch();
 }
 
 bool GPE_SceneGameObject::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn )
 {
     if( fileTarget!=NULL && fileTarget->is_open() )
     {
-        std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+        std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"GPE_SceneObject=";
         if( (int)objTypeName.size() > 0)
         {

@@ -36,7 +36,7 @@ SOFTWARE.
 
 std::string SUPPORTED_VIDEO_EXT[SUPPORTED_VIDEO_FORMAT_COUNT];
 
-videoResource::videoResource(GPE_GeneralResourceContainer * pFolder)
+videoResource::videoResource(pawgui::widget_resource_container * pFolder)
 {
     projectParentFolder = pFolder;
     resourceFileName = " ";
@@ -47,17 +47,17 @@ videoResource::videoResource(GPE_GeneralResourceContainer * pFolder)
     }
     videoId = -1;
     videoType = 0;
-    videoEditorMainNote = new GPE_Label_Text("Video playback in editor not supported.","Video playback in editor not supported.");
+    videoEditorMainNote = new pawgui::widget_label_text ("Video playback in editor not supported.","Video playback in editor not supported.");
 
-    videoGroupName = new gpe_text_widget_string("","default=blank");
+    videoGroupName = new pawgui::widget_input_text("","default=blank");
     videoGroupName->set_label("Video Group");
 
-    defaultVolume = new gpe_text_widget_number("100",true,0,100);
+    defaultVolume = new pawgui::widget_input_number("100",true,0,100);
     defaultVolume->set_string("100");
     defaultVolume->set_label("Default Volume:");
 
-    openExternalEditorButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens Audio In External Editor");
-    refreshResourceDataButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refreshes this resource's media files");
+    openExternalEditorButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens Audio In External Editor");
+    refreshResourceDataButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refreshes this resource's media files");
 }
 
 videoResource::~videoResource()
@@ -93,8 +93,8 @@ bool videoResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTab
 {
     if( fileTarget!=NULL && fileTarget->is_open() )
     {
-        std::string nestedTabsStr = generate_tabs( leftTabAmount  );
-        std::string nestedTabsStrObjFunc = generate_tabs( leftTabAmount +1 );
+        std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
+        std::string nestedTabsStrObjFunc = pawgui::generate_tabs( leftTabAmount +1 );
         std::string html5SpShName = get_name();
 
         *fileTarget << nestedTabsStr << "var " + html5SpShName + " =  GPE.rsm.add_video(";
@@ -197,7 +197,7 @@ void videoResource::load_video(std::string new_file_name)
         }
         else
         {
-            display_user_alert("[Alert - "+resource_name+"]","Unsupported file type added.");
+            pawgui::display_user_alert("[Alert - "+resource_name+"]","Unsupported file type added.");
         }
         if( isvideoFile)
         {
@@ -210,9 +210,9 @@ void videoResource::load_resource(std::string file_path)
 {
     if( resourcePostProcessed == false  || sff_ex::file_exists(file_path) )
     {
-        if( GPE_LOADER != NULL )
+        if( pawgui::main_loader_display != NULL )
         {
-            GPE_LOADER->update_submessages( "Processing Video",resource_name );
+            pawgui::main_loader_display->update_submessages( "Processing Video",resource_name );
         }
 
         std::string otherColContainerName = "";
@@ -321,16 +321,16 @@ void videoResource::load_resource(std::string file_path)
                 }
             }
 
-            if( GPE_LOADER != NULL )
+            if( pawgui::main_loader_display != NULL )
             {
-                GPE_LOADER->increment_and_update( "Video resource processed",resource_name );
+                pawgui::main_loader_display->increment_and_update( "Video resource processed",resource_name );
             }
         }
         else
         {
-            if( GPE_LOADER != NULL )
+            if( pawgui::main_loader_display != NULL )
             {
-                GPE_LOADER->increment_and_update( "Video resource processingg error occurred",resource_name );
+                pawgui::main_loader_display->increment_and_update( "Video resource processingg error occurred",resource_name );
             }
         }
     }
@@ -341,31 +341,31 @@ void videoResource::prerender_self()
     standardEditableGameResource::prerender_self();
 }
 
-void videoResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void videoResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && viewedSpace!=NULL && PANEL_GENERAL_EDITOR!=NULL)
+    if(cam!=NULL && view_space!=NULL && panel_main_area!=NULL)
     {
-        PANEL_GENERAL_EDITOR->clear_panel();
-        PANEL_GENERAL_EDITOR->add_gui_element(videoEditorMainNote,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(renameBox,true);
+        panel_main_area->clear_panel();
+        panel_main_area->add_gui_element(videoEditorMainNote,true);
+        panel_main_area->add_gui_element(renameBox,true);
 
-        PANEL_GENERAL_EDITOR->add_gui_element(refreshResourceDataButton,false );
-        PANEL_GENERAL_EDITOR->add_gui_element(loadResourceButton,false );
-        PANEL_GENERAL_EDITOR->add_gui_element(openExternalEditorButton,true);
+        panel_main_area->add_gui_element(refreshResourceDataButton,false );
+        panel_main_area->add_gui_element(loadResourceButton,false );
+        panel_main_area->add_gui_element(openExternalEditorButton,true);
 
-        PANEL_GENERAL_EDITOR->add_gui_element(videoGroupName, true);
-        PANEL_GENERAL_EDITOR->add_gui_element(defaultVolume,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(confirmResourceButton,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(cancelResourceButton,true);
-        //PANEL_GENERAL_EDITOR->set_maxed_out_width();
-        PANEL_GENERAL_EDITOR->process_self(NULL, NULL);
+        panel_main_area->add_gui_element(videoGroupName, true);
+        panel_main_area->add_gui_element(defaultVolume,true);
+        panel_main_area->add_gui_element(confirmResourceButton,true);
+        panel_main_area->add_gui_element(cancelResourceButton,true);
+        //panel_main_area->set_maxed_out_width();
+        panel_main_area->process_self(NULL, NULL);
 
 
         if( loadResourceButton!=NULL && loadResourceButton->is_clicked() )
         {
-            std::string new_file_name = GPE_GetOpenFileName("Load In an video File","Video",main_GUI_SETTINGS->fileOpenVideoDir);
+            std::string new_file_name = pawgui::get_filename_open_from_popup("Load In an video File","Video",pawgui::main_settings->fileOpenVideoDir);
             load_video(new_file_name);
         }
         else if( confirmResourceButton!=NULL && confirmResourceButton->is_clicked() )
@@ -391,23 +391,23 @@ void videoResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect
             }
             if( hasFileToOpen )
             {
-                GPE_open_context_menu(-1,-1,256);
-                main_CONTEXT_MENU->set_width(openExternalEditorButton->get_width() );
+                pawgui::context_menu_open(-1,-1,256);
+                pawgui::main_context_menu->set_width(openExternalEditorButton->get_width() );
                 for( ii = 0; ii < SUPPORTED_VIDEO_FORMAT_COUNT; ii++)
                 {
                     if( (int)videoFileName[ii].size() > 0)
                     {
-                        main_CONTEXT_MENU->add_menu_option("Edit "+SUPPORTED_VIDEO_EXT[ii],ii);
+                        pawgui::main_context_menu->add_menu_option("Edit "+SUPPORTED_VIDEO_EXT[ii],ii);
                     }
                 }
-                int menuSelection = GPE_Get_Context_Result();
+                int menuSelection = pawgui::context_menu_process();
                 if( menuSelection >=0 && menuSelection < SUPPORTED_VIDEO_FORMAT_COUNT)
                 {
                     std::string fileToEdit = videoFileName[menuSelection];
 
-                    if( main_EDITOR_SETTINGS!=NULL && main_EDITOR_SETTINGS->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_VID]!=NULL)
+                    if( main_editor_settings!=NULL && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_VID]!=NULL)
                     {
-                        gpe::external_open_program(main_EDITOR_SETTINGS->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_VID]->get_string(),fileToEdit, true );
+                        gpe::external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_VID]->get_string(),fileToEdit, true );
                     }
                     else
                     {
@@ -428,33 +428,33 @@ void videoResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect
     }
 }
 
-void videoResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam )
+void videoResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if( cam!=NULL && viewedSpace!=NULL)
+    if( cam!=NULL && view_space!=NULL)
     {
         for( int i = 0; i < SUPPORTED_VIDEO_FORMAT_COUNT; i++)
         {
             if( videoFileName[i].size()> 0)
             {
-                gpe::gfs->render_text( viewedSpace->w-GENERAL_GPE_GUI_PADDING*3,GENERAL_GPE_GUI_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_VIDEO_EXT[i]+" is attatched",theme_main->main_box_font_highlight_color,font_default,gpe::fa_right,gpe::fa_top);
+                gpe::gfs->render_text( view_space->w-pawgui::padding_default*3,pawgui::padding_default+pawgui::default_line_height*i,SUPPORTED_VIDEO_EXT[i]+" is attatched",pawgui::theme_main->main_box_font_highlight_color,gpe::font_default,gpe::fa_right,gpe::fa_top);
             }
             else
             {
-                gpe::gfs->render_text( viewedSpace->w-GENERAL_GPE_GUI_PADDING*3,GENERAL_GPE_GUI_PADDING+GPE_AVERAGE_LINE_HEIGHT*i,SUPPORTED_VIDEO_EXT[i]+" not attatched",theme_main->main_box_font_color,font_default,gpe::fa_right,gpe::fa_top);
+                gpe::gfs->render_text( view_space->w-pawgui::padding_default*3,pawgui::padding_default+pawgui::default_line_height*i,SUPPORTED_VIDEO_EXT[i]+" not attatched",pawgui::theme_main->main_box_font_color,gpe::font_default,gpe::fa_right,gpe::fa_top);
             }
         }
-        gpe::gfs->render_text( viewedSpace->w/2, viewedSpace->h-32, "HTML5 Feature. Currently not supported in C++/Native runtime",theme_main->main_box_font_color,font_default, gpe::fa_center, gpe::fa_bottom, 255);
+        gpe::gfs->render_text( view_space->w/2, view_space->h-32, "HTML5 Feature. Currently not supported in C++/Native runtime",pawgui::theme_main->main_box_font_color,gpe::font_default, gpe::fa_center, gpe::fa_bottom, 255);
     }
     //
 }
 
 void videoResource::save_resource(std::string file_path, int backupId)
 {
-    if( GPE_LOADER != NULL )
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->update_submessages( "Saving Game video", resource_name );
+        pawgui::main_loader_display->update_submessages( "Saving Game video", resource_name );
     }
 
     bool usingAltSaveSource = false;
@@ -493,7 +493,7 @@ void videoResource::save_resource(std::string file_path, int backupId)
                     if( sff_ex::file_exists(resFileCopyDest) )
                     {
                         /*
-                        if( GPE_Display_Basic_Prompt("[WARNING]Video File Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] Video file? This action is irreversible!")==DISPLAY_QUERY_YES)
+                        if( pawgui::display_prompt_message("[WARNING]Video File Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] Video file? This action is irreversible!")==pawgui::display_query_yes)
                         {
                             sff_ex::file_copy(resFileCopySrc,resFileCopyDest);
                         }
@@ -523,17 +523,17 @@ void videoResource::save_resource(std::string file_path, int backupId)
         {
             isModified = false;
         }
-        if( GPE_LOADER != NULL )
+        if( pawgui::main_loader_display != NULL )
         {
-            GPE_LOADER->increment_and_update( "Video resource saved",resource_name );
+            pawgui::main_loader_display->increment_and_update( "Video resource saved",resource_name );
         }
         return;
     }
 
-    GPE_main_Logs->log_general_error("Unable to save file ["+newFileOut+"]");
-    if( GPE_LOADER != NULL )
+    main_editor_log->log_general_error("Unable to save file ["+newFileOut+"]");
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->increment_and_update( "Video resource unable to save",resource_name );
+        pawgui::main_loader_display->increment_and_update( "Video resource unable to save",resource_name );
     }
 }
 
@@ -543,7 +543,7 @@ bool videoResource::write_data_into_projectfile(std::ofstream * fileTarget, int 
     {
         if( fileTarget->is_open() )
         {
-            std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+            std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
             *fileTarget << nestedTabsStr << "video=" << resource_name << "," << get_global_rid() << ",\n";
             return true;
         }

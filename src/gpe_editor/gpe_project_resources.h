@@ -44,7 +44,6 @@ SOFTWARE.
 #include "particle_resource.h"
 #include "video_resource.h"
 #include "gpe_editor_aboutpage.h"
-#include "gpe_editor_helppage.h"
 #include "gpe_editor_settings.h"
 #include "gpe_editor_start_page.h"
 #include "gpe_extra_tools.h"

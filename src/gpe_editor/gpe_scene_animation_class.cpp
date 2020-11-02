@@ -33,15 +33,15 @@ SOFTWARE.
 
 #include "gpe_scene_animation_class.h"
 
-GPE_SceneAnimation::GPE_SceneAnimation( GPE_GeneralResourceContainer *pFolder  )
+GPE_SceneAnimation::GPE_SceneAnimation( pawgui::widget_resource_container *pFolder  )
 {
-    iconTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magnet.png") ;
+    iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magnet.png") ;
 
     projectParentFolder = pFolder;
 
     if( projectParentFolder!=NULL)
     {
-        animationInEditor = new GPE_DropDown_Resouce_Menu( "Animation",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_animation]+"s"),-1,true);
+        animationInEditor = new pawgui::widget_drop_down_resource_menu( "Animation",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_animation]+"s"),-1,true);
         animationInEditor->set_width(192);
     }
     else
@@ -49,12 +49,12 @@ GPE_SceneAnimation::GPE_SceneAnimation( GPE_GeneralResourceContainer *pFolder  )
         animationInEditor = NULL;
     }
     branchType = gpe::branch_type::ANIMATION;
-    xPosField = new gpe_text_widget_number("",true, 0 );
+    xPosField = new pawgui::widget_input_number("",true, 0 );
     xPosField->set_label("X-Pos");
-    yPosField = new gpe_text_widget_number("",true, 0 );
+    yPosField = new pawgui::widget_input_number("",true, 0 );
     yPosField->set_label("Y-Pos");
 
-    startPositionField = new gpe_text_widget_number("",false, 0 );
+    startPositionField = new pawgui::widget_input_number("",false, 0 );
     startPositionField->set_label("Animation Start Frame");
 
 
@@ -66,10 +66,10 @@ GPE_SceneAnimation::GPE_SceneAnimation( GPE_GeneralResourceContainer *pFolder  )
     frameStartPosition = 0;
     framePosition = 0;
 
-    animationSpeedField = new gpe_text_widget_number("",false, -7000);
+    animationSpeedField = new pawgui::widget_input_number("",false, -7000);
     animationSpeedField->set_label("Animation Speed");
     animationSpeedField->set_number( animSpeed );
-    useCustomSpeed = new GPE_CheckBoxBasic("Uuse Custom Speed","Diffrentiate from the default speed of animation resource", false );
+    useCustomSpeed = new pawgui::widget_checkbox("Uuse Custom Speed","Diffrentiate from the default speed of animation resource", false );
 }
 
 GPE_SceneAnimation::~GPE_SceneAnimation()
@@ -112,7 +112,7 @@ GPE_SceneAnimation::~GPE_SceneAnimation()
     }
 }
 
-bool GPE_SceneAnimation::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController )
+bool GPE_SceneAnimation::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
 {
     GPE_SceneBasicClass::build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController);
     return true;
@@ -120,12 +120,12 @@ bool GPE_SceneAnimation::build_intohtml5_file(std::ofstream * fileTarget, int le
 
 void GPE_SceneAnimation::add_typed_elements()
 {
-    if( PANEL_INSPECTOR!=NULL )
+    if( panel_inspector!=NULL )
     {
-        PANEL_INSPECTOR->add_gui_element( animationInEditor , true );
-        PANEL_INSPECTOR->add_gui_element( startPositionField ,true );
-        PANEL_INSPECTOR->add_gui_element( animationSpeedField ,true );
-        PANEL_INSPECTOR->add_gui_element( useCustomSpeed ,true );
+        panel_inspector->add_gui_element( animationInEditor , true );
+        panel_inspector->add_gui_element( startPositionField ,true );
+        panel_inspector->add_gui_element( animationSpeedField ,true );
+        panel_inspector->add_gui_element( useCustomSpeed ,true );
     }
 }
 

@@ -36,40 +36,40 @@ SOFTWARE.
 
 #include "gpe_basic_resource_page.h"
 
-class gamePencilgamepadTesterResource: public generalGameResource
+class gamePencilgamepadTesterResource: public pawgui::general_resource
 {
 public:
     int controllerInView;
-    GPE_ToolPushButton * confirmResourceButton;
-    GPE_ToolPushButton * cancelResourceButton;
-    GPE_SelectBoxBasic * sideAreaPanel;
+    pawgui::widget_button_push * confirmResourceButton;
+    pawgui::widget_button_push * cancelResourceButton;
+    pawgui::widget_selectbox * sideAreaPanel;
     gpe::shape_rect * sidePanelRect;
-    GPE_CheckBoxBasic * requireInputToConnect;
-    GPE_CheckBoxBasic * renderSceneBGColor;
-    GPE_SelectBoxBasic * subEditorSelectBox;
+    pawgui::widget_checkbox * requireInputToConnect;
+    pawgui::widget_checkbox * renderSceneBGColor;
+    pawgui::widget_selectbox * subEditorSelectBox;
 
-    GPE_CheckBoxBasic * showControllerInfo;
-    GPE_Label_Title * playerStats;
+    pawgui::widget_checkbox * showControllerInfo;
+    pawgui::widget_label_title * playerStats;
     int playerRadius[gp_max_devices];
     float playerDeadZone[gp_max_devices];
-    gpe_text_widget_number * playerDeadZoneField[gp_max_devices];
-    gpe_text_widget_number * playerSizeRadius[gp_max_devices];
-    gpe_widget_color_picker * playerTestColor[gp_max_devices];
-    gpe_widget_color_picker * playerFontColor[gp_max_devices];
-    GPE_ToolPushButton * detectControllersButton;
-    GPE_ToolPushButton * vibrateControllerButton;
-    GPE_ToolIconButton * previousControllerButton;
-    GPE_ToolIconButton * nextControllerButton;
-    gpe_text_widget_number * conrollerIdField;
-    GPE_Label_Title * controllerViewTitleLabel;
-    GPE_Label_Text * controllerNameLabel;
+    pawgui::widget_input_number * playerDeadZoneField[gp_max_devices];
+    pawgui::widget_input_number * playerSizeRadius[gp_max_devices];
+    pawgui::gpe_widget_color_picker * playerTestColor[gp_max_devices];
+    pawgui::gpe_widget_color_picker * playerFontColor[gp_max_devices];
+    pawgui::widget_button_push * detectControllersButton;
+    pawgui::widget_button_push * vibrateControllerButton;
+    pawgui::widget_button_icon * previousControllerButton;
+    pawgui::widget_button_icon * nextControllerButton;
+    pawgui::widget_input_number * conrollerIdField;
+    pawgui::widget_label_title * controllerViewTitleLabel;
+    pawgui::widget_label_text  * controllerNameLabel;
 
     int playerRadiusMin, playerRadiusMax;
     int playerX[gp_max_devices];
     int playerY[gp_max_devices];
     //Editor Related variables
     gpe::shape_rect subViewedSpace;
-    GPE_GuiElementList * editorPageList;
+    pawgui::widget_panel_list * editorPageList;
     std::string projectFolderListLocation;
     gamePencilgamepadTesterResource();
     ~gamePencilgamepadTesterResource();
@@ -77,8 +77,8 @@ public:
 
     void prerender_self( );
     void load_resource(std::string file_path = "");
-    void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void save_resource(std::string file_path = "", int backupId = -1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };

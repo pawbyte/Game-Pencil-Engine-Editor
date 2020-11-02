@@ -50,46 +50,46 @@ GPE_SceneBasicClass::GPE_SceneBasicClass()
     yPivot = height/2;
     isLocked = false;
 
-    branchGlobalId = new GPE_Label_Text("Global Id:" + stg_ex::int_to_string(globalId),"Automatically assigned on create...");
-    angleField = new gpe_text_widget_number("",false,-720,720);
+    branchGlobalId = new pawgui::widget_label_text ("Global Id:" + stg_ex::int_to_string(globalId),"Automatically assigned on create...");
+    angleField = new pawgui::widget_input_number("",false,-720,720);
     angleField->set_name("Angle");
     angleField->set_label("Angle");
     angleField->set_number(angle);
 
-    xPosField = new gpe_text_widget_number("","");
+    xPosField = new pawgui::widget_input_number("","");
     xPosField->set_label("X-Pos");
     xPosField->set_label("X-Start");
     xPosField->scale_width( 0.4 );
 
-    yPosField = new gpe_text_widget_number("","");
+    yPosField = new pawgui::widget_input_number("","");
     yPosField->set_label("Y-Pos");
     yPosField->set_label("Y-Start");
     yPosField->scale_width( 0.4 );
 
-    xScaleField = new gpe_text_widget_number("",false);
+    xScaleField = new pawgui::widget_input_number("",false);
     xScaleField->set_string("1.0");
     xScaleField->set_label("X-Scale");
     xScaleField->scale_width( 0.4 );
 
-    yScaleField = new gpe_text_widget_number("",false);
+    yScaleField = new pawgui::widget_input_number("",false);
     yScaleField->set_string("1.0");
     yScaleField->set_label("Y-Scale");
     yScaleField->scale_width( 0.4 );
 
-    branchNameField = new gpe_text_widget_string("name","branch name");
+    branchNameField = new pawgui::widget_input_text("name","branch name");
     branchNameField->set_string("0");
     branchNameField->set_label("Name");
 
-    branchTagField = new gpe_text_widget_string("tag","branch tag");
+    branchTagField = new pawgui::widget_input_text("tag","branch tag");
     branchTagField->set_string("");
     branchTagField->set_label("Tag");
 
-    branchColor = new gpe_widget_color_picker();
+    branchColor = new pawgui::gpe_widget_color_picker();
     branchColor->set_name("Color");
     branchColor->set_label("Color");
 
-    branchAlpha = new GPE_Slider_XAxis(255, 0, 255);
-    iconTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/tree.png") ;
+    branchAlpha = new pawgui::widget_slide_xaxis(255, 0, 255);
+    iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/tree.png") ;
 }
 
 GPE_SceneBasicClass::~GPE_SceneBasicClass()
@@ -151,42 +151,42 @@ GPE_SceneBasicClass::~GPE_SceneBasicClass()
 
 void GPE_SceneBasicClass::add_basic_elements()
 {
-    if( PANEL_INSPECTOR!=NULL)
+    if( panel_inspector!=NULL)
     {
         if( branchType != gpe::branch_type::LAYER )
         {
-            PANEL_INSPECTOR->add_gui_element(branchNameField , true );
+            panel_inspector->add_gui_element(branchNameField , true );
         }
-        PANEL_INSPECTOR->add_gui_element( branchGlobalId , true );
+        panel_inspector->add_gui_element( branchGlobalId , true );
 
         if( branchType != gpe::branch_type::LAYER && branchType!= gpe::branch_type::GROUP)
         {
             if( !isLocked )
             {
-                PANEL_INSPECTOR->add_gui_element( xPosField , false );
-                PANEL_INSPECTOR->add_gui_element( yPosField , true );
+                panel_inspector->add_gui_element( xPosField , false );
+                panel_inspector->add_gui_element( yPosField , true );
             }
-            PANEL_INSPECTOR->add_gui_element( branchTagField, true );
+            panel_inspector->add_gui_element( branchTagField, true );
             if( dualScaleClass )
             {
                 /*
                 Temporarily disabled
-                PANEL_INSPECTOR->add_gui_element( angleField , true );
+                panel_inspector->add_gui_element( angleField , true );
                 */
-                PANEL_INSPECTOR->add_gui_element( xScaleField , false );
-                PANEL_INSPECTOR->add_gui_element( yScaleField , true );
-                PANEL_INSPECTOR->add_gui_element( branchColor  , true );
-                PANEL_INSPECTOR->add_gui_element( branchAlpha  , true );
+                panel_inspector->add_gui_element( xScaleField , false );
+                panel_inspector->add_gui_element( yScaleField , true );
+                panel_inspector->add_gui_element( branchColor  , true );
+                panel_inspector->add_gui_element( branchAlpha  , true );
             }
             else
             {
                 /*
                 Temporarily disabled
-                PANEL_INSPECTOR->add_gui_element( angleField , true );
+                panel_inspector->add_gui_element( angleField , true );
                 */
-                PANEL_INSPECTOR->add_gui_element( xScaleField , true );
-                PANEL_INSPECTOR->add_gui_element( branchColor  , true );
-                PANEL_INSPECTOR->add_gui_element( branchAlpha  , true );
+                panel_inspector->add_gui_element( xScaleField , true );
+                panel_inspector->add_gui_element( branchColor  , true );
+                panel_inspector->add_gui_element( branchAlpha  , true );
             }
         }
     }
@@ -221,7 +221,7 @@ bool GPE_SceneBasicClass::add_scene_branch( GPE_SceneBasicClass * branch, bool c
     return false;
 }
 
-GPE_ObjectComponent * GPE_SceneBasicClass::add_variable(GPE_GeneralGuiElement * newVariable)
+GPE_ObjectComponent * GPE_SceneBasicClass::add_variable(pawgui::widget_basic * newVariable)
 {
     if( newVariable!=NULL)
     {
@@ -254,10 +254,10 @@ GPE_ObjectComponent * GPE_SceneBasicClass::add_variable(GPE_GeneralGuiElement * 
     return NULL;
 }
 
-bool GPE_SceneBasicClass::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController )
+bool GPE_SceneBasicClass::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
 {
     //Loops thru all of his sub-elements
-    std::string nestedTabsStr = generate_tabs( leftTabAmount );
+    std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount );
     *fileTarget << nestedTabsStr << "newBranch.init_basic(";
     stg_ex::int_to_string(xPos)+","+ stg_ex::int_to_string(yPos)+","+
     stg_ex::int_to_string(angle)+","+
@@ -293,7 +293,7 @@ bool GPE_SceneBasicClass::build_intohtml5_file(std::ofstream * fileTarget, int l
     int subElementsSize = (int)sub_elements.size();
     if( subElementsSize > 0 )
     {
-        GPE_SpecialMenu_Branch * tBranch = NULL;
+        pawgui::widget_branch * tBranch = NULL;
         GPE_SceneBasicClass * tbasicBranch = NULL;
         for( int iSubEl = 0; iSubEl < subElementsSize; iSubEl++)
         {
@@ -348,7 +348,7 @@ void GPE_SceneBasicClass::reset_components()
 void GPE_SceneBasicClass::render_branch()
 {
     int subElCount  = (int)sub_elements.size();
-    GPE_SpecialMenu_Branch * current_branch = NULL;
+    pawgui::widget_branch * current_branch = NULL;
     for(  int myItr = 0; myItr < subElCount; myItr++ )
     {
         current_branch = sub_elements[myItr];
@@ -376,8 +376,8 @@ bool GPE_SceneBasicClass::save_branch_data(std::ofstream * fileTarget, int neste
     {
         if( fileTarget!=NULL && fileTarget->is_open() )
         {
-            std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
-            std::string componentNestedTabsStr = generate_tabs( nestedFoldersIn +1 );
+            std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
+            std::string componentNestedTabsStr = pawgui::generate_tabs( nestedFoldersIn +1 );
             *fileTarget << nestedTabsStr+"[GPECustomFields]\n";
             GPE_ObjectComponent * tObjCustomProperty = NULL;
             for( int iComponent = 0; iComponent < componentCount ; iComponent++ )
@@ -411,7 +411,7 @@ void GPE_SceneBasicClass::set_angle( float newAngle )
 
 void GPE_SceneBasicClass::set_name( std::string new_name )
 {
-    GPE_SpecialMenu_Branch::set_name( new_name);
+    pawgui::widget_branch::set_name( new_name);
     if( branchNameField!=NULL )
     {
         branchNameField->set_string( new_name );

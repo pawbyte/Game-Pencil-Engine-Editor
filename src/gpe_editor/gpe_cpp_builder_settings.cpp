@@ -38,17 +38,17 @@ gameCPPBuilderSettingsResource * GPE_CPP_BUILDER_SETTINGS = NULL;
 gpeCPPSubsytemHolder::gpeCPPSubsytemHolder( std::string gpeSubSystemName )
 {
     subsystemName = gpeSubSystemName;
-    systemNameField = new gpe_text_widget_string(gpeSubSystemName,"ie: visualstudio,codeblocks,cmake");
-    systemNameLabel = new GPE_Label_Text("Build Subsystem Name:","subsystem used within project build phase");
-    removeSystemButton = new GPE_ToolLabelButton("Remove build subsystem","deletes build subsystem");
+    systemNameField = new pawgui::widget_input_text(gpeSubSystemName,"ie: visualstudio,codeblocks,cmake");
+    systemNameLabel = new pawgui::widget_label_text ("Build Subsystem Name:","subsystem used within project build phase");
+    removeSystemButton = new pawgui::widget_button_label("Remove build subsystem","deletes build subsystem");
 
-    systemProgramScriptLabel = new GPE_Label_Text("Subsystem GPE Script:","Used to auto-generate file");
-    mainProgramFileScript = new gpe_text_widget_string("","Subsystem GPE file script");
-    mainProgramFileScriptButton = new GPE_ToolLabelButton("Browse...","Search for gpe substem build script...");
+    systemProgramScriptLabel = new pawgui::widget_label_text ("Subsystem GPE Script:","Used to auto-generate file");
+    mainProgramFileScript = new pawgui::widget_input_text("","Subsystem GPE file script");
+    mainProgramFileScriptButton = new pawgui::widget_button_label("Browse...","Search for gpe substem build script...");
 
-    systemProgramTemplateFileLabel = new GPE_Label_Text("Subsystem GPE File Template:","Template file copied in auto-generation");
-    systemProgramTemplateFile = new gpe_text_widget_string("","Subsystem GPE template file");
-    systemProgramTemplateFileButton = new GPE_ToolLabelButton("Browse...","Search for gpe substem template file...");
+    systemProgramTemplateFileLabel = new pawgui::widget_label_text ("Subsystem GPE File Template:","Template file copied in auto-generation");
+    systemProgramTemplateFile = new pawgui::widget_input_text("","Subsystem GPE template file");
+    systemProgramTemplateFileButton = new pawgui::widget_button_label("Browse...","Search for gpe substem template file...");
 }
 
 gpeCPPSubsytemHolder::~gpeCPPSubsytemHolder()
@@ -56,7 +56,7 @@ gpeCPPSubsytemHolder::~gpeCPPSubsytemHolder()
 
 }
 
-bool gpeCPPSubsytemHolder::add_to_list(GPE_GuiElementList * listIn)
+bool gpeCPPSubsytemHolder::add_to_list(pawgui::widget_panel_list * listIn)
 {
     if( listIn ==NULL)
     return false;
@@ -81,9 +81,9 @@ gpeCPPBuildHolder::gpeCPPBuildHolder(std::string buildSystemName)
 {
     subSystemToRemove = -1; //keep negative to avoid deletions
     builderName = buildSystemName;
-    builderNameField = new gpe_text_widget_string(buildSystemName,"ie: Visual Studio, CodeBlocks, DevC++, Premake5...");
-    builderNameLabel = new GPE_Label_Text("Builder System Name:");
-    addSubSystemButton = new GPE_ToolLabelButton("Add subsystem","Add a new subsystem for C++ builder");
+    builderNameField = new pawgui::widget_input_text(buildSystemName,"ie: Visual Studio, CodeBlocks, DevC++, Premake5...");
+    builderNameLabel = new pawgui::widget_label_text ("Builder System Name:");
+    addSubSystemButton = new pawgui::widget_button_label("Add subsystem","Add a new subsystem for C++ builder");
 }
 
 gpeCPPBuildHolder::~gpeCPPBuildHolder()
@@ -104,7 +104,7 @@ gpeCPPBuildHolder::~gpeCPPBuildHolder()
 }
 
 
-bool gpeCPPBuildHolder::add_to_list(GPE_GuiElementList * listIn)
+bool gpeCPPBuildHolder::add_to_list(pawgui::widget_panel_list * listIn)
 {
     if( subSystemToRemove >= 0 )
     {
@@ -138,9 +138,9 @@ gpeCPPSubsytemHolder * gpeCPPBuildHolder::add_subsystem( std::string newSysName 
     {
         if( find_sub_system( newSysName) !=NULL )
         {
-            if( GPE_main_Logs!=NULL)
+            if( main_editor_log!=NULL)
             {
-                GPE_main_Logs->log_general_error("Subsystem["+newSysName+"] name already used for ["+builderName+"] build system.");
+                main_editor_log->log_general_error("Subsystem["+newSysName+"] name already used for ["+builderName+"] build system.");
             }
             return NULL;
         }
@@ -191,14 +191,14 @@ void gpeCPPBuildHolder::process_self()
 {
     if( addSubSystemButton->is_clicked() )
     {
-        std::string newSubSystemName = get_string_from_popup("Name your new subsystem","","");
+        std::string newSubSystemName = pawgui::get_string_from_popup("Name your new subsystem","","");
         if( (int)newSubSystemName.size() > 0 )
         {
             add_subsystem( newSubSystemName );
         }
-        else if( GPE_main_Logs!=NULL)
+        else if( main_editor_log!=NULL)
         {
-            GPE_main_Logs->log_general_error("["+builderName+"] build system add_subsystem exited, (Name not entered).");
+            main_editor_log->log_general_error("["+builderName+"] build system add_subsystem exited, (Name not entered).");
         }
     }
 
@@ -214,23 +214,23 @@ void gpeCPPBuildHolder::process_self()
             {
                 if( tempSubSystem->removeSystemButton!=NULL && tempSubSystem->removeSystemButton->is_clicked()  )
                 {
-                    if( GPE_Display_Basic_Prompt("Are you sure you want to delete Subsystem["+tempSubSystem->subsystemName+"]?","Scripts/Templates won't be deleted",true) == DISPLAY_QUERY_YES )
+                    if( pawgui::display_prompt_message("Are you sure you want to delete Subsystem["+tempSubSystem->subsystemName+"]?","Scripts/Templates won't be deleted",true) == pawgui::display_query_yes )
                     {
                         subSystemToRemove = i;
                         return; // only one thing can be clicked so just exit like a boss :-)
                     }
                     else
                     {
-                        if( GPE_main_Logs!=NULL )
+                        if( main_editor_log!=NULL )
                         {
-                            GPE_main_Logs->log_build_comment("Subsystem removal process averted by user.");
+                            main_editor_log->log_build_comment("Subsystem removal process averted by user.");
                         }
                         subSystemToRemove = -1;
                     }
                 }
                 else if( tempSubSystem->mainProgramFileScriptButton!=NULL && tempSubSystem->mainProgramFileScriptButton->is_clicked()  )
                 {
-                    std::string newGPEScriptFilename = GPE_GetOpenFileName("Browse for a GPE Build Script File...","",GPE_CPP_BUILDER_SETTINGS->fileOpenDefaultScriptDir);
+                    std::string newGPEScriptFilename = pawgui::get_filename_open_from_popup("Browse for a GPE Build Script File...","",GPE_CPP_BUILDER_SETTINGS->fileOpenDefaultScriptDir);
                     if( (int)newGPEScriptFilename.size() > 0  && tempSubSystem->mainProgramFileScript!=NULL )
                     {
                         tempSubSystem->mainProgramFileScript->set_string( newGPEScriptFilename );
@@ -238,7 +238,7 @@ void gpeCPPBuildHolder::process_self()
                 }
                 else if( tempSubSystem->systemProgramTemplateFileButton!=NULL && tempSubSystem->systemProgramTemplateFileButton->is_clicked()  )
                 {
-                    std::string newGPETemplateFilename = GPE_GetOpenFileName("Browse for a GPE Build Template File...","",GPE_CPP_BUILDER_SETTINGS->fileOpenDefaultTemplateDir);
+                    std::string newGPETemplateFilename = pawgui::get_filename_open_from_popup("Browse for a GPE Build Template File...","",GPE_CPP_BUILDER_SETTINGS->fileOpenDefaultTemplateDir);
                     if( (int)newGPETemplateFilename.size() > 0  && tempSubSystem->systemProgramTemplateFile!=NULL )
                     {
                         tempSubSystem->systemProgramTemplateFile->set_string( newGPETemplateFilename );
@@ -271,7 +271,7 @@ bool gpeCPPBuildHolder::remove_subsystem_indexed(int subsystemPos, bool resetIdT
     return false;
 }
 
-gameCPPBuilderSettingsResource::gameCPPBuilderSettingsResource(GPE_GeneralResourceContainer * pFolder)
+gameCPPBuilderSettingsResource::gameCPPBuilderSettingsResource(pawgui::widget_resource_container * pFolder)
 {
     fileOpenDefaultScriptDir = "";
     fileOpenDefaultTemplateDir = "";
@@ -280,18 +280,18 @@ gameCPPBuilderSettingsResource::gameCPPBuilderSettingsResource(GPE_GeneralResour
     parentProjectName = "";
     parentProjectDirectory = "";
 
-    cppBuildSystemsDropDown = new GPE_DropDown_Menu("Build Systems...", false );
-    addCPPBuildSystemButton = new GPE_ToolLabelButton("Add System","Add a new C++ build system" );
-    sideAreaPanel = new GPE_SelectBoxBasic("Mode");
+    cppBuildSystemsDropDown = new pawgui::widget_dropdown_menu("Build Systems...", false );
+    addCPPBuildSystemButton = new pawgui::widget_button_label("Add System","Add a new C++ build system" );
+    sideAreaPanel = new pawgui::widget_selectbox("Mode");
     sideAreaPanel->set_width(160);
     sideAreaPanel->set_option_height(64);
-    sideAreaPanel->add_option("Builder Settings",-1,paw_gui_rsm->texture_add( "wrench", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),NULL,2, false, false);
+    sideAreaPanel->add_option("Builder Settings",-1,pawgui::rsm_gui->texture_add( "wrench", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),NULL,2, false, false);
 
     sidePanelRect = new gpe::shape_rect();
 
-    editorPageList = new GPE_GuiElementList();
-    editorPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
-    editorPageList->panelAlignType = GPE_PANEL_ALIGN_FULL_RIGHT;
+    editorPageList = new pawgui::widget_panel_list();
+    editorPageList->barXPadding = pawgui::padding_default;
+    editorPageList->panelAlignType = pawgui::panel_align_right;
     editorPageList->barXMargin = 0;
 
     subViewedSpace.x = 0;
@@ -313,9 +313,9 @@ gpeCPPBuildHolder * gameCPPBuilderSettingsResource::add_cpp_build_system( std::s
     {
         if( find_build_system( newSysName) !=NULL )
         {
-            if( GPE_main_Logs!=NULL)
+            if( main_editor_log!=NULL)
             {
-                GPE_main_Logs->log_general_error("CPP Build System["+newSysName+"] name already exists.");
+                main_editor_log->log_general_error("CPP Build System["+newSysName+"] name already exists.");
             }
             return NULL;
         }
@@ -389,13 +389,13 @@ void gameCPPBuilderSettingsResource::load_resource(std::string file_path)
         return;
     }
     resourcePostProcessed = true;
-    if( GPE_main_Logs!=NULL )
+    if( main_editor_log!=NULL )
     {
-        GPE_main_Logs->log_general_line("Loading CPP Builder Settings...");
+        main_editor_log->log_general_line("Loading CPP Builder Settings...");
     }
-    if( GPE_LOADER != NULL )
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->update_submessages( "Processing C++ Builder","Loading systems" );
+        pawgui::main_loader_display->update_submessages( "Processing C++ Builder","Loading systems" );
     }
 
     std::string otherColContainerName = "";
@@ -519,37 +519,37 @@ void gameCPPBuilderSettingsResource::load_resource(std::string file_path)
     }
     gameResourceFileIn.close();
     resourcePostProcessed = true;
-    if( GPE_main_Logs!=NULL )
+    if( main_editor_log!=NULL )
     {
-        GPE_main_Logs->log_general_line("CPP Builder Settings loaded ("+ stg_ex::int_to_string( (int)cppBuildSystems.size() )+") subsystems...");
+        main_editor_log->log_general_line("CPP Builder Settings loaded ("+ stg_ex::int_to_string( (int)cppBuildSystems.size() )+") subsystems...");
     }
 }
 
-void gameCPPBuilderSettingsResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam)
+void gameCPPBuilderSettingsResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
 {
     cam = gpe::camera_find(cam);
-    viewedSpace = gpe::camera_find(viewedSpace);
-    if( cam!=NULL && editorPageList!=NULL && sideAreaPanel!=NULL && viewedSpace!=NULL)
+    view_space = gpe::camera_find(view_space);
+    if( cam!=NULL && editorPageList!=NULL && sideAreaPanel!=NULL && view_space!=NULL)
     {
         int prevTab = sideAreaPanel->get_selection();
-        if( PANEL_GENERAL_EDITOR!=NULL )
+        if( panel_main_area!=NULL )
         {
             subViewedSpace.x = 0;
             subViewedSpace.y = 0;
-            subViewedSpace.w = viewedSpace->w;
-            subViewedSpace.h = viewedSpace->h;
-            PANEL_GENERAL_EDITOR->add_gui_element_fullsize( sideAreaPanel );
-            PANEL_GENERAL_EDITOR->process_self();
+            subViewedSpace.w = view_space->w;
+            subViewedSpace.h = view_space->h;
+            panel_main_area->add_gui_element_fullsize( sideAreaPanel );
+            panel_main_area->process_self();
         }
         else
         {
             sideAreaPanel->set_coords(  0,0  );
-            sideAreaPanel->set_height( viewedSpace->h );
-            sideAreaPanel->process_self( viewedSpace, cam );
-            subViewedSpace.x = sideAreaPanel->get_x2pos();
+            sideAreaPanel->set_height( view_space->h );
+            sideAreaPanel->process_self( view_space, cam );
+            subViewedSpace.x = sideAreaPanel->get_x2();
             subViewedSpace.y = 0;
-            subViewedSpace.w = viewedSpace->w - sideAreaPanel->get_width();
-            subViewedSpace.h = viewedSpace->h;
+            subViewedSpace.w = view_space->w - sideAreaPanel->get_width();
+            subViewedSpace.h = view_space->h;
         }
 
         if( prevTab!=sideAreaPanel->get_selection() )
@@ -561,8 +561,8 @@ void gameCPPBuilderSettingsResource::process_self( gpe::shape_rect * viewedSpace
         editorPageList->set_coords( subViewedSpace.x, subViewedSpace.y );
         editorPageList->set_width(subViewedSpace.w);
         editorPageList->set_height(subViewedSpace.h );
-        editorPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
-        editorPageList->barXMargin = GENERAL_GPE_GUI_PADDING;
+        editorPageList->barXPadding = pawgui::padding_default;
+        editorPageList->barXMargin = pawgui::padding_default;
         gpeCPPBuildHolder *cTempHolder = NULL;
 
         int i = 0;
@@ -579,7 +579,7 @@ void gameCPPBuilderSettingsResource::process_self( gpe::shape_rect * viewedSpace
             }
             editorPageList->add_gui_element(confirmResourceButton,true );
             editorPageList->add_gui_element(cancelResourceButton,true );
-            editorPageList->process_self( viewedSpace,cam);
+            editorPageList->process_self( view_space,cam);
 
             if( cTempHolder!=NULL)
             {
@@ -587,7 +587,7 @@ void gameCPPBuilderSettingsResource::process_self( gpe::shape_rect * viewedSpace
             }
             if( addCPPBuildSystemButton!=NULL && addCPPBuildSystemButton->is_clicked() )
             {
-                std::string newCPPBuildSystemName = get_string_from_popup("Name your new C++ build system","","");
+                std::string newCPPBuildSystemName = pawgui::get_string_from_popup("Name your new C++ build system","","");
                 if( (int)newCPPBuildSystemName.size() > 0 )
                 {
                     add_cpp_build_system( newCPPBuildSystemName );
@@ -598,7 +598,7 @@ void gameCPPBuilderSettingsResource::process_self( gpe::shape_rect * viewedSpace
         {
             editorPageList->add_gui_element(confirmResourceButton,false);
             editorPageList->add_gui_element(cancelResourceButton,true);
-            editorPageList->process_self( viewedSpace,cam);
+            editorPageList->process_self( view_space,cam);
         }
 
         if( confirmResourceButton->is_clicked() )
@@ -613,28 +613,28 @@ void gameCPPBuilderSettingsResource::process_self( gpe::shape_rect * viewedSpace
     }
 }
 
-void gameCPPBuilderSettingsResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void gameCPPBuilderSettingsResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
     cam = gpe::camera_find(cam);
-    viewedSpace = gpe::camera_find(viewedSpace);
-    if( cam!=NULL && viewedSpace!=NULL)
+    view_space = gpe::camera_find(view_space);
+    if( cam!=NULL && view_space!=NULL)
     {
-        if( sideAreaPanel!=NULL && PANEL_GENERAL_EDITOR==NULL )
+        if( sideAreaPanel!=NULL && panel_main_area==NULL )
         {
-            sideAreaPanel->render_self( viewedSpace,cam);
+            sideAreaPanel->render_self( view_space,cam);
         }
         if( editorPageList!=NULL )
         {
-            editorPageList->render_self( viewedSpace,cam);
+            editorPageList->render_self( view_space,cam);
         }
     }
 }
 
 void gameCPPBuilderSettingsResource::save_resource(std::string file_path, int backupId )
 {
-    if( GPE_LOADER != NULL )
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->update_submessages( "Saving C++ Settings", "Builder Systems" );
+        pawgui::main_loader_display->update_submessages( "Saving C++ Settings", "Builder Systems" );
     }
     std::string newSaveDataFilename = "";
     bool usingAltSaveSource = false;
@@ -655,14 +655,14 @@ void gameCPPBuilderSettingsResource::save_resource(std::string file_path, int ba
     if( newSaveDataFile.fail() )
     {
         newSaveDataFile.close();
-        GPE_main_Logs->log_general_error("Failed to begin saving to file ["+newFileOut+"]");
+        main_editor_log->log_general_error("Failed to begin saving to file ["+newFileOut+"]");
 
         return;
     }
     //makes sure the file is open
     if( !newSaveDataFile.is_open() )
     {
-        GPE_main_Logs->log_general_error("Unable to save to file ["+newFileOut+"]");
+        main_editor_log->log_general_error("Unable to save to file ["+newFileOut+"]");
         return;
     }
 

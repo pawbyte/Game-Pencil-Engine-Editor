@@ -38,7 +38,7 @@ SOFTWARE.
 #include "../gpe/gpe_constants.h"
 #include "../gpe/gpe_file_system.h"
 #include "../gpe/gpe_globals.h"
-#include "../pawgui/paw_gui_popups.h"
+#include "../pawgui/pawgui_popups.h"
 #include "gpe_editor_constants.h"
 
 void setup_project_directory(std::string newProjectDir);

@@ -34,7 +34,7 @@ SOFTWARE.
 #include "audio_resource.h"
 #include "gpe_editor_settings.h"
 
-audioResource::audioResource(GPE_GeneralResourceContainer * pFolder)
+audioResource::audioResource(pawgui::widget_resource_container * pFolder)
 {
     projectParentFolder = pFolder;
     resourceFileName = " ";
@@ -47,29 +47,29 @@ audioResource::audioResource(GPE_GeneralResourceContainer * pFolder)
     audioType = 0;
     musicVal = NULL;
     soundVal = NULL;
-    audioEditorMainNote = new GPE_Label_Text("MP3 file type not supported.","Please Note MP3 files are not supported or licensed with usage of the Game Pencil Engine.");
-    audioGroupName = new gpe_text_widget_string("","default=blank");
+    audioEditorMainNote = new pawgui::widget_label_text ("MP3 file type not supported.","Please Note MP3 files are not supported or licensed with usage of the Game Pencil Engine.");
+    audioGroupName = new pawgui::widget_input_text("","default=blank");
     audioGroupName->set_name("Audio Group");
     audioGroupName->set_label("Audio Group");
-    audioTypeButtonController = new GPE_RadioButtonControllerBasic("Audio Type", true,1);
+    audioTypeButtonController = new pawgui::widget_radio_button_controller("Audio Type", true,1);
     audioTypeButtonController->add_opton("Normal Audio");
     audioTypeButtonController->add_opton("Voice");
     audioTypeButtonController->add_opton("Background Music");
     if( saveResourceButton!=NULL)
     {
-        audioTypeButtonController->set_coords(-1,saveResourceButton->get_ypos()+saveResourceButton->get_height()+GENERAL_GPE_GUI_PADDING);
+        audioTypeButtonController->set_coords(-1,saveResourceButton->get_ypos()+saveResourceButton->get_height()+pawgui::padding_default);
     }
-    openExternalEditorButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Use External Editor" );
-    refreshResourceDataButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png"," Refreshes this resource's media files");
+    openExternalEditorButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Use External Editor" );
+    refreshResourceDataButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png"," Refreshes this resource's media files");
 
-    playButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Play" );
-    preloadCheckBox = new GPE_CheckBoxBasic("Preload Audio","Check to load audio at game open", true);
-    volumeLabel = new GPE_Label_Text("Volume","Default Volume Level");
-    defaultVolume = new gpe_text_widget_number("Range 0 to 100",true,0,200 );
+    playButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Play" );
+    preloadCheckBox = new pawgui::widget_checkbox("Preload Audio","Check to load audio at game open", true);
+    volumeLabel = new pawgui::widget_label_text ("Volume","Default Volume Level");
+    defaultVolume = new pawgui::widget_input_number("Range 0 to 100",true,0,200 );
     defaultVolume->set_string("100");
     defaultVolume->set_name("Default Volume:");
     defaultVolume->set_width(32);
-    volumeSlider = new GPE_Slider_XAxis(100,0,200);
+    volumeSlider = new pawgui::widget_slide_xaxis(100,0,200);
 }
 
 audioResource::~audioResource()
@@ -139,8 +139,8 @@ bool audioResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTab
 {
     if( fileTarget!=NULL && fileTarget->is_open() )
     {
-        std::string nestedTabsStr = generate_tabs( leftTabAmount  );
-        std::string nestedTabsStrObjFunc = generate_tabs( leftTabAmount +1 );
+        std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
+        std::string nestedTabsStrObjFunc = pawgui::generate_tabs( leftTabAmount +1 );
         std::string html5SpShName = get_name();
 
         *fileTarget << nestedTabsStr << "var " + html5SpShName + " =  GPE.rsm.add_audio(";
@@ -267,7 +267,7 @@ void audioResource::load_audio(std::string new_file_name)
         else
         {
             isAudioFile = false;
-            display_user_alert("[Alert - "+resource_name+"]","Unsupported file type added.");
+            pawgui::display_user_alert("[Alert - "+resource_name+"]","Unsupported file type added.");
         }
         if( loadableAudio )
         {
@@ -281,7 +281,7 @@ void audioResource::load_audio(std::string new_file_name)
             }
             if( soundVal==NULL)
             {
-                update_action_message("Failed to Load Audio file "+new_file_name+"." );
+                pawgui::update_action_message("Failed to Load Audio file "+new_file_name+"." );
             }
         }
         if( isAudioFile)
@@ -291,16 +291,16 @@ void audioResource::load_audio(std::string new_file_name)
     }
     else
     {
-        display_user_alert("Unable to load audio","File type["+ stg_ex::get_file_ext(new_file_name)+"] not supported when loading ["+new_file_name+"].");
+        pawgui::display_user_alert("Unable to load audio","File type["+ stg_ex::get_file_ext(new_file_name)+"] not supported when loading ["+new_file_name+"].");
     }
 }
 
 void audioResource::load_resource(std::string file_path )
 {
 
-    if( GPE_LOADER != NULL )
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->update_submessages( "Processing Audio", resource_name );
+        pawgui::main_loader_display->update_submessages( "Processing Audio", resource_name );
     }
     std::string otherColContainerName = "";
 
@@ -453,38 +453,38 @@ void audioResource::prerender_self( )
 
 }
 
-void audioResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && viewedSpace!=NULL )
+    if(cam!=NULL && view_space!=NULL )
     {
         int prevVolumeSliderVal = volumeSlider->get_value();
         int prevVolumeTypedVal = defaultVolume->get_held_number();
 
-        if( PANEL_GENERAL_EDITOR!=NULL )
+        if( panel_main_area!=NULL )
         {
-            PANEL_GENERAL_EDITOR->clear_panel();
+            panel_main_area->clear_panel();
 
-            PANEL_GENERAL_EDITOR->add_gui_element(audioEditorMainNote,true);
-            PANEL_GENERAL_EDITOR->add_gui_element(renameBox,true);
-            PANEL_GENERAL_EDITOR->add_gui_element(audioGroupName, true);
+            panel_main_area->add_gui_element(audioEditorMainNote,true);
+            panel_main_area->add_gui_element(renameBox,true);
+            panel_main_area->add_gui_element(audioGroupName, true);
 
-            PANEL_GENERAL_EDITOR->add_gui_auto(refreshResourceDataButton);
-            PANEL_GENERAL_EDITOR->add_gui_auto(loadResourceButton);
-            PANEL_GENERAL_EDITOR->add_gui_auto(playButton);
-            PANEL_GENERAL_EDITOR->add_gui_auto(exportResourceButton);
-            PANEL_GENERAL_EDITOR->add_gui_element(openExternalEditorButton,true);
+            panel_main_area->add_gui_auto(refreshResourceDataButton);
+            panel_main_area->add_gui_auto(loadResourceButton);
+            panel_main_area->add_gui_auto(playButton);
+            panel_main_area->add_gui_auto(exportResourceButton);
+            panel_main_area->add_gui_element(openExternalEditorButton,true);
 
-            PANEL_GENERAL_EDITOR->add_gui_element(audioTypeButtonController,true);
+            panel_main_area->add_gui_element(audioTypeButtonController,true);
 
-            PANEL_GENERAL_EDITOR->add_gui_element(volumeLabel, true);
-            PANEL_GENERAL_EDITOR->add_gui_element(volumeSlider, false);
-            PANEL_GENERAL_EDITOR->add_gui_element(defaultVolume,true);
+            panel_main_area->add_gui_element(volumeLabel, true);
+            panel_main_area->add_gui_element(volumeSlider, false);
+            panel_main_area->add_gui_element(defaultVolume,true);
 
-            PANEL_GENERAL_EDITOR->add_gui_auto(confirmResourceButton);
-            PANEL_GENERAL_EDITOR->add_gui_auto(cancelResourceButton);
-            PANEL_GENERAL_EDITOR->process_self( NULL, NULL );
+            panel_main_area->add_gui_auto(confirmResourceButton);
+            panel_main_area->add_gui_auto(cancelResourceButton);
+            panel_main_area->process_self( NULL, NULL );
 
             if( confirmResourceButton!=NULL && confirmResourceButton->is_clicked() )
             {
@@ -541,7 +541,7 @@ void audioResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect
             {
                 if( loadResourceButton->is_clicked() )
                 {
-                    std::string new_file_name = GPE_GetOpenFileName("Load In an Audio File","Audio",main_GUI_SETTINGS->fileOpenAudioDir);
+                    std::string new_file_name = pawgui::get_filename_open_from_popup("Load In an Audio File","Audio",pawgui::main_settings->fileOpenAudioDir);
                     if( (int)new_file_name.size() > 3)
                     {
                         load_audio(new_file_name);
@@ -564,23 +564,23 @@ void audioResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect
                     }
                     if( hasFileToOpen )
                     {
-                        GPE_open_context_menu();
-                        main_CONTEXT_MENU->set_width(openExternalEditorButton->get_width() );
+                        pawgui::context_menu_open();
+                        pawgui::main_context_menu->set_width(openExternalEditorButton->get_width() );
                         for( ii = 0; ii < gpe::sound_format_max; ii++)
                         {
                             if( (int)audioFileName[ii].size() > 0)
                             {
-                                main_CONTEXT_MENU->add_menu_option("Edit "+ gpe::sound_type_names[ii],ii,NULL,-1,NULL,true,true);
+                                pawgui::main_context_menu->add_menu_option("Edit "+ gpe::sound_type_names[ii],ii,NULL,-1,NULL,true,true);
                             }
                         }
-                        int menuSelection = GPE_Get_Context_Result();
+                        int menuSelection = pawgui::context_menu_process();
                         if( menuSelection >=0 && menuSelection < gpe::sound_format_max)
                         {
                             std::string fileToEdit = audioFileName[menuSelection];
 
-                            if( main_EDITOR_SETTINGS!=NULL && main_EDITOR_SETTINGS->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_AUD]!=NULL)
+                            if( main_editor_settings!=NULL && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_AUD]!=NULL)
                             {
-                                gpe::external_open_program(main_EDITOR_SETTINGS->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_AUD]->get_string(),fileToEdit, true );
+                                gpe::external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_AUD]->get_string(),fileToEdit, true );
                             }
                             else
                             {
@@ -615,11 +615,11 @@ void audioResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect
     }
 }
 
-void audioResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam )
+void audioResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && viewedSpace!=NULL)
+    if(cam!=NULL && view_space!=NULL)
     {
         std::string support_string = "";
 
@@ -632,9 +632,9 @@ void audioResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect 
                 current_max_types++;
             }
         }
-        int required_height = current_max_types *( GPE_AVERAGE_LINE_HEIGHT+GENERAL_GPE_GUI_PADDING );
+        int required_height = current_max_types *( pawgui::default_line_height+pawgui::padding_default );
 
-        if( viewedSpace->h >= required_height )
+        if( view_space->h >= required_height )
         {
             for( i_sound_type= 0; i_sound_type < current_max_types; i_sound_type++)
             {
@@ -647,27 +647,27 @@ void audioResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect 
                     support_string = "Not supported with current sound system";
                 }
 
-                gpe::gfs->render_text( GENERAL_GPE_GUI_PADDING,viewedSpace->h - i_sound_type*(GENERAL_GPE_GUI_PADDING+GPE_AVERAGE_LINE_HEIGHT), gpe::sound_type_names[i_sound_type]+" "+support_string,theme_main->main_box_font_highlight_color,font_default, gpe::fa_left, gpe::fa_bottom);
+                gpe::gfs->render_text( pawgui::padding_default,view_space->h - i_sound_type*(pawgui::padding_default+pawgui::default_line_height), gpe::sound_type_names[i_sound_type]+" "+support_string,pawgui::theme_main->main_box_font_highlight_color, gpe::font_default, gpe::fa_left, gpe::fa_bottom);
 
                 if( audioFileName[i_sound_type].size()> 0)
                 {
-                    gpe::gfs->render_text( viewedSpace->w-GENERAL_GPE_GUI_PADDING*3,i_sound_type *(GENERAL_GPE_GUI_PADDING+GPE_AVERAGE_LINE_HEIGHT), gpe::sound_type_names[i_sound_type]+" attatched ",theme_main->main_box_font_highlight_color,font_default, gpe::fa_right, gpe::fa_top);
+                    gpe::gfs->render_text( view_space->w-pawgui::padding_default*3,i_sound_type *(pawgui::padding_default+pawgui::default_line_height), gpe::sound_type_names[i_sound_type]+" attatched ",pawgui::theme_main->main_box_font_highlight_color, gpe::font_default, gpe::fa_right, gpe::fa_top);
                 }
                 else
                 {
-                    gpe::gfs->render_text( viewedSpace->w-GENERAL_GPE_GUI_PADDING*3,i_sound_type*(GENERAL_GPE_GUI_PADDING+GPE_AVERAGE_LINE_HEIGHT), gpe::sound_type_names[i_sound_type]+" not attatched ",theme_main->main_box_font_color,font_default,gpe::fa_right,gpe::fa_top);
+                    gpe::gfs->render_text( view_space->w-pawgui::padding_default*3,i_sound_type*(pawgui::padding_default+pawgui::default_line_height), gpe::sound_type_names[i_sound_type]+" not attatched ",pawgui::theme_main->main_box_font_color, gpe::font_default,gpe::fa_right,gpe::fa_top);
                 }
             }
         }
-        gpe::gfs->render_text( viewedSpace->w - GENERAL_GPE_GUI_PADDING,viewedSpace->h - GENERAL_GPE_GUI_PADDING, gpe::sound_system_name,theme_main->main_box_font_highlight_color,font_default, gpe::fa_right, gpe::fa_bottom);
+        gpe::gfs->render_text( view_space->w - pawgui::padding_default,view_space->h - pawgui::padding_default, gpe::sound_system_name,pawgui::theme_main->main_box_font_highlight_color, gpe::font_default, gpe::fa_right, gpe::fa_bottom);
     }
 }
 
 void audioResource::save_resource(std::string file_path, int backupId)
 {
-    if( GPE_LOADER != NULL )
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->update_submessages( "Saving Audio", resource_name );
+        pawgui::main_loader_display->update_submessages( "Saving Audio", resource_name );
     }
 
     bool usingAltSaveSource = false;
@@ -706,7 +706,7 @@ void audioResource::save_resource(std::string file_path, int backupId)
                         if( sff_ex::file_exists(resFileCopyDest) )
                         {
                             /*
-                            if( GPE_Display_Basic_Prompt("[WARNING]Audio File Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] audio file? This action is irreversible!")==DISPLAY_QUERY_YES)
+                            if( pawgui::display_prompt_message("[WARNING]Audio File Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] audio file? This action is irreversible!")==pawgui::display_query_yes)
                             {
                                 file_copy(resFileCopySrc,resFileCopyDest);
                             }
@@ -746,12 +746,12 @@ void audioResource::save_resource(std::string file_path, int backupId)
         }
         else
         {
-            GPE_main_Logs->log_general_error("Unable to save to file ["+newFileOut+"]");
+            main_editor_log->log_general_error("Unable to save to file ["+newFileOut+"]");
         }
     }
     else
     {
-        GPE_main_Logs->log_general_error("Unable to save file ["+newFileOut+"]");
+        main_editor_log->log_general_error("Unable to save file ["+newFileOut+"]");
     }
 }
 
@@ -761,7 +761,7 @@ bool audioResource::write_data_into_projectfile(std::ofstream * fileTarget, int 
     {
         if( fileTarget->is_open() )
         {
-            std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+            std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
             *fileTarget << nestedTabsStr << "audio=" << resource_name << "," << get_global_rid() << ",\n";
             return true;
         }

@@ -40,7 +40,7 @@ SOFTWARE.
 class sceneLayer: public GPE_SceneBasicClass
 {
 public:
-    GPE_GeneralResourceContainer * projectParentFolder;
+    pawgui::widget_resource_container * projectParentFolder;
     int tileAmountX, tileAmountY;
     //int layerId;
     int layerAlpha;
@@ -49,10 +49,10 @@ public:
     //Lights [ BEGIN ]
     std::vector< GPE_SceneBasicLight * > layerLights;
     //Lights [ END ]
-    sceneLayer( int foundProjectLayerId, GPE_GeneralResourceContainer *pFolder = NULL);
+    sceneLayer( int foundProjectLayerId, pawgui::widget_resource_container *pFolder = NULL);
     ~sceneLayer();
     void add_typed_elements();
-    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController );
+    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
     void calculate_size();
     void process_elements();
     void render_branch();

@@ -41,20 +41,20 @@ SOFTWARE.
 class GPE_SceneText: public GPE_SceneBasicClass
 {
 public:
-    GPE_DropDown_Resouce_Menu * fontInEditor;
+    pawgui::widget_drop_down_resource_menu * fontInEditor;
     int fontHalign, fontValign;
     std::string text;
     int fontId;
-    GPE_ToolIconButtonBar * sceneTextHalign;
-    GPE_ToolIconButtonBar * sceneTextValign;
-    gpe_text_widget_string * defaultTextElement; //Default if not localized
-    gpe_text_widget_string * textSection; //Section found in localization
-    gpe_text_widget_string * textKey; //The Key found in localization;
+    pawgui::widget_button_iconbar * sceneTextHalign;
+    pawgui::widget_button_iconbar * sceneTextValign;
+    pawgui::widget_input_text * defaultTextElement; //Default if not localized
+    pawgui::widget_input_text * textSection; //Section found in localization
+    pawgui::widget_input_text * textKey; //The Key found in localization;
 
-    GPE_SceneText(  GPE_GeneralResourceContainer *pFolder = NULL );
+    GPE_SceneText(  pawgui::widget_resource_container *pFolder = NULL );
     ~GPE_SceneText();
     void add_typed_elements();
-    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController );
+    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
     void calculate_size();
     void process_elements();
     void render_branch();
@@ -64,21 +64,21 @@ public:
 class GPE_SceneMultilineText: public GPE_SceneBasicClass
 {
 public:
-    GPE_DropDown_Resouce_Menu * fontInEditor;
+    pawgui::widget_drop_down_resource_menu * fontInEditor;
     int fontHalign, fontValign;
     std::string text;
     int fontId;
-    GPE_CheckBoxBasic * checkWrapText;
+    pawgui::widget_checkbox * checkWrapText;
 
-    GPE_ToolIconButtonBar * sceneTextHalign;
-    GPE_ToolIconButtonBar * sceneTextValign;
-    GPE_TextAreaInputBasic * customTextElement;//Default if not localized
-    gpe_text_widget_string * textSection; //Section found in localization
-    gpe_text_widget_string * textKey; //The Key found in localization;
-    GPE_SceneMultilineText(  GPE_GeneralResourceContainer *pFolder = NULL );
+    pawgui::widget_button_iconbar * sceneTextHalign;
+    pawgui::widget_button_iconbar * sceneTextValign;
+    pawgui::widget_text_editor * customTextElement;//Default if not localized
+    pawgui::widget_input_text * textSection; //Section found in localization
+    pawgui::widget_input_text * textKey; //The Key found in localization;
+    GPE_SceneMultilineText(  pawgui::widget_resource_container *pFolder = NULL );
     ~GPE_SceneMultilineText();
     void add_typed_elements();
-    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController );
+    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
     void calculate_size();
     void process_elements();
     void render_branch();

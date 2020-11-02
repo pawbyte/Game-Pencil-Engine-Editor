@@ -34,18 +34,18 @@ SOFTWARE.
 
 #include "gpe_scene_text_class.h"
 
-GPE_SceneText::GPE_SceneText( GPE_GeneralResourceContainer *pFolder )
+GPE_SceneText::GPE_SceneText( pawgui::widget_resource_container *pFolder )
 {
     branchType = gpe::branch_type::STEXT;
     dualScaleClass = false;
     angleField->scale_width( 0.4 );
 
-    iconTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/font.png") ;
+    iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/font.png") ;
     projectParentFolder = pFolder;
 
     if( projectParentFolder!=NULL)
     {
-        fontInEditor  = new GPE_DropDown_Resouce_Menu( "Font",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_font]+"s"),-1,true);
+        fontInEditor  = new pawgui::widget_drop_down_resource_menu( "Font",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_font]+"s"),-1,true);
         fontInEditor->set_width(192);
     }
     else
@@ -63,23 +63,23 @@ GPE_SceneText::GPE_SceneText( GPE_GeneralResourceContainer *pFolder )
     fontHalign = gpe::fa_left;
     fontValign = gpe::fa_top;
 
-    sceneTextHalign = new GPE_ToolIconButtonBar( 32,true);
+    sceneTextHalign = new pawgui::widget_button_iconbar( 32,true);
     sceneTextHalign->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/align-left.png","Align left", gpe::fa_left, false );
     sceneTextHalign->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/align-center.png","Align center", gpe::fa_center, false );
     sceneTextHalign->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/align-right.png","Align right", gpe::fa_right, false );
 
 
-    sceneTextValign = new GPE_ToolIconButtonBar( 32,true);
+    sceneTextValign = new pawgui::widget_button_iconbar( 32,true);
     sceneTextValign->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/align-left.png","Align top", gpe::fa_top, false );
     sceneTextValign->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/align-center.png","Align middle", gpe::fa_middle, false );
     sceneTextValign->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/align-right.png","Align bottom", gpe::fa_bottom, false );
 
-    defaultTextElement = new gpe_text_widget_string("","Custom text...");
+    defaultTextElement = new pawgui::widget_input_text("","Custom text...");
     defaultTextElement->set_label("Default Text:");
-    textSection = new gpe_text_widget_string("","Text Section");
+    textSection = new pawgui::widget_input_text("","Text Section");
     textSection->set_label("Text Section(localization):");
 
-    textKey = new gpe_text_widget_string("","Text Key");
+    textKey = new pawgui::widget_input_text("","Text Key");
     textKey->set_label("Text Key(localization):");
 }
 
@@ -114,18 +114,18 @@ GPE_SceneText::~GPE_SceneText()
 
 void GPE_SceneText::add_typed_elements()
 {
-    if( PANEL_INSPECTOR!=NULL )
+    if( panel_inspector!=NULL )
     {
-        PANEL_INSPECTOR->add_gui_element( fontInEditor, true );
-        PANEL_INSPECTOR->add_gui_element( sceneTextHalign, true );
-        PANEL_INSPECTOR->add_gui_element( sceneTextValign, true );
-        PANEL_INSPECTOR->add_gui_element( defaultTextElement, true );
-        PANEL_INSPECTOR->add_gui_element( textSection, true );
-        PANEL_INSPECTOR->add_gui_element( textKey, true );
+        panel_inspector->add_gui_element( fontInEditor, true );
+        panel_inspector->add_gui_element( sceneTextHalign, true );
+        panel_inspector->add_gui_element( sceneTextValign, true );
+        panel_inspector->add_gui_element( defaultTextElement, true );
+        panel_inspector->add_gui_element( textSection, true );
+        panel_inspector->add_gui_element( textKey, true );
     }
 }
 
-bool GPE_SceneText::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController )
+bool GPE_SceneText::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
 {
     GPE_SceneBasicClass::build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController);
     return true;
@@ -167,7 +167,7 @@ void GPE_SceneText::render_branch( )
     spm->tempRect->y = ceil( (yPos*spm->zoomValue-spm->currentCamera->y*spm->zoomValue) );
 
     gpe::font_base * foundFont = NULL;
-    GPE_GeneralResourceContainer * fContainer = fontInEditor->get_selected_container();
+    pawgui::widget_resource_container * fContainer = fontInEditor->get_selected_container();
     bool fontRendered = false;
     if( fContainer!=NULL && fContainer->get_held_resource() )
     {
@@ -178,9 +178,9 @@ void GPE_SceneText::render_branch( )
         }
     }
     //Renders using default for preview
-    if( !fontRendered && font_default!=NULL )
+    if( !fontRendered && gpe::font_default!=NULL )
     {
-        font_default->render_text_special( spm->tempRect->x, spm->tempRect->y, "DEFAULT:  "+defaultTextElement->get_string(), branchColor->get_color(), fontHalign, fontValign, angle, spm->zoomValue * xScale, branchAlpha->get_value() );
+        gpe::font_default->render_text_special( spm->tempRect->x, spm->tempRect->y, "DEFAULT:  "+defaultTextElement->get_string(), branchColor->get_color(), fontHalign, fontValign, angle, spm->zoomValue * xScale, branchAlpha->get_value() );
     }
 }
 
@@ -188,7 +188,7 @@ bool GPE_SceneText::save_branch_data(std::ofstream * fileTarget, int nestedFolde
 {
     if( fileTarget!=NULL && fileTarget->is_open() )
     {
-        std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+        std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"   [GPE_GameText=";
         *fileTarget << fontId << ",";
         if( xPosField!=NULL)
@@ -226,8 +226,8 @@ bool GPE_SceneText::save_branch_data(std::ofstream * fileTarget, int nestedFolde
         {
             *fileTarget << "0,";
         }
-        *fileTarget << opName+",,]";
-        std::string customtTextTabsStr = generate_tabs( nestedFoldersIn+1 );
+        *fileTarget << widget_name+",,]";
+        std::string customtTextTabsStr = pawgui::generate_tabs( nestedFoldersIn+1 );
         *fileTarget << customtTextTabsStr+"[CUSTOM_TEXT]\n";
         *fileTarget << customtTextTabsStr+text+"\n";
         *fileTarget << customtTextTabsStr+"[/CUSTOM_TEXT]\n";
@@ -241,25 +241,25 @@ bool GPE_SceneText::save_branch_data(std::ofstream * fileTarget, int nestedFolde
 
 void GPE_SceneMultilineText::add_typed_elements()
 {
-    if( PANEL_INSPECTOR!=NULL )
+    if( panel_inspector!=NULL )
     {
-        PANEL_INSPECTOR->add_gui_element( fontInEditor, true );
-        PANEL_INSPECTOR->add_gui_element( sceneTextHalign, true );
-        PANEL_INSPECTOR->add_gui_element( sceneTextValign, true );
-        PANEL_INSPECTOR->add_gui_element( checkWrapText, true );
-        PANEL_INSPECTOR->add_gui_element( customTextElement, true );
+        panel_inspector->add_gui_element( fontInEditor, true );
+        panel_inspector->add_gui_element( sceneTextHalign, true );
+        panel_inspector->add_gui_element( sceneTextValign, true );
+        panel_inspector->add_gui_element( checkWrapText, true );
+        panel_inspector->add_gui_element( customTextElement, true );
     }
 }
 
-GPE_SceneMultilineText::GPE_SceneMultilineText( GPE_GeneralResourceContainer *pFolder )
+GPE_SceneMultilineText::GPE_SceneMultilineText( pawgui::widget_resource_container *pFolder )
 {
     dualScaleClass = false;
-    iconTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/paragraph.png") ;
+    iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/paragraph.png") ;
     projectParentFolder = pFolder;
 
     if( projectParentFolder!=NULL)
     {
-        fontInEditor  = new GPE_DropDown_Resouce_Menu( "Font",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_font]+"s"),-1,true);
+        fontInEditor  = new pawgui::widget_drop_down_resource_menu( "Font",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_font]+"s"),-1,true);
         fontInEditor->set_width(192);
     }
     else
@@ -274,26 +274,26 @@ GPE_SceneMultilineText::GPE_SceneMultilineText( GPE_GeneralResourceContainer *pF
     fontHalign = gpe::fa_left;
     fontValign = gpe::fa_top;
 
-    sceneTextHalign = new GPE_ToolIconButtonBar( 32,true);
+    sceneTextHalign = new pawgui::widget_button_iconbar( 32,true);
     sceneTextHalign->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/align-left.png","Align left", gpe::fa_left, false );
     sceneTextHalign->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/align-center.png","Align center", gpe::fa_center, false );
     sceneTextHalign->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/align-right.png","Align right", gpe::fa_right, false );
 
-    sceneTextValign = new GPE_ToolIconButtonBar( 32,true);
+    sceneTextValign = new pawgui::widget_button_iconbar( 32,true);
     sceneTextValign->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/align-left.png","Align top", gpe::fa_top, false );
     sceneTextValign->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/align-center.png","Align middle", gpe::fa_middle, false );
     sceneTextValign->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/align-right.png","Align bottom", gpe::fa_bottom, false );
 
-    customTextElement = new GPE_TextAreaInputBasic( false );
+    customTextElement = new pawgui::widget_text_editor( false );
     customTextElement->showButtonBar = false;
     customTextElement->isCodeEditor = false;
 
-    textSection = new gpe_text_widget_string("","Text Section");
+    textSection = new pawgui::widget_input_text("","Text Section");
     textSection->set_label("Text Section(localization):");
 
-    textKey = new gpe_text_widget_string("","Text Key");
+    textKey = new pawgui::widget_input_text("","Text Key");
     textKey->set_label("Text Key(localization):");
-    checkWrapText = new GPE_CheckBoxBasic("Automatically wrap text","", false );
+    checkWrapText = new pawgui::widget_checkbox("Automatically wrap text","", false );
 }
 
 GPE_SceneMultilineText::~GPE_SceneMultilineText()
@@ -331,7 +331,7 @@ GPE_SceneMultilineText::~GPE_SceneMultilineText()
 }
 
 
-bool GPE_SceneMultilineText::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController )
+bool GPE_SceneMultilineText::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
 {
     GPE_SceneBasicClass::build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController);
     return true;
@@ -364,7 +364,7 @@ bool GPE_SceneMultilineText::save_branch_data(std::ofstream * fileTarget, int ne
 {
     if( fileTarget!=NULL && fileTarget->is_open() )
     {
-        std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+        std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"   [GPE_GameText=";
         *fileTarget << fontId << ",";
         if( xPosField!=NULL)
@@ -411,8 +411,8 @@ bool GPE_SceneMultilineText::save_branch_data(std::ofstream * fileTarget, int ne
         {
             *fileTarget << "-1,";
         }
-        *fileTarget << opName+",,]";
-        std::string customtTextTabsStr = generate_tabs( nestedFoldersIn+1 );
+        *fileTarget << widget_name+",,]";
+        std::string customtTextTabsStr = pawgui::generate_tabs( nestedFoldersIn+1 );
         *fileTarget << customtTextTabsStr+"[CUSTOM_TEXT]\n";
         *fileTarget << customtTextTabsStr+text+"\n";
         *fileTarget << customtTextTabsStr+"[/CUSTOM_TEXT]\n";

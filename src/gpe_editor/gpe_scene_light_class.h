@@ -40,19 +40,19 @@ SOFTWARE.
 class GPE_SceneBasicLight: public GPE_SceneBasicClass
 {
 public:
-    GPE_DropDown_Resouce_Menu * lightInEditor;
+    pawgui::widget_drop_down_resource_menu * lightInEditor;
 
     //Ambient Light by default
-    GPE_CheckBoxBasic * lightIsActive;
-    gpe_text_widget_number * lightRadius;
-    gpe_text_widget_number * lightWidth;
-    gpe_text_widget_number * lightX2Pos;
-    gpe_text_widget_number * lightY2Pos;
+    pawgui::widget_checkbox * lightIsActive;
+    pawgui::widget_input_number * lightRadius;
+    pawgui::widget_input_number * lightWidth;
+    pawgui::widget_input_number * lightX2Pos;
+    pawgui::widget_input_number * lightY2Pos;
 
-    GPE_SceneBasicLight( GPE_GeneralResourceContainer *pFolder = NULL);
+    GPE_SceneBasicLight( pawgui::widget_resource_container *pFolder = NULL);
     ~GPE_SceneBasicLight();
     void add_typed_elements();
-    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController );
+    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
     void process_elements();
     void render_branch();
     bool save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn = 0);

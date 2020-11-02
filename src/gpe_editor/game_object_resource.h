@@ -59,51 +59,51 @@ const int OBJ_MODE_SOURCE = 2;
 class gameObjectResource: public standardEditableGameResource
 {
 public:
-    GPE_Label_Title * resource_nameLabel;
+    pawgui::widget_label_title * resource_nameLabel;
 
-    GPE_SelectBoxBasic * objModeSelector;
-    GPE_CheckBoxBasic * checkBoxNeedsCamera;
-    GPE_CheckBoxBasic * checkBoxIsMoveable;
-    GPE_CheckBoxBasic * checkBoxIsVisible;
-    GPE_CheckBoxBasic * checkBoxIsContinuous;
-    GPE_TextAreaInputBasic * headerCodeArea;
-    GPE_TextAreaInputBasic * sourceCodeArea;
+    pawgui::widget_selectbox * objModeSelector;
+    pawgui::widget_checkbox * checkBoxNeedsCamera;
+    pawgui::widget_checkbox * checkBoxIsMoveable;
+    pawgui::widget_checkbox * checkBoxIsVisible;
+    pawgui::widget_checkbox * checkBoxIsContinuous;
+    pawgui::widget_text_editor * headerCodeArea;
+    pawgui::widget_text_editor * sourceCodeArea;
     int animationIndex;
     int imageIndex;
     int selectedMode;
     int parentObjectId;
     gpe::animaton2d * animInEditor;
-    GPE_DropDown_Resouce_Menu * animationField;
-    GPE_DropDown_Resouce_Menu * parentObjectField;
+    pawgui::widget_drop_down_resource_menu * animationField;
+    pawgui::widget_drop_down_resource_menu * parentObjectField;
 
     //Component Related Variables
-    GPE_GuiElementList * customComponentsGuiList;
-    GPE_Label_Text * componentsMainGuiLabel;
-    GPE_Label_Text * componentsGuiLabel;
-    GPE_ToolPushButton * inheritParentComponentButton;
-    GPE_ToolPushButton * resetComponentsButton;
-    GPE_DropDown_Menu * addNewComponentDropDown;
-    GPE_ToolIconButton * removeComponentButton;
-    GPE_ToolIconButton * editCompnentButton;
-    GPE_ToolIconButton * componentSettingsButton;
+    pawgui::widget_panel_list * customComponentsGuiList;
+    pawgui::widget_label_text  * componentsMainGuiLabel;
+    pawgui::widget_label_text  * componentsGuiLabel;
+    pawgui::widget_button_push * inheritParentComponentButton;
+    pawgui::widget_button_push * resetComponentsButton;
+    pawgui::widget_dropdown_menu * addNewComponentDropDown;
+    pawgui::widget_button_icon * removeComponentButton;
+    pawgui::widget_button_icon * editCompnentButton;
+    pawgui::widget_button_icon * componentSettingsButton;
 
-    gameObjectResource(GPE_GeneralResourceContainer * pFolder = NULL);
+    gameObjectResource(pawgui::widget_resource_container * pFolder = NULL);
     ~gameObjectResource();
     void add_component(std::string newComponentData);
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
-    GPE_GeneralResourceContainer * get_parent_resource();
+    pawgui::widget_resource_container * get_parent_resource();
     gpe::animaton2d * get_resource_animation();
     bool include_local_files( std::string pBuildDir , int buildType );
     bool is_build_ready();
     void integrate_into_syntax();
-    void manage_components( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void manage_components( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
     void prerender_self( );
     void load_resource(std::string file_path = "");
-    void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
 
     void save_resource(std::string file_path = "", int backupId = -1);
     int search_for_string(std::string needle);
@@ -112,5 +112,5 @@ public:
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 
-void setup_object_components( GPE_DropDown_Menu * componentMenu);
+void setup_object_components( pawgui::widget_dropdown_menu * componentMenu);
 #endif

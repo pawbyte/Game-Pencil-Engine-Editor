@@ -67,7 +67,7 @@ bool objectResParentChainLink::is_inchain(int chainId)
     return false;
 }
 
-gameObjectResource::gameObjectResource(GPE_GeneralResourceContainer * pFolder)
+gameObjectResource::gameObjectResource(pawgui::widget_resource_container * pFolder)
 {
     resourcePostProcessed = true;
     projectParentFolder = pFolder;
@@ -85,20 +85,20 @@ gameObjectResource::gameObjectResource(GPE_GeneralResourceContainer * pFolder)
 
 
 
-    headerCodeArea = new GPE_TextAreaInputBasic(true);
-    sourceCodeArea = new GPE_TextAreaInputBasic(true);
+    headerCodeArea = new pawgui::widget_text_editor(true);
+    sourceCodeArea = new pawgui::widget_text_editor(true);
 
-    objModeSelector = new GPE_SelectBoxBasic("Object Functions");
-    objModeSelector->add_option("Components",OBJ_MODE_COMPONENTS,paw_gui_rsm->texture_add("componentsIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/tags.png"),NULL,0,false,true);
-    objModeSelector->add_option("Header Code(C++)",OBJ_MODE_HEADER,paw_gui_rsm->texture_add("superScriptIoon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/superscript.png"),NULL,0,false,true);
-    objModeSelector->add_option("Source Code",OBJ_MODE_SOURCE,paw_gui_rsm->texture_add("codeIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/code.png"),NULL,0,false,true);
+    objModeSelector = new pawgui::widget_selectbox("Object Functions");
+    objModeSelector->add_option("Components",OBJ_MODE_COMPONENTS,pawgui::rsm_gui->texture_add("componentsIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/tags.png"),NULL,0,false,true);
+    objModeSelector->add_option("Header Code(C++)",OBJ_MODE_HEADER,pawgui::rsm_gui->texture_add("superScriptIoon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/superscript.png"),NULL,0,false,true);
+    objModeSelector->add_option("Source Code",OBJ_MODE_SOURCE,pawgui::rsm_gui->texture_add("codeIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/code.png"),NULL,0,false,true);
 
     if( projectParentFolder!=NULL )
     {
-        animationField = new GPE_DropDown_Resouce_Menu( "Default Animation",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_animation]+"s") );
+        animationField = new pawgui::widget_drop_down_resource_menu( "Default Animation",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_animation]+"s") );
         loadResourceButton->set_width(animationField->get_width() );
         confirmResourceButton->set_width(animationField->get_width() );
-        parentObjectField = new GPE_DropDown_Resouce_Menu( "Parent Object",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s" ) );
+        parentObjectField = new pawgui::widget_drop_down_resource_menu( "Parent Object",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s" ) );
     }
     else
     {
@@ -106,25 +106,25 @@ gameObjectResource::gameObjectResource(GPE_GeneralResourceContainer * pFolder)
         parentObjectField = NULL;
     }
 
-    customComponentsGuiList = new GPE_GuiElementList();
-    customComponentsGuiList->panelAlignType = GPE_PANEL_ALIGN_FULL_LEFT;
-    componentsMainGuiLabel = new GPE_Label_Text("Custom Components","Custom components, useful for scene editor");
-    componentsGuiLabel = new GPE_Label_Text("Custom Components","Custom components, useful for scene editor");
-    inheritParentComponentButton = new GPE_ToolPushButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/users.png","Inherit Components","Inherit components from parent object class");
-    resetComponentsButton = new GPE_ToolPushButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/trash.png","Reset Components","Clears all components form this object class");
-    addNewComponentDropDown = new GPE_DropDown_Menu( "Add Component",false);
+    customComponentsGuiList = new pawgui::widget_panel_list();
+    customComponentsGuiList->panelAlignType = pawgui::panel_align_left;
+    componentsMainGuiLabel = new pawgui::widget_label_text ("Custom Components","Custom components, useful for scene editor");
+    componentsGuiLabel = new pawgui::widget_label_text ("Custom Components","Custom components, useful for scene editor");
+    inheritParentComponentButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/users.png","Inherit Components","Inherit components from parent object class");
+    resetComponentsButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/trash.png","Reset Components","Clears all components form this object class");
+    addNewComponentDropDown = new pawgui::widget_dropdown_menu( "Add Component",false);
     setup_object_components ( addNewComponentDropDown );
     addNewComponentDropDown->set_width(224);
 
-    removeComponentButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/minus.png","Remove Component");
-    editCompnentButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/edit.png","Edit Component");
-    componentSettingsButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/trash.png","Component Settings");
+    removeComponentButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/minus.png","Remove Component");
+    editCompnentButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/edit.png","Edit Component");
+    componentSettingsButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/trash.png","Component Settings");
 
-    checkBoxIsVisible = new GPE_CheckBoxBasic("Visible","The actor is rendered on screen", true);
-    checkBoxNeedsCamera = new GPE_CheckBoxBasic("Needs Camera","Object will only perform logic if in view of any camera [Highly recommended for most objects]", true);
-    checkBoxIsMoveable = new GPE_CheckBoxBasic("Mobile","Uses engine default physics", true);
-    checkBoxIsContinuous = new GPE_CheckBoxBasic("Continuous","Object continues throughout game scenes[Keep unchecked for most objects]", false);
-    resource_nameLabel = new GPE_Label_Title("Object","");
+    checkBoxIsVisible = new pawgui::widget_checkbox("Visible","The actor is rendered on screen", true);
+    checkBoxNeedsCamera = new pawgui::widget_checkbox("Needs Camera","Object will only perform logic if in view of any camera [Highly recommended for most objects]", true);
+    checkBoxIsMoveable = new pawgui::widget_checkbox("Mobile","Uses engine default physics", true);
+    checkBoxIsContinuous = new pawgui::widget_checkbox("Continuous","Object continues throughout game scenes[Keep unchecked for most objects]", false);
+    resource_nameLabel = new pawgui::widget_label_title("Object","");
 }
 
 gameObjectResource::~gameObjectResource()
@@ -250,7 +250,7 @@ gameObjectResource::~gameObjectResource()
 
 void gameObjectResource::add_component(std::string newComponentData)
 {
-    GPE_GeneralGuiElement * newComponentMeat = add_gui_component(newComponentData);
+    pawgui::widget_basic * newComponentMeat = add_gui_component(newComponentData);
     if( newComponentMeat!=NULL)
     {
         GPE_ObjectComponent * tempComponent = NULL;
@@ -290,15 +290,15 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
         int iFunc = 0;
         int paramLine = 0;
         int iErrorLine = 0;
-        std::string nestedTabsStr = generate_tabs( leftTabAmount  );
-        std::string nestedTabsStrObjFunc = generate_tabs( leftTabAmount +1 );
+        std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
+        std::string nestedTabsStrObjFunc = pawgui::generate_tabs( leftTabAmount +1 );
 
         //*fileTarget << nestedTabsStr << "var " << get_name() << " = " << exportBuildGlobalId << ";\n";
         *fileTarget << nestedTabsStr << "GPE._obj_" << get_name() << " =  (function (xPosIn, yPosIn,objectLayerId) \n";
         *fileTarget << nestedTabsStr << "{ \n";
         *fileTarget << nestedTabsStrObjFunc << "function _obj_" << get_name() <<" (xPosIn, yPosIn,objectLayerId) \n";
         *fileTarget << nestedTabsStrObjFunc << "{ \n";
-        GPE_GeneralResourceContainer * parentRes = parentObjectField->get_selected_container();
+        pawgui::widget_resource_container * parentRes = parentObjectField->get_selected_container();
         if( parentRes!=NULL)
         {
             *fileTarget << nestedTabsStrObjFunc << "    GPE._obj_" << parentRes->get_name() <<".call(this,xPosIn, yPosIn,objectLayerId); \n";
@@ -308,7 +308,7 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
             *fileTarget << nestedTabsStrObjFunc << "    GPE.game_object.call(this,xPosIn, yPosIn,objectLayerId); \n";
         }
         *fileTarget << nestedTabsStrObjFunc << "    this.gpeObjectType ="<< exportBuildGlobalId << "; \n";
-        GPE_GeneralResourceContainer * animationRes = animationField->get_selected_container();
+        pawgui::widget_resource_container * animationRes = animationField->get_selected_container();
         if( animationRes!=NULL)
         {
             *fileTarget << nestedTabsStrObjFunc << "    this.init_animation(" << animationRes->exportBuildGlobalId << ");\n";
@@ -320,7 +320,7 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
 
         if( checkBoxIsVisible!=NULL)
         {
-            *fileTarget << nestedTabsStrObjFunc << "    this.isVisible = " << checkBoxIsVisible->is_checked() << ";\n";
+            *fileTarget << nestedTabsStrObjFunc << "    this.isVisible = " << checkBoxIsVisible->is_clicked() << ";\n";
         }
         else
         {
@@ -329,7 +329,7 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
         //
         if( checkBoxIsContinuous!=NULL)
         {
-            *fileTarget << nestedTabsStrObjFunc << "    this.gpeIsContinuousObject = " << checkBoxIsContinuous->is_checked() << ";\n";
+            *fileTarget << nestedTabsStrObjFunc << "    this.gpeIsContinuousObject = " << checkBoxIsContinuous->is_clicked() << ";\n";
         }
         else
         {
@@ -338,7 +338,7 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
         //
         if( checkBoxNeedsCamera!=NULL)
         {
-            *fileTarget << nestedTabsStrObjFunc << "    this.isViewIndependent = " << !checkBoxNeedsCamera->is_checked() << ";\n";
+            *fileTarget << nestedTabsStrObjFunc << "    this.isViewIndependent = " << !checkBoxNeedsCamera->is_clicked() << ";\n";
         }
         else
         {
@@ -349,7 +349,7 @@ bool gameObjectResource::build_intohtml5_file(std::ofstream * fileTarget, int le
         {
             for( iErrorLine=0; iErrorLine < (int)sourceCodeArea->foundSyntaxErrors.size(); iErrorLine++)
             {
-                GPE_main_Logs->log_build_error(get_name()+"'s SRC: "+sourceCodeArea->foundSyntaxErrors[iErrorLine] );
+                main_editor_log->log_build_error(get_name()+"'s SRC: "+sourceCodeArea->foundSyntaxErrors[iErrorLine] );
                 buildSuccessful = false;
             }
         }
@@ -378,7 +378,7 @@ void gameObjectResource::compile_cpp()
 
 }
 
-GPE_GeneralResourceContainer * gameObjectResource::get_parent_resource()
+pawgui::widget_resource_container * gameObjectResource::get_parent_resource()
 {
     if( parentObjectField!=NULL)
     {
@@ -397,10 +397,10 @@ gpe::animaton2d * gameObjectResource::get_resource_animation()
 {
     if( projectParentFolder!=NULL)
     {
-        GPE_GeneralResourceContainer * allanimationsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_animation]+"s");
+        pawgui::widget_resource_container * allanimationsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_animation]+"s");
         if( allanimationsFolder!=NULL)
         {
-            GPE_GeneralResourceContainer *objTypeContainer = allanimationsFolder->find_resource_from_id( animationIndex);
+            pawgui::widget_resource_container *objTypeContainer = allanimationsFolder->find_resource_from_id( animationIndex);
             if( objTypeContainer!=NULL)
             {
                 return objTypeContainer->get_resource_animation();
@@ -430,16 +430,16 @@ void gameObjectResource::integrate_into_syntax()
     }
 }
 
-void gameObjectResource::manage_components( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void gameObjectResource::manage_components( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && viewedSpace!=NULL && customComponentsGuiList!=NULL && renameBox!=NULL)
+    if(cam!=NULL && view_space!=NULL && customComponentsGuiList!=NULL && renameBox!=NULL)
     {
         customComponentsGuiList->set_coords(0, 0);
-        customComponentsGuiList->set_width(viewedSpace->w );
-        customComponentsGuiList->set_height(viewedSpace->h  );
-        customComponentsGuiList->barXPadding = GENERAL_GPE_GUI_PADDING;
+        customComponentsGuiList->set_width(view_space->w );
+        customComponentsGuiList->set_height(view_space->h  );
+        customComponentsGuiList->barXPadding = pawgui::padding_default;
         customComponentsGuiList->barXMargin = 0;
 
         customComponentsGuiList->clear_list();
@@ -475,7 +475,7 @@ void gameObjectResource::manage_components( gpe::shape_rect * viewedSpace, gpe::
                 customComponentsGuiList->add_gui_element(tempCustomComponent->get_gear(),true);
             }
         }
-        customComponentsGuiList->process_self(viewedSpace,cam);
+        customComponentsGuiList->process_self(view_space,cam);
 
         for(  iRealCompo = (int)customComponentRealList.size()-1; iRealCompo>=0; iRealCompo--)
         {
@@ -487,20 +487,20 @@ void gameObjectResource::manage_components( gpe::shape_rect * viewedSpace, gpe::
                     if( tempCustomComponent->get_gear()->is_clicked() )
                     {
                         customComponentsGuiList->clear_list();
-                        GPE_open_context_menu(-1,-1,256);
-                        main_CONTEXT_MENU->add_menu_option("Rename Component",0,NULL,-1,NULL,true,true);
-                        main_CONTEXT_MENU->add_menu_option("Delete Component",1,NULL,-1,NULL,false,true);
+                        pawgui::context_menu_open(-1,-1,256);
+                        pawgui::main_context_menu->add_menu_option("Rename Component",0,NULL,-1,NULL,true,true);
+                        pawgui::main_context_menu->add_menu_option("Delete Component",1,NULL,-1,NULL,false,true);
                         if( tempCustomComponent->get_type()=="dropdown" || tempCustomComponent->get_type()=="selectbox")
                         {
-                            main_CONTEXT_MENU->add_menu_option("Add Option",2,NULL,-1,NULL,false,true);
-                            main_CONTEXT_MENU->add_menu_option("Remove Option",3,NULL,-1,NULL,false,true);
+                            pawgui::main_context_menu->add_menu_option("Add Option",2,NULL,-1,NULL,false,true);
+                            pawgui::main_context_menu->add_menu_option("Remove Option",3,NULL,-1,NULL,false,true);
                         }
-                        main_CONTEXT_MENU->add_menu_option("Exit Menu",4,NULL,-1,NULL,true,true);
-                        int menuSelection = GPE_Get_Context_Result();
+                        pawgui::main_context_menu->add_menu_option("Exit Menu",4,NULL,-1,NULL,true,true);
+                        int menuSelection = pawgui::context_menu_process();
                         if( menuSelection==0)
                         {
                             //rename
-                            std::string newComponentName = get_string_from_popup("Name your new component","Must be unique!","");
+                            std::string newComponentName = pawgui::get_string_from_popup("Name your new component","Must be unique!","");
                             bool componentNameInUseAlready = false;
                             if( newComponentName.size() > 0 )
                             {
@@ -529,7 +529,7 @@ void gameObjectResource::manage_components( gpe::shape_rect * viewedSpace, gpe::
                         }
                         else if( menuSelection==1)
                         {
-                            if( GPE_Display_Basic_Prompt("[WARNING]Object Component deletion?","Are you sure you will like to delete the ["+tempCustomComponent->get_name()+"] component? This action is irreversible!")==DISPLAY_QUERY_YES)
+                            if( pawgui::display_prompt_message("[WARNING]Object Component deletion?","Are you sure you will like to delete the ["+tempCustomComponent->get_name()+"] component? This action is irreversible!")==pawgui::display_query_yes)
                             {
                                 //delete
                                 delete tempCustomComponent;
@@ -542,11 +542,11 @@ void gameObjectResource::manage_components( gpe::shape_rect * viewedSpace, gpe::
                             if( tempCustomComponent->get_type()=="dropdown" || tempCustomComponent->get_type()=="selectbox")
                             {
                                 std::string extraDataString = "[menu]";
-                                std::string newMenuOptionName = get_string_from_popup("Enter an option name.","option name:","");
+                                std::string newMenuOptionName = pawgui::get_string_from_popup("Enter an option name.","option name:","");
                                 while( newMenuOptionName.size() > 0 && (  stg_ex::is_alnum(newMenuOptionName,true,true) ) )
                                 {
                                     extraDataString+="[option]"+newMenuOptionName+":"+newMenuOptionName+":-1[/option]";
-                                    newMenuOptionName = get_string_from_popup("Enter an option name.","option name:","");
+                                    newMenuOptionName = pawgui::get_string_from_popup("Enter an option name.","option name:","");
                                 }
                                 extraDataString+="[/menu]0,0";
                                 tempCustomComponent->load_data(extraDataString);
@@ -557,7 +557,7 @@ void gameObjectResource::manage_components( gpe::shape_rect * viewedSpace, gpe::
                             if( tempCustomComponent->get_type()=="dropdown" || tempCustomComponent->get_type()=="selectbox")
                             {
                                 std::string extraDataString = "";
-                                std::string newMenuOptionName = get_string_from_popup("Enter option to remove.","option name:","");
+                                std::string newMenuOptionName = pawgui::get_string_from_popup("Enter option to remove.","option name:","");
                                 if( newMenuOptionName.size() > 0 && (  stg_ex::is_alnum(newMenuOptionName,true,true) ) )
                                 {
                                     extraDataString+="[option]"+newMenuOptionName+"[/option]";
@@ -565,7 +565,7 @@ void gameObjectResource::manage_components( gpe::shape_rect * viewedSpace, gpe::
                                 }
                             }
                         }
-                        //manage_components(viewedSpace, cam);
+                        //manage_components(view_space, cam);
                         break;
                     }
                 }
@@ -578,7 +578,7 @@ void gameObjectResource::open_code(int lineNumb, int colNumb, std::string codeTi
 {
     if( (int)codeTitle.size() > 0 )
     {
-        GPE_TextAreaInputBasic * foundTextArea = NULL;
+        pawgui::widget_text_editor * foundTextArea = NULL;
 
         if( codeTitle == "header" )
         {
@@ -624,9 +624,9 @@ void gameObjectResource::load_resource(std::string file_path)
 {
     if( resourcePostProcessed ==false  || sff_ex::file_exists(file_path) )
     {
-        if( GPE_LOADER != NULL )
+        if( pawgui::main_loader_display != NULL )
         {
-            GPE_LOADER->update_submessages( "Processing Game Object", resource_name );
+            pawgui::main_loader_display->update_submessages( "Processing Game Object", resource_name );
         }
 
         std::string otherColContainerName = "";
@@ -651,7 +651,8 @@ void gameObjectResource::load_resource(std::string file_path)
 
         if( current_project !=NULL)
         {
-            if( current_project->get_project_language_id() == PROGRAM_LANGUAGE_CPP )
+            if( current_project->get_project_language_id() ==
+               pawgui::program_language_cpp )
             {
                 sourceFileName = soughtDir+resource_name+".cpp";
             }
@@ -661,8 +662,8 @@ void gameObjectResource::load_resource(std::string file_path)
 
         //Used for importing older object class embedded in same file...
         bool inCodeSection = false; //Default to false so nothing happens til a function is entered
-        std::string nestedFunctionStr = generate_tabs( 1  );
-        std::string nestedContentStr = generate_tabs( 2  );
+        std::string nestedFunctionStr = pawgui::generate_tabs( 1  );
+        std::string nestedContentStr = pawgui::generate_tabs( 2  );
         //End of variables used to pre-format older JS format embedded in same file...
 
         //If the level file could be loaded
@@ -685,10 +686,10 @@ void gameObjectResource::load_resource(std::string file_path)
 
 
                 float foundFileVersion = 0;
-                GPE_TextAreaInputBasic * textAreaToLoad = sourceCodeArea;
+                pawgui::widget_text_editor * textAreaToLoad = sourceCodeArea;
                 if( current_project!=NULL )
                 {
-                    if( current_project->get_project_language_id() == PROGRAM_LANGUAGE_JS )
+                    if( current_project->get_project_language_id() == pawgui::program_language_js )
                     {
 
                     }
@@ -887,7 +888,7 @@ void gameObjectResource::load_resource(std::string file_path)
     }
 }
 
-void gameObjectResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam)
+void gameObjectResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
 {
     //Processes the object's rename box 1st
     if(resource_nameLabel!=NULL)
@@ -902,27 +903,27 @@ void gameObjectResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape
         }
     }
 
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
     load_resource();
 
     //Exits if we have a a bad variable
-    if( cam == NULL || viewedSpace == NULL || objModeSelector == NULL )
+    if( cam == NULL || view_space == NULL || objModeSelector == NULL )
     {
         return;
     }
     selectedMode = objModeSelector->get_selected_value();
 
     int functionI = 0;
-    GPE_TextAreaInputBasic *  fTextArea = NULL;
+    pawgui::widget_text_editor *  fTextArea = NULL;
 
-    if( PANEL_GENERAL_EDITOR!=NULL )
+    if( panel_main_area!=NULL )
     {
-        PANEL_GENERAL_EDITOR->add_gui_element(resource_nameLabel,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(objModeSelector,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(confirmResourceButton,false);
+        panel_main_area->add_gui_element(resource_nameLabel,true);
+        panel_main_area->add_gui_element(objModeSelector,true);
+        panel_main_area->add_gui_element(confirmResourceButton,false);
         //gpe::error_log->report("Attempting to process with code section found "+ stg_ex::int_to_string(codeSection) );
-        PANEL_GENERAL_EDITOR->process_self(NULL, NULL);
+        panel_main_area->process_self(NULL, NULL);
     }
     else
     {
@@ -937,7 +938,7 @@ void gameObjectResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape
         //
     if( selectedMode == OBJ_MODE_COMPONENTS )
     {
-        manage_components(viewedSpace, cam);
+        manage_components(view_space, cam);
         if( loadResourceButton!=NULL)
         {
             if( loadResourceButton->is_clicked() )
@@ -972,14 +973,14 @@ void gameObjectResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape
         {
             if( inheritParentComponentButton->is_clicked() )
             {
-                GPE_GeneralResourceContainer * objectParent = parentObjectField->get_selected_container();
+                pawgui::widget_resource_container * objectParent = parentObjectField->get_selected_container();
                 std::string inheritedComponentData = "";
-                GPE_GeneralGuiElement * inheritedComponent = NULL;
+                pawgui::widget_basic * inheritedComponent = NULL;
                 bool componentAlreadyExists = false;
 
                 if( objectParent!=NULL)
                 {
-                    generalGameResource * parentGenRes = objectParent->get_held_resource();
+                    pawgui::general_resource * parentGenRes = objectParent->get_held_resource();
                     if( parentGenRes!=NULL)
                     {
                         gameObjectResource* parentObjRes = (gameObjectResource*)parentGenRes;
@@ -1035,7 +1036,7 @@ void gameObjectResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape
             std::string newComponentType = addNewComponentDropDown->get_selected_tag();
             if( (int)newComponentType.size() > 0)
             {
-                std::string newComponentName = get_string_from_popup("Name your new component","Must be unique!","");
+                std::string newComponentName = pawgui::get_string_from_popup("Name your new component","Must be unique!","");
                 bool componentNameInUseAlready = false;
                 if( newComponentName.size() > 0 )
                 {
@@ -1061,8 +1062,8 @@ void gameObjectResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape
                             std::string extraDataString = "_blank";
                             if( newComponentType=="texturl")
                             {
-                                std::string newurlLink = get_string_from_popup("Please enter a URL for this new component","Example: http://www.pawbyte.com","");
-                                std::string newUrlDescription = get_string_from_popup("Please enter a description of your URL","Please describe your URL","");
+                                std::string newurlLink = pawgui::get_string_from_popup("Please enter a URL for this new component","Example: http://www.pawbyte.com","");
+                                std::string newUrlDescription = pawgui::get_string_from_popup("Please enter a description of your URL","Please describe your URL","");
                                 if( (int)newurlLink.size() > 0)
                                 {
                                     int fileColonPos = newurlLink.find("file://");
@@ -1078,11 +1079,11 @@ void gameObjectResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape
                             else if( newComponentType=="dropdown" || newComponentType=="radio")
                             {
                                 extraDataString = "[menu]";
-                                std::string newMenuOptionName = get_string_from_popup("Enter an option name.","option name:","");
+                                std::string newMenuOptionName = pawgui::get_string_from_popup("Enter an option name.","option name:","");
                                 while( (int)newMenuOptionName.size() > 0 && (  stg_ex::is_alnum(newMenuOptionName,true,true) ) )
                                 {
                                     extraDataString+="[option]"+newMenuOptionName+":"+newMenuOptionName+":-1[/option]";
-                                    newMenuOptionName = get_string_from_popup("Enter an option name.","option name:","");
+                                    newMenuOptionName = pawgui::get_string_from_popup("Enter an option name.","option name:","");
                                 }
                                 extraDataString+="[/menu]0,0";
                             }
@@ -1097,7 +1098,7 @@ void gameObjectResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape
                                 }
                             }
                             newComponentData = newComponentData+extraDataString;
-                            GPE_GeneralGuiElement * newComponentField = add_gui_component(newComponentData);
+                            pawgui::widget_basic * newComponentField = add_gui_component(newComponentData);
 
                             if( newComponentField!=NULL)
                             {
@@ -1111,12 +1112,12 @@ void gameObjectResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape
                         }
                         else
                         {
-                            display_user_alert("Invalid Component Name Entered","Please enter a unique component name with alpha-numeric values and no spaces!");
+                            pawgui::display_user_alert("Invalid Component Name Entered","Please enter a unique component name with alpha-numeric values and no spaces!");
                         }
                     }
                     else
                     {
-                        display_user_alert("Invalid Component Name Entered","Please enter a unique component name with alpha-numeric values and no spaces!");
+                        pawgui::display_user_alert("Invalid Component Name Entered","Please enter a unique component name with alpha-numeric values and no spaces!");
                     }
                 }
                 addNewComponentDropDown->set_option_value(-1);
@@ -1125,7 +1126,7 @@ void gameObjectResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape
 
         if( resetComponentsButton!=NULL && resetComponentsButton->is_clicked() && (int)customComponentRealList.size() > 0)
         {
-            if( GPE_Display_Basic_Prompt("Are you sure you want to delete all component elements?","There is no undo!")==DISPLAY_QUERY_YES)
+            if( pawgui::display_prompt_message("Are you sure you want to delete all component elements?","There is no undo!")==pawgui::display_query_yes)
             {
                 GPE_ObjectComponent * myTempCustomComponent = NULL;
                 for( int iCompo = 0; iCompo < (int)customComponentRealList.size(); iCompo++)
@@ -1156,33 +1157,33 @@ void gameObjectResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape
         if( fTextArea!=NULL)
         {
             fTextArea->set_coords(0,0);
-            fTextArea->set_width(viewedSpace->w );
-            fTextArea->set_height(viewedSpace->h);
+            fTextArea->set_width(view_space->w );
+            fTextArea->set_height(view_space->h);
             /*if( basicFunctionsSelector->is_clicked() )
             {
                 fTextArea->isInUse;
             }*/
-            fTextArea->process_self(viewedSpace,cam);
+            fTextArea->process_self(view_space,cam);
         }
     }
 }
 
-void gameObjectResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void gameObjectResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && viewedSpace!=NULL )
+    if(cam!=NULL && view_space!=NULL )
     {
         if( selectedMode == OBJ_MODE_COMPONENTS )
         {
             if( customComponentsGuiList!=NULL)
             {
-                customComponentsGuiList->render_self( viewedSpace,cam);
+                customComponentsGuiList->render_self( view_space,cam);
             }
         }
         else
         {
-            GPE_TextAreaInputBasic *  fTextArea = NULL;
+            pawgui::widget_text_editor *  fTextArea = NULL;
 
             if( selectedMode == OBJ_MODE_HEADER )
             {
@@ -1195,7 +1196,7 @@ void gameObjectResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_
 
             if(fTextArea!=NULL)
             {
-                fTextArea->render_self( viewedSpace,cam);
+                fTextArea->render_self( view_space,cam);
             }
         }
     }
@@ -1204,9 +1205,9 @@ void gameObjectResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_
 
 void gameObjectResource::save_resource(std::string file_path, int backupId)
 {
-    if( GPE_LOADER != NULL )
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->update_submessages( "Saving Game Object", resource_name );
+        pawgui::main_loader_display->update_submessages( "Saving Game Object", resource_name );
     }
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
@@ -1221,7 +1222,7 @@ void gameObjectResource::save_resource(std::string file_path, int backupId)
 
         if( current_project !=NULL)
         {
-            if( current_project->get_project_language_id() == PROGRAM_LANGUAGE_CPP )
+            if( current_project->get_project_language_id() == pawgui::program_language_cpp )
             {
                 sourceFileName = soughtDir+resource_name+".cpp";
             }
@@ -1237,7 +1238,7 @@ void gameObjectResource::save_resource(std::string file_path, int backupId)
         sourceFileName = soughtDir + resource_name+".src";
         if( current_project !=NULL)
         {
-            if( current_project->get_project_language_id() == PROGRAM_LANGUAGE_CPP )
+            if( current_project->get_project_language_id() == pawgui::program_language_cpp )
             {
                 sourceFileName = soughtDir+resource_name+".cpp";
             }
@@ -1249,8 +1250,8 @@ void gameObjectResource::save_resource(std::string file_path, int backupId)
         load_resource();
     }
     int i = 0;
-    GPE_GeneralResourceContainer * objsParentContainer = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s" );
-    GPE_GeneralResourceContainer * tOtherContainer = NULL;
+    pawgui::widget_resource_container * objsParentContainer = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s" );
+    pawgui::widget_resource_container * tOtherContainer = NULL;
     std::string otherColContainerName = "";
     animationIndex = -1;
     if( animationField!=NULL)
@@ -1329,23 +1330,23 @@ void gameObjectResource::save_resource(std::string file_path, int backupId)
 int gameObjectResource::search_for_string(std::string needle)
 {
     int foundStrings = 0;
-    GPE_main_Logs->log_general_comment("Searching ["+resource_name+"] object..");
+    main_editor_log->log_general_comment("Searching ["+resource_name+"] object..");
 
 
-    if( GPE_ANCHOR_GC!=NULL  )
+    if( pawgui::main_anchor_controller!=NULL  )
     {
         int i = 0;
-        GPE_ANCHOR_GC->searchResultProjectName = parentProjectName;
-        GPE_ANCHOR_GC->searchResultResourceId = globalResouceIdNumber;
-        GPE_ANCHOR_GC->searchResultResourceName = resource_name;
+        pawgui::main_anchor_controller->searchResultProjectName = parentProjectName;
+        pawgui::main_anchor_controller->searchResultResourceId = globalResouceIdNumber;
+        pawgui::main_anchor_controller->searchResultResourceName = resource_name;
         if( headerCodeArea!=NULL && headerCodeArea->has_content() )
         {
-            foundStrings+=headerCodeArea->find_all_strings(needle,main_SEARCH_CONTROLLER->findMatchCase->is_checked(),true, "header" );
+            foundStrings+=headerCodeArea->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true, "header" );
         }
 
         if( sourceCodeArea!=NULL && sourceCodeArea->has_content() )
         {
-            foundStrings += sourceCodeArea->find_all_strings(needle,main_SEARCH_CONTROLLER->findMatchCase->is_checked(),true, "source" );
+            foundStrings += sourceCodeArea->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true, "source" );
         }
     }
     return foundStrings;
@@ -1355,18 +1356,18 @@ int gameObjectResource::search_and_replace_string(std::string needle, std::strin
 {
     int foundStrings = 0;
     int tempFoundCount = 0;
-    GPE_main_Logs->log_general_comment("Searching ["+resource_name+"] object..");
+    main_editor_log->log_general_comment("Searching ["+resource_name+"] object..");
     int i = 0;
 
-    if( GPE_ANCHOR_GC!=NULL )
+    if( pawgui::main_anchor_controller!=NULL )
     {
-        GPE_ANCHOR_GC->searchResultProjectName = parentProjectName;
-        GPE_ANCHOR_GC->searchResultResourceId = globalResouceIdNumber;
-        GPE_ANCHOR_GC->searchResultResourceName = resource_name;
+        pawgui::main_anchor_controller->searchResultProjectName = parentProjectName;
+        pawgui::main_anchor_controller->searchResultResourceId = globalResouceIdNumber;
+        pawgui::main_anchor_controller->searchResultResourceName = resource_name;
 
         if( headerCodeArea!=NULL && headerCodeArea->has_content() )
         {
-            tempFoundCount =headerCodeArea->find_all_strings(needle,main_SEARCH_CONTROLLER->findMatchCase->is_checked(),false,"header" );
+            tempFoundCount =headerCodeArea->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),false,"header" );
             if( tempFoundCount > 0)
             {
                 foundStrings+=tempFoundCount;
@@ -1376,7 +1377,7 @@ int gameObjectResource::search_and_replace_string(std::string needle, std::strin
 
         if( sourceCodeArea!=NULL && sourceCodeArea->has_content() )
         {
-            tempFoundCount = sourceCodeArea->find_all_strings(needle,main_SEARCH_CONTROLLER->findMatchCase->is_checked(),false, "source" );
+            tempFoundCount = sourceCodeArea->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),false, "source" );
             if( tempFoundCount > 0)
             {
                 foundStrings+=tempFoundCount;
@@ -1401,7 +1402,7 @@ bool gameObjectResource::write_data_into_projectfile(std::ofstream * fileTarget,
         if( fileTarget->is_open() )
         {
             load_resource();
-            std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+            std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
             *fileTarget << nestedTabsStr << "GameObject=" << resource_name << "," << get_global_rid() << ",\n";
             return true;
         }
@@ -1410,7 +1411,7 @@ bool gameObjectResource::write_data_into_projectfile(std::ofstream * fileTarget,
 }
 
 //This function is also shared by scene editor to make sure code is uniform and reduce potential mismatchings
-void setup_object_components( GPE_DropDown_Menu * componentMenu)
+void setup_object_components( pawgui::widget_dropdown_menu * componentMenu)
 {
     if( componentMenu == NULL)
     {

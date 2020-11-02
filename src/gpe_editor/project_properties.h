@@ -40,122 +40,122 @@ SOFTWARE.
 class projectPropertiesResource: public standardEditableGameResource
 {
 public:
-    GPE_SelectBoxBasic * projectSettingsBar;
+    pawgui::widget_selectbox * projectSettingsBar;
 
     //Icon data and such
     std::string iconFileName;
-    GPE_Label_Text * projectIconLabel;
-    GPE_Label_Image * projectIconImg;
-    GPE_ToolLabelButton * browseIconButton;
+    pawgui::widget_label_text  * projectIconLabel;
+    pawgui::widget_label_image * projectIconImg;
+    pawgui::widget_button_label * browseIconButton;
     //Meta information to be built into the project
-    GPE_TextAreaInputBasic * projectGameMacros;
-    GPE_TextAreaInputBasic * projectGameNotes;
-    GPE_CheckBoxBasic * showMetaData;
-    GPE_Label_Text * projectLanguageLabel;
-    GPE_DropDown_Menu * projectLanguage;
+    pawgui::widget_text_editor * projectGameMacros;
+    pawgui::widget_text_editor * projectGameNotes;
+    pawgui::widget_checkbox * showMetaData;
+    pawgui::widget_label_text  * projectLanguageLabel;
+    pawgui::widget_dropdown_menu * projectLanguage;
     //Export Settings Tab
-    GPE_SelectBoxBasic * exportSettingsBar;
+    pawgui::widget_selectbox * exportSettingsBar;
     //Export Settings [ HTML5]
-    GPE_CheckBoxBasic * obfuscateCodeCheckbox;
-    GPE_CheckBoxBasic * minifyCodeCheckbox;
-    GPE_CheckBoxBasic * warnOnCloseCheckbox;
+    pawgui::widget_checkbox * obfuscateCodeCheckbox;
+    pawgui::widget_checkbox * minifyCodeCheckbox;
+    pawgui::widget_checkbox * warnOnCloseCheckbox;
 
-    GPE_ToolPushButton * buildToSourceButton; //used to create projects to raw CPP files / dependencies
-    GPE_DropDown_Menu  * buildPlatformdropdown; //used to select which "build script we use for building thru source"
-    GPE_TextURL * buildPlatformRefreshLabel;
-    GPE_ToolPushButton * exportPushButton;
-    GPE_ToolPushButton * exportAndPlayPushButton;
-    GPE_ToolPushButton * cleanBuildFolderPushButton;
-    GPE_ToolPushButton * cleanBuildAllFolderPushButton;
-    GPE_ToolPushButton * playProgramPushButton;
+    pawgui::widget_button_push * buildToSourceButton; //used to create projects to raw CPP files / dependencies
+    pawgui::widget_dropdown_menu  * buildPlatformdropdown; //used to select which "build script we use for building thru source"
+    pawgui::widget_text_url * buildPlatformRefreshLabel;
+    pawgui::widget_button_push * exportPushButton;
+    pawgui::widget_button_push * exportAndPlayPushButton;
+    pawgui::widget_button_push * cleanBuildFolderPushButton;
+    pawgui::widget_button_push * cleanBuildAllFolderPushButton;
+    pawgui::widget_button_push * playProgramPushButton;
 
     //[Export Settings Desktop]
-    GPE_TabBar * desktopSettingsTabBar;
-    GPE_Label_Title * exportApplicationLabel;
-    GPE_Label_Title * exportWindowsLabel;
-    GPE_Label_Title * exportOSXLabel;
-    GPE_Label_Title * exportLinuxLabel;
-    GPE_CheckBoxBasic * win64BitCheckbox;
-    GPE_CheckBoxBasic * osx64BitCheckbox;
-    GPE_CheckBoxBasic * linux64BitCheckbox;
+    pawgui::widget_tabbar * desktopSettingsTabBar;
+    pawgui::widget_label_title * exportApplicationLabel;
+    pawgui::widget_label_title * exportWindowsLabel;
+    pawgui::widget_label_title * exportOSXLabel;
+    pawgui::widget_label_title * exportLinuxLabel;
+    pawgui::widget_checkbox * win64BitCheckbox;
+    pawgui::widget_checkbox * osx64BitCheckbox;
+    pawgui::widget_checkbox * linux64BitCheckbox;
 
-    GPE_CheckBoxBasic * html5DebugModeCheckbox;
-    GPE_CheckBoxBasic * osxDebugModeCheckbox;
-    GPE_CheckBoxBasic * winDebugModeCheckbox;
-    GPE_CheckBoxBasic * linuxDebugModeCheckbox;
+    pawgui::widget_checkbox * html5DebugModeCheckbox;
+    pawgui::widget_checkbox * osxDebugModeCheckbox;
+    pawgui::widget_checkbox * winDebugModeCheckbox;
+    pawgui::widget_checkbox * linuxDebugModeCheckbox;
 
-    GPE_RadioButtonControllerBasic * html5nativeBuildTypeOptions;
-    GPE_RadioButtonControllerBasic * windowsNativeBuildTypeOptions;
-    GPE_RadioButtonControllerBasic * osxNativeBuildTypeOptions;
-    GPE_RadioButtonControllerBasic * linuxNativeBuildTypeOptions;
-    GPE_RadioButtonControllerBasic * switchNativeBuildTypeOptions;
-    GPE_Label_Text * electronCompileNote;
-    GPE_TextURL * electronCompileUrl;
+    pawgui::widget_radio_button_controller * html5nativeBuildTypeOptions;
+    pawgui::widget_radio_button_controller * windowsNativeBuildTypeOptions;
+    pawgui::widget_radio_button_controller * osxNativeBuildTypeOptions;
+    pawgui::widget_radio_button_controller * linuxNativeBuildTypeOptions;
+    pawgui::widget_radio_button_controller * switchNativeBuildTypeOptions;
+    pawgui::widget_label_text  * electronCompileNote;
+    pawgui::widget_text_url * electronCompileUrl;
 
-    GPE_Label_Paragraph * switchComingSoonNote;
-    GPE_Label_Paragraph * nSwitchSideNote;
-    GPE_Label_Paragraph * nSwitchThirdNote;
-    GPE_TextURL * nSwitchContactUrl;
+    pawgui::widget_label_paragraph * switchComingSoonNote;
+    pawgui::widget_label_paragraph * nSwitchSideNote;
+    pawgui::widget_label_paragraph * nSwitchThirdNote;
+    pawgui::widget_text_url * nSwitchContactUrl;
 
-    GPE_Label_Paragraph * ps4ComingSoonNote;
-    GPE_Label_Paragraph * ps4SideNote;
-    GPE_TextURL * ps4ContactUrl;
+    pawgui::widget_label_paragraph * ps4ComingSoonNote;
+    pawgui::widget_label_paragraph * ps4SideNote;
+    pawgui::widget_text_url * ps4ContactUrl;
 
-    GPE_Label_Paragraph * xboxOneComingSoonNote;
-    GPE_Label_Paragraph * xboxOneSideNote;
-    GPE_TextURL * xboxOneContactUrl;
+    pawgui::widget_label_paragraph * xboxOneComingSoonNote;
+    pawgui::widget_label_paragraph * xboxOneSideNote;
+    pawgui::widget_text_url * xboxOneContactUrl;
 
     //Other Platform label notes
-    GPE_Label_Text * otherPlatformLabel;
-    GPE_Label_Paragraph * otherPlatformLabelParagraph;
-    GPE_TextURL * otherPlatformLabelURL;
+    pawgui::widget_label_text  * otherPlatformLabel;
+    pawgui::widget_label_paragraph * otherPlatformLabelParagraph;
+    pawgui::widget_text_url * otherPlatformLabelURL;
 
 
     //Settings Tab
-    gpe_text_widget_number * projectScreenWidthField;
-    gpe_text_widget_number * projectScreenHeightField;
-    gpe_text_widget_number * projectGameVersionField;
-    gpe_text_widget_string * projectGameSubVersionField;
-    GPE_RadioButtonControllerBasic * projectScaleSettings;
-    GPE_Label_Text * projectSettingsFPSRateLabel;
-    GPE_DropDown_Menu * projectSettingsFPSRate;
+    pawgui::widget_input_number * projectScreenWidthField;
+    pawgui::widget_input_number * projectScreenHeightField;
+    pawgui::widget_input_number * projectGameVersionField;
+    pawgui::widget_input_text * projectGameSubVersionField;
+    pawgui::widget_radio_button_controller * projectScaleSettings;
+    pawgui::widget_label_text  * projectSettingsFPSRateLabel;
+    pawgui::widget_dropdown_menu * projectSettingsFPSRate;
     //Publisher Setting
-    GPE_Label_Title * sectionTitlePublisher;
-    GPE_Label_Title * sectionTitleGameSettings;
-    gpe_text_widget_string * projectGameTitleField;
-    gpe_text_widget_string * projectGameShortTitleField;
-    gpe_text_widget_string * projectGameDateField;
-    gpe_text_widget_string * projectGameDescriptionField;
-    gpe_text_widget_string * projectGamePublisherField;
-    gpe_text_widget_string * projectGameDeveloperField;
-    gpe_text_widget_string * projectGameCopyrightField;
-    gpe_text_widget_string * projectGameWebsiteField;
-    gpe_text_widget_string * projectGameEmailField;
-    GPE_CheckBoxBasic * checkBoxShowPublisherInfo;
+    pawgui::widget_label_title * sectionTitlePublisher;
+    pawgui::widget_label_title * sectionTitleGameSettings;
+    pawgui::widget_input_text * projectGameTitleField;
+    pawgui::widget_input_text * projectGameShortTitleField;
+    pawgui::widget_input_text * projectGameDateField;
+    pawgui::widget_input_text * projectGameDescriptionField;
+    pawgui::widget_input_text * projectGamePublisherField;
+    pawgui::widget_input_text * projectGameDeveloperField;
+    pawgui::widget_input_text * projectGameCopyrightField;
+    pawgui::widget_input_text * projectGameWebsiteField;
+    pawgui::widget_input_text * projectGameEmailField;
+    pawgui::widget_checkbox * checkBoxShowPublisherInfo;
 
     //Colors Tab
-    GPE_Label_Title * sectionWebColorsTitle;
-    gpe_widget_color_picker * projectBorderColor;
-    gpe_widget_color_picker * projectGameBackgroundColor;
-    gpe_widget_color_picker * projectWebsiteBackgroundColor;
-    gpe_widget_color_picker * projectTextHeaderColor;
-    gpe_widget_color_picker * projectTextParagraphColor;
-    gpe_widget_color_picker * projectTextLinkColor;
-    gpe_widget_color_picker * projectTextLinkActiveColor;
-    gpe_widget_color_picker * projectTextLinkHoverColor;
-    gpe_widget_color_picker * projectTextLinkVisitedColor;
+    pawgui::widget_label_title * sectionWebColorsTitle;
+    pawgui::gpe_widget_color_picker * projectBorderColor;
+    pawgui::gpe_widget_color_picker * projectGameBackgroundColor;
+    pawgui::gpe_widget_color_picker * projectWebsiteBackgroundColor;
+    pawgui::gpe_widget_color_picker * projectTextHeaderColor;
+    pawgui::gpe_widget_color_picker * projectTextParagraphColor;
+    pawgui::gpe_widget_color_picker * projectTextLinkColor;
+    pawgui::gpe_widget_color_picker * projectTextLinkActiveColor;
+    pawgui::gpe_widget_color_picker * projectTextLinkHoverColor;
+    pawgui::gpe_widget_color_picker * projectTextLinkVisitedColor;
     gpe::shape_rect subViewedSpace;
 
-    GPE_GuiElementList * projectSettingsList;
-    GPE_GuiElementList * collisionLayerMatrixList;
-    GPE_CheckBoxBasic * projectCollisionLayerMatrix[1024];
-    GPE_Label_90Degree * projectLayerNamesColumnTitles[32];
-    GPE_Label_Text * projectLayerNamesRowTitles[32];
-    GPE_Label_Text * projectLayerEmptyTitle;
-    GPE_ToolLabelButton * selectAllCollisionBoxes;
-    GPE_ToolLabelButton * unselectAllCollisionBoxes;
+    pawgui::widget_panel_list * projectSettingsList;
+    pawgui::widget_panel_list * collisionLayerMatrixList;
+    pawgui::widget_checkbox * projectCollisionLayerMatrix[1024];
+    pawgui::widget_label_rotated_90 * projectLayerNamesColumnTitles[32];
+    pawgui::widget_label_text  * projectLayerNamesRowTitles[32];
+    pawgui::widget_label_text  * projectLayerEmptyTitle;
+    pawgui::widget_button_label * selectAllCollisionBoxes;
+    pawgui::widget_button_label * unselectAllCollisionBoxes;
 
-    projectPropertiesResource(GPE_GeneralResourceContainer * pFolder = NULL);
+    projectPropertiesResource(pawgui::widget_resource_container * pFolder = NULL);
     ~projectPropertiesResource();
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
@@ -166,9 +166,9 @@ public:
     void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
     void prerender_self( );
     void load_resource(std::string file_path = "");
-    void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void refresh_build_to_source_targets();
-    void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void save_resource(std::string file_path = "", int backupId = -1);
     int search_for_string(std::string needle);
     int search_and_replace_string(std::string needle, std::string newStr = "");

@@ -39,16 +39,19 @@ SOFTWARE.
 #include "gpe_dock_system.h"
 #include "gpe_editor_globals.h"
 #include "gpe_editor_project.h"
-#include "../pawgui/paw_gui_general_resource.h"
-#include "../pawgui/paw_gui.h"
+#include "../pawgui/pawgui_general_resource.h"
+#include "../pawgui/pawgui.h"
 #include "../sdl_libs/gpe_sdl_converter.h"
 #include "../sdl_libs/sdl_surface_ex.h"
+
+extern gpe::texture_base * texture_transparent_bg;
+extern gpe::texture_base * texture_gpe_logo;
 
 class GPE_ObjectComponent
 {
 private:
-    GPE_GeneralGuiElement * component;
-    GPE_ToolIconButton * settingsGear;
+    pawgui::widget_basic * component;
+    pawgui::widget_button_icon * settingsGear;
 public:
     GPE_ObjectComponent();
     ~GPE_ObjectComponent();
@@ -60,29 +63,29 @@ public:
     std::string get_name();
     std::string get_plain_string();
     std::string get_type();
-    GPE_GeneralGuiElement * get_component();
-    GPE_ToolIconButton * get_gear();
-    void set_component(GPE_GeneralGuiElement * newComponent);
+    pawgui::widget_basic * get_component();
+    pawgui::widget_button_icon * get_gear();
+    void set_component(pawgui::widget_basic * newComponent);
 };
 
-class standardEditableGameResource: public generalGameResource
+class standardEditableGameResource : public pawgui::general_resource
 {
 protected:
-    GPE_ToolIconButton * loadResourceButton;
-    GPE_ToolIconButton * exportResourceButton;
-    GPE_ToolIconButton * saveResourceButton;
-    GPE_ToolPushButton * confirmResourceButton;
-    GPE_ToolPushButton * cancelResourceButton;
-    gpe_text_widget_string * renameBox;
+    pawgui::widget_button_icon * loadResourceButton;
+    pawgui::widget_button_icon * exportResourceButton;
+    pawgui::widget_button_icon * saveResourceButton;
+    pawgui::widget_button_push * confirmResourceButton;
+    pawgui::widget_button_push * cancelResourceButton;
+    pawgui::widget_input_text * renameBox;
 public:
     bool resourcePostProcessed;
     int commonButtonAlignment;
     std::vector < GPE_ObjectComponent * > customComponentRealList;
-    GPE_GeneralResourceContainer * projectParentFolder;
-    standardEditableGameResource(GPE_GeneralResourceContainer * ppFolder = NULL);
+    pawgui::widget_resource_container * projectParentFolder;
+    standardEditableGameResource(pawgui::widget_resource_container * ppFolder = NULL);
     virtual ~standardEditableGameResource() = 0;
     std::string get_current_name();
-    GPE_GeneralGuiElement * add_gui_component(std::string componentData);
+    pawgui::widget_basic * add_gui_component(std::string componentData);
     virtual bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     virtual bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     virtual void compile_cpp();
@@ -93,9 +96,9 @@ public:
     virtual void load_resource(std::string file_path = "" );
     virtual void prerender_self( );
     void process_export();
-    virtual void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-    virtual void process_resource( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-    virtual void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    virtual void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    virtual void process_resource( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    virtual void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void seek_parent_name();
     void set_name(std::string new_name);
     void set_parent_name(std::string new_name);

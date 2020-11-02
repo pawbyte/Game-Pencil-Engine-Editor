@@ -35,7 +35,7 @@ SOFTWARE.
 
 gameJSCompilerSettingsResource * GPE_JS_COMPILER_SETTINGS = NULL;
 
-gameJSCompilerSettingsResource::gameJSCompilerSettingsResource(GPE_GeneralResourceContainer * pFolder)
+gameJSCompilerSettingsResource::gameJSCompilerSettingsResource(pawgui::widget_resource_container * pFolder)
 {
     isFullScreenResource = true;
     resourceFileName = "";
@@ -43,20 +43,20 @@ gameJSCompilerSettingsResource::gameJSCompilerSettingsResource(GPE_GeneralResour
     parentProjectName = "";
     parentProjectDirectory = "";
 
-    sideAreaPanel = new GPE_SelectBoxBasic("Mode");
+    sideAreaPanel = new pawgui::widget_selectbox("Mode");
     sideAreaPanel->set_width(160);
     sideAreaPanel->set_option_height(64);
-    sideAreaPanel->add_option("General",-1,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),NULL,2, false, false);
-    sideAreaPanel->add_option("Obfuscation",-1,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/crosshairs.png"),NULL,2, false, false);
+    sideAreaPanel->add_option("General",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),NULL,2, false, false);
+    sideAreaPanel->add_option("Obfuscation",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/crosshairs.png"),NULL,2, false, false);
 
     sidePanelRect = new gpe::shape_rect();
 
-    editorPageList = new GPE_GuiElementList();
-    editorPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
-    editorPageList->panelAlignType = GPE_PANEL_ALIGN_FULL_LEFT;
+    editorPageList = new pawgui::widget_panel_list();
+    editorPageList->barXPadding = pawgui::padding_default;
+    editorPageList->panelAlignType = pawgui::panel_align_left;
     editorPageList->barXMargin = 0;
 
-    editorPageTabBar = new GPE_TabBar();
+    editorPageTabBar = new pawgui::widget_tabbar();
     editorPageTabBar->set_coords(16, 16);
     editorPageTabBar->add_new_tab("General");
     editorPageTabBar->add_new_tab("Obfuscation");
@@ -69,19 +69,19 @@ gameJSCompilerSettingsResource::gameJSCompilerSettingsResource(GPE_GeneralResour
     subViewedSpace.w = gpe::screen_width;
     subViewedSpace.h = gpe::screen_height;
 
-    stopCompileOnError = new GPE_CheckBoxBasic("Stop Compiling on first detected error","Exit build phase as soon as error is found", false);
+    stopCompileOnError = new pawgui::widget_checkbox("Stop Compiling on first detected error","Exit build phase as soon as error is found", false);
 
     //Added as of 1.13 [ BEGIN ]
-    minifyCode = new GPE_CheckBoxBasic("Minify Code","Use to eliminate many linebreaks and un-needed spaces in code base", true);
-    pluginConstantValues = new GPE_CheckBoxBasic("Plugin Constant Values","Removes constants in codebase and replaces it with their values", true);
-    obfuscateCode = new GPE_CheckBoxBasic("Obfuscate Code","Obfuscate your games code as a layer of protection",true);
-    obfuscatorDirectoryField = new gpe_text_widget_string("","");
+    minifyCode = new pawgui::widget_checkbox("Minify Code","Use to eliminate many linebreaks and un-needed spaces in code base", true);
+    pluginConstantValues = new pawgui::widget_checkbox("Plugin Constant Values","Removes constants in codebase and replaces it with their values", true);
+    obfuscateCode = new pawgui::widget_checkbox("Obfuscate Code","Obfuscate your games code as a layer of protection",true);
+    obfuscatorDirectoryField = new pawgui::widget_input_text("","");
     obfuscatorDirectoryField->set_label("Obfuscator Directory");
-    obfuscatorDirectoryLoadButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/binoculars.png","Search Directory..",-1,32);
+    obfuscatorDirectoryLoadButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/binoculars.png","Search Directory..",-1,32);
 
-    googleClosureCompilerFile = new gpe_text_widget_string("","");
+    googleClosureCompilerFile = new pawgui::widget_input_text("","");
     googleClosureCompilerFile->set_label("Google Closure File Location");
-    googleClosureCompilerLoadButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/binoculars.png","Find Editor..",-1,32);
+    googleClosureCompilerLoadButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/binoculars.png","Find Editor..",-1,32);
 
     //Added as of 1.13 [ END ]
 }
@@ -156,9 +156,9 @@ void gameJSCompilerSettingsResource::prerender_self( )
 void gameJSCompilerSettingsResource::load_resource(std::string file_path)
 {
     //showStatupTipsBox->set_clicked( editor_gui_main->showTipsAtStartUp );
-    if( GPE_LOADER != NULL )
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->update_submessages( "Loading JS Compiler Settings","Please Wait..." );
+        pawgui::main_loader_display->update_submessages( "Loading JS Compiler Settings","Please Wait..." );
     }
 
     std::string otherColContainerName = "";
@@ -236,32 +236,32 @@ void gameJSCompilerSettingsResource::load_resource(std::string file_path)
     }
 }
 
-void gameJSCompilerSettingsResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam)
+void gameJSCompilerSettingsResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
 {
     cam = gpe::camera_find(cam);
-    viewedSpace = gpe::camera_find(viewedSpace);
-    if( cam!=NULL && editorPageList!=NULL && editorPageTabBar!=NULL && viewedSpace!=NULL)
+    view_space = gpe::camera_find(view_space);
+    if( cam!=NULL && editorPageList!=NULL && editorPageTabBar!=NULL && view_space!=NULL)
     {
         int prevTab = sideAreaPanel->get_selection();
-        if( PANEL_GENERAL_EDITOR!=NULL )
+        if( panel_main_area!=NULL )
         {
             subViewedSpace.x = 0;
             subViewedSpace.y = 0;
-            subViewedSpace.w = viewedSpace->w;
-            subViewedSpace.h = viewedSpace->h;
-            PANEL_GENERAL_EDITOR->add_gui_element_fullsize( sideAreaPanel );
-            PANEL_GENERAL_EDITOR->process_self();
+            subViewedSpace.w = view_space->w;
+            subViewedSpace.h = view_space->h;
+            panel_main_area->add_gui_element_fullsize( sideAreaPanel );
+            panel_main_area->process_self();
 
         }
         else
         {
             sideAreaPanel->set_coords(0, 0 );
-            sideAreaPanel->set_height( viewedSpace->h );
-            sideAreaPanel->process_self( viewedSpace, cam );
-            subViewedSpace.x = sideAreaPanel->get_x2pos();
+            sideAreaPanel->set_height( view_space->h );
+            sideAreaPanel->process_self( view_space, cam );
+            subViewedSpace.x = sideAreaPanel->get_x2();
             subViewedSpace.y = 0;
-            subViewedSpace.w = viewedSpace->w - sideAreaPanel->get_width();
-            subViewedSpace.h = viewedSpace->h;
+            subViewedSpace.w = view_space->w - sideAreaPanel->get_width();
+            subViewedSpace.h = view_space->h;
         }
 
         if( prevTab!=sideAreaPanel->get_selection() )
@@ -272,8 +272,8 @@ void gameJSCompilerSettingsResource::process_self( gpe::shape_rect * viewedSpace
         editorPageList->set_coords( subViewedSpace.x, subViewedSpace.y );
         editorPageList->set_width(subViewedSpace.w);
         editorPageList->set_height(subViewedSpace.h );
-        editorPageList->barXPadding = GENERAL_GPE_GUI_PADDING;
-        editorPageList->barXMargin = GENERAL_GPE_GUI_PADDING;
+        editorPageList->barXPadding = pawgui::padding_default;
+        editorPageList->barXMargin = pawgui::padding_default;
         int i = 0;
         if(sideAreaPanel->get_selected_name()=="General")
         {
@@ -295,7 +295,7 @@ void gameJSCompilerSettingsResource::process_self( gpe::shape_rect * viewedSpace
             editorPageList->add_gui_element(confirmResourceButton,false);
             editorPageList->add_gui_element(cancelResourceButton,true);
         }
-        editorPageList->process_self( viewedSpace,cam);
+        editorPageList->process_self( view_space,cam);
         if( confirmResourceButton->is_clicked() )
         {
             save_resource();
@@ -307,19 +307,19 @@ void gameJSCompilerSettingsResource::process_self( gpe::shape_rect * viewedSpace
     }
 }
 
-void gameJSCompilerSettingsResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void gameJSCompilerSettingsResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
     cam = gpe::camera_find(cam);
-    viewedSpace = gpe::camera_find(viewedSpace);
-    if( cam!=NULL && viewedSpace!=NULL)
+    view_space = gpe::camera_find(view_space);
+    if( cam!=NULL && view_space!=NULL)
     {
-        if( sideAreaPanel!=NULL && PANEL_GENERAL_EDITOR==NULL )
+        if( sideAreaPanel!=NULL && panel_main_area==NULL )
         {
-            sideAreaPanel->render_self( viewedSpace,cam);
+            sideAreaPanel->render_self( view_space,cam);
         }
         if( editorPageList!=NULL )
         {
-            editorPageList->render_self( viewedSpace,cam);
+            editorPageList->render_self( view_space,cam);
         }
     }
 }

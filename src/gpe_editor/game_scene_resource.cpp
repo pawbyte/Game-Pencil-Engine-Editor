@@ -40,12 +40,12 @@ SOFTWARE.
 
 std::string DEFAULT_SCENE_SUBEDITOR_NAMES[5];
 
-gameSceneResource * currentSceneToRender = NULL;
+gameSceneResource * scene_currentToRender = NULL;
 
 gpeEditorDockPanel * PANEL_GRID_INFO = NULL;
 gpeEditorDockPanel * PANEL_TS_RESOURCE = NULL;
 
-gameSceneResource::gameSceneResource(GPE_GeneralResourceContainer * pFolder )
+gameSceneResource::gameSceneResource(pawgui::widget_resource_container * pFolder )
 {
     selectedBranchId = -1;
     draggingOffsetX = 0;
@@ -72,15 +72,15 @@ gameSceneResource::gameSceneResource(GPE_GeneralResourceContainer * pFolder )
     sceneObjMouseX  = sceneMouseXPos = 0;
     sceneObjMouseY  = sceneMouseYPos = 0;
     sceneComponents = new GPE_SceneBasicClass();
-    sceneTopBarList = new GPE_GuiElementList();
+    sceneTopBarList = new pawgui::widget_panel_list();
 
-    changeLayerNameButton = new GPE_ToolLabelButton( "Change Layer","Change Layer");
-    renameLayerButton = new GPE_ToolLabelButton( "Rename Layer","Rename Layer");
-    addTileMapButton = new GPE_ToolLabelButton( "Add TileMap","Adds a new TileMap Container to this branch");
-    addGroupButton = new GPE_ToolLabelButton( "Add Group","Adds a new Group Container to this branch");
-    changeGroupNameButton = new GPE_ToolLabelButton( "Rename Group","Rename Group");
+    changeLayerNameButton = new pawgui::widget_button_label( "Change Layer","Change Layer");
+    renameLayerButton = new pawgui::widget_button_label( "Rename Layer","Rename Layer");
+    addTileMapButton = new pawgui::widget_button_label( "Add TileMap","Adds a new TileMap Container to this branch");
+    addGroupButton = new pawgui::widget_button_label( "Add Group","Adds a new Group Container to this branch");
+    changeGroupNameButton = new pawgui::widget_button_label( "Rename Group","Rename Group");
     selectedSceneBranch = NULL;
-    sceneResourceTree = new GPE_SpecialMenu_Tree( "Scene" , gpe::branch_type::SCENE );
+    sceneResourceTree = new pawgui::widget_tree( "Scene" , gpe::branch_type::SCENE );
 
     zoomValue = 1;
     defaultObjectLayer = NULL;
@@ -101,15 +101,15 @@ gameSceneResource::gameSceneResource(GPE_GeneralResourceContainer * pFolder )
     showTileLines = true;
     sceneGridX = sceneGridY =16;
     useSceneGrid = true;
-    saveButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png","Save Changes",-1,24);
-    sceneEditorSubTitle = new GPE_Label_Title("Settings");
-    customComponentsTitle = new GPE_Label_Title("Components");
+    saveButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png","Save Changes",-1,24);
+    sceneEditorSubTitle = new pawgui::widget_label_title("Settings");
+    customComponentsTitle = new pawgui::widget_label_title("Components");
 
-    editorButtonBar = new GPE_ToolIconButtonBar(24, true);
+    editorButtonBar = new pawgui::widget_button_iconbar(24, true);
     editorButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/object-group.png","Layers", LEDITOR_MODE_LAYERS,true);
     editorButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/dashboard.png","Settings",LEDITOR_MODE_SETTINGS,false);
 
-    shortcutButtonBar = new GPE_ToolIconButtonBar(24, true);
+    shortcutButtonBar = new pawgui::widget_button_iconbar(24, true);
     shortcutButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/mouse-pointer.png","Select-Mode(Q)", SCENE_MODE_SELECT,false);
     shortcutButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/pencil.png","Place-Mode(W)", SCENE_MODE_PLACE,false);
     shortcutButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/eraser.png","Erase-Mode(E)",SCENE_MODE_ERASE,false);
@@ -121,10 +121,10 @@ gameSceneResource::gameSceneResource(GPE_GeneralResourceContainer * pFolder )
     shortcutButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/arrows-alt.png","Scale-Mode(Y)",SCENE_MODE_SCALE,false);
     shortcutButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/paperclip.png","Assign-Mode(U)",SCENE_MODE_ASSIGN,false);
 
-    gridToggleButtton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/th-large.png","Toggle Grid(G)" );
-    rotationButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/random.png","Flip/ Rotate(H)");
-    objectLockStateButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/lock.png","Lock Branch(J)" );
-    lightingStateButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/sun-o.png","Lighting Off(L)" );
+    gridToggleButtton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/th-large.png","Toggle Grid(G)" );
+    rotationButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/random.png","Flip/ Rotate(H)");
+    objectLockStateButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/lock.png","Lock Branch(J)" );
+    lightingStateButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/sun-o.png","Lighting Off(L)" );
 
     confirmResourceButton->enable_self();
     confirmResourceButton->set_name("Confirm Changes");
@@ -134,31 +134,31 @@ gameSceneResource::gameSceneResource(GPE_GeneralResourceContainer * pFolder )
     cancelResourceButton->set_name("Undo Changes  ");
     cancelResourceButton->descriptionText = "Revert Level Settings to previous save";
     //Start Variables used for the settings tab
-    renameBox->set_coords(GENERAL_GPE_GUI_PADDING,64);
+    renameBox->set_coords(pawgui::padding_default,64);
     renameBox->set_label("Scene Title");
     renameBox->set_height(24);
     renameBox->disable_self();
     sceneTitleField = NULL;
-    sceneCaptionField = new gpe_text_widget_string("","Scene Caption");
+    sceneCaptionField = new pawgui::widget_input_text("","Scene Caption");
     sceneCaptionField->set_label("Scene Caption");
-    sceneHintField = new gpe_text_widget_string("","Scene Hint");
+    sceneHintField = new pawgui::widget_input_text("","Scene Hint");
     sceneHintField->set_label("Scene Hint");
 
-    levelPixelWidthField = new gpe_text_widget_number("",true,0);
+    levelPixelWidthField = new pawgui::widget_input_number("",true,0);
     levelPixelWidthField->set_string( stg_ex::int_to_string(sceneRect.w) );
     levelPixelWidthField->set_label("Width(px)");
     levelPixelWidthField->scale_width( 0.5 );
 
-    levelPixelHeightField = new gpe_text_widget_number("",true,0);
+    levelPixelHeightField = new pawgui::widget_input_number("",true,0);
     levelPixelHeightField->set_string( stg_ex::int_to_string(sceneRect.h) );
     levelPixelHeightField->set_label("Height(px)");
     levelPixelHeightField->scale_width( 0.5 );
 
-    defaultTileWidthField = new gpe_text_widget_number("width",true,0);
+    defaultTileWidthField = new pawgui::widget_input_number("width",true,0);
     defaultTileWidthField->set_string("32");
     defaultTileWidthField->set_label("Default Tile Width(px)");
 
-    defaultTileHeightField = new gpe_text_widget_number("height",true,0);
+    defaultTileHeightField = new pawgui::widget_input_number("height",true,0);
     defaultTileHeightField->set_string("32");
     defaultTileHeightField->set_label("Default Tile Height(px)");
 
@@ -166,37 +166,20 @@ gameSceneResource::gameSceneResource(GPE_GeneralResourceContainer * pFolder )
     endAudioDropDown = NULL;
     startAudioDropDown = NULL;
 
-    northSceneDropDown = NULL;
-    southSceneDropDown = NULL;
-    westSceneDropDown = NULL;
-    eastSceneDropDown = NULL;
     if( projectParentFolder!=NULL)
     {
-        musicAudioDropDown = new GPE_DropDown_Resouce_Menu( "BG Music",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_audio]),-1,true);
+        musicAudioDropDown = new pawgui::widget_drop_down_resource_menu( "BG Music",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_audio]),-1,true);
 
-        startAudioDropDown = new GPE_DropDown_Resouce_Menu( "Start Audio",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_audio]),-1,true);
+        startAudioDropDown = new pawgui::widget_drop_down_resource_menu( "Start Audio",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_audio]),-1,true);
 
-        endAudioDropDown = new GPE_DropDown_Resouce_Menu( "End Audio",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_audio]),-1,true);
-
-        //
-        northSceneDropDown = new GPE_DropDown_Resouce_Menu( "North",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_scene]+"s"),-1,true);
-        northSceneDropDown->set_width(128);
-
-        southSceneDropDown = new GPE_DropDown_Resouce_Menu( "South",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_scene]+"s"),-1,true);
-        southSceneDropDown->set_width(128);
-
-        eastSceneDropDown = new GPE_DropDown_Resouce_Menu( "East",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_scene]+"s"),-1,true);
-        eastSceneDropDown->set_width(128);
-
-        westSceneDropDown = new GPE_DropDown_Resouce_Menu( "West",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_scene]+"s"),-1,true);
-        westSceneDropDown->set_width(128);
+        endAudioDropDown = new pawgui::widget_drop_down_resource_menu( "End Audio",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_audio]),-1,true);
     }
 
-    resizeMapButton = new GPE_ToolLabelButton("Resize Map","Click to re-size and recalculate map content" );
-    preloadCheckBox = new GPE_CheckBoxBasic("Preload","Check to load scene at launch of program", true);
-    isometricCheckBox = new GPE_CheckBoxBasic("Isometric Scene","The Scene is rendered and processed with the isometric engine", false);
-    checkBoxIsContinuous = new GPE_CheckBoxBasic("Continuous Scene","Scene Data & Objects are stored throughout game[Reccommended: Keep unchecked for most scenes]", false);
-    sceneBackgroundColor = new gpe_widget_color_picker();
+    resizeMapButton = new pawgui::widget_button_label("Resize Map","Click to re-size and recalculate map content" );
+    preloadCheckBox = new pawgui::widget_checkbox("Preload","Check to load scene at launch of program", true);
+    isometricCheckBox = new pawgui::widget_checkbox("Isometric Scene","The Scene is rendered and processed with the isometric engine", false);
+    checkBoxIsContinuous = new pawgui::widget_checkbox("Continuous Scene","Scene Data & Objects are stored throughout game[Reccommended: Keep unchecked for most scenes]", false);
+    sceneBackgroundColor = new pawgui::gpe_widget_color_picker();
     sceneBackgroundColor->set_rgb(0,0,0);
     sceneBackgroundColor->set_label("Background");
     //end Variables for settings Tab
@@ -207,57 +190,57 @@ gameSceneResource::gameSceneResource(GPE_GeneralResourceContainer * pFolder )
     layerInEdit = -1;
     if( projectParentFolder!=NULL)
     {
-        addNewComponentDropDown = new GPE_DropDown_Menu( "Add Component",false);
+        addNewComponentDropDown = new pawgui::widget_dropdown_menu( "Add Component",false);
         setup_object_components( addNewComponentDropDown );
         addNewComponentDropDown->set_width(128);
-        animationInEditor = new GPE_DropDown_Resouce_Menu( "Change  Animation",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_animation]+"s"),-1,true);
-        objectInEditor = new GPE_DropDown_Resouce_Menu( "New Branch",projectParentFolder,-1,true);
-        objectReplacerInEditor = new GPE_DropDown_Resouce_Menu( "Replace Object",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s"),-1,true);
-        objectNewType = new GPE_DropDown_Resouce_Menu( "Change Object",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s"),-1,true);
+        animationInEditor = new pawgui::widget_drop_down_resource_menu( "Change  Animation",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_animation]+"s"),-1,true);
+        objectInEditor = new pawgui::widget_drop_down_resource_menu( "New Branch",projectParentFolder,-1,true);
+        objectReplacerInEditor = new pawgui::widget_drop_down_resource_menu( "Replace Object",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s"),-1,true);
+        objectNewType = new pawgui::widget_drop_down_resource_menu( "Change Object",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s"),-1,true);
 
-        closeObjectProperties = new GPE_ToolLabelButton( "Close Properties","Closes Object Properties of selected Object");
+        closeObjectProperties = new pawgui::widget_button_label( "Close Properties","Closes Object Properties of selected Object");
 
-        gridWidthField = new gpe_text_widget_number("grid_width",true,0);
+        gridWidthField = new pawgui::widget_input_number("grid_width",true,0);
         gridWidthField->set_string("32");
         gridWidthField->set_label("Grid Width");
 
-        gridHeightField = new gpe_text_widget_number("grid_height",true,0);
+        gridHeightField = new pawgui::widget_input_number("grid_height",true,0);
         gridHeightField->set_string("32");
         gridHeightField->set_label("Grid Height");
 
-        gridColorField = new gpe_widget_color_picker("Grid Color","Sets the color of the grid cells" );
-        gridAlphaField = new gpe_text_widget_number("grid_alpha",true,0);
+        gridColorField = new pawgui::gpe_widget_color_picker("Grid Color","Sets the color of the grid cells" );
+        gridAlphaField = new pawgui::widget_input_number("grid_alpha",true,0);
         gridAlphaField->set_string("228");
         gridAlphaField->set_label("Grid Alpha");
 
-        viewTileGridCheckBox = new GPE_CheckBoxBasic("View Grid","View grid.", true);
-        useObjGridCheckBox = new GPE_CheckBoxBasic("Use Grid","Have future branches placed on a uniform grid.", true);
-        onlyRemoveThisObjectTypeButton = new GPE_CheckBoxBasic("Limit Scope","Only select/remove this object on right-click", false);
-        forceSnapButton = new GPE_ToolLabelButton( "Snap To Grid","Aligns all branches to the  grid");
-        removeObjectButton = new GPE_ToolLabelButton( "Remove from Scene","Removes only this object type from the scene");
-        clearObjectsButton = new GPE_ToolLabelButton( "Clear Objects","Removes all Objects from scene");
+        viewTileGridCheckBox = new pawgui::widget_checkbox("View Grid","View grid.", true);
+        useObjGridCheckBox = new pawgui::widget_checkbox("Use Grid","Have future branches placed on a uniform grid.", true);
+        onlyRemoveThisObjectTypeButton = new pawgui::widget_checkbox("Limit Scope","Only select/remove this object on right-click", false);
+        forceSnapButton = new pawgui::widget_button_label( "Snap To Grid","Aligns all branches to the  grid");
+        removeObjectButton = new pawgui::widget_button_label( "Remove from Scene","Removes only this object type from the scene");
+        clearObjectsButton = new pawgui::widget_button_label( "Clear Objects","Removes all Objects from scene");
         removeObjectButton->set_width(forceSnapButton->get_width());
         clearObjectsButton->set_width(forceSnapButton->get_width());
 
-        inheritParentComponentButton = new GPE_ToolLabelButton( "Inherit Components","Inherit components from entity's object class");
-        resetComponentsButton = new GPE_ToolLabelButton( "Reset Components","Removes all components from this object");
+        inheritParentComponentButton = new pawgui::widget_button_label( "Inherit Components","Inherit components from entity's object class");
+        resetComponentsButton = new pawgui::widget_button_label( "Reset Components","Removes all components from this object");
         resetComponentsButton->set_width(forceSnapButton->get_width());
         resetComponentsButton->set_width(forceSnapButton->get_width());
 
-        objCustomVariableSettingsButtton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/edit.png","Edit Variable");
-        objCustomVariableAddButtton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/plus.png","Add Variable");
-        objCustomVariableRemoveButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/minus.png", "Remove Variable" );
-        objCustomVariableRefeshButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refresh Object Default Variables");
+        objCustomVariableSettingsButtton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/edit.png","Edit Variable");
+        objCustomVariableAddButtton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/plus.png","Add Variable");
+        objCustomVariableRemoveButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/minus.png", "Remove Variable" );
+        objCustomVariableRefeshButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refresh Object Default Variables");
 
         //variables for the tiled tab
         update_rectangle(&tsCameraRect,0,0,0,0);
 
-        selectedBranchLabel = new GPE_Label_Text("Scene Branch","");
-        layerErrorMessage = new GPE_Label_Text("Error invalid layer type given...","ERROR");
-        layerRemoveButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/remove.png", "Remove Layer",-1,32 );
-        layerMoveUpButtton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/arrow-up.png", "Move Layer Up",-1,32);
-        layerMoveDownButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/arrow-down.png","Move Layer Down",-1,32 );
-        layerToggleHideButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/adjust.png","Hide/Unhide Other Layers",-1,32 );
+        selectedBranchLabel = new pawgui::widget_label_text ("Scene Branch","");
+        layerErrorMessage = new pawgui::widget_label_text ("Error invalid layer type given...","ERROR");
+        layerRemoveButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/remove.png", "Remove Layer",-1,32 );
+        layerMoveUpButtton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/arrow-up.png", "Move Layer Up",-1,32);
+        layerMoveDownButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/arrow-down.png","Move Layer Down",-1,32 );
+        layerToggleHideButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/adjust.png","Hide/Unhide Other Layers",-1,32 );
 
         tilesheetRenderXPos = 0;
         tilesheetRenderYPos = 0;
@@ -274,17 +257,17 @@ gameSceneResource::gameSceneResource(GPE_GeneralResourceContainer * pFolder )
 
     selectedSceneObject = NULL;
     customObjCreationId = 0;
-    objectEditorNameTitle = new GPE_Label_Text("None","None");
-    objectEditorPropertiesTitle = new GPE_Label_Text("Object Properties","Object Properties");
+    objectEditorNameTitle = new pawgui::widget_label_text ("None","None");
+    objectEditorPropertiesTitle = new pawgui::widget_label_text ("Object Properties","Object Properties");
 
 
     lastCreatedObjXPos=-1;
     lastCreatedObjYPos=-1;
     lastCreatedObjTypeId=-1;
     editorMode = LEDITOR_MODE_SETTINGS;
-    sceneXScroll = new GPE_ScrollBar_XAxis();
+    sceneXScroll = new pawgui::widget_scrollbar_xaxis();
     update_rectangle(&sceneXScroll->contextRect,0,0,640,480);
-    sceneYScroll = new GPE_ScrollBar_YAxis();
+    sceneYScroll = new pawgui::widget_scrollbar_yaxis();
     update_rectangle(&sceneYScroll->contextRect,0,0,640,480);
     texRes = NULL;
 
@@ -641,7 +624,7 @@ sceneLayer * gameSceneResource::add_retro_layer(int layerType, int newLayerId, b
                 availableLayerIds.push_back(availI);
             }
 
-            GPE_SpecialMenu_Branch * fResBranch = NULL;
+            pawgui::widget_branch * fResBranch = NULL;
             sceneLayer * fLayer = NULL;
             for( availI = (int)(availableLayerIds.size() )-1; availI >=0; availI--)
             {
@@ -730,7 +713,7 @@ sceneLayer * gameSceneResource::add_layer( int newLayerId, bool selectLayer )
         {
             availableLayerIds.push_back(availI);
         }
-        GPE_SpecialMenu_Branch * fResBranch = NULL;
+        pawgui::widget_branch * fResBranch = NULL;
         sceneLayer * fLayer = NULL;
         for( availI = (int)(availableLayerIds.size() )-1; availI >=0; availI--)
         {
@@ -764,7 +747,7 @@ sceneLayer * gameSceneResource::add_layer( int newLayerId, bool selectLayer )
         newLayer = new sceneLayer( newLayerId, projectParentFolder);
         if( newLayer!=NULL)
         {
-            GPE_main_Logs->log_other_line( current_project->projectLayerNames[newLayerId] );
+            main_editor_log->log_other_line( current_project->projectLayerNames[newLayerId] );
             newLayer->set_name( current_project->projectLayerNames[newLayerId] );
             sceneResourceTree->add_branch(  newLayer, true );
             if( selectLayer )
@@ -794,7 +777,7 @@ GPE_SceneBasicClass *  gameSceneResource::add_new_resource_from_menu()
             availableLayerIds.push_back(availI);
         }
 
-        GPE_SpecialMenu_Branch * fResBranch = NULL;
+        pawgui::widget_branch * fResBranch = NULL;
         sceneLayer * fLayer = NULL;
         for( availI = (int)(availableLayerIds.size() )-1; availI >=0; availI--)
         {
@@ -945,7 +928,7 @@ GPE_SceneBasicClass *  gameSceneResource::add_new_resource_from_menu()
     return NULL;
 }
 
-void gameSceneResource::adjust_object_offsets( GPE_SpecialMenu_Branch *  basicObj )
+void gameSceneResource::adjust_object_offsets( pawgui::widget_branch *  basicObj )
 {
     //Avoids all getters and calculations if NULl or has an empty list
     if( basicObj == NULL)
@@ -962,11 +945,11 @@ void gameSceneResource::adjust_object_offsets( GPE_SpecialMenu_Branch *  basicOb
     GPE_SceneAnimation * cAnim = NULL;
     GPE_SceneGameObject * cObj = NULL;
     int jAnim = 0, jObj = 0;
-    GPE_GeneralResourceContainer * allObjsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s");
-    GPE_GeneralResourceContainer * fObjType = NULL;
+    pawgui::widget_resource_container * allObjsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s");
+    pawgui::widget_resource_container * fObjType = NULL;
 
-    GPE_GeneralResourceContainer * allAnimationsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_animation]+"s");
-    GPE_GeneralResourceContainer * fAnimType = NULL;
+    pawgui::widget_resource_container * allAnimationsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_animation]+"s");
+    pawgui::widget_resource_container * fAnimType = NULL;
 
     gameObjectResource * currentTypeObj = NULL;
     animationResource * currentTypeAnim= NULL;
@@ -975,7 +958,7 @@ void gameSceneResource::adjust_object_offsets( GPE_SpecialMenu_Branch *  basicOb
         gpe::error_log->report("All allObjsFolder or allAnimationsFolder is null... aborting...");
         return;
     }
-    GPE_SpecialMenu_Branch * iBranch = NULL;
+    pawgui::widget_branch * iBranch = NULL;
     GPE_SceneBasicClass * iBasicClass = NULL;
 
     for( int iAdjust = basicObj->sub_elements.size()-1; iAdjust >=0; iAdjust--)
@@ -1054,8 +1037,8 @@ bool gameSceneResource::build_intohtml5_file(std::ofstream * fileTarget, int lef
         int iItr = 0, jItr = 0, kItr = 0;
         std::string customObjLabel  = "";
         std::string customObjValue  = "";
-        std::string nestedTabsStr = generate_tabs( leftTabAmount  );
-        std::string nestedTabsStrObjFunc = generate_tabs( leftTabAmount +1 );
+        std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
+        std::string nestedTabsStrObjFunc = pawgui::generate_tabs( leftTabAmount +1 );
         std::string html5SceneName = "_scn_" + get_name();
         //*fileTarget << nestedTabsStr << "var " << get_name() << " = " << exportBuildGlobalId << ";\n";
         //*fileTarget << nestedTabsStr << "var " << html5SceneName << " =  GPE.add_gamescene(); \n";
@@ -1073,13 +1056,13 @@ bool gameSceneResource::build_intohtml5_file(std::ofstream * fileTarget, int lef
         *fileTarget << nestedTabsStr << html5SceneName << ".tileAmountX = " << floor(defaultTileAmountX) << ";\n";
         *fileTarget << nestedTabsStr << html5SceneName << ".tileAmountY = " << floor(defaultTileAmountY) << ";\n";
         */
-        *fileTarget << nestedTabsStr << html5SceneName << ".bgColor = '#" << sceneBackgroundColor->get_hex_string() << "';\n";
+        *fileTarget << nestedTabsStr << html5SceneName << ".bg_color = '#" << sceneBackgroundColor->get_hex_string() << "';\n";
 
         if(checkBoxIsContinuous!=NULL)
         {
             *fileTarget << nestedTabsStr << html5SceneName << ".sceneIsContinuous = " << checkBoxIsContinuous->is_clicked() << ";\n";
         }
-        GPE_GeneralResourceContainer * fAudioId = NULL;
+        pawgui::widget_resource_container * fAudioId = NULL;
         if( musicAudioDropDown!=NULL)
         {
             fAudioId = musicAudioDropDown->get_selected_container();
@@ -1104,7 +1087,7 @@ bool gameSceneResource::build_intohtml5_file(std::ofstream * fileTarget, int lef
                 *fileTarget << nestedTabsStr << html5SceneName << ".endAudio = " << fAudioId->exportBuildGlobalId << ";\n";
             }
         }
-        GPE_SpecialMenu_Branch * tempBranch = NULL;
+        pawgui::widget_branch * tempBranch = NULL;
         GPE_SceneBasicClass * tempBasicSceneObj = NULL;
         sceneLayer * tempLayer = NULL;
         GPE_SceneTile* fSceneTile= NULL;
@@ -1143,7 +1126,7 @@ void gameSceneResource::compile_cpp()
 
 sceneLayer * gameSceneResource::find_layer( int layerIdToFind )
 {
-    GPE_SpecialMenu_Branch * fResBranch = NULL;
+    pawgui::widget_branch * fResBranch = NULL;
     sceneLayer * fLayer = NULL;
     for( int i = (int)sceneResourceTree->sub_elements.size()-1; i >= 0; i-- )
     {
@@ -1268,13 +1251,13 @@ void gameSceneResource::handle_scrolling()
     bool xScrollHappened = false;
     bool yScrollHappened = false;
     bool editorScrolling = false;
-    if( PANEL_GENERAL_EDITOR!=NULL  )
+    if( panel_main_area!=NULL  )
     {
-        if( PANEL_GENERAL_EDITOR->hasScrollControl )
+        if( panel_main_area->hasScrollControl )
         {
             return;
         }
-        editorScrolling = PANEL_GENERAL_EDITOR->is_inuse();
+        editorScrolling = panel_main_area->is_inuse();
     }
 
     if( areaIsScrollable && ( editorMode!=LEDITOR_MODE_LAYERS || (  editorMode==LEDITOR_MODE_LAYERS/* && tSPreviewer->hasScrollControl==false*/)  ) )
@@ -1465,9 +1448,9 @@ void gameSceneResource::load_resource(std::string file_path)
         editorCameraRect.y = 0;
         editorCameraRect.w = 640;
         editorCameraRect.h = 480;
-        if( GPE_LOADER != NULL )
+        if( pawgui::main_loader_display != NULL )
         {
-            GPE_LOADER->update_submessages( "Processing Game Scene", resource_name );
+            pawgui::main_loader_display->update_submessages( "Processing Game Scene", resource_name );
         }
 
         std::string otherColContainerName = "";
@@ -1541,12 +1524,12 @@ void gameSceneResource::load_resource(std::string file_path)
                 int endObjectComponentPos = -1;
                 std::string componentTag = "[component]";
                 int componentTagSize = (int)componentTag.size();
-                GPE_GeneralGuiElement * newObjectComponent = NULL;
+                pawgui::widget_basic * newObjectComponent = NULL;
                 GPE_ObjectComponent * tempObjectComponent = NULL;
                 bool uniqeComponentsOpen = false;
                 //GPE_TextAreagpe::inputBasic * textAreaToLoad = NULL;
-                GPE_GeneralResourceContainer * allObjsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s");
-                GPE_GeneralResourceContainer * foundObjContainer = NULL;
+                pawgui::widget_resource_container * allObjsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s");
+                pawgui::widget_resource_container * foundObjContainer = NULL;
 
 
                 while ( gameScnFileIn.good() )
@@ -2393,7 +2376,7 @@ void gameSceneResource::inherit_components( GPE_SceneBasicClass * objectToInheri
                 }
                 if( !componentIsDuplicate)
                 {
-                    GPE_GeneralGuiElement * newInheritedGuiElement =add_gui_component( pComponent->get_data() );
+                    pawgui::widget_basic * newInheritedGuiElement =add_gui_component( pComponent->get_data() );
                     GPE_ObjectComponent * newComponent = new GPE_ObjectComponent();
                     if( newComponent!=NULL)
                     {
@@ -2414,10 +2397,10 @@ bool gameSceneResource::is_build_ready()
 
 void gameSceneResource::manage_components( bool processComponentsToo )
 {
-    if( PANEL_INSPECTOR!=NULL )
+    if( panel_inspector!=NULL )
     {
         GPE_SceneBasicClass * classHolder = NULL;
-        PANEL_INSPECTOR->add_gui_element( customComponentsTitle );
+        panel_inspector->add_gui_element( customComponentsTitle );
         if( editorMode==LEDITOR_MODE_SETTINGS )
         {
             classHolder = sceneComponents;
@@ -2438,16 +2421,16 @@ void gameSceneResource::manage_components( bool processComponentsToo )
                 {
                     if( tComponent->get_component()!=NULL && tComponent->get_gear()!=NULL)
                     {
-                        PANEL_INSPECTOR->add_gui_element( tComponent->get_component(),false );
-                        PANEL_INSPECTOR->add_gui_element( tComponent->get_gear(),true );
+                        panel_inspector->add_gui_element( tComponent->get_component(),false );
+                        panel_inspector->add_gui_element( tComponent->get_gear(),true );
                     }
                 }
             }
-            PANEL_INSPECTOR->add_gui_element( addNewComponentDropDown,true );
+            panel_inspector->add_gui_element( addNewComponentDropDown,true );
         }
         if( processComponentsToo )
         {
-            PANEL_INSPECTOR->process_self();
+            panel_inspector->process_self();
             process_components();
         }
     }
@@ -2473,7 +2456,7 @@ void gameSceneResource::process_components()
             std::string newComponentType = addNewComponentDropDown->get_selected_tag();
             if( (int)newComponentType.size() > 0)
             {
-                std::string newComponentName = get_string_from_popup("Name your new component","Must be unique!","");
+                std::string newComponentName = pawgui::get_string_from_popup("Name your new component","Must be unique!","");
                 bool componentNameInUseAlready = false;
                 if( newComponentName.size() > 0 )
                 {
@@ -2501,8 +2484,8 @@ void gameSceneResource::process_components()
                             std::string extraDataString = "_blank";
                             if( newComponentType=="texturl")
                             {
-                                std::string newurlLink = get_string_from_popup("Please enter a URL for this new component","Example: http://www.pawbyte.com","");
-                                std::string newUrlDescription = get_string_from_popup("Please enter a description of your URL","Please describe your URL","");
+                                std::string newurlLink = pawgui::get_string_from_popup("Please enter a URL for this new component","Example: http://www.pawbyte.com","");
+                                std::string newUrlDescription = pawgui::get_string_from_popup("Please enter a description of your URL","Please describe your URL","");
                                 if( (int)newurlLink.size() > 0)
                                 {
                                     int fileColonPos = newurlLink.find("file://");
@@ -2518,11 +2501,11 @@ void gameSceneResource::process_components()
                             else if( newComponentType=="dropdown" || newComponentType=="radio")
                             {
                                 extraDataString = "[menu]";
-                                std::string newMenuOptionName = get_string_from_popup("Enter an option name.","option name:","");
+                                std::string newMenuOptionName = pawgui::get_string_from_popup("Enter an option name.","option name:","");
                                 while( (int)newMenuOptionName.size() > 0 && (  stg_ex::is_alnum(newMenuOptionName,true,true) ) )
                                 {
                                     extraDataString+="[option]"+newMenuOptionName+":"+newMenuOptionName+":-1[/option]";
-                                    newMenuOptionName = get_string_from_popup("Enter an option name.","option name:","");
+                                    newMenuOptionName = pawgui::get_string_from_popup("Enter an option name.","option name:","");
                                 }
                                 extraDataString+="[/menu]0,0";
                             }
@@ -2538,7 +2521,7 @@ void gameSceneResource::process_components()
                             }
 
                             newComponentData = newComponentData+extraDataString;
-                            GPE_GeneralGuiElement * newComponentField = add_gui_component(newComponentData);
+                            pawgui::widget_basic * newComponentField = add_gui_component(newComponentData);
 
                             if( newComponentField!=NULL)
                             {
@@ -2552,12 +2535,12 @@ void gameSceneResource::process_components()
                         }
                         else
                         {
-                            display_user_alert("Invalid Component Name Entered","Please enter a unique component name with alpha-numeric values and no spaces!");
+                            pawgui::display_user_alert("Invalid Component Name Entered","Please enter a unique component name with alpha-numeric values and no spaces!");
                         }
                     }
                     else
                     {
-                        display_user_alert("Invalid Component Name Entered","Please enter a unique component name with alpha-numeric values and no spaces!");
+                        pawgui::display_user_alert("Invalid Component Name Entered","Please enter a unique component name with alpha-numeric values and no spaces!");
                     }
                 }
                 addNewComponentDropDown->set_option_value(-1);
@@ -2574,21 +2557,21 @@ void gameSceneResource::process_components()
             tempCustomComponent = classHolder->objCustomValPairs.at(iRealCompo);
             if( tempCustomComponent!=NULL && tempCustomComponent->get_gear()!=NULL &&  tempCustomComponent->get_gear()->is_clicked() )
             {
-                GPE_open_context_menu(-1,-1,256);
-                main_CONTEXT_MENU->add_menu_option("Rename Component",0,NULL,-1,NULL,true,true);
-                main_CONTEXT_MENU->add_menu_option("Delete Component",1,NULL,-1,NULL,false,true);
+                pawgui::context_menu_open(-1,-1,256);
+                pawgui::main_context_menu->add_menu_option("Rename Component",0,NULL,-1,NULL,true,true);
+                pawgui::main_context_menu->add_menu_option("Delete Component",1,NULL,-1,NULL,false,true);
                 if( tempCustomComponent->get_type()=="dropdown" || tempCustomComponent->get_type()=="selectbox")
                 {
-                    main_CONTEXT_MENU->add_menu_option("Add Option",2,NULL,-1,NULL,false,true);
-                    main_CONTEXT_MENU->add_menu_option("Remove Option",3,NULL,-1,NULL,false,true);
+                    pawgui::main_context_menu->add_menu_option("Add Option",2,NULL,-1,NULL,false,true);
+                    pawgui::main_context_menu->add_menu_option("Remove Option",3,NULL,-1,NULL,false,true);
                 }
 
-                main_CONTEXT_MENU->add_menu_option("Exit Menu",4,NULL,-1,NULL,true,true);
-                int menuSelection = GPE_Get_Context_Result();
+                pawgui::main_context_menu->add_menu_option("Exit Menu",4,NULL,-1,NULL,true,true);
+                int menuSelection = pawgui::context_menu_process();
                 if( menuSelection==0)
                 {
                     //rename
-                    std::string newComponentName = get_string_from_popup("Name your new component","Must be unique!","");
+                    std::string newComponentName = pawgui::get_string_from_popup("Name your new component","Must be unique!","");
                     bool componentNameInUseAlready = false;
                     if( newComponentName.size() > 0 )
                     {
@@ -2617,7 +2600,7 @@ void gameSceneResource::process_components()
                 }
                 else if( menuSelection==1)
                 {
-                    if( GPE_Display_Basic_Prompt("[WARNING]Object Component deletion?","Are you sure you will like to delete the ["+tempCustomComponent->get_name()+"] component? This action is irreversible!")==DISPLAY_QUERY_YES)
+                    if( pawgui::display_prompt_message("[WARNING]Object Component deletion?","Are you sure you will like to delete the ["+tempCustomComponent->get_name()+"] component? This action is irreversible!")==pawgui::display_query_yes)
                     {
                         //delete
                         delete tempCustomComponent;
@@ -2630,11 +2613,11 @@ void gameSceneResource::process_components()
                     if( tempCustomComponent->get_type()=="dropdown" || tempCustomComponent->get_type()=="selectbox")
                     {
                         std::string extraDataString = "[menu]";
-                        std::string newMenuOptionName = get_string_from_popup("Enter an option name.","option name:","");
+                        std::string newMenuOptionName = pawgui::get_string_from_popup("Enter an option name.","option name:","");
                         while( newMenuOptionName.size() > 0 && (  stg_ex::is_alnum(newMenuOptionName,true,true) ) )
                         {
                             extraDataString+="[option]"+newMenuOptionName+":"+newMenuOptionName+":-1[/option]";
-                            newMenuOptionName = get_string_from_popup("Enter an option name.","option name:","");
+                            newMenuOptionName = pawgui::get_string_from_popup("Enter an option name.","option name:","");
                         }
                         extraDataString+="[/menu]0,0";
                         tempCustomComponent->load_data(extraDataString);
@@ -2645,7 +2628,7 @@ void gameSceneResource::process_components()
                     if( tempCustomComponent->get_type()=="dropdown" || tempCustomComponent->get_type()=="selectbox")
                     {
                         std::string extraDataString = "";
-                        std::string newMenuOptionName = get_string_from_popup("Enter option to remove.","option name:","");
+                        std::string newMenuOptionName = pawgui::get_string_from_popup("Enter option to remove.","option name:","");
                         if( newMenuOptionName.size() > 0 && (  stg_ex::is_alnum(newMenuOptionName,true,true) ) )
                         {
                             extraDataString+="[option]"+newMenuOptionName+"[/option]";
@@ -2661,13 +2644,13 @@ void gameSceneResource::process_components()
     }
 }
 
-void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam)
+void gameSceneResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
 {
     saveResourceButton->disable_self();
     load_resource();
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if( cam==NULL || viewedSpace==NULL || sceneXScroll==NULL || sceneYScroll==NULL || spm == NULL )
+    if( cam==NULL || view_space==NULL || sceneXScroll==NULL || sceneYScroll==NULL || spm == NULL )
     {
         return;
     }
@@ -2676,9 +2659,9 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
     mouseIsInScene = get_mouse_coords();
 
     //Checks for resources being dragged
-    if( RESOURCE_TO_DRAG!=NULL )
+    if( pawgui::resource_dragged!=NULL )
     {
-        if( RESOURCE_TO_DRAG->is_folder()==false  && RESOURCE_TO_DRAG->projectParentFileName.compare(project_current_name)==0 )
+        if( pawgui::resource_dragged->is_folder()==false  && pawgui::resource_dragged->projectParentFileName.compare(pawgui::project_current_name)==0 )
         {
             if( mouseIsInScene && gpe::input->check_mouse_released( mb_left) )
             {
@@ -2686,30 +2669,30 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
                 editorButtonBar->set_selection( LEDITOR_MODE_LAYERS );
                 shortcutButtonBar->set_selection( SCENE_MODE_PLACE );
 
-                if( RESOURCE_TO_DRAG->is_folder()==false && RESOURCE_TO_DRAG->projectParentFileName.compare(project_current_name)==0 )
+                if( pawgui::resource_dragged->is_folder()==false && pawgui::resource_dragged->projectParentFileName.compare(pawgui::project_current_name)==0 )
                 {
                     seek_placeable_branch();
-                    if( RESOURCE_TO_DRAG->get_resource_type()== gpe::resource_type_animation )
+                    if( pawgui::resource_dragged->get_resource_type()== gpe::resource_type_animation )
                     {
-                        main_OVERLAY->update_tooltip("Placing Animation");
+                        pawgui::main_overlay_system->update_tooltip("Placing Animation");
                         GPE_SceneAnimation * newPlacedAnim = new GPE_SceneAnimation( projectParentFolder );
                         lastCreatedObjXPos = sceneObjMouseX;
                         lastCreatedObjYPos = sceneObjMouseY;
                         newPlacedAnim->set_position( sceneObjMouseX, sceneObjMouseY );
-                        newPlacedAnim->animationId = RESOURCE_TO_DRAG->get_global_id();
-                        newPlacedAnim->set_name(  RESOURCE_TO_DRAG->get_name() );
+                        newPlacedAnim->animationId = pawgui::resource_dragged->get_global_id();
+                        newPlacedAnim->set_name(  pawgui::resource_dragged->get_name() );
 
                         selectedSceneBranch->add_scene_branch( newPlacedAnim );
-                        lastCreatedObjTypeId=RESOURCE_TO_DRAG->get_global_id();
+                        lastCreatedObjTypeId=pawgui::resource_dragged->get_global_id();
                         selectedSceneObject = NULL;
 
                         if( objectEditorNameTitle!=NULL)
                         {
                             objectEditorNameTitle ->set_name( "None" );
                         }
-                        //objectInEditor->set_selection(RESOURCE_TO_DRAG->get_global_id() );
+                        //objectInEditor->set_selection(pawgui::resource_dragged->get_global_id() );
 
-                        animationResource* newAniRes = (animationResource*)RESOURCE_TO_DRAG->get_held_resource();
+                        animationResource* newAniRes = (animationResource*)pawgui::resource_dragged->get_held_resource();
                         /*
                         if( newAniRes!=NULL )
                         {
@@ -2718,11 +2701,11 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
                         newPlacedAnim->customObjId = customObjCreationId;
                         customObjCreationId++;*/
 
-                        RESOURCE_TO_DRAG = NULL;
+                        pawgui::resource_dragged = NULL;
                     }
-                    else if( RESOURCE_TO_DRAG->get_resource_type()== gpe::resource_type_font )
+                    else if( pawgui::resource_dragged->get_resource_type()== gpe::resource_type_font )
                     {
-                        main_OVERLAY->update_tooltip("Placing Custom Text");
+                        pawgui::main_overlay_system->update_tooltip("Placing Custom Text");
                         GPE_SceneText * newPlacedText = new GPE_SceneText();
                         lastCreatedObjXPos = sceneObjMouseX;
                         lastCreatedObjYPos = sceneObjMouseY;
@@ -2730,17 +2713,17 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
                         newPlacedText->set_name( "Hello World");
 
                         selectedSceneBranch->add_scene_branch( newPlacedText );
-                        lastCreatedObjTypeId=RESOURCE_TO_DRAG->get_global_id();
+                        lastCreatedObjTypeId=pawgui::resource_dragged->get_global_id();
                         selectedSceneObject = NULL;
 
                         if( objectEditorNameTitle!=NULL)
                         {
                             objectEditorNameTitle ->set_name( "None" );
                         }
-                        //objectInEditor->set_selection(RESOURCE_TO_DRAG->get_global_id() );
+                        //objectInEditor->set_selection(pawgui::resource_dragged->get_global_id() );
 
-                        fontResource * newFontRes = (fontResource*)RESOURCE_TO_DRAG->get_held_resource();
-                        newPlacedText->fontId = RESOURCE_TO_DRAG->get_global_id();
+                        fontResource * newFontRes = (fontResource*)pawgui::resource_dragged->get_held_resource();
+                        newPlacedText->fontId = pawgui::resource_dragged->get_global_id();
                         /*
                         if( newAniRes!=NULL )
                         {
@@ -2749,67 +2732,67 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
                         newPlacedAnim->customObjId = customObjCreationId;
                         customObjCreationId++;*/
 
-                        RESOURCE_TO_DRAG = NULL;
+                        pawgui::resource_dragged = NULL;
                     }
-                    else if( RESOURCE_TO_DRAG->get_resource_type()== gpe::resource_type_tilesheet )
+                    else if( pawgui::resource_dragged->get_resource_type()== gpe::resource_type_tilesheet )
                     {
 
                     }
-                    else if( RESOURCE_TO_DRAG->get_resource_type()== gpe::resource_type_object )
+                    else if( pawgui::resource_dragged->get_resource_type()== gpe::resource_type_object )
                     {
-                        main_OVERLAY->update_tooltip("Placing Object");
-                        GPE_SceneGameObject * newPlacedObject = new GPE_SceneGameObject( RESOURCE_TO_DRAG->get_name() );
+                        pawgui::main_overlay_system->update_tooltip("Placing Object");
+                        GPE_SceneGameObject * newPlacedObject = new GPE_SceneGameObject( pawgui::resource_dragged->get_name() );
                         lastCreatedObjXPos = sceneObjMouseX;
                         lastCreatedObjYPos = sceneObjMouseY;
                         newPlacedObject->set_position( sceneObjMouseX, sceneObjMouseY );
-                        newPlacedObject->objTypeId = RESOURCE_TO_DRAG->get_global_id();
-                        newPlacedObject->objTypeName = RESOURCE_TO_DRAG->get_name();
-                        newPlacedObject->set_name(  RESOURCE_TO_DRAG->get_name() );
+                        newPlacedObject->objTypeId = pawgui::resource_dragged->get_global_id();
+                        newPlacedObject->objTypeName = pawgui::resource_dragged->get_name();
+                        newPlacedObject->set_name(  pawgui::resource_dragged->get_name() );
 
                         selectedSceneBranch->add_scene_branch( newPlacedObject );
-                        lastCreatedObjTypeId=RESOURCE_TO_DRAG->get_global_id();
+                        lastCreatedObjTypeId=pawgui::resource_dragged->get_global_id();
                         selectedSceneObject = NULL;
 
                         if( objectEditorNameTitle!=NULL)
                         {
                             objectEditorNameTitle ->set_name( "None" );
                         }
-                        //objectInEditor->set_selection(RESOURCE_TO_DRAG->get_global_id() );
+                        //objectInEditor->set_selection(pawgui::resource_dragged->get_global_id() );
 
-                        gameObjectResource* newObjRes = (gameObjectResource*)RESOURCE_TO_DRAG->get_held_resource();
+                        gameObjectResource* newObjRes = (gameObjectResource*)pawgui::resource_dragged->get_held_resource();
                         if( newObjRes!=NULL )
                         {
                             inherit_components(newPlacedObject,newObjRes);
                         }
                         newPlacedObject->customObjId = customObjCreationId;
                         customObjCreationId++;
-                        RESOURCE_TO_DRAG = NULL;
+                        pawgui::resource_dragged = NULL;
                     }
-                    else if( RESOURCE_TO_DRAG->get_resource_type()== gpe::resource_type_path )
+                    else if( pawgui::resource_dragged->get_resource_type()== gpe::resource_type_path )
                     {
 
                     }
-                    else if( RESOURCE_TO_DRAG->get_resource_type()== gpe::resource_type_texture )
+                    else if( pawgui::resource_dragged->get_resource_type()== gpe::resource_type_texture )
                     {
-                        main_OVERLAY->update_tooltip("Placing Background");
+                        pawgui::main_overlay_system->update_tooltip("Placing Background");
                         GPE_SceneBackground * newPlacedBg = new GPE_SceneBackground( projectParentFolder );
-                        newPlacedBg->backgroundInEditor->set_selection( RESOURCE_TO_DRAG->get_global_id() );
+                        newPlacedBg->backgroundInEditor->set_selection( pawgui::resource_dragged->get_global_id() );
                         lastCreatedObjXPos = sceneObjMouseX;
                         lastCreatedObjYPos = sceneObjMouseY;
                         newPlacedBg->set_position( sceneObjMouseX, sceneObjMouseY );
-                        newPlacedBg->set_name( RESOURCE_TO_DRAG->get_name() );
+                        newPlacedBg->set_name( pawgui::resource_dragged->get_name() );
 
                         selectedSceneBranch->add_scene_branch( newPlacedBg );
-                        lastCreatedObjTypeId=RESOURCE_TO_DRAG->get_global_id();
+                        lastCreatedObjTypeId=pawgui::resource_dragged->get_global_id();
                         selectedSceneObject = NULL;
 
                         if( objectEditorNameTitle!=NULL)
                         {
                             objectEditorNameTitle ->set_name( "None" );
                         }
-                        //objectInEditor->set_selection(RESOURCE_TO_DRAG->get_global_id() );
+                        //objectInEditor->set_selection(pawgui::resource_dragged->get_global_id() );
 
-                        textureResource* newBGRes = (textureResource*)RESOURCE_TO_DRAG->get_held_resource();
+                        textureResource* newBGRes = (textureResource*)pawgui::resource_dragged->get_held_resource();
                         /*
                         if( newAniRes!=NULL )
                         {
@@ -2817,18 +2800,18 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
                         }
                         newPlacedAnim->customObjId = customObjCreationId;
                         customObjCreationId++;*/
-                        RESOURCE_TO_DRAG = NULL;
+                        pawgui::resource_dragged = NULL;
                     }
-                    else if( RESOURCE_TO_DRAG->get_resource_type()== gpe::resource_type_tilesheet )
+                    else if( pawgui::resource_dragged->get_resource_type()== gpe::resource_type_tilesheet )
                     {
 
                     }
                 }
                 else
                 {
-                    gpe::error_log->report("Unable to place dragged resource ["+RESOURCE_TO_DRAG->projectParentFileName+"] with ["+project_current_name+"]...");
+                    gpe::error_log->report("Unable to place dragged resource ["+pawgui::resource_dragged->projectParentFileName+"] with ["+pawgui::project_current_name+"]...");
                 }
-                RESOURCE_TO_DRAG = NULL;
+                pawgui::resource_dragged = NULL;
                 return;
             }
         }
@@ -2839,15 +2822,15 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
         sceneInFocus = mouseIsInScene;
     }
 
-    GPE_SpecialMenu_Branch * fBranch = NULL;
+    pawgui::widget_branch * fBranch = NULL;
     GPE_SceneBasicClass * fBasicElement = NULL;
     sceneLayer * fSceneLayer  = NULL;
 
     //Top Bar Edits and Mode Toggles
     sceneTopBarList->set_coords(0, 0 );
-    sceneTopBarList->set_width( viewedSpace->w );
+    sceneTopBarList->set_width( view_space->w );
     sceneTopBarList->set_height( 32 );
-    sceneTopBarList->barXPadding = GENERAL_GPE_GUI_PADDING;
+    sceneTopBarList->barXPadding = pawgui::padding_default;
     sceneTopBarList->barYPadding = 0;
     sceneTopBarList->barXMargin = 0;
     sceneTopBarList->barYMargin = 0;
@@ -2869,7 +2852,7 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
     objectLockStateButton->set_clicked( false );
     rotationButton->set_clicked( false );
     lightingStateButton->set_clicked( false );
-    sceneTopBarList->process_self(viewedSpace, cam );
+    sceneTopBarList->process_self(view_space, cam );
     bool openBranchRoationMenu = false;
     if( gridToggleButtton->is_clicked() )
     {
@@ -2944,20 +2927,20 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
         gridSettingsPanel->process_self();
         if( useObjGridCheckBox!=NULL)
         {
-            useSceneGrid = useObjGridCheckBox->is_checked();
+            useSceneGrid = useObjGridCheckBox->is_clicked();
         }
     }
 
     if( openBranchRoationMenu && selectedSceneBranch!=NULL)
     {
-        GPE_open_context_menu();
-        main_CONTEXT_MENU->add_menu_option("Rotate Left 90 Degrees",1);
-        main_CONTEXT_MENU->add_menu_option("Rotate Right 90 Degrees",2);
-        main_CONTEXT_MENU->add_menu_option("Rotate Left 180 Degrees",3);
-        main_CONTEXT_MENU->add_menu_option("Rotate Right 180 Degrees",4);
-        main_CONTEXT_MENU->add_menu_option("Flip Horizontal",5);
-        main_CONTEXT_MENU->add_menu_option("Flip Vertical",6);
-        int rotationOption = GPE_Get_Context_Result(NULL, true );
+        pawgui::context_menu_open();
+        pawgui::main_context_menu->add_menu_option("Rotate Left 90 Degrees",1);
+        pawgui::main_context_menu->add_menu_option("Rotate Right 90 Degrees",2);
+        pawgui::main_context_menu->add_menu_option("Rotate Left 180 Degrees",3);
+        pawgui::main_context_menu->add_menu_option("Rotate Right 180 Degrees",4);
+        pawgui::main_context_menu->add_menu_option("Flip Horizontal",5);
+        pawgui::main_context_menu->add_menu_option("Flip Vertical",6);
+        int rotationOption = pawgui::context_menu_process(NULL, true );
         if( rotationOption == 1 )
         {
             selectedSceneBranch->set_angle( selectedSceneBranch->angle + 90 );
@@ -2982,19 +2965,19 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
         {
             selectedSceneBranch->yScale*=-1.f;
         }
-        GPE_close_context_menu();
+        pawgui::context_menu_close();
     }
 
     scenePane.x = 0;
     scenePane.y = sceneTopBarList->get_height();
 
-    editorView.x = viewedSpace->x+scenePane.x;
-    editorView.y = viewedSpace->y+sceneTopBarList->get_height();
+    editorView.x = view_space->x+scenePane.x;
+    editorView.y = view_space->y+sceneTopBarList->get_height();
 
-    editorCameraRect.w = scenePane.w = (int)(viewedSpace->w -sceneYScroll->get_width() );
+    editorCameraRect.w = scenePane.w = (int)(view_space->w -sceneYScroll->get_width() );
     editorView.w = scenePane.w;
 
-    scenePane.h = viewedSpace->h;
+    scenePane.h = view_space->h;
     editorCameraRect.h = editorView.h = scenePane.h  - sceneXScroll->get_height();
 
     if( editorButtonBar!=NULL)
@@ -3006,15 +2989,15 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
     if( prevEditorMode!=editorMode)
     {
         gpe::input->reset_all_input();
-        if( PANEL_INSPECTOR!=NULL )
+        if( panel_inspector!=NULL )
         {
-            PANEL_INSPECTOR->clear_panel();
-            PANEL_INSPECTOR->process_self();
+            panel_inspector->clear_panel();
+            panel_inspector->process_self();
         }
-        if( PANEL_GENERAL_EDITOR!=NULL )
+        if( panel_main_area!=NULL )
         {
-            PANEL_GENERAL_EDITOR->clear_panel();
-            PANEL_GENERAL_EDITOR->process_self();
+            panel_main_area->clear_panel();
+            panel_main_area->process_self();
         }
         if( editorMode >=0 && editorMode < 5)
         {
@@ -3025,7 +3008,7 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
 
 
 
-    editorCameraRect.h = editorView.h = viewedSpace->h-shortcutButtonBar->get_height() - sceneXScroll->get_height();
+    editorCameraRect.h = editorView.h = view_space->h-shortcutButtonBar->get_height() - sceneXScroll->get_height();
 
     //Checks if the mouse is in the scene for all editor related tasks below
     mouseIsInScene = get_mouse_coords();
@@ -3046,7 +3029,7 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
 
             if( useObjGridCheckBox!=NULL)
             {
-                useSceneGrid = useObjGridCheckBox->is_checked();
+                useSceneGrid = useObjGridCheckBox->is_clicked();
             }
 
             if( useSceneGrid && sceneGridX!=0 && sceneGridY!=0)
@@ -3060,9 +3043,9 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
             }
         }
 
-        if( PANEL_INSPECTOR!=NULL )
+        if( panel_inspector!=NULL )
         {
-            PANEL_INSPECTOR->panelGuiList->set_horizontal_align(gpe::fa_left);
+            panel_inspector->panelGuiList->set_horizontal_align(gpe::fa_left);
         }
 
         //Clicks on object in scene if possible
@@ -3104,10 +3087,10 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
         //Handles resource tree
         int previousselectedId = sceneResourceTree->selectedSubOption;
         bool selectionChanged = false;
-        if( PANEL_GENERAL_EDITOR!=NULL )
+        if( panel_main_area!=NULL )
         {
-            PANEL_GENERAL_EDITOR->add_gui_element_fullsize( sceneResourceTree );
-            PANEL_GENERAL_EDITOR->process_self(NULL, NULL);
+            panel_main_area->add_gui_element_fullsize( sceneResourceTree );
+            panel_main_area->process_self(NULL, NULL);
             if( previousselectedId!= sceneResourceTree->selectedSubOption )
             {
                 selectionChanged = true;
@@ -3118,26 +3101,26 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
             }
             else if( sceneResourceTree->rightClickedId > 0 && sceneResourceTree->selectedBranch!=NULL )
             {
-                GPE_open_context_menu();
-                main_CONTEXT_MENU->add_menu_option("Add Group", 1);
-                main_CONTEXT_MENU->add_menu_option("Add Sub-Branch", 2);
-                main_CONTEXT_MENU->add_menu_option("Duplicate Branch ( disabled )", 3);
-                main_CONTEXT_MENU->add_menu_option("Delete Branch", 4);
-                main_CONTEXT_MENU->add_menu_option("Change Branch Type ( disabled )", 5);
+                pawgui::context_menu_open();
+                pawgui::main_context_menu->add_menu_option("Add Group", 1);
+                pawgui::main_context_menu->add_menu_option("Add Sub-Branch", 2);
+                pawgui::main_context_menu->add_menu_option("Duplicate Branch ( disabled )", 3);
+                pawgui::main_context_menu->add_menu_option("Delete Branch", 4);
+                pawgui::main_context_menu->add_menu_option("Change Branch Type ( disabled )", 5);
                 if( sceneResourceTree->selectedBranch->get_type() !=gpe::branch_type::LAYER )
                 {
-                    main_CONTEXT_MENU->add_menu_option("Rename Branch", 6);
+                    pawgui::main_context_menu->add_menu_option("Rename Branch", 6);
                 }
-                main_CONTEXT_MENU->add_menu_option("Move Up", 7 );
-                main_CONTEXT_MENU->add_menu_option("Move Down", 8 );
-                main_CONTEXT_MENU->add_menu_option("Branch Properties", 9 );
-                int menuResult = GPE_Get_Context_Result();
-                GPE_close_context_menu();
+                pawgui::main_context_menu->add_menu_option("Move Up", 7 );
+                pawgui::main_context_menu->add_menu_option("Move Down", 8 );
+                pawgui::main_context_menu->add_menu_option("Branch Properties", 9 );
+                int menuResult = pawgui::context_menu_process();
+                pawgui::context_menu_close();
 
                 switch( menuResult )
                 {
                     case 6:
-                        std::string newBranchName =get_string_from_popup("Rename branching...","Enter new name below", sceneResourceTree->selectedBranch->get_name() );
+                        std::string newBranchName =pawgui::get_string_from_popup("Rename branching...","Enter new name below", sceneResourceTree->selectedBranch->get_name() );
                         if( (int)newBranchName.size() > 0 )
                         {
                             sceneResourceTree->selectedBranch->set_name( newBranchName );
@@ -3191,11 +3174,11 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
             }
             swap_lock( selectedSceneBranch->isLocked  );
 
-            if( PANEL_INSPECTOR!=NULL)
+            if( panel_inspector!=NULL)
             {
                 if( selectedSceneBranch->get_type() > gpe::branch_type::BASIC_SCENE_ELEMENT && selectedSceneBranch->get_type() < gpe::branch_type::MAX_TYPE )
                 {
-                    PANEL_INSPECTOR->clear_panel();
+                    panel_inspector->clear_panel();
                     selectedSceneBranch->add_basic_elements();
                     selectedSceneBranch->add_typed_elements();
                     manage_components( true );
@@ -3205,9 +3188,9 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
                 {
                     objectLockStateButton->set_clicked( false );
                     //Shows error message if the scene branch has a weird type...
-                    PANEL_INSPECTOR->clear_panel();
-                    PANEL_INSPECTOR->add_gui_element(layerErrorMessage, true );
-                    PANEL_INSPECTOR->process_self(viewedSpace, cam);
+                    panel_inspector->clear_panel();
+                    panel_inspector->add_gui_element(layerErrorMessage, true );
+                    panel_inspector->process_self(view_space, cam);
                     //means that something is simply broken in editor code here
                 }
             }
@@ -3221,7 +3204,7 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
             }
 
             //Now lets play around in the scene some
-            if( mouseIsInScene && RESOURCE_TO_DRAG == NULL )
+            if( mouseIsInScene && pawgui::resource_dragged == NULL )
             {
                 if( shortcutButtonBar->get_tab_id()== SCENE_MODE_SELECT && isLayerOrGroup  )
                 {
@@ -3238,7 +3221,7 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
                             //Makes sure we are not stacking identical objects on each other
                             if( ( lastCreatedObjXPos < 0 || lastCreatedObjYPos < 0 || lastCreatedObjTypeId < 0) || sceneObjMouseX!=lastCreatedObjXPos && lastCreatedObjXPos|| sceneObjMouseY!=lastCreatedObjYPos || lastCreatedObjTypeId!=objTypeBeingPlaced )
                             {
-                                main_OVERLAY->update_tooltip("Placing Object");
+                                pawgui::main_overlay_system->update_tooltip("Placing Object");
                                 GPE_SceneGameObject * newPlacedObject = new GPE_SceneGameObject("object");
                                 newPlacedObject->set_position( sceneObjMouseX, sceneObjMouseY);
                                 lastCreatedObjXPos = sceneObjMouseX;
@@ -3253,7 +3236,7 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
                                 {
                                     objectEditorNameTitle ->set_name( "None");
                                 }
-                                GPE_GeneralResourceContainer * objContainer = objectInEditor->get_selected_container();
+                                pawgui::widget_resource_container * objContainer = objectInEditor->get_selected_container();
                                 if( objContainer!=NULL)
                                 {
                                     gameObjectResource* newObjRes = (gameObjectResource*)objContainer->get_held_resource();
@@ -3380,7 +3363,7 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
 
             if( addGroupButton!=NULL && addGroupButton->is_clicked() )
             {
-                std::string newBranchName =get_string_from_popup("Create a new Group Branch","Branch name","" );
+                std::string newBranchName =pawgui::get_string_from_popup("Create a new Group Branch","Branch name","" );
                 if( newBranchName.size() > 0 )
                 {
                     sceneBranchGroup * newBranchGroup = new sceneBranchGroup( newBranchName );
@@ -3389,7 +3372,7 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
             }
             else if( addTileMapButton!=NULL && addTileMapButton->is_clicked() )
             {
-                std::string newBranchName =get_string_from_popup("Create a new TileMap","Branch name","" );
+                std::string newBranchName =pawgui::get_string_from_popup("Create a new TileMap","Branch name","" );
                 if( newBranchName.size() > 0 )
                 {
                     GPE_SceneTileMap * newTileMap = new GPE_SceneTileMap( newBranchName, 0, 0, projectParentFolder );
@@ -3409,15 +3392,15 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
             else if( shortcutButtonBar->get_tab_id() != SCENE_MODE_ERASE )
             {
                 //Opens options for scene
-                GPE_open_context_menu();
+                pawgui::context_menu_open();
                 if( clickedSceneBranch!=NULL )
                 {
-                    main_CONTEXT_MENU->add_menu_option("Edit Resource["+ stg_ex::int_to_string( (int)clickedSceneBranch->get_type() )+"]", 1 );
+                    pawgui::main_context_menu->add_menu_option("Edit Resource["+ stg_ex::int_to_string( (int)clickedSceneBranch->get_type() )+"]", 1 );
                 }
-                main_CONTEXT_MENU->add_menu_option("Create New Scene Branch",5,NULL,5,NULL,true,true);
-                main_CONTEXT_MENU->add_menu_option("Help", 6 );
-                main_CONTEXT_MENU->add_menu_option("Exit Menu",7,NULL,-1,NULL,true,true);
-                int menuSelection = GPE_Get_Context_Result();
+                pawgui::main_context_menu->add_menu_option("Create New Scene Branch",5,NULL,5,NULL,true,true);
+                pawgui::main_context_menu->add_menu_option("Help", 6 );
+                pawgui::main_context_menu->add_menu_option("Exit Menu",7,NULL,-1,NULL,true,true);
+                int menuSelection = pawgui::context_menu_process();
                 if( menuSelection == 5 )
                 {
                     GPE_SceneBasicClass *  newResource = add_new_resource_from_menu();
@@ -3430,40 +3413,40 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
         if( mouseIsInScene )
         {
             gpe::cursor_main_controller->cursor_change("no" );
-            main_OVERLAY->update_tooltip("Select Layer-Mode to edit layer");
+            pawgui::main_overlay_system->update_tooltip("Select Layer-Mode to edit layer");
         }
         //Edits the settings of the scene
         objectLockStateButton->set_clicked( false );
-        if( PANEL_GENERAL_EDITOR!=NULL )
+        if( panel_main_area!=NULL )
         {
-            PANEL_GENERAL_EDITOR->clear_panel();
+            panel_main_area->clear_panel();
             renameBox->enable_self();
             confirmResourceButton->enable_self();
 
             cancelResourceButton->enable_self();
 
-            PANEL_GENERAL_EDITOR->add_gui_element(sceneEditorSubTitle,true);
-            PANEL_GENERAL_EDITOR->add_gui_auto(renameBox );
-            PANEL_GENERAL_EDITOR->add_gui_auto(sceneCaptionField );
-            PANEL_GENERAL_EDITOR->add_gui_auto(sceneHintField );
-            PANEL_GENERAL_EDITOR->add_gui_auto(levelPixelWidthField );
-            PANEL_GENERAL_EDITOR->add_gui_element(levelPixelHeightField, true );
-            PANEL_GENERAL_EDITOR->add_gui_element(defaultTileWidthField, true  );
-            PANEL_GENERAL_EDITOR->add_gui_auto(defaultTileHeightField);
-            PANEL_GENERAL_EDITOR->add_gui_auto(musicAudioDropDown );
-            PANEL_GENERAL_EDITOR->add_gui_auto(startAudioDropDown );
-            PANEL_GENERAL_EDITOR->add_gui_auto(endAudioDropDown );
-            //PANEL_GENERAL_EDITOR->add_gui_auto(isometricCheckBox );
-            PANEL_GENERAL_EDITOR->add_gui_auto(checkBoxIsContinuous );
-            PANEL_GENERAL_EDITOR->add_gui_auto(sceneBackgroundColor );
-            if( main_EDITOR_SETTINGS!=NULL && main_EDITOR_SETTINGS->renderSceneBGColor!=NULL)
+            panel_main_area->add_gui_element(sceneEditorSubTitle,true);
+            panel_main_area->add_gui_auto(renameBox );
+            panel_main_area->add_gui_auto(sceneCaptionField );
+            panel_main_area->add_gui_auto(sceneHintField );
+            panel_main_area->add_gui_auto(levelPixelWidthField );
+            panel_main_area->add_gui_element(levelPixelHeightField, true );
+            panel_main_area->add_gui_element(defaultTileWidthField, true  );
+            panel_main_area->add_gui_auto(defaultTileHeightField);
+            panel_main_area->add_gui_auto(musicAudioDropDown );
+            panel_main_area->add_gui_auto(startAudioDropDown );
+            panel_main_area->add_gui_auto(endAudioDropDown );
+            //panel_main_area->add_gui_auto(isometricCheckBox );
+            panel_main_area->add_gui_auto(checkBoxIsContinuous );
+            panel_main_area->add_gui_auto(sceneBackgroundColor );
+            if( main_editor_settings!=NULL && main_editor_settings->renderSceneBGColor!=NULL)
             {
-                PANEL_GENERAL_EDITOR->add_gui_auto(main_EDITOR_SETTINGS->renderSceneBGColor );
+                panel_main_area->add_gui_auto(main_editor_settings->renderSceneBGColor );
             }
-            PANEL_GENERAL_EDITOR->add_gui_auto(confirmResourceButton );
-            PANEL_GENERAL_EDITOR->add_gui_auto(cancelResourceButton );
-            //PANEL_GENERAL_EDITOR->set_maxed_out_width();
-            PANEL_GENERAL_EDITOR->process_self(NULL, NULL);
+            panel_main_area->add_gui_auto(confirmResourceButton );
+            panel_main_area->add_gui_auto(cancelResourceButton );
+            //panel_main_area->set_maxed_out_width();
+            panel_main_area->process_self(NULL, NULL);
 
             manage_components( true );
             if( confirmResourceButton->is_clicked() )
@@ -3472,7 +3455,7 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
             }
             else if( cancelResourceButton->is_clicked() )
             {
-                if( GPE_Display_Basic_Prompt("Are you sure you will like to revert scene?","This will load in data from save-file and remove all unsaved changes!", true )== DISPLAY_QUERY_YES )
+                if( pawgui::display_prompt_message("Are you sure you will like to revert scene?","This will load in data from save-file and remove all unsaved changes!", true )== pawgui::display_query_yes )
                 {
                     resourcePostProcessed = false;
                     load_resource();
@@ -3485,14 +3468,14 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
     {
         swap_lighting( );
     }
-    //if( PANEL_GENERAL_EDITOR->hasScrollControl==false && PANEL_INSPECTOR->hasScrollControl==false )
+    //if( panel_main_area->hasScrollControl==false && panel_inspector->hasScrollControl==false )
     {
         //Horizontal scrolling
         sceneXScroll->set_coords( scenePane.x,scenePane.h - sceneXScroll->get_height() );
         sceneXScroll->set_width( editorView.w );
         update_rectangle(&sceneXScroll->fullRect,0,0,(float)sceneRect.w, (float)sceneRect.h );
         update_rectangle(&sceneXScroll->contextRect,(float)editorCameraRect.x,(float)editorCameraRect.y, (float)editorCameraRect.w/zoomValue, (float)editorCameraRect.h/zoomValue );
-        sceneXScroll->process_self(viewedSpace,cam );
+        sceneXScroll->process_self(view_space,cam );
         //if( sceneXScroll->has_moved() )
         {
             editorCameraRect.x = (float)(sceneXScroll->contextRect.x);
@@ -3504,7 +3487,7 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
         update_rectangle(&sceneYScroll->fullRect,0,0,(float)sceneRect.w, (float)sceneRect.h );
         update_rectangle(&sceneYScroll->contextRect,(float)editorCameraRect.x,(float)editorCameraRect.y, (float)editorCameraRect.w/zoomValue, (float)editorCameraRect.h/zoomValue );
         //sceneYScroll->contextRect.h = scenePane.h;
-        sceneYScroll->process_self(viewedSpace,cam );
+        sceneYScroll->process_self(view_space,cam );
         //if( sceneYScroll->has_moved() )
         {
             editorCameraRect.y = float(sceneYScroll->contextRect.y);
@@ -3516,9 +3499,9 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
         if( mouseIsInScene )
         {
             areaIsScrollable = true;
-            if( PANEL_GENERAL_EDITOR!=NULL )
+            if( panel_main_area!=NULL )
             {
-                PANEL_GENERAL_EDITOR->hasScrollControl = false;
+                panel_main_area->hasScrollControl = false;
             }
         }
         else
@@ -3545,9 +3528,9 @@ void gameSceneResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
 
     handle_scrolling();
 
-    if( GPE_main_Statusbar!=NULL)
+    if( pawgui::main_statusbar!=NULL)
     {
-        GPE_main_Statusbar->set_codestring( "Mouse( "+ stg_ex::int_to_string(sceneMouseXPos )+" , "+ stg_ex::int_to_string(sceneMouseYPos)+")"+
+        pawgui::main_statusbar->set_codestring( "Mouse( "+ stg_ex::int_to_string(sceneMouseXPos )+" , "+ stg_ex::int_to_string(sceneMouseYPos)+")"+
                                             "Camera( "+ stg_ex::float_to_string(editorCameraRect.x )+" , "+ stg_ex::float_to_string(editorCameraRect.y)+") Zoom:"+ stg_ex::float_to_string(zoomValue) );
     }
     clickedSceneBranch = NULL;
@@ -3604,9 +3587,9 @@ void gameSceneResource::render_grid( int xStart, int yStart, int cellW, int cell
     }
 }
 
-void gameSceneResource::render_scene_layers( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam, gpe::shape_rect * sceneCamera,float renderScale, bool showEditorPreviews,  bool checkListDependent )
+void gameSceneResource::render_scene_layers( gpe::shape_rect * view_space, gpe::shape_rect * cam, gpe::shape_rect * sceneCamera,float renderScale, bool showEditorPreviews,  bool checkListDependent )
 {
-    viewedSpace = gpe::camera_find( viewedSpace );
+    view_space = gpe::camera_find( view_space );
     cam = gpe::camera_find( cam );
     if( renderScale <=0 )
     {
@@ -3616,7 +3599,7 @@ void gameSceneResource::render_scene_layers( gpe::shape_rect * viewedSpace, gpe:
     {
         zoomValue = renderScale;
     }
-    currentSceneToRender = this;
+    scene_currentToRender = this;
     /*
     renderZone = gpe::camera_find( renderZone );
     if( renderZone==NULL)
@@ -3625,7 +3608,7 @@ void gameSceneResource::render_scene_layers( gpe::shape_rect * viewedSpace, gpe:
     }
 
     gpe::renderer_main->reset_viewpoint();
-    gpe::renderer_main->set_viewpoint( viewedSpace );
+    gpe::renderer_main->set_viewpoint( view_space );
     */
 
     if( sceneCamera==NULL)
@@ -3654,7 +3637,7 @@ void gameSceneResource::render_scene_layers( gpe::shape_rect * viewedSpace, gpe:
     spm->cameraFloorXPos = floor( sceneCamera->x );
     spm->cameraFloorYPos = floor( sceneCamera->y );
     int layerCount = (int)sceneResourceTree->sub_elements.size();
-    GPE_SpecialMenu_Branch * current_branch = NULL;
+    pawgui::widget_branch * current_branch = NULL;
     for(  int layerItr = 0; layerItr < layerCount; layerItr++ )
     {
         current_branch = sceneResourceTree->sub_elements[layerItr];
@@ -3665,9 +3648,9 @@ void gameSceneResource::render_scene_layers( gpe::shape_rect * viewedSpace, gpe:
     }
 }
 
-void gameSceneResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void gameSceneResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
     float i = 0, j = 0, k = 0;
     int gridX1 = 0;
@@ -3678,9 +3661,9 @@ void gameSceneResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_r
     GPE_SceneBackground * currBg = NULL;
 
     //renders the BGs
-    GPE_GeneralResourceContainer * allTexturesFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_texture]+"s");
-    GPE_GeneralResourceContainer * allTilesheetsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_tilesheet]+"s");
-    GPE_GeneralResourceContainer * allObjsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s");
+    pawgui::widget_resource_container * allTexturesFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_texture]+"s");
+    pawgui::widget_resource_container * allTilesheetsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_tilesheet]+"s");
+    pawgui::widget_resource_container * allObjsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s");
     //renders the background
 
     int bgI = 0;
@@ -3699,22 +3682,22 @@ void gameSceneResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_r
         }
 
         //Renders the transparent background texture below the layers
-        if(  editorMode==0 && GPE_TEXTURE_TRANSPARENT_BG!=NULL)
+        if(  editorMode==0 && texture_transparent_bg!=NULL)
         {
-            if( main_EDITOR_SETTINGS!=NULL && main_EDITOR_SETTINGS->renderSceneBGColor!=NULL && main_EDITOR_SETTINGS->renderSceneBGColor->is_clicked()==false )
+            if( main_editor_settings!=NULL && main_editor_settings->renderSceneBGColor!=NULL && main_editor_settings->renderSceneBGColor->is_clicked()==false )
             {
-                for(int iPV= 0; iPV<= editorView.w; iPV+=GPE_TEXTURE_TRANSPARENT_BG->get_width() )
+                for(int iPV= 0; iPV<= editorView.w; iPV+=texture_transparent_bg->get_width() )
                 {
-                    for(int jPV= 0; jPV<= editorView.h; jPV+=GPE_TEXTURE_TRANSPARENT_BG->get_height() )
+                    for(int jPV= 0; jPV<= editorView.h; jPV+=texture_transparent_bg->get_height() )
                     {
-                        //GPE_TEXTURE_TRANSPARENT_BG->render_tex( iPV,jPV,NULL);
+                        //texture_transparent_bg->render_tex( iPV,jPV,NULL);
                     }
                 }
             }
         }
 
         //Renders the scene layers( tiles, backgrounds, objects, etc)
-        render_scene_layers( viewedSpace, cam, &editorCameraRect,zoomValue,true, true );
+        render_scene_layers( view_space, cam, &editorCameraRect,zoomValue,true, true );
 
         int mousePreviewXPos = floor( (sceneMouseXPos*zoomValue-editorCameraRect.x*zoomValue) );
         int mousePreviewYPos = floor( (sceneMouseYPos*zoomValue-editorCameraRect.y*zoomValue) );
@@ -3773,9 +3756,9 @@ void gameSceneResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_r
                     int objRenderXPos = draggedResourceX = floor( (sceneObjMouseX*zoomValue-editorCameraRect.x*zoomValue) );
                     int objRenderYPos = draggedResourceY = floor( (sceneObjMouseY*zoomValue-editorCameraRect.y*zoomValue) );
 
-                    if( shortcutButtonBar->get_tab_id() == SCENE_MODE_PLACE && mouseIsInScene && RESOURCE_TO_DRAG==NULL)
+                    if( shortcutButtonBar->get_tab_id() == SCENE_MODE_PLACE && mouseIsInScene && pawgui::resource_dragged==NULL)
                     {
-                        GPE_GeneralResourceContainer * hObj = objectInEditor->get_selected_container();
+                        pawgui::widget_resource_container * hObj = objectInEditor->get_selected_container();
                         if( hObj!=NULL && hObj->get_held_resource() )
                         {
                             if( hObj->get_resource_type() == gpe::resource_type_object || hObj->get_resource_type() == gpe::resource_type_animation )
@@ -3822,26 +3805,26 @@ void gameSceneResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_r
                     //spm->highlightRect->render_tex_special( branchTempRect->x + objPivotX/2, branchTempRect->y + objPivotY/2, selectedSceneBranch->angle, branchTempRect->w,branchTempRect->h, c_blue, NULL, 192 );
                     spm->highlightRect->render_tex_special( branchTempRect->x , branchTempRect->y , selectedSceneBranch->angle, branchTempRect->w,branchTempRect->h, gpe::c_maroon, NULL, 192 );
                 }
-                gpe::gfs->render_text_boxed(branchTempRect->x, branchTempRect->y,selectedSceneBranch->get_name(), gpe::c_white, gpe::c_black, FONT_LABEL, gpe::fa_left, gpe::fa_bottom );
+                gpe::gfs->render_text_boxed(branchTempRect->x, branchTempRect->y,selectedSceneBranch->get_name(), gpe::c_white, gpe::c_black, pawgui::FONT_LABEL, gpe::fa_left, gpe::fa_bottom );
             }
 
             if( mouseIsInScene && shortcutButtonBar->get_tab_id() == SCENE_MODE_ERASE && spm!=NULL && spm->eraserAnimation!=NULL )
             {
                 spm->eraserAnimation->render_scaled( 0, draggedResourceX, draggedResourceY, zoomValue, zoomValue );
             }
-            else if( RESOURCE_TO_DRAG!=NULL && mouseIsInScene )
+            else if( pawgui::resource_dragged!=NULL && mouseIsInScene )
             {
-                if( RESOURCE_TO_DRAG->get_resource_type() == gpe::resource_type_object || RESOURCE_TO_DRAG->get_resource_type() == gpe::resource_type_animation )
+                if( pawgui::resource_dragged->get_resource_type() == gpe::resource_type_object || pawgui::resource_dragged->get_resource_type() == gpe::resource_type_animation )
                 {
-                    RESOURCE_TO_DRAG->render_image_scaled( draggedResourceX, draggedResourceY, zoomValue, zoomValue, NULL, NULL, gpe::c_gray );
+                    pawgui::resource_dragged->render_image_scaled( draggedResourceX, draggedResourceY, zoomValue, zoomValue, NULL, NULL, gpe::c_gray );
                 }
                 else if( sceneGridX>=8 && sceneGridY>=8  )
                 {
-                    RESOURCE_TO_DRAG->render_image( draggedResourceX, draggedResourceY, sceneGridX*zoomValue, sceneGridY*zoomValue, NULL, NULL, gpe::c_gray );
+                    pawgui::resource_dragged->render_image( draggedResourceX, draggedResourceY, sceneGridX*zoomValue, sceneGridY*zoomValue, NULL, NULL, gpe::c_gray );
                 }
                 else
                 {
-                    RESOURCE_TO_DRAG->render_image( draggedResourceX, draggedResourceY,32*zoomValue, 32*zoomValue, NULL, NULL, gpe::c_gray );
+                    pawgui::resource_dragged->render_image( draggedResourceX, draggedResourceY,32*zoomValue, 32*zoomValue, NULL, NULL, gpe::c_gray );
                 }
             }
         }
@@ -3852,26 +3835,26 @@ void gameSceneResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_r
         //Clears the editor pane then renders panel and scrollbars
 
         //"Editor View:("+ stg_ex::int_to_string(editorCameraRect.x)+","+ stg_ex::int_to_string(editorCameraRect.y)+","+ stg_ex::int_to_string(editorCameraRect.w)+","+ stg_ex::int_to_string(editorCameraRect.h)+")",
-        //gpe::gcanvas->render_rectangle( sceneYScroll->widget_box.x+sceneYScroll->widget_box.w,0,viewedSpace->w,viewedSpace->h,theme_main->program_color,false);
-        //gpe::gcanvas->render_rectangle( sceneXScroll->widget_box.x,sceneXScroll->widget_box.y,viewedSpace->w,viewedSpace->h,theme_main->program_color,false);
+        //gpe::gcanvas->render_rectangle( sceneYScroll->widget_box.x+sceneYScroll->widget_box.w,0,view_space->w,view_space->h,pawgui::theme_main->program_color,false);
+        //gpe::gcanvas->render_rectangle( sceneXScroll->widget_box.x,sceneXScroll->widget_box.y,view_space->w,view_space->h,pawgui::theme_main->program_color,false);
         gpe::renderer_main->reset_viewpoint(  );
-        gpe::renderer_main->set_viewpoint( viewedSpace );
+        gpe::renderer_main->set_viewpoint( view_space );
     }
 
     //if( forceRedraw )
     {
         if( sceneXScroll!=NULL)
         {
-            sceneXScroll->render_self( viewedSpace,cam);
+            sceneXScroll->render_self( view_space,cam);
         }
         if( sceneYScroll!=NULL)
         {
-            sceneYScroll->render_self( viewedSpace,cam);
+            sceneYScroll->render_self( view_space,cam);
         }
 
         if( sceneTopBarList!=NULL)
         {
-            sceneTopBarList->render_self( viewedSpace,cam);
+            sceneTopBarList->render_self( view_space,cam);
         }
     }
 }
@@ -3886,9 +3869,9 @@ void gameSceneResource::reset_placement_info()
 void gameSceneResource::save_resource(std::string file_path, int backupId)
 {
     int i = 0, j = 0, k = 0, jMax = 0, kMax;
-    if( GPE_LOADER != NULL )
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->update_submessages( "Saving Game Scene", resource_name );
+        pawgui::main_loader_display->update_submessages( "Saving Game Scene", resource_name );
     }
     std::string newFileIn ="";
     sff_ex::append_to_file(file_path,"blank");
@@ -3914,8 +3897,8 @@ void gameSceneResource::save_resource(std::string file_path, int backupId)
         {
             GPE_SceneGameObject * tSceneObj = NULL;
             GPE_SceneBackground * tSceneBg = NULL;
-            GPE_GeneralResourceContainer * allObjsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s");
-            GPE_GeneralResourceContainer * fObj = NULL;
+            pawgui::widget_resource_container * allObjsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s");
+            pawgui::widget_resource_container * fObj = NULL;
             write_header_on_file(&newSceneFile);
             if( sceneTitleField!=NULL)
             {
@@ -4023,7 +4006,7 @@ void gameSceneResource::save_resource(std::string file_path, int backupId)
 
             if( useObjGridCheckBox!=NULL)
             {
-                newSceneFile << "DisplayObjectGrid=" << useObjGridCheckBox->is_checked() << "\n";
+                newSceneFile << "DisplayObjectGrid=" << useObjGridCheckBox->is_clicked() << "\n";
             }
 
             //Saves the scene's components
@@ -4045,12 +4028,12 @@ void gameSceneResource::save_resource(std::string file_path, int backupId)
         }
         else
         {
-            GPE_main_Logs->log_general_error("Unable to save to file ["+newFileOut+"]");
+            main_editor_log->log_general_error("Unable to save to file ["+newFileOut+"]");
         }
     }
     else
     {
-        GPE_main_Logs->log_general_error("Unable to save file ["+newFileOut+"]");
+        main_editor_log->log_general_error("Unable to save file ["+newFileOut+"]");
     }
 }
 
@@ -4086,12 +4069,12 @@ void gameSceneResource::select_object( GPE_SceneGameObject * objToSelect )
         sceneResourceTree->select_branch( objToSelect);
         selectedSceneBranch = ( GPE_SceneBasicClass * ) objToSelect;
         selectedSceneObject = objToSelect;
-        if( PANEL_INSPECTOR!=NULL)
+        if( panel_inspector!=NULL)
         {
-            PANEL_INSPECTOR->clear_panel();
+            panel_inspector->clear_panel();
         }
 
-        GPE_GeneralResourceContainer * foundselectedObjContainer = projectParentFolder->find_resource_from_id(selectedSceneObject->objTypeId);
+        pawgui::widget_resource_container * foundselectedObjContainer = projectParentFolder->find_resource_from_id(selectedSceneObject->objTypeId);
         if( objectEditorNameTitle!=NULL)
         {
             if( foundselectedObjContainer!=NULL)
@@ -4177,9 +4160,9 @@ bool gameSceneResource::unselect_object( bool selectParent )
     {
 
     }
-    if( PANEL_INSPECTOR!=NULL)
+    if( panel_inspector!=NULL)
     {
-        PANEL_INSPECTOR->clear_panel();
+        panel_inspector->clear_panel();
     }
     if( objectEditorNameTitle!=NULL)
     {
@@ -4195,7 +4178,7 @@ void gameSceneResource::update_box(int newX, int newY, int newW, int newH)
 
 void gameSceneResource::update_project_layers()
 {
-    GPE_SpecialMenu_Branch * current_branch;
+    pawgui::widget_branch * current_branch;
 
     sceneLayer * tLayer = NULL;
     for( int i = (int)sceneResourceTree->sub_elements.size()-1; i>=0; i-- )
@@ -4226,7 +4209,7 @@ bool gameSceneResource::write_data_into_projectfile(std::ofstream * fileTarget, 
     {
         if( fileTarget->is_open() )
         {
-            std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+            std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
             *fileTarget << nestedTabsStr << "scene=" << resource_name << "," << get_global_rid() << ",";
             *fileTarget << "\n";
             return true;

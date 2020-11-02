@@ -56,66 +56,66 @@ public:
     float minZoomValue;
     float maxZoomValue;
     int autoAnimationPos;
-    GPE_Slider_XAxis * animationTrackBar;
+    pawgui::widget_slide_xaxis * animationTrackBar;
     gpe::animaton2d * animInEditor;
 
     //
     gpe::shape_rect animCameraRect;
     gpe::shape_rect animRect;
 
-    GPE_ScrollBar_XAxis * animXScroll;
-    GPE_ScrollBar_YAxis * animYScroll;
+    pawgui::widget_scrollbar_xaxis * animXScroll;
+    pawgui::widget_scrollbar_yaxis * animYScroll;
 
     //Right pane
     gpe::shape_rect  * animatonPreviewRect;
     gpe::shape_rect  * animationPreviewCam;
-    GPE_Label_Text * animationSpeedLabel;
-    GPE_CheckBoxBasic * previewZoomLevel;
-    GPE_CheckBoxBasic * previewSubImageNumbers;
+    pawgui::widget_label_text  * animationSpeedLabel;
+    pawgui::widget_checkbox * previewZoomLevel;
+    pawgui::widget_checkbox * previewSubImageNumbers;
 
     //Editor panel elements
-    GPE_Label_Text * labelanimationDimensions;
-    GPE_Label_Text * labelFrameInfo;
-    GPE_Label_Text * labelanimationMessage;
-    GPE_ToolIconButton * editResourceButton;
-    GPE_ToolIconButton * transformResourceButton;
-    GPE_ToolIconButton * playPauseResourceButton;
-    GPE_ToolIconButton * openExternalEditorButton;
-    GPE_ToolIconButton * refreshResourceDataButton;
-    GPE_CheckBoxBasic * preloadCheckBox;
-    GPE_CheckBoxBasic * showCollisionShapeCheckBox;
-    GPE_CheckBoxBasic * showAnimationCheckBox;
+    pawgui::widget_label_text  * labelanimationDimensions;
+    pawgui::widget_label_text  * labelFrameInfo;
+    pawgui::widget_label_text  * labelanimationMessage;
+    pawgui::widget_button_icon * editResourceButton;
+    pawgui::widget_button_icon * transformResourceButton;
+    pawgui::widget_button_icon * playPauseResourceButton;
+    pawgui::widget_button_icon * openExternalEditorButton;
+    pawgui::widget_button_icon * refreshResourceDataButton;
+    pawgui::widget_checkbox * preloadCheckBox;
+    pawgui::widget_checkbox * showCollisionShapeCheckBox;
+    pawgui::widget_checkbox * showAnimationCheckBox;
 
-    gpe_text_widget_number * animationDataFields[ANIMATION_DATA_FIELD_COUNT];
+    pawgui::widget_input_number * animationDataFields[ANIMATION_DATA_FIELD_COUNT];
 
-    gpe_text_widget_number * animationCollisionRectX;
-    gpe_text_widget_number * animationCollisionRectY;
-    gpe_text_widget_number * animationCollisionRectW;
-    gpe_text_widget_number * animationCollisionRectH;
+    pawgui::widget_input_number * animationCollisionRectX;
+    pawgui::widget_input_number * animationCollisionRectY;
+    pawgui::widget_input_number * animationCollisionRectW;
+    pawgui::widget_input_number * animationCollisionRectH;
 
-    gpe_text_widget_number * animationCollisionCircleX;
-    gpe_text_widget_number * animationCollisionCircleY;
-    gpe_text_widget_number * animationCollisionCircleR;
+    pawgui::widget_input_number * animationCollisionCircleX;
+    pawgui::widget_input_number * animationCollisionCircleY;
+    pawgui::widget_input_number * animationCollisionCircleR;
 
-    GPE_ToolLabelButton * animationCenterCollisionButton;
+    pawgui::widget_button_label * animationCenterCollisionButton;
 
-    GPE_DropDown_Menu * animationCollisionShapeMenu;
+    pawgui::widget_dropdown_menu * animationCollisionShapeMenu;
 
-    GPE_ToolIconButton * previousSubImageButton;
-    GPE_ToolIconButton * nextSubImageButton;
-    gpe_text_widget_number * subImageNumberField;
-    gpe_text_widget_number * subImageEditorPreviewId;
+    pawgui::widget_button_icon * previousSubImageButton;
+    pawgui::widget_button_icon * nextSubImageButton;
+    pawgui::widget_input_number * subImageNumberField;
+    pawgui::widget_input_number * subImageEditorPreviewId;
     int subImagePreviewNumber;
     float subImageMiniAnimationNumber;
-    GPE_Label_Text * labelInfoMaxTextureSize;
+    pawgui::widget_label_text  * labelInfoMaxTextureSize;
 
-    animationResource(GPE_GeneralResourceContainer * pFolder = NULL);
+    animationResource(pawgui::widget_resource_container * pFolder = NULL);
     ~animationResource();
 
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
-    bool get_mouse_coords( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    bool get_mouse_coords( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     int get_preview_frame();
     gpe::animaton2d * get_resource_animation();
     void handle_scrolling();
@@ -126,8 +126,8 @@ public:
     void prerender_self( );
     void process_collision_box();
     void process_data_fields(float versionToProcess = -1);
-    void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void revert_data_fields();
     void save_resource(std::string file_path = "", int backupId = -1);
     void update_box(int newX=-1, int newY=-1, int newW=-1, int newH=-1);

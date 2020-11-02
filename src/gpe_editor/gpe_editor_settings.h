@@ -43,106 +43,106 @@ const int GPE_EXTERNAL_EDITOR_AUD = 1;
 const int GPE_EXTERNAL_EDITOR_VID = 2;
 const int GPE_EXTERNAL_EDITOR_FONT = 3;
 
-class GPE_Theme_Holder
+class theme_holder
 {
 public:
     std::string theme_name;
     std::string templateFileName;
     std::string templateBgFileName;
-    gpe_text_widget_string * nameInEditor;
+    pawgui::widget_input_text * nameInEditor;
     bool non_default_theme;
-    std::vector < gpe_widget_color_picker * > colorsInEditor;
-    GPE_Label_Image * themeIconImg;
-    gpe_text_widget_string * themeBgFileLocation;
-    GPE_Theme_Holder( std::string tName, std::string tFileName, bool isCustomTheme = false  );
-    ~GPE_Theme_Holder();
+    std::vector < pawgui::gpe_widget_color_picker * > colorsInEditor;
+    pawgui::widget_label_image * themeIconImg;
+    pawgui::widget_input_text * theme_bg_location;
+    theme_holder( std::string tName, std::string tFileName, bool isCustomTheme = false  );
+    ~theme_holder();
     void clear_colors();
-    bool copy_theme( GPE_Theme * systemTheme, bool copyToSelf = true );
-    bool load_background( std::string bgTextureLocation, bool allOrNothing = false);
+    bool copy_theme( pawgui::gui_theme * systemTheme, bool copyToSelf = true );
+    bool load_background( std::string bg_textureLocation, bool allOrNothing = false);
 };
 
-class gamePencilEditorSettingsResource: public generalGameResource
+class gamePencilEditorSettingsResource: public pawgui::general_resource
 {
 public:
-    GPE_ToolPushButton * confirmResourceButton;
-    GPE_ToolPushButton * cancelResourceButton;
-    GPE_SelectBoxBasic * sideAreaPanel;
+    pawgui::widget_button_push * confirmResourceButton;
+    pawgui::widget_button_push * cancelResourceButton;
+    pawgui::widget_selectbox * sideAreaPanel;
     gpe::shape_rect * sidePanelRect;
-    GPE_CheckBoxBasic * showShortProjectNames;
-    GPE_CheckBoxBasic * renderSceneBGColor;
-    GPE_SelectBoxBasic * subEditorSelectBox;
+    pawgui::widget_checkbox * showShortProjectNames;
+    pawgui::widget_checkbox * renderSceneBGColor;
+    pawgui::widget_selectbox * subEditorSelectBox;
 
 
     //General Editor Settings
-    GPE_CheckBoxBasic * userInvertMouseScroll;
+    pawgui::widget_checkbox * userInvertMouseScroll;
 
-    GPE_ToolPushButton * openEditorFolder;
-    GPE_ToolPushButton * openLocalSettingsFolder;
-    GPE_CheckBoxBasic * autoSaveScreenshots;
-    GPE_CheckBoxBasic * makeMetaScreenshots;
+    pawgui::widget_button_push * openEditorFolder;
+    pawgui::widget_button_push * openLocalSettingsFolder;
+    pawgui::widget_checkbox * autoSaveScreenshots;
+    pawgui::widget_checkbox * makeMetaScreenshots;
 
     //Coding language related settings
-    GPE_Label_Title * CodingLanguageTitle;
-    GPE_Label_Text * CodingLanguageLabel;
-    GPE_Label_Paragraph * CodingLanguageParagraph;
-    GPE_TextURL * CodingLanguageURL;
-    GPE_SelectBoxBasic * codingLanguageSelector;
+    pawgui::widget_label_title * CodingLanguageTitle;
+    pawgui::widget_label_text  * CodingLanguageLabel;
+    pawgui::widget_label_paragraph * CodingLanguageParagraph;
+    pawgui::widget_text_url * CodingLanguageURL;
+    pawgui::widget_selectbox * codingLanguageSelector;
     //FPS Related Items
-    GPE_Label_Title * editorGuiSettingsLabel;
-    GPE_Label_Title * ideSettingsFPSRateLabel;
-    GPE_DropDown_Menu * ideSettingsFPSRate;
-    GPE_Label_Text * ideFPSRatioLabel;
-    GPE_Label_Text *    ideButtonBarSizeLabel;
-    GPE_CheckBoxBasic * showFPSOnEditor;
+    pawgui::widget_label_title * editorGuiSettingsLabel;
+    pawgui::widget_label_title * ideSettingsFPSRateLabel;
+    pawgui::widget_dropdown_menu * ideSettingsFPSRate;
+    pawgui::widget_label_text  * ideFPSRatioLabel;
+    pawgui::widget_label_text  *    ideButtonBarSizeLabel;
+    pawgui::widget_checkbox * showFPSOnEditor;
 
-    GPE_DropDown_Menu * ideButtonBarSize;
-    GPE_RadioButtonControllerBasic * ideButtonBarAlignment;
+    pawgui::widget_dropdown_menu * ideButtonBarSize;
+    pawgui::widget_radio_button_controller * ideButtonBarAlignment;
 
     //External Editor Section
-    GPE_Label_Title * externalEditorsTitle;
-    gpe_text_widget_string * pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_MAX];
-    GPE_ToolIconButton * pencilExternalEditorsLoadButton[GPE_EXTERNAL_EDITOR_MAX];
+    pawgui::widget_label_title * externalEditorsTitle;
+    pawgui::widget_input_text * pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_MAX];
+    pawgui::widget_button_icon * pencilExternalEditorsLoadButton[GPE_EXTERNAL_EDITOR_MAX];
 
-    gpe_text_widget_number * editorTextAreaDelayTime;
-    gpe_text_widget_number * editorTextInputDelayTime;
-    gpe_text_widget_number * editorCursorBlinkDelayTime;
-    gpe_text_widget_number * editorNormalDelayTime;
-    gpe_text_widget_number * editorScrollSpeed;
+    pawgui::widget_input_number * editorTextAreaDelayTime;
+    pawgui::widget_input_number * editorTextInputDelayTime;
+    pawgui::widget_input_number * editorCursorBlinkDelayTime;
+    pawgui::widget_input_number * editorNormalDelayTime;
+    pawgui::widget_input_number * editorScrollSpeed;
 
-    GPE_Label_Title * editorStatupTipsLabel;
-    GPE_CheckBoxBasic * showStatupTipsBox;
-    GPE_CheckBoxBasic * launchLastProjectBox;
-    GPE_DropDown_Menu * projectAutoSaveRate;
-    GPE_Label_Text * projectAutoSaveRateLabel;
+    pawgui::widget_label_title * editorStatupTipsLabel;
+    pawgui::widget_checkbox * showStatupTipsBox;
+    pawgui::widget_checkbox * launchLastProjectBox;
+    pawgui::widget_dropdown_menu * projectAutoSaveRate;
+    pawgui::widget_label_text  * projectAutoSaveRateLabel;
 
     //Tab Section
-    GPE_Label_Title * tabSectionLabel;
-    GPE_CheckBoxBasic * mouseAutoFindTabs;
-    gpe_text_widget_number * tabSpaceSize;
+    pawgui::widget_label_title * tabSectionLabel;
+    pawgui::widget_checkbox * mouseAutoFindTabs;
+    pawgui::widget_input_number * tabSpaceSize;
 
     //Themes Section
-    GPE_Label_Title * themesLabel;
-    GPE_DropDown_Menu * themePicker;
-    GPE_ToolIconButton * themeLoadButton;
-    GPE_ToolIconButton * themeAddButton;
-    GPE_ToolIconButton * themeRemoveButton;
-    GPE_ToolLabelButton * themeSetDefaultButton;
-    GPE_TextURL * itchLinkForThemes;
-    std::vector< GPE_Theme_Holder * > themeHolders;
+    pawgui::widget_label_title * themesLabel;
+    pawgui::widget_dropdown_menu * themePicker;
+    pawgui::widget_button_icon * themeLoadButton;
+    pawgui::widget_button_icon * themeAddButton;
+    pawgui::widget_button_icon * themeRemoveButton;
+    pawgui::widget_button_label * themeSetDefaultButton;
+    pawgui::widget_text_url * itchLinkForThemes;
+    std::vector< theme_holder * > themeHolders;
     int defaultTemplateEndPos;
     int currentThemeInEdit;
 
-    GPE_Label_Text * themeBgLabel;
-    GPE_ToolLabelButton * themeBgBrowseButton;
+    pawgui::widget_label_text  * themeBgLabel;
+    pawgui::widget_button_label * themeBgBrowseButton;
     //Advanced Section
-    GPE_Label_Title * advancedAreaLabel;
-    GPE_CheckBoxBasic * showHiddenFilesInBrowser;
-    GPE_CheckBoxBasic * forceFrameRedraw;
-    GPE_ToolPushButton * clearCacheButton;
+    pawgui::widget_label_title * advancedAreaLabel;
+    pawgui::widget_checkbox * showHiddenFilesInBrowser;
+    pawgui::widget_checkbox * forceFrameRedraw;
+    pawgui::widget_button_push * clearCacheButton;
 
     //Editor Related variables
     gpe::shape_rect subViewedSpace;
-    GPE_GuiElementList * editorPageList;
+    pawgui::widget_panel_list * editorPageList;
     std::string projectFolderListLocation;
     gamePencilEditorSettingsResource();
     ~gamePencilEditorSettingsResource();
@@ -151,11 +151,11 @@ public:
     void load_themes_from_folder( std::string themeFolder );
     void prerender_self( );
     void load_resource(std::string file_path = "");
-    void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void save_resource(std::string file_path = "", int backupId = -1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 
-extern gamePencilEditorSettingsResource * main_EDITOR_SETTINGS;
+extern gamePencilEditorSettingsResource * main_editor_settings;
 #endif // GPE_EDITOR_SETTINGS_RESOURCES_H

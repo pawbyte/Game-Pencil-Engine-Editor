@@ -33,11 +33,13 @@ SOFTWARE.
 
 #include "gpe_basic_resource_page.h"
 
+gpe::texture_base * texture_transparent_bg = NULL;
+gpe::texture_base * texture_gpe_logo = NULL;
 
 GPE_ObjectComponent::GPE_ObjectComponent()
 {
     component = NULL;
-    settingsGear = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cogs.png","settings",-1,16 );
+    settingsGear = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cogs.png","settings",-1,16 );
 }
 
 GPE_ObjectComponent::~GPE_ObjectComponent()
@@ -84,12 +86,12 @@ void GPE_ObjectComponent::rename_component(std::string new_name)
     }
 }
 
-GPE_GeneralGuiElement * GPE_ObjectComponent::get_component()
+pawgui::widget_basic * GPE_ObjectComponent::get_component()
 {
     return component;
 }
 
-GPE_ToolIconButton * GPE_ObjectComponent::get_gear()
+pawgui::widget_button_icon * GPE_ObjectComponent::get_gear()
 {
     return settingsGear;
 }
@@ -137,7 +139,7 @@ std::string GPE_ObjectComponent::get_type()
     return "";
 }
 
-void GPE_ObjectComponent::set_component(GPE_GeneralGuiElement * newComponent)
+void GPE_ObjectComponent::set_component(pawgui::widget_basic * newComponent)
 {
     if( newComponent!=NULL)
     {
@@ -154,7 +156,7 @@ void GPE_ObjectComponent::set_component(GPE_GeneralGuiElement * newComponent)
     }
 }
 
-standardEditableGameResource::standardEditableGameResource(GPE_GeneralResourceContainer * ppFolder)
+standardEditableGameResource::standardEditableGameResource(pawgui::widget_resource_container * ppFolder)
 {
     resource_name = "";
     globalResouceIdNumber = -1;
@@ -167,15 +169,15 @@ standardEditableGameResource::standardEditableGameResource(GPE_GeneralResourceCo
     {
         parentProjectName = projectParentFolder->get_name();
     }
-    renameBox = new gpe_text_widget_string("","Name");
+    renameBox = new pawgui::widget_input_text("","Name");
     renameBox->set_label("Name");
 
-    loadResourceButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/folder.png","Load Resource",-1);
-    exportResourceButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/plane.png","Export Resource TO File",-1);
-    saveResourceButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png","Save Resource to File",-1);
+    loadResourceButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/folder.png","Load Resource",-1);
+    exportResourceButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/plane.png","Export Resource TO File",-1);
+    saveResourceButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png","Save Resource to File",-1);
 
-    confirmResourceButton = new GPE_ToolPushButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/check.png","Confirm Changes","Confirm and Save Changes");
-    cancelResourceButton =  new GPE_ToolPushButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/times.png","Cancel Changes","Cancel Changes and Revert to previous settings");
+    confirmResourceButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/check.png","Confirm Changes","Confirm and Save Changes");
+    cancelResourceButton =  new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/times.png","Cancel Changes","Cancel Changes and Revert to previous settings");
 
     int maxSize = std::max(confirmResourceButton->get_width(),cancelResourceButton->get_width() );
     //confirmResourceButton->set_width(maxSize);
@@ -226,15 +228,15 @@ std::string standardEditableGameResource::get_current_name()
         {
             return renameBox->get_string();
         }
-        else if( GPE_main_Logs!=NULL && resourceType!=gpe::resource_type_project_settings && globalResouceIdNumber >=1000 )
+        else if( main_editor_log!=NULL && resourceType!=gpe::resource_type_project_settings && globalResouceIdNumber >=1000 )
         {
-            GPE_main_Logs->log_general_comment("Non-alphabetical resource ["+renameBox->get_string()+"] being renamed to "+resource_name+"." );
+            main_editor_log->log_general_comment("Non-alphabetical resource ["+renameBox->get_string()+"] being renamed to "+resource_name+"." );
         }
     }
     return get_name();
 }
 
-GPE_GeneralGuiElement * standardEditableGameResource::add_gui_component(std::string componentData)
+pawgui::widget_basic * standardEditableGameResource::add_gui_component(std::string componentData)
 {
     if( (int)componentData.size() > 0)
     {
@@ -246,48 +248,48 @@ GPE_GeneralGuiElement * standardEditableGameResource::add_gui_component(std::str
             std::string newComponentType = stg_ex::split_first_string(componentData,":");
             std::string newComponentName = stg_ex::split_first_string(componentData,"==|||==");
 
-            GPE_GeneralGuiElement * newComponentField = NULL;
+            pawgui::widget_basic * newComponentField = NULL;
             if( newComponentType=="checkbox")
             {
-                newComponentField = new GPE_CheckBoxBasic(newComponentName);
+                newComponentField = new pawgui::widget_checkbox(newComponentName);
             }
             else if( newComponentType=="colorpicker")
             {
-                gpe_widget_color_picker * newColorField = new gpe_widget_color_picker( newComponentName);
+                pawgui::gpe_widget_color_picker * newColorField = new pawgui::gpe_widget_color_picker( newComponentName);
                 newColorField->set_label(newComponentName);
                 newComponentField = newColorField;
             }
             else if( newComponentType == "contentselector-int")
             {
-                GPE_Content_Selector * newContentSelector = new GPE_Content_Selector( newComponentName, "");
-                newContentSelector->selectorType = GPE_CS_TYPE_INT;
+                pawgui::widget_content_selector * newContentSelector = new pawgui::widget_content_selector( newComponentName, "");
+                newContentSelector->selectorType = pawgui::content_selector_type::cs_type_int;
                 newComponentField = newContentSelector;
             }
             else if( newComponentType == "contentselector-float")
             {
-                GPE_Content_Selector * newContentSelector = new GPE_Content_Selector( newComponentName, "");
-                newContentSelector->selectorType = GPE_CS_TYPE_float;
+                pawgui::widget_content_selector * newContentSelector = new pawgui::widget_content_selector( newComponentName, "");
+                newContentSelector->selectorType = pawgui::content_selector_type::cs_type_float;
                 newComponentField = newContentSelector;
             }
             else if( newComponentType == "contentselector-string")
             {
-                GPE_Content_Selector * newContentSelector = new GPE_Content_Selector( newComponentName, "");
-                newContentSelector->selectorType = GPE_CS_TYPE_STRING;
+                pawgui::widget_content_selector * newContentSelector = new pawgui::widget_content_selector( newComponentName, "");
+                newContentSelector->selectorType = pawgui::content_selector_type::cs_type_string;
                 newComponentField = newContentSelector;
             }
             else if( newComponentType == "contentselector-color")
             {
-                GPE_Content_Selector * newContentSelector = new GPE_Content_Selector( newComponentName, "");
-                newContentSelector->selectorType = GPE_CS_TYPE_color;
+                pawgui::widget_content_selector * newContentSelector = new pawgui::widget_content_selector( newComponentName, "");
+                newContentSelector->selectorType = pawgui::content_selector_type::cs_type_color;
                 newComponentField = newContentSelector;
             }
             else if( newComponentType=="dropdown")
             {
-                newComponentField = new GPE_DropDown_Menu( newComponentName,false);
+                newComponentField = new pawgui::widget_dropdown_menu( newComponentName,false);
             }
             else if(newComponentType=="inputtext")
             {
-                gpe_text_widget_string * tempNewField = new gpe_text_widget_string("");
+                pawgui::widget_input_text * tempNewField = new pawgui::widget_input_text("");
                 tempNewField->set_name(newComponentName);
                 tempNewField->set_label(newComponentName);
                 tempNewField->set_width(256);
@@ -295,7 +297,7 @@ GPE_GeneralGuiElement * standardEditableGameResource::add_gui_component(std::str
             }
             else if(newComponentType=="inputnumber")
             {
-                gpe_text_widget_string * tempNewField = new gpe_text_widget_number("");
+                pawgui::widget_input_text * tempNewField = new pawgui::widget_input_number("");
                 tempNewField->set_name(newComponentName);
                 tempNewField->set_label(newComponentName);
                 tempNewField->set_width(256);
@@ -303,22 +305,22 @@ GPE_GeneralGuiElement * standardEditableGameResource::add_gui_component(std::str
             }
             else if(newComponentType=="radio")
             {
-                GPE_RadioButtonControllerBasic * tempRadioButton = new GPE_RadioButtonControllerBasic();
+                pawgui::widget_radio_button_controller * tempRadioButton = new pawgui::widget_radio_button_controller();
                 tempRadioButton->set_name(newComponentName);
                 newComponentField = tempRadioButton;
             }
             else if(newComponentType=="labeltext")
             {
-                newComponentField = new GPE_Label_Text(newComponentName,newComponentName);
+                newComponentField = new pawgui::widget_label_text (newComponentName,newComponentName);
             }
             else if(newComponentType=="texturl")
             {
-                newComponentField = new GPE_TextURL(newComponentName,newComponentName);
+                newComponentField = new pawgui::widget_text_url(newComponentName,newComponentName);
             }
             else if( newComponentType=="resourcedropdown")
             {
                 std::string dropdownType = stg_ex::split_first_string(componentData,"=");
-                newComponentField = new GPE_DropDown_Resouce_Menu( newComponentName, projectParentFolder );
+                newComponentField = new pawgui::widget_drop_down_resource_menu( newComponentName, projectParentFolder );
             }
             if( newComponentField!=NULL)
             {
@@ -381,10 +383,10 @@ void standardEditableGameResource::open_code( int lineNumb, int colNumb, std::st
 
 }
 
-void standardEditableGameResource::process_resource( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void standardEditableGameResource::process_resource( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
     isModified = false;
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
     //Unclicks buttons
     if( loadResourceButton!=NULL )
@@ -398,26 +400,26 @@ void standardEditableGameResource::process_resource( gpe::shape_rect * viewedSpa
     if( cancelResourceButton!=NULL )
         cancelResourceButton->set_clicked( false );
 
-    process_self(viewedSpace,cam);
+    process_self(view_space,cam);
     process_export();
     /*
     if( confirmResourceButton!=NULL)
     {
         if( commonButtonAlignment==1)
         {
-            cancelResourceButton->set_coords(viewedSpace->w-cancelResourceButton->get_width()-GENERAL_GPE_GUI_PADDING,viewedSpace->h-cancelResourceButton->get_height()-GPE_AVERAGE_LINE_HEIGHT);
-            cancelResourceButton->process_self(viewedSpace,cam);
+            cancelResourceButton->set_coords(view_space->w-cancelResourceButton->get_width()-pawgui::padding_default,view_space->h-cancelResourceButton->get_height()-pawgui::default_line_height);
+            cancelResourceButton->process_self(view_space,cam);
             if( confirmResourceButton!=NULL)
             {
                 if( confirmResourceButton->is_enabled() )
                 {
-                    confirmResourceButton->set_coords(cancelResourceButton->get_xpos()-confirmResourceButton->get_width()-GENERAL_GPE_GUI_PADDING,cancelResourceButton->get_ypos());
+                    confirmResourceButton->set_coords(cancelResourceButton->get_xpos()-confirmResourceButton->get_width()-pawgui::padding_default,cancelResourceButton->get_ypos());
                 }
                 else
                 {
-                    confirmResourceButton->set_coords(cancelResourceButton->get_xpos()-confirmResourceButton->get_width()-GENERAL_GPE_GUI_PADDING,cancelResourceButton->get_ypos());
+                    confirmResourceButton->set_coords(cancelResourceButton->get_xpos()-confirmResourceButton->get_width()-pawgui::padding_default,cancelResourceButton->get_ypos());
                 }
-                confirmResourceButton->process_self(viewedSpace,cam);
+                confirmResourceButton->process_self(view_space,cam);
                 if( confirmResourceButton->is_clicked() && editorMode==0 )
                 {
                     if( renameBox!=NULL)
@@ -429,19 +431,19 @@ void standardEditableGameResource::process_resource( gpe::shape_rect * viewedSpa
         }
         else
         {
-            cancelResourceButton->set_coords(-1,viewedSpace->h-cancelResourceButton->get_height()-GPE_AVERAGE_LINE_HEIGHT);
-            cancelResourceButton->process_self(viewedSpace,cam);
+            cancelResourceButton->set_coords(-1,view_space->h-cancelResourceButton->get_height()-pawgui::default_line_height);
+            cancelResourceButton->process_self(view_space,cam);
             if( confirmResourceButton!=NULL)
             {
                 if( cancelResourceButton->is_enabled() )
                 {
-                    confirmResourceButton->set_coords(-1,cancelResourceButton->get_ypos()-confirmResourceButton->get_height()-GPE_AVERAGE_LINE_HEIGHT);
+                    confirmResourceButton->set_coords(-1,cancelResourceButton->get_ypos()-confirmResourceButton->get_height()-pawgui::default_line_height);
                 }
                 else
                 {
-                    confirmResourceButton->set_coords(-1,viewedSpace->h-confirmResourceButton->get_height()-GPE_AVERAGE_LINE_HEIGHT);
+                    confirmResourceButton->set_coords(-1,view_space->h-confirmResourceButton->get_height()-pawgui::default_line_height);
                 }
-                confirmResourceButton->process_self(viewedSpace,cam);
+                confirmResourceButton->process_self(view_space,cam);
                 if( confirmResourceButton->is_clicked() && editorMode==0 )
                 {
                     if( renameBox!=NULL)
@@ -454,7 +456,7 @@ void standardEditableGameResource::process_resource( gpe::shape_rect * viewedSpa
     }
     if( renameBox!=NULL)
     {
-        renameBox->process_self(viewedSpace,cam);
+        renameBox->process_self(view_space,cam);
         //set_name( renameBox->get_string() );
         if(resource_name!=renameBox->get_string() )
         {
@@ -481,19 +483,19 @@ void standardEditableGameResource::process_export()
     {
         if( resourceType >=0 && resourceType < gpe::resource_type_max )
         {
-            std::string fileToExportName = GPE_GetSaveFileName( "Export "+gpe::resource_type_names[resourceType]+" to file",".gpf", main_GUI_SETTINGS->fileSaveExportFileDir );
+            std::string fileToExportName = pawgui::get_filename_save_from_popup( "Export "+gpe::resource_type_names[resourceType]+" to file",".gpf", pawgui::main_settings->fileSaveExportFileDir );
             if( (int)fileToExportName.size() > 0)
             {
                 if(  stg_ex::get_file_ext(fileToExportName) !="gpf" )
                 {
                     fileToExportName = stg_ex::get_file_noext(fileToExportName)+".gpf";
                 }
-                GPE_main_Logs->log_general_line("Exporting "+gpe::resource_type_names[resourceType]+" resource to "+fileToExportName+".");
+                main_editor_log->log_general_line("Exporting "+gpe::resource_type_names[resourceType]+" resource to "+fileToExportName+".");
                 save_resource(fileToExportName);
             }
             else
             {
-                GPE_main_Logs->log_general_comment("Export of ["+resource_name+"] canceled.");
+                main_editor_log->log_general_comment("Export of ["+resource_name+"] canceled.");
             }
         }
         exportResourceButton->set_clicked( false );
@@ -522,12 +524,12 @@ void standardEditableGameResource::load_resource(std::string file_path)
 
 }
 
-void standardEditableGameResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void standardEditableGameResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
 
 }
 
-void standardEditableGameResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam  )
+void standardEditableGameResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam  )
 {
 
 }

@@ -43,7 +43,7 @@ SOFTWARE.
 
 extern gpeEditorDockPanel * PANEL_TS_RESOURCE;
 
-class GPE_SceneTile: public GPE_SpecialMenu_Branch
+class GPE_SceneTile: public pawgui::widget_branch
 {
 public:
     int tileTypeId;
@@ -75,19 +75,19 @@ public:
     int tileWidth,tileHeight;
     int prevTileAmountX, prevTileAmountY;
     std::vector <GPE_SceneTile*> mapTiles;
-    gpe_text_widget_number * fieldTileWidth;
-    gpe_text_widget_number * fieldTileHeight;
-    gpe_text_widget_number * fieldAmountX;
-    gpe_text_widget_number * fieldAmountY;
-    GPE_CheckBoxBasic * fillScene;
-    GPE_SpecialMenu_Branch * mapBranch;
-    GPE_DropDown_Resouce_Menu * tilesheetDropDown;
+    pawgui::widget_input_number * fieldTileWidth;
+    pawgui::widget_input_number * fieldTileHeight;
+    pawgui::widget_input_number * fieldAmountX;
+    pawgui::widget_input_number * fieldAmountY;
+    pawgui::widget_checkbox * fillScene;
+    pawgui::widget_branch * mapBranch;
+    pawgui::widget_drop_down_resource_menu * tilesheetDropDown;
     tilesheetPreviewer * tSPreviewer;
 
-    GPE_SceneTileMap(std::string mapName, int x = 0, int y = 0, GPE_GeneralResourceContainer *pFolder = NULL );
+    GPE_SceneTileMap(std::string mapName, int x = 0, int y = 0, pawgui::widget_resource_container *pFolder = NULL );
     ~GPE_SceneTileMap();
     void add_typed_elements();
-    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController );
+    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
     void calculate_size();
     void create_new_map(int newTX=8, int newTY=8, int ntileType=0);
     GPE_SceneTile* get_tile_at(int x, int y);

@@ -34,17 +34,17 @@ SOFTWARE.
 #include "project_properties.h"
 #include "game_scene_resource.h"
 
-projectPropertiesResource::projectPropertiesResource(GPE_GeneralResourceContainer * pFolder)
+projectPropertiesResource::projectPropertiesResource(pawgui::widget_resource_container * pFolder)
 {
     isFullScreenResource = false;
     for( int iLayerN = 0; iLayerN < 32; iLayerN++)
     {
-        projectLayerNamesColumnTitles[iLayerN] = new GPE_Label_90Degree("","");
-        projectLayerNamesRowTitles[iLayerN] = new GPE_Label_Text("","");
+        projectLayerNamesColumnTitles[iLayerN] = new pawgui::widget_label_rotated_90("","");
+        projectLayerNamesRowTitles[iLayerN] = new pawgui::widget_label_text ("","");
     }
     for( int iMatrix = 0; iMatrix < 1024; iMatrix++)
     {
-        projectCollisionLayerMatrix[iMatrix] = new GPE_CheckBoxBasic("","");
+        projectCollisionLayerMatrix[iMatrix] = new pawgui::widget_checkbox("","");
         projectCollisionLayerMatrix[iMatrix]->set_checkbox_size(16);
     }
     int iMatrixRow = 0, iMatrixCol = 0;
@@ -63,9 +63,9 @@ projectPropertiesResource::projectPropertiesResource(GPE_GeneralResourceContaine
             projectCollisionLayerMatrix[iMatrixRow*32+iMatrixCol]->set_checked(false);
         }
     }
-    projectLayerEmptyTitle = new GPE_Label_Text("","");
-    selectAllCollisionBoxes = new GPE_ToolLabelButton( "Select All Layers","Select All Layers");
-    unselectAllCollisionBoxes = new GPE_ToolLabelButton( "Unselect All Layers","Unselect All Layers");
+    projectLayerEmptyTitle = new pawgui::widget_label_text ("","");
+    selectAllCollisionBoxes = new pawgui::widget_button_label( "Select All Layers","Select All Layers");
+    unselectAllCollisionBoxes = new pawgui::widget_button_label( "Unselect All Layers","Unselect All Layers");
     resourceFileName = "";
     resource_name = "Project Properties";
     commonButtonAlignment = 1;
@@ -75,18 +75,18 @@ projectPropertiesResource::projectPropertiesResource(GPE_GeneralResourceContaine
 
     //Project language
 
-    projectLanguageLabel = new GPE_Label_Text("Programming Language:","Programming Language:");
+    projectLanguageLabel = new pawgui::widget_label_text ("Programming Language:","Programming Language:");
     //Adds all available languages to drop down menu
-    projectLanguage = new GPE_DropDown_Menu( "Project Language",true);
+    projectLanguage = new pawgui::widget_dropdown_menu( "Project Language",true);
     int addedLanguages = 0;
-    if( GPE_main_HIGHLIGHTER!=NULL )
+    if( pawgui::main_syntax_highlighter!=NULL )
     {
         //short opertion so not "optimized"
-        GPE_Gui_Engine_Language * tLanguage  = NULL;
-        int languageCount = (int)GPE_main_HIGHLIGHTER->get_language_count();
+        pawgui::syntax_language * tLanguage  = NULL;
+        int languageCount = (int)pawgui::main_syntax_highlighter->get_language_count();
         for( int cLanguage = 0; cLanguage < languageCount; cLanguage++ )
         {
-            tLanguage = GPE_main_HIGHLIGHTER->get_language_object(cLanguage);
+            tLanguage = pawgui::main_syntax_highlighter->get_language_object(cLanguage);
             if( tLanguage!=NULL && tLanguage->isCodingLanguage)
             {
                 projectLanguage->add_menu_option(tLanguage->languageName+" ("+tLanguage->languageShortName+")",tLanguage->languageShortName,cLanguage,true);
@@ -97,43 +97,43 @@ projectPropertiesResource::projectPropertiesResource(GPE_GeneralResourceContaine
     //In the event something went wrong and we somehow didn't add JS and any other new coding language...
     if( addedLanguages == 0 )
     {
-            projectLanguage->add_menu_option("JavaScript","JS", PROGRAM_LANGUAGE_JS,true);
-            projectLanguage->add_menu_option("C++","CPP", PROGRAM_LANGUAGE_CPP,true);
-            projectLanguage->add_menu_option("C#","CS", PROGRAM_LANGUAGE_CS,true);
-            projectLanguage->add_menu_option("HAXE","HAXE", PROGRAM_LANGUAGE_HAXE,true);
+            projectLanguage->add_menu_option("JavaScript","JS", pawgui::program_language_js,true);
+            projectLanguage->add_menu_option("C++","CPP", pawgui::program_language_cpp,true);
+            projectLanguage->add_menu_option("C#","CS", pawgui::program_language_cs,true);
+            projectLanguage->add_menu_option("HAXE","HAXE", pawgui::program_language_haxe,true);
     }
     iconFileName = "";
-    projectIconLabel = new GPE_Label_Text("Project Icon","Project Icon");
-    projectIconImg = new GPE_Label_Image("roject_icon_image","" );
+    projectIconLabel = new pawgui::widget_label_text ("Project Icon","Project Icon");
+    projectIconImg = new pawgui::widget_label_image("roject_icon_image","" );
     projectIconImg->set_width(128);
     projectIconImg->set_height(128);
-    browseIconButton = new GPE_ToolLabelButton( "Browse..","Find image icon");
+    browseIconButton = new pawgui::widget_button_label( "Browse..","Find image icon");
 
-    projectScreenWidthField = new gpe_text_widget_number("Default: 640",true,64,4096);
+    projectScreenWidthField = new pawgui::widget_input_number("Default: 640",true,64,4096);
     projectScreenWidthField->set_label("Screen Width");
     projectScreenWidthField->set_number(640);
 
-    projectScreenHeightField = new gpe_text_widget_number("Default: 480",true,64,4096);
+    projectScreenHeightField = new pawgui::widget_input_number("Default: 480",true,64,4096);
     projectScreenHeightField->set_label("Screen Height");
     projectScreenHeightField->set_number(480);
 
-    projectGameVersionField = new gpe_text_widget_number("0");
+    projectGameVersionField = new pawgui::widget_input_number("0");
     projectGameVersionField->set_label("Game Version Number");
     projectGameVersionField->set_number(1);
 
-    projectGameSubVersionField = new gpe_text_widget_string();
+    projectGameSubVersionField = new pawgui::widget_input_text();
     projectGameSubVersionField->set_label("Game Sub-Version Number");
     projectGameSubVersionField->set_number(0);
 
-    projectScaleSettings = new GPE_RadioButtonControllerBasic("Scale Settings", true,1);
+    projectScaleSettings = new pawgui::widget_radio_button_controller("Scale Settings", true,1);
     projectScaleSettings->add_opton("Do Not Scale");
     projectScaleSettings->add_opton("Half-Size[50%]");
     projectScaleSettings->add_opton("float-Size[200%]");
     projectScaleSettings->add_opton("Keep Aspect Ratio[Recommended]");
     projectScaleSettings->add_opton("Full Scale");
 
-    projectSettingsFPSRateLabel = new GPE_Label_Text("Frame Rate Cap","Sets the (max) framerate set for the game(Usually 30 or 60)");
-    projectSettingsFPSRate = new GPE_DropDown_Menu( "FPS Cap",true);
+    projectSettingsFPSRateLabel = new pawgui::widget_label_text ("Frame Rate Cap","Sets the (max) framerate set for the game(Usually 30 or 60)");
+    projectSettingsFPSRate = new pawgui::widget_dropdown_menu( "FPS Cap",true);
     projectSettingsFPSRate->add_menu_option("15 FPS","",15);
     projectSettingsFPSRate->add_menu_option("20 FPS","",20);
     projectSettingsFPSRate->add_menu_option("24 FPS","",24);
@@ -143,189 +143,189 @@ projectPropertiesResource::projectPropertiesResource(GPE_GeneralResourceContaine
     projectSettingsFPSRate->add_menu_option("Uncapped","",-1);
 
     //Publisher Section
-    sectionTitleGameSettings = new GPE_Label_Title("Game Settings","Game Settings");
-    sectionTitlePublisher = new GPE_Label_Title("Publishing","Publishing");
-    projectGameTitleField = new gpe_text_widget_string();
+    sectionTitleGameSettings = new pawgui::widget_label_title("Game Settings","Game Settings");
+    sectionTitlePublisher = new pawgui::widget_label_title("Publishing","Publishing");
+    projectGameTitleField = new pawgui::widget_input_text();
     projectGameTitleField->set_label("Game Title");
 
-    projectGameShortTitleField = new gpe_text_widget_string();
+    projectGameShortTitleField = new pawgui::widget_input_text();
     projectGameShortTitleField->set_label("Game Short Title");
 
-    projectGamePublisherField = new gpe_text_widget_string();
+    projectGamePublisherField = new pawgui::widget_input_text();
     projectGamePublisherField->set_label("Game Publisher");
 
-    projectGameDeveloperField = new gpe_text_widget_string();
+    projectGameDeveloperField = new pawgui::widget_input_text();
     projectGameDeveloperField->set_label("Game Developer");
 
-    projectGameCopyrightField = new gpe_text_widget_string();
+    projectGameCopyrightField = new pawgui::widget_input_text();
     projectGameCopyrightField->set_label("Game Copyright Text");
 
-    projectGameDateField = new gpe_text_widget_string("2018");
+    projectGameDateField = new pawgui::widget_input_text("2018");
     projectGameDateField->set_label("Game Copyright Date");
 
-    projectGameDescriptionField = new gpe_text_widget_string();
+    projectGameDescriptionField = new pawgui::widget_input_text();
     projectGameDescriptionField->set_label("Game Description");
 
-    projectGameWebsiteField = new gpe_text_widget_string();
+    projectGameWebsiteField = new pawgui::widget_input_text();
     projectGameWebsiteField->set_label("Game Website");
 
-    projectGameEmailField= new gpe_text_widget_string();
+    projectGameEmailField= new pawgui::widget_input_text();
     projectGameEmailField->set_label("Game Email");
 
-    checkBoxShowPublisherInfo = new GPE_CheckBoxBasic("Display Info","Displays this information in build");
+    checkBoxShowPublisherInfo = new pawgui::widget_checkbox("Display Info","Displays this information in build");
     checkBoxShowPublisherInfo->set_checked(true);
 
     //Colors Tab
-    sectionWebColorsTitle = new GPE_Label_Title("Web Colors");
-    projectBorderColor = new gpe_widget_color_picker();
+    sectionWebColorsTitle = new pawgui::widget_label_title("Web Colors");
+    projectBorderColor = new pawgui::gpe_widget_color_picker();
     projectBorderColor->set_label("Border");
     projectBorderColor->set_rgb(16,16,16);
 
-    projectWebsiteBackgroundColor = new gpe_widget_color_picker();
+    projectWebsiteBackgroundColor = new pawgui::gpe_widget_color_picker();
     projectWebsiteBackgroundColor->set_label("Website Background");
     projectWebsiteBackgroundColor->set_rgb(0,0,0);
 
-    projectGameBackgroundColor = new gpe_widget_color_picker();
+    projectGameBackgroundColor = new pawgui::gpe_widget_color_picker();
     projectGameBackgroundColor->set_label("Game Background");
     projectGameBackgroundColor->set_rgb(0,0,0);
 
-    projectTextHeaderColor = new gpe_widget_color_picker();
+    projectTextHeaderColor = new pawgui::gpe_widget_color_picker();
     projectTextHeaderColor->set_label("Text(Header)");
     projectTextHeaderColor->set_rgb(0,0,228);
 
-    projectTextParagraphColor = new gpe_widget_color_picker();
+    projectTextParagraphColor = new pawgui::gpe_widget_color_picker();
     projectTextParagraphColor->set_label("Text");
     projectTextParagraphColor->set_rgb(192,192,192);
 
-    projectTextLinkColor = new gpe_widget_color_picker();
+    projectTextLinkColor = new pawgui::gpe_widget_color_picker();
     projectTextLinkColor->set_label("Hyperlink");
     projectTextLinkColor->set_rgb(16,16,255);
 
-    projectTextLinkActiveColor = new gpe_widget_color_picker();
+    projectTextLinkActiveColor = new pawgui::gpe_widget_color_picker();
     projectTextLinkActiveColor->set_label("Hyperlink Active");
     projectTextLinkActiveColor->set_rgb(192,192,192);
 
-    projectTextLinkHoverColor = new gpe_widget_color_picker();
+    projectTextLinkHoverColor = new pawgui::gpe_widget_color_picker();
     projectTextLinkHoverColor->set_label("Hyperlink Hover");
     projectTextLinkHoverColor->set_rgb(192,255,192);
 
-    projectTextLinkVisitedColor = new gpe_widget_color_picker();
+    projectTextLinkVisitedColor = new pawgui::gpe_widget_color_picker();
     projectTextLinkVisitedColor->set_label("Hyperlink Visited");
     projectTextLinkVisitedColor->set_rgb(192,16,192);
 
     //Macros Tab
-    projectGameMacros = new GPE_TextAreaInputBasic();
+    projectGameMacros = new pawgui::widget_text_editor();
 
     //Game Notes Tab
-    projectGameNotes = new GPE_TextAreaInputBasic();
+    projectGameNotes = new pawgui::widget_text_editor();
     projectGameNotes->isCodeEditor = false;
 
     //Export Settings Tab
-    buildToSourceButton = new GPE_ToolPushButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file-code-o.png","Build to Source","Packages code in preparation for building");
-    buildPlatformdropdown = new GPE_DropDown_Menu("Source Build Method", false);
-    buildPlatformRefreshLabel = new GPE_TextURL("Refresh methods","Click to re-load build platforms","#");
-    exportPushButton = new GPE_ToolPushButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cog.png","Build Project","Recompiles Project");
-    exportAndPlayPushButton = new GPE_ToolPushButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Build & Play Project","Recompiles Project & Runs it");
+    buildToSourceButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file-code-o.png","Build to Source","Packages code in preparation for building");
+    buildPlatformdropdown = new pawgui::widget_dropdown_menu("Source Build Method", false);
+    buildPlatformRefreshLabel = new pawgui::widget_text_url("Refresh methods","Click to re-load build platforms","#");
+    exportPushButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cog.png","Build Project","Recompiles Project");
+    exportAndPlayPushButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Build & Play Project","Recompiles Project & Runs it");
 
-    cleanBuildFolderPushButton = new GPE_ToolPushButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Clean Build Folders","Removes files from the build folder matching the criteria above.");
-    cleanBuildAllFolderPushButton = new GPE_ToolPushButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Clean ALL Build Folders","Removes files from all build folders of this project.");
-    playProgramPushButton = new GPE_ToolPushButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Play Game","Runs game matching the criteria above");
+    cleanBuildFolderPushButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Clean Build Folders","Removes files from the build folder matching the criteria above.");
+    cleanBuildAllFolderPushButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Clean ALL Build Folders","Removes files from all build folders of this project.");
+    playProgramPushButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Play Game","Runs game matching the criteria above");
 
-    projectSettingsBar = new GPE_SelectBoxBasic( "Settings");
+    projectSettingsBar = new pawgui::widget_selectbox( "Settings");
     projectSettingsBar->set_width(160);
-    projectSettingsBar->set_option_height(64);
+    projectSettingsBar->set_option_height(32);
 
-    projectSettingsBar->add_option("General",-1,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),NULL,2, false, false);
-    projectSettingsBar->add_option("Platforms",-1,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/umbrella.png"),NULL,2, false, false);
-    projectSettingsBar->add_option("Layers",-1,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/map.png"),NULL,2, false, false);
-    projectSettingsBar->add_option("Macros",-1,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/tags.png"),NULL,2, false, false);
-    projectSettingsBar->add_option("Notes",-1,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/sticky-note.png"),NULL,2, false, false);
+    projectSettingsBar->add_option("General",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),NULL,2, false, false);
+    projectSettingsBar->add_option("Platforms",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/umbrella.png"),NULL,2, false, false);
+    projectSettingsBar->add_option("Layers",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/map.png"),NULL,2, false, false);
+    projectSettingsBar->add_option("Macros",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/tags.png"),NULL,2, false, false);
+    projectSettingsBar->add_option("Notes",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/sticky-note.png"),NULL,2, false, false);
 
-    exportSettingsBar = new GPE_SelectBoxBasic( "Platforms");
+    exportSettingsBar = new pawgui::widget_selectbox( "Platforms");
     exportSettingsBar->set_width(160);
-    exportSettingsBar->set_option_height(64);
-    exportSettingsBar->add_option("Windows", gpe::system_os_windows,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/windows.png"));
-    exportSettingsBar->add_option("Mac", gpe::system_os_mac,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/apple.png"));
-    exportSettingsBar->add_option("Linux", gpe::system_os_linux,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/linux.png"));
-    exportSettingsBar->add_option("HTML5", gpe::system_os_html5,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/html5.png"));
-    exportSettingsBar->add_option("Other", gpe::system_os_html5,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/question-circle.png"));
+    exportSettingsBar->set_option_height(32);
+    exportSettingsBar->add_option("Windows", gpe::system_os_windows,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/windows.png"));
+    exportSettingsBar->add_option("Mac", gpe::system_os_mac,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/apple.png"));
+    exportSettingsBar->add_option("Linux", gpe::system_os_linux,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/linux.png"));
+    exportSettingsBar->add_option("HTML5", gpe::system_os_html5,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/html5.png"));
+    exportSettingsBar->add_option("Other", gpe::system_os_html5,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/question-circle.png"));
 
 
-    otherPlatformLabel = new GPE_Label_Text("Have another platform to extend GPE to?","Follow the instructions below:" );
-    otherPlatformLabelParagraph = new GPE_Label_Paragraph("Extending GPE to new platforms","Were you able to get GPE working on a new platform besides the basic systems listed above? Great, using the guide below we have prepared a way to integrate our editor into your new system and build for it right away ( pending automation). Please note you may need to restart the editor for this to take place as well. "," ");
-    otherPlatformLabelURL = new GPE_TextURL("Documentation on adding new platforms","Will open in browser","http://docs.pawbyte.com/adding-platforms/");
+    otherPlatformLabel = new pawgui::widget_label_text ("Have another platform to extend GPE to?","Follow the instructions below:" );
+    otherPlatformLabelParagraph = new pawgui::widget_label_paragraph("Extending GPE to new platforms","Were you able to get GPE working on a new platform besides the basic systems listed above? Great, using the guide below we have prepared a way to integrate our editor into your new system and build for it right away ( pending automation). Please note you may need to restart the editor for this to take place as well. "," ");
+    otherPlatformLabelURL = new pawgui::widget_text_url("Documentation on adding new platforms","Will open in browser","http://docs.pawbyte.com/adding-platforms/");
 
-    exportApplicationLabel = new GPE_Label_Title("Application Settings","Key Application Information");
+    exportApplicationLabel = new pawgui::widget_label_title("Application Settings","Key Application Information");
 
-    exportWindowsLabel = new GPE_Label_Title("Windows Settings","Windows  Export Settings");
-    exportOSXLabel = new GPE_Label_Title("Mac Settings","Mac Export Settings");
-    exportLinuxLabel = new GPE_Label_Title("Linux Settings","Linux Export Settingsation");
+    exportWindowsLabel = new pawgui::widget_label_title("Windows Settings","Windows  Export Settings");
+    exportOSXLabel = new pawgui::widget_label_title("Mac Settings","Mac Export Settings");
+    exportLinuxLabel = new pawgui::widget_label_title("Linux Settings","Linux Export Settingsation");
 
-    win64BitCheckbox = new GPE_CheckBoxBasic("64 Bit Build","Leave unchecked to use 32-bit build", true);
-    osx64BitCheckbox = new GPE_CheckBoxBasic("64 Bit Build","Leave unchecked to use 32-bit build", true);
-    linux64BitCheckbox = new GPE_CheckBoxBasic("64 Bit Build","Leave unchecked to use 32-bit build", true);
+    win64BitCheckbox = new pawgui::widget_checkbox("64 Bit Build","Leave unchecked to use 32-bit build", true);
+    osx64BitCheckbox = new pawgui::widget_checkbox("64 Bit Build","Leave unchecked to use 32-bit build", true);
+    linux64BitCheckbox = new pawgui::widget_checkbox("64 Bit Build","Leave unchecked to use 32-bit build", true);
 
-    html5DebugModeCheckbox = new GPE_CheckBoxBasic("Debug Mode","Enter Debug mode for HTML5 build", true);
-    osxDebugModeCheckbox = new GPE_CheckBoxBasic("Debug Mode","Enter Debug mode for OSX build", true );
-    winDebugModeCheckbox = new GPE_CheckBoxBasic("Debug Mode","Enter Debug mode for Windows build",true);
-    linuxDebugModeCheckbox = new GPE_CheckBoxBasic("Debug Mode","Enter Debug mode for Linux build",true);
+    html5DebugModeCheckbox = new pawgui::widget_checkbox("Debug Mode","Enter Debug mode for HTML5 build", true);
+    osxDebugModeCheckbox = new pawgui::widget_checkbox("Debug Mode","Enter Debug mode for OSX build", true );
+    winDebugModeCheckbox = new pawgui::widget_checkbox("Debug Mode","Enter Debug mode for Windows build",true);
+    linuxDebugModeCheckbox = new pawgui::widget_checkbox("Debug Mode","Enter Debug mode for Linux build",true);
 
-    html5nativeBuildTypeOptions = new GPE_RadioButtonControllerBasic("Build Type", true);
+    html5nativeBuildTypeOptions = new pawgui::widget_radio_button_controller("Build Type", true);
 
-    windowsNativeBuildTypeOptions = new GPE_RadioButtonControllerBasic("Build Type", true);
+    windowsNativeBuildTypeOptions = new pawgui::widget_radio_button_controller("Build Type", true);
     //windowsNativeBuildTypeOptions->add_menu_option("Use GPE Native-Build[Experimental]","gpe_native",native_option_runtime,false);
     windowsNativeBuildTypeOptions->add_menu_option("Use Electron","gpe_electron", native_option_electron,false);
     //windowsNativeBuildTypeOptions->add_menu_option("C++ Project","gpe_cpp",native_option_runtime_cpp,false);
     windowsNativeBuildTypeOptions->add_menu_option("Do not Export...","gpe_no_native", native_option_none,true);
 
-    osxNativeBuildTypeOptions = new GPE_RadioButtonControllerBasic("Build Type", true);
+    osxNativeBuildTypeOptions = new pawgui::widget_radio_button_controller("Build Type", true);
     //osxNativeBuildTypeOptions->add_menu_option("Use GPE Native-Build[Experimental]","gpe_native",native_option_runtime,false);
     osxNativeBuildTypeOptions->add_menu_option("Use Electron","gpe_electron", native_option_electron,false);
     //osxNativeBuildTypeOptions->add_menu_option("C++ Project","gpe_cpp",native_option_runtime_cpp,false);
     osxNativeBuildTypeOptions->add_menu_option("Do not Export...","gpe_no_native", native_option_none,true);
 
-    linuxNativeBuildTypeOptions = new GPE_RadioButtonControllerBasic("Build Type", true);
+    linuxNativeBuildTypeOptions = new pawgui::widget_radio_button_controller("Build Type", true);
     //linuxNativeBuildTypeOptions->add_menu_option("Use GPE Native-Build[Experimental]","gpe_native",native_option_runtime,false);
     linuxNativeBuildTypeOptions->add_menu_option("Use Electron","gpe_electron",native_option_electron,false);
     //linuxNativeBuildTypeOptions->add_menu_option("C++ Project","gpe_cpp",native_option_runtime_cpp,false);
     linuxNativeBuildTypeOptions->add_menu_option("Do not Export...","gpe_no_native",native_option_none,true);
 
-    electronCompileNote = new GPE_Label_Text("Electron Build Guide");
-    electronCompileUrl = new GPE_TextURL("For instructions on compiling using Electron click here.","Instructions on compiling using Electron.","http://docs.pawbyte.com/using-electron/");
+    electronCompileNote = new pawgui::widget_label_text ("Electron Build Guide");
+    electronCompileUrl = new pawgui::widget_text_url("For instructions on compiling using Electron click here.","Instructions on compiling using Electron.","http://docs.pawbyte.com/using-electron/");
 
-    switchComingSoonNote = new GPE_Label_Paragraph("Switch Note","We hope and intend to soon providing support to the Nintendo Switch. When we do, we will provide the port to approved Nintendo Switch developers free of charge. Thank you for your patience and time.","");
-    nSwitchSideNote = new GPE_Label_Paragraph("Switch Side Note","We are heavily excited to soon provide support for multi-touch screens, new play modes, HD Rumble and built in multiplayer controls.","");
-    nSwitchThirdNote = new GPE_Label_Paragraph("Switch Third Note","For more information feel free to contact Nintendo Developer's program:   ","");
+    switchComingSoonNote = new pawgui::widget_label_paragraph("Switch Note","We hope and intend to soon providing support to the Nintendo Switch. When we do, we will provide the port to approved Nintendo Switch developers free of charge. Thank you for your patience and time.","");
+    nSwitchSideNote = new pawgui::widget_label_paragraph("Switch Side Note","We are heavily excited to soon provide support for multi-touch screens, new play modes, HD Rumble and built in multiplayer controls.","");
+    nSwitchThirdNote = new pawgui::widget_label_paragraph("Switch Third Note","For more information feel free to contact Nintendo Developer's program:   ","");
 
-    nSwitchContactUrl  = new GPE_TextURL("Nintendo Developer contact page","Click here to visit Nintendo Developer contact page","https://developer.nintendo.com/web/development/contact");
+    nSwitchContactUrl  = new pawgui::widget_text_url("Nintendo Developer contact page","Click here to visit Nintendo Developer contact page","https://developer.nintendo.com/web/development/contact");
 
-    ps4ComingSoonNote = new GPE_Label_Paragraph("PS4 Note","We hope and intend to soon providing support to the PlayStation 4. When we do, we will provide the port to approved PlayStation 4 developers free of charge. Thank you for your patience and time.","");
-    ps4SideNote = new GPE_Label_Paragraph("PS4 Side Note","For more information feel free to contact PlayStation 4 Developer's program:   ","");
-    ps4ContactUrl  = new GPE_TextURL("PlayStation Developer contact page","Click here to visit PlayStation Developer page","https://www.playstation.com/en-us/develop/");
+    ps4ComingSoonNote = new pawgui::widget_label_paragraph("PS4 Note","We hope and intend to soon providing support to the PlayStation 4. When we do, we will provide the port to approved PlayStation 4 developers free of charge. Thank you for your patience and time.","");
+    ps4SideNote = new pawgui::widget_label_paragraph("PS4 Side Note","For more information feel free to contact PlayStation 4 Developer's program:   ","");
+    ps4ContactUrl  = new pawgui::widget_text_url("PlayStation Developer contact page","Click here to visit PlayStation Developer page","https://www.playstation.com/en-us/develop/");
 
-    xboxOneComingSoonNote = new GPE_Label_Paragraph("Xbox One Note","We hope and intend to soon providing support to the Xbox One. When we do, we will provide the port to approved Xbox One developers free of charge. Thank you for your patience and time.","");
-    xboxOneSideNote = new GPE_Label_Paragraph("Xbox One Side Note","For more information feel free to contact Xbox Developer's program:   ","");
-    xboxOneContactUrl  = new GPE_TextURL("Xbox Developer contact page","Click here to visit Xbox Developer contact page","http://www.xbox.com/en-US/developers");
+    xboxOneComingSoonNote = new pawgui::widget_label_paragraph("Xbox One Note","We hope and intend to soon providing support to the Xbox One. When we do, we will provide the port to approved Xbox One developers free of charge. Thank you for your patience and time.","");
+    xboxOneSideNote = new pawgui::widget_label_paragraph("Xbox One Side Note","For more information feel free to contact Xbox Developer's program:   ","");
+    xboxOneContactUrl  = new pawgui::widget_text_url("Xbox Developer contact page","Click here to visit Xbox Developer contact page","http://www.xbox.com/en-US/developers");
 
-    switchNativeBuildTypeOptions = new GPE_RadioButtonControllerBasic("Build Type",true);
+    switchNativeBuildTypeOptions = new pawgui::widget_radio_button_controller("Build Type",true);
     /*
     switchNativeBuildTypeOptions->add_menu_option("Use GPE Native-Build[Experimental]","gpe_native",native_option_runtime,false);
     switchNativeBuildTypeOptions->add_menu_option("C++ Project","gpe_cpp",native_option_runtime_cpp,false);
     */
     switchNativeBuildTypeOptions->add_menu_option("Do not Export...","gpe_no_native",native_option_none,false);
 
-    gpe::animaton2d * mainExportOptionsanimation = paw_gui_rsm->animation_add("exportOptionsIcons", gpe::app_directory_name+"resources/gfx/animations/main_export_options_icons.png",12,true,0,0,false);
+    gpe::animaton2d * mainExportOptionsanimation = pawgui::rsm_gui->animation_add("exportOptionsIcons", gpe::app_directory_name+"resources/gfx/animations/main_export_options_icons.png",12,true,0,0,false);
 
-    gpe::texture_base * desktopLogoTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/desktop.png");
-    gpe::texture_base * appleLogoTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/apple.png");
-    gpe::texture_base * linuxLogoTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/font_awesome_linux.png");
-    gpe::texture_base * windowsLogoTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/windows.png");
-    gpe::texture_base * html5LogoTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/html5.png");
+    gpe::texture_base * desktopLogoTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/desktop.png");
+    gpe::texture_base * appleLogoTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/apple.png");
+    gpe::texture_base * linuxLogoTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/font_awesome_linux.png");
+    gpe::texture_base * windowsLogoTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/windows.png");
+    gpe::texture_base * html5LogoTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/html5.png");
 
     //HTML5 Settings
-    warnOnCloseCheckbox = new GPE_CheckBoxBasic("Warn on Close","If checked warn user on close",true);
+    warnOnCloseCheckbox = new pawgui::widget_checkbox("Warn on Close","If checked warn user on close",true);
 
-    desktopSettingsTabBar = new GPE_TabBar();
+    desktopSettingsTabBar = new pawgui::widget_tabbar();
     desktopSettingsTabBar->set_coords(16, 16);
     desktopSettingsTabBar->add_new_tab("Windows");
     desktopSettingsTabBar->add_new_tab("OSX");
@@ -338,12 +338,12 @@ projectPropertiesResource::projectPropertiesResource(GPE_GeneralResourceContaine
     //cancelResourceButton->disable_self();
     saveResourceButton->disable_self();
     resourcePostProcessed = false;
-    projectSettingsList = new GPE_GuiElementList();
-    projectSettingsList->panelAlignType = GPE_PANEL_ALIGN_FULLROWS;
+    projectSettingsList = new pawgui::widget_panel_list();
+    projectSettingsList->panelAlignType = pawgui::panel_align_full;
 
-    collisionLayerMatrixList = new GPE_GuiElementList();
-    projectSettingsList->barXPadding = GENERAL_GPE_GUI_PADDING;
-    projectSettingsList->barXMargin = GENERAL_GPE_GUI_PADDING;
+    collisionLayerMatrixList = new pawgui::widget_panel_list();
+    projectSettingsList->barXPadding = pawgui::padding_default;
+    projectSettingsList->barXMargin = pawgui::padding_default;
     subViewedSpace.x = 0;
     subViewedSpace.y = 0;
     subViewedSpace.w = gpe::screen_width;
@@ -612,9 +612,9 @@ bool projectPropertiesResource::export_and_play_native(bool launchProgram)
             current_project->save_project();
             buildAndRunSuccessful = current_project->export_project_osx("", buildPlatformdropdown->get_selected_name(),buildBits,launchProgram, osxDebugModeCheckbox->is_clicked(), osxNativeBuildTypeOptions->get_selected_value()  );
         }
-        else if( GPE_main_TabManager!=NULL )
+        else if( pawgui::main_tab_resource_bar!=NULL )
         {
-            GPE_main_TabManager->add_new_tab(this );
+            pawgui::main_tab_resource_bar->add_new_tab(this );
             projectSettingsBar->set_selected_option("Platforms");
         }
     }
@@ -689,11 +689,11 @@ void projectPropertiesResource::integrate_into_syntax()
                                     lineParseXCursorPos++;
                                 }
                             }
-                            else if (GPE_main_HIGHLIGHTER->charIsSymbol(currentLineToRead[lineParseXCursorPos]))
+                            else if (pawgui::main_syntax_highlighter->charIsSymbol(currentLineToRead[lineParseXCursorPos]))
                             {
                                 lineParseXCursorPos++;
                                 commentFoundInSymbols = false;
-                                while( ( commentFoundInSymbols==false && lineParseXCursorPos < currentLineSize && GPE_main_HIGHLIGHTER->charIsSymbol(currentLineToRead[lineParseXCursorPos] ) )|| currentLineToRead[lineParseXCursorPos] ==' ')
+                                while( ( commentFoundInSymbols==false && lineParseXCursorPos < currentLineSize && pawgui::main_syntax_highlighter->charIsSymbol(currentLineToRead[lineParseXCursorPos] ) )|| currentLineToRead[lineParseXCursorPos] ==' ')
                                 {
                                     if( currentLineSize > lineParseXCursorPos+1)
                                     {
@@ -859,7 +859,7 @@ void projectPropertiesResource::open_code(int lineNumb, int colNumb, std::string
 {
     if( (int)codeTitle.size() > 0 )
     {
-        GPE_TextAreaInputBasic * foundTextArea = NULL;
+        pawgui::widget_text_editor * foundTextArea = NULL;
 
         if( codeTitle == "Macros")
         {
@@ -893,9 +893,9 @@ void projectPropertiesResource::load_resource(std::string file_path)
 {
     if( resourcePostProcessed ==false  || sff_ex::file_exists(file_path) )
     {
-        if( GPE_LOADER != NULL )
+        if( pawgui::main_loader_display != NULL )
         {
-            GPE_LOADER->update_submessages( "Processing Project Properties","Please wait..." );
+            pawgui::main_loader_display->update_submessages( "Processing Project Properties","Please wait..." );
         }
 
         std::string otherColContainerName = "";
@@ -1170,14 +1170,14 @@ void projectPropertiesResource::load_resource(std::string file_path)
     }
 }
 
-void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam)
+void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
 {
     cam = gpe::camera_find(cam);
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     bool isJSProject = true;
     if( current_project !=NULL )
     {
-        if( current_project->get_project_language_id() != PROGRAM_LANGUAGE_JS )
+        if( current_project->get_project_language_id() != pawgui::program_language_js )
         {
             isJSProject = false;
         }
@@ -1192,7 +1192,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
         {
             if( html5OptionId < 0)
             {
-                exportSettingsBar->add_option("HTML5", gpe::system_os_html5,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/html5.png"));
+                exportSettingsBar->add_option("HTML5", gpe::system_os_html5,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/html5.png"));
             }
         }
         else if(  html5OptionId > 0 )
@@ -1201,34 +1201,38 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
         }
     }
 
-    if( cam!=NULL && projectSettingsList!=NULL && projectSettingsBar!=NULL && viewedSpace!=NULL)
+    if( collisionLayerMatrixList != NULL )
+    {
+        collisionLayerMatrixList->clear_list();
+    }
+    if( cam!=NULL && projectSettingsList!=NULL && projectSettingsBar!=NULL && view_space!=NULL)
     {
         std::string nExportOptionName = exportSettingsBar->get_selected_name();
 
         std::string nExportDesktopOS = desktopSettingsTabBar->get_selected_name();
 
         int prevTab = projectSettingsBar->get_selection();
-        if( PANEL_GENERAL_EDITOR!=NULL )
+        if( panel_main_area!=NULL )
         {
             subViewedSpace.x = 0;
             subViewedSpace.y = 0;
-            subViewedSpace.w = viewedSpace->w;
-            subViewedSpace.h = viewedSpace->h;
-            PANEL_GENERAL_EDITOR->add_gui_element_fullsize( projectSettingsBar );
-            PANEL_GENERAL_EDITOR->process_self();
+            subViewedSpace.w = view_space->w;
+            subViewedSpace.h = view_space->h;
+            panel_main_area->add_gui_element_fullsize( projectSettingsBar );
+            panel_main_area->process_self();
             exportSettingsBar->set_coords( 0, 0 );
 
         }
         else
         {
             projectSettingsBar->set_coords(0, 0 );
-            projectSettingsBar->set_height( viewedSpace->h );
-            projectSettingsBar->process_self( viewedSpace, cam );
-            subViewedSpace.x = projectSettingsBar->get_x2pos();
+            projectSettingsBar->set_height( view_space->h );
+            projectSettingsBar->process_self( view_space, cam );
+            subViewedSpace.x = projectSettingsBar->get_x2();
             subViewedSpace.y = 0;
-            subViewedSpace.w = viewedSpace->w - projectSettingsBar->get_width();
-            subViewedSpace.h = viewedSpace->h;
-            exportSettingsBar->set_coords(projectSettingsBar->get_x2pos(), 0 );
+            subViewedSpace.w = view_space->w - projectSettingsBar->get_width();
+            subViewedSpace.h = view_space->h;
+            exportSettingsBar->set_coords(projectSettingsBar->get_x2(), 0 );
 
         }
 
@@ -1242,10 +1246,10 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
         projectSettingsList->set_coords( subViewedSpace.x, subViewedSpace.y);
         projectSettingsList->set_width(subViewedSpace.w);
         projectSettingsList->set_height(subViewedSpace.h );
-        projectSettingsList->barXPadding = GENERAL_GPE_GUI_PADDING;
-        projectSettingsList->barYPadding = GENERAL_GPE_GUI_PADDING;
-        projectSettingsList->barXMargin = GENERAL_GPE_GUI_PADDING;
-        projectSettingsList->barYMargin = GENERAL_GPE_GUI_PADDING;
+        projectSettingsList->barXPadding = pawgui::padding_default;
+        projectSettingsList->barYPadding = pawgui::padding_default;
+        projectSettingsList->barXMargin = pawgui::padding_default;
+        projectSettingsList->barYMargin = pawgui::padding_default;
 
         if( projectSettingsBar->get_selected_name()=="General" || projectSettingsBar->get_selected_name()=="Settings")
         {
@@ -1279,7 +1283,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
             projectSettingsList->add_gui_element(checkBoxShowPublisherInfo,true);
 
             projectSettingsList->add_gui_element(confirmResourceButton,true);
-            projectSettingsList->process_self( viewedSpace,cam);
+            projectSettingsList->process_self( view_space,cam);
 
             if( browseIconButton->is_clicked() )
             {
@@ -1287,7 +1291,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
                 {
                     editor_gui_main->fileOpenProjectIconDir = current_project->get_project_directory();
                 }
-                std::string newProjectIconName = GPE_GetOpenFileName("Find Project Icon","Image",editor_gui_main->fileOpenProjectIconDir );
+                std::string newProjectIconName = pawgui::get_filename_open_from_popup("Find Project Icon","Image",editor_gui_main->fileOpenProjectIconDir );
                 if( sff_ex::file_exists(newProjectIconName ) )
                 {
                     if( stg_ex::file_is_image(newProjectIconName) )
@@ -1309,8 +1313,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
         else if(projectSettingsBar->get_selected_name()=="Platforms")
         {
             exportSettingsBar->set_height(subViewedSpace.h);
-            exportSettingsBar->optionIconWidth = 64;
-            exportSettingsBar->process_self(viewedSpace,cam);
+            exportSettingsBar->process_self(view_space,cam);
             subViewedSpace.x+= exportSettingsBar->get_width();
             subViewedSpace.w-= exportSettingsBar->get_width();
             projectSettingsList->set_coords( subViewedSpace.x, subViewedSpace.y );
@@ -1338,7 +1341,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
                 projectSettingsList->add_gui_element(exportPushButton,true);
                 projectSettingsList->add_gui_element(exportAndPlayPushButton,true );
                 projectSettingsList->add_gui_element(playProgramPushButton, true);
-                projectSettingsList->process_self( viewedSpace,cam);
+                projectSettingsList->process_self( view_space,cam);
 
                 if( current_project!=NULL )
                 {
@@ -1391,7 +1394,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
                         projectSettingsList->add_gui_element(electronCompileNote,true);
                         projectSettingsList->add_gui_element(electronCompileUrl,true);
                     }
-                    projectSettingsList->process_self( viewedSpace,cam);
+                    projectSettingsList->process_self( view_space,cam);
 
                     if( buildPlatformRefreshLabel->is_clicked() )
                     {
@@ -1408,7 +1411,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
                         }
                         else
                         {
-                            GPE_main_Logs->log_build_error("Unable to build to Source for Windows: Method not selected!" );
+                            main_editor_log->log_build_error("Unable to build to Source for Windows: Method not selected!" );
                         }
                     }
 
@@ -1466,7 +1469,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
                         projectSettingsList->add_gui_element(electronCompileNote,true);
                         projectSettingsList->add_gui_element(electronCompileUrl,true);
                     }
-                    projectSettingsList->process_self( viewedSpace,cam);
+                    projectSettingsList->process_self( view_space,cam);
 
                     if( buildPlatformRefreshLabel->is_clicked() )
                     {
@@ -1483,7 +1486,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
                         }
                         else
                         {
-                            GPE_main_Logs->log_build_error("Unable to build to Source for Linux: Method not selected!" );
+                            main_editor_log->log_build_error("Unable to build to Source for Linux: Method not selected!" );
                         }
                     }
                     if( linux64BitCheckbox->is_clicked() )
@@ -1540,7 +1543,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
                         projectSettingsList->add_gui_element(electronCompileNote,true);
                         projectSettingsList->add_gui_element(electronCompileUrl,true);
                     }
-                    projectSettingsList->process_self( viewedSpace,cam);
+                    projectSettingsList->process_self( view_space,cam);
 
                     if( buildPlatformRefreshLabel->is_clicked() )
                     {
@@ -1557,11 +1560,11 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
                         }
                         else
                         {
-                            GPE_main_Logs->log_build_error("Unable to build to Source for OSX: Method not selected!" );
+                            main_editor_log->log_build_error("Unable to build to Source for OSX: Method not selected!" );
                         }
                     }
 
-                    if( osx64BitCheckbox->is_checked() )
+                    if( osx64BitCheckbox->is_clicked() )
                     {
                         buildBits = 64;
                     }
@@ -1589,7 +1592,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
                     projectSettingsList->add_gui_element(otherPlatformLabel,true);
                     projectSettingsList->add_gui_element(otherPlatformLabelParagraph,true );
                     projectSettingsList->add_gui_element(otherPlatformLabelURL, true);
-                    projectSettingsList->process_self( viewedSpace,cam);
+                    projectSettingsList->process_self( view_space,cam);
                 }
             }
         }
@@ -1598,7 +1601,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
             projectGameMacros->set_width(subViewedSpace.w-32 );
             projectGameMacros->set_height(subViewedSpace.h-96 );
             projectSettingsList->add_gui_element(projectGameMacros,true);
-            projectSettingsList->process_self( viewedSpace,cam);
+            projectSettingsList->process_self( view_space,cam);
 
         }
         else if( projectSettingsBar->get_selected_name()=="Notes")
@@ -1606,7 +1609,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
             projectGameNotes->set_width(subViewedSpace.w-32 );
             projectGameNotes->set_height(subViewedSpace.h-96 );
             projectSettingsList->add_gui_element(projectGameNotes,true);
-            projectSettingsList->process_self( viewedSpace,cam);
+            projectSettingsList->process_self( view_space,cam);
         }
         else if( projectSettingsBar->get_selected_name() == "Layers")
         {
@@ -1627,10 +1630,10 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
             collisionLayerMatrixList->set_coords( subViewedSpace.x, subViewedSpace.y);
             collisionLayerMatrixList->set_width(subViewedSpace.w);
             collisionLayerMatrixList->set_height(subViewedSpace.h );
-            collisionLayerMatrixList->barXPadding = GENERAL_GPE_GUI_PADDING;
-            collisionLayerMatrixList->barYPadding = GENERAL_GPE_GUI_PADDING;
-            collisionLayerMatrixList->barXMargin = GENERAL_GPE_GUI_PADDING;
-            collisionLayerMatrixList->barYMargin = GENERAL_GPE_GUI_PADDING;
+            collisionLayerMatrixList->barXPadding = pawgui::padding_default;
+            collisionLayerMatrixList->barYPadding = pawgui::padding_default;
+            collisionLayerMatrixList->barXMargin = pawgui::padding_default;
+            collisionLayerMatrixList->barYMargin = pawgui::padding_default;
 
             //Important to manipulate view of layer matrix with rows/columns using headers
             collisionLayerMatrixList->add_gui_element( projectLayerEmptyTitle,false );
@@ -1652,7 +1655,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
             collisionLayerMatrixList->add_gui_element(selectAllCollisionBoxes, true);
             collisionLayerMatrixList->add_gui_element(unselectAllCollisionBoxes, true);
             collisionLayerMatrixList->add_gui_element(confirmResourceButton,true);
-            collisionLayerMatrixList->process_self( viewedSpace,cam);
+            collisionLayerMatrixList->process_self( view_space,cam);
 
             bool renameLayer = false;
             for( int iLayerVal = 0; iLayerVal < 32 && renameLayer==false; iLayerVal++)
@@ -1667,7 +1670,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
                 }
                 if( renameLayer)
                 {
-                    std::string newLayerName = get_string_from_popup("Rename this project layer","Please enter an unique alphanumeric name",projectLayerNamesRowTitles[iLayerVal]->get_name() );
+                    std::string newLayerName = pawgui::get_string_from_popup("Rename this project layer","Please enter an unique alphanumeric name",projectLayerNamesRowTitles[iLayerVal]->get_name() );
                     bool layerValueAllowed = true;
                     if( stg_ex::is_alnum(newLayerName,true,true) )
                     {
@@ -1679,7 +1682,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
                                 {
                                     if( newLayerName==projectLayerNamesColumnTitles[jLayerVal]->get_name() )
                                     {
-                                        display_user_alert("Invalid name given","Layer names must all be unique!");
+                                        pawgui::display_user_alert("Invalid name given","Layer names must all be unique!");
                                         layerValueAllowed= false;
                                         break;
                                     }
@@ -1690,7 +1693,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
                     else
                     {
                         layerValueAllowed = false;
-                        display_user_alert("Invalid name given","Layer names must be alphanumerical in value.");
+                        pawgui::display_user_alert("Invalid name given","Layer names must be alphanumerical in value.");
                     }
                     if( layerValueAllowed)
                     {
@@ -1729,30 +1732,30 @@ void projectPropertiesResource::process_self( gpe::shape_rect * viewedSpace, gpe
         }
         if( nExportOptionName != exportSettingsBar->get_selected_name() )
         {
-            //process_self(viewedSpace,cam);
+            //process_self(view_space,cam);
         }
     }
 }
 
 void projectPropertiesResource::refresh_build_to_source_targets()
 {
-    if( GPE_main_Logs==NULL)
+    if( main_editor_log==NULL)
     {
-        gpe::error_log->report("Unable to detect [GPE_main_Logs].");
+        gpe::error_log->report("Unable to detect [main_editor_log].");
         return;
     }
-    GPE_main_Logs->log_build_line("Attempting to refresh build platforms");
-    GPE_main_Logs->log_build_line("Build platforms refreshed!");
+    main_editor_log->log_build_line("Attempting to refresh build platforms");
+    main_editor_log->log_build_line("Build platforms refreshed!");
 
     if( buildPlatformdropdown==NULL )
     {
-        GPE_main_Logs->log_build_error("Error finding [buildPlatformdropdown] object!");
+        main_editor_log->log_build_error("Error finding [buildPlatformdropdown] object!");
         return;
     }
 
     if( GPE_CPP_BUILDER_SETTINGS==NULL )
     {
-        GPE_main_Logs->log_build_error("Error finding [GPE_CPP_BUILDER_SETTINGS] global object!");
+        main_editor_log->log_build_error("Error finding [GPE_CPP_BUILDER_SETTINGS] global object!");
         return;
     }
 
@@ -1769,32 +1772,32 @@ void projectPropertiesResource::refresh_build_to_source_targets()
             buildPlatformdropdown->add_menu_option(tempCBS->builderName,tempCBS->builderName, -1, false );
         }
     }
-    GPE_main_Logs->log_build_line("Added ["+ stg_ex::int_to_string(builderSystems)+"] builder systems");
+    main_editor_log->log_build_line("Added ["+ stg_ex::int_to_string(builderSystems)+"] builder systems");
 }
 
-void projectPropertiesResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void projectPropertiesResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if( cam!=NULL && viewedSpace!=NULL)
+    if( cam!=NULL && view_space!=NULL)
     {
-        if(  projectSettingsBar!=NULL && PANEL_GENERAL_EDITOR==NULL )
+        if(  projectSettingsBar!=NULL && panel_main_area==NULL )
         {
-            projectSettingsBar->render_self( viewedSpace,cam);
+            projectSettingsBar->render_self( view_space,cam);
         }
         if(  exportSettingsBar!=NULL && projectSettingsBar!=NULL  && projectSettingsBar->get_selected_name()=="Platforms" )
         {
-            exportSettingsBar->render_self( viewedSpace,cam);
+            exportSettingsBar->render_self( view_space,cam);
         }
 
         //Seperate render process since the layer is aligned differently then rest of menus
         if( projectSettingsBar->get_selected_name()=="Layers")
         {
-            collisionLayerMatrixList->render_self( viewedSpace,cam );
+            collisionLayerMatrixList->render_self( view_space,cam );
         }
         else if( projectSettingsList!=NULL )
         {
-            projectSettingsList->render_self( viewedSpace,cam);
+            projectSettingsList->render_self( view_space,cam);
         }
     }
 }
@@ -1975,20 +1978,20 @@ void projectPropertiesResource::save_resource(std::string file_path, int backupI
 int projectPropertiesResource::search_for_string(std::string needle)
 {
     int foundStrings = 0;
-    GPE_main_Logs->log_general_comment("Searching [Project Settings]..");
-    if( GPE_ANCHOR_GC!=NULL)
+    main_editor_log->log_general_comment("Searching [Project Settings]..");
+    if( pawgui::main_anchor_controller!=NULL)
     {
-        GPE_ANCHOR_GC->searchResultProjectName = parentProjectName;
-        GPE_ANCHOR_GC->searchResultResourceId = globalResouceIdNumber;
-        GPE_ANCHOR_GC->searchResultResourceName = resource_name;
+        pawgui::main_anchor_controller->searchResultProjectName = parentProjectName;
+        pawgui::main_anchor_controller->searchResultResourceId = globalResouceIdNumber;
+        pawgui::main_anchor_controller->searchResultResourceName = resource_name;
         if( projectGameMacros!=NULL && projectGameMacros->has_content() )
         {
-            foundStrings+=projectGameMacros->find_all_strings(needle,main_SEARCH_CONTROLLER->findMatchCase->is_checked(),true,"Macros");
+            foundStrings+=projectGameMacros->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true,"Macros");
         }
 
         if( projectGameNotes!=NULL && projectGameNotes->has_content() )
         {
-            foundStrings+=projectGameNotes->find_all_strings(needle,main_SEARCH_CONTROLLER->findMatchCase->is_checked(),true,"Notes");
+            foundStrings+=projectGameNotes->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true,"Notes");
         }
     }
     return foundStrings;
@@ -1999,15 +2002,15 @@ int projectPropertiesResource::search_and_replace_string(std::string needle, std
     int foundStrings = 0;
     int tempFoundCount = 0;
 
-    GPE_main_Logs->log_general_comment("Searching [Project Settings]..");
-    if( GPE_ANCHOR_GC!=NULL)
+    main_editor_log->log_general_comment("Searching [Project Settings]..");
+    if( pawgui::main_anchor_controller!=NULL)
     {
-        GPE_ANCHOR_GC->searchResultProjectName = parentProjectName;
-        GPE_ANCHOR_GC->searchResultResourceId = globalResouceIdNumber;
-        GPE_ANCHOR_GC->searchResultResourceName = resource_name;
+        pawgui::main_anchor_controller->searchResultProjectName = parentProjectName;
+        pawgui::main_anchor_controller->searchResultResourceId = globalResouceIdNumber;
+        pawgui::main_anchor_controller->searchResultResourceName = resource_name;
         if( projectGameMacros!=NULL && projectGameMacros->has_content() )
         {
-            tempFoundCount = projectGameMacros->find_all_strings(needle,main_SEARCH_CONTROLLER->findMatchCase->is_checked(),true,"Macros");
+            tempFoundCount = projectGameMacros->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true,"Macros");
             if( tempFoundCount > 0)
             {
                 foundStrings+=tempFoundCount;
@@ -2017,7 +2020,7 @@ int projectPropertiesResource::search_and_replace_string(std::string needle, std
 
         if( projectGameNotes!=NULL && projectGameNotes->has_content() )
         {
-            tempFoundCount = projectGameNotes->find_all_strings(needle,main_SEARCH_CONTROLLER->findMatchCase->is_checked(),true,"Notes");
+            tempFoundCount = projectGameNotes->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true,"Notes");
             if( tempFoundCount > 0)
             {
                 foundStrings+=tempFoundCount;
@@ -2055,8 +2058,8 @@ void projectPropertiesResource::update_project_layers()
             }
         }
 
-        std::vector <GPE_GeneralResourceContainer *> projectScenes;
-        GPE_GeneralResourceContainer * tempContainer = NULL;
+        std::vector <pawgui::widget_resource_container *> projectScenes;
+        pawgui::widget_resource_container * tempContainer = NULL;
         gameSceneResource * tempScnRes = NULL;
         current_project->RESC_SCENES->grab_useable_resources(projectScenes);
         for( int iRes = (int)projectScenes.size()-1; iRes >=0; iRes--)
@@ -2083,7 +2086,7 @@ bool projectPropertiesResource::write_data_into_projectfile(std::ofstream * file
     {
         if( fileTarget->is_open() )
         {
-            std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+            std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
             //*fileTarget << "Testing";
             return true;
         }

@@ -33,18 +33,18 @@ SOFTWARE.
 
 #include "class_resource.h"
 
-classResource::classResource(GPE_GeneralResourceContainer * pFolder)
+classResource::classResource(pawgui::widget_resource_container * pFolder)
 {
-    codeCategoryTabs = new GPE_TabBar();
+    codeCategoryTabs = new pawgui::widget_tabbar();
     codeCategoryTabs->set_coords(16,16);
     codeCategoryTabs->add_new_tab("Header",false);
     codeCategoryTabs->add_new_tab("Source",true);
     classHeaderCode = NULL;
-    classHeaderCode = new GPE_TextAreaInputBasic(false);
+    classHeaderCode = new pawgui::widget_text_editor(false);
     classHeaderCode->set_placeholder("Header Code...");
 
 
-    classSourceCode = new GPE_TextAreaInputBasic(false);
+    classSourceCode = new pawgui::widget_text_editor(false);
     classSourceCode->set_placeholder("Source Code...");
 
     projectParentFolder = pFolder;
@@ -54,9 +54,9 @@ classResource::classResource(GPE_GeneralResourceContainer * pFolder)
     loadResourceButton->disable_self();
     saveResourceButton->disable_self();*/
     //textEditorButtonBar->set_width(256);
-    renameBox->set_coords(GENERAL_GPE_GUI_PADDING,-1 );
-    saveButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png","Save Changes",-1,24);
-    classEditorList = new GPE_GuiElementList();
+    renameBox->set_coords(pawgui::padding_default,-1 );
+    saveButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png","Save Changes",-1,24);
+    classEditorList = new pawgui::widget_panel_list();
     //saveResourceButton->disable_self();
 }
 
@@ -154,9 +154,9 @@ void classResource::load_resource(std::string file_path)
 {
     if( resourcePostProcessed ==false  || sff_ex::file_exists(file_path) )
     {
-        if( GPE_LOADER != NULL )
+        if( pawgui::main_loader_display != NULL )
         {
-            GPE_LOADER->update_submessages( "Processing Class", resource_name );
+            pawgui::main_loader_display->update_submessages( "Processing Class", resource_name );
         }
 
         bool usingAltSaveSource = false;
@@ -292,37 +292,37 @@ void classResource::prerender_self(  )
     standardEditableGameResource::prerender_self();
 }
 
-void classResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam)
+void classResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
     gpeEditorDockPanel * fEditorPanel = GPE_DOCK->find_panel("Editor");
-    if( classEditorList!=NULL && cam!=NULL && viewedSpace!=NULL && codeCategoryTabs!=NULL &&  saveButton!=NULL && renameBox!=NULL && classSourceCode!=NULL )
+    if( classEditorList!=NULL && cam!=NULL && view_space!=NULL && codeCategoryTabs!=NULL &&  saveButton!=NULL && renameBox!=NULL && classSourceCode!=NULL )
     {
         int prevTab = codeCategoryTabs->tabInUse;
 
         classEditorList->set_coords( 0, 0 );
-        classEditorList->set_width(viewedSpace->w );
-        classEditorList->set_height(viewedSpace->h);
+        classEditorList->set_width(view_space->w );
+        classEditorList->set_height(view_space->h);
         classEditorList->clear_list();
 
-        classHeaderCode->set_width(viewedSpace->w );
-        classHeaderCode->set_height(viewedSpace->h-64 );
+        classHeaderCode->set_width(view_space->w );
+        classHeaderCode->set_height(view_space->h-64 );
 
-        classSourceCode->set_width(viewedSpace->w );
-        classSourceCode->set_height(viewedSpace->h-64);
+        classSourceCode->set_width(view_space->w );
+        classSourceCode->set_height(view_space->h-64);
 
         classEditorList->set_coords( 0, 0 );
-        classEditorList->set_width( viewedSpace->w );
-        classEditorList->set_height( viewedSpace->h);
+        classEditorList->set_width( view_space->w );
+        classEditorList->set_height( view_space->h);
         classEditorList->clear_list();
 
-        if( PANEL_GENERAL_EDITOR!=NULL )
+        if( panel_main_area!=NULL )
         {
-            PANEL_GENERAL_EDITOR->add_gui_element(renameBox,true);
-            PANEL_GENERAL_EDITOR->add_gui_element(confirmResourceButton,true);
-            PANEL_GENERAL_EDITOR->add_gui_element(cancelResourceButton,true);
-            PANEL_GENERAL_EDITOR->process_self();
+            panel_main_area->add_gui_element(renameBox,true);
+            panel_main_area->add_gui_element(confirmResourceButton,true);
+            panel_main_area->add_gui_element(cancelResourceButton,true);
+            panel_main_area->process_self();
         }
         else
         {
@@ -330,7 +330,7 @@ void classResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect
             classEditorList->add_gui_element(renameBox,true);
         }
         //CPP is the only language that does header files so...
-        if( current_project->get_project_language_id() == PROGRAM_LANGUAGE_CPP)
+        if( current_project->get_project_language_id() == pawgui::program_language_cpp)
         {
             if( codeCategoryTabs->get_selected_name()=="Header" && classHeaderCode!=NULL)
             {
@@ -347,12 +347,12 @@ void classResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect
             classEditorList->add_gui_element(classSourceCode,true);
         }
 
-        classEditorList->process_self( viewedSpace,cam );
+        classEditorList->process_self( view_space,cam );
         if( saveButton->is_clicked() )
         {
             save_resource();
         }
-        else if( PANEL_GENERAL_EDITOR!=NULL )
+        else if( panel_main_area!=NULL )
         {
             if( confirmResourceButton->is_clicked() )
             {
@@ -362,21 +362,21 @@ void classResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect
     }
 }
 
-void classResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void classResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && viewedSpace!=NULL)
+    if(cam!=NULL && view_space!=NULL)
     {
-        classEditorList->render_self( viewedSpace,cam );
+        classEditorList->render_self( view_space,cam );
     }
 }
 
 void classResource::save_resource(std::string file_path, int backupId)
 {
-    if( GPE_LOADER != NULL )
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->update_submessages( "Saving Class", resource_name );
+        pawgui::main_loader_display->update_submessages( "Saving Class", resource_name );
     }
     sff_ex::append_to_file( gpe::get_user_settings_folder()+"resources_check.txt ", "Saving "+ get_name() +"...");
     bool usingAltSaveSource = false;
@@ -411,7 +411,7 @@ void classResource::save_resource(std::string file_path, int backupId)
                     if( sff_ex::file_exists(sourceCodeSaveLocation) )
                     {
                         /*
-                        if( GPE_Display_Basic_Prompt("[WARNING]Class File Already exists?","Are you sure you will like to overwrite your ["+resource_name+".js] Class file? This action is irreversible!")==DISPLAY_QUERY_YES)
+                        if( pawgui::display_prompt_message("[WARNING]Class File Already exists?","Are you sure you will like to overwrite your ["+resource_name+".js] Class file? This action is irreversible!")==pawgui::display_query_yes)
                         {
                             classSourceCode->export_text(sourceCodeSaveLocation );
                         }*/
@@ -439,25 +439,25 @@ void classResource::save_resource(std::string file_path, int backupId)
         }
         else
         {
-            GPE_main_Logs->log_general_error("Unable to save to file ["+newFileOut+"]");
+            main_editor_log->log_general_error("Unable to save to file ["+newFileOut+"]");
         }
     }
     else
     {
-        GPE_main_Logs->log_general_error("Unable to save file ["+newFileOut+"]");
+        main_editor_log->log_general_error("Unable to save file ["+newFileOut+"]");
     }
 }
 
 int classResource::search_for_string(std::string needle)
 {
     int foundStrings = 0;
-    GPE_main_Logs->log_general_comment("Searching ["+resource_name+"] class..");
-    if( classSourceCode!=NULL && GPE_ANCHOR_GC!=NULL && classSourceCode->has_content() )
+    main_editor_log->log_general_comment("Searching ["+resource_name+"] class..");
+    if( classSourceCode!=NULL && pawgui::main_anchor_controller!=NULL && classSourceCode->has_content() )
     {
-        GPE_ANCHOR_GC->searchResultProjectName = parentProjectName;
-        GPE_ANCHOR_GC->searchResultResourceId = globalResouceIdNumber;
-        GPE_ANCHOR_GC->searchResultResourceName = resource_name;
-        foundStrings=classSourceCode->find_all_strings(needle,main_SEARCH_CONTROLLER->findMatchCase->is_checked(),true,"class");
+        pawgui::main_anchor_controller->searchResultProjectName = parentProjectName;
+        pawgui::main_anchor_controller->searchResultResourceId = globalResouceIdNumber;
+        pawgui::main_anchor_controller->searchResultResourceName = resource_name;
+        foundStrings=classSourceCode->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true,"class");
     }
     return foundStrings;
 }
@@ -465,29 +465,29 @@ int classResource::search_for_string(std::string needle)
 int classResource::search_and_replace_string(std::string needle, std::string newStr )
 {
     int foundStrings = 0;
-    if( classSourceCode!=NULL && main_SEARCH_CONTROLLER!=NULL && classSourceCode->has_content() )
+    if( classSourceCode!=NULL && pawgui::main_search_controller!=NULL && classSourceCode->has_content() )
     {
-        if( GPE_LOADER != NULL )
+        if( pawgui::main_loader_display != NULL )
         {
-            GPE_LOADER->update_messages( "Replacing Substring", needle, "with ["+newStr+"]" );
+            pawgui::main_loader_display->update_messages( "Replacing Substring", needle, "with ["+newStr+"]" );
         }
 
-        foundStrings = classSourceCode->find_all_strings(needle,main_SEARCH_CONTROLLER->findMatchCase->is_checked() );
+        foundStrings = classSourceCode->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked() );
         if( foundStrings > 0)
         {
             int replaceCount = classSourceCode->replace_all_found(needle, newStr );
-            if( GPE_LOADER != NULL )
+            if( pawgui::main_loader_display != NULL )
             {
-                GPE_LOADER->update_messages( "Replaced", needle, stg_ex::int_to_string(replaceCount)+" times");
+                pawgui::main_loader_display->update_messages( "Replaced", needle, stg_ex::int_to_string(replaceCount)+" times");
             }
-            main_SEARCH_CONTROLLER->showFindAllResults = true;
+            pawgui::main_search_controller->showFindAllResults = true;
         }
         else
         {
-            GPE_LOADER->update_messages( "Replaced", needle, "No matches found");
-            main_SEARCH_CONTROLLER->showFindAllResults = false;
+            pawgui::main_loader_display->update_messages( "Replaced", needle, "No matches found");
+            pawgui::main_search_controller->showFindAllResults = false;
         }
-        //main_OVERLAY->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessageString,1);
+        //pawgui::main_overlay_system->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessageString,1);
     }
     return foundStrings;
 }
@@ -498,7 +498,7 @@ bool classResource::write_data_into_projectfile(std::ofstream * fileTarget, int 
     {
         if( fileTarget->is_open() )
         {
-            std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+            std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
             *fileTarget << nestedTabsStr << "Class=" << resource_name << "," << get_global_rid() << ",\n";
             save_resource();
             return true;

@@ -36,33 +36,52 @@ SOFTWARE.
 
 #include "gpe_basic_resource_page.h"
 
-class gamePencilAboutPageResource: public generalGameResource
+class gamePencilAboutPageResource: public pawgui::general_resource
 {
 public:
-    GPE_SelectBoxBasic * sideAreaPanel;
+    pawgui::widget_selectbox * sideAreaPanel;
     gpe::shape_rect * sidePanelRect;
+
+    //General Help Tab [ begin]
+    pawgui::widget_label_title * helpfulLinksTitle;
+    pawgui::widget_label_title * communityLinksTitle;
+    std::vector< pawgui::widget_button_push * > helpfulButtons;
+    std::vector< pawgui::widget_text_url * > helpfulLinks;
+    std::vector< pawgui::widget_button_icon * > communityButtons;
+    pawgui::widget_label_image * engineLogo;
+    pawgui::widget_text_editor * pencilInformation;
+    pawgui::widget_text_editor * pencilChangelog;
+    pawgui::widget_text_editor * pencilShortkeys;
+    pawgui::widget_button_push * updateCheckerButton;
+    //General Help Tab [ end ]
+
     //Meta information to be built into the project
-    GPE_TextAreaInputBasic * pencilCredits;
-    GPE_TextAreaInputBasic * pencilDescription;
-    GPE_TextAreaInputBasic * pencilLicense;
-    GPE_TextAreaInputBasic * thirdPartyLicenses;
-    GPE_TextAreaInputBasic * pencilMissionStatement;
+    pawgui::widget_text_editor * pencilCredits;
+    pawgui::widget_text_editor * pencilDescription;
+    pawgui::widget_text_editor * pencilLicense;
+    pawgui::widget_text_editor * thirdPartyLicenses;
+    pawgui::widget_text_editor * pencilMissionStatement;
     gpe::shape_rect subViewedSpace;
-    GPE_GuiElementList * aboutPageList;
+    pawgui::widget_panel_list * aboutPageList;
     gamePencilAboutPageResource();
     ~gamePencilAboutPageResource();
+
+    void add_helpfulbutton(pawgui::widget_button_push * newButton);
+    void add_helpfullink(pawgui::widget_text_url * newLink);
+    void add_communitylink( pawgui::widget_button_icon * newLink);
+
     bool include_local_files( std::string pBuildDir , int buildType );
 
     void prerender_self( );
     void load_resource(std::string file_path = "");
-    void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void save_resource(std::string file_path = "", int backupId = -1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 
 };
 
-extern gamePencilAboutPageResource * main_ABOUT_PAGE;
+extern gamePencilAboutPageResource * main_about_page;
 
 #endif
 

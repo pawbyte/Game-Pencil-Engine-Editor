@@ -45,58 +45,58 @@ class particleResource: public standardEditableGameResource
 private:
     gpe::particle_emitter * myEmitter;
 public:
-    GPE_Label_Title * textureLabel;
-    GPE_Label_Image * texturePreviewImgLabel;
-    gpe_text_widget_string * textureLocationField;
-    GPE_ToolIconButton * transformResourceButton;
-    GPE_ToolIconButton * openExternalEditorButton;
-    GPE_ToolIconButton * refreshResourceDataButton;
-    GPE_ToolLabelButton * clearTextureButton;
-    GPE_DropDown_Menu * emitterBackupTextureMenu;
-    GPE_CheckBoxBasic * textureIsRotated;
+    pawgui::widget_label_title * textureLabel;
+    pawgui::widget_label_image * texturePreviewImgLabel;
+    pawgui::widget_input_text * textureLocationField;
+    pawgui::widget_button_icon * transformResourceButton;
+    pawgui::widget_button_icon * openExternalEditorButton;
+    pawgui::widget_button_icon * refreshResourceDataButton;
+    pawgui::widget_button_label * clearTextureButton;
+    pawgui::widget_dropdown_menu * emitterBackupTextureMenu;
+    pawgui::widget_checkbox * textureIsRotated;
 
-    gpe_text_widget_number * particleCountField;
-    gpe_text_widget_number * emissionRateField;
+    pawgui::widget_input_number * particleCountField;
+    pawgui::widget_input_number * emissionRateField;
 
-    gpe_text_widget_number * lifeMinField;
-    gpe_text_widget_number * lifeMaxField;
+    pawgui::widget_input_number * lifeMinField;
+    pawgui::widget_input_number * lifeMaxField;
 
-    GPE_Label_Title * colorsLabel;
-    gpe_widget_color_picker * sColorField;
-    gpe_widget_color_picker * sVColorField;
-    gpe_widget_color_picker * eColorField;
-    gpe_widget_color_picker * eVColorField;
+    pawgui::widget_label_title * colorsLabel;
+    pawgui::gpe_widget_color_picker * sColorField;
+    pawgui::gpe_widget_color_picker * sVColorField;
+    pawgui::gpe_widget_color_picker * eColorField;
+    pawgui::gpe_widget_color_picker * eVColorField;
 
-    gpe_text_widget_number * xStartPosField;
-    gpe_text_widget_number * yStartPosField;
-    gpe_text_widget_number * xRandomField;
-    gpe_text_widget_number * yRandomField;
+    pawgui::widget_input_number * xStartPosField;
+    pawgui::widget_input_number * yStartPosField;
+    pawgui::widget_input_number * xRandomField;
+    pawgui::widget_input_number * yRandomField;
 
-    GPE_Label_Title * physicsLabel;
+    pawgui::widget_label_title * physicsLabel;
 
-    gpe_text_widget_number * directionMin;
-    gpe_text_widget_number * directionMax;
-    gpe_text_widget_number * speedMin;
-    gpe_text_widget_number * speedMax;
+    pawgui::widget_input_number * directionMin;
+    pawgui::widget_input_number * directionMax;
+    pawgui::widget_input_number * speedMin;
+    pawgui::widget_input_number * speedMax;
 
-    gpe_text_widget_number * gravityXValue;
-    gpe_text_widget_number * gravityYValue;
+    pawgui::widget_input_number * gravityXValue;
+    pawgui::widget_input_number * gravityYValue;
 
     gpe::texture_base * emitterTexture;
 
-    GPE_DropDown_Menu * blendTypeMenu;
-    GPE_DropDown_Menu * shapeMenu;
-    gpe_text_widget_number * shapeWField;
-    gpe_text_widget_number * shapeHField;
-    GPE_CheckBoxBasic * showDebugInfo;
+    pawgui::widget_dropdown_menu * blendTypeMenu;
+    pawgui::widget_dropdown_menu * shapeMenu;
+    pawgui::widget_input_number * shapeWField;
+    pawgui::widget_input_number * shapeHField;
+    pawgui::widget_checkbox * showDebugInfo;
 
-    particleResource( GPE_GeneralResourceContainer * pFolder = NULL );
+    particleResource( pawgui::widget_resource_container * pFolder = NULL );
     ~particleResource();
 
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
-    bool get_mouse_coords( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    bool get_mouse_coords( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     bool include_local_files( std::string pBuildDir , int buildType );
     void handle_scrolling();
     bool is_build_ready();
@@ -104,8 +104,8 @@ public:
     void load_resource(std::string file_path = "");
     void prerender_self( );
     void process_data_fields(float versionToProcess = -1);
-    void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void revert_data_fields();
     void save_resource(std::string file_path = "", int backupId = -1);
     void update_box(int newX=-1, int newY=-1, int newW=-1, int newH=-1);

@@ -37,7 +37,7 @@ SOFTWARE.
 
 #include "gpe_basic_resource_page.h"
 #include "gpe_dock_system.h"
-#include "../pawgui/paw_gui_stree.h"
+#include "../pawgui/pawgui_stree.h"
 
 //Basic Scene Editing Modes
 const int SCENE_MODE_NONE = -1;
@@ -49,11 +49,11 @@ const int SCENE_MODE_SCALE = 5;
 const int SCENE_MODE_ERASE = 6;
 const int SCENE_MODE_ASSIGN = 7;
 
-class GPE_SceneBasicClass: public GPE_SpecialMenu_Branch
+class GPE_SceneBasicClass: public pawgui::widget_branch
 {
 protected:
     bool dualScaleClass;
-    GPE_GeneralResourceContainer * projectParentFolder;
+    pawgui::widget_resource_container * projectParentFolder;
 public:
     GPE_SceneBasicClass * parentSceneBranch;
     bool isBeingMoved;
@@ -63,24 +63,24 @@ public:
     float angle;
     int xPivot, yPivot;
     int width, height;
-    GPE_Label_Text * branchGlobalId;
-    gpe_text_widget_number * angleField;
-    gpe_text_widget_number * xPosField;
-    gpe_text_widget_number * yPosField;
-    gpe_text_widget_number * xScaleField;
-    gpe_text_widget_number * yScaleField;
-    gpe_text_widget_string * branchNameField;
-    gpe_text_widget_string * branchTagField;
-    gpe_widget_color_picker * branchColor;
-    GPE_Slider_XAxis * branchAlpha;
+    pawgui::widget_label_text  * branchGlobalId;
+    pawgui::widget_input_number * angleField;
+    pawgui::widget_input_number * xPosField;
+    pawgui::widget_input_number * yPosField;
+    pawgui::widget_input_number * xScaleField;
+    pawgui::widget_input_number * yScaleField;
+    pawgui::widget_input_text * branchNameField;
+    pawgui::widget_input_text * branchTagField;
+    pawgui::gpe_widget_color_picker * branchColor;
+    pawgui::widget_slide_xaxis * branchAlpha;
     std::vector< GPE_ObjectComponent * >objCustomValPairs;
     GPE_SceneBasicClass();
     virtual ~GPE_SceneBasicClass();
     void add_basic_elements();
     bool add_scene_branch( GPE_SceneBasicClass * branch, bool changeId = true, bool openBranch = false );
     virtual void add_typed_elements();
-    GPE_ObjectComponent *  add_variable(GPE_GeneralGuiElement * newVariable);
-    virtual bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController );
+    GPE_ObjectComponent *  add_variable(pawgui::widget_basic * newVariable);
+    virtual bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
     virtual void calculate_size();
     virtual void process_elements();
     void refresh_branch();

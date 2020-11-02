@@ -87,48 +87,43 @@ protected:
     gpe::shape_rect scenePane;
     gpe::shape_rect editorView;
     gpe::shape_rect editorCameraRect;
-    GPE_GuiElementList * sceneTopBarList;
+    pawgui::widget_panel_list * sceneTopBarList;
 
-    GPE_ToolIconButtonBar * editorButtonBar;
-    GPE_ToolIconButtonBar * shortcutButtonBar;
-    GPE_ToolIconButton * objectLockStateButton;
-    GPE_ToolIconButton * lightingStateButton;
-    GPE_Label_Title * sceneEditorSubTitle;
-    GPE_Label_Title * customComponentsTitle;
+    pawgui::widget_button_iconbar * editorButtonBar;
+    pawgui::widget_button_iconbar * shortcutButtonBar;
+    pawgui::widget_button_icon * objectLockStateButton;
+    pawgui::widget_button_icon * lightingStateButton;
+    pawgui::widget_label_title * sceneEditorSubTitle;
+    pawgui::widget_label_title * customComponentsTitle;
 
     //used for the settings/options tab
-    gpe_text_widget_string * sceneTitleField;
-    gpe_text_widget_string * sceneCaptionField;
-    gpe_text_widget_string * sceneHintField;
+    pawgui::widget_input_text * sceneTitleField;
+    pawgui::widget_input_text * sceneCaptionField;
+    pawgui::widget_input_text * sceneHintField;
 
-    GPE_DropDown_Resouce_Menu * musicAudioDropDown;
-    GPE_DropDown_Resouce_Menu * startAudioDropDown;
-    GPE_DropDown_Resouce_Menu * endAudioDropDown;
+    pawgui::widget_drop_down_resource_menu * musicAudioDropDown;
+    pawgui::widget_drop_down_resource_menu * startAudioDropDown;
+    pawgui::widget_drop_down_resource_menu * endAudioDropDown;
 
     //
-    GPE_DropDown_Resouce_Menu * northSceneDropDown;
-    GPE_DropDown_Resouce_Menu * southSceneDropDown;
-    GPE_DropDown_Resouce_Menu * eastSceneDropDown;
-    GPE_DropDown_Resouce_Menu * westSceneDropDown;
-    //
-    gpe_text_widget_number * levelPixelWidthField;
-    gpe_text_widget_number * levelPixelHeightField;
-    gpe_text_widget_number * defaultTileWidthField;
-    gpe_text_widget_number * defaultTileHeightField;
+    pawgui::widget_input_number * levelPixelWidthField;
+    pawgui::widget_input_number * levelPixelHeightField;
+    pawgui::widget_input_number * defaultTileWidthField;
+    pawgui::widget_input_number * defaultTileHeightField;
 
-    GPE_CheckBoxBasic * preloadCheckBox;
-    GPE_CheckBoxBasic * isometricCheckBox;
-    GPE_CheckBoxBasic * checkBoxIsContinuous;
-    gpe_widget_color_picker * sceneBackgroundColor;
+    pawgui::widget_checkbox * preloadCheckBox;
+    pawgui::widget_checkbox * isometricCheckBox;
+    pawgui::widget_checkbox * checkBoxIsContinuous;
+    pawgui::gpe_widget_color_picker * sceneBackgroundColor;
 
-    GPE_ToolLabelButton * addGroupButton;
-    GPE_ToolLabelButton * addTileMapButton;
-    GPE_ToolLabelButton * changeGroupNameButton;
+    pawgui::widget_button_label * addGroupButton;
+    pawgui::widget_button_label * addTileMapButton;
+    pawgui::widget_button_label * changeGroupNameButton;
 
     //Used for the Layers Tab
-    GPE_ToolLabelButton * changeLayerNameButton;
-    GPE_ToolLabelButton * renameLayerButton;
-    GPE_CheckBoxBasic * viewTileGridCheckBox;
+    pawgui::widget_button_label * changeLayerNameButton;
+    pawgui::widget_button_label * renameLayerButton;
+    pawgui::widget_checkbox * viewTileGridCheckBox;
     bool showTileLines;
 
     //used for the background tab
@@ -138,51 +133,48 @@ protected:
     float zoomValue;
 
     //used for the object placement tab
-    GPE_ToolLabelButton * inheritParentComponentButton;
-    GPE_ToolLabelButton * resetComponentsButton;
-    GPE_DropDown_Menu * addNewComponentDropDown;
+    pawgui::widget_button_label * inheritParentComponentButton;
+    pawgui::widget_button_label * resetComponentsButton;
+    pawgui::widget_dropdown_menu * addNewComponentDropDown;
 
     //Object related gui elements.
-    GPE_DropDown_Resouce_Menu * objectInEditor;
+    pawgui::widget_drop_down_resource_menu * objectInEditor;
 
     //Animation Related gui elements.
-    GPE_DropDown_Resouce_Menu * animationInEditor;
+    pawgui::widget_drop_down_resource_menu * animationInEditor;
 
-
-    GPE_DropDown_Resouce_Menu * objectNewType;
-    GPE_DropDown_Resouce_Menu * objectReplacerInEditor;
+    pawgui::widget_drop_down_resource_menu * objectNewType;
+    pawgui::widget_drop_down_resource_menu * objectReplacerInEditor;
     GPE_SceneGameObject * selectedSceneObject;
     int customObjCreationId;
-    GPE_ToolLabelButton * closeObjectProperties;
+    pawgui::widget_button_label * closeObjectProperties;
 
     //Grid Related Varables [ Begin ]
-    gpe_text_widget_number * gridWidthField;
-    gpe_text_widget_number * gridHeightField;
-    GPE_ToolLabelButton * forceSnapButton;
-    gpe_widget_color_picker * gridColorField;
-    gpe_text_widget_number * gridAlphaField;
+    pawgui::widget_input_number * gridWidthField;
+    pawgui::widget_input_number * gridHeightField;
+    pawgui::widget_button_label * forceSnapButton;
+    pawgui::gpe_widget_color_picker * gridColorField;
+    pawgui::widget_input_number * gridAlphaField;
     int sceneGridX, sceneGridY;
-    GPE_CheckBoxBasic * useObjGridCheckBox;
+    pawgui::widget_checkbox * useObjGridCheckBox;
     bool useSceneGrid;
     //Grid Related Variables [ End ]
 
-    GPE_CheckBoxBasic * onlyRemoveThisObjectTypeButton;
-    GPE_ToolLabelButton * removeObjectButton;
-    GPE_ToolLabelButton * clearObjectsButton;
+    pawgui::widget_checkbox * onlyRemoveThisObjectTypeButton;
+    pawgui::widget_button_label * removeObjectButton;
+    pawgui::widget_button_label * clearObjectsButton;
 
-    GPE_Label_Text * objectEditorNameTitle;
-    GPE_Label_Text * objectEditorPropertiesTitle;
+    pawgui::widget_label_text  * objectEditorNameTitle;
+    pawgui::widget_label_text  * objectEditorPropertiesTitle;
 
 
-    GPE_ToolIconButton * objCustomVariableSettingsButtton;
-    GPE_ToolIconButton * objCustomVariableAddButtton;
-    GPE_ToolIconButton * objCustomVariableRemoveButton;
-    GPE_ToolIconButton * objCustomVariableRefeshButton;
+    pawgui::widget_button_icon * objCustomVariableSettingsButtton;
+    pawgui::widget_button_icon * objCustomVariableAddButtton;
+    pawgui::widget_button_icon * objCustomVariableRemoveButton;
+    pawgui::widget_button_icon * objCustomVariableRefeshButton;
 
     //used for the tile placement tab
-    GPE_ToolLabelButton * resizeMapButton;
-
-
+    pawgui::widget_button_label * resizeMapButton;
 
     int layerInEdit;
     float sceneMouseXPos, sceneMouseYPos;
@@ -193,15 +185,15 @@ protected:
     int tilesheetRenderXPos,tilesheetRenderYPos;
     sceneLayer * defaultObjectLayer;
     sceneLayer * defaultBackgroundLayer;
-    GPE_ToolIconButton * gridToggleButtton;
-    GPE_ToolIconButton * rotationButton;
-    GPE_ToolIconButton * layerRemoveButton;
-    GPE_ToolIconButton * layerMoveUpButtton;
-    GPE_ToolIconButton * layerMoveDownButton;
-    GPE_ToolIconButton * layerToggleHideButton;
+    pawgui::widget_button_icon * gridToggleButtton;
+    pawgui::widget_button_icon * rotationButton;
+    pawgui::widget_button_icon * layerRemoveButton;
+    pawgui::widget_button_icon * layerMoveUpButtton;
+    pawgui::widget_button_icon * layerMoveDownButton;
+    pawgui::widget_button_icon * layerToggleHideButton;
 
-    GPE_Label_Text * selectedBranchLabel;
-    GPE_Label_Text * layerErrorMessage;
+    pawgui::widget_label_text  * selectedBranchLabel;
+    pawgui::widget_label_text  * layerErrorMessage;
     bool areaIsScrollable;
     bool isDraggingObject;
     gpe::shape_rect * branchTempRect;
@@ -219,24 +211,24 @@ public:
     int selectedBranchId;
     GPE_SceneBasicClass * sceneComponents;
     GPE_SceneBasicClass * selectedSceneBranch;
-    GPE_SpecialMenu_Tree * sceneResourceTree;
+    pawgui::widget_tree * sceneResourceTree;
     bool scnPostProcessed;
-    GPE_ScrollBar_XAxis * sceneXScroll;
-    GPE_ScrollBar_YAxis * sceneYScroll;
+    pawgui::widget_scrollbar_xaxis * sceneXScroll;
+    pawgui::widget_scrollbar_yaxis * sceneYScroll;
 
-    GPE_ToolIconButton * saveButton;
+    pawgui::widget_button_icon * saveButton;
     //Used to calculate the derotated/scaled box of an resource
     float rmx;
     float rmy;
     float lmx;
     float lmy;
-    gameSceneResource(GPE_GeneralResourceContainer * pFolder = NULL);
+    gameSceneResource(pawgui::widget_resource_container * pFolder = NULL);
     ~gameSceneResource();
     sceneLayer * add_retro_layer(int layerType, int newLayerProjectLayerId, bool selectedLayer = false );
     sceneLayer * add_layer( int newLayerProjectLayerId, bool selectedLayer = false );
     GPE_SceneBasicClass *  add_new_resource_from_menu();
     GPE_SceneTileMap *  add_tilemap( GPE_SceneBasicClass * branchHolder, std::string name = "", int x = 0, int y = 0, int w = -1, int h = -1, int tW = 32, int tH = 32);
-    void adjust_object_offsets( GPE_SpecialMenu_Branch *  basicObj );
+    void adjust_object_offsets( pawgui::widget_branch *  basicObj );
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
@@ -254,10 +246,10 @@ public:
     void prerender_self( );
     void load_resource(std::string file_path = "");
     void process_components();
-    void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void render_grid( int xStart, int yStart, int cellW, int cellH, int xMax = -1, int yMax = -1, gpe::color * gridLineColor = NULL, int gridLineAlpha = 128 );
-    void render_scene_layers( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL, gpe::shape_rect * sceneCamera = NULL, float renderScale = -1,bool showEditorPreviews = true, bool checkListDependent = true);
-    void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void render_scene_layers( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, gpe::shape_rect * sceneCamera = NULL, float renderScale = -1,bool showEditorPreviews = true, bool checkListDependent = true);
+    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void reset_placement_info();
     void save_resource(std::string file_path = "", int backupId = -1);
     bool seek_placeable_branch();
@@ -272,5 +264,5 @@ public:
 
 extern gpeEditorDockPanel * PANEL_GRID_INFO;
 
-extern gameSceneResource * currentSceneToRender;
+extern gameSceneResource * scene_currentToRender;
 #endif

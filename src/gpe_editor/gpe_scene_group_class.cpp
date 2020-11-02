@@ -36,14 +36,14 @@ SOFTWARE.
 sceneBranchGroup::sceneBranchGroup( std::string nName  )
 {
     branchType = gpe::branch_type::GROUP;
-    iconTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/object-group.png") ;
+    iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/object-group.png") ;
     if( (int)nName.size() > 0 )
     {
-        opName = name = nName;
+        widget_name = name = nName;
     }
     else
     {
-        opName = name = "group";
+        widget_name = name = "group";
     }
 }
 
@@ -57,7 +57,7 @@ void sceneBranchGroup::add_typed_elements()
 
 }
 
-bool sceneBranchGroup::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController )
+bool sceneBranchGroup::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
 {
     GPE_SceneBasicClass::build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController);
     return true;
@@ -75,17 +75,17 @@ void sceneBranchGroup::process_elements()
 
 void sceneBranchGroup::render_branch()
 {
-    GPE_SpecialMenu_Branch::render_branch();
+    pawgui::widget_branch::render_branch();
 }
 
 bool sceneBranchGroup::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn )
 {
     if( fileTarget!=NULL && fileTarget->is_open() )
     {
-        std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+        std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"[GPE_Group="+name+",,]" << "\n";
         GPE_SceneBasicClass::save_branch_data( fileTarget, nestedFoldersIn+1 );
-        GPE_SpecialMenu_Branch * current_branch = NULL;
+        pawgui::widget_branch * current_branch = NULL;
         for( int i = 0; i < (int)sub_elements.size(); i++)
         {
             current_branch = sub_elements[i];

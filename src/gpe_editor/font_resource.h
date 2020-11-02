@@ -48,8 +48,8 @@ extern std::string SUPPORTED_FONT_EXT[FONT_FILE_TYPES];
 class fontResource: public standardEditableGameResource
 {
 private:
-    GPE_RadioButtonControllerBasic * fontTypeButtonController;
-    GPE_ToolIconButton * openExternalEditorButton;
+    pawgui::widget_radio_button_controller * fontTypeButtonController;
+    pawgui::widget_button_icon * openExternalEditorButton;
     std::string fontInEditorFileName;
     std::string fontFamilyName;
     gpe::font_base * fontInEditor;
@@ -59,10 +59,10 @@ public:
     int fontType;
     int fontWidth;
     int fontHeight;
-    gpe_text_widget_number * fontSizeField;
-    gpe_text_widget_string * fontPreviewTextField;
+    pawgui::widget_input_number * fontSizeField;
+    pawgui::widget_input_text * fontPreviewTextField;
     std::string storedFontFileNames[FONT_FILE_TYPES];
-    fontResource(GPE_GeneralResourceContainer * pFolder = NULL);
+    fontResource(pawgui::widget_resource_container * pFolder = NULL);
     ~fontResource();
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_css3_file(std::ofstream * fileTarget, int leftTabAmount);
@@ -73,9 +73,9 @@ public:
     void load_font(std::string new_file_name, int newFontSize = 12);
     void load_resource(std::string file_path = "");
     void prerender_self( );
-    void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     bool render_held_font( int xPos, int yPos, std::string textureText, gpe::color * textColor = NULL,int hAlign = gpe::fa_left,int vAlign = gpe::fa_top, float renderAngle = 0.f, float renderScale = 1, int renderAlpha = 255 );
-    void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void save_resource(std::string file_path = "", int backupId = -1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };

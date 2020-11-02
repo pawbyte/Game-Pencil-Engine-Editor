@@ -40,30 +40,30 @@ SOFTWARE.
 class gameJSCompilerSettingsResource: public standardEditableGameResource
 {
 public:
-    GPE_SelectBoxBasic * sideAreaPanel;
+    pawgui::widget_selectbox * sideAreaPanel;
     gpe::shape_rect * sidePanelRect;
     //Compiler Settings
-    GPE_CheckBoxBasic * stopCompileOnError;
+    pawgui::widget_checkbox * stopCompileOnError;
     //Added as of 1.15 [ BEGIN ]
-    GPE_CheckBoxBasic * minifyCode;
-    GPE_CheckBoxBasic * pluginConstantValues;
-    GPE_CheckBoxBasic * obfuscateCode;
-    gpe_text_widget_string * obfuscatorDirectoryField;
-    GPE_ToolIconButton * obfuscatorDirectoryLoadButton;
-    gpe_text_widget_string * googleClosureCompilerFile;
-    GPE_ToolIconButton * googleClosureCompilerLoadButton;
+    pawgui::widget_checkbox * minifyCode;
+    pawgui::widget_checkbox * pluginConstantValues;
+    pawgui::widget_checkbox * obfuscateCode;
+    pawgui::widget_input_text * obfuscatorDirectoryField;
+    pawgui::widget_button_icon * obfuscatorDirectoryLoadButton;
+    pawgui::widget_input_text * googleClosureCompilerFile;
+    pawgui::widget_button_icon * googleClosureCompilerLoadButton;
     //Added as of 1.15 [ END ]
     gpe::shape_rect subViewedSpace;
-    GPE_TabBar * editorPageTabBar;
-    GPE_GuiElementList * editorPageList;
+    pawgui::widget_tabbar * editorPageTabBar;
+    pawgui::widget_panel_list * editorPageList;
     std::string projectFolderListLocation;
-    gameJSCompilerSettingsResource(GPE_GeneralResourceContainer * pFolder = NULL);
+    gameJSCompilerSettingsResource(pawgui::widget_resource_container * pFolder = NULL);
     ~gameJSCompilerSettingsResource();
     bool include_local_files( std::string pBuildDir , int buildType );
     void prerender_self( );
     void load_resource(std::string file_path = "");
-    void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void save_resource(std::string file_path = "", int backupId = -1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };

@@ -41,7 +41,7 @@ GPE_ResourceTree::GPE_ResourceTree()
     leftDelayTime = 0;
     rightDelayTime = 0;
 
-    guiListTypeName = "resourcemangementbar";
+    widget_type = "resourcemangementbar";
     cameraBox.x = 0;
     cameraBox.y = 0;
     cameraBox.w = 128;
@@ -63,18 +63,18 @@ GPE_ResourceTree::GPE_ResourceTree()
     viewBox.w = 128;
     viewBox.h = 128;
 
-    barXPadding = GENERAL_GPE_GUI_PADDING;
-    barYPadding = GENERAL_GPE_GUI_PADDING;
+    barXPadding = pawgui::padding_default;
+    barYPadding = pawgui::padding_default;
     widget_box.h = gpe::screen_height-widget_box.y;
     subMenuIsOpen = true;
     selectedSubOption = -1;
     hasScrollControl = false;
     hasArrowkeyControl = false;
-    xScroll = new GPE_ScrollBar_XAxis();
-    yScroll = new GPE_ScrollBar_YAxis();
+    xScroll = new pawgui::widget_scrollbar_xaxis();
+    yScroll = new pawgui::widget_scrollbar_yaxis();
     barTitleWidth = 0;
     barTitleHeight = 24;
-    font_default->get_metrics("Project Resources",&barTitleWidth,&barTitleHeight);
+    gpe::font_default->get_metrics("Project Resources",&barTitleWidth,&barTitleHeight);
     barTitleHeight= 24;
     lastWidth = widget_box.w;
 }
@@ -95,7 +95,7 @@ GPE_ResourceTree::~GPE_ResourceTree()
 
 }
 
-void GPE_ResourceTree::add_resource_container( GPE_GeneralResourceContainer * new_resource )
+void GPE_ResourceTree::add_resource_container( pawgui::widget_resource_container * new_resource )
 {
     if( new_resource == NULL)
     {
@@ -105,17 +105,17 @@ void GPE_ResourceTree::add_resource_container( GPE_GeneralResourceContainer * ne
     subOptions.push_back(new_resource);
 }
 
-GPE_GeneralResourceContainer * GPE_ResourceTree::add_resource_folder(int resourceType, std::string projFolderName, std::string resourceTypeName)
+pawgui::widget_resource_container * GPE_ResourceTree::add_resource_folder(int resourceType, std::string projFolderName, std::string resourceTypeName)
 {
-    GPE_GeneralResourceContainer * newResourceFolder = new GPE_GeneralResourceContainer(projFolderName,resourceTypeName,resourceType,-1,true,0,restype_superfolder);
+    pawgui::widget_resource_container * newResourceFolder = new pawgui::widget_resource_container(projFolderName,resourceTypeName,resourceType,-1,true,0,pawgui::restype_superfolder);
     newResourceFolder->element_box.x = widget_box.x;
     subOptions.push_back(newResourceFolder);
     return newResourceFolder;
 }
 
-GPE_GeneralResourceContainer * GPE_ResourceTree::add_project_folder(int resourceType, std::string projFolderName, std::string resourceTypeName)
+pawgui::widget_resource_container * GPE_ResourceTree::add_project_folder(int resourceType, std::string projFolderName, std::string resourceTypeName)
 {
-    GPE_GeneralResourceContainer * newResourceFolder = new GPE_GeneralResourceContainer(projFolderName,resourceTypeName,resourceType,-1,true,0,restype_projfolder);
+    pawgui::widget_resource_container * newResourceFolder = new pawgui::widget_resource_container(projFolderName,resourceTypeName,resourceType,-1,true,0, pawgui::restype_projfolder);
     newResourceFolder->element_box.x = widget_box.x;
     subOptions.push_back(newResourceFolder);
     return newResourceFolder;
@@ -128,7 +128,7 @@ void GPE_ResourceTree::delete_project_resources(std::string projectFileName)
 
 void GPE_ResourceTree::prerender_self( )
 {
-    GPE_GeneralResourceContainer * tSubOption= NULL;
+    pawgui::widget_resource_container * tSubOption= NULL;
     for( int i = 0; i < (int)subOptions.size(); i++)
     {
         tSubOption = subOptions[i];
@@ -139,14 +139,14 @@ void GPE_ResourceTree::prerender_self( )
     }
 }
 
-void GPE_ResourceTree::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void GPE_ResourceTree::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
-    viewedSpace = gpe::camera_find( viewedSpace );
+    view_space = gpe::camera_find( view_space );
     cam = gpe::camera_find(cam);
 
     /*widget_box.x = 0;
     widget_box.y = 0;*/
-    GPE_GeneralGuiElement::process_self( viewedSpace, cam );
+    pawgui::widget_basic::process_self( view_space, cam );
 
     int sOpNumber = -1;
 
@@ -180,12 +180,12 @@ void GPE_ResourceTree::process_self( gpe::shape_rect * viewedSpace, gpe::shape_r
     {
         entireBox.x = 0;
         entireBox.y = 0;
-        entireBox.w = cameraBox.w - GENERAL_GPE_GUI_PADDING;
-        entireBox.h = RESOURCE_AREA_HEIGHT*3;
-        GPE_GeneralResourceContainer * cContainer = NULL;
+        entireBox.w = cameraBox.w - pawgui::padding_default;
+        entireBox.h = pawgui::resource_container_default_height*3;
+        pawgui::widget_resource_container * cContainer = NULL;
 
-        viewBox.x = widget_box.x + viewedSpace->x - cam->x;
-        viewBox.y = widget_box.y + viewedSpace->y - cam->y;
+        viewBox.x = widget_box.x + view_space->x - cam->x;
+        viewBox.y = widget_box.y + view_space->y - cam->y;
         viewBox.w = cameraBox.w;
         viewBox.h = cameraBox.h;
 
@@ -249,12 +249,12 @@ void GPE_ResourceTree::process_self( gpe::shape_rect * viewedSpace, gpe::shape_r
                 rightDelayTime++;
             }
 
-            if( leftDelayTime > main_GUI_SETTINGS->normalInputDelayTime || gpe::input->check_kb_pressed(kb_left) )
+            if( leftDelayTime > pawgui::main_settings->normalInputDelayTime || gpe::input->check_kb_pressed(kb_left) )
             {
                 xScroll->contextRect.x-=cameraBox.w/8;
                 leftDelayTime = 0;
             }
-            else if( rightDelayTime > main_GUI_SETTINGS->normalInputDelayTime || gpe::input->check_kb_pressed(kb_right) )
+            else if( rightDelayTime > pawgui::main_settings->normalInputDelayTime || gpe::input->check_kb_pressed(kb_right) )
             {
                 xScroll->contextRect.x+=cameraBox.w/8;
                 rightDelayTime = 0;
@@ -312,18 +312,18 @@ void GPE_ResourceTree::process_self( gpe::shape_rect * viewedSpace, gpe::shape_r
                 downDelayTime++;
             }
 
-            if( upDelayTime > main_GUI_SETTINGS->normalInputDelayTime || gpe::input->check_kb_pressed(kb_up) )
+            if( upDelayTime > pawgui::main_settings->normalInputDelayTime || gpe::input->check_kb_pressed(kb_up) )
             {
                 yScroll->contextRect.y-=cameraBox.h/8;
                 upDelayTime = 0;
             }
-            else if( downDelayTime > main_GUI_SETTINGS->normalInputDelayTime || gpe::input->check_kb_pressed(kb_down) )
+            else if( downDelayTime > pawgui::main_settings->normalInputDelayTime || gpe::input->check_kb_pressed(kb_down) )
             {
                 yScroll->contextRect.y+=cameraBox.h/8;
                 downDelayTime = 0;
             }
         }
-        yScroll->process_self( viewedSpace, cam );
+        yScroll->process_self( view_space, cam );
         //if( yScroll->has_moved() || yScroll->is_scrolling() || hasScrollControl)
         if( yScroll->has_moved() || yScroll->is_scrolling() || mouseInRange)
         {
@@ -336,124 +336,124 @@ void GPE_ResourceTree::process_self( gpe::shape_rect * viewedSpace, gpe::shape_r
             {
                 cameraBox.y = 0;
             }
-            yScroll->process_self( viewedSpace, cam );
+            yScroll->process_self( view_space, cam );
         }
     }
 
     //Processes if a previous right click was made and if so, make context menu
-    if( RESOURCEMENU_WAS_RIGHTCLICKED && LAST_CLICKED_RESOURCE!=NULL)
+    if( pawgui::resourcemenu_rightclicked && pawgui::resource_last_clicked!=NULL)
     {
-        RESOURCEMENU_WAS_RIGHTCLICKED = false;
-        GPE_open_context_menu(gpe::input->mouse_position_x-256,gpe::input->mouse_position_y,256);
-        if( !LAST_CLICKED_RESOURCE->is_folder() && !LAST_CLICKED_RESOURCE->is_super_project_folder() && !LAST_CLICKED_RESOURCE->is_super_project_folder() )
+        pawgui::resourcemenu_rightclicked = false;
+        pawgui::context_menu_open(gpe::input->mouse_position_x-256,gpe::input->mouse_position_y,256);
+        if( !pawgui::resource_last_clicked->is_folder() && !pawgui::resource_last_clicked->is_super_project_folder() && !pawgui::resource_last_clicked->is_super_project_folder() )
         {
-            int tempResType= LAST_CLICKED_RESOURCE->get_resource_type() ;
+            int tempResType= pawgui::resource_last_clicked->get_resource_type() ;
             if( tempResType!=gpe::resource_type_texture && tempResType!=gpe::resource_type_tilesheet && tempResType!=gpe::resource_type_animation && tempResType!=gpe::resource_type_audio && tempResType!=gpe::resource_type_video && tempResType!=gpe::resource_type_project_settings )
             {
-                main_CONTEXT_MENU->add_menu_option("Duplicate Resource",-1,NULL,-1,NULL,false,true);
+                pawgui::main_context_menu->add_menu_option("Duplicate Resource",-1,NULL,-1,NULL,false,true);
             }
-            main_CONTEXT_MENU->add_menu_option("Rename Resource",-1,NULL,-1,NULL,false,true);
-            main_CONTEXT_MENU->add_menu_option("Remove Resource",-1,NULL,-1,NULL,false,true);
-            main_CONTEXT_MENU->add_menu_option("Resource Properties",-1,NULL,-1,NULL,true,true);
+            pawgui::main_context_menu->add_menu_option("Rename Resource",-1,NULL,-1,NULL,false,true);
+            pawgui::main_context_menu->add_menu_option("Remove Resource",-1,NULL,-1,NULL,false,true);
+            pawgui::main_context_menu->add_menu_option("Resource Properties",-1,NULL,-1,NULL,true,true);
         }
-        else if(LAST_CLICKED_RESOURCE->is_super_project_folder() )
+        else if(pawgui::resource_last_clicked->is_super_project_folder() )
         {
-            main_CONTEXT_MENU->add_menu_option("Save Project",-1,NULL,-1,NULL,false,true);
-            main_CONTEXT_MENU->add_menu_option("Close Project",-1,NULL,-1,NULL,true,true);
+            pawgui::main_context_menu->add_menu_option("Save Project",-1,NULL,-1,NULL,false,true);
+            pawgui::main_context_menu->add_menu_option("Close Project",-1,NULL,-1,NULL,true,true);
 
-            main_CONTEXT_MENU->add_menu_option("Build Project",-1,NULL,-1,NULL,false,true);
-            //main_CONTEXT_MENU->add_menu_option("Debug Project",-1,NULL,-1,NULL,false,true);
-            GPE_PopUpMenu_Option *cleanFolderOptions =  main_CONTEXT_MENU->add_menu_option("Clean Project",-1,NULL,-1,NULL,true,false);
+            pawgui::main_context_menu->add_menu_option("Build Project",-1,NULL,-1,NULL,false,true);
+            //pawgui::main_context_menu->add_menu_option("Debug Project",-1,NULL,-1,NULL,false,true);
+            pawgui::popup_menu_option *cleanFolderOptions =  pawgui::main_context_menu->add_menu_option("Clean Project",-1,NULL,-1,NULL,true,false);
             cleanFolderOptions->add_menu_option("Clean [HTML5] Build Folder",-1);
             cleanFolderOptions->add_menu_option("Clean [Windows] Build Folder",-1);
             cleanFolderOptions->add_menu_option("Clean [Linux] Build Folder",-1);
             cleanFolderOptions->add_menu_option("Clean [OSX] Build Folder",-1);
-            cleanFolderOptions = main_CONTEXT_MENU->add_menu_option("Open Project Directory");
-            main_CONTEXT_MENU->add_menu_option("Find Resource...");
+            cleanFolderOptions = pawgui::main_context_menu->add_menu_option("Open Project Directory");
+            pawgui::main_context_menu->add_menu_option("Find Resource...");
 
-            //main_CONTEXT_MENU->add_menu_option("Browse Directory",-1,-1,NULL,false,true);
+            //pawgui::main_context_menu->add_menu_option("Browse Directory",-1,-1,NULL,false,true);
         }
-        else if(LAST_CLICKED_RESOURCE->is_super_folder() || LAST_CLICKED_RESOURCE->is_folder() )
+        else if(pawgui::resource_last_clicked->is_super_folder() || pawgui::resource_last_clicked->is_folder() )
         {
-            main_CONTEXT_MENU->add_menu_option("Add Resource",-1,NULL,-1,NULL,false,true);
-            main_CONTEXT_MENU->add_menu_option("Add Folder",-1,NULL,-1,NULL,true,true);
-            if( !LAST_CLICKED_RESOURCE->is_super_folder())
+            pawgui::main_context_menu->add_menu_option("Add Resource",-1,NULL,-1,NULL,false,true);
+            pawgui::main_context_menu->add_menu_option("Add Folder",-1,NULL,-1,NULL,true,true);
+            if( !pawgui::resource_last_clicked->is_super_folder())
             {
-                main_CONTEXT_MENU->add_menu_option("Rename Folder",-1,NULL,-1,NULL,true,true);
-                main_CONTEXT_MENU->add_menu_option("Clear Resource Folder Contents",-1,NULL,-1,NULL,true,true);
+                pawgui::main_context_menu->add_menu_option("Rename Folder",-1,NULL,-1,NULL,true,true);
+                pawgui::main_context_menu->add_menu_option("Clear Resource Folder Contents",-1,NULL,-1,NULL,true,true);
             }
-            main_CONTEXT_MENU->add_menu_option("Sort by Name",-1,NULL,-1,NULL,true,true);
-            if( !LAST_CLICKED_RESOURCE->is_super_folder())
+            pawgui::main_context_menu->add_menu_option("Sort by Name",-1,NULL,-1,NULL,true,true);
+            if( !pawgui::resource_last_clicked->is_super_folder())
             {
-                main_CONTEXT_MENU->add_menu_option("Remove Folder",-1,NULL,-1,NULL,false,true);
+                pawgui::main_context_menu->add_menu_option("Remove Folder",-1,NULL,-1,NULL,false,true);
             }
-            main_CONTEXT_MENU->add_menu_option("Find Resource...");
+            pawgui::main_context_menu->add_menu_option("Find Resource...");
         }
-        else if( LAST_CLICKED_RESOURCE->is_folder()==false)
+        else if( pawgui::resource_last_clicked->is_folder()==false)
         {
-            int tempResType= LAST_CLICKED_RESOURCE->get_resource_type() ;
+            int tempResType= pawgui::resource_last_clicked->get_resource_type() ;
             if( tempResType!=gpe::resource_type_texture && tempResType!= gpe::resource_type_tilesheet && tempResType!= gpe::resource_type_animation && tempResType!= gpe::resource_type_audio && tempResType!= gpe::resource_type_video && tempResType!= gpe::resource_type_project_settings )
             {
-                main_CONTEXT_MENU->add_menu_option("Duplicate Resource",-1,NULL,-1,NULL,false,true);
+                pawgui::main_context_menu->add_menu_option("Duplicate Resource",-1,NULL,-1,NULL,false,true);
             }
-            main_CONTEXT_MENU->add_menu_option("Rename Resource",-1,NULL,-1,NULL,false,true);
-            main_CONTEXT_MENU->add_menu_option("Delete Resource",-1,NULL,-1,NULL,false,true);
-            main_CONTEXT_MENU->add_menu_option("Properties",-1,NULL,-1,NULL,false,true);
+            pawgui::main_context_menu->add_menu_option("Rename Resource",-1,NULL,-1,NULL,false,true);
+            pawgui::main_context_menu->add_menu_option("Delete Resource",-1,NULL,-1,NULL,false,true);
+            pawgui::main_context_menu->add_menu_option("Properties",-1,NULL,-1,NULL,false,true);
         }
-        GPE_Get_Context_Result();
+        pawgui::context_menu_process();
     }
-    else if( gpe::input->check_mouse_released( mb_left)&&  RESOURCE_TO_DRAG!=NULL )
+    else if( gpe::input->check_mouse_released( mb_left)&&  pawgui::resource_dragged!=NULL )
     {
-        if( LAST_CLICKED_RESOURCE!=NULL)
+        if( pawgui::resource_last_clicked!=NULL)
         {
-            if( LAST_CLICKED_RESOURCE->is_super_folder() || LAST_CLICKED_RESOURCE->is_folder() )
+            if( pawgui::resource_last_clicked->is_super_folder() || pawgui::resource_last_clicked->is_folder() )
             {
-                if( RESOURCE_TO_DRAG->parentResource!=NULL && LAST_CLICKED_RESOURCE->can_obtain(RESOURCE_TO_DRAG) )
+                if( pawgui::resource_dragged->parentResource!=NULL && pawgui::resource_last_clicked->can_obtain(pawgui::resource_dragged) )
                 {
-                    RESOURCE_TO_DRAG->parentResource->remove_resource(RESOURCE_TO_DRAG,false);
-                    LAST_CLICKED_RESOURCE->add_resource_container(RESOURCE_TO_DRAG);
+                    pawgui::resource_dragged->parentResource->remove_resource(pawgui::resource_dragged,false);
+                    pawgui::resource_last_clicked->add_resource_container(pawgui::resource_dragged);
                     gpe::input->reset_all_input();
-                    selectedSubOption = RESOURCE_TO_DRAG->get_global_id();
-                    RESOURCE_TO_DRAG = NULL;
-                    LAST_CLICKED_RESOURCE = NULL;
+                    selectedSubOption = pawgui::resource_dragged->get_global_id();
+                    pawgui::resource_dragged = NULL;
+                    pawgui::resource_last_clicked = NULL;
                     process_self();
                 }
             }
-            else if( RESOURCE_TO_DRAG->parentResource!=NULL && LAST_CLICKED_RESOURCE->parentResource!=NULL && LAST_CLICKED_RESOURCE->parentResource->can_obtain(RESOURCE_TO_DRAG) )
+            else if( pawgui::resource_dragged->parentResource!=NULL && pawgui::resource_last_clicked->parentResource!=NULL && pawgui::resource_last_clicked->parentResource->can_obtain(pawgui::resource_dragged) )
             {
-                if( RESOURCE_TO_DRAG->matches(LAST_CLICKED_RESOURCE)!=1  &&  RESOURCE_TO_DRAG->matches(LAST_CLICKED_RESOURCE->parentResource)!=1  )
+                if( pawgui::resource_dragged->matches(pawgui::resource_last_clicked)!=1  &&  pawgui::resource_dragged->matches(pawgui::resource_last_clicked->parentResource)!=1  )
                 {
-                    GPE_GeneralResourceContainer * previousParentResource = RESOURCE_TO_DRAG->parentResource;
-                    RESOURCE_TO_DRAG->parentResource->remove_resource(RESOURCE_TO_DRAG, false);
-                    gpe::error_log->report("Trying to copy ["+RESOURCE_TO_DRAG->get_name()+"] resource.");
-                    gpe::error_log->report("Trying to copy to ["+LAST_CLICKED_RESOURCE->get_name()+"]'s parent resource.");
-                    gpe::error_log->report("Trying to copy to ["+LAST_CLICKED_RESOURCE->parentResource->get_name()+"]'s resource.");
-                    LAST_CLICKED_RESOURCE->parentResource->add_resource_container(RESOURCE_TO_DRAG,false,LAST_CLICKED_RESOURCE);
-                    selectedSubOption = RESOURCE_TO_DRAG->get_global_id();
+                    pawgui::widget_resource_container * previousParentResource = pawgui::resource_dragged->parentResource;
+                    pawgui::resource_dragged->parentResource->remove_resource(pawgui::resource_dragged, false);
+                    gpe::error_log->report("Trying to copy ["+pawgui::resource_dragged->get_name()+"] resource.");
+                    gpe::error_log->report("Trying to copy to ["+pawgui::resource_last_clicked->get_name()+"]'s parent resource.");
+                    gpe::error_log->report("Trying to copy to ["+pawgui::resource_last_clicked->parentResource->get_name()+"]'s resource.");
+                    pawgui::resource_last_clicked->parentResource->add_resource_container(pawgui::resource_dragged,false,pawgui::resource_last_clicked);
+                    selectedSubOption = pawgui::resource_dragged->get_global_id();
                     gpe::input->reset_all_input();
-                    RESOURCE_TO_DRAG = NULL;
-                    LAST_CLICKED_RESOURCE = NULL;
+                    pawgui::resource_dragged = NULL;
+                    pawgui::resource_last_clicked = NULL;
                     process_self();
                 }
             }
-            LAST_CLICKED_RESOURCE= NULL;
+            pawgui::resource_last_clicked= NULL;
         }
     }
 }
 
-void GPE_ResourceTree::render_self( gpe::shape_rect *viewedSpace, gpe::shape_rect *cam)
+void GPE_ResourceTree::render_self( gpe::shape_rect *view_space, gpe::shape_rect *cam)
 {
-    viewedSpace = gpe::camera_find( viewedSpace );
+    view_space = gpe::camera_find( view_space );
     cam = gpe::camera_find( cam );
     gpe::renderer_main->reset_viewpoint( );
-    gpe::renderer_main->set_viewpoint( viewedSpace);
+    gpe::renderer_main->set_viewpoint( view_space);
 
-    if( theme_main->theme_texture_bg == NULL)
+    if( pawgui::theme_main->theme_texture_bg == NULL)
     {
-        gpe::gcanvas->render_rect( &widget_box,theme_main->program_color,false);
+        gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->program_color,false);
     }
 
-    GPE_GeneralResourceContainer * cResource = NULL;
+    pawgui::widget_resource_container * cResource = NULL;
     int xDrawPos = 0;
     int yDrawPos = 0;
     int optionSize = (int)subOptions.size();
@@ -462,20 +462,20 @@ void GPE_ResourceTree::render_self( gpe::shape_rect *viewedSpace, gpe::shape_rec
         cResource = subOptions[i];
         if(cResource!=NULL)
         {
-            cResource->render_option(xDrawPos,yDrawPos,selectedSubOption, viewedSpace,&cameraBox, true );
+            cResource->render_option(xDrawPos,yDrawPos,selectedSubOption, view_space,&cameraBox, true );
             yDrawPos+=cResource->element_box.h;
         }
     }
 
     gpe::renderer_main->set_viewpoint( NULL );
-    gpe::renderer_main->set_viewpoint( viewedSpace );
+    gpe::renderer_main->set_viewpoint( view_space );
     if( xScroll!=NULL)
     {
-        xScroll->render_self( viewedSpace, cam );
+        xScroll->render_self( view_space, cam );
     }
     if( yScroll!=NULL)
     {
-        yScroll->render_self(viewedSpace, cam  );
+        yScroll->render_self(view_space, cam  );
         //if( RENDER_RESOURCEBAR_LEFT)
         {
             //gpe::gcanvas->render_rectangle( yScroll->widget_box.x+yScroll->widget_box.w,yScroll->widget_box.y,widget_box.x+widget_box.w,widget_box.h,barColor,false);
@@ -484,11 +484,11 @@ void GPE_ResourceTree::render_self( gpe::shape_rect *viewedSpace, gpe::shape_rec
 
     if( hasScrollControl)
     {
-        gpe::gcanvas->render_rectangle( widget_box.x,widget_box.y,widget_box.x+widget_box.w,widget_box.y+widget_box.h,theme_main->button_box_highlight_color,true);
+        gpe::gcanvas->render_rectangle( widget_box.x,widget_box.y,widget_box.x+widget_box.w,widget_box.y+widget_box.h,pawgui::theme_main->button_box_highlight_color,true);
     }
     else
     {
-        gpe::gcanvas->render_rect( &widget_box,theme_main->text_box_outline_color,true);
+        gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->text_box_outline_color,true);
     }
 
     gpe::renderer_main->reset_viewpoint( );
@@ -500,7 +500,7 @@ void GPE_ResourceTree::remove_project_resources(std::string projectFileName)
 {
     if( (int)projectFileName.size()>0 )
     {
-        GPE_GeneralResourceContainer * tContainer = NULL;
+        pawgui::widget_resource_container * tContainer = NULL;
         for( int i = (int)subOptions.size()-1; i>=0; i--)
         {
             tContainer = subOptions[i];
