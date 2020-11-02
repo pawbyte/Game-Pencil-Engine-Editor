@@ -2,11 +2,10 @@
 stg_ex.cpp
 This file is part of:
 stg_ex
-https://pawbyte.com/opensource
+https://pawbyte.com/stg_ex
 Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
 Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -26,7 +25,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
--stg_ex <https://pawbyte.com/opensource>
+-stg_ex <https://pawbyte.com/stg_ex>
 
 
 */
@@ -364,7 +363,7 @@ namespace stg_ex
         return converter.str();
     }
 
-        int split_first_int(std::string &s, char separator)
+    int split_first_int(std::string &s, char separator)
     {
         size_t seppos = s.find_first_of(separator);
         if (seppos == std::string::npos)

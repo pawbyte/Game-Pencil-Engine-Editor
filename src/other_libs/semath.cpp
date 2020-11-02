@@ -1,12 +1,12 @@
 /*
 semath.cpp
 This file is part of:
-Simple Easy Math Library
-https://www.pawbyte.com/opensource
+Short Easy Math Library
+https://www.pawbyte.com/semath
 Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
 Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Simple Easy Math Library contributors ( Contributors Page )
+Copyright (c) 2014-2020 Short Easy Math Library contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -26,8 +26,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
--Simple Easy Math Library <https://www.pawbyte.com/opensource>
-
+-Short Easy Math Library <https://www.pawbyte.com/semath>
 
 */
 
@@ -63,6 +62,7 @@ namespace semath
         return sin(dAngle *math_radians_multiplier);
     }
 
+    //Special thanks to YellowAfterLife for help in these calculations
     float get_direction( float x1, float y1, float x2, float y2 )
     {
         float returnVal =  atan2(y2-y1,x2-x1) * math_degrees_multiplier;
