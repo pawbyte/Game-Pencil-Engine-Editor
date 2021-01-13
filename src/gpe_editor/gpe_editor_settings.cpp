@@ -223,9 +223,9 @@ gamePencilEditorSettingsResource::gamePencilEditorSettingsResource()
     CodingLanguageLabel = new pawgui::widget_label_text ("Basic language syntax");
     CodingLanguageParagraph = new pawgui::widget_label_paragraph("Coding Language","Unsure how to add a new language to the editor? Click the link below to add a new language. Please note to use new languages you may need to reset the editor.");
     CodingLanguageURL = new pawgui::widget_text_url("See our online guide for editing languages","Opens in browser","https://docs.pawbyte.com/");
-    codingLanguageSelector = new pawgui::widget_selectbox("CodingLanguages");
+    codingLanguageSelector = new pawgui::widget_selectbox("Coding Languages");
     codingLanguageSelector->set_option_height( 32 );
-    codingLanguageSelector->set_width( 96 );
+    codingLanguageSelector->set_width( 128 );
 
     codingLanguageSelector->add_option("JavaScript",pawgui::program_language_js );
     codingLanguageSelector->add_option("C++",pawgui::program_language_cpp );

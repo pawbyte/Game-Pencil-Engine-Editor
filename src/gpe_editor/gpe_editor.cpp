@@ -1470,7 +1470,7 @@ void GPE_Gui_Engine::process_overlay_message()
             if( tempResType > gpe::resource_type_project_settings && tempResType < gpe::resource_type_max )
             {
                 std::string newresource_name = pawgui::get_string_from_popup("Please name your new "+gpe::resource_type_names[tempResType]+".","Please use an alphanumeric value","" );
-                if( (int)newresource_name.size() > 0 && stg_ex::is_alnum( newresource_name) )
+                if( (int)newresource_name.size() > 0 && stg_ex::is_alnum( newresource_name, false, true) )
                 {
                     pawgui::widget_resource_container * newResource = fFolder->create_blank_resource(tempResType,pawgui::resource_last_clicked, newresource_name );
                     if( newResource!=NULL)

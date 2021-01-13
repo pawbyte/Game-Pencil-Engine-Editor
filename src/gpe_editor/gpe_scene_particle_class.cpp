@@ -38,7 +38,7 @@ GPE_SceneParticleEmitter::GPE_SceneParticleEmitter( pawgui::widget_resource_cont
     branchType = gpe::branch_type::PARTIClE_EMITTER;
     if( projectParentFolder!=NULL)
     {
-        emmitterInEditor = new pawgui::widget_drop_down_resource_menu( "Particle Emitter",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_emitter]+"s"),-1,true);
+        emmitterInEditor = new pawgui::widget_drop_down_resource_menu( "Particle Emitter",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_emitter]),-1,true);
         emmitterInEditor->set_width(192);
     }
     else

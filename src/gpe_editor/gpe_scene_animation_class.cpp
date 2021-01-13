@@ -41,7 +41,7 @@ GPE_SceneAnimation::GPE_SceneAnimation( pawgui::widget_resource_container *pFold
 
     if( projectParentFolder!=NULL)
     {
-        animationInEditor = new pawgui::widget_drop_down_resource_menu( "Animation",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_animation]+"s"),-1,true);
+        animationInEditor = new pawgui::widget_drop_down_resource_menu( "Animation",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_animation]),-1,true);
         animationInEditor->set_width(192);
     }
     else

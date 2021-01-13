@@ -161,7 +161,7 @@ void classResource::load_resource(std::string file_path)
 
         bool usingAltSaveSource = false;
         std::string newFileIn ="";
-        std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/classes/";
+        std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/source/";
         if( sff_ex::file_exists(file_path) )
         {
             newFileIn = file_path;
@@ -170,7 +170,7 @@ void classResource::load_resource(std::string file_path)
         }
         else
         {
-            newFileIn = soughtDir + resource_name+".gpf";
+            newFileIn = soughtDir + "class_" + resource_name+".gpf";
         }
 
 
@@ -178,7 +178,16 @@ void classResource::load_resource(std::string file_path)
         {
             std::string  classSrcCodeLoadLocation = "";
             //if( )
-            classSrcCodeLoadLocation = soughtDir+resource_name+".js";
+            classSrcCodeLoadLocation = soughtDir + "class_" + resource_name+".js";
+
+            if( current_project !=NULL )
+            {
+                if( current_project->get_project_language_id() ==
+                   pawgui::program_language_cpp )
+                {
+                    classSrcCodeLoadLocation = soughtDir+  "entity_" + resource_name + ".cpp";
+                }
+            }
 
             classSourceCode->import_text(classSrcCodeLoadLocation);
             classSourceCode->activate_self();
@@ -188,7 +197,7 @@ void classResource::load_resource(std::string file_path)
 
         if( classHeaderCode!=NULL)
         {
-            std::string classHeaderCodeLoadLocation = soughtDir+resource_name+".h";
+            std::string classHeaderCodeLoadLocation = soughtDir+ "class_" + resource_name + ".h";
             classHeaderCode->import_text(classHeaderCodeLoadLocation);
             classHeaderCode->activate_self();
             classHeaderCode->init_save_history();

@@ -47,21 +47,12 @@ void setup_project_directory(std::string newProjectDir)
 
         sff_ex::create_directory(newProjectDir+"/gpe_project/resources");
         sff_ex::create_directory(newProjectDir+"/gpe_project/resources/achievements");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/audio");
 
-        //Class Directory addition for 1.14
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/animations");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/classes");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/fonts");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/functions");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/lights");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/objects");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/paths");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/particles");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/scenes");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/textures");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/tilesheets");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/videos");
+        for( int i_res_type = 0; i_res_type < gpe::resource_type_max; i_res_type++ )
+        {
+            sff_ex::create_directory(newProjectDir+"/gpe_project/resources/" + stg_ex::string_lower( gpe::resource_type_names_plural[ i_res_type] ) );
+        }
+
         sff_ex::create_directory(newProjectDir+"/gpe_project/source");
         sff_ex::create_directory(newProjectDir+"/gpe_project/source/GPE");
         sff_ex::create_directory(newProjectDir+"/gpe_project/source/AOSGUI");

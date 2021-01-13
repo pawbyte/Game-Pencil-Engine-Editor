@@ -168,11 +168,11 @@ gameSceneResource::gameSceneResource(pawgui::widget_resource_container * pFolder
 
     if( projectParentFolder!=NULL)
     {
-        musicAudioDropDown = new pawgui::widget_drop_down_resource_menu( "BG Music",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_audio]),-1,true);
+        musicAudioDropDown = new pawgui::widget_drop_down_resource_menu( "BG Music",projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_audio]),-1,true);
 
-        startAudioDropDown = new pawgui::widget_drop_down_resource_menu( "Start Audio",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_audio]),-1,true);
+        startAudioDropDown = new pawgui::widget_drop_down_resource_menu( "Start Audio",projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_audio]),-1,true);
 
-        endAudioDropDown = new pawgui::widget_drop_down_resource_menu( "End Audio",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_audio]),-1,true);
+        endAudioDropDown = new pawgui::widget_drop_down_resource_menu( "End Audio",projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_audio]),-1,true);
     }
 
     resizeMapButton = new pawgui::widget_button_label("Resize Map","Click to re-size and recalculate map content" );
@@ -193,10 +193,10 @@ gameSceneResource::gameSceneResource(pawgui::widget_resource_container * pFolder
         addNewComponentDropDown = new pawgui::widget_dropdown_menu( "Add Component",false);
         setup_object_components( addNewComponentDropDown );
         addNewComponentDropDown->set_width(128);
-        animationInEditor = new pawgui::widget_drop_down_resource_menu( "Change  Animation",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_animation]+"s"),-1,true);
+        animationInEditor = new pawgui::widget_drop_down_resource_menu( "Change  Animation",projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_animation]),-1,true);
         objectInEditor = new pawgui::widget_drop_down_resource_menu( "New Branch",projectParentFolder,-1,true);
-        objectReplacerInEditor = new pawgui::widget_drop_down_resource_menu( "Replace Object",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s"),-1,true);
-        objectNewType = new pawgui::widget_drop_down_resource_menu( "Change Object",projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s"),-1,true);
+        objectReplacerInEditor = new pawgui::widget_drop_down_resource_menu( "Replace Object",projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_object]),-1,true);
+        objectNewType = new pawgui::widget_drop_down_resource_menu( "Change Object",projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_object]),-1,true);
 
         closeObjectProperties = new pawgui::widget_button_label( "Close Properties","Closes Object Properties of selected Object");
 
@@ -945,17 +945,17 @@ void gameSceneResource::adjust_object_offsets( pawgui::widget_branch *  basicObj
     GPE_SceneAnimation * cAnim = NULL;
     GPE_SceneGameObject * cObj = NULL;
     int jAnim = 0, jObj = 0;
-    pawgui::widget_resource_container * allObjsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s");
+    pawgui::widget_resource_container * allEntitiesFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_object]);
     pawgui::widget_resource_container * fObjType = NULL;
 
-    pawgui::widget_resource_container * allAnimationsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_animation]+"s");
+    pawgui::widget_resource_container * allAnimationsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_animation]);
     pawgui::widget_resource_container * fAnimType = NULL;
 
-    gameObjectResource * currentTypeObj = NULL;
+    gameEntityResource * currentTypeObj = NULL;
     animationResource * currentTypeAnim= NULL;
-    if( allObjsFolder==NULL || allAnimationsFolder==NULL)
+    if( allEntitiesFolder==NULL || allAnimationsFolder==NULL)
     {
-        gpe::error_log->report("All allObjsFolder or allAnimationsFolder is null... aborting...");
+        gpe::error_log->report("All allEntitiesFolder or allAnimationsFolder is null... aborting...");
         return;
     }
     pawgui::widget_branch * iBranch = NULL;
@@ -969,10 +969,10 @@ void gameSceneResource::adjust_object_offsets( pawgui::widget_branch *  basicObj
             if( iBranch->get_type() == gpe::branch_type::OBJECT )
             {
                 cObj = (GPE_SceneGameObject * )iBranch;
-                fObjType = allObjsFolder->find_resource_from_id( cObj->objTypeId );
+                fObjType = allEntitiesFolder->find_resource_from_id( cObj->objTypeId );
                 if( fObjType!=NULL && fObjType->get_held_resource()!=NULL )
                 {
-                    currentTypeObj = (gameObjectResource *) fObjType->get_held_resource();
+                    currentTypeObj = (gameEntityResource *) fObjType->get_held_resource();
                     if( currentTypeObj!=NULL && currentTypeObj->animationIndex > 0  )
                     {
                         fAnimType = allAnimationsFolder->find_resource_from_id( currentTypeObj->animationIndex );
@@ -1528,7 +1528,7 @@ void gameSceneResource::load_resource(std::string file_path)
                 GPE_ObjectComponent * tempObjectComponent = NULL;
                 bool uniqeComponentsOpen = false;
                 //GPE_TextAreagpe::inputBasic * textAreaToLoad = NULL;
-                pawgui::widget_resource_container * allObjsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s");
+                pawgui::widget_resource_container * allEntitiesFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_object]);
                 pawgui::widget_resource_container * foundObjContainer = NULL;
 
 
@@ -1884,9 +1884,9 @@ void gameSceneResource::load_resource(std::string file_path)
                                             foundObjName = stg_ex::split_first_string(valString,',');
                                             newGameObject = new GPE_SceneGameObject( "object");
                                             //newGameObject->localMenuBranch =
-                                            if( allObjsFolder!=NULL)
+                                            if( allEntitiesFolder!=NULL)
                                             {
-                                                foundObjContainer = allObjsFolder->find_resource_target(foundObjName, true);
+                                                foundObjContainer = allEntitiesFolder->find_resource_target(foundObjName, true);
                                                 if( foundObjContainer!=NULL )
                                                 {
                                                     newGameObject->objTypeName = foundObjContainer->get_name();
@@ -1944,9 +1944,9 @@ void gameSceneResource::load_resource(std::string file_path)
                                             foundObjName = stg_ex::split_first_string(valString,',');
                                             newGameObject = new GPE_SceneGameObject("object");
                                             //newGameObject->localMenuBranch =
-                                            if( allObjsFolder!=NULL)
+                                            if( allEntitiesFolder!=NULL)
                                             {
-                                                foundObjContainer = allObjsFolder->find_resource_target(foundObjName, true);
+                                                foundObjContainer = allEntitiesFolder->find_resource_target(foundObjName, true);
                                                 if( foundObjContainer!=NULL )
                                                 {
                                                     newGameObject->objTypeName = foundObjContainer->get_name();
@@ -2055,9 +2055,9 @@ void gameSceneResource::load_resource(std::string file_path)
                                                 {
                                                     newGameObject = new GPE_SceneGameObject("object");
                                                     newGameObject->objTypeId = foundNumberToRead;
-                                                    if( allObjsFolder!=NULL)
+                                                    if( allEntitiesFolder!=NULL)
                                                     {
-                                                        foundObjContainer = allObjsFolder->find_resource_from_id(foundNumberToRead, true);
+                                                        foundObjContainer = allEntitiesFolder->find_resource_from_id(foundNumberToRead, true);
                                                         if( foundObjContainer!=NULL)
                                                         {
                                                             newGameObject->objTypeName = foundObjContainer->get_name();
@@ -2759,7 +2759,7 @@ void gameSceneResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
                         }
                         //objectInEditor->set_selection(pawgui::resource_dragged->get_global_id() );
 
-                        gameObjectResource* newObjRes = (gameObjectResource*)pawgui::resource_dragged->get_held_resource();
+                        gameEntityResource* newObjRes = (gameEntityResource*)pawgui::resource_dragged->get_held_resource();
                         if( newObjRes!=NULL )
                         {
                             inherit_components(newPlacedObject,newObjRes);
@@ -3239,7 +3239,7 @@ void gameSceneResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
                                 pawgui::widget_resource_container * objContainer = objectInEditor->get_selected_container();
                                 if( objContainer!=NULL)
                                 {
-                                    gameObjectResource* newObjRes = (gameObjectResource*)objContainer->get_held_resource();
+                                    gameEntityResource* newObjRes = (gameEntityResource*)objContainer->get_held_resource();
                                     if( newObjRes!=NULL)
                                     {
                                         newPlacedObject->objTypeName = newObjRes->get_name();
@@ -3616,10 +3616,10 @@ void gameSceneResource::render_scene_layers( gpe::shape_rect * view_space, gpe::
         sceneCamera = &editorCameraRect;
     }
     spm->currentCamera->update_box( sceneCamera->x, sceneCamera->y, sceneCamera->w, sceneCamera->h );
-    spm->cSceneAnimtList = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_animation]+"s", false );
-    spm->cSceneObjList = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s", false );
-    spm->cSceneTexList = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_texture]+"s", false );
-    spm->cSceneTstList = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_tilesheet]+"s", false );
+    spm->cSceneAnimtList = projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_animation], false );
+    spm->cSceneObjList = projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_object], false );
+    spm->cSceneTexList = projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_texture], false );
+    spm->cSceneTstList = projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_tilesheet], false );
 
     /*if( gpe::input->check_kb_down(kb_ctrl) )
     {
@@ -3661,9 +3661,9 @@ void gameSceneResource::render_self( gpe::shape_rect * view_space, gpe::shape_re
     GPE_SceneBackground * currBg = NULL;
 
     //renders the BGs
-    pawgui::widget_resource_container * allTexturesFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_texture]+"s");
-    pawgui::widget_resource_container * allTilesheetsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_tilesheet]+"s");
-    pawgui::widget_resource_container * allObjsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s");
+    pawgui::widget_resource_container * allTexturesFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_texture]);
+    pawgui::widget_resource_container * allTilesheetsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_tilesheet]);
+    pawgui::widget_resource_container * allEntitiesFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_object]);
     //renders the background
 
     int bgI = 0;
@@ -3897,7 +3897,7 @@ void gameSceneResource::save_resource(std::string file_path, int backupId)
         {
             GPE_SceneGameObject * tSceneObj = NULL;
             GPE_SceneBackground * tSceneBg = NULL;
-            pawgui::widget_resource_container * allObjsFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names[ gpe::resource_type_object]+"s");
+            pawgui::widget_resource_container * allEntitiesFolder = projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_object]);
             pawgui::widget_resource_container * fObj = NULL;
             write_header_on_file(&newSceneFile);
             if( sceneTitleField!=NULL)

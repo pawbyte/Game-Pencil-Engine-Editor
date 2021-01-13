@@ -84,6 +84,7 @@ gpeCPPBuildHolder::gpeCPPBuildHolder(std::string buildSystemName)
     builderNameField = new pawgui::widget_input_text(buildSystemName,"ie: Visual Studio, CodeBlocks, DevC++, Premake5...");
     builderNameLabel = new pawgui::widget_label_text ("Builder System Name:");
     addSubSystemButton = new pawgui::widget_button_label("Add subsystem","Add a new subsystem for C++ builder");
+    buildSystemOS = new pawgui::widget_dropdown_menu("Build Platform", false );
 }
 
 gpeCPPBuildHolder::~gpeCPPBuildHolder()
@@ -98,6 +99,11 @@ gpeCPPBuildHolder::~gpeCPPBuildHolder()
     {
         delete builderNameLabel;
         builderNameLabel = NULL;
+    }
+    if( buildSystemOS!=NULL)
+    {
+        delete buildSystemOS;
+        buildSystemOS = NULL;
     }
 
     clear_subsystems();
@@ -115,6 +121,7 @@ bool gpeCPPBuildHolder::add_to_list(pawgui::widget_panel_list * listIn)
     return false;
     listIn->add_gui_element( builderNameLabel, true);
     listIn->add_gui_element( builderNameField, true);
+    listIn->add_gui_element( buildSystemOS, true);
     listIn->add_gui_element( addSubSystemButton, true);
 
     int subSystemCount = (int)mySubsystems.size();
@@ -279,6 +286,8 @@ gameCPPBuilderSettingsResource::gameCPPBuilderSettingsResource(pawgui::widget_re
     resource_name = "C++ Builder Settings";//C++ Settings
     parentProjectName = "";
     parentProjectDirectory = "";
+
+    cppbuildSystemsLabel = new pawgui::widget_label_title("Build Systems","Your editor's list of build systems");
 
     cppBuildSystemsDropDown = new pawgui::widget_dropdown_menu("Build Systems...", false );
     addCPPBuildSystemButton = new pawgui::widget_button_label("Add System","Add a new C++ build system" );
@@ -565,6 +574,8 @@ void gameCPPBuilderSettingsResource::process_self( gpe::shape_rect * view_space,
         editorPageList->barXMargin = pawgui::padding_default;
         gpeCPPBuildHolder *cTempHolder = NULL;
 
+        editorPageList->add_gui_element(cppbuildSystemsLabel,true );
+
         int i = 0;
         if( sideAreaPanel->get_selected_name() == "Builder Settings")
         {
@@ -577,7 +588,7 @@ void gameCPPBuilderSettingsResource::process_self( gpe::shape_rect * view_space,
             {
                 cTempHolder->add_to_list( editorPageList );
             }
-            editorPageList->add_gui_element(confirmResourceButton,true );
+            editorPageList->add_gui_element(confirmResourceButton,false );
             editorPageList->add_gui_element(cancelResourceButton,true );
             editorPageList->process_self( view_space,cam);
 

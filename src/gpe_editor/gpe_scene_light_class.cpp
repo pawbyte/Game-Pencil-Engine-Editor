@@ -46,7 +46,7 @@ GPE_SceneBasicLight::GPE_SceneBasicLight(pawgui::widget_resource_container *pFol
     projectParentFolder = pFolder;
     if( projectParentFolder!=NULL)
     {
-        lightInEditor = new pawgui::widget_drop_down_resource_menu( "Light Source",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_light]+"s"),-1,true);
+        lightInEditor = new pawgui::widget_drop_down_resource_menu( "Light Source",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_light]),-1,true);
         lightInEditor->set_width(192);
     }
     else

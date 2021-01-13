@@ -37,7 +37,7 @@ SOFTWARE.
 #include "../gpe/gpe_layer.h"
 #include "animation_resource.h"
 #include "font_resource.h"
-#include "game_object_resource.h"
+#include "game_entity_resource.h"
 #include "project_properties.h"
 #include "texture_resource.h"
 #include "tilesheet_resource.h"

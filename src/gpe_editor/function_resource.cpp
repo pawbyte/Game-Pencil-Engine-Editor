@@ -175,7 +175,7 @@ void functionResource::load_resource(std::string file_path)
 
         bool usingAltSaveSource = false;
         std::string newFileIn ="";
-        std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/functions/";
+        std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/source/";
         if( sff_ex::file_exists(file_path) )
         {
             newFileIn = file_path;
@@ -188,7 +188,17 @@ void functionResource::load_resource(std::string file_path)
         }
 
 
-        std::string  functionCodeLoadLocation = soughtDir+resource_name+".cps";
+        std::string  functionCodeLoadLocation = soughtDir+ "function_" + resource_name + ".cps";
+
+        if( current_project !=NULL )
+        {
+            if( current_project->get_project_language_id() ==
+               pawgui::program_language_cpp )
+            {
+                functionCodeLoadLocation = soughtDir+  "function_" + resource_name + ".cpp";
+            }
+        }
+
         if( functionCode!=NULL)
         {
             functionCode->import_text(functionCodeLoadLocation);
@@ -384,8 +394,8 @@ void functionResource::save_resource(std::string file_path, int backupId)
     }
     else
     {
-        soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/functions/";
-        newFileOut = soughtDir + resource_name+".gpf";
+        soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/source/";
+        newFileOut = soughtDir + "function_" + resource_name+".gpf";
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
     //If the scene file could be saved

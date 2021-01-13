@@ -45,7 +45,7 @@ GPE_SceneText::GPE_SceneText( pawgui::widget_resource_container *pFolder )
 
     if( projectParentFolder!=NULL)
     {
-        fontInEditor  = new pawgui::widget_drop_down_resource_menu( "Font",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_font]+"s"),-1,true);
+        fontInEditor  = new pawgui::widget_drop_down_resource_menu( "Font",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_font]),-1,true);
         fontInEditor->set_width(192);
     }
     else
@@ -259,7 +259,7 @@ GPE_SceneMultilineText::GPE_SceneMultilineText( pawgui::widget_resource_containe
 
     if( projectParentFolder!=NULL)
     {
-        fontInEditor  = new pawgui::widget_drop_down_resource_menu( "Font",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_font]+"s"),-1,true);
+        fontInEditor  = new pawgui::widget_drop_down_resource_menu( "Font",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_font]),-1,true);
         fontInEditor->set_width(192);
     }
     else

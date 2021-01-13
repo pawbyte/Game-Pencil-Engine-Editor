@@ -69,7 +69,7 @@ public:
     pawgui::widget_resource_container * RESC_EMITTERS;
     pawgui::widget_resource_container * RESC_LIGHTS;
     pawgui::widget_resource_container * RESC_FUNCTIONS;
-    pawgui::widget_resource_container * RESC_OBJECTS;
+    pawgui::widget_resource_container * RESC_ENTITIES;
     pawgui::widget_resource_container * RESC_CLASSES;
     pawgui::widget_resource_container * RESC_RESOURCES;
     pawgui::widget_resource_container * RESC_PATHS;
@@ -121,7 +121,7 @@ public:
     pawgui::widget_resource_container * create_blank_font( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
     pawgui::widget_resource_container * create_blank_function( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
     pawgui::widget_resource_container * create_blank_class( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    pawgui::widget_resource_container * create_blank_gameobject( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_game_enttity( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
     pawgui::widget_resource_container * create_blank_scene( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
     pawgui::widget_resource_container * create_blank_animation( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
     pawgui::widget_resource_container * create_blank_texture( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);

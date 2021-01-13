@@ -70,6 +70,7 @@ class gpeCPPBuildHolder
     pawgui::widget_label_text  * builderNameLabel;
     pawgui::widget_input_text * builderNameField;
     pawgui::widget_button_label * addSubSystemButton;
+    pawgui::widget_dropdown_menu * buildSystemOS;
     std::vector <gpeCPPSubsytemHolder *> mySubsystems;
     gpeCPPBuildHolder(std::string buildSystemName = "NewBuildHolder");
     ~gpeCPPBuildHolder();
@@ -91,6 +92,7 @@ class gameCPPBuilderSettingsResource: public standardEditableGameResource
         pawgui::widget_selectbox * sideAreaPanel;
         gpe::shape_rect * sidePanelRect;
         //Compiler Settings
+        pawgui::widget_label_title * cppbuildSystemsLabel;
         pawgui::widget_button_label * addCPPBuildSystemButton;
         pawgui::widget_dropdown_menu * compilerInUse;
         pawgui::widget_button_label * defaultCompilerButton;

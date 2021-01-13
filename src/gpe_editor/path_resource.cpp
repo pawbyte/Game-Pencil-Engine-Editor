@@ -41,7 +41,7 @@ gamePathResource::gamePathResource(pawgui::widget_resource_container * pFolder )
 
     if( projectParentFolder!=NULL)
     {
-        sceneToPreview = new pawgui::widget_drop_down_resource_menu( "Previewed Scene",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_scene]+"s"),-1,true );
+        sceneToPreview = new pawgui::widget_drop_down_resource_menu( "Previewed Scene",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_scene]),-1,true );
         sceneToPreview->set_width(128);
     }
     else

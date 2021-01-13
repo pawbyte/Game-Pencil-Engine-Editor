@@ -51,7 +51,7 @@ GPE_SceneBackground::GPE_SceneBackground(pawgui::widget_resource_container *pFol
 
     if( projectParentFolder!=NULL)
     {
-        backgroundInEditor = new pawgui::widget_drop_down_resource_menu( "Background Texture",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_texture]+"s"),-1,true);
+        backgroundInEditor = new pawgui::widget_drop_down_resource_menu( "Background Texture",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_texture]),-1,true);
         backgroundInEditor->set_width(192);
     }
     else
@@ -96,7 +96,7 @@ void GPE_SceneBackground::add_typed_elements()
 
 bool GPE_SceneBackground::build_intohtml5_file( std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
 {
-    pawgui::widget_resource_container * allTexturesFolder = localResTypeController->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_texture]+"s");
+    pawgui::widget_resource_container * allTexturesFolder = localResTypeController->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_texture]);
     if( allTexturesFolder == NULL)
     {
         GPE_SceneBasicClass::build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController);

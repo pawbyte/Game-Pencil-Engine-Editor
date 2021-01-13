@@ -95,7 +95,7 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directoryIn, 
     RESC_AUDIO = NULL;
     RESC_VIDEOS = NULL;
     RESC_FUNCTIONS = NULL;
-    RESC_OBJECTS = NULL;
+    RESC_ENTITIES = NULL;
     RESC_CLASSES = NULL;
     RESC_PATHS = NULL;
     RESC_SCENES = NULL;
@@ -121,7 +121,7 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directoryIn, 
     RESC_PATHS =  RESC_ALL[ gpe::resource_type_path] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_path,"Paths", increment_resouce_count(), pawgui::restype_superfolder);
     RESC_EMITTERS =  RESC_ALL[ gpe::resource_type_emitter] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_emitter,"Particles", increment_resouce_count(), pawgui::restype_superfolder);
     RESC_LIGHTS =  RESC_ALL[ gpe::resource_type_light] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_light,"Lights", increment_resouce_count(), pawgui::restype_superfolder);
-    RESC_OBJECTS =  RESC_ALL[ gpe::resource_type_object] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_object,"Objects", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_ENTITIES =  RESC_ALL[ gpe::resource_type_object] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_object,"Entities", increment_resouce_count(), pawgui::restype_superfolder);
     RESC_CLASSES =  RESC_ALL[ gpe::resource_type_class] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_class,"Classes", increment_resouce_count(), pawgui::restype_superfolder);
     RESC_SCENES =  RESC_ALL[ gpe::resource_type_scene] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_scene,"Scenes", increment_resouce_count(), pawgui::restype_superfolder);
     //RESC_ACHIEVEMENTS =  RESC_ALL[ gpe::resource_type_achievement] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_achievement,"Achievements", increment_resouce_count(), pawgui::restype_superfolder);
@@ -371,7 +371,7 @@ pawgui::widget_resource_container *  GPE_ProjectFolder::create_blank_resource(in
         {
             CREATED_RESOURCE_COUNT[rNewType]+=1;
             int resourceNumb = CREATED_RESOURCE_COUNT[rNewType];
-            if( (int)new_name.size() <= 0)
+            if( (int)new_name.size() == 0)
             {
                 new_name = "new"+gpe::resource_type_names[rNewType]+ stg_ex::int_to_string(resourceNumb );
             }
@@ -397,7 +397,7 @@ pawgui::widget_resource_container *  GPE_ProjectFolder::create_blank_resource(in
                     newProjectResource = new lightResource(RESC_project_FOLDER);
                 break;
                 case gpe::resource_type_object:
-                    newProjectResource = new gameObjectResource(RESC_project_FOLDER);
+                    newProjectResource = new gameEntityResource(RESC_project_FOLDER);
                 break;
                 //Added since Version 1.12 [BEGIN]
                 case gpe::resource_type_path:
@@ -516,7 +516,7 @@ pawgui::widget_resource_container *  GPE_ProjectFolder::create_blank_tilesheet(p
     return create_blank_resource( gpe::resource_type_tilesheet, folderContainer, new_name, newResId);
 }
 
-pawgui::widget_resource_container *  GPE_ProjectFolder::create_blank_gameobject(pawgui::widget_resource_container * folderContainer, std::string new_name, int newResId )
+pawgui::widget_resource_container *  GPE_ProjectFolder::create_blank_game_enttity(pawgui::widget_resource_container * folderContainer, std::string new_name, int newResId )
 {
     return create_blank_resource( gpe::resource_type_object, folderContainer, new_name, newResId);
 }
@@ -663,7 +663,7 @@ bool GPE_ProjectFolder::export_project_cpp(std::string projectBuildDirectory, st
     //Added as of 1.14 [ BEGIN ]
     RESC_CLASSES->grab_useable_resources(buildClassesOptions);
     //Added as of 1.14 [ END ]
-    RESC_OBJECTS->grab_useable_resources(buildGameObjectOptions);
+    RESC_ENTITIES->grab_useable_resources(buildGameObjectOptions);
     RESC_SCENES->grab_useable_resources(buildGameSceneOptions);
 
     //For Mega Looking of resources:
@@ -679,7 +679,7 @@ bool GPE_ProjectFolder::export_project_cpp(std::string projectBuildDirectory, st
     //Added as of 1.14 [ BEGIN ]
     RESC_CLASSES->grab_useable_resources(buildGameBuildAllOptions);
     //Added as of 1.14 [ END ]
-    RESC_OBJECTS->grab_useable_resources(buildGameBuildAllOptions);
+    RESC_ENTITIES->grab_useable_resources(buildGameBuildAllOptions);
     RESC_SCENES->grab_useable_resources(buildGameBuildAllOptions);
 
     currentObjParents.clear();
@@ -692,7 +692,7 @@ bool GPE_ProjectFolder::export_project_cpp(std::string projectBuildDirectory, st
 //Build HTML5
 bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory,  std::string gpeBuilderName , int buildMetaTemplate, bool runGameOnCompile, bool inDebugMode)
 {
-    pawgui::widget_resource_container * firstObjectContainer = RESC_OBJECTS->get_usable_resource();
+    pawgui::widget_resource_container * firstObjectContainer = RESC_ENTITIES->get_usable_resource();
     pawgui::widget_resource_container * firstSceneContainer = RESC_SCENES->get_usable_resource();
     bool hadSaveErrors = false;
     int build_screen_width = 640;
@@ -1653,7 +1653,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 particleResource * tempEmitterRes = NULL;
                 functionResource * tempFuncRes = NULL;
                 classResource *    tempClassRes = NULL;
-                gameObjectResource * tempObjRes = NULL;
+                gameEntityResource * tempObjRes = NULL;
                 gameSceneResource * tempScnRes = NULL;
                 //achievementResource * tempAchRes = NULL;
                 fontResource * tempFntRes = NULL;
@@ -1681,7 +1681,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 std::vector <gamePathResource *> projectGamePaths;
                 std::vector <functionResource *> projectGameFunctions;
                 std::vector <classResource *> projectGameClasses;
-                std::vector <gameObjectResource *> projectGameObjects;
+                std::vector <gameEntityResource *> projectGameEntities;
                 std::vector <gameSceneResource *> projectScenes;
                 std::vector <fontResource *> projectGameFonts;
 
@@ -1967,18 +1967,18 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                         }
                                     }
                                 }
-                                else if( keyString == "object"|| keyString=="gameobject"|| keyString=="game-object" || keyString=="actor" )
+                                else if( keyString == "object"|| keyString=="gameobject"|| keyString=="game-object" || keyString=="actor" || keyString=="entity"  || keyString=="game-entity"  ||  keyString=="gameentity")
                                 {
                                     tempNewresource_name = stg_ex::split_first_string(valString,',');
                                     foundResGlobalId = stg_ex::split_first_int(valString,',');
-                                    newContainer = create_blank_gameobject(containerFolderToEdit,tempNewresource_name,foundResGlobalId);
+                                    newContainer = create_blank_game_enttity(containerFolderToEdit,tempNewresource_name,foundResGlobalId);
                                     if( newContainer->get_held_resource()!=NULL)
                                     {
-                                        tempObjRes = (gameObjectResource * )newContainer->get_held_resource();
+                                        tempObjRes = (gameEntityResource * )newContainer->get_held_resource();
                                         if( tempObjRes!=NULL)
                                         {
                                             tempObjRes->resourcePostProcessed = false;
-                                            projectGameObjects.push_back(tempObjRes);
+                                            projectGameEntities.push_back(tempObjRes);
                                         }
                                     }
                                 }
@@ -2169,9 +2169,9 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                     }
                 }
 
-                for( iItr = 0; iItr < (int)projectGameObjects.size(); iItr++)
+                for( iItr = 0; iItr < (int)projectGameEntities.size(); iItr++)
                 {
-                    tempObjRes = projectGameObjects[iItr];
+                    tempObjRes = projectGameEntities[iItr];
                     if( tempObjRes!=NULL)
                     {
                         tempObjRes->load_resource();

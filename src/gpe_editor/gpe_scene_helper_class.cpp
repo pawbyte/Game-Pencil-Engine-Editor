@@ -151,7 +151,7 @@ GPE_SceneEditorHelper::GPE_SceneEditorHelper()
     tCategory = add_category("Standard Element");
     tCategory->add_button("Animation",(int)gpe::branch_type::ANIMATION, gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magnet.png","Animation" );
     tCategory->add_button("Background",(int)gpe::branch_type::BACKGROUND, gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/image.png","Background" );
-    tCategory->add_button("Object", (int)gpe::branch_type::OBJECT, gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/automobile.png","Object" );
+    tCategory->add_button("Entity", (int)gpe::branch_type::OBJECT, gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/automobile.png","Object" );
     tCategory->add_button("Multi-Line Text", (int)gpe::branch_type::TEXT, gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/text-height.png","Multi-Line\nText" );
     tCategory->add_button("Single-Line Text", (int)gpe::branch_type::STEXT, gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/text-width.png","Single-Line\nText" );
 

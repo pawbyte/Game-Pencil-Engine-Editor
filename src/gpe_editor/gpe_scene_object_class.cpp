@@ -69,10 +69,10 @@ void GPE_SceneGameObject::add_typed_elements()
 bool GPE_SceneGameObject::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
 {
 
-    pawgui::widget_resource_container * allObjsFolder = localResTypeController->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_object]+"s");
+    pawgui::widget_resource_container * allEntitiesFolder = localResTypeController->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_object]);
     pawgui::widget_resource_container * fObjToPlace = NULL;
 
-    fObjToPlace = allObjsFolder->find_resource_from_id( objTypeId);
+    fObjToPlace = allEntitiesFolder->find_resource_from_id( objTypeId);
     std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
     if( fObjToPlace!=NULL)
     {
@@ -111,7 +111,7 @@ void GPE_SceneGameObject::render_branch()
         if( objTypeContainer!=NULL && objTypeContainer->get_held_resource()!=NULL )
         {
             bool objectanimationRender = false;
-            gameObjectResource*tempGameObj = (gameObjectResource*) objTypeContainer->get_held_resource();
+            gameEntityResource*tempGameObj = (gameEntityResource*) objTypeContainer->get_held_resource();
             if( tempGameObj!=NULL)
             {
                 //fangle = angleField->get_held_number();

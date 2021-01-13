@@ -75,7 +75,7 @@ GPE_SceneTileMap::GPE_SceneTileMap( std::string mapName, int x, int y, pawgui::w
     projectParentFolder = pFolder;
     if( projectParentFolder!=NULL)
     {
-        tilesheetDropDown = new pawgui::widget_drop_down_resource_menu( "Tilesheet",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_tilesheet]+"s"),-1,true );
+        tilesheetDropDown = new pawgui::widget_drop_down_resource_menu( "Tilesheet",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_tilesheet]),-1,true );
         tilesheetDropDown->set_width(192);
         tSPreviewer = new tilesheetPreviewer();
 
