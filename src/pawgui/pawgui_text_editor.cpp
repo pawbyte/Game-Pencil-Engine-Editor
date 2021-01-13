@@ -2040,6 +2040,7 @@ namespace pawgui
     {
         if( !new_file_name.empty() )
         {
+            textFileLocation = new_file_name;
             std::ifstream newTxtFile( new_file_name.c_str() );
             //If the level file could be loaded
             if( !newTxtFile.fail() )
@@ -2156,12 +2157,17 @@ namespace pawgui
         }
     }
 
+    void widget_text_editor::open_text_file()
+    {
+        gpe::external_open_program( textFileLocation );
+    }
+
     void widget_text_editor::paste_clipboard()
     {
         if(!isReadOnly)
         {
             std::string clipboardStr = gpe::input->clipboard_string();
-            if( clipboardStr.size() > 0)
+            if( (int)clipboardStr.size() > 0)
             {
                 clipboardStr = stg_ex::string_replace_all(clipboardStr,"\r\n","\n");
                 clipboardStr = stg_ex::string_replace_all(clipboardStr,"\r","\n");
@@ -2806,13 +2812,25 @@ namespace pawgui
                     else if( gpe::input->check_mouse_down( mb_right ))
                     {
                         context_menu_open(-1,-1,128);
-                        main_context_menu->add_menu_option("Undo",0,rsm_gui->texture_add("backButtonIcon", gpe::app_directory_name+"resources/buttons/backward.png"),-1,NULL,true,!isReadOnly && can_undo());
-                        main_context_menu->add_menu_option("Redo",1,rsm_gui->texture_add("forwardButtonIcon", gpe::app_directory_name+"resources/buttons/forward.png"),-1,NULL,true,!isReadOnly && can_redo() );
-                        main_context_menu->add_menu_option("Cut",2,rsm_gui->texture_add("cutButtonIcon", gpe::app_directory_name+"resources/buttons/cut.png"),-1,NULL,false,!isReadOnly);
+                        if( !isReadOnly )
+                        {
+                            main_context_menu->add_menu_option("Undo",0,rsm_gui->texture_add("backButtonIcon", gpe::app_directory_name+"resources/buttons/backward.png"),-1,NULL,true,!isReadOnly && can_undo());
+                            main_context_menu->add_menu_option("Redo",1,rsm_gui->texture_add("forwardButtonIcon", gpe::app_directory_name+"resources/buttons/forward.png"),-1,NULL,true,!isReadOnly && can_redo() );
+                            main_context_menu->add_menu_option("Cut",2,rsm_gui->texture_add("cutButtonIcon", gpe::app_directory_name+"resources/buttons/cut.png"),-1,NULL,false,!isReadOnly);
+                        }
                         main_context_menu->add_menu_option("Copy",3,rsm_gui->texture_add("copyButtonIcon", gpe::app_directory_name+"resources/buttons/copy.png"),-1,NULL,false,true);
-                        main_context_menu->add_menu_option("Paste",4,rsm_gui->texture_add("pasteButtonIcon", gpe::app_directory_name+"resources/buttons/paste.png"),-1,NULL,false,!isReadOnly);
-                        main_context_menu->add_menu_option("Delete",5,rsm_gui->texture_add("removeButtonIcon", gpe::app_directory_name+"resources/buttons/remove.png"),-1,NULL,true,!isReadOnly);
+                        if( !isReadOnly )
+                        {
+                            main_context_menu->add_menu_option("Paste",4,rsm_gui->texture_add("pasteButtonIcon", gpe::app_directory_name+"resources/buttons/paste.png"),-1,NULL,false,!isReadOnly);
+                            main_context_menu->add_menu_option("Delete",5,rsm_gui->texture_add("removeButtonIcon", gpe::app_directory_name+"resources/buttons/remove.png"),-1,NULL,true,!isReadOnly);
+                        }
                         main_context_menu->add_menu_option("Select All",6,rsm_gui->texture_add("stickyButtonIcon", gpe::app_directory_name+"resources/buttons/sticky-note.png"),-1,NULL,true,true);
+
+                        if( (int)textFileLocation.size() > 0 )
+                        {
+                            main_context_menu->add_menu_option("Open File",7,rsm_gui->texture_add("stickyButtonIcon", gpe::app_directory_name+"resources/buttons/file-open.png"),-1,NULL,true,true);
+                            main_context_menu->add_menu_option("Refresh Text",8,rsm_gui->texture_add("stickyButtonIcon", gpe::app_directory_name+"resources/buttons/file-open.png"),-1,NULL,true,true);
+                        }
                         int menuSelection = context_menu_process();
 
                         if( menuSelection==0)
@@ -2822,16 +2840,24 @@ namespace pawgui
                                 undo_edit();
                             }
                         }
-                        else if( menuSelection==1 && !isReadOnly )
+                        else if( menuSelection==1 )
                         {
-                            if( can_redo() )
+                            if( can_redo() && !isReadOnly )
                             {
                                 redo_edit();
                             }
                         }
-                        if( menuSelection==6)
+                        else if( menuSelection==6)
                         {
                             select_all();
+                        }
+                        else if( menuSelection==7)
+                        {
+                            open_text_file();
+                        }
+                        else if( menuSelection==8)
+                        {
+                            refresh_text_file();
                         }
                         else
                         {
@@ -4116,7 +4142,7 @@ namespace pawgui
             paste_clipboard();
             main_syntax_highlighter->clear_all();
             gpe::input->reset_all_input();
-            process_self( view_space,cam );
+            //process_self( view_space,cam );
         }
 
         if( undoableActionOccurred && !isReadOnly )
@@ -4147,6 +4173,11 @@ namespace pawgui
                 }
             }
         }
+    }
+
+    void widget_text_editor::refresh_text_file()
+    {
+        import_text( textFileLocation );
     }
 
     void widget_text_editor::render_code( gpe::shape_rect * view_space, gpe::shape_rect * cam )

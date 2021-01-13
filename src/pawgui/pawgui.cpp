@@ -41,8 +41,8 @@ namespace pawgui
         if( load_default_fonts( mono_font_location, font_min_size) )
         {
             gpe::error_log->report("IDE properly added all PawGUI Fonts... \n");
-            popup_font_size_width = 12;
-            popup_font_size_height = 12;
+            popup_font_size_width = font_min_size;
+            popup_font_size_height = font_min_size;
             if( font_popup!=NULL)
             {
                 font_popup->get_metrics("A",&popup_font_size_width,&popup_font_size_height);

@@ -515,39 +515,39 @@ namespace pawgui
         }
         gpe::error_log->report("Using "+mainGuiFontLocation+" font..." );
         //Open the fonts
-        font_buttons = gpe::gfs->open_font(textEditorFontLocation,12,true, "Buttons Font");
+        font_buttons = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "Buttons Font");
 
-        gpe::font_default = gpe::gfs->open_font(mainGuiFontLocation,16,fontIsMonoSpaced, "gpe::font_default");
-        font_tab = gpe::gfs->open_font(mainGuiFontLocation,11,fontIsMonoSpaced, "GPE_TAB_FONT");
+        gpe::font_default = gpe::gfs->open_font(mainGuiFontLocation,font_min_size,fontIsMonoSpaced, "gpe::font_default");
+        font_tab = gpe::gfs->open_font(mainGuiFontLocation,font_min_size,fontIsMonoSpaced, "GPE_TAB_FONT");
 
-        font_popup = gpe::gfs->open_font(mainGuiFontLocation,14,fontIsMonoSpaced, "font_popup");
+        font_popup = gpe::gfs->open_font(mainGuiFontLocation,font_min_size,fontIsMonoSpaced, "font_popup");
 
-        font_toolbar = gpe::gfs->open_font(mainGuiFontLocation,14,fontIsMonoSpaced, "font_toolbar");
-        font_resourcebar = gpe::gfs->open_font(mainGuiFontLocation,12,fontIsMonoSpaced, "font_resourcebar");
-        FONT_STREE_BRANCH = gpe::gfs->open_font(mainGuiFontLocation,12,fontIsMonoSpaced, "FONT_STREE");
+        font_toolbar = gpe::gfs->open_font(mainGuiFontLocation,font_min_size,fontIsMonoSpaced, "font_toolbar");
+        font_resourcebar = gpe::gfs->open_font(mainGuiFontLocation,font_min_size,fontIsMonoSpaced, "font_resourcebar");
+        FONT_STREE_BRANCH = gpe::gfs->open_font(mainGuiFontLocation,font_min_size,fontIsMonoSpaced, "FONT_STREE");
 
-        font_textinput = gpe::gfs->open_font(textEditorFontLocation,11,true, "FONT_TEXTinput_GENERAL");
-        font_textinput_comment = gpe::gfs->open_font(textEditorFontLocation,11,true, "font_textinput_comment");
-        font_textinput_keyword = gpe::gfs->open_font(textEditorFontLocation,11,true, "font_textinput_keyword");
-        font_textinput_function = gpe::gfs->open_font(textEditorFontLocation,11,true, "font_textinput_function");
-        font_textinput_number = gpe::gfs->open_font(textEditorFontLocation,11,true, "font_textinput_number");
-        font_textinput_quote = gpe::gfs->open_font(textEditorFontLocation,11,true, "font_textinput_quote");
-        font_textinput_symbol = gpe::gfs->open_font(textEditorFontLocation,11,true, "font_textinput_symbol");
-        font_textinput_project_function = gpe::gfs->open_font(textEditorFontLocation,11,true, "font_textinput_project_function");
-        FONT_TEXTinput_project_keyword = gpe::gfs->open_font(textEditorFontLocation,11,true, "FONT_TEXTinput_project_keyword");
+        font_textinput = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "FONT_TEXTinput_GENERAL");
+        font_textinput_comment = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_textinput_comment");
+        font_textinput_keyword = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_textinput_keyword");
+        font_textinput_function = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_textinput_function");
+        font_textinput_number = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_textinput_number");
+        font_textinput_quote = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_textinput_quote");
+        font_textinput_symbol = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_textinput_symbol");
+        font_textinput_project_function = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_textinput_project_function");
+        FONT_TEXTinput_project_keyword = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "FONT_TEXTinput_project_keyword");
 
-        font_term_name = gpe::gfs->open_font(textEditorFontLocation,11,true, "font_term_name");
-        font_term_description = gpe::gfs->open_font(textEditorFontLocation,11,true, "font_term_description");
-        font_term_scope = gpe::gfs->open_font(textEditorFontLocation,11,true, "font_term_scope");
-        FONT_TOOLTIP = gpe::gfs->open_font(textEditorFontLocation,12,true, "FONT_TOOLTIP");
+        font_term_name = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_term_name");
+        font_term_description = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_term_description");
+        font_term_scope = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_term_scope");
+        FONT_TOOLTIP = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "FONT_TOOLTIP");
 
-        font_default_prompt = gpe::gfs->open_font(textEditorFontLocation,16,true, "font_default_prompt");
+        font_default_prompt = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_default_prompt");
 
-        FONT_HEADER = gpe::gfs->open_font( mainGuiFontLocation, 18,fontIsMonoSpaced, "FONT_HEADER");
-        FONT_LABEL = gpe::gfs->open_font( mainGuiFontLocation, 14,fontIsMonoSpaced, "FONT_LABEL");
-        FONT_LABEL_ANCHOR = gpe::gfs->open_font( mainGuiFontLocation, 14,fontIsMonoSpaced, "FONT_LABEL_ANCHOR");
-        FONT_LABEL_TITLE = gpe::gfs->open_font( mainGuiFontLocation, 18,fontIsMonoSpaced, "FONT_LABEL_TITLE");
-        FONT_STATUSBAR = gpe::gfs->open_font( textEditorFontLocation, 12,true, "FONT_STATUSBAR" );
+        FONT_HEADER = gpe::gfs->open_font( mainGuiFontLocation, font_min_size,fontIsMonoSpaced, "FONT_HEADER");
+        FONT_LABEL = gpe::gfs->open_font( mainGuiFontLocation, font_min_size,fontIsMonoSpaced, "FONT_LABEL");
+        FONT_LABEL_ANCHOR = gpe::gfs->open_font( mainGuiFontLocation, font_min_size,fontIsMonoSpaced, "FONT_LABEL_ANCHOR");
+        FONT_LABEL_TITLE = gpe::gfs->open_font( mainGuiFontLocation, font_min_size,fontIsMonoSpaced, "FONT_LABEL_TITLE");
+        FONT_STATUSBAR = gpe::gfs->open_font( textEditorFontLocation, font_min_size,true, "FONT_STATUSBAR" );
 
         if(gpe::font_default==NULL )
         {

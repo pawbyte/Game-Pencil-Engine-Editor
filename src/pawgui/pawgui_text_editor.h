@@ -182,6 +182,7 @@ namespace pawgui
             bool missingSymbolDetected;
             int missingSymbolStartYPos;
             int missingSymbolStartXPos;
+            std::string textFileLocation;
             std::vector<std::string> foundSyntaxErrors;
             int misingSymbolSuggestedEndYPos;
             int misingSymbolSuggestedEndXPos;
@@ -254,10 +255,12 @@ namespace pawgui
             bool write_data_into_file(std::ofstream * fileTarget, int leftTabAmount = 0, bool useNewLines = true, bool useLastNewLine = false);
             bool write_short_data_into_file(std::ofstream * fileTarget, int leftTabAmount = 0, bool useNewLines = true, bool useLastNewLine = false);
             bool import_text(std::string new_file_name);
+            void open_text_file();
             void paste_clipboard();
             bool parse_code_javascript();
             void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             void redo_edit();
+            void refresh_text_file();
             void reset_selection(int resetDirection = 0);
             void reset_self();
             void render_linebox( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
