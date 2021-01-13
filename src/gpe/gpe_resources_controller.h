@@ -54,6 +54,7 @@ SOFTWARE.
 namespace gpe
 {
     extern std::string resource_type_names[resource_type_max];
+    extern std::string resource_type_names_plural[resource_type_max];
     //Controls and handles all of the game's resources( animations & Backgrounds and maybe sounds and music
     class asset_manager
     {

@@ -102,6 +102,16 @@ namespace gpe
         return NULL;
     }
 
+        font_pair_base * font_base::find_character_texture( const std::string numbId )
+    {
+        return NULL;
+    }
+
+    font_pair_base * font_base::find_texture( const std::string textToRender)
+    {
+        return NULL;
+    }
+
     int font_base::get_cache_count()
     {
         return 0;
@@ -157,9 +167,19 @@ namespace gpe
         return monoWidth;
     }
 
+    std::string font_base::get_nickname()
+    {
+        return fontNickName;
+    }
+
     std::string font_base::get_family_name()
     {
         return fontFamilyName;
+    }
+
+    int font_base::get_font_size()
+    {
+        return fontSize;
     }
 
     std::string font_base::get_font_type()
@@ -167,14 +187,9 @@ namespace gpe
         return font_system_type;
     }
 
-    font_pair_base * font_base::find_character_texture( const std::string numbId )
+    bool font_base::is_monospaced()
     {
-        return NULL;
-    }
-
-    font_pair_base * font_base::find_texture( const std::string textToRender)
-    {
-        return NULL;
+        return fontIsMonoSpaced;
     }
 
     void font_base::render_bitmapped_text( int xPos, int yPos, std::string numberToRender, color * textColor, int hAlign,int vAlign, int renderAlpha )
@@ -224,6 +239,24 @@ namespace gpe
     {
 
     }
+
+    font_base *  font_system_controller::copy_font( font_base * parent_font, std::string font_nickname , int dynamicId )
+    {
+        if( parent_font == NULL )
+        {
+            return NULL;
+        }
+        if( dynamicId < 0)
+        {
+            dynamicId = newFontIdNumber;
+        }
+        font_base *  returnVal = font_template->create_new( parent_font->get_family_name(),parent_font->get_font_size(), parent_font->is_monospaced(), font_nickname, newFontIdNumber );
+        loadedFonts.push_back(returnVal);
+        newFontIdNumber++;
+        fontTotalCount++;
+        return returnVal;
+    }
+
 
     font_base * font_system_controller::open_font(std::string fontLocation, int fontSize, bool isMonospaced, std::string fNickName, int dynamicId )
     {

@@ -61,6 +61,7 @@ namespace gpe
         for(int rI = 0; rI < resource_type_max; rI++)
         {
             resource_type_names[rI] = "";
+            resource_type_names_plural[rI] = "";
         }
 
         resource_type_names[resource_type_animation] = "Animation";
@@ -72,7 +73,7 @@ namespace gpe
 
         resource_type_names[resource_type_function] = "Function";
         resource_type_names[resource_type_class] = "Class";
-        resource_type_names[resource_type_object] = "Object";
+        resource_type_names[resource_type_object] = "Entity";
         resource_type_names[resource_type_scene] = "Scene";
         resource_type_names[resource_type_achievement] = "Achievement";
 
@@ -85,6 +86,30 @@ namespace gpe
         resource_type_names[resource_type_event] = "Event";
         resource_type_names[resource_type_quest] = "Quest";
         resource_type_names[resource_type_project_settings] = "Project Properties";
+
+        //Plural names
+        resource_type_names_plural[resource_type_animation] = "Animations";
+        resource_type_names_plural[resource_type_texture] = "Textures";
+        resource_type_names_plural[resource_type_tilesheet] = "Tilesheets";
+
+        resource_type_names_plural[resource_type_audio] = "Audios";
+        resource_type_names_plural[resource_type_video] = "Videos";
+
+        resource_type_names_plural[resource_type_function] = "Functions";
+        resource_type_names_plural[resource_type_class] = "Classes";
+        resource_type_names_plural[resource_type_object] = "Entities";
+        resource_type_names_plural[resource_type_scene] = "Scenes";
+        resource_type_names_plural[resource_type_achievement] = "Achievements";
+
+        resource_type_names_plural[resource_type_path] = "Paths";
+        resource_type_names_plural[resource_type_dictionary] = "Dictionaries";
+        resource_type_names_plural[resource_type_font] = "Fonts";
+        resource_type_names_plural[resource_type_emitter] = "Particles";
+        resource_type_names_plural[resource_type_light] = "Lights";
+        resource_type_names_plural[resource_type_plugin] = "Plugins";
+        resource_type_names_plural[resource_type_event] = "Events";
+        resource_type_names_plural[resource_type_quest] = "Quests";
+        resource_type_names_plural[resource_type_project_settings] = "Project Properties";
 
         for( int i_sound_format = 0; i_sound_format < sound_format_max; i_sound_format++ )
         {

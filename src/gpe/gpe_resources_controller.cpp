@@ -35,6 +35,7 @@ SOFTWARE.
 namespace gpe
 {
     std::string resource_type_names[resource_type_max];
+    std::string resource_type_names_plural[resource_type_max];
 
     asset_manager::asset_manager(render_package * start_package, std::string start_name)
     {

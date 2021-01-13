@@ -324,7 +324,7 @@ namespace gpe
             void key_bind_load();
             void key_bind_save();
 
-            bool clipboard_empty();
+            virtual bool clipboard_empty();
             virtual bool clipboard_set( std::string new_clipboard_string);
             virtual std::string clipboard_string();
 
