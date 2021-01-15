@@ -23,13 +23,8 @@ I appreciate your generousity and moving this project forward.
 
 Building
 ========
-Building requires the following programs:
 
- - meson
- - ninja
-
-To build run `meson build` then go into the build directory and run `ninja`
-
+Currently being updated.
 
 Documentation
 =============
