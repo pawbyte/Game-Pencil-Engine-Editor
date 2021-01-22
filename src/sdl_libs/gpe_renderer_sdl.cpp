@@ -37,6 +37,8 @@ SOFTWARE.
 #include "../gpe/gpe_settings.h"
 #include "../other_libs/stg_ex.h"
 
+#define SDL_BLENDMODE_MUL (SDL_BlendMode)0x00000008
+
 namespace gpe
 {
     renderer_system_sdl * renderer_main_sdl = NULL;

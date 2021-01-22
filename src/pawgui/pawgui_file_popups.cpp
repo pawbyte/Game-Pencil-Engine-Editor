@@ -30,6 +30,11 @@ SOFTWARE.
 
 
 */
+
+#if defined(_WIN32) || (defined(__APPLE__) && defined(__MACH__)) || (defined(__linux__) && !defined(__ANDROID__)) || defined(__FreeBSD__)
+#include "../other_libs/dlgmodule.h"
+#endif
+
 #include "pawgui_file_popups.h"
 
 namespace pawgui
@@ -284,40 +289,14 @@ namespace pawgui
             gpe::error_log->report("Attempting to open file selection menu...");
             //The lovely file selector loop
             nextDirectoryToView = currentDirectoryInView;
-    #ifdef _WIN32
-    #include "windows.h"
-            if( !isDirectorySearch)
-            {
-                const int BUFSIZE = 1024;
-                char buffer[BUFSIZE] = {0};
-                OPENFILENAME ofns = {0};
-                ofns.hInstance = NULL;
-                ofns.hwndOwner = NULL;
-                ofns.lStructSize = sizeof( ofns );
-                ofns.lpstrFile = buffer;
-                ofns.nMaxFile = BUFSIZE;
-                ofns.lpstrInitialDir = currentDirectoryInView.c_str();
-                ofns.lpstrTitle = prompt.c_str();
-                ofns.lpstrFilter =  osFileFilterString.c_str();
-
-                ofns.nFilterIndex = 1;
-                ofns.Flags =  OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
-                bool emptyFileReturned = false;
-                if( isSaving)
-                {
-                    if ( !GetSaveFileName( & ofns ) )
-                    {
-                        emptyFileReturned = true;
-                    }
-                }
-                else if ( !GetOpenFileName( & ofns ) )
-                {
-                    emptyFileReturned = true;
-                }
-                returnFile = buffer;
-                if( emptyFileReturned)
-                {
-                    returnFile = "";
+    #if defined(_WIN32) || (defined(__APPLE__) && defined(__MACH__)) || (defined(__linux__) && !defined(__ANDROID__)) || defined(__FreeBSD__)
+            if (!isDirectorySearch) {
+                widget_set_icon((char *)"resources/gamepencil_icon_300dpi.png");
+                std::replace(allowedFileTypes.begin(), allowedFileTypes.end(), '\0', '|');
+                if (!isSaving) {
+                    returnFile = get_open_filename_ext((char *)allowedFileTypes.c_str(), (char *)"", (char *)previousDirectory.c_str(), (char *)prompt.c_str());
+                } else {
+                    returnFile = get_save_filename_ext((char *)allowedFileTypes.c_str(), (char *)"", (char *)previousDirectory.c_str(), (char *)prompt.c_str());
                 }
                 exitOperation = true;
             }

@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Game_Pencil_Engine_IDE" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<MakeCommands>
+			<Build command="" />
+			<CompileFile command="" />
+			<Clean command="" />
+			<DistClean command="" />
+			<AskRebuildNeeded command="" />
+			<SilentBuild command=" &gt; $(CMD_NULL)" />
+		</MakeCommands>
+		<Build>
+			<Target title="Win32-Debug">
+				<Option platforms="Windows;" />
+				<Option output="bin/Debug/Game_Pencil_Engine_IDE" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="C:/Users/SirNathanHurde/OneDrive/Documents/gpe_crossplatform/Game_Pencil_Engine_IDE/" />
+				</Compiler>
+				<Linker>
+					<Add library="SDL2" />
+					<Add library="SDL2main" />
+					<Add library="SDL2_image" />
+					<Add library="SDL2_ttf" />
+					<Add library="SDL2_mixer" />
+					<Add library="mingw32" />
+					<Add library="Comdlg32" />
+					<Add library="gdi32" />
+					<Add library="comctl32" />
+				</Linker>
+			</Target>
+			<Target title="Win32-Release">
+				<Option platforms="Windows;" />
+				<Option output="bin/Release/Game_Pencil_Engine_IDE" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wfatal-errors" />
+					<Add option="-Wextra" />
+					<Add option="-pg" />
+					<Add directory="C:/Users/SirNathanHurde/OneDrive/Documents/gpe_crossplatform/Game_Pencil_Engine_IDE/" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg" />
+					<Add library="SDL2" />
+					<Add library="SDL2main" />
+					<Add library="SDL2_image" />
+					<Add library="SDL2_ttf" />
+					<Add library="SDL2_mixer" />
+					<Add library="procps" />
+				</Linker>
+			</Target>
+			<Target title="MacOS-Debug">
+				<Option platforms="Mac;" />
+				<Option output="bin/Debug/Game_Pencil_Engine_IDE" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="C:/Users/SirNathanHurde/OneDrive/Documents/gpe_crossplatform/Game_Pencil_Engine_IDE/" />
+				</Compiler>
+			</Target>
+			<Target title="MacOS-Release">
+				<Option platforms="Mac;" />
+				<Option output="bin/Release/Game_Pencil_Engine_IDE" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wfatal-errors" />
+					<Add option="-Wextra" />
+					<Add option="-pg" />
+					<Add directory="C:/Users/SirNathanHurde/OneDrive/Documents/gpe_crossplatform/Game_Pencil_Engine_IDE/" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg -lgmon" />
+				</Linker>
+			</Target>
+			<Target title="Linux-Debug">
+				<Option platforms="Unix;" />
+				<Option output="bin/Debug/Game_Pencil_Engine_IDE" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="C:/Users/SirNathanHurde/OneDrive/Documents/gpe_crossplatform/Game_Pencil_Engine_IDE/" />
+				</Compiler>
+				<Linker>
+					<Add library="SDL2" />
+					<Add library="SDL2main" />
+					<Add library="SDL2_image" />
+					<Add library="SDL2_ttf" />
+					<Add library="SDL2_mixer" />
+					<Add library="procps" />
+					<Add library="X11" />
+				</Linker>
+			</Target>
+			<Target title="Linux-Release">
+				<Option platforms="Unix;" />
+				<Option output="bin/Release/Game_Pencil_Engine_IDE" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wfatal-errors" />
+					<Add option="-Wextra" />
+					<Add option="-pg" />
+					<Add directory="C:/Users/SirNathanHurde/OneDrive/Documents/gpe_crossplatform/Game_Pencil_Engine_IDE/" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg" />
+					<Add library="SDL2" />
+					<Add library="SDL2main" />
+					<Add library="SDL2_image" />
+					<Add library="SDL2_ttf" />
+					<Add library="SDL2_mixer" />
+					<Add library="procps" />
+					<Add library="X11" />
+				</Linker>
+			</Target>
+			<Target title="FreeBSD-Debug">
+				<Option platforms="Unix;" />
+				<Option output="bin/Debug/Game_Pencil_Engine_IDE" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="C:/Users/SirNathanHurde/OneDrive/Documents/gpe_crossplatform/Game_Pencil_Engine_IDE/" />
+				</Compiler>
+				<Linker>
+					<Add library="SDL2" />
+					<Add library="SDL2main" />
+					<Add library="SDL2_image" />
+					<Add library="SDL2_ttf" />
+					<Add library="SDL2_mixer" />
+					<Add library="util" />
+					<Add library="c" />
+					<Add library="X11" />
+				</Linker>
+			</Target>
+			<Target title="FreeBSD-Release">
+				<Option platforms="Unix;" />
+				<Option output="bin/Release/Game_Pencil_Engine_IDE" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wfatal-errors" />
+					<Add option="-Wextra" />
+					<Add option="-pg" />
+					<Add directory="C:/Users/SirNathanHurde/OneDrive/Documents/gpe_crossplatform/Game_Pencil_Engine_IDE/" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg" />
+					<Add library="SDL2" />
+					<Add library="SDL2main" />
+					<Add library="SDL2_image" />
+					<Add library="SDL2_ttf" />
+					<Add library="SDL2_mixer" />
+					<Add library="util" />
+					<Add library="c" />
+					<Add library="X11" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="resource.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="Win32-Debug" />
+			<Option target="Win32-Release" />
+		</Unit>
+		<Unit filename="src/game_state_credits_base.cpp" />
+		<Unit filename="src/game_state_load.cpp" />
+		<Unit filename="src/game_state_load.h" />
+		<Unit filename="src/game_state_main_menu_base.cpp" />
+		<Unit filename="src/game_state_main_menu_base.h" />
+		<Unit filename="src/game_state_master.cpp" />
+		<Unit filename="src/game_state_master.h" />
+		<Unit filename="src/game_state_splash.cpp" />
+		<Unit filename="src/game_state_splash.h" />
+		<Unit filename="src/game_state_triangle_test.cpp" />
+		<Unit filename="src/game_state_triangle_test.h" />
+		<Unit filename="src/gpe/gpe.cpp" />
+		<Unit filename="src/gpe/gpe.h" />
+		<Unit filename="src/gpe/gpe_animation2d.cpp" />
+		<Unit filename="src/gpe/gpe_animation2d.h" />
+		<Unit filename="src/gpe/gpe_artist_base.cpp" />
+		<Unit filename="src/gpe/gpe_artist_base.h" />
+		<Unit filename="src/gpe/gpe_audio_base.cpp" />
+		<Unit filename="src/gpe/gpe_audio_base.h" />
+		<Unit filename="src/gpe/gpe_background.cpp" />
+		<Unit filename="src/gpe/gpe_background.h" />
+		<Unit filename="src/gpe/gpe_basic_object.cpp" />
+		<Unit filename="src/gpe/gpe_basic_object.h" />
+		<Unit filename="src/gpe/gpe_basic_object_list.cpp" />
+		<Unit filename="src/gpe/gpe_basic_object_list.h" />
+		<Unit filename="src/gpe/gpe_basic_object_type_mapper.cpp" />
+		<Unit filename="src/gpe/gpe_basic_object_type_mapper.h" />
+		<Unit filename="src/gpe/gpe_branch.cpp" />
+		<Unit filename="src/gpe/gpe_branch.h" />
+		<Unit filename="src/gpe/gpe_camera.cpp" />
+		<Unit filename="src/gpe/gpe_camera.h" />
+		<Unit filename="src/gpe/gpe_collision_controller_base.cpp" />
+		<Unit filename="src/gpe/gpe_collision_controller_base.h" />
+		<Unit filename="src/gpe/gpe_collisions.cpp" />
+		<Unit filename="src/gpe/gpe_collisions.h" />
+		<Unit filename="src/gpe/gpe_color.cpp" />
+		<Unit filename="src/gpe/gpe_color.h" />
+		<Unit filename="src/gpe/gpe_color_manager.cpp" />
+		<Unit filename="src/gpe/gpe_color_manager.h" />
+		<Unit filename="src/gpe/gpe_common_includes.cpp" />
+		<Unit filename="src/gpe/gpe_common_includes.h" />
+		<Unit filename="src/gpe/gpe_constants.h" />
+		<Unit filename="src/gpe/gpe_cursor_base.cpp" />
+		<Unit filename="src/gpe/gpe_cursor_base.h" />
+		<Unit filename="src/gpe/gpe_error_logger.cpp" />
+		<Unit filename="src/gpe/gpe_error_logger.h" />
+		<Unit filename="src/gpe/gpe_file_system.cpp" />
+		<Unit filename="src/gpe/gpe_file_system.h" />
+		<Unit filename="src/gpe/gpe_font_base.cpp" />
+		<Unit filename="src/gpe/gpe_font_base.h" />
+		<Unit filename="src/gpe/gpe_globals.cpp" />
+		<Unit filename="src/gpe/gpe_globals.h" />
+		<Unit filename="src/gpe/gpe_group.cpp" />
+		<Unit filename="src/gpe/gpe_group.h" />
+		<Unit filename="src/gpe/gpe_ini_file.cpp" />
+		<Unit filename="src/gpe/gpe_ini_file.h" />
+		<Unit filename="src/gpe/gpe_input_base.cpp" />
+		<Unit filename="src/gpe/gpe_input_base.h" />
+		<Unit filename="src/gpe/gpe_input_event.cpp" />
+		<Unit filename="src/gpe/gpe_input_event.h" />
+		<Unit filename="src/gpe/gpe_layer.cpp" />
+		<Unit filename="src/gpe/gpe_layer.h" />
+		<Unit filename="src/gpe/gpe_lights2d.cpp" />
+		<Unit filename="src/gpe/gpe_lights2d.h" />
+		<Unit filename="src/gpe/gpe_parser.cpp" />
+		<Unit filename="src/gpe/gpe_parser.h" />
+		<Unit filename="src/gpe/gpe_particles2d.cpp" />
+		<Unit filename="src/gpe/gpe_particles2d.h" />
+		<Unit filename="src/gpe/gpe_path2d.cpp" />
+		<Unit filename="src/gpe/gpe_path2d.h" />
+		<Unit filename="src/gpe/gpe_program_state.cpp" />
+		<Unit filename="src/gpe/gpe_program_state.h" />
+		<Unit filename="src/gpe/gpe_render_package.cpp" />
+		<Unit filename="src/gpe/gpe_render_package.h" />
+		<Unit filename="src/gpe/gpe_render_package_handler.cpp" />
+		<Unit filename="src/gpe/gpe_render_package_handler.h" />
+		<Unit filename="src/gpe/gpe_renderer_base.cpp" />
+		<Unit filename="src/gpe/gpe_renderer_base.h" />
+		<Unit filename="src/gpe/gpe_resources_controller.cpp" />
+		<Unit filename="src/gpe/gpe_resources_controller.h" />
+		<Unit filename="src/gpe/gpe_runtime.cpp" />
+		<Unit filename="src/gpe/gpe_runtime.h" />
+		<Unit filename="src/gpe/gpe_scene.cpp" />
+		<Unit filename="src/gpe/gpe_scene.h" />
+		<Unit filename="src/gpe/gpe_settings.cpp" />
+		<Unit filename="src/gpe/gpe_settings.h" />
+		<Unit filename="src/gpe/gpe_shapes.cpp" />
+		<Unit filename="src/gpe/gpe_shapes.h" />
+		<Unit filename="src/gpe/gpe_shared_resources.cpp" />
+		<Unit filename="src/gpe/gpe_shared_resources.h" />
+		<Unit filename="src/gpe/gpe_spatial_partition.cpp" />
+		<Unit filename="src/gpe/gpe_spatial_partition.h" />
+		<Unit filename="src/gpe/gpe_spatial_partition_controller.cpp" />
+		<Unit filename="src/gpe/gpe_spatial_partition_controller.h" />
+		<Unit filename="src/gpe/gpe_spatial_partition_layer.cpp" />
+		<Unit filename="src/gpe/gpe_spatial_partition_layer.h" />
+		<Unit filename="src/gpe/gpe_texture_base.cpp" />
+		<Unit filename="src/gpe/gpe_texture_base.h" />
+		<Unit filename="src/gpe/gpe_texture_target_base.cpp" />
+		<Unit filename="src/gpe/gpe_texture_target_base.h" />
+		<Unit filename="src/gpe/gpe_tiles.cpp" />
+		<Unit filename="src/gpe/gpe_tiles.h" />
+		<Unit filename="src/gpe/gpe_tilesheet.cpp" />
+		<Unit filename="src/gpe/gpe_tilesheet.h" />
+		<Unit filename="src/gpe/gpe_timer_base.cpp" />
+		<Unit filename="src/gpe/gpe_timer_base.h" />
+		<Unit filename="src/gpe/gpe_window_controller_base.cpp" />
+		<Unit filename="src/gpe/gpe_window_controller_base.h" />
+		<Unit filename="src/gpe_editor/animation_resource.cpp" />
+		<Unit filename="src/gpe_editor/animation_resource.h" />
+		<Unit filename="src/gpe_editor/audio_resource.cpp" />
+		<Unit filename="src/gpe_editor/audio_resource.h" />
+		<Unit filename="src/gpe_editor/class_resource.cpp" />
+		<Unit filename="src/gpe_editor/class_resource.h" />
+		<Unit filename="src/gpe_editor/font_resource.cpp" />
+		<Unit filename="src/gpe_editor/font_resource.h" />
+		<Unit filename="src/gpe_editor/function_resource.cpp" />
+		<Unit filename="src/gpe_editor/function_resource.h" />
+		<Unit filename="src/gpe_editor/game_entity_resource.cpp" />
+		<Unit filename="src/gpe_editor/game_entity_resource.h" />
+		<Unit filename="src/gpe_editor/game_scene_resource.cpp" />
+		<Unit filename="src/gpe_editor/game_scene_resource.h" />
+		<Unit filename="src/gpe_editor/gpe_basic_resource_page.cpp" />
+		<Unit filename="src/gpe_editor/gpe_basic_resource_page.h" />
+		<Unit filename="src/gpe_editor/gpe_cpp_builder_settings.cpp" />
+		<Unit filename="src/gpe_editor/gpe_cpp_builder_settings.h" />
+		<Unit filename="src/gpe_editor/gpe_dock_system.cpp" />
+		<Unit filename="src/gpe_editor/gpe_dock_system.h" />
+		<Unit filename="src/gpe_editor/gpe_editor.cpp" />
+		<Unit filename="src/gpe_editor/gpe_editor.h" />
+		<Unit filename="src/gpe_editor/gpe_editor_aboutpage.cpp" />
+		<Unit filename="src/gpe_editor/gpe_editor_aboutpage.h" />
+		<Unit filename="src/gpe_editor/gpe_editor_constants.h" />
+		<Unit filename="src/gpe_editor/gpe_editor_globals.cpp" />
+		<Unit filename="src/gpe_editor/gpe_editor_globals.h" />
+		<Unit filename="src/gpe_editor/gpe_editor_helppage.cpp" />
+		<Unit filename="src/gpe_editor/gpe_editor_helppage.h" />
+		<Unit filename="src/gpe_editor/gpe_editor_project.cpp" />
+		<Unit filename="src/gpe_editor/gpe_editor_project.h" />
+		<Unit filename="src/gpe_editor/gpe_editor_project_helper.cpp" />
+		<Unit filename="src/gpe_editor/gpe_editor_project_helper.h" />
+		<Unit filename="src/gpe_editor/gpe_editor_settings.cpp" />
+		<Unit filename="src/gpe_editor/gpe_editor_settings.h" />
+		<Unit filename="src/gpe_editor/gpe_editor_start_page.cpp" />
+		<Unit filename="src/gpe_editor/gpe_editor_start_page.h" />
+		<Unit filename="src/gpe_editor/gpe_editor_state.cpp" />
+		<Unit filename="src/gpe_editor/gpe_editor_state.h" />
+		<Unit filename="src/gpe_editor/gpe_extra_tools.cpp" />
+		<Unit filename="src/gpe_editor/gpe_extra_tools.h" />
+		<Unit filename="src/gpe_editor/gpe_game_master_itenary.cpp" />
+		<Unit filename="src/gpe_editor/gpe_game_master_itenary.h" />
+		<Unit filename="src/gpe_editor/gpe_gamepad_tester.cpp" />
+		<Unit filename="src/gpe_editor/gpe_gamepad_tester.h" />
+		<Unit filename="src/gpe_editor/gpe_js_compiler_settings.cpp" />
+		<Unit filename="src/gpe_editor/gpe_js_compiler_settings.h" />
+		<Unit filename="src/gpe_editor/gpe_log_manager.cpp" />
+		<Unit filename="src/gpe_editor/gpe_log_manager.h" />
+		<Unit filename="src/gpe_editor/gpe_project_resources.cpp" />
+		<Unit filename="src/gpe_editor/gpe_project_resources.h" />
+		<Unit filename="src/gpe_editor/gpe_resource_tree.cpp" />
+		<Unit filename="src/gpe_editor/gpe_resource_tree.h" />
+		<Unit filename="src/gpe_editor/gpe_scene_animation_class.cpp" />
+		<Unit filename="src/gpe_editor/gpe_scene_animation_class.h" />
+		<Unit filename="src/gpe_editor/gpe_scene_background_class.cpp" />
+		<Unit filename="src/gpe_editor/gpe_scene_background_class.h" />
+		<Unit filename="src/gpe_editor/gpe_scene_basic_class.cpp" />
+		<Unit filename="src/gpe_editor/gpe_scene_basic_class.h" />
+		<Unit filename="src/gpe_editor/gpe_scene_group_class.cpp" />
+		<Unit filename="src/gpe_editor/gpe_scene_group_class.h" />
+		<Unit filename="src/gpe_editor/gpe_scene_helper_class.cpp" />
+		<Unit filename="src/gpe_editor/gpe_scene_helper_class.h" />
+		<Unit filename="src/gpe_editor/gpe_scene_layer_class.cpp" />
+		<Unit filename="src/gpe_editor/gpe_scene_layer_class.h" />
+		<Unit filename="src/gpe_editor/gpe_scene_light_class.cpp" />
+		<Unit filename="src/gpe_editor/gpe_scene_light_class.h" />
+		<Unit filename="src/gpe_editor/gpe_scene_object_class.cpp" />
+		<Unit filename="src/gpe_editor/gpe_scene_object_class.h" />
+		<Unit filename="src/gpe_editor/gpe_scene_particle_class.cpp" />
+		<Unit filename="src/gpe_editor/gpe_scene_particle_class.h" />
+		<Unit filename="src/gpe_editor/gpe_scene_text_class.cpp" />
+		<Unit filename="src/gpe_editor/gpe_scene_text_class.h" />
+		<Unit filename="src/gpe_editor/gpe_scene_tilemap_class.cpp" />
+		<Unit filename="src/gpe_editor/gpe_scene_tilemap_class.h" />
+		<Unit filename="src/gpe_editor/light_resource.cpp" />
+		<Unit filename="src/gpe_editor/light_resource.h" />
+		<Unit filename="src/gpe_editor/particle_resource.cpp" />
+		<Unit filename="src/gpe_editor/particle_resource.h" />
+		<Unit filename="src/gpe_editor/path_resource.cpp" />
+		<Unit filename="src/gpe_editor/path_resource.h" />
+		<Unit filename="src/gpe_editor/project_properties.cpp" />
+		<Unit filename="src/gpe_editor/project_properties.h" />
+		<Unit filename="src/gpe_editor/texture_resource.cpp" />
+		<Unit filename="src/gpe_editor/texture_resource.h" />
+		<Unit filename="src/gpe_editor/tilesheet_resource.cpp" />
+		<Unit filename="src/gpe_editor/tilesheet_resource.h" />
+		<Unit filename="src/gpe_editor/video_resource.cpp" />
+		<Unit filename="src/gpe_editor/video_resource.h" />
+		<Unit filename="src/main.cpp" />
+		<Unit filename="src/other_libs/dlgmodule.h" />
+		<Unit filename="src/other_libs/dlgmodule/macos/buttons.h">
+			<Option target="MacOS-Debug" />
+			<Option target="MacOS-Release" />
+		</Unit>
+		<Unit filename="src/other_libs/dlgmodule/macos/cocoa.mm">
+			<Option compile="1" />
+			<Option link="1" />
+			<Option target="MacOS-Debug" />
+			<Option target="MacOS-Release" />
+		</Unit>
+		<Unit filename="src/other_libs/dlgmodule/macos/config.cpp">
+			<Option target="MacOS-Debug" />
+			<Option target="MacOS-Release" />
+		</Unit>
+		<Unit filename="src/other_libs/dlgmodule/macos/config.h">
+			<Option target="MacOS-Debug" />
+			<Option target="MacOS-Release" />
+		</Unit>
+		<Unit filename="src/other_libs/dlgmodule/macos/macos.cpp">
+			<Option target="MacOS-Debug" />
+			<Option target="MacOS-Release" />
+		</Unit>
+		<Unit filename="src/other_libs/dlgmodule/unix/lodepng.cpp">
+			<Option target="Linux-Debug" />
+			<Option target="Linux-Release" />
+			<Option target="FreeBSD-Debug" />
+			<Option target="FreeBSD-Release" />
+		</Unit>
+		<Unit filename="src/other_libs/dlgmodule/unix/lodepng.h">
+			<Option target="Linux-Debug" />
+			<Option target="Linux-Release" />
+			<Option target="FreeBSD-Debug" />
+			<Option target="FreeBSD-Release" />
+		</Unit>
+		<Unit filename="src/other_libs/dlgmodule/unix/unix.cpp">
+			<Option target="Linux-Debug" />
+			<Option target="Linux-Release" />
+			<Option target="FreeBSD-Debug" />
+			<Option target="FreeBSD-Release" />
+		</Unit>
+		<Unit filename="src/other_libs/dlgmodule/win32/win32.cpp">
+			<Option target="Win32-Debug" />
+			<Option target="Win32-Release" />
+		</Unit>
+		<Unit filename="src/other_libs/semath.cpp" />
+		<Unit filename="src/other_libs/semath.h" />
+		<Unit filename="src/other_libs/sff_ex.cpp" />
+		<Unit filename="src/other_libs/sff_ex.h" />
+		<Unit filename="src/other_libs/stg_ex.cpp" />
+		<Unit filename="src/other_libs/stg_ex.h" />
+		<Unit filename="src/pawgui/pawgui.cpp" />
+		<Unit filename="src/pawgui/pawgui.h" />
+		<Unit filename="src/pawgui/pawgui_base.cpp" />
+		<Unit filename="src/pawgui/pawgui_base.h" />
+		<Unit filename="src/pawgui/pawgui_buttons.cpp" />
+		<Unit filename="src/pawgui/pawgui_buttons.h" />
+		<Unit filename="src/pawgui/pawgui_checkbox.cpp" />
+		<Unit filename="src/pawgui/pawgui_checkbox.h" />
+		<Unit filename="src/pawgui/pawgui_color_picker.cpp" />
+		<Unit filename="src/pawgui/pawgui_color_picker.h" />
+		<Unit filename="src/pawgui/pawgui_constants.h" />
+		<Unit filename="src/pawgui/pawgui_content_selector.cpp" />
+		<Unit filename="src/pawgui/pawgui_content_selector.h" />
+		<Unit filename="src/pawgui/pawgui_context.cpp" />
+		<Unit filename="src/pawgui/pawgui_context.h" />
+		<Unit filename="src/pawgui/pawgui_dropdown.cpp" />
+		<Unit filename="src/pawgui/pawgui_dropdown.h" />
+		<Unit filename="src/pawgui/pawgui_file_popups.cpp" />
+		<Unit filename="src/pawgui/pawgui_file_popups.h" />
+		<Unit filename="src/pawgui/pawgui_general_resource.cpp" />
+		<Unit filename="src/pawgui/pawgui_general_resource.h" />
+		<Unit filename="src/pawgui/pawgui_general_resource_container.cpp" />
+		<Unit filename="src/pawgui/pawgui_general_resource_container.h" />
+		<Unit filename="src/pawgui/pawgui_globals.cpp" />
+		<Unit filename="src/pawgui/pawgui_globals.h" />
+		<Unit filename="src/pawgui/pawgui_labels.cpp" />
+		<Unit filename="src/pawgui/pawgui_labels.h" />
+		<Unit filename="src/pawgui/pawgui_notifications.cpp" />
+		<Unit filename="src/pawgui/pawgui_notifications.h" />
+		<Unit filename="src/pawgui/pawgui_overlay.cpp" />
+		<Unit filename="src/pawgui/pawgui_overlay.h" />
+		<Unit filename="src/pawgui/pawgui_panel_list.cpp" />
+		<Unit filename="src/pawgui/pawgui_panel_list.h" />
+		<Unit filename="src/pawgui/pawgui_parsers.cpp" />
+		<Unit filename="src/pawgui/pawgui_parsers.h" />
+		<Unit filename="src/pawgui/pawgui_popups.cpp" />
+		<Unit filename="src/pawgui/pawgui_popups.h" />
+		<Unit filename="src/pawgui/pawgui_radiobuttons.cpp" />
+		<Unit filename="src/pawgui/pawgui_radiobuttons.h" />
+		<Unit filename="src/pawgui/pawgui_resource_dropdown.cpp" />
+		<Unit filename="src/pawgui/pawgui_resource_dropdown.h" />
+		<Unit filename="src/pawgui/pawgui_scrollbars.cpp" />
+		<Unit filename="src/pawgui/pawgui_scrollbars.h" />
+		<Unit filename="src/pawgui/pawgui_search_controller.cpp" />
+		<Unit filename="src/pawgui/pawgui_search_controller.h" />
+		<Unit filename="src/pawgui/pawgui_selectbox.cpp" />
+		<Unit filename="src/pawgui/pawgui_selectbox.h" />
+		<Unit filename="src/pawgui/pawgui_settings.cpp" />
+		<Unit filename="src/pawgui/pawgui_settings.h" />
+		<Unit filename="src/pawgui/pawgui_sliders.cpp" />
+		<Unit filename="src/pawgui/pawgui_sliders.h" />
+		<Unit filename="src/pawgui/pawgui_statusbar.cpp" />
+		<Unit filename="src/pawgui/pawgui_statusbar.h" />
+		<Unit filename="src/pawgui/pawgui_stree.cpp" />
+		<Unit filename="src/pawgui/pawgui_stree.h" />
+		<Unit filename="src/pawgui/pawgui_syntax_handler.cpp" />
+		<Unit filename="src/pawgui/pawgui_syntax_handler.h" />
+		<Unit filename="src/pawgui/pawgui_tab_basic.cpp" />
+		<Unit filename="src/pawgui/pawgui_tab_basic.h" />
+		<Unit filename="src/pawgui/pawgui_tab_manager.cpp" />
+		<Unit filename="src/pawgui/pawgui_tab_manager.h" />
+		<Unit filename="src/pawgui/pawgui_text_editor.cpp" />
+		<Unit filename="src/pawgui/pawgui_text_editor.h" />
+		<Unit filename="src/pawgui/pawgui_text_input.cpp" />
+		<Unit filename="src/pawgui/pawgui_text_input.h" />
+		<Unit filename="src/pawgui/pawgui_text_url.cpp" />
+		<Unit filename="src/pawgui/pawgui_text_url.h" />
+		<Unit filename="src/pawgui/pawgui_theme_controller.cpp" />
+		<Unit filename="src/pawgui/pawgui_theme_controller.h" />
+		<Unit filename="src/pawgui/pawgui_themes.cpp" />
+		<Unit filename="src/pawgui/pawgui_themes.h" />
+		<Unit filename="src/sdl_libs/gpe_artist_sdl.cpp" />
+		<Unit filename="src/sdl_libs/gpe_artist_sdl.h" />
+		<Unit filename="src/sdl_libs/gpe_audio_sdl_mixer.cpp" />
+		<Unit filename="src/sdl_libs/gpe_audio_sdl_mixer.h" />
+		<Unit filename="src/sdl_libs/gpe_cursor_sdl.cpp" />
+		<Unit filename="src/sdl_libs/gpe_cursor_sdl.h" />
+		<Unit filename="src/sdl_libs/gpe_font_sdl.cpp" />
+		<Unit filename="src/sdl_libs/gpe_font_sdl.h" />
+		<Unit filename="src/sdl_libs/gpe_input_sdl.cpp" />
+		<Unit filename="src/sdl_libs/gpe_input_sdl.h" />
+		<Unit filename="src/sdl_libs/gpe_render_package_sdl.cpp" />
+		<Unit filename="src/sdl_libs/gpe_render_package_sdl.h" />
+		<Unit filename="src/sdl_libs/gpe_renderer_sdl.cpp" />
+		<Unit filename="src/sdl_libs/gpe_renderer_sdl.h" />
+		<Unit filename="src/sdl_libs/gpe_sdl.cpp" />
+		<Unit filename="src/sdl_libs/gpe_sdl.h" />
+		<Unit filename="src/sdl_libs/gpe_sdl_basic.cpp" />
+		<Unit filename="src/sdl_libs/gpe_sdl_basic.h" />
+		<Unit filename="src/sdl_libs/gpe_sdl_converter.cpp" />
+		<Unit filename="src/sdl_libs/gpe_sdl_converter.h" />
+		<Unit filename="src/sdl_libs/gpe_texture_sdl.cpp" />
+		<Unit filename="src/sdl_libs/gpe_texture_sdl.h" />
+		<Unit filename="src/sdl_libs/gpe_texture_target_sdl.cpp" />
+		<Unit filename="src/sdl_libs/gpe_texture_target_sdl.h" />
+		<Unit filename="src/sdl_libs/gpe_timer_sdl.cpp" />
+		<Unit filename="src/sdl_libs/gpe_timer_sdl.h" />
+		<Unit filename="src/sdl_libs/gpe_window_controller_sdl.cpp" />
+		<Unit filename="src/sdl_libs/gpe_window_controller_sdl.h" />
+		<Unit filename="src/sdl_libs/sdl_surface_ex.cpp" />
+		<Unit filename="src/sdl_libs/sdl_surface_ex.h" />
+		<Extensions>
+			<code_completion>
+				<search_path add="C:\Users\SirNathanHurde\OneDrive\Documents\gpe_crossplatform\Game_Pencil_Engine_IDE\" />
+			</code_completion>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
