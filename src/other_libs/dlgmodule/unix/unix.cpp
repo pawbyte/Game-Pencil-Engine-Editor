@@ -317,7 +317,7 @@ wid_t wid_from_top() {
   return wid;
 }
 
-pid_t pid_from_wid(wid_t wid) {
+process_t pid_from_wid(wid_t wid) {
   SetErrorHandlers();
   unsigned char *prop;
   unsigned long property;
@@ -358,7 +358,7 @@ void wid_set_pwid(wid_t wid, wid_t pwid) {
   XCloseDisplay(display);
 }
 
-bool WaitForChildPidOfPidToExist(pid_t pid, pid_t ppid) {
+bool WaitForChildPidOfPidToExist(process_t pid, process_t ppid) {
   if (pid == ppid) return true;
   while (pid != ppid) {
     if (pid <= 1) break;
@@ -367,8 +367,8 @@ bool WaitForChildPidOfPidToExist(pid_t pid, pid_t ppid) {
   return (pid != ppid);
 }
 
-pid_t modify_dialog(pid_t ppid) {
-  pid_t pid = 0;
+process_t modify_dialog(process_t ppid) {
+  process_t pid = 0;
   if ((pid = fork()) == 0) {
     SetErrorHandlers();
     Display *display = XOpenDisplay(nullptr);
@@ -401,8 +401,8 @@ string shellscript_evaluate(string command) {
   size_t buffer_size = 0;
   string str_buffer;
   FILE *file = popen(command.c_str(), "r");
-  pid_t ppid = getpid();
-  pid_t pid = modify_dialog(ppid);
+  process_t ppid = getpid();
+  process_t pid = modify_dialog(ppid);
   while (getline(&buffer, &buffer_size, file) != -1)
     str_buffer += buffer;
   free(buffer);
