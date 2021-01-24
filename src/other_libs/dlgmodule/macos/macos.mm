@@ -25,7 +25,6 @@
 */
 
 #import "../../dlgmodule.h"
-#import "buttons.h"
 #import "config.h"
 #import <climits>
 #import <cstdlib>
@@ -38,6 +37,16 @@
 #import <Cocoa/Cocoa.h>
 #import <libproc.h>
 #import <unistd.h>
+
+enum BUTTON_TYPES {
+  BUTTON_ABORT,
+  BUTTON_IGNORE,
+  BUTTON_OK,
+  BUTTON_CANCEL,
+  BUTTON_YES,
+  BUTTON_NO,
+  BUTTON_RETRY
+};
 
 using std::string;
 
