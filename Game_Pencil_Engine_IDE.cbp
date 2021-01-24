@@ -444,10 +444,6 @@
 		<Unit filename="src/gpe_editor/video_resource.h" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/other_libs/dlgmodule.h" />
-		<Unit filename="src/other_libs/dlgmodule/macos/buttons.h">
-			<Option target="MacOS-Debug" />
-			<Option target="MacOS-Release" />
-		</Unit>
 		<Unit filename="src/other_libs/dlgmodule/macos/macos.mm">
 			<Option compile="1" />
 			<Option link="1" />
