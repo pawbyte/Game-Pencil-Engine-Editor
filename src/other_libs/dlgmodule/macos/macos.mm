@@ -38,6 +38,8 @@
 #import <libproc.h>
 #import <unistd.h>
 
+using std::string;
+
 enum BUTTON_TYPES {
   BUTTON_ABORT,
   BUTTON_IGNORE,
@@ -47,8 +49,6 @@ enum BUTTON_TYPES {
   BUTTON_NO,
   BUTTON_RETRY
 };
-
-using std::string;
 
 const char *cocoa_widget_get_button_name(int type) {
   return widget_get_button_name(type);
