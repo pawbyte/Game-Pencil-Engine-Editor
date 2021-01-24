@@ -37,7 +37,7 @@ SOFTWARE.
 #include "gpe_scene_basic_class.h"
 #include "gpe_scene_helper_class.h"
 #include "animation_resource.h"
-#include "game_object_resource.h"
+#include "game_entity_resource.h"
 
 class GPE_SceneGameObject: public GPE_SceneBasicClass
 {
@@ -45,12 +45,12 @@ public:
     int customObjId;
     int objTypeId;
     std::string objTypeName;
-    gameObjectResource * objBeingPlaced;
+    gameEntityResource * objBeingPlaced;
     GPE_SceneGameObject( std::string nName );
     ~GPE_SceneGameObject();
 
     void add_typed_elements();
-    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController );
+    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
     void calculate_size();
     void render_branch();
     void process_elements();

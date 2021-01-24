@@ -38,12 +38,14 @@ namespace gpe
     bool init_sdl_all_systems()
     {
         bool inittd_succesffully = true;
+        //First we initialize SDL2
         if( init_sdl_main_system() == false )
         {
             error_log->report( "Unable to properly initialize sdl_main_system! \n" );
             inittd_succesffully = false;
         }
 
+        //Then we begin our window
         if( init_sdl_window_system() == false )
         {
             error_log->report( "Unable to properly initialize sdl_window_system! \n" );
@@ -54,6 +56,16 @@ namespace gpe
         if( init_sdl_render_package() == false )
         {
             error_log->report( "Unable to properly initialize sdl_render_package! \n" );
+            inittd_succesffully = false;
+        }
+
+        if( init_sdl_cursor_system()  )
+        {
+            error_log->report( "Cursor system updated to sdl_cursor_system! \n" );
+        }
+        else
+        {
+            error_log->report( "Unable to properly initialize sdl_cursor_system! \n" );
             inittd_succesffully = false;
         }
 

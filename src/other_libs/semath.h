@@ -1,12 +1,12 @@
 /*
 semath.h
 This file is part of:
-Simple Easy Math Library
-https://www.pawbyte.com/opensource
+Short Easy Math Library
+https://www.pawbyte.com/semath
 Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
 Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Simple Easy Math Library contributors ( Contributors Page )
+Copyright (c) 2014-2020 Short Easy Math Library contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -26,8 +26,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
--Simple Easy Math Library <https://www.pawbyte.com/opensource>
-
+-Short Easy Math Library <https://www.pawbyte.com/semath>
 
 */
 
@@ -39,6 +38,10 @@ SOFTWARE.
 
 namespace semath
 {
+    const int version_major = 1;
+    const int version_minor = 2;
+    const int version_patch_level = 0;
+
     const float math_pi = 3.141592653589793;
     const float math_to_radians = 180.f/math_pi;
     const float math_degrees_multiplier = 180.f/-math_pi;
@@ -47,6 +50,7 @@ namespace semath
     float bound_number(float numbIn,float xMin =0, float xMax = 100);
     bool compare_floats(float a,float b);
 
+    //Special thanks to YellowAfterLife for help in these calculations
     float point_direction(float x1,float y1,float x2,float y2);
     float point_distance(float x1, float y1, float x2, float y2);
 
@@ -62,10 +66,12 @@ namespace semath
     float deg_sin( float dAngle  );
 
     //Directional math
+    //Special thanks to YellowAfterLife for help in these calculations
     float get_direction( float x1, float y1, float x2, float y2 );
     float get_distance( float x1, float y1, float x2, float y2 );
 
     //Length/Direction Functions
+    //Special thanks to YellowAfterLife for help in these calculations
     float lengthdir_x( float length, float angle);
     float lengthdir_y( float length, float angle);
 }

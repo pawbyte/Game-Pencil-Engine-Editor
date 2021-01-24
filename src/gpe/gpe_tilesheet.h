@@ -35,6 +35,7 @@ SOFTWARE.
 #define gpe_tilesheet_h
 
 #include "gpe_texture_base.h"
+#include <vector>
 
 namespace gpe
 {

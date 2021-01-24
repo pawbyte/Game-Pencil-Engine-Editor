@@ -34,19 +34,19 @@ SOFTWARE.
 #include "texture_resource.h"
 #include "gpe_editor_settings.h"
 
-textureResource::textureResource(GPE_GeneralResourceContainer * pFolder)
+textureResource::textureResource(pawgui::widget_resource_container * pFolder)
 {
     projectParentFolder = pFolder;
     editorMode = 0;
     textureInEditor = NULL;
     isPreloaded = true;
-    preloadCheckBox = new GPE_CheckBoxBasic("Preload Texture","Check to load texture at game open", true);
-    transformResourceButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png","Transform the Image",-1);
-    labelImageDimensions = new GPE_Label_Text("","");
-    //labelTextureMessage = new GPE_Label_Text("","");
-    openExternalEditorButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens Texture Image In External Editor");
-    refreshResourceDataButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refreshes the loaded texture image");
-    labelInfoMaxTextureSize = new GPE_Label_Text("Max Image Size: 4096 X 4096px","Max Image Size: 4096 X 4096px");
+    preloadCheckBox = new pawgui::widget_checkbox("Preload Texture","Check to load texture at game open", true);
+    transformResourceButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png","Transform the Image",-1);
+    labelImageDimensions = new pawgui::widget_label_text ("","");
+    //labelTextureMessage = new pawgui::widget_label_text ("","");
+    openExternalEditorButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens Texture Image In External Editor");
+    refreshResourceDataButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refreshes the loaded texture image");
+    labelInfoMaxTextureSize = new pawgui::widget_label_text ("Max Image Size: 4096 X 4096px","Max Image Size: 4096 X 4096px");
 }
 
 textureResource::~textureResource()
@@ -88,7 +88,7 @@ bool textureResource::build_intohtml5_file(std::ofstream * fileTarget, int leftT
 {
     if( fileTarget!=NULL && fileTarget->is_open() )
     {
-        std::string nestedTabsStr = generate_tabs( leftTabAmount  );
+        std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
         std::string html5TSName = get_name();
         if( textureInEditor!=NULL)
         {
@@ -181,9 +181,9 @@ void textureResource::load_resource(std::string file_path)
 {
     if( resourcePostProcessed ==false  || sff_ex::file_exists(file_path) )
     {
-        if( GPE_LOADER != NULL )
+        if( pawgui::main_loader_display != NULL )
         {
-            GPE_LOADER->update_submessages( "Processing Texture",resource_name );
+            pawgui::main_loader_display->update_submessages( "Processing Texture",resource_name );
         }
 
         std::string otherColContainerName = "";
@@ -297,33 +297,33 @@ void textureResource::prerender_self(  )
     }
 }
 
-void textureResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void textureResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && viewedSpace!=NULL && PANEL_GENERAL_EDITOR!=NULL)
+    if(cam!=NULL && view_space!=NULL && panel_main_area!=NULL)
     {
         /*
         if( textureInEditor!=NULL)
             {
-                render_text( GENERAL_GPE_GUI_PADDING,GENERAL_GPE_GUI_PADDING*2+preloadCheckBox->get_ypos()+preloadCheckBox->get_height(),
+                render_text( pawgui::padding_default,pawgui::padding_default*2+preloadCheckBox->get_ypos()+preloadCheckBox->get_height(),
                 int_to_string(textureInEditor->get_width() )+" x "+ stg_ex::int_to_string(textureInEditor->get_height() )+"px",
-                theme_main->main_box_font_color,font_default,gpe::fa_left,gpe::fa_top);
+                pawgui::theme_main->main_box_font_color,gpe::font_default,gpe::fa_left,gpe::fa_top);
             }
             else
             {
-                render_text( GENERAL_GPE_GUI_PADDING,GENERAL_GPE_GUI_PADDING*2+preloadCheckBox->get_ypos()+preloadCheckBox->get_height(),
-                "Image not loaded",theme_main->main_box_font_color,font_default,gpe::fa_left,gpe::fa_top);
+                render_text( pawgui::padding_default,pawgui::padding_default*2+preloadCheckBox->get_ypos()+preloadCheckBox->get_height(),
+                "Image not loaded",pawgui::theme_main->main_box_font_color,gpe::font_default,gpe::fa_left,gpe::fa_top);
             }
         */
-        PANEL_GENERAL_EDITOR->clear_panel();
+        panel_main_area->clear_panel();
 
-        PANEL_GENERAL_EDITOR->add_gui_element(renameBox,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(refreshResourceDataButton,false);
-        PANEL_GENERAL_EDITOR->add_gui_element(loadResourceButton,false);
-        //PANEL_GENERAL_EDITOR->add_gui_element(saveResourceButton,false);
-        PANEL_GENERAL_EDITOR->add_gui_element(transformResourceButton,false);
-        PANEL_GENERAL_EDITOR->add_gui_element( openExternalEditorButton,true);
+        panel_main_area->add_gui_element(renameBox,true);
+        panel_main_area->add_gui_element(refreshResourceDataButton,false);
+        panel_main_area->add_gui_element(loadResourceButton,false);
+        //panel_main_area->add_gui_element(saveResourceButton,false);
+        panel_main_area->add_gui_element(transformResourceButton,false);
+        panel_main_area->add_gui_element( openExternalEditorButton,true);
 
         if( textureInEditor!=NULL)
         {
@@ -333,29 +333,29 @@ void textureResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_re
         {
             labelImageDimensions->set_name("Image not loaded");
         }
-        PANEL_GENERAL_EDITOR->add_gui_element( labelImageDimensions,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(labelInfoMaxTextureSize,true);
+        panel_main_area->add_gui_element( labelImageDimensions,true);
+        panel_main_area->add_gui_element(labelInfoMaxTextureSize,true);
 
-        PANEL_GENERAL_EDITOR->add_gui_element(preloadCheckBox,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(confirmResourceButton,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(cancelResourceButton,true);
-        //PANEL_GENERAL_EDITOR->set_maxed_out_width();
-        //PANEL_GENERAL_EDITOR->process_self(NULL, NULL);
+        panel_main_area->add_gui_element(preloadCheckBox,true);
+        panel_main_area->add_gui_element(confirmResourceButton,true);
+        panel_main_area->add_gui_element(cancelResourceButton,true);
+        //panel_main_area->set_maxed_out_width();
+        //panel_main_area->process_self(NULL, NULL);
         if( editorMode==0)
         {
             if( loadResourceButton!=NULL && loadResourceButton->is_clicked() )
             {
-                std::string new_file_name = GPE_GetOpenFileName("Load Your Texture and such...","Images",main_GUI_SETTINGS->fileOpenTextureDir);
+                std::string new_file_name = pawgui::get_filename_open_from_popup("Load Your Texture and such...","Images",pawgui::main_settings->fileOpenTextureDir);
                 if( (int)new_file_name.size() > 3)
                 {
                     int loadResult = load_image(new_file_name);
                     if( loadResult==false)
                     {
-                        display_user_alert("Unable to load image","File type["+stg_ex::get_file_ext(new_file_name)+"] not supported when loading ["+new_file_name+"].");
+                        pawgui::display_user_alert("Unable to load image","File type["+stg_ex::get_file_ext(new_file_name)+"] not supported when loading ["+new_file_name+"].");
                     }
                     else if( loadResult==-1)
                     {
-                        display_user_alert("Unable to load image","File does not exist["+new_file_name+"].");
+                        pawgui::display_user_alert("Unable to load image","File does not exist["+new_file_name+"].");
                     }
                 }
             }
@@ -374,7 +374,7 @@ void textureResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_re
             }
             else if( cancelResourceButton->is_clicked() )
             {
-                if( GPE_Display_Basic_Prompt("Are you sure you will like to reverse changes?","This will load in data from save-file!", true )== DISPLAY_QUERY_YES )
+                if( pawgui::display_prompt_message("Are you sure you will like to reverse changes?","This will load in data from save-file!", true )== pawgui::display_query_yes )
                 {
                     resourcePostProcessed = false;
                     load_resource();
@@ -406,12 +406,12 @@ void textureResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_re
                 {
                     if( textureInEditor->get_width() > 0 && textureInEditor->get_height() > 0)
                     {
-                        GPE_open_context_menu(-1,-1,256);
-                        main_CONTEXT_MENU->add_menu_option("Erase BG Color",0);
-                        main_CONTEXT_MENU->add_menu_option("Invert Colors",1);
-                        main_CONTEXT_MENU->add_menu_option("Make GrayScale",2);
-                        main_CONTEXT_MENU->add_menu_option("Exit",10);
-                        int menuSelection = GPE_Get_Context_Result();
+                        pawgui::context_menu_open(-1,-1,256);
+                        pawgui::main_context_menu->add_menu_option("Erase BG Color",0);
+                        pawgui::main_context_menu->add_menu_option("Invert Colors",1);
+                        pawgui::main_context_menu->add_menu_option("Make GrayScale",2);
+                        pawgui::main_context_menu->add_menu_option("Exit",10);
+                        int menuSelection = pawgui::context_menu_process();
                         if( menuSelection>=0 && menuSelection <=3)
                         {
                             std::string tempStr = textureInEditor->get_filename();
@@ -422,9 +422,9 @@ void textureResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_re
                                 if( menuSelection==0)
                                 {
                                     gpe::color * foundBGColor = gpe::c_fuchsia->duplicate_color();
-                                    if( GPE_Change_color_PopUp("Image Background Color To Remove, ",foundBGColor) )
+                                    if( pawgui::get_color_from_popup("Image Background Color To Remove, ",foundBGColor) )
                                     {
-                                        if( GPE_Display_Basic_Prompt("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
+                                        if( pawgui::display_prompt_message("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
                                         {
                                             gpe::error_log->report("Modifying image at: "+textureInEditor->get_filename()+".");
                                             nTempSurface= sdl_surface_ex::surface_remove_color_rgba(oTempSurface, foundBGColor->get_r(), foundBGColor->get_r(), foundBGColor->get_b() );
@@ -436,14 +436,14 @@ void textureResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_re
                                 }
                                 else if( menuSelection==1 )
                                 {
-                                    if( GPE_Display_Basic_Prompt("Are you sure you want to invert your image's colors?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
+                                    if( pawgui::display_prompt_message("Are you sure you want to invert your image's colors?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
                                     {
                                         nTempSurface= sdl_surface_ex::surface_invert(oTempSurface);
                                     }
                                 }
                                 else if( menuSelection==2 )
                                 {
-                                    if( GPE_Display_Basic_Prompt("Are you sure you want to grayscale your image?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
+                                    if( pawgui::display_prompt_message("Are you sure you want to grayscale your image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
                                     {
                                         nTempSurface= sdl_surface_ex::surface_grayscale(oTempSurface);
                                     }
@@ -471,9 +471,9 @@ void textureResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_re
                 {
                     if( sff_ex::file_exists(textureInEditor->get_filename() ) )
                     {
-                        if( main_EDITOR_SETTINGS!=NULL && main_EDITOR_SETTINGS->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]!=NULL)
+                        if( main_editor_settings!=NULL && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]!=NULL)
                         {
-                            gpe::external_open_program(main_EDITOR_SETTINGS->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]->get_string(),textureInEditor->get_filename(), true );
+                            gpe::external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]->get_string(),textureInEditor->get_filename(), true );
                         }
                         else
                         {
@@ -488,21 +488,21 @@ void textureResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_re
     }
 }
 
-void textureResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam )
+void textureResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && viewedSpace!=NULL)
+    if(cam!=NULL && view_space!=NULL)
     {
         //renders the right side of the area, mainly preview of tilesheet
         //renderer_main->set_viewpoint( &texturePreviewCam );
-        if( GPE_TEXTURE_TRANSPARENT_BG!=NULL && theme_main->theme_texture_bg==NULL )
+        if( texture_transparent_bg!=NULL && pawgui::theme_main->theme_texture_bg==NULL )
         {
-            for(int iPV= 0; iPV< viewedSpace->w; iPV+=GPE_TEXTURE_TRANSPARENT_BG->get_width() )
+            for(int iPV= 0; iPV< view_space->w; iPV+=texture_transparent_bg->get_width() )
             {
-                for(int jPV= 0; jPV< viewedSpace->h; jPV+=GPE_TEXTURE_TRANSPARENT_BG->get_height() )
+                for(int jPV= 0; jPV< view_space->h; jPV+=texture_transparent_bg->get_height() )
                 {
-                    GPE_TEXTURE_TRANSPARENT_BG->render_tex( iPV,jPV,NULL);
+                    texture_transparent_bg->render_tex( iPV,jPV,NULL);
                 }
             }
         }
@@ -510,13 +510,13 @@ void textureResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rec
         //renders the tilesheet in edit
         if( textureInEditor!=NULL)
         {
-            if( textureInEditor->get_width() <=viewedSpace->w && textureInEditor->get_height() <=viewedSpace->h )
+            if( textureInEditor->get_width() <=view_space->w && textureInEditor->get_height() <=view_space->h )
             {
                 textureInEditor->render_tex( 0, 0,NULL);
             }
             else
             {
-                float neededTextureScale= (float)std::min( (float)viewedSpace->w/ (float)textureInEditor->get_width(),  (float)viewedSpace->h / (float)textureInEditor->get_height() );
+                float neededTextureScale= (float)std::min( (float)view_space->w/ (float)textureInEditor->get_width(),  (float)view_space->h / (float)textureInEditor->get_height() );
                 textureInEditor->render_tex_scaled( 0, 0,neededTextureScale,neededTextureScale,NULL);
             }
         }
@@ -526,9 +526,9 @@ void textureResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rec
 void textureResource::save_resource(std::string file_path, int backupId)
 {
     isModified = false;
-    if( GPE_LOADER != NULL )
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->update_submessages( "Saving Texture",resource_name );
+        pawgui::main_loader_display->update_submessages( "Saving Texture",resource_name );
     }
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
@@ -540,7 +540,7 @@ void textureResource::save_resource(std::string file_path, int backupId)
     }
     else
     {
-        //GPE_main_Logs->log_general_error("Path ["+soughtDir+"] does not exist");
+        //main_editor_log->log_general_error("Path ["+soughtDir+"] does not exist");
         soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/textures/";
         newFileOut = soughtDir + resource_name+".gpf";
     }
@@ -565,7 +565,7 @@ void textureResource::save_resource(std::string file_path, int backupId)
                     if( sff_ex::file_exists(resFileCopyDest) )
                     {
                         /*
-                        if( GPE_Display_Basic_Prompt("[WARNING]Texture Image Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] texture file? This action is irreversible!")==DISPLAY_QUERY_YES)
+                        if( pawgui::display_prompt_message("[WARNING]Texture Image Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] texture file? This action is irreversible!")==pawgui::display_query_yes)
                         {
                             file_copy(resFileCopySrc,resFileCopyDest);
                         }
@@ -589,12 +589,12 @@ void textureResource::save_resource(std::string file_path, int backupId)
         }
         else
         {
-            GPE_main_Logs->log_general_error("Unable to save to file ["+newFileOut+"]");
+            main_editor_log->log_general_error("Unable to save to file ["+newFileOut+"]");
         }
     }
     else
     {
-        GPE_main_Logs->log_general_error("Unable to save file ["+newFileOut+"]");
+        main_editor_log->log_general_error("Unable to save file ["+newFileOut+"]");
     }
 }
 
@@ -626,7 +626,7 @@ bool textureResource::write_data_into_projectfile(std::ofstream * fileTarget, in
     {
         if( fileTarget->is_open() )
         {
-            std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+            std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
             *fileTarget << nestedTabsStr << "Texture=" << resource_name << "," << get_global_rid() << ",";
             *fileTarget << "\n";
             return true;

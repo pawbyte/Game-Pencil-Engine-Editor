@@ -42,8 +42,8 @@ namespace gpe
         programPublisher = app_publisher;
         programTitle = appTitle;
 
-        defaultWindowWidth = 640;
-        defaultWindowHeight = 360;
+        defaultWindowWidth = 320;
+        defaultWindowHeight = 180;
 
         minWindowWidth = 320;
         minWindowHeight = 180;
@@ -84,9 +84,9 @@ namespace gpe
         }
     }
 
-    float engine_settings::get_setting_float( std::string sName )
+    float engine_settings::get_setting_float( std::string s_name )
     {
-        gpe::key_pair * fPair = settingsLeadPair->find_option_named( sName );
+        gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
         if( fPair != NULL )
         {
@@ -95,9 +95,9 @@ namespace gpe
         return -1;
     }
 
-    int engine_settings::get_setting_int( std::string sName )
+    int engine_settings::get_setting_int( std::string s_name )
     {
-        gpe::key_pair * fPair = settingsLeadPair->find_option_named( sName );
+        gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
         if( fPair != NULL )
         {
@@ -106,9 +106,9 @@ namespace gpe
         return -1;
     }
 
-    std::string engine_settings::get_setting_string( std::string sName )
+    std::string engine_settings::get_setting_string( std::string s_name )
     {
-        gpe::key_pair * fPair = settingsLeadPair->find_option_named( sName );
+        gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
         if( fPair != NULL )
         {
@@ -118,53 +118,54 @@ namespace gpe
 
     }
 
-    void engine_settings::set_setting_float( std::string sName , float sVal )
+    void engine_settings::set_setting_float( std::string s_name , float s_val )
     {
-        gpe::key_pair * fPair = settingsLeadPair->find_option_named( sName );
+        gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
         if( fPair != NULL )
         {
-            fPair->keySubString = stg_ex::float_to_string( sVal );
-            fPair->keyValue = sVal;
+            fPair->keySubString = stg_ex::float_to_string( s_val );
+            fPair->keyValue = s_val;
         }
         else
         {
-            fPair->add_keypair( sName, stg_ex::float_to_string( sVal) , sVal );
+            fPair->add_keypair( s_name, stg_ex::float_to_string( s_val) , s_val );
         }
 
     }
 
-    void engine_settings::set_setting_int( std::string sName , int sVal )
+    void engine_settings::set_setting_int( std::string s_name , int s_val )
     {
-        gpe::key_pair * fPair = settingsLeadPair->find_option_named( sName );
+        gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
         if( fPair != NULL )
         {
-            fPair->keySubString = stg_ex::int_to_string( sVal );
-            fPair->keyValue = sVal;
+            fPair->keySubString = stg_ex::int_to_string( s_val );
+            fPair->keyValue = s_val;
         }
         else
         {
-            fPair->add_keypair( sName, stg_ex::int_to_string( sVal) , sVal );
+            fPair->add_keypair( s_name, stg_ex::int_to_string( s_val) , s_val );
         }
 
     }
 
-    void engine_settings::set_setting_string( std::string sName , std::string sVal )
+    void engine_settings::set_setting_string( std::string s_name , std::string s_val )
     {
-        gpe::key_pair * fPair = settingsLeadPair->find_option_named( sName );
+        gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
         if( fPair != NULL )
         {
-            fPair->keySubString = sVal;
-            fPair->keyValue = stg_ex::string_to_float( sVal, 0 );
+            fPair->keySubString = s_val;
+            fPair->keyValue = stg_ex::string_to_float( s_val, 0 );
         }
         else
         {
-            fPair->add_keypair( sName, sVal, stg_ex::string_to_float( sVal, 0 ) );
+            fPair->add_keypair( s_name, s_val, stg_ex::string_to_float( s_val, 0 ) );
         }
     }
 
+    //Creates the settings object and error logger
     bool init_settings(int argc, char* args[], std::string app_publisher, std::string app_name, std::string error_log_location  )
     {
         if( error_log == NULL )

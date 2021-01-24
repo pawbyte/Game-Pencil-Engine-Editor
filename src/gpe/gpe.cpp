@@ -61,6 +61,7 @@ namespace gpe
         for(int rI = 0; rI < resource_type_max; rI++)
         {
             resource_type_names[rI] = "";
+            resource_type_names_plural[rI] = "";
         }
 
         resource_type_names[resource_type_animation] = "Animation";
@@ -72,12 +73,12 @@ namespace gpe
 
         resource_type_names[resource_type_function] = "Function";
         resource_type_names[resource_type_class] = "Class";
-        resource_type_names[resource_type_object] = "Object";
+        resource_type_names[resource_type_object] = "Entity";
         resource_type_names[resource_type_scene] = "Scene";
-        //resource_type_names[resource_type_achievement] = "Achievement";
+        resource_type_names[resource_type_achievement] = "Achievement";
 
         resource_type_names[resource_type_path] = "Path";
-        //resource_type_names[resource_type_dictionary] = "Dictionary";
+        resource_type_names[resource_type_dictionary] = "Dictionary";
         resource_type_names[resource_type_font] = "Font";
         resource_type_names[resource_type_emitter] = "Particle";
         resource_type_names[resource_type_light] = "Light";
@@ -85,6 +86,30 @@ namespace gpe
         resource_type_names[resource_type_event] = "Event";
         resource_type_names[resource_type_quest] = "Quest";
         resource_type_names[resource_type_project_settings] = "Project Properties";
+
+        //Plural names
+        resource_type_names_plural[resource_type_animation] = "Animations";
+        resource_type_names_plural[resource_type_texture] = "Textures";
+        resource_type_names_plural[resource_type_tilesheet] = "Tilesheets";
+
+        resource_type_names_plural[resource_type_audio] = "Audios";
+        resource_type_names_plural[resource_type_video] = "Videos";
+
+        resource_type_names_plural[resource_type_function] = "Functions";
+        resource_type_names_plural[resource_type_class] = "Classes";
+        resource_type_names_plural[resource_type_object] = "Entities";
+        resource_type_names_plural[resource_type_scene] = "Scenes";
+        resource_type_names_plural[resource_type_achievement] = "Achievements";
+
+        resource_type_names_plural[resource_type_path] = "Paths";
+        resource_type_names_plural[resource_type_dictionary] = "Dictionaries";
+        resource_type_names_plural[resource_type_font] = "Fonts";
+        resource_type_names_plural[resource_type_emitter] = "Particles";
+        resource_type_names_plural[resource_type_light] = "Lights";
+        resource_type_names_plural[resource_type_plugin] = "Plugins";
+        resource_type_names_plural[resource_type_event] = "Events";
+        resource_type_names_plural[resource_type_quest] = "Quests";
+        resource_type_names_plural[resource_type_project_settings] = "Project Properties";
 
         for( int i_sound_format = 0; i_sound_format < sound_format_max; i_sound_format++ )
         {
@@ -98,7 +123,7 @@ namespace gpe
         sound_type_names[ sound_format_wav ] = "wav";
 
         //Sets the folder used in all  get_user_settings_folder() calls based on the 2 paramers above
-        GPE_Seek_Settings_Folder();
+        seek_settings_folder();
 
         //General Debug Info
         //error_log->report("    WARNING: DO NOT CLOSE THE CONSOLE WINDOW. UNSAVED FILES AND DATA WILL BE LOST!");
@@ -117,32 +142,13 @@ namespace gpe
         error_log->report("Settings Folder: "+ get_user_settings_folder() );
 
         error_log->report("Initializing Color_System..");
-        GPE_Init_colors();
+        init_colors();
 
-        if( camera_default == NULL )
-        {
-            camera_default = new shape_rect(0,0,screen_width, screen_height);
-        }
+        camera_default = new shape_rect(0,0,screen_width, screen_height);
+        camera_current = new shape_rect( 0,0,screen_width, screen_height );
 
-        if( camera_current == NULL )
-        {
-            camera_current = new shape_rect( 0,0,screen_width, screen_height );
-        }
-
-        if( renderer_main != NULL )
-        {
-            delete renderer_main;
-            renderer_main = NULL;
-        }
         renderer_main = new renderer_base();
-
-        if( gcanvas != NULL )
-        {
-            delete gcanvas;
-            gcanvas = NULL;
-        }
         gcanvas = new artist_base( renderer_main );
-
         rph = new render_package_handler();
 
         input = new input_manager_base();
@@ -159,24 +165,18 @@ namespace gpe
         cursor_main_controller = new cursor_controller_base();
         cursor_main_controller->cursor_change( cursor_main_controller->cursor_system_name( cursor_default_type::wait ) );
 
-        if( window_controller_main == NULL )
-        {
-            window_controller_main = new window_controller_base();
-        }
+        window_controller_main = new window_controller_base();
         game_runtime = new runtime_master();
         game_runtime->loading_data = true;
         return true;
     }
 
+    //inits the run-time and game-states
     bool init_engine()
     {
         error_log->report("-Run-time started ");
-        game_runtime->end_loop();
-        error_log->report("-1st loop ended ");
-
-        game_loader * gpeLoader = new game_loader( "GPE_Loader");
-        game_runtime->state_add( gpeLoader );
-        game_runtime->state_set( gpeLoader->get_state_name() );
+        //game_runtime->end_loop();
+        //error_log->report("-1st loop ended ");
 
         time_keeper->set_fps( fps_cap );
         cursor_main_controller->cursor_change( cursor_main_controller->cursor_system_name( cursor_default_type::arrow) );

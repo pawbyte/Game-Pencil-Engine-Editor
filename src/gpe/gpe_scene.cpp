@@ -35,10 +35,10 @@ SOFTWARE.
 
 namespace gpe
 {
-    game_scene::game_scene(int sId, std::string sName, std::string sFile )
+    game_scene::game_scene(int sId, std::string s_name, std::string sFile )
     {
         sceneFilename = sFile;
-        name = sName;
+        name = s_name;
         sceneId = sId;
         sceneHasBeenActivated = false;
         sceneWidth = 1024;
@@ -50,7 +50,7 @@ namespace gpe
         defaultLayerName = "game - layer";
 
         //background data
-        bgColor = new color("bgcolor", c_dkgray->get_r(), c_dkgray->get_b(), c_dkgray->get_b() );
+        bg_color = new color("bgcolor", c_dkgray->get_r(), c_dkgray->get_b(), c_dkgray->get_b() );
         sceneVersion = -1;
         bgMusic = -1;
         startAudio = -1;
@@ -64,10 +64,10 @@ namespace gpe
 
     game_scene::~game_scene()
     {
-        if( bgColor!=NULL )
+        if( bg_color!=NULL )
         {
-            delete bgColor;
-            bgColor = NULL;
+            delete bg_color;
+            bg_color = NULL;
         }
 
         sceneObjects.clear();
@@ -75,9 +75,9 @@ namespace gpe
         sub_elements.clear();
         scenesStartLayers.clear();
 
-        if( GPE_SPATIAL_GRID != NULL )
+        if( main_spatial_grid != NULL )
         {
-            GPE_SPATIAL_GRID->deactivate_all_layers();
+            main_spatial_grid->deactivate_all_layers();
         }
     }
 
@@ -112,9 +112,9 @@ namespace gpe
     {
         if( newLayerId >=0 && newLayerId < 32 )
         {
-            if( GPE_SPATIAL_GRID != NULL )
+            if( main_spatial_grid != NULL )
             {
-                GPE_SPATIAL_GRID->activate_layer( newLayerId );
+                main_spatial_grid->activate_layer( newLayerId );
             }
             if( find_layer( newLayerId )== NULL  )
             {
@@ -215,7 +215,7 @@ namespace gpe
         }
     }
 
-    void game_scene::init_spatialpartioning()
+    void game_scene::init_collision_handler()
     {
         branch * current_branch = NULL;
         scene_layer * current_layer = NULL;
@@ -227,7 +227,7 @@ namespace gpe
 
             if( current_layer != nullptr )
             {
-                current_layer->init_spatialpartioning( sceneWidth, sceneHeight );
+                current_layer->init_collision_handler( sceneWidth, sceneHeight );
             }
         }
     }
@@ -502,7 +502,7 @@ namespace gpe
 
     void game_scene::render_background_color()
     {
-        gpe::gcanvas->render_rectangle(0,0, screen_width, screen_height, bgColor,  false , 255 );
+        gpe::gcanvas->render_rectangle(0,0, screen_width, screen_height, bg_color,  false , 255 );
     }
 
     void game_scene::render_backgrounds()
@@ -572,7 +572,7 @@ namespace gpe
                 if( camInUse.isVisible == true )
                 {
                     renderToArea = gpe.GPE_Current_Context = gpe.EXTRA_CONTEXTS[gTemp];
-                    renderToArea.fillStyle = bgColor;
+                    renderToArea.fillStyle = bg_color;
                     gpe.set_render_alpha(255);
                     renderToArea.fillRect(0, 0, gpe.screen_width, gpe.screen_height);
 
@@ -705,14 +705,14 @@ namespace gpe
                 renderToArea.fillStyle = 'maroon';
                 renderToArea.fillText('Scene Info || Version: '+sceneVersion+" | "+sceneWidth+" | "+sceneHeight, 32, 300);
 
-                renderToArea.fillText('Collision Grids: '+state_controller.COLLISION_AREA_SPACES.length+' ('+state_controller.spatialGridWidthAmount+' X '+state_controller.spatialGridHeightAmount+') for '+state_controller.OBJECT_COUNT+' objects', 32, 364);
+                renderToArea.fillText('Collision Grids: '+state_controller.COLLISION_AREA_SPACES.length+' ('+state_controller.spatialGridWidthAmount+' X '+state_controller.spatialGridHeightAmount+') for '+state_controller.object_count+' objects', 32, 364);
                 renderToArea.textAlign = 'left';
                 renderToArea.fillText('Scene Name: '+sceneName, 32, gpe.SCREEN2_HEIGHT-64);
             }
         }
         else
         {
-            gpe.context.fillStyle = bgColor;
+            gpe.context.fillStyle = bg_color;
             gpe.context.fillRect(0, 0, gpe.screen_width, gpe.screen_height);
         }
         */

@@ -39,12 +39,12 @@ SOFTWARE.
 class functionResource: public standardEditableGameResource
 {
 public:
-    gpe_text_widget_string * parametersField;
-    gpe_text_widget_string * functionReturnType;
-    GPE_TextAreaInputBasic * functionCode;
-    GPE_ToolIconButton * saveButton;
-    GPE_GuiElementList * functionEditorList;
-    functionResource(GPE_GeneralResourceContainer * pFolder = NULL);
+    pawgui::widget_input_text * parametersField;
+    pawgui::widget_input_text * functionReturnType;
+    pawgui::widget_text_editor * functionCode;
+    pawgui::widget_button_icon * saveButton;
+    pawgui::widget_panel_list * functionEditorList;
+    functionResource(pawgui::widget_resource_container * pFolder = NULL);
     ~functionResource();
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
@@ -55,8 +55,8 @@ public:
     void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
     void load_resource(std::string file_path = "");
     void prerender_self( );
-    void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void save_resource(std::string file_path = "", int backupId = -1);
     int search_for_string(std::string needle);
     int search_and_replace_string(std::string needle, std::string newStr = "");

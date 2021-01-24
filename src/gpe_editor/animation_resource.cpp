@@ -36,10 +36,10 @@ SOFTWARE.
 
 std::string animaton2d_LABELS[ANIMATION_DATA_FIELD_COUNT];
 
-animationResource::animationResource(GPE_GeneralResourceContainer * pFolder)
+animationResource::animationResource(pawgui::widget_resource_container * pFolder)
 {
     autoAnimationPos = 0;
-    animationTrackBar = new GPE_Slider_XAxis();
+    animationTrackBar = new pawgui::widget_slide_xaxis();
 
     animatonPreviewRect = new gpe::shape_rect(0,0,0,0);
     animCameraRect.x = animRect.x = 0;
@@ -55,94 +55,94 @@ animationResource::animationResource(GPE_GeneralResourceContainer * pFolder)
 
     projectParentFolder = pFolder;
     animInEditor = new gpe::animaton2d( gpe::rph->get_default_render_package() );
-    animationSpeedLabel = new GPE_Label_Text("Preview Speed","Preview Speed");
-    labelanimationDimensions = new GPE_Label_Text("animation Dimensions");
-    previewZoomLevel = new GPE_CheckBoxBasic("Preview Zoom Level","Preview Zoom Level", true);
-    previewSubImageNumbers = new GPE_CheckBoxBasic("Sub-images","Sub-images", true);
+    animationSpeedLabel = new pawgui::widget_label_text ("Preview Speed","Preview Speed");
+    labelanimationDimensions = new pawgui::widget_label_text ("animation Dimensions");
+    previewZoomLevel = new pawgui::widget_checkbox("Preview Zoom Level","Preview Zoom Level", true);
+    previewSubImageNumbers = new pawgui::widget_checkbox("Sub-images","Sub-images", true);
 
-    labelFrameInfo = new GPE_Label_Text("Frame Info");
-    labelanimationMessage = new GPE_Label_Text("animation Message");
+    labelFrameInfo = new pawgui::widget_label_text ("Frame Info");
+    labelanimationMessage = new pawgui::widget_label_text ("animation Message");
     //animation Collision Area
-    preloadCheckBox = new GPE_CheckBoxBasic("Preload animation","Check to load animation at game open", true);
-    showCollisionShapeCheckBox = new GPE_CheckBoxBasic("Preview Collision Shape","", true);
-    showAnimationCheckBox = new GPE_CheckBoxBasic("Preview animation Animation","", true);
-    animationCollisionShapeMenu = new GPE_DropDown_Menu( "Collision Shape",true);
+    preloadCheckBox = new pawgui::widget_checkbox("Preload animation","Check to load animation at game open", true);
+    showCollisionShapeCheckBox = new pawgui::widget_checkbox("Preview Collision Shape","", true);
+    showAnimationCheckBox = new pawgui::widget_checkbox("Preview animation Animation","", true);
+    animationCollisionShapeMenu = new pawgui::widget_dropdown_menu( "Collision Shape",true);
     animationCollisionShapeMenu->add_menu_option("Rectangle","rectangle",0,true);
     animationCollisionShapeMenu->add_menu_option("Circle","circle",1,false);
     //animationCollisionShapeMenu->add_menu_option("Triangle [ Coming Soon]");
     //animationCollisionShapeMenu->add_menu_option("Diamond [ Coming Soon]");
     //animationCollisionShapeMenu->add_menu_option("Hexagon [ Coming Soon]");
 
-    animationCenterCollisionButton = new GPE_ToolLabelButton( "Center Collision Shape","Centers the collision box");
-    animationCollisionRectX = new gpe_text_widget_number("0",true,0);
+    animationCenterCollisionButton = new pawgui::widget_button_label( "Center Collision Shape","Centers the collision box");
+    animationCollisionRectX = new pawgui::widget_input_number("0",true,0);
     animationCollisionRectX->set_label("X-Pos");
     animationCollisionRectX->set_string("0");
     animationCollisionRectX->scale_width(0.5);
 
-    animationCollisionRectY = new gpe_text_widget_number("0",true,0);
+    animationCollisionRectY = new pawgui::widget_input_number("0",true,0);
     animationCollisionRectY->set_label("Y-Pos");
     animationCollisionRectY->set_string("0");
     animationCollisionRectY->scale_width(0.5);
 
-    animationCollisionRectW = new gpe_text_widget_number("0",true,0);
+    animationCollisionRectW = new pawgui::widget_input_number("0",true,0);
     animationCollisionRectW->set_label("Width");
     animationCollisionRectW->set_string("0");
     animationCollisionRectW->scale_width(0.5);
 
-    animationCollisionRectH = new gpe_text_widget_number("0",true,0);
+    animationCollisionRectH = new pawgui::widget_input_number("0",true,0);
     animationCollisionRectH->set_label("Height");
     animationCollisionRectH->set_string("0");
     animationCollisionRectH->scale_width(0.5);
 
-    animationCollisionCircleX = new gpe_text_widget_number("0",true,0);
+    animationCollisionCircleX = new pawgui::widget_input_number("0",true,0);
     animationCollisionCircleX->set_label("X-Pos");
     animationCollisionCircleX->set_string("0");
 
-    animationCollisionCircleY = new gpe_text_widget_number("0",true,0);
+    animationCollisionCircleY = new pawgui::widget_input_number("0",true,0);
     animationCollisionCircleY->set_label("Y-Pos");
     animationCollisionCircleY->set_string("0");
 
-    animationCollisionCircleR = new gpe_text_widget_number("0",true,0);
+    animationCollisionCircleR = new pawgui::widget_input_number("0",true,0);
     animationCollisionCircleR->set_label("Radius");
     animationCollisionCircleR->set_string("0");
     int i = 0;
 
-    animationDataFields[i] = new gpe_text_widget_number("");
-    //GENERAL_GPE_GUI_PADDING*2+animationDataLabelWidth,GENERAL_GPE_GUI_PADDING+GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING*(i+1),64,GPE_AVERAGE_LINE_HEIGHT,"0",false,INT_MIN,INT_MAX);
+    animationDataFields[i] = new pawgui::widget_input_number("");
+    //pawgui::padding_default*2+animationDataLabelWidth,pawgui::padding_default+pawgui::default_line_height_padded*(i+1),64,pawgui::default_line_height,"0",false,INT_MIN,INT_MAX);
     animationDataFields[i]->set_string("0");
     animationDataFields[i]->set_label(animaton2d_LABELS[i]);
 
     for( i =1; i < ANIMATION_DATA_FIELD_COUNT; i++)
     {
-        animationDataFields[i] = new gpe_text_widget_number("");
-        //GENERAL_GPE_GUI_PADDING*2+animationDataLabelWidth,GENERAL_GPE_GUI_PADDING+GPE_AVERAGE_LINE_HEIGHT_WITH_PADDING*(i+1),64,GPE_AVERAGE_LINE_HEIGHT,"0",true,0,512);
+        animationDataFields[i] = new pawgui::widget_input_number("");
+        //pawgui::padding_default*2+animationDataLabelWidth,pawgui::padding_default+pawgui::default_line_height_padded*(i+1),64,pawgui::default_line_height,"0",true,0,512);
         animationDataFields[i]->set_string("0");
         animationDataFields[i]->set_label(animaton2d_LABELS[i]);
     }
-    editResourceButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/edit.png","Edit animation Data",-1);
-    transformResourceButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png","Transform the Image",-1);
-    playPauseResourceButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Stop",-1);
+    editResourceButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/edit.png","Edit animation Data",-1);
+    transformResourceButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png","Transform the Image",-1);
+    playPauseResourceButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Stop",-1);
     subImagePreviewNumber = 0;
     subImageMiniAnimationNumber = 0;
     resourcePostProcessed = false;
 
     //Subimage
-    previousSubImageButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/arrow-left.png","Previous");
+    previousSubImageButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/arrow-left.png","Previous");
     //previousSubImageButton->set_animation(mainMenuanimation, 36 );
-    nextSubImageButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/arrow-right.png","Next");
+    nextSubImageButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/arrow-right.png","Next");
     //nextSubImageButton->set_animation(mainMenuanimation, 38 );
-    subImageNumberField = new gpe_text_widget_number("");
+    subImageNumberField = new pawgui::widget_input_number("");
     subImageNumberField->set_string("0");
     subImageNumberField->set_width(64);
-    subImageEditorPreviewId = new gpe_text_widget_number("");
+    subImageEditorPreviewId = new pawgui::widget_input_number("");
     subImageEditorPreviewId->set_string("0");
     subImageEditorPreviewId->set_label("Editor Preview Frame");
-    openExternalEditorButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens animation Image In External Editor");
-    refreshResourceDataButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refreshes the loaded animation image");
-    labelInfoMaxTextureSize = new GPE_Label_Text("Max Image Size: 8192 X 8192px","Max Image Size: 8192 X 8192px");
+    openExternalEditorButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens animation Image In External Editor");
+    refreshResourceDataButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refreshes the loaded animation image");
+    labelInfoMaxTextureSize = new pawgui::widget_label_text ("Max Image Size: 8192 X 8192px","Max Image Size: 8192 X 8192px");
 
-    animXScroll = new GPE_ScrollBar_XAxis();
-    animYScroll = new GPE_ScrollBar_YAxis();
+    animXScroll = new pawgui::widget_scrollbar_xaxis();
+    animYScroll = new pawgui::widget_scrollbar_yaxis();
 }
 
 animationResource::~animationResource()
@@ -197,7 +197,7 @@ animationResource::~animationResource()
         delete animInEditor;
         animInEditor = NULL;
     }
-    gpe_text_widget_number *  tempDataField = NULL;
+    pawgui::widget_input_number *  tempDataField = NULL;
     for( int i =ANIMATION_DATA_FIELD_COUNT-1; i >=0; i--)
     {
         tempDataField = animationDataFields[i];
@@ -331,11 +331,11 @@ bool animationResource::build_intohtml5_file(std::ofstream * fileTarget, int lef
 {
     if( fileTarget!=NULL && fileTarget->is_open() )
     {
-        std::string nestedTabsStr = generate_tabs( leftTabAmount  );
+        std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
         std::string html5SpShName = get_name();
         if( is_build_ready() )
         {
-            std::string nestedTabsStrObjFunc = generate_tabs( leftTabAmount +1 );
+            std::string nestedTabsStrObjFunc = pawgui::generate_tabs( leftTabAmount +1 );
 
             *fileTarget << nestedTabsStr << "var " << html5SpShName << " =  GPE.rsm.add_animation(";
             *fileTarget << stg_ex::int_to_string (exportBuildGlobalId ) +",";
@@ -373,8 +373,8 @@ bool animationResource::build_intocpp_file(std::ofstream * fileTarget, int leftT
 {
    if( fileTarget!=NULL && fileTarget->is_open() )
    {
-        std::string nestedTabsStr = generate_tabs( leftTabAmount  );
-        std::string nestedTabsStrObjFunc = generate_tabs( leftTabAmount +1 );
+        std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
+        std::string nestedTabsStrObjFunc = pawgui::generate_tabs( leftTabAmount +1 );
         std::string cppAnimationName = get_name();
 
         if( is_build_ready() )
@@ -411,13 +411,13 @@ void animationResource::compile_cpp()
 
 }
 
-bool animationResource::get_mouse_coords( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam)
+bool animationResource::get_mouse_coords( gpe::shape_rect * view_space, gpe::shape_rect * cam)
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
     /*areaMouseXPos = 0;
     areaMouseYPos = 0;*/
-    if( viewedSpace!=NULL)
+    if( view_space!=NULL)
     {
         if( gpe::point_within( gpe::input->mouse_position_x, gpe::input->mouse_position_y,
                          animationPreviewCam->x,
@@ -647,7 +647,7 @@ void animationResource::load_image(std::string new_file_name, bool autoProcess)
         }
         else
         {
-            display_user_alert("Unable to load image","File type["+  stg_ex::get_file_ext(new_file_name)+"] not supported when loading ["+new_file_name+"].");
+            pawgui::display_user_alert("Unable to load image","File type["+  stg_ex::get_file_ext(new_file_name)+"] not supported when loading ["+new_file_name+"].");
         }
     }
 }
@@ -658,9 +658,9 @@ void animationResource::load_resource(std::string file_path)
     {
         return;
     }
-    if( GPE_LOADER != NULL )
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->update_submessages( "Loading Animation", resource_name );
+        pawgui::main_loader_display->update_submessages( "Loading Animation", resource_name );
     }
 
     std::string otherColContainerName = "";
@@ -966,12 +966,12 @@ void animationResource::prerender_self(  )
     }
 }
 
-void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void animationResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
     int i;
-    if( cam==NULL && viewedSpace == NULL )
+    if( cam==NULL && view_space == NULL )
     {
         return;
     }
@@ -1001,8 +1001,8 @@ void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
     }
     animationPreviewCam->x = 0;
     animationPreviewCam->y = 0;
-    animationPreviewCam->w = viewedSpace->w;
-    animationPreviewCam->h = viewedSpace->h;
+    animationPreviewCam->w = view_space->w;
+    animationPreviewCam->h = view_space->h;
 
     animCameraRect.w = animationPreviewCam->w / editorZoomValue;
     animCameraRect.h = animationPreviewCam->h / editorZoomValue;
@@ -1018,23 +1018,23 @@ void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
     }
 
     //Horizontal scrolling
-    animXScroll->set_coords( 0,viewedSpace->h - animXScroll->get_height() );
-    animXScroll->set_width( viewedSpace->w);
+    animXScroll->set_coords( 0,view_space->h - animXScroll->get_height() );
+    animXScroll->set_width( view_space->w);
     update_rectangle(&animXScroll->fullRect,0,0,(float)animRect.w, (float)animRect.h );
     update_rectangle(&animXScroll->contextRect,(float)animCameraRect.x,(float)animCameraRect.y, (float)animCameraRect.w, (float)animCameraRect.h );
-    animXScroll->process_self(viewedSpace,cam );
+    animXScroll->process_self(view_space,cam );
     //if( animXScroll->has_moved() )
     {
         animCameraRect.x = (float)(animXScroll->contextRect.x);
     }
 
     //Vertical Scrolling
-    animYScroll->set_coords( viewedSpace->w -animYScroll->get_width(),0);
-    animYScroll->set_height( viewedSpace->h );
+    animYScroll->set_coords( view_space->w -animYScroll->get_width(),0);
+    animYScroll->set_height( view_space->h );
     update_rectangle(&animYScroll->fullRect,0,0,(float)animRect.w, (float)animRect.h );
     update_rectangle(&animYScroll->contextRect,(float)animCameraRect.x,(float)animCameraRect.y, (float)animCameraRect.w, (float)animCameraRect.h );
     //animYScroll->contextRect.h = sceneEditorView.h;
-    animYScroll->process_self(viewedSpace,cam );
+    animYScroll->process_self(view_space,cam );
     //if( animYScroll->has_moved() )
     {
         animCameraRect.y = float(animYScroll->contextRect.y);
@@ -1074,37 +1074,37 @@ void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
     }
 
 
-    if( PANEL_GENERAL_EDITOR==NULL && PANEL_INSPECTOR == NULL)
+    if( panel_main_area==NULL && panel_inspector == NULL)
     {
         return;
     }
 
-    gpeEditorDockPanel * collisionAndPreviewDataPanel = PANEL_GENERAL_EDITOR;
-    if( PANEL_INSPECTOR != NULL)
+    gpeEditorDockPanel * collisionAndPreviewDataPanel = panel_main_area;
+    if( panel_inspector != NULL)
     {
-        PANEL_INSPECTOR->clear_panel();
-        collisionAndPreviewDataPanel = PANEL_INSPECTOR;
+        panel_inspector->clear_panel();
+        collisionAndPreviewDataPanel = panel_inspector;
     }
 
-    if( PANEL_GENERAL_EDITOR!=NULL )
+    if( panel_main_area!=NULL )
     {
-        editorHasControl = PANEL_GENERAL_EDITOR->hasScrollControl || collisionAndPreviewDataPanel->hasScrollControl;
-        PANEL_GENERAL_EDITOR->add_gui_element( renameBox,true);
-        PANEL_GENERAL_EDITOR->add_gui_element( loadResourceButton,false );
-        PANEL_GENERAL_EDITOR->add_gui_element( refreshResourceDataButton,false );
-        PANEL_GENERAL_EDITOR->add_gui_element( editResourceButton,false);
-        PANEL_GENERAL_EDITOR->add_gui_element( transformResourceButton,false);
-        PANEL_GENERAL_EDITOR->add_gui_element( openExternalEditorButton,true);
-        PANEL_GENERAL_EDITOR->add_gui_element( previewSubImageNumbers,true);
+        editorHasControl = panel_main_area->hasScrollControl || collisionAndPreviewDataPanel->hasScrollControl;
+        panel_main_area->add_gui_element( renameBox,true);
+        panel_main_area->add_gui_element( loadResourceButton,false );
+        panel_main_area->add_gui_element( refreshResourceDataButton,false );
+        panel_main_area->add_gui_element( editResourceButton,false);
+        panel_main_area->add_gui_element( transformResourceButton,false);
+        panel_main_area->add_gui_element( openExternalEditorButton,true);
+        panel_main_area->add_gui_element( previewSubImageNumbers,true);
 
-        PANEL_GENERAL_EDITOR->add_gui_element(labelInfoMaxTextureSize,true);
-        PANEL_GENERAL_EDITOR->add_gui_element( labelanimationDimensions,true);
+        panel_main_area->add_gui_element(labelInfoMaxTextureSize,true);
+        panel_main_area->add_gui_element( labelanimationDimensions,true);
         for(  i =0; i < ANIMATION_DATA_FIELD_COUNT; i++)
         {
             if( animationDataFields[i]!=NULL)
             {
-                PANEL_GENERAL_EDITOR->add_gui_element(animationDataFields[i],true );
-                        //animationDataFields[i]->set_width(PANEL_GENERAL_EDITOR->get_width()-GENERAL_GPE_GUI_PADDING*3);
+                panel_main_area->add_gui_element(animationDataFields[i],true );
+                        //animationDataFields[i]->set_width(panel_main_area->get_width()-pawgui::padding_default*3);
             }
         }
     }
@@ -1135,7 +1135,7 @@ void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
     else
     {
         //Circle collision box
-        animationCollisionCircleX->set_width( (collisionAndPreviewDataPanel->get_width()-GENERAL_GPE_GUI_PADDING*3 )/3 );
+        animationCollisionCircleX->set_width( (collisionAndPreviewDataPanel->get_width()-pawgui::padding_default*3 )/3 );
         animationCollisionCircleY->set_width( animationCollisionCircleX->get_width( ) );
         animationCollisionCircleR->set_width(animationCollisionCircleX->get_width( ) );
 
@@ -1145,23 +1145,23 @@ void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
         collisionAndPreviewDataPanel->add_gui_element( showCollisionShapeCheckBox,true);
     }
 
-    if( PANEL_INSPECTOR != NULL)
+    if( panel_inspector != NULL)
     {
-        PANEL_INSPECTOR->process_self( NULL, NULL );
+        panel_inspector->process_self( NULL, NULL );
     }
 
-    if( PANEL_GENERAL_EDITOR!=NULL )
+    if( panel_main_area!=NULL )
     {
-        PANEL_GENERAL_EDITOR->add_gui_element(preloadCheckBox,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(confirmResourceButton,true);
+        panel_main_area->add_gui_element(preloadCheckBox,true);
+        panel_main_area->add_gui_element(confirmResourceButton,true);
 
-        PANEL_GENERAL_EDITOR->add_gui_element(cancelResourceButton,true);
-        //PANEL_GENERAL_EDITOR->set_maxed_out_width();
-        PANEL_GENERAL_EDITOR->process_self( NULL, NULL );
+        panel_main_area->add_gui_element(cancelResourceButton,true);
+        //panel_main_area->set_maxed_out_width();
+        panel_main_area->process_self( NULL, NULL );
 
         if( loadResourceButton!=NULL && loadResourceButton->is_clicked() )
         {
-            std::string new_file_name = GPE_GetOpenFileName("Load Your animation Image","Image",main_GUI_SETTINGS->fileOpenanimationDir);
+            std::string new_file_name = pawgui::get_filename_open_from_popup("Load Your animation Image","Image",pawgui::main_settings->fileOpenanimationDir);
             if( (int)new_file_name.size() > 3 && sff_ex::file_exists(new_file_name) )
             {
                 bool autoProcessData = false;
@@ -1204,7 +1204,7 @@ void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
         }
         else if( cancelResourceButton->is_clicked() )
         {
-            if( GPE_Display_Basic_Prompt("Are you sure you will like to reverse changes?","This will load in data from save-file!", true )== DISPLAY_QUERY_YES )
+            if( pawgui::display_prompt_message("Are you sure you will like to reverse changes?","This will load in data from save-file!", true )== pawgui::display_query_yes )
             {
                 resourcePostProcessed = false;
                 gpe::input->reset_all_input();
@@ -1221,7 +1221,7 @@ void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
             editResourceButton->set_clicked( false );
             gpe::error_log->report("Going to Editor Mode 1");
             gpe::input->reset_all_input();
-            process_self(viewedSpace,cam);
+            process_self(view_space,cam);
             return;
         }
 
@@ -1229,12 +1229,12 @@ void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
         {
             if( animInEditor->get_width() > 0 && animInEditor->get_height() > 0)
             {
-                GPE_open_context_menu(-1,-1,256 );
-                main_CONTEXT_MENU->add_menu_option("Erase BG Color",0);
-                main_CONTEXT_MENU->add_menu_option("Invert Colors",1);
-                main_CONTEXT_MENU->add_menu_option("Make GrayScale",2);
-                main_CONTEXT_MENU->add_menu_option("Exit",10);
-                int menuSelection = GPE_Get_Context_Result();
+                pawgui::context_menu_open(-1,-1,256 );
+                pawgui::main_context_menu->add_menu_option("Erase BG Color",0);
+                pawgui::main_context_menu->add_menu_option("Invert Colors",1);
+                pawgui::main_context_menu->add_menu_option("Make GrayScale",2);
+                pawgui::main_context_menu->add_menu_option("Exit",10);
+                int menuSelection = pawgui::context_menu_process();
                 if( menuSelection>=0 && menuSelection <=3)
                 {
                     std::string tempStr = animInEditor->get_file_name();
@@ -1245,9 +1245,9 @@ void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
                         if( menuSelection==0)
                         {
                             gpe::color * foundBGColor = gpe::c_fuchsia->duplicate_color();
-                            if( GPE_Change_color_PopUp("Image Background Color To Remove",foundBGColor) )
+                            if( pawgui::get_color_from_popup("Image Background Color To Remove",foundBGColor) )
                             {
-                                if( GPE_Display_Basic_Prompt("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
+                                if( pawgui::display_prompt_message("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
                                 {
                                     gpe::error_log->report("Modifying image at: "+animInEditor->get_file_name() +".");
                                     nTempSurface = sdl_surface_ex::surface_remove_color_rgba( oTempSurface, foundBGColor->get_r(), foundBGColor->get_g(), foundBGColor->get_b() );
@@ -1259,14 +1259,14 @@ void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
                         }
                         else if( menuSelection==1 )
                         {
-                            if( GPE_Display_Basic_Prompt("Are you sure you want to invert your image's colors?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
+                            if( pawgui::display_prompt_message("Are you sure you want to invert your image's colors?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
                             {
                                 nTempSurface= sdl_surface_ex::surface_invert(oTempSurface);
                             }
                         }
                         else if( menuSelection==2 )
                         {
-                            if( GPE_Display_Basic_Prompt("Are you sure you want to grayscale your image?","This action is irreversible and will change your image's format to a .png file!")==DISPLAY_QUERY_YES)
+                            if( pawgui::display_prompt_message("Are you sure you want to grayscale your image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
                             {
                                 nTempSurface= sdl_surface_ex::surface_grayscale(oTempSurface);
                             }
@@ -1293,9 +1293,9 @@ void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
             {
                 if( sff_ex::file_exists(animInEditor->get_file_name() ) )
                 {
-                    if( main_EDITOR_SETTINGS!=NULL && main_EDITOR_SETTINGS->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]!=NULL)
+                    if( main_editor_settings!=NULL && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]!=NULL)
                     {
-                        gpe::external_open_program(main_EDITOR_SETTINGS->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]->get_string(),animInEditor->get_file_name(), true );
+                        gpe::external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]->get_string(),animInEditor->get_file_name(), true );
                     }
                     else
                     {
@@ -1405,16 +1405,16 @@ void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
             subImageNumberField->set_number( subImagePreviewNumber);
         }
 
-        if( PANEL_GENERAL_EDITOR!=NULL)
+        if( panel_main_area!=NULL)
         {
-            editorHasControl = PANEL_GENERAL_EDITOR->hasScrollControl || collisionAndPreviewDataPanel->hasScrollControl;
+            editorHasControl = panel_main_area->hasScrollControl || collisionAndPreviewDataPanel->hasScrollControl;
         }
         else
         {
             editorHasControl = collisionAndPreviewDataPanel->hasScrollControl;
         }
         //actual saving of the animation onto the engine and files
-        if( get_mouse_coords(viewedSpace, cam) )
+        if( get_mouse_coords(view_space, cam) )
         {
             areaIsScrollable = true;
         }
@@ -1429,11 +1429,11 @@ void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
             if( gpe::input->check_mouse_released( mb_right) )
             {
                 /*
-                GPE_open_context_menu( gpe::input->mouse_position_x, gpe::input->mouse_position_y );
-                    main_CONTEXT_MENU->add_menu_option("Change Box Color",0);
-                    main_CONTEXT_MENU->add_menu_option("Change Number Color",1);
-                    main_CONTEXT_MENU->add_menu_option("Return to Mode 0",2);
-                    int menuSelection = GPE_Get_Context_Result();
+                pawgui::context_menu_open( gpe::input->mouse_position_x, gpe::input->mouse_position_y );
+                    pawgui::main_context_menu->add_menu_option("Change Box Color",0);
+                    pawgui::main_context_menu->add_menu_option("Change Number Color",1);
+                    pawgui::main_context_menu->add_menu_option("Return to Mode 0",2);
+                    int menuSelection = pawgui::context_menu_process();
 
                     if( menuSelection == 2)
                     {
@@ -1441,7 +1441,7 @@ void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
                         requestedMode = 0;
                         error_log->report("Reverting to Editor Mode 0");
                         gpe::input->reset_all_input();
-                        process_self(viewedSpace,cam);
+                        process_self(view_space,cam);
                         return;
                     }
                     */
@@ -1465,29 +1465,30 @@ void animationResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_
     }
 }
 
-void animationResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void animationResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
     bool animationPreviewIsRendered = false;
-    if( cam==NULL || viewedSpace==NULL )
+    if( cam==NULL || view_space==NULL )
     {
         return;
     }
 
-    if( GPE_TEXTURE_TRANSPARENT_BG!=NULL )
+    if( texture_transparent_bg!=NULL )
     {
-        for(int iPV = 0; iPV< viewedSpace->w; iPV+=GPE_TEXTURE_TRANSPARENT_BG->get_width() )
+        int iPV = 0, jPV = 0;
+        for( iPV = 0; iPV< view_space->w; iPV+=texture_transparent_bg->get_width() )
         {
-            for(int jPV= 0; jPV< viewedSpace->h; jPV+=GPE_TEXTURE_TRANSPARENT_BG->get_height() )
+            for( jPV= 0; jPV< view_space->h; jPV+=texture_transparent_bg->get_height() )
             {
-                GPE_TEXTURE_TRANSPARENT_BG->render_tex( iPV,jPV,NULL);
+                texture_transparent_bg->render_tex( iPV,jPV,NULL);
             }
         }
     }
     else
     {
-        gpe::gcanvas->render_rect( viewedSpace,theme_main->program_color, false, 255 );
+        gpe::gcanvas->render_rectangle( 0,0,view_space->w, view_space->h, pawgui::theme_main->program_color, false, 255 );
     }
 
     if( animInEditor!=NULL &&animInEditor->has_texture() )
@@ -1503,7 +1504,7 @@ void animationResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_r
             animationPreviewCam->y+animationPreviewCam->h/2, editorZoomValue,editorZoomValue,NULL );
         }
 
-        if( showCollisionShapeCheckBox->is_checked() && animInEditor!=NULL )
+        if( showCollisionShapeCheckBox->is_clicked() && animInEditor!=NULL )
         {
             if( animationCollisionShapeMenu->get_selected_value()==0 )
             {
@@ -1583,7 +1584,7 @@ void animationResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_r
 
                 if( previewSubImageNumbers->is_clicked() && editorZoomValue > 0.40 )
                 {
-                    gpe::gfs->render_text( bx1-cam->x+GENERAL_GPE_GUI_PADDING, by2-4-cam->y, stg_ex::int_to_string(iAnimFrame), theme_main->main_box_font_highlight_color, font_default, gpe::fa_left, gpe::fa_bottom );
+                    gpe::gfs->render_text( bx1-cam->x+pawgui::padding_default, by2-4-cam->y, stg_ex::int_to_string(iAnimFrame), pawgui::theme_main->main_box_font_highlight_color, gpe::font_default, gpe::fa_left, gpe::fa_bottom );
                 }
 
                 animationPreviewCam->x+= incrementWidth;
@@ -1597,18 +1598,18 @@ void animationResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_r
 
     if( previewZoomLevel!=NULL && previewZoomLevel->is_clicked() )
     {
-        gpe::gfs->render_text_boxed( viewedSpace->w-32,viewedSpace->h-32,
+        gpe::gfs->render_text_boxed( view_space->w-32,view_space->h-32,
                           "Zoom Level: "+ stg_ex::float_to_string(editorZoomValue*100 )+"%",
-                          theme_main->text_box_font_color, gpe::c_black, font_default, gpe::fa_right, gpe::fa_bottom);
+                          pawgui::theme_main->text_box_font_color, gpe::c_black, gpe::font_default, gpe::fa_right, gpe::fa_bottom);
     }
 
     if( animXScroll!=NULL)
     {
-        animXScroll->render_self( viewedSpace,cam);
+        animXScroll->render_self( view_space,cam);
     }
     if( animYScroll!=NULL)
     {
-        animYScroll->render_self( viewedSpace,cam);
+        animYScroll->render_self( view_space,cam);
     }
 }
 
@@ -1641,9 +1642,9 @@ void animationResource::revert_data_fields()
 
 void animationResource::save_resource(std::string file_path, int backupId)
 {
-    if( GPE_LOADER != NULL )
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->update_submessages( "Processing Animation", resource_name );
+        pawgui::main_loader_display->update_submessages( "Processing Animation", resource_name );
     }
     std::string newSaveDataFilename = "";
     bool usingAltSaveSource = false;
@@ -1716,7 +1717,7 @@ void animationResource::save_resource(std::string file_path, int backupId)
                     if( sff_ex::file_exists(resFileCopyDest) )
                     {
                         /*
-                        if( GPE_Display_Basic_Prompt("[WARNING]animation Image File Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] animation Image File? This action is irreversible!")==DISPLAY_QUERY_YES)
+                        if( pawgui::display_prompt_message("[WARNING]animation Image File Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] animation Image File? This action is irreversible!")==pawgui::display_query_yes)
                         {
                             file_copy(resFileCopySrc,resFileCopyDest);
                         }
@@ -1736,12 +1737,12 @@ void animationResource::save_resource(std::string file_path, int backupId)
         }
         else
         {
-            GPE_main_Logs->log_general_error("Unable to save to file ["+newFileOut+"]");
+            main_editor_log->log_general_error("Unable to save to file ["+newFileOut+"]");
         }
     }
     else
     {
-        GPE_main_Logs->log_general_error("Unable to save file ["+newFileOut+"]");
+        main_editor_log->log_general_error("Unable to save file ["+newFileOut+"]");
     }
 }
 
@@ -1772,7 +1773,7 @@ bool animationResource::write_data_into_projectfile(std::ofstream * fileTarget, 
     {
         if( fileTarget->is_open() )
         {
-            std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+            std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
             *fileTarget << nestedTabsStr << "animation=" << resource_name << "," << get_global_rid() << ",";
             *fileTarget << "\n";
             //save_resource();

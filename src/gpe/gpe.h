@@ -36,10 +36,9 @@ SOFTWARE.
 
 #include "gpe_artist_base.h"
 #include "gpe_animation2d.h"
-#include "gpe_runtime.h"
+#include "gpe_basic_object_list.h"
 #include "gpe_file_system.h"
 #include "gpe_font_base.h"
-#include "gpe_game_load_state.h"
 #include "gpe_ini_file.h"
 #include "gpe_layer.h"
 #include "gpe_particles2d.h"
@@ -48,10 +47,15 @@ SOFTWARE.
 #include "gpe_program_state.h"
 #include "gpe_render_package.h"
 #include "gpe_render_package_handler.h"
+#include "gpe_runtime.h"
 #include "gpe_scene.h"
 #include "gpe_settings.h"
+
 #include "../other_libs/semath.h"
 #include "../other_libs/stg_ex.h"
+
+#include <ctime>
+#include <stdlib.h>
 
 namespace gpe
 {

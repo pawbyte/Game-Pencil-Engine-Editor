@@ -78,10 +78,10 @@ namespace pawgui
             virtual void open_code(int lineNumb, int colNumb, std::string codeTitle = "");
             virtual void load_resource(std::string file_path = "");
             virtual void prerender_self( );
-            virtual void process_resource( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-            virtual void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-            void render_resource( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-            virtual void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+            virtual void process_resource( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            virtual void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void render_resource( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            virtual void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             virtual void save_resource(std::string file_path = "", int backupId = -1);
             virtual void set_global_rid(int newRId);
             virtual void set_name(std::string new_name);

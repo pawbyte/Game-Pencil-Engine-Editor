@@ -42,36 +42,37 @@ namespace gpe
             delete renderer_main;
             renderer_main = NULL;
         }
+        if( gcanvas != NULL )
+        {
+            delete gcanvas;
+            gcanvas = NULL;
+        }
         renderer_main_sdl = new renderer_system_sdl( window_controller_main_sdl->get_window_id(), settings->defaultWindowWidth, settings->defaultWindowHeight, window_controller_main_sdl->get_sdl_window() );
+        renderer_main = renderer_main_sdl;
 
         if( rph == NULL )
         {
             rph = new render_package_handler();
+
         }
 
         render_package * defaultRenderPackage = rph->add_render_package( "sdl" );
+        if( gpe::rsm != NULL )
+        {
+            delete gpe::rsm;
+            gpe::rsm = NULL;
+            gpe::rsm = new gpe::asset_manager( defaultRenderPackage, "gcm-rsm" );
+        }
 
         window_controller_main_sdl->set_renderer( renderer_main_sdl, false );
-        renderer_main = renderer_main_sdl;
 
         defaultRenderPackage->packageRenderer = renderer_main_sdl;
         defaultRenderPackage->packageTexture = new texture_sdl();
         defaultRenderPackage->packageWindow = window_controller_main_sdl;
         rph->defaultRenderPackageName = defaultRenderPackage->get_package_name();
 
-        screen_width = window_controller_main->get_window_width();
-        screen_height = window_controller_main->get_window_height();
-
         error_log->report("-Starting GPE_SDL Artist...");
-        if( gcanvas != NULL )
-        {
-            delete gcanvas;
-            gcanvas = NULL;
-        }
         gcanvas = new artist_sdl( renderer_main_sdl );
-        //Start counting frames per second
-        renderer_main->clear_renderer( true );
-
         return true;
     }
 

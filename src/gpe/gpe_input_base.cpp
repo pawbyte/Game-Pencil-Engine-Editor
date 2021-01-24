@@ -336,7 +336,7 @@ namespace gpe
         manager_id_number = input_manger_id_count;
         input_manger_id_count++;
         manager_type = "input_base";
-        debug_input = false;
+        debug_input = true;
         gamepad_requires_input = true;
         time(&last_screen_resize);
         exit_requested = false;
@@ -382,14 +382,14 @@ namespace gpe
         mouse_scrolling_right = false;
 
 
-        kb_binding_name[kb_esc] = "esc";
-        kb_binding_name[kb_space] = "space";
-        kb_binding_name[kb_up] = "up";
-        kb_binding_name[kb_left] = "left";
-        kb_binding_name[kb_right] = "right";
-        kb_binding_name[kb_down] = "down";
-        kb_binding_name[kb_ctrl] = "ctrl";
-        kb_binding_name[kb_shift] = "shift";
+        kb_binding_name[kb_esc] = "ESC";
+        kb_binding_name[kb_space] = "SPACE";
+        kb_binding_name[kb_up] = "UP";
+        kb_binding_name[kb_left] = "LEFT";
+        kb_binding_name[kb_right] = "RIGHT";
+        kb_binding_name[kb_down] = "DOWN";
+        kb_binding_name[kb_ctrl] = "CTRL";
+        kb_binding_name[kb_shift] = "SHIFT";
         kb_binding_name[kb_a] = "a";
         kb_binding_name[kb_b] = "b";
         kb_binding_name[kb_c] = "c";
@@ -909,8 +909,8 @@ namespace gpe
         if( window_controller_main->is_resized() )
         {
             window_input_received = true;
-            screen_width = window_controller_main->get_window_width();
-            screen_height= window_controller_main->get_window_height();
+            //screen_width = window_controller_main->get_window_width();
+            //screen_height = window_controller_main->get_window_height();
             if(  window_controller_main->is_resized() )
             {
                 time(&last_screen_resize);
@@ -928,6 +928,7 @@ namespace gpe
             kb_button_pressed[key] = kb_button_down[key] && !kb_button_previous[key];
             kb_button_released[key] = !kb_button_down[key] && kb_button_previous[key];
         }
+
         for (int mb=0; mb<mouse_button_count; mb++)
         {
             mouse_pressed_button[mb] = mouse_down_button[mb] && !mouse_previous_button[mb];
@@ -953,13 +954,6 @@ namespace gpe
         if( window_controller_main !=NULL )
         {
             window_controller_main->reset_input();
-            screen_width = window_controller_main->get_window_width();
-            screen_height= window_controller_main->get_window_height();
-        }
-        else
-        {
-            screen_width = 0;
-            screen_height =0;
         }
 
         int key = 0;
@@ -1098,7 +1092,7 @@ namespace gpe
                                 keyString = currLineToBeProcessed.substr(0,equalPos);
                                 valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
-                                if( keyString=="ResourceName")
+                                if( keyString=="deput_input")
                                 {
                                     debug_input = stg_ex::string_to_bool( valString);
                                 }

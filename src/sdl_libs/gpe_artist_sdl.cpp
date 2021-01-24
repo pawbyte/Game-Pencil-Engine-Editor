@@ -40,13 +40,14 @@ namespace gpe
     //GPE Render calls [ Begin ]
     artist_sdl::artist_sdl( renderer_system_sdl * aRenderer)
     {
+        line_render_point_position = 0;
         gpeSDLRenderer = NULL;
         sdlRenderer = NULL;
         lightingOverlayTexture = new texture_target_sdl();
 
         artistRenderer = aRenderer;
 
-        gpeSDLRenderer = (renderer_system_sdl * ) artistRenderer;
+        gpeSDLRenderer = aRenderer;
         if( gpeSDLRenderer !=NULL )
         {
             sdlRenderer = gpeSDLRenderer->get_sdl_renderer();
@@ -67,8 +68,14 @@ namespace gpe
             //prerenderedCirclesOutlines.push_back( tempPRCircleOutline);
         }
 
+        for( int i_point = 0; i_point < render_points_giant_size; i_point++)
+        {
+            line_render_points[ i_point] ={0,0};
+            rect_render_points[ i_point] = {0,0,0,1 };
+        }
         prerenderedSquare = new texture_sdl();
         prerenderedSquare->prerender_rectangle( artistRenderer,1,1,c_white);
+        geometry_texture = SDL_CreateTexture( sdlRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 1024, 1024 );
     }
 
     artist_sdl::~artist_sdl()
@@ -92,6 +99,13 @@ namespace gpe
                 delete prerenderedCirclesOutlines[j];
                 prerenderedCirclesOutlines[j] = NULL;
             }
+        }
+
+        if( geometry_texture != NULL )
+        {
+            //SDL_LockTexture( geometry_texture, );
+            SDL_DestroyTexture( geometry_texture );
+            geometry_texture = NULL;
         }
     }
 
@@ -338,9 +352,9 @@ namespace gpe
         }
     }
 
-    void artist_sdl::render_rotated_rectangle(int xCenter, int yCenter, int w, int h, int angle, color * rendColor, int alphaChannel )
+    void artist_sdl::render_rotated_rectangle(int get_center(), int yCenter, int w, int h, int angle, color * rendColor, int alphaChannel )
     {
-        prerenderedSquare->render_tex_special( xCenter, yCenter,angle, w, h,rendColor, NULL, alphaChannel );
+        prerenderedSquare->render_tex_special( get_center(), yCenter,angle, w, h,rendColor, NULL, alphaChannel );
     }
 
     void artist_sdl::render_roundrect(int x1, int y1, int x2, int y2, int rad,bool outline )
@@ -353,166 +367,251 @@ namespace gpe
 
     }
 
-    void artist_sdl::render_triangle( int x1, int y1, int x2, int y2, int x3, int y3, bool isOutlne, int lineWidth )
+
+    void artist_sdl::render_triangle( shape_triangle2d * tri )
     {
-        render_triangle_color( x1, y1, x2, y2, x3, y3, currentColor, currentAlpha, isOutlne, lineWidth );
+        render_triangle_color( tri, currentColor, currentAlpha );
     }
 
-
-    void artist_sdl::render_triangle_color( int x1, int y1, int x2, int y2, int x3, int y3, color * rendColor , int alphaChannel, bool isOutlne, int lineWidth  )
+    //Based on http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html#algo1
+    void artist_sdl::render_triangle_color( shape_triangle2d * tri, color * rendColor, int alphaChannel )
     {
-        if( x1 == x2 && x2 == x3)
+        if( tri == NULL )
         {
             return;
         }
 
-        if( y1==y2 && y2 ==y3 )
+        if( tri->vertices[0].x == tri->vertices[1].x || tri->vertices[0].x == tri->vertices[2].x || tri->vertices[1].x == tri->vertices[2].x )
         {
             return;
         }
 
-
-        if( isOutlne)
+        if( tri->vertices[0].y == tri->vertices[1].y || tri->vertices[0].y == tri->vertices[2].y || tri->vertices[1].y == tri->vertices[2].y )
         {
-            if( lineWidth < 1)
-            {
-                render_line_color(x1, y1, x2, y2, rendColor, alphaChannel);
-                render_line_color(x1, y1, x2, y2, rendColor, alphaChannel);
-                render_line_color(x1, y1, x3, y3, rendColor, alphaChannel);
-            }
-            else
-            {
-                render_line_width_color(x1, y1, x2, y2, lineWidth,rendColor, alphaChannel);
-                render_line_width_color(x2, y2, x3, y3, lineWidth,rendColor, alphaChannel);
-                render_line_width_color(x3, y3, x1, y1, lineWidth,rendColor, alphaChannel);
-            }
             return;
         }
 
         //Sort by y-coordnates
-        float xTop = x1;
-        float yTop = y1;
-        float xMiddle = x2;
-        float yMiddle = y2;
-        float xBottom = x3;
-        float yBottom = y3;
-        if( y1 >= y2 )
+        float xTop = INT_MAX;
+        float yTop = INT_MAX;
+        float xMiddle = INT_MIN;
+        float yMiddle = INT_MIN;
+        float xBottom = INT_MIN;
+        float yBottom = INT_MIN;
+
+        int i_vert = 0;
+        for( i_vert = 0; i_vert < 3; i_vert++)
         {
-            if( y2 >= y3)
+            if( tri->vertices[ i_vert ].y < yTop )
             {
-                //y1 = bottom
-                //y2 = middle
-                //y3 = top
-                //(Swaps (X1,Y1) WITH (X3, Y3)
-                xTop = x3;
-                yTop = y3;
-                xMiddle = x2;
-                yMiddle = y2;
-                xBottom = x1;
-                yBottom = y1;
+                xTop = tri->vertices[ i_vert ].x;
+                yTop = tri->vertices[ i_vert ].y;
             }
-            else
+
+            if( tri->vertices[ i_vert ].y > yBottom )
             {
-                //y1 = bottom
-                //y2 = top
-                //y3 = middle
-                //(Swaps (X1,Y1) WITH (X3, Y3)
-                xTop = x1;
-                yTop = y1;
-                xMiddle = x3;
-                yMiddle = y3;
-                xBottom = x1;
-                yBottom = y1;
+                xBottom = tri->vertices[ i_vert ].x;
+                yBottom = tri->vertices[ i_vert ].y;
             }
         }
-        else if( y2 >= y3)
+
+        for( i_vert = 0; i_vert < 3; i_vert++)
         {
-            if( y1 >= y3)
+            if( tri->vertices[ i_vert ].y != yTop && tri->vertices[ i_vert ].y != yBottom )
             {
-                //y1 = middle
-                //y2 =  bottom
-                //y3 = top
-                xTop = x3;
-                yTop = y3;
-                xMiddle = x1;
-                yMiddle = y1;
-                xBottom = x2;
-                yBottom = y2;
-            }
-            else
-            {
-                //y1 = top
-                //y3 =  middle
-                //y3 = bottom
-                //Change Nothing...
+                xMiddle = tri->vertices[ i_vert ].x;
+                yMiddle = tri->vertices[ i_vert ].y;
             }
         }
-        //Else: triangle is already pre-sorted yippie!
+
+        int lines_rendered_count = 0;
+        line_render_point_position = 0;
+        SDL_SetRenderDrawColor( sdlRenderer,rendColor->get_r(),rendColor->get_g(),rendColor->get_b(),alphaChannel );
 
         if ( yMiddle == yBottom)
         {
-            render_triangle_flatbottom(xTop,yTop, xMiddle,yMiddle, xBottom, yBottom, c_blue, alphaChannel);
+            lines_rendered_count+= render_triangle_flatbottom(xTop,yTop, xMiddle,yMiddle, xBottom, yBottom);
         }
         /* check for trivial case of top-flat triangle */
-        else if ( y1 == y2)
+        else if ( yTop == yMiddle)
         {
-            render_triangle_flattop(xTop,yTop, xMiddle,yMiddle, xBottom, yBottom, c_blue, alphaChannel);
+            lines_rendered_count+= render_triangle_flattop(xTop,yTop, xMiddle,yMiddle, xBottom, yBottom);
         }
         else if( yTop!=yBottom )
         {
             /* general case - split the triangle in a topflat and bottom-flat one */
-            float xHalf =  xTop + ( (yMiddle - yTop) / (yBottom - yTop) ) * (xBottom - xTop);
-            //y4 = y2;
-            render_triangle_flatbottom( xTop,yTop, xMiddle,yMiddle, xHalf, yMiddle, rendColor, alphaChannel );
-            render_triangle_flattop(xMiddle,yMiddle, xHalf, yMiddle, xBottom, yBottom, rendColor, alphaChannel );
+            triangle_midpoint.x = (float)(xTop + ((float)(yMiddle - yTop) / (float)(yBottom - yTop)) * (xBottom - xTop));
+            triangle_midpoint.y = yMiddle;
+
+            lines_rendered_count+= render_triangle_flatbottom( xTop,yTop,  xMiddle,yMiddle, triangle_midpoint.x, triangle_midpoint.y );
+            lines_rendered_count+= render_triangle_flattop(xMiddle,yMiddle,triangle_midpoint.x, triangle_midpoint.y,  xBottom, yBottom );
         }
+        //SDL_RenderDrawLines( sdlRenderer, line_render_points, line_render_point_position );
+        SDL_RenderFillRectsF( sdlRenderer, rect_render_points, line_render_point_position );
+        line_render_point_position = 0;
     }
 
-    void artist_sdl::render_triangle_flatbottom ( float x1, float y1, float x2, float y2, float x3, float y3, color * rendColor , int alphaChannel )
+    //Based on http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html#algo1
+    int artist_sdl::render_triangle_flatbottom( float x1, float y1, float x2, float y2, float x3, float y3 )
     {
-        return; // too unoptimzied for release....
         //Avoids dividing by 0
-        if( y2==y1 || y1==y3)
+        if( y2==y1 || y3==y1)
         {
-            //return;
+            return 0;
         }
+
+        //Calculates the slopes
         float invslope1 = (x2 - x1) / (y2 - y1);
         float invslope2 = (x3 - x1) / (y3 - y1);
 
+        //Sets the starting x position
         float curx1 = x1;
-        float curx2 = x1;
+        float curx2 = x1+1;
 
-        for (int scanlineY = y1; scanlineY <= y2; scanlineY++)
+        int lines_rendered_count =0;
+        bool use_left_coord = true; //This is used to connect SDL lines
+        for ( int scanlineY = y1; scanlineY <= y2 ;scanlineY++ )
         {
-            render_horizontal_line_color( scanlineY, (int)curx1, (int)curx2, rendColor, alphaChannel );
-            curx1 += invslope1;
+            //Checks if we should use the coordinate, since SDL connects the current line with the past line
+            /*
+            if( use_left_coord )
+            {
+                line_render_points[line_render_point_position] = {(int)curx1, scanlineY};
+                line_render_points[line_render_point_position+1] = {(int)curx2, scanlineY};
+
+            }
+            else
+            {
+                line_render_points[line_render_point_position] = {(int)curx2, scanlineY};
+                line_render_points[line_render_point_position+1] = {(int)curx1, scanlineY};
+            }
+            */
+            rect_render_points[line_render_point_position] = {(int)curx1, scanlineY, curx2 - curx1, 1 };
+
+            use_left_coord = !use_left_coord;
             curx2 += invslope2;
+            curx1 += invslope1;
+
+            lines_rendered_count++;
+            //line_render_point_position +=2;
+            line_render_point_position ++;
         }
-        error_log->report("["+ stg_ex::int_to_string(y2-y1)+"] lines rendered for 1st half of triangle" );
+        return lines_rendered_count;
     }
 
-    void artist_sdl::render_triangle_flattop( float x1, float y1, float x2, float y2, float x3, float y3, color * rendColor , int alphaChannel  )
+    //Based on http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html#algo1
+    int artist_sdl::render_triangle_flattop( float x1, float y1, float x2, float y2, float x3, float y3 )
     {
-    return; // too unoptimzied for release....
-    //Avoids dividing by 0
-    if( y1==y3 || y2==y3)
-    {
-        //return;
-    }
-    float invslope1 = (x3 - x1) / (y3 - y1);
-    float invslope2 = (x3 - x2) / (y3 - y2);
+        //Avoids dividing by 0
+        if( y1==y3 || y2==y3)
+        {
+            return 0;
+        }
+        float invslope1 = (x3 - x1) / (y3 - y1);
+        float invslope2 = (x3 - x2) / (y3 - y2);
 
-    float curx1 = x3;
-    float curx2 = x3;
+        float curx1 = x3-1;
+        float curx2 = x3;
 
-    for (int scanlineY = y3; scanlineY > y1; scanlineY--)
+        int lines_rendered_count = 0;
+        bool use_left_coord = true; //Used to alternate the connnecting endpoint
+        for( int scanlineY = y3; scanlineY > y1; scanlineY-- )
+        {
+            //Checks if we should use the coordinate, since SDL connects the current line with the past line
+            /*
+            if( use_left_coord )
+            {
+                line_render_points[line_render_point_position] = { (int)curx1, scanlineY};
+                line_render_points[line_render_point_position+1] = { (int)curx2, scanlineY};
+            }
+            else
+            {
+                line_render_points[line_render_point_position] = { (int)curx2, scanlineY};
+                line_render_points[line_render_point_position+1] = { (int)curx1, scanlineY};
+            }
+            */
+            use_left_coord = !use_left_coord;
+            rect_render_points[line_render_point_position] = {(int)curx1, scanlineY, curx2 - curx1, 1 };
+
+            curx1 -= invslope1;
+            curx2 -= invslope2;
+
+            //line_render_point_position +=2;
+            line_render_point_position ++;
+            lines_rendered_count++;
+        }
+        return lines_rendered_count;
+    }
+
+    void artist_sdl::render_triangle_color_coords( int x1, int y1, int x2, int y2, int x3, int y3, color * rendColor , int alphaChannel )
     {
-        render_horizontal_line_color( scanlineY, (int)curx1, (int)curx2,  rendColor, alphaChannel );
-        curx1 -= invslope1;
-        curx2 -= invslope2;
+
     }
-    //error_log->report("["+ stg_ex::int_to_string(y3-y1)+"] lines rendered for 2nd half of triangle" );
+
+    void artist_sdl::render_triangle_coords( int x1, int y1, int x2, int y2, int x3, int y3)
+    {
+        render_triangle_color_coords( x1, y1, x2, y2, x3, y3, currentColor, currentAlpha );
     }
+
+    void artist_sdl::render_triangle_outline( shape_triangle2d * tri, int lineWidth )
+    {
+        render_triangle_outline_color( tri, currentColor, currentAlpha, lineWidth );
+    }
+
+    void artist_sdl::render_triangle_outline_color( shape_triangle2d * tri, color * rendColor , int alphaChannel,int lineWidth )
+    {
+        //Based on http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html
+        if( tri == NULL)
+        {
+            return;
+        }
+        if( lineWidth <= 1)
+        {
+            SDL_SetRenderDrawColor( sdlRenderer,rendColor->get_r(),rendColor->get_g(),rendColor->get_b(),alphaChannel );
+
+            line_render_points[0] = { tri->vertices[0].x, tri->vertices[0].y};
+            line_render_points[1] = { tri->vertices[1].x, tri->vertices[2].y};
+            line_render_points[2] = { tri->vertices[1].x, tri->vertices[2].y};
+
+            SDL_RenderDrawLines( sdlRenderer, line_render_points, 3 );
+            line_render_point_position = 0;
+        }
+        else
+        {
+            render_line_width_color(tri->vertices[0].x, tri->vertices[0].y, tri->vertices[1].x, tri->vertices[1].y, lineWidth,rendColor, alphaChannel);
+            render_line_width_color(tri->vertices[1].x, tri->vertices[1].y, tri->vertices[2].x, tri->vertices[2].y, lineWidth,rendColor, alphaChannel);
+            render_line_width_color(tri->vertices[2].x, tri->vertices[2].y, tri->vertices[0].x, tri->vertices[0].y, lineWidth,rendColor, alphaChannel);
+        }
+        return;
+    }
+
+    void artist_sdl::render_triangle_outline_coords( int x1, int y1, int x2, int y2, int x3, int y3, int lineWidth )
+    {
+        render_triangle_outline_color_coords( x1, y1, x2, y2, x3, y3, currentColor, currentAlpha, lineWidth );
+    }
+
+    void artist_sdl::render_triangle_outline_color_coords( int x1, int y1, int x2, int y2, int x3, int y3, color * rendColor, int alphaChannel,int lineWidth )
+    {
+        if( lineWidth <= 1)
+        {
+            SDL_SetRenderDrawColor( sdlRenderer,rendColor->get_r(),rendColor->get_g(),rendColor->get_b(),alphaChannel );
+
+            line_render_points[0] = { x1, y1};
+            line_render_points[1] ={ x2, y2};
+            line_render_points[2] ={ x3, y3};
+
+            SDL_RenderDrawLines( sdlRenderer, line_render_points, 3 );
+            line_render_point_position = 0;
+        }
+        else
+        {
+            render_line_width_color(x1, y1, x2, y2, lineWidth,rendColor, alphaChannel);
+            render_line_width_color(x2, y2, x3, y3, lineWidth,rendColor, alphaChannel);
+            render_line_width_color(x3, y3, x1, y1, lineWidth,rendColor, alphaChannel);
+        }
+        return;
+    }
+
 
     void artist_sdl::render_square( int x, int y, int squareSize,  color * rendColor,bool outline, int alphaChannel )
     {
@@ -521,19 +620,11 @@ namespace gpe
 
     void artist_sdl::render_line( int x1, int y1, int x2, int y2 )
     {
-        /*
-        SDL_SetRenderDrawColor( sdlRenderer,rendColor->get_r(),rendColor->get_g(),rendColor->get_b(),alphaChannel );
-        SDL_RenderDrawLine( sdlRenderer, x1, y1, x2, y2);
-        */
         render_line_width_color(x1, y1, x2, y2, defaultLineWidth, currentColor,  currentAlpha );
     }
 
     void artist_sdl::render_line_color( int x1, int y1, int x2, int y2,  color * rendColor, int alphaChannel)
     {
-        /*
-        SDL_SetRenderDrawColor( sdlRenderer,rendColor->get_r(),rendColor->get_g(),rendColor->get_b(),alphaChannel );
-        SDL_RenderDrawLine( sdlRenderer, x1, y1, x2, y2);
-        */
         render_line_width_color(x1, y1, x2, y2, defaultLineWidth, rendColor, alphaChannel);
     }
 
@@ -565,19 +656,27 @@ namespace gpe
 
     void artist_sdl::render_line_width_color( int x1, int y1, int x2, int y2, int lineWidth, color *rendColor, int alphaChannel )
     {
-        if( lineWidth <= 0 || lineWidth > 256 || prerenderedSquare==NULL  )
+        if( lineWidth == 1 )
+        {
+            SDL_SetRenderDrawColor( sdlRenderer, rendColor->get_r(),rendColor->get_g(),rendColor->get_b(), currentAlpha );
+            SDL_RenderDrawLine( sdlRenderer, x1, y1, x2, y2);
+            return;
+        }
+        if( lineWidth < 0 )
         {
             return;
         }
-        //lineWidth = 1;
         float lineAngle = semath::get_direction(x1, y1, x2, y2 );
         int lineSize  = ceil( semath::get_distance(x1, y1, x2, y2 ) );
         if( lineSize <= 0)
         {
             return;
         }
-        //render_line(x1,y1,x2,y2, rendColor, alphaChannel );
 
+        if( prerenderedSquare==NULL )
+        {
+            return;
+        }
         x1  = x1 + semath::lengthdir_x( lineSize/2, lineAngle );
         y1  = y1 + semath::lengthdir_y( lineSize/2, lineAngle );
         prerenderedSquare->render_tex_special(x1,y1, lineAngle,lineSize,lineWidth, rendColor, NULL, alphaChannel );
@@ -585,20 +684,15 @@ namespace gpe
 
     void artist_sdl::render_horizontal_line(int y, int x1, int x2)
     {
-        //SDL_RenderDrawLine( sdlRenderer, x1, y, x2, y);
-        if( x1!=x2 && prerenderedSquare!=NULL  )
+        if( x1!=x2 )
         {
-            //render_line(x1,y1,x2,y2, rendColor, alphaChannel );
             render_line_width_color(x1, y, x2, y, defaultLineWidth, currentColor, currentAlpha);
         }
     }
 
     void artist_sdl::render_horizontal_line_color( int y, int x1, int x2,  color * rendColor, int alphaChannel)
     {
-        /*SDL_SetRenderDrawColor( sdlRenderer,rendColor->get_r(),rendColor->get_g(),rendColor->get_b(),alphaChannel );
-        SDL_RenderDrawLine( sdlRenderer, x1, y, x2, y);
-        */
-        if( x1!=x2 && prerenderedSquare!=NULL  )
+        if( x1!=x2  )
         {
             render_line_width_color(x1, y, x2, y, defaultLineWidth, rendColor, alphaChannel);
         }
@@ -606,22 +700,16 @@ namespace gpe
 
     void artist_sdl::render_vertical_line( int x, int y1, int y2)
     {
-        //SDL_RenderDrawLine( sdlRenderer, x, y1, x, y2);
-        if( y1!=y2 && prerenderedSquare!=NULL  )
+        if( y1!=y2 )
         {
             //render_line_color(x,y1,x,y2, currentColor, currentAlpha );
             render_line_width_color(x, y1, x, y2, defaultLineWidth, currentColor, currentAlpha);
-            //prerenderedSquare->render_tex_special(x,y1,0,1,y2-y1, currentColor, NULL, currentAlpha );
         }
     }
 
     void artist_sdl::render_vertical_line_color( int x, int y1, int y2,  color * rendColor, int alphaChannel)
     {
-        /*
-        SDL_SetRenderDrawColor( sdlRenderer,rendColor->get_r(),rendColor->get_g(),rendColor->get_b(),alphaChannel );
-        SDL_RenderDrawLine( sdlRenderer, x, y1, x, y2);
-        */
-        if( y1!=y2 && prerenderedSquare!=NULL  )
+        if( y1!=y2  )
         {
              render_line_width_color(x, y1, x, y2, defaultLineWidth, rendColor, alphaChannel);
         }

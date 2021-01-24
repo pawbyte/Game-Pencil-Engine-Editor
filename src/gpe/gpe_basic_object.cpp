@@ -50,10 +50,6 @@ namespace gpe
 
     game_object::game_object(int xPosIn,  int yPosIn,  int objectLayerId)
     {
-        /*if( objectType >=0 && objectType < objectType)
-        {
-            //gpeObjName = GPE_OBJ_NAMES[ objectType];
-        }*/
         pathId = -1;
         foundPathObject = -1;
         pathPosition = 0;

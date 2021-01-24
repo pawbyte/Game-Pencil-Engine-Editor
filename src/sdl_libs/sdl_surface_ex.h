@@ -1,8 +1,8 @@
 /*
 sdl_surface_ex.h
 This file is part of:
-sdl_surface_ex
-https://www.pawbyte.com/opensource
+SDL_SurfaceEx
+https://www.pawbyte.com/sdl_surface_ex
 Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
 Copyright (c) 2014-2020 PawByte LLC.
@@ -24,7 +24,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
--sdl_surface_ex <https://www.pawbyte.com/opensource>
+-sdl_surface_ex <https://www.pawbyte.com/sdl_surface_ex>
 
 
 */
@@ -37,6 +37,10 @@ SOFTWARE.
 
 namespace sdl_surface_ex
 {
+    const int version_major = 1;
+    const int version_minor = 4;
+    const int version_patch_level = 0;
+
     //Surface Functions
     SDL_Texture * create_texture_from_surface( SDL_Renderer * sdlRenderer, SDL_Surface * surf,  int format = SDL_PIXELFORMAT_RGBA8888, bool destroySurface = true );
     SDL_Surface * create_filled_surface_rgba(int w, int h, Uint8 color_key_r, Uint8 color_key_g, Uint8 color_key_b, Uint8 alpha = 255);

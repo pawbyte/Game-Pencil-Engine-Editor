@@ -41,20 +41,20 @@ SOFTWARE.
 class GPE_SceneAnimation: public GPE_SceneBasicClass
 {
 public:
-    GPE_DropDown_Resouce_Menu * animationInEditor;
-    gpe_text_widget_number * startPositionField;
-    gpe_text_widget_number * animationSpeedField;
-    GPE_CheckBoxBasic * useCustomSpeed;
+    pawgui::widget_drop_down_resource_menu * animationInEditor;
+    pawgui::widget_input_number * startPositionField;
+    pawgui::widget_input_number * animationSpeedField;
+    pawgui::widget_checkbox * useCustomSpeed;
     int animationId;
     float animationSpeed;
     float frameStartPosition;
     float framePosition;
     animationResource * animRes;
     int animSpeed;
-    GPE_SceneAnimation( GPE_GeneralResourceContainer *pFolder = NULL );
+    GPE_SceneAnimation( pawgui::widget_resource_container *pFolder = NULL );
     ~GPE_SceneAnimation();
     void add_typed_elements();
-    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController );
+    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
     void calculate_size();
     void process_elements();
     void render_branch();

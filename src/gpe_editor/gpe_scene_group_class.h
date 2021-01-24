@@ -42,7 +42,7 @@ public:
     sceneBranchGroup(std::string nName = "");
     ~sceneBranchGroup();
     void add_typed_elements();
-    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController );
+    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
     void calculate_size();
     void process_elements();
     void render_branch();

@@ -48,8 +48,8 @@ namespace gpe
     std::string app_directory_name = "";
     std::string settings_app_folder = "";
 
-    int screen_width = 800;
-    int screen_height = 480;
+    int screen_width = 500;
+    int screen_height = 300;
 
     int system_found_os = -1;
 }

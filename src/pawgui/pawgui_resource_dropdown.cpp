@@ -37,13 +37,13 @@ namespace pawgui
 {
     widget_drop_down_resource_menu::widget_drop_down_resource_menu( std::string name, widget_resource_container * cTree,int id,bool selectable )
     {
-        guiListTypeName = "resourcedropdown";
+        widget_type = "resourcedropdown";
         widget_box.x = 0;
         widget_box.y = 0;
         widget_box.w = 196;
         //int nameMinSize = name.size()*
         widget_box.h = 32;
-        displayedResult = dropdownName = opName = name;
+        displayedResult = dropdownName = widget_name = name;
         containerTree = cTree;
         opId = id;
         isSelectable = selectable;
@@ -63,7 +63,7 @@ namespace pawgui
     {
         if( containerTree!=NULL)
         {
-            std::string dataString = guiListTypeName+":"+dropdownName+"==|||==";
+            std::string dataString = widget_type+":"+dropdownName+"==|||==";
             dataString+= containerTree->get_name()+",,,";
             if( selectedResource!=NULL)
             {
@@ -188,13 +188,13 @@ namespace pawgui
         return justActivated;
     }
 
-    void widget_drop_down_resource_menu::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam)
+    void widget_drop_down_resource_menu::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
         isHovered = false;
         justActivated = false;
-        widget_basic::process_self(viewedSpace,cam);
+        widget_basic::process_self(view_space,cam);
         if( isHovered || isInUse)
         {
             main_overlay_system->update_tooltip(dropdownName);
@@ -204,7 +204,7 @@ namespace pawgui
             isClicked = true;
         }
 
-        if( isClicked && cam!=NULL && viewedSpace!=NULL && containerTree!=NULL )
+        if( isClicked && cam!=NULL && view_space!=NULL && containerTree!=NULL )
         {
             if( resource_dragged!=NULL)
             {
@@ -222,13 +222,13 @@ namespace pawgui
                 if( main_context_menu->subMenuIsOpen == false)
                 {
                     isOpen = true;
-                    context_menu_open(viewedSpace->x+widget_box.x-cam->x, viewedSpace->y+widget_box.y+widget_box.h-cam->y);
+                    context_menu_open(view_space->x+widget_box.x-cam->x, view_space->y+widget_box.y+widget_box.h-cam->y);
                     int estimatedMenuSize = containerTree->get_options_width()+default_icon_width_padded ;
                     int dropdownNameWidth = 0;
                     int dropdownNameHeight = 0;
-                    if( (int)opName.size()>0 && FONT_TOOLBAR!=NULL)
+                    if( (int)widget_name.size()>0 && font_toolbar!=NULL)
                     {
-                        FONT_TOOLBAR->get_metrics(dropdownName,&dropdownNameWidth, &dropdownNameHeight);
+                        font_toolbar->get_metrics(dropdownName,&dropdownNameWidth, &dropdownNameHeight);
                     }
                     dropdownNameWidth+=default_icon_width_padded+padding_default;
                     estimatedMenuSize = std::max( estimatedMenuSize, dropdownNameWidth );
@@ -274,11 +274,11 @@ namespace pawgui
         }
     }
 
-    void widget_drop_down_resource_menu::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+    void widget_drop_down_resource_menu::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( cam!=NULL && viewedSpace!=NULL)
+        if( cam!=NULL && view_space!=NULL)
         {
             gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->input_color,false);
             if( selectedId >= 0)
@@ -286,17 +286,17 @@ namespace pawgui
                 selectedResource = containerTree->find_resource_from_id(selectedId);
                 if( selectedResource!=NULL)
                 {
-                    gpe::gfs->render_text_resized( widget_box.x+32+padding_default-cam->x,widget_box.y+widget_box.h/2-cam->y,selectedResource->get_name(),pawgui::theme_main->input_font_color,FONT_POPUP,gpe::fa_left,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
-                    selectedResource->render_image( widget_box.x,widget_box.y,widget_box.h-2,widget_box.h-2,viewedSpace,cam);
+                    gpe::gfs->render_text_resized( widget_box.x+32+padding_default-cam->x,widget_box.y+widget_box.h/2-cam->y,selectedResource->get_name(),pawgui::theme_main->input_font_color,font_popup,gpe::fa_left,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
+                    selectedResource->render_image( widget_box.x,widget_box.y,widget_box.h-2,widget_box.h-2,view_space,cam);
                 }
                 else
                 {
-                    gpe::gfs->render_text_resized( widget_box.x-cam->x,widget_box.y+widget_box.h/2-cam->y,opName,pawgui::theme_main->input_font_color,FONT_POPUP,gpe::fa_left,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
+                    gpe::gfs->render_text_resized( widget_box.x-cam->x,widget_box.y+widget_box.h/2-cam->y,widget_name,pawgui::theme_main->input_font_color,font_popup,gpe::fa_left,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
                 }
             }
             else
             {
-                gpe::gfs->render_text_resized( widget_box.x+padding_default-cam->x,widget_box.y+widget_box.h/2-cam->y,opName,pawgui::theme_main->input_font_color,FONT_POPUP,gpe::fa_left,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
+                gpe::gfs->render_text_resized( widget_box.x+padding_default-cam->x,widget_box.y+widget_box.h/2-cam->y,widget_name,pawgui::theme_main->input_font_color,font_popup,gpe::fa_left,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
             }
             //gpe::gcanvas->render_rectangle( widget_box.x+widget_box.w-widget_box.h*3/4-cam->x,widget_box.y-cam->y,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->input_outline_color ,false);
             if( dropdown_arrow_texture!=NULL )
@@ -320,7 +320,7 @@ namespace pawgui
 
     void widget_drop_down_resource_menu::set_name(std::string new_name)
     {
-        opName = new_name;
+        widget_name = new_name;
     }
 
     void widget_drop_down_resource_menu::set_selection(int new_id)
@@ -338,7 +338,7 @@ namespace pawgui
         else
         {
             selectedId = -1;
-            displayedResult = opName = dropdownName;
+            displayedResult = widget_name = dropdownName;
             selectedResource = NULL;
         }
     }
@@ -368,14 +368,14 @@ namespace pawgui
             else
             {
                 selectedId = -1;
-                displayedResult = opName = dropdownName;
+                displayedResult = widget_name = dropdownName;
                 selectedResource = NULL;
             }
         }
         else
         {
             selectedId = -1;
-            displayedResult = opName = dropdownName;
+            displayedResult = widget_name = dropdownName;
             selectedResource = NULL;
         }
     }

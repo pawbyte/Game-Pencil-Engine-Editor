@@ -121,8 +121,10 @@ namespace gpe
             return -3; //no state set on first go around so we exit
         }
 
-        uint64_t sTicks;
-        uint64_t eTicks;
+        uint64_t sTicks = 0;
+        uint64_t eTicks = 0;
+        error_log->report("Beginning gameloop...");
+        error_log->report("Current state: "+ state_current->get_state_name() );
         //While we didnt't request gameloop to end
         while( stg_ex::string_lower( state_seeked_name ) != "exit" )
         {
@@ -134,24 +136,22 @@ namespace gpe
                 return true;
             }
 
-            if( state_current == NULL )
-            {
-                return true;
-            }
-            else
+            if( state_current != NULL )
             {
                 sTicks = time_keeper->get_ticks();
                 state_current->process_input();
                 eTicks = time_keeper->get_ticks();
                 error_log->log_ms_action("state_current->process_input()",eTicks - sTicks,10 );
             }
-
-
+            else
+            {
+                return true;
+            }
 
             sTicks = time_keeper->get_ticks();
             state_current->apply_logic();
             eTicks = time_keeper->get_ticks();
-            error_log->log_ms_action("state_current->apply_logic",eTicks - sTicks, 10);
+            error_log->log_ms_action("state_current->apply_logic",eTicks - sTicks, 20);
 
             if( window_controller_main->is_minimized() == false )
             {
@@ -161,6 +161,7 @@ namespace gpe
                 {
                     rph->clear_render_packages();
                 }
+                //renderer_main->clear_renderer( false );
 
                 if( state_current!=NULL )
                 {
@@ -194,14 +195,14 @@ namespace gpe
         //gets user input
         uint64_t sTicks = time_keeper->get_ticks();
         input->handle_input(true, false );
-        if( window_controller_main != NULL || ( window_controller_main->is_minimized() == false ) )
+        if(  window_controller_main->is_minimized() == false )
         {
             if( cursor_main_controller !=NULL )
             {
                 cursor_main_controller->process_cursors();
             }
-            screen_width = window_controller_main->get_window_width();
-            screen_height= window_controller_main->get_window_height();
+            //screen_width = window_controller_main->get_window_width();
+            //screen_height = window_controller_main->get_window_height();
         }
         loop_started  = true;
         uint64_t eTicks = time_keeper->get_ticks();
@@ -211,8 +212,9 @@ namespace gpe
     void runtime_master::end_loop(  )
     {
         loop_started = false;
-        if( window_controller_main != NULL || window_controller_main->is_minimized() )
+        if(  window_controller_main->is_minimized() )
         {
+            error_log->report("End loop resetting timer...");
             time_keeper->reset_timer();
             return;
         }
@@ -220,10 +222,10 @@ namespace gpe
         if( rph!=NULL )
         {
             rph->update_render_packages();
-
-            time_keeper->cap_fps( window_controller_main->is_minimized() );
-            time_keeper->calculate_avg_fps( window_controller_main->is_minimized() );
         }
+        time_keeper->cap_fps( window_controller_main->is_minimized() );
+        time_keeper->calculate_avg_fps( window_controller_main->is_minimized() );
+        //}
     }
 
     void runtime_master::finish_loop()
@@ -250,13 +252,13 @@ namespace gpe
         return false;
     }
 
-    program_state * runtime_master::state_find( std::string stateName )
+    program_state * runtime_master::state_find( std::string state_name )
     {
         program_state *  cState = NULL;
         for( int i = (int)states_list.size() -1; i >=0; i-- )
         {
             cState = states_list[i];
-            if( cState!=NULL && cState->get_state_name() == stateName )
+            if( cState!=NULL && cState->get_state_name() == state_name )
             {
                 return cState;
             }

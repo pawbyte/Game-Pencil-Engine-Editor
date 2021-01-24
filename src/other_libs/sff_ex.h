@@ -2,11 +2,10 @@
 sff_ex.h
 This file is part of:
 Simple File Functions Extension
-https://www.pawbyte.com/gamepencilengine
+https://pawbyte.com/sff_ex/
 Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
 Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -26,7 +25,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
--Simple File Functions Extension <https://www.pawbyte.com/opensource>
+-Simple File Functions Extension <https://www.pawbyte.com/sff_ex/>
 
 
 */
@@ -37,16 +36,15 @@ SOFTWARE.
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <ctime>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 #include <sys/stat.h>
-#include <limits>
 //#include <direct.h>
 
 namespace sff_ex
 {
+    const int version_major = 1;
+    const int version_minor = 2;
+    const int version_patch_level = 0;
+
     //The headers
     void append_to_file(std::string file_name, std::string output_string );
     bool file_copy(std::string source_file_name, std::string destination_file_name, bool overwrite_existing = true);

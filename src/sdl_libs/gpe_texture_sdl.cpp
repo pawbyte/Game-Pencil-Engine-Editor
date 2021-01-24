@@ -31,8 +31,9 @@ SOFTWARE.
 
 */
 
-
 #include "gpe_texture_sdl.h"
+
+#define SDL_BLENDMODE_MUL (SDL_BlendMode)0x00000008
 
 namespace gpe
 {
@@ -124,6 +125,11 @@ namespace gpe
             return sff_ex::file_copy(fileLocation,copyDestinationStr );
         }
         return false;
+    }
+
+    texture_base * texture_sdl::create_new()
+    {
+        return new texture_sdl();
     }
 
     renderer_system_sdl * texture_sdl::get_gpe_renderer_sdl(renderer_base * renderer)
@@ -265,6 +271,11 @@ namespace gpe
         }
     }
 
+    void texture_sdl::prerender_triangle( renderer_base * renderer, shape_triangle2d,  color * circleColor,  uint8_t alpha )
+    {
+
+    }
+
     void texture_sdl::prerender_rectangle( renderer_base * renderer, int w, int h, color * newColor, int id, bool transparent, bool useLinearScaling , bool isOutline)
     {
         if( renderer == NULL)
@@ -340,12 +351,6 @@ namespace gpe
             //error_log->report("[Bad] Unable to load filed  <"+fileName+">. Error: FILE_NOT_FOUND.");
         }
     }
-
-    texture_base * texture_sdl::create_new()
-    {
-        return new texture_sdl();
-    }
-
 
     void texture_sdl::render_align(  int x, int y, int hAlign, int vAlign, gpe::shape_rect* clip, color * rendColor, int alpha )
     {
@@ -940,11 +945,15 @@ namespace gpe
             {
                 case blend_mode_add:
                     SDL_SetTextureBlendMode(texImg,SDL_BLENDMODE_ADD );
-                    break;
+                break;
 
                 case blend_mode_mod:
                     SDL_SetTextureBlendMode(texImg, SDL_BLENDMODE_MOD);
-                    break;
+                break;
+
+                case blend_mode_mul:
+                    SDL_SetTextureBlendMode(texImg, SDL_BLENDMODE_MUL);
+                break;
 
                 case blend_mode_none:
                     SDL_SetTextureBlendMode(texImg, SDL_BLENDMODE_NONE  );

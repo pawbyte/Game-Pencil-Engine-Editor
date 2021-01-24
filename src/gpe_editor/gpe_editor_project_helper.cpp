@@ -47,21 +47,12 @@ void setup_project_directory(std::string newProjectDir)
 
         sff_ex::create_directory(newProjectDir+"/gpe_project/resources");
         sff_ex::create_directory(newProjectDir+"/gpe_project/resources/achievements");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/audio");
 
-        //Class Directory addition for 1.14
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/animations");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/classes");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/fonts");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/functions");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/lights");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/objects");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/paths");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/particles");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/scenes");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/textures");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/tilesheets");
-        sff_ex::create_directory(newProjectDir+"/gpe_project/resources/videos");
+        for( int i_res_type = 0; i_res_type < gpe::resource_type_max; i_res_type++ )
+        {
+            sff_ex::create_directory(newProjectDir+"/gpe_project/resources/" + stg_ex::string_lower( gpe::resource_type_names_plural[ i_res_type] ) );
+        }
+
         sff_ex::create_directory(newProjectDir+"/gpe_project/source");
         sff_ex::create_directory(newProjectDir+"/gpe_project/source/GPE");
         sff_ex::create_directory(newProjectDir+"/gpe_project/source/AOSGUI");
@@ -172,97 +163,97 @@ std::string setup_js_folder(std::string buildDirectory,int buildType, int buildB
         {
             if( buildType == gpe::system_os_windows)
             {
-                if( GPE_LOADER != NULL )
+                if( pawgui::main_loader_display != NULL )
                 {
-                    GPE_LOADER->update_messages( "Copying Electron-Windows Files", "Please wait","Do NOT CLOSE" );
+                    pawgui::main_loader_display->update_messages( "Copying Electron-Windows Files", "Please wait","Do NOT CLOSE" );
                 }
                 if( buildBits==64)
                 {
-                    if( GPE_LOADER!=NULL )
+                    if( pawgui::main_loader_display!=NULL )
                     {
-                        GPE_LOADER->update_submessages( "Copying [game.exe and dlls] folder", "Please Wait..." );
+                        pawgui::main_loader_display->update_submessages( "Copying [game.exe and dlls] folder", "Please Wait..." );
                     }
                     gpe::copy_folder( gpe::app_directory_name+"build_files/win64build_electron",buildDirectory);
 
-                    if( GPE_LOADER!=NULL )
+                    if( pawgui::main_loader_display!=NULL )
                     {
-                        GPE_LOADER->update_submessages( "Copying [game.exe and dlls] folder", "Please Wait..." );
+                        pawgui::main_loader_display->update_submessages( "Copying [game.exe and dlls] folder", "Please Wait..." );
                     }
                     gpe::copy_folder( gpe::app_directory_name+"build_files/win64build_electron/locales",buildDirectory+"/locales");
 
 
-                    if( GPE_LOADER!=NULL )
+                    if( pawgui::main_loader_display!=NULL )
                     {
-                        GPE_LOADER->update_submessages( "Copying [resources] folder", "Please Wait..." );
+                        pawgui::main_loader_display->update_submessages( "Copying [resources] folder", "Please Wait..." );
                     }
                     gpe::copy_folder( gpe::app_directory_name+"build_files/win64build_electron/resources",buildDirectory+"/resources", true);
                 }
                 else
                 {
-                    if( GPE_LOADER!=NULL )
+                    if( pawgui::main_loader_display!=NULL )
                     {
-                        GPE_LOADER->update_submessages( "Copying [game.exe and dlls] folder", "Please Wait..." );
+                        pawgui::main_loader_display->update_submessages( "Copying [game.exe and dlls] folder", "Please Wait..." );
                     }
                     gpe::copy_folder( gpe::app_directory_name+"build_files/win32build_electron",buildDirectory);
 
-                    if( GPE_LOADER!=NULL )
+                    if( pawgui::main_loader_display!=NULL )
                     {
-                        GPE_LOADER->update_submessages( "Copying [locales] folder", "Please Wait..." );
+                        pawgui::main_loader_display->update_submessages( "Copying [locales] folder", "Please Wait..." );
                     }
                     gpe::copy_folder( gpe::app_directory_name+"build_files/win32build_electron/locales",buildDirectory+"/locales");
 
-                    if( GPE_LOADER!=NULL )
+                    if( pawgui::main_loader_display!=NULL )
                     {
-                        GPE_LOADER->update_submessages( "Copying [resources] folder", "Please Wait..." );
+                        pawgui::main_loader_display->update_submessages( "Copying [resources] folder", "Please Wait..." );
                     }
                     gpe::copy_folder( gpe::app_directory_name+"build_files/win32build_electron/resources",buildDirectory+"/resources", true);
                 }
             }
             else if( buildType == gpe::system_os_linux)
             {
-                if( GPE_LOADER != NULL )
+                if( pawgui::main_loader_display != NULL )
                 {
-                    GPE_LOADER->update_messages( "Copying Electron-Linux Files", "Please wait","Do NOT CLOSE" );
+                    pawgui::main_loader_display->update_messages( "Copying Electron-Linux Files", "Please wait","Do NOT CLOSE" );
                 }
 
                 if( buildBits==64)
                 {
-                    if( GPE_LOADER != NULL )
+                    if( pawgui::main_loader_display != NULL )
                     {
-                        GPE_LOADER->update_submessages( "Copying [game and SO files] folder", "Please Wait..." );
+                        pawgui::main_loader_display->update_submessages( "Copying [game and SO files] folder", "Please Wait..." );
                     }
                     gpe::copy_folder( gpe::app_directory_name+"build_files/linux64build_electron",buildDirectory);
 
-                    if( GPE_LOADER != NULL )
+                    if( pawgui::main_loader_display != NULL )
                     {
-                        GPE_LOADER->update_submessages( "Copying [locales] folder", "Please Wait..." );
+                        pawgui::main_loader_display->update_submessages( "Copying [locales] folder", "Please Wait..." );
                     }
                     gpe::copy_folder( gpe::app_directory_name+"build_files/linux64build_electron/locales",buildDirectory+"/locales");
 
 
-                    if( GPE_LOADER != NULL )
+                    if( pawgui::main_loader_display != NULL )
                     {
-                        GPE_LOADER->update_submessages( "Copying [resources] folder", "Please Wait..." );
+                        pawgui::main_loader_display->update_submessages( "Copying [resources] folder", "Please Wait..." );
                     }
                     gpe::copy_folder( gpe::app_directory_name+"build_files/linux64build_electron/resources",buildDirectory+"/resources", true);
                 }
                 else
                 {
-                    if( GPE_LOADER != NULL )
+                    if( pawgui::main_loader_display != NULL )
                     {
-                        GPE_LOADER->update_submessages( "Copying [game and SO files] folder", "Please Wait..." );
+                        pawgui::main_loader_display->update_submessages( "Copying [game and SO files] folder", "Please Wait..." );
                     }
                     gpe::copy_folder( gpe::app_directory_name+"build_files/linux32build_electron",buildDirectory);
 
-                    if( GPE_LOADER != NULL )
+                    if( pawgui::main_loader_display != NULL )
                     {
-                        GPE_LOADER->update_submessages( "Copying [locales] folder", "Please Wait..." );
+                        pawgui::main_loader_display->update_submessages( "Copying [locales] folder", "Please Wait..." );
                     }
                     gpe::copy_folder( gpe::app_directory_name+"build_files/linux32build_electron/locales",buildDirectory+"/locales");
 
-                    if( GPE_LOADER != NULL )
+                    if( pawgui::main_loader_display != NULL )
                     {
-                        GPE_LOADER->update_submessages( "Copying [resources] folder", "Please Wait..." );
+                        pawgui::main_loader_display->update_submessages( "Copying [resources] folder", "Please Wait..." );
                     }
                     gpe::copy_folder( gpe::app_directory_name+"build_files/linux32build_electron/resources",buildDirectory+"/resources", true);
                 }

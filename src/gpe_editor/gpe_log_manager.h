@@ -34,75 +34,73 @@ SOFTWARE.
 #ifndef GPE_EDITOR_LOGS_H
 #define GPE_EDITOR_LOGS_H
 
-#include "../pawgui/paw_gui.h"
+#include "../pawgui/pawgui.h"
 
-
-//Glorious
-class GPE_LogManager: public GPE_GeneralGuiElement
+class log_manager: public pawgui::widget_basic
 {
-private:
-    std::vector<GPE_Log_Entry *> generalLog;
-    GPE_TextAreaInputBasic * generalTextLog;
+    private:
+        std::vector<pawgui::log_entry *> generalLog;
+        pawgui::widget_text_editor * generalTextLog;
 
-    std::vector<GPE_Log_Entry *> debugLog;
-    GPE_TextAreaInputBasic * debugTextLog;
+        std::vector<pawgui::log_entry *> debugLog;
+        pawgui::widget_text_editor * debugTextLog;
 
-    std::vector<GPE_Log_Entry *> buildLog;
-    GPE_TextAreaInputBasic * buildTextLog;
-    GPE_TextAreaInputBasic * otherLog;
-    GPE_TextAreaInputBasic * logToView;
-    GPE_Label_Text * emptyResultsLabel;
-    GPE_TabBar * logTabs;
-    GPE_ScrollBar_XAxis * xScroll;
-    GPE_ScrollBar_YAxis * yScroll;
-    bool showXLogScroll, showLogYScroll;
-    int previousHeight;
-    std::vector< gpe::key_pair * > defaultTabs;
-public:
-    bool tabsAtBottom;
-    int minLogHeight;
-    bool isVisible;
-    std::vector< GPE_TextAnchor * > searchAnchors;
-    GPE_GuiElementList * bottomInfoList;
-    GPE_LogManager();
-    ~GPE_LogManager();
-    void add_default_tab(  std::string name,  bool open = false );
-    void clear_defaults();
-    void clear_search_anchors();
-    void process_self( gpe::shape_rect * viewedSpace=NULL, gpe::shape_rect *cam=NULL);
-    void render_self( gpe::shape_rect * viewedSpace=NULL, gpe::shape_rect * cam = NULL);
-    void clear_all_logs();
-    void clear_debug_log();
-    void clear_build_log();
-    void clear_general_log();
+        std::vector<pawgui::log_entry *> buildLog;
+        pawgui::widget_text_editor * buildTextLog;
+        pawgui::widget_text_editor * otherLog;
+        pawgui::widget_text_editor * logToView;
+        pawgui::widget_label_text  * emptyResultsLabel;
+        pawgui::widget_tabbar * logTabs;
+        pawgui::widget_scrollbar_xaxis * xScroll;
+        pawgui::widget_scrollbar_yaxis * yScroll;
+        bool showXLogScroll, showLogYScroll;
+        int previousHeight;
+        std::vector< gpe::key_pair * > defaultTabs;
+    public:
+        bool tabsAtBottom;
+        int minLogHeight;
+        bool isVisible;
+        std::vector< pawgui::widget_text_anchor * > searchAnchors;
+        pawgui::widget_panel_list * bottomInfoList;
+        log_manager();
+        ~log_manager();
+        void add_default_tab(  std::string name,  bool open = false );
+        void clear_defaults();
+        void clear_search_anchors();
+        void process_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect *cam=NULL);
+        void render_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect * cam = NULL);
+        void clear_all_logs();
+        void clear_debug_log();
+        void clear_build_log();
+        void clear_general_log();
 
-    void handle_error_log();
+        void handle_error_log();
 
-    void log_general_line(std::string newLogLine);
+        void log_general_line(std::string newLogLine);
 
-    void log_general_comment(std::string newLogLine);
-    void log_general_warning(std::string newLogLine);
-    void log_general_error(std::string newLogLine);
+        void log_general_comment(std::string newLogLine);
+        void log_general_warning(std::string newLogLine);
+        void log_general_error(std::string newLogLine);
 
-    void log_debug_line(std::string newLogLine);
-    //The core 3 special messages to show for build problems and suggestions
-    void log_build_line(std::string newLogLine);
-    void log_build_comment(std::string newLogLine);
-    void log_build_warning(std::string newLogLine);
-    void log_build_error(std::string newLogLine);
+        void log_debug_line(std::string newLogLine);
+        //The core 3 special messages to show for build problems and suggestions
+        void log_build_line(std::string newLogLine);
+        void log_build_comment(std::string newLogLine);
+        void log_build_warning(std::string newLogLine);
+        void log_build_error(std::string newLogLine);
 
-    void log_other_line(std::string newLogLine);
-    void open_general_log();
-    void open_build_log();
-    void open_other_log();
-    void open_replace_mode();
-    void open_search_mode();
-    void open_search_results();
-    void process_anchors();
-    void remove_default_tab( std::string name );
-    void toggle_manager();
+        void log_other_line(std::string newLogLine);
+        void open_general_log();
+        void open_build_log();
+        void open_other_log();
+        void open_replace_mode();
+        void open_search_mode();
+        void open_search_results();
+        void process_anchors();
+        void remove_default_tab( std::string name );
+        void toggle_manager();
 };
 
-extern GPE_LogManager * GPE_main_Logs;
+extern log_manager * main_editor_log;
 
-#endif
+#endif //GPE_EDITOR_LOGS_H

@@ -51,8 +51,8 @@ namespace pawgui
         widget_label_image( std::string name_param , std::string file_name,std::string description = "", std::string urlIn = "");
         ~widget_label_image();
         void load_label_image(std::string new_file_name);
-        void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-        void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+        void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void set_name(std::string name_param);
         void change_texture( gpe::texture_base * imgIn);
         void set_width( int newW);
@@ -68,8 +68,8 @@ namespace pawgui
         std::string get_data();
         std::string get_plain_string();
         void load_data(std::string dataString);
-        void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-        void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+        void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void set_name(std::string name_param);
     };
 
@@ -81,8 +81,8 @@ namespace pawgui
         std::string get_data();
         std::string get_plain_string();
         void load_data(std::string dataString);
-        void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-        void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+        void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void set_name(std::string name_param);
     };
 
@@ -94,8 +94,8 @@ namespace pawgui
         std::string get_data();
         std::string get_plain_string();
         void load_data(std::string dataString);
-        void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-        void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+        void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void set_name(std::string name_param);
     };
 
@@ -113,8 +113,8 @@ namespace pawgui
         void add_line(std::string newLine);
         void clear_all_lines();
         std::string get_paragraph();
-        void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-        void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+        void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void set_name(std::string name_param);
         void set_width(int newWidth);
         void set_height(int newHeight);
@@ -132,8 +132,8 @@ namespace pawgui
         std::string get_data();
         std::string get_plain_string();
         void load_data(std::string dataString);
-        void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-        void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+        void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void set_name(std::string name_param);
     };
 }

@@ -53,16 +53,7 @@ namespace pawgui
 
     overlay_system::~overlay_system()
     {
-        if( previousScreenshot!=NULL)
-        {
-            delete previousScreenshot;
-            previousScreenshot = NULL;
-        }
-        if( toolTipTexture!=NULL)
-        {
-            delete toolTipTexture;
-            toolTipTexture = NULL;
-        }
+
     }
 
     bool overlay_system::overhead_used()

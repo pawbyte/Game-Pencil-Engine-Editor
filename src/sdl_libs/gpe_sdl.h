@@ -69,6 +69,7 @@ SOFTWARE.
 
 #include "gpe_artist_sdl.h"
 #include "gpe_audio_sdl_mixer.h"
+#include "gpe_cursor_sdl.h"
 #include "gpe_font_sdl.h"
 #include "gpe_input_sdl.h"
 #include "gpe_render_package_sdl.h"

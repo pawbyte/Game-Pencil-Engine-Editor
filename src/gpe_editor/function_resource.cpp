@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include "function_resource.h"
 
-functionResource::functionResource(GPE_GeneralResourceContainer * pFolder)
+functionResource::functionResource(pawgui::widget_resource_container * pFolder)
 {
     projectParentFolder = pFolder;
 
@@ -43,15 +43,15 @@ functionResource::functionResource(GPE_GeneralResourceContainer * pFolder)
     saveResourceButton->disable_self();
     */
     //textEditorButtonBar->set_width(256);
-    functionReturnType = new gpe_text_widget_string("void","");
-    parametersField = new gpe_text_widget_string("","parameter1, parameter2, etc");
+    functionReturnType = new pawgui::widget_input_text("void","");
+    parametersField = new pawgui::widget_input_text("","parameter1, parameter2, etc");
     parametersField->set_label("Function Parameters");
-    functionCode = new GPE_TextAreaInputBasic(false);
-    renameBox->set_coords(GENERAL_GPE_GUI_PADDING,-1 );
-    saveButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png","Save Changes",-1,24);
+    functionCode = new pawgui::widget_text_editor(false);
+    renameBox->set_coords(pawgui::padding_default,-1 );
+    saveButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png","Save Changes",-1,24);
     saveButton->set_height(parametersField->get_height() );
     saveButton->set_width(parametersField->get_height() );
-    functionEditorList = new GPE_GuiElementList();
+    functionEditorList = new pawgui::widget_panel_list();
     //loadResourceButton->disable_self();
     //saveResourceButton->disable_self();
 }
@@ -168,14 +168,14 @@ void functionResource::load_resource(std::string file_path)
 {
     if( resourcePostProcessed ==false  || sff_ex::file_exists(file_path) )
     {
-        if( GPE_LOADER != NULL )
+        if( pawgui::main_loader_display != NULL )
         {
-            GPE_LOADER->update_submessages( "Processing Function", resource_name );
+            pawgui::main_loader_display->update_submessages( "Processing Function", resource_name );
         }
 
         bool usingAltSaveSource = false;
         std::string newFileIn ="";
-        std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/functions/";
+        std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/source/";
         if( sff_ex::file_exists(file_path) )
         {
             newFileIn = file_path;
@@ -188,7 +188,17 @@ void functionResource::load_resource(std::string file_path)
         }
 
 
-        std::string  functionCodeLoadLocation = soughtDir+resource_name+".cps";
+        std::string  functionCodeLoadLocation = soughtDir+ "function_" + resource_name + ".cps";
+
+        if( current_project !=NULL )
+        {
+            if( current_project->get_project_language_id() ==
+               pawgui::program_language_cpp )
+            {
+                functionCodeLoadLocation = soughtDir+  "function_" + resource_name + ".cpp";
+            }
+        }
+
         if( functionCode!=NULL)
         {
             functionCode->import_text(functionCodeLoadLocation);
@@ -295,40 +305,40 @@ void functionResource::prerender_self(  )
     standardEditableGameResource::prerender_self();
 }
 
-void functionResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam)
+void functionResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && viewedSpace!=NULL && saveButton!=NULL && functionEditorList!=NULL && parametersField!=NULL && functionCode!=NULL )
+    if(cam!=NULL && view_space!=NULL && saveButton!=NULL && functionEditorList!=NULL && parametersField!=NULL && functionCode!=NULL )
     {
         functionEditorList->set_coords( 0,0 );
-        functionEditorList->set_width(viewedSpace->w );
-        functionEditorList->set_height(viewedSpace->h);
+        functionEditorList->set_width(view_space->w );
+        functionEditorList->set_height(view_space->h);
         functionEditorList->clear_list();
-        if( PANEL_GENERAL_EDITOR!=NULL )
+        if( panel_main_area!=NULL )
         {
             functionEditorList->barXMargin = functionEditorList->barYMargin = 0;
             functionEditorList->barXPadding = functionEditorList->barYPadding = 0;
-            functionCode->set_width(viewedSpace->w );
-            functionCode->set_height(viewedSpace->h );
+            functionCode->set_width(view_space->w );
+            functionCode->set_height(view_space->h );
 
             //Process function parameter elements in the Editor Panel
-            PANEL_GENERAL_EDITOR->clear_panel();
-            PANEL_GENERAL_EDITOR->add_gui_element(renameBox,true);
-            PANEL_GENERAL_EDITOR->add_gui_element(parametersField,true);
-            PANEL_GENERAL_EDITOR->add_gui_element(confirmResourceButton,true);
-            PANEL_GENERAL_EDITOR->add_gui_element(cancelResourceButton,true);
-            PANEL_GENERAL_EDITOR->process_self();
+            panel_main_area->clear_panel();
+            panel_main_area->add_gui_element(renameBox,true);
+            panel_main_area->add_gui_element(parametersField,true);
+            panel_main_area->add_gui_element(confirmResourceButton,true);
+            panel_main_area->add_gui_element(cancelResourceButton,true);
+            panel_main_area->process_self();
 
             functionEditorList->add_gui_element_fullsize( functionCode );
-            functionEditorList->process_self( viewedSpace,cam );
+            functionEditorList->process_self( view_space,cam );
             if( confirmResourceButton->is_clicked() )
             {
                 save_resource();
             }
             else if( cancelResourceButton->is_clicked() )
             {
-                if( GPE_Display_Basic_Prompt("Are you sure you will like to reverse code changes?","This will load in data from save-file!", true )== DISPLAY_QUERY_YES )
+                if( pawgui::display_prompt_message("Are you sure you will like to reverse code changes?","This will load in data from save-file!", true )== pawgui::display_query_yes )
                 {
                     resourcePostProcessed = false;
                     load_resource();
@@ -337,16 +347,16 @@ void functionResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_r
         }
         else
         {
-            functionEditorList->barXMargin = functionEditorList->barYMargin = GENERAL_GPE_GUI_PADDING;
-            functionEditorList->barXPadding = functionEditorList->barYPadding = GENERAL_GPE_GUI_PADDING;
+            functionEditorList->barXMargin = functionEditorList->barYMargin = pawgui::padding_default;
+            functionEditorList->barXPadding = functionEditorList->barYPadding = pawgui::padding_default;
             functionEditorList->set_coords( 0,0 );
-            functionCode->set_width(viewedSpace->w-GENERAL_GPE_GUI_PADDING*4 );
-            functionCode->set_height(viewedSpace->h - GENERAL_GPE_GUI_PADDING*4 - 32 );
+            functionCode->set_width(view_space->w-pawgui::padding_default*4 );
+            functionCode->set_height(view_space->h - pawgui::padding_default*4 - 32 );
             functionEditorList->add_gui_element(saveButton,false);
             functionEditorList->add_gui_element(renameBox,false);
             functionEditorList->add_gui_element(parametersField,true);
             functionEditorList->add_gui_element(functionCode,true);
-            functionEditorList->process_self( viewedSpace,cam );
+            functionEditorList->process_self( view_space,cam );
             if( saveButton->is_clicked() )
             {
                 save_resource();
@@ -357,21 +367,21 @@ void functionResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_r
     }
 }
 
-void functionResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void functionResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && viewedSpace!=NULL && functionEditorList!=NULL )
+    if(cam!=NULL && view_space!=NULL && functionEditorList!=NULL )
     {
-        functionEditorList->render_self( viewedSpace, cam );
+        functionEditorList->render_self( view_space, cam );
     }
 }
 
 void functionResource::save_resource(std::string file_path, int backupId)
 {
-    if( GPE_LOADER != NULL )
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->update_submessages( "Processing Function", resource_name );
+        pawgui::main_loader_display->update_submessages( "Processing Function", resource_name );
     }
     sff_ex::append_to_file(file_path,"blank");
     bool usingAltSaveSource = false;
@@ -384,8 +394,8 @@ void functionResource::save_resource(std::string file_path, int backupId)
     }
     else
     {
-        soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/functions/";
-        newFileOut = soughtDir + resource_name+".gpf";
+        soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/source/";
+        newFileOut = soughtDir + "function_" + resource_name+".gpf";
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
     //If the scene file could be saved
@@ -405,7 +415,7 @@ void functionResource::save_resource(std::string file_path, int backupId)
                     if( sff_ex::file_exists(functionCodeSaveLocation) )
                     {
                         /*
-                        if( GPE_Display_Basic_Prompt("[WARNING]Function File Already exists?","Are you sure you will like to overwrite your ["+resource_name+".cps] Function file? This action is irreversible!")==DISPLAY_QUERY_YES)
+                        if( pawgui::display_prompt_message("[WARNING]Function File Already exists?","Are you sure you will like to overwrite your ["+resource_name+".cps] Function file? This action is irreversible!")==pawgui::display_query_yes)
                         {
                             functionCode->export_text(functionCodeSaveLocation );
                         }
@@ -445,25 +455,25 @@ void functionResource::save_resource(std::string file_path, int backupId)
         }
         else
         {
-            GPE_main_Logs->log_general_error("Unable to save to file ["+newFileOut+"]");
+            main_editor_log->log_general_error("Unable to save to file ["+newFileOut+"]");
         }
     }
     else
     {
-        GPE_main_Logs->log_general_error("Unable to save file ["+newFileOut+"]");
+        main_editor_log->log_general_error("Unable to save file ["+newFileOut+"]");
     }
 }
 
 int functionResource::search_for_string(std::string needle)
 {
     int foundStrings = 0;
-    GPE_main_Logs->log_general_comment("Searching ["+resource_name+"] function..");
-    if( functionCode!=NULL && GPE_ANCHOR_GC!=NULL && functionCode->has_content() )
+    main_editor_log->log_general_comment("Searching ["+resource_name+"] function..");
+    if( functionCode!=NULL && pawgui::main_anchor_controller!=NULL && functionCode->has_content() )
     {
-        GPE_ANCHOR_GC->searchResultProjectName = parentProjectName;
-        GPE_ANCHOR_GC->searchResultResourceId = globalResouceIdNumber;
-        GPE_ANCHOR_GC->searchResultResourceName = resource_name;
-        foundStrings=functionCode->find_all_strings(needle,main_SEARCH_CONTROLLER->findMatchCase->is_checked(),true, "function");
+        pawgui::main_anchor_controller->searchResultProjectName = parentProjectName;
+        pawgui::main_anchor_controller->searchResultResourceId = globalResouceIdNumber;
+        pawgui::main_anchor_controller->searchResultResourceName = resource_name;
+        foundStrings=functionCode->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true, "function");
     }
     return foundStrings;
 }
@@ -471,41 +481,41 @@ int functionResource::search_for_string(std::string needle)
 int functionResource::search_and_replace_string(std::string needle, std::string newStr )
 {
     int foundStrings = 0;
-    if( functionCode!=NULL && main_SEARCH_CONTROLLER!=NULL && functionCode->has_content() )
+    if( functionCode!=NULL && pawgui::main_search_controller!=NULL && functionCode->has_content() )
     {
-        foundStrings=functionCode->find_all_strings(needle,main_SEARCH_CONTROLLER->findMatchCase->is_checked() );
-        if( GPE_LOADER != NULL )
+        foundStrings=functionCode->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked() );
+        if( pawgui::main_loader_display != NULL )
         {
-            GPE_LOADER->update_messages( "Replacing Substring", needle, "with ["+newStr+"]" );
+            pawgui::main_loader_display->update_messages( "Replacing Substring", needle, "with ["+newStr+"]" );
         }
 
         if( foundStrings > 0)
         {
             int replaceCount =  functionCode->replace_all_found(needle, newStr );
-            GPE_LOADER->update_messages( "Replaced Substring", needle, stg_ex::int_to_string(replaceCount) +" times" );
-            main_SEARCH_CONTROLLER->showFindAllResults = true;
+            pawgui::main_loader_display->update_messages( "Replaced Substring", needle, stg_ex::int_to_string(replaceCount) +" times" );
+            pawgui::main_search_controller->showFindAllResults = true;
         }
         else
         {
-            GPE_LOADER->update_messages( "Replacing Substring", needle, "No matches found");
-            main_SEARCH_CONTROLLER->showFindAllResults = false;
+            pawgui::main_loader_display->update_messages( "Replacing Substring", needle, "No matches found");
+            pawgui::main_search_controller->showFindAllResults = false;
         }
-        //main_OVERLAY->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessageString,1);
+        //pawgui::main_overlay_system->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessageString,1);
     }
     return foundStrings;
 }
 
 bool functionResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn)
 {
-    if( GPE_LOADER != NULL )
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->update_submessages( "Saving Function", resource_name );
+        pawgui::main_loader_display->update_submessages( "Saving Function", resource_name );
     }
     if( fileTarget!=NULL)
     {
         if( fileTarget->is_open() )
         {
-            std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+            std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
             *fileTarget << nestedTabsStr << "Function=" << resource_name << "," << get_global_rid() << ",\n";
             save_resource();
             return true;

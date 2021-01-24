@@ -232,6 +232,7 @@ namespace gpe
         for( int i = packageMax -1; i >= 0; i--)
         {
             tempPackage = renderPackages[i];
+
             if( tempPackage!=NULL && tempPackage->packageRenderer!=NULL && tempPackage->packageWindow!=NULL )
             {
                 tempPackage->packageRenderer->update_renderer( tempPackage->packageWindow->is_minimized() );

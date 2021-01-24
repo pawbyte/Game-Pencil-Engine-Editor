@@ -44,7 +44,6 @@ SDL 2.0.9 used for this version...
 bool init_gpe_master_itenary( int argc, char* args[] )
 {
     return init_gpe_editor(argc, args);
-    return true;
 }
 
 bool quit_gpe_master_itenary()
@@ -53,7 +52,6 @@ bool quit_gpe_master_itenary()
     quit_gpe_editor();
 
     gpe::error_log->report("Deleting Gui...");
-    PAW_GUI_END();
-
+    pawgui::quit_gui();
     return true;
 }

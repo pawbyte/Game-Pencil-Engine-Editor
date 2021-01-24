@@ -85,7 +85,6 @@ namespace gpe
             float min_delay_ms;
             int average_fps;
             time_keeper_base();
-            time_keeper_base( std::string t_name );
             virtual ~time_keeper_base();
 
             virtual void calculate_avg_fps( bool is_minimized );
@@ -105,6 +104,7 @@ namespace gpe
             virtual float get_delta_ticks();
 
             virtual float get_fps();
+            std::string get_name();
             virtual float get_performance_ms();
             virtual float get_performance_seconds();
             virtual uint64_t get_ticks();

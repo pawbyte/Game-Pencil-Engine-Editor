@@ -35,4 +35,4 @@ SOFTWARE.
 #include "gpe_editor_globals.h"
 
 int release_current_mode = release_type_alpha;
-themes_controller * editor_theme_controller = NULL;
+pawgui::themes_controller * editor_theme_controller = NULL;

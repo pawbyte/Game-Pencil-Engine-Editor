@@ -105,14 +105,14 @@ namespace pawgui
             void open_folder();
             void preprocess_container(std::string file_path = "", int backupId = -1);
             void prerender_self( );
-            int process_container(int xPos, int yPos, int selectedId = -1, gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL, bool mouseInRange = false);
+            int process_container(int xPos, int yPos, int selectedId = -1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, bool mouseInRange = false);
             bool read_data_from_projectfile(std::ofstream * fileTarget);
             void remove_resource(widget_resource_container * otherContainer, bool deleteResource = true);
             //Render options
-            void render_contained_object( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-            void render_option( int xPos, int yPos, int selectedIdNumber=-1, gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL, bool renderSubOptions = true, bool renderAutomatically = false);
-            void render_image( int xPos, int yPos, int rWidth = -1, int rHeight = -1, gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL, gpe::color * renderColor = NULL);
-            void render_image_scaled( int xPos, int yPos, float xScale = 1, float yScale = -1, gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL, gpe::color * renderColor = NULL);
+            void render_contained_object( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void render_option( int xPos, int yPos, int selectedIdNumber=-1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, bool renderSubOptions = true, bool renderAutomatically = false);
+            void render_image( int xPos, int yPos, int r_width = -1, int r_height = -1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, gpe::color * renderColor = NULL);
+            void render_image_scaled( int xPos, int yPos, float xScale = 1, float yScale = -1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, gpe::color * renderColor = NULL);
 
             void save_container(std::string file_path = "", int backupId = -1);
             int search_for_string(std::string needle);

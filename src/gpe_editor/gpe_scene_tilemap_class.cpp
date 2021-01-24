@@ -37,7 +37,7 @@ GPE_SceneTile::GPE_SceneTile()
 {
     isLocked = false;
     branchType = gpe::branch_type::TILE;
-    iconTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/table.png") ;
+    iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/table.png") ;
 
     tileTypeId = -1;
     tileIndexId = -1;
@@ -55,7 +55,7 @@ GPE_SceneTile::~GPE_SceneTile()
 
 void GPE_SceneTile::add_typed_elements()
 {
-    if( PANEL_INSPECTOR!=NULL )
+    if( panel_inspector!=NULL )
     {
     }
 }
@@ -70,12 +70,12 @@ bool GPE_SceneTile::save_branch_data(std::ofstream * fileTarget, int nestedFolde
     return true;
 }
 
-GPE_SceneTileMap::GPE_SceneTileMap( std::string mapName, int x, int y, GPE_GeneralResourceContainer *pFolder  )
+GPE_SceneTileMap::GPE_SceneTileMap( std::string mapName, int x, int y, pawgui::widget_resource_container *pFolder  )
 {
     projectParentFolder = pFolder;
     if( projectParentFolder!=NULL)
     {
-        tilesheetDropDown = new GPE_DropDown_Resouce_Menu( "Tilesheet",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_tilesheet]+"s"),-1,true );
+        tilesheetDropDown = new pawgui::widget_drop_down_resource_menu( "Tilesheet",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_tilesheet]),-1,true );
         tilesheetDropDown->set_width(192);
         tSPreviewer = new tilesheetPreviewer();
 
@@ -89,7 +89,7 @@ GPE_SceneTileMap::GPE_SceneTileMap( std::string mapName, int x, int y, GPE_Gener
     isLocked = false;
     set_position( x, y);
     branchType = gpe::branch_type::TILEMAP;
-    iconTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/th.png") ;
+    iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/th.png") ;
 
     update_rectangle(&tsPlacementArea,0,0,0,0);
 
@@ -105,27 +105,27 @@ GPE_SceneTileMap::GPE_SceneTileMap( std::string mapName, int x, int y, GPE_Gener
     yPosField->set_number( yPos );
     yPosField->set_label("Map-YStart");
 
-    fieldTileWidth = new gpe_text_widget_number( "32" );
+    fieldTileWidth = new pawgui::widget_input_number( "32" );
     fieldTileWidth->set_number( tileWidth );
     fieldTileWidth->set_label("Tile Width");
     fieldTileWidth->scale_width( 0.4 );
 
-    fieldTileHeight = new gpe_text_widget_number( "32" );
+    fieldTileHeight = new pawgui::widget_input_number( "32" );
     fieldTileHeight->set_number( tileHeight );
     fieldTileHeight->set_label("Tile Height");
     fieldTileHeight->scale_width( 0.4 );
 
-    fieldAmountX = new gpe_text_widget_number( "" );
+    fieldAmountX = new pawgui::widget_input_number( "" );
     fieldAmountX->set_number( tileAmountX );
     fieldAmountX->set_label("Map Width");
     fieldAmountX->scale_width( 0.4 );
 
-    fieldAmountY = new gpe_text_widget_number( "y-tile-amount" );
+    fieldAmountY = new pawgui::widget_input_number( "y-tile-amount" );
     fieldAmountY->set_label("Map Height");
     fieldAmountY->set_number( tileAmountY );
     fieldAmountY->scale_width( 0.4 );
 
-    fillScene = new GPE_CheckBoxBasic("Fill Scene","Check to use remainder of scene" );
+    fillScene = new pawgui::widget_checkbox("Fill Scene","Check to use remainder of scene" );
     if( (int)mapName.size()==0 )
     {
         name = "tilemap";
@@ -138,14 +138,14 @@ GPE_SceneTileMap::GPE_SceneTileMap( std::string mapName, int x, int y, GPE_Gener
 
 void GPE_SceneTileMap::add_typed_elements()
 {
-    if( PANEL_INSPECTOR!=NULL )
+    if( panel_inspector!=NULL )
     {
-        PANEL_INSPECTOR->add_gui_element( tilesheetDropDown, true );
-        PANEL_INSPECTOR->add_gui_element( fieldTileWidth, false );
-        PANEL_INSPECTOR->add_gui_element( fieldTileHeight, true );
-        PANEL_INSPECTOR->add_gui_element( fieldAmountX, false );
-        PANEL_INSPECTOR->add_gui_element( fieldAmountY, true );
-        PANEL_INSPECTOR->add_gui_element( fillScene, true );
+        panel_inspector->add_gui_element( tilesheetDropDown, true );
+        panel_inspector->add_gui_element( fieldTileWidth, false );
+        panel_inspector->add_gui_element( fieldTileHeight, true );
+        panel_inspector->add_gui_element( fieldAmountX, false );
+        panel_inspector->add_gui_element( fieldAmountY, true );
+        panel_inspector->add_gui_element( fillScene, true );
     }
 }
 
@@ -158,15 +158,15 @@ GPE_SceneTileMap::~GPE_SceneTileMap()
     }
 }
 
-bool GPE_SceneTileMap::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount, GPE_GeneralResourceContainer * localResTypeController )
+bool GPE_SceneTileMap::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount, pawgui::widget_resource_container * localResTypeController )
 {
     if( localResTypeController == NULL )
     {
         return false;
     }
-    std::string nestedTabsStr = generate_tabs( leftTabAmount  );
+    std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
     GPE_SceneTile * fSceneTile = NULL;
-    GPE_GeneralResourceContainer * fTSToPlace = NULL;
+    pawgui::widget_resource_container * fTSToPlace = NULL;
     int maxTilesInLayer = (int)mapTiles.size();
 
     for(  int i = 0; i < maxTilesInLayer; i++)
@@ -335,14 +335,14 @@ void GPE_SceneTileMap::process_elements()
                     tileIdsToPlace.clear();
                     tSPreviewer->reset_preview(true);
                 }
-                GPE_GeneralResourceContainer * tsTypeContainer = tilesheetDropDown->get_selected_container();
+                pawgui::widget_resource_container * tsTypeContainer = tilesheetDropDown->get_selected_container();
                 if( tsTypeContainer!=NULL)
                 {
                     tsRes = (tilesheetResource*) tsTypeContainer->get_held_resource();
                     tSPreviewer->tileSheetToPreview = tsRes->tilesheetInEditor;
                 }
-                tSPreviewer->set_width( PANEL_TS_RESOURCE->get_width()-GENERAL_GPE_GUI_PADDING );
-                tSPreviewer->set_height( PANEL_TS_RESOURCE->get_height()-GENERAL_GPE_GUI_PADDING-tilesheetDropDown->get_height() );
+                tSPreviewer->set_width( PANEL_TS_RESOURCE->get_width()-pawgui::padding_default );
+                tSPreviewer->set_height( PANEL_TS_RESOURCE->get_height()-pawgui::padding_default-tilesheetDropDown->get_height() );
                 PANEL_TS_RESOURCE->add_gui_element(tSPreviewer,true);
             }
             PANEL_TS_RESOURCE->process_self( );
@@ -379,7 +379,7 @@ void GPE_SceneTileMap::process_elements()
             if( tsRes!=NULL  && tsRes->tilesheetInEditor!=NULL && tsRes->tilesheetInEditor->tsImage!=NULL)
             {
                 //select tiles to place / place tiles / add tiles
-                //if( RESOURCE_TO_DRAG==NULL && mouseIsInScene && sceneXScroll->is_scrolling()==false && sceneYScroll->is_scrolling()==false )
+                //if( pawgui::resource_dragged==NULL && mouseIsInScene && sceneXScroll->is_scrolling()==false && sceneYScroll->is_scrolling()==false )
                 {
                     GPE_SceneTile* fSceneTileToEdit = NULL;
 
@@ -398,7 +398,7 @@ void GPE_SceneTileMap::process_elements()
                         }
                         else
                         {
-                            //    main_OVERLAY->update_tooltip("Unable to find scene tile to edit...");
+                            //    pawgui::main_overlay_system->update_tooltip("Unable to find scene tile to edit...");
                         }
                         newTileX+=1;
                         tileRowItr+=1;
@@ -591,7 +591,7 @@ void GPE_SceneTileMap::render_branch()
         }
 
         GPE_SceneTile * fSceneTile = NULL;
-        GPE_GeneralResourceContainer * foundTSResource = NULL;
+        pawgui::widget_resource_container * foundTSResource = NULL;
         tilesheetResource * foundHeldTSRes = NULL;
 
         //gpe::error_log->report("Performing 1st loop");
@@ -622,7 +622,7 @@ void GPE_SceneTileMap::render_branch()
                                         /*if( renderOutlines )
                                         {
                                             gpe::gcanvas->render_rectangle( cTileXPos,cTileYPos, cTileXPos+ceil( (float)foundTsRect.w*spm->zoomValue),cTileYPos+ceil( (float)foundTsRect.h*spm->zoomValue ), c_red, true, 255 );
-                                            //render_text( cTileXPos,cTileYPos, stg_ex::int_to_string(fSceneTile->tilesheetIndexId)+"-"+ stg_ex::int_to_string(fSceneTile->tileIndexId),c_red,font_default,gpe::fa_left,gpe::fa_top, 255 );
+                                            //render_text( cTileXPos,cTileYPos, stg_ex::int_to_string(fSceneTile->tilesheetIndexId)+"-"+ stg_ex::int_to_string(fSceneTile->tileIndexId),c_red,gpe::font_default,gpe::fa_left,gpe::fa_top, 255 );
                                         }
                                         */
                                     }
@@ -637,8 +637,8 @@ void GPE_SceneTileMap::render_branch()
         //gpe::error_log->report("1st loop completed");
 
         //Previews tilesheet if selected
-        GPE_GeneralResourceContainer * tsTypeContainer = tilesheetDropDown->get_selected_container();
-        if( tsTypeContainer!=NULL  && spm->mouseInScene && spm->editMode == SCENE_MODE_PLACE && RESOURCE_TO_DRAG==NULL )
+        pawgui::widget_resource_container * tsTypeContainer = tilesheetDropDown->get_selected_container();
+        if( tsTypeContainer!=NULL  && spm->mouseInScene && spm->editMode == SCENE_MODE_PLACE && pawgui::resource_dragged==NULL )
         {
             tsRes = (tilesheetResource*) tsTypeContainer->get_held_resource();
             if( tsRes!=NULL && tsRes->tilesheetInEditor!=NULL && tsRes->tilesheetInEditor->tsImage!=NULL)
@@ -680,14 +680,14 @@ void GPE_SceneTileMap::render_branch()
             }
         }
     }
-    GPE_SpecialMenu_Branch::render_branch();
+    pawgui::widget_branch::render_branch();
 }
 
 bool GPE_SceneTileMap::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn )
 {
     if( fileTarget!=NULL && fileTarget->is_open() )
     {
-        std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+        std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+ "[GPE_TileMap=";
         *fileTarget << stg_ex::int_to_string( tileWidth )+",";
         *fileTarget << stg_ex::int_to_string( tileHeight )+",";
@@ -714,7 +714,7 @@ bool GPE_SceneTileMap::save_branch_data(std::ofstream * fileTarget, int nestedFo
         *fileTarget << "]\n";
         GPE_SceneBasicClass::save_branch_data( fileTarget, nestedFoldersIn+1 );
         int maxTilesInMap = (int)mapTiles.size();
-        nestedTabsStr = generate_tabs( nestedFoldersIn+1 );
+        nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn+1 );
         GPE_SceneTile * fSceneTile = NULL;
         for(  int i = 0; i < maxTilesInMap; i++)
         {

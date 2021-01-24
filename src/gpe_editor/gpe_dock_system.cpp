@@ -35,25 +35,25 @@ SOFTWARE.
 #include "gpe_editor.h"
 
 gpeEditorDock * GPE_DOCK = NULL;
-gpeEditorDockPanel * PANEL_RESOURCE_TREE = NULL;
-gpeEditorDockPanel * PANEL_GENERAL_EDITOR = NULL;
-gpeEditorDockPanel * PANEL_INSPECTOR = NULL;
-gpeEditorDockPanel * PANEL_META = NULL;
+gpeEditorDockPanel * panel_resource_tree = NULL;
+gpeEditorDockPanel * panel_main_area = NULL;
+gpeEditorDockPanel * panel_inspector = NULL;
+gpeEditorDockPanel * panel_meta = NULL;
 
 gpeEditorDockPanel::gpeEditorDockPanel()
 {
     specialPanelElement = NULL;
-    panelBar = new GPE_TabBar(true);
+    panelBar = new pawgui::widget_tabbar(true);
     panelRect = new gpe::shape_rect();
     widget_box.w = 0;
     wasProcessed = false;
-    panelGuiList = new GPE_GuiElementList();
+    panelGuiList = new pawgui::widget_panel_list();
     panelGuiList->set_horizontal_align(gpe::fa_left);
-    panelGuiList->panelAlignType = GPE_PANEL_ALIGN_FULL_LEFT;
-    panelGuiList->barXPadding = GENERAL_GPE_GUI_PADDING;
+    panelGuiList->panelAlignType = pawgui::panel_align_left;
+    panelGuiList->barXPadding = pawgui::padding_default;
     panelGuiList->barXMargin = 0;
     containerRect = new gpe::shape_rect();
-    dockSettingsButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/bars.png","Panel Settings");
+    dockSettingsButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/bars.png","Panel Settings");
 }
 
 gpeEditorDockPanel::~gpeEditorDockPanel()
@@ -99,7 +99,7 @@ bool gpeEditorDockPanel::add_container( std::string name, bool openNew )
     return false;
 }
 
-void gpeEditorDockPanel::add_gui_element(GPE_GeneralGuiElement * element, bool isNLElement)
+void gpeEditorDockPanel::add_gui_element(pawgui::widget_basic * element, bool isNLElement)
 {
     if( panelGuiList!=NULL )
     {
@@ -107,7 +107,7 @@ void gpeEditorDockPanel::add_gui_element(GPE_GeneralGuiElement * element, bool i
     }
 }
 
-void gpeEditorDockPanel::add_gui_auto(GPE_GeneralGuiElement * element)
+void gpeEditorDockPanel::add_gui_auto(pawgui::widget_basic * element)
 {
     if( panelGuiList!=NULL )
     {
@@ -115,7 +115,7 @@ void gpeEditorDockPanel::add_gui_auto(GPE_GeneralGuiElement * element)
     }
 }
 
-void gpeEditorDockPanel::add_gui_element_fullsize(GPE_GeneralGuiElement * element )
+void gpeEditorDockPanel::add_gui_element_fullsize(pawgui::widget_basic * element )
 {
     if( panelGuiList!=NULL && element!=NULL)
     {
@@ -171,9 +171,9 @@ bool gpeEditorDockPanel::has_content()
     return false;
 }
 
-void gpeEditorDockPanel::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam  )
+void gpeEditorDockPanel::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam  )
 {
-    viewedSpace = gpe::camera_find( viewedSpace );
+    view_space = gpe::camera_find( view_space );
     cam = gpe::camera_find( cam );
     setup_panel( false, false );
     if( panelBar!=NULL)
@@ -190,7 +190,7 @@ void gpeEditorDockPanel::process_self( gpe::shape_rect * viewedSpace, gpe::shape
                 specialPanelElement->set_coords( widget_box.x, widget_box.y);
                 specialPanelElement->set_width( widget_box.w );
                 specialPanelElement->set_height( widget_box.h );
-                specialPanelElement->process_self( viewedSpace, cam );
+                specialPanelElement->process_self( view_space, cam );
             }
             else
             {
@@ -201,20 +201,20 @@ void gpeEditorDockPanel::process_self( gpe::shape_rect * viewedSpace, gpe::shape
                     panelGuiList->set_coords( 0,0 );
                     panelGuiList->set_width( panelRect->w );
                     panelGuiList->set_height( panelRect->h );
-                    panelGuiList->barXMargin = GENERAL_GPE_GUI_PADDING;
-                    panelGuiList->barYMargin = GENERAL_GPE_GUI_PADDING;
-                    panelGuiList->barXPadding = GENERAL_GPE_GUI_PADDING;
-                    panelGuiList->barYPadding = GENERAL_GPE_GUI_PADDING;
+                    panelGuiList->barXMargin = pawgui::padding_default;
+                    panelGuiList->barYMargin = pawgui::padding_default;
+                    panelGuiList->barXPadding = pawgui::padding_default;
+                    panelGuiList->barYPadding = pawgui::padding_default;
                     panelGuiList->process_self( panelRect, cam  );
                 }
 
                 if( panelBar!=NULL )
                 {
-                    panelBar->process_self( viewedSpace, cam);
+                    panelBar->process_self( view_space, cam);
                 }
                 if( dockSettingsButton!=NULL )
                 {
-                    dockSettingsButton->process_self( viewedSpace, cam);
+                    dockSettingsButton->process_self( view_space, cam);
                 }
             }
         }
@@ -238,17 +238,17 @@ bool gpeEditorDockPanel::remove_container( std::string name )
     return false;
 }
 
-void gpeEditorDockPanel::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam   )
+void gpeEditorDockPanel::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam   )
 {
     if( has_content() == false)
     {
         return;
     }
 
-    viewedSpace = gpe::camera_find( viewedSpace );
+    view_space = gpe::camera_find( view_space );
     cam = gpe::camera_find( cam );
     gpe::renderer_main->reset_viewpoint();
-    gpe::renderer_main->set_viewpoint( viewedSpace);
+    gpe::renderer_main->set_viewpoint( view_space);
 
     if( specialPanelElement!=NULL )
     {
@@ -323,16 +323,16 @@ void gpeEditorDockPanel::setup_panel(  bool addSpacing, bool clearList  )
         }
         if( addSpacing )
         {
-            panelGuiList->barXPadding = GENERAL_GPE_GUI_PADDING;
-            panelGuiList->barYPadding = GENERAL_GPE_GUI_PADDING;
-            panelGuiList->barXMargin = GENERAL_GPE_GUI_PADDING;
-            panelGuiList->barYMargin = GENERAL_GPE_GUI_PADDING;
+            panelGuiList->barXPadding = pawgui::padding_default;
+            panelGuiList->barYPadding = pawgui::padding_default;
+            panelGuiList->barXMargin = pawgui::padding_default;
+            panelGuiList->barYMargin = pawgui::padding_default;
         }
     }
 
     if( panelBar!=NULL)
     {
-        panelBar->set_width( widget_box.w - panelBar->get_height() - GENERAL_GPE_GUI_PADDING );
+        panelBar->set_width( widget_box.w - panelBar->get_height() - pawgui::padding_default );
         panelBar->set_coords( widget_box.x, widget_box.y );
 
         if( dockSettingsButton!=NULL )
@@ -341,7 +341,7 @@ void gpeEditorDockPanel::setup_panel(  bool addSpacing, bool clearList  )
             {
                 dockSettingsButton->set_clicked( false );
             }
-            dockSettingsButton->set_coords( panelBar->get_x2pos() + GENERAL_GPE_GUI_PADDING, panelBar->get_ypos() );
+            dockSettingsButton->set_coords( panelBar->get_x2() + pawgui::padding_default, panelBar->get_ypos() );
             dockSettingsButton->set_width(  panelBar->get_height() );
             dockSettingsButton->set_height(  panelBar->get_height() );
         }
@@ -354,7 +354,7 @@ void gpeEditorDockPanel::setup_panel(  bool addSpacing, bool clearList  )
         {
             dockSettingsButton->set_clicked( false );
         }
-        dockSettingsButton->set_coords(widget_box.w - 32 - GENERAL_GPE_GUI_PADDING, 0 );
+        dockSettingsButton->set_coords(widget_box.w - 32 - pawgui::padding_default, 0 );
         dockSettingsButton->set_width(  32 );
         dockSettingsButton->set_height(  32 );
     }
@@ -364,13 +364,13 @@ gpeEditorDock::gpeEditorDock()
 {
     dockHorizontalPadding = 16;
     dockVerticalPadding = 16;
-    toolbarOptonsHolder = new GPE_PopUpMenu_Option("Manage Dock Panels",-1,false, false, false );
-    toolbarOptonsHolder->set_texture( paw_gui_rsm->texture_add("cogsIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cogs.png") );
-    toolbarOptonsHolder->add_menu_option("Toggle Logs",-1,paw_gui_rsm->texture_add("toggleOnIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
-    toolbarOptonsHolder->add_menu_option("Toggle Editor Pane",-1,paw_gui_rsm->texture_add("toggleOnIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
-    toolbarOptonsHolder->add_menu_option("Toggle ResourcesBar",-1,paw_gui_rsm->texture_add("toggleOnIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
-    toolbarOptonsHolder->add_menu_option("Toggle Inspector",-1,paw_gui_rsm->texture_add("toggleOnIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
-    toolbarOptonsHolder->add_menu_option("Toggle Meta",-1,paw_gui_rsm->texture_add("toggleOnIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
+    toolbarOptonsHolder = new pawgui::popup_menu_option("Manage Dock Panels",-1,false, false, false );
+    toolbarOptonsHolder->set_texture( pawgui::rsm_gui->texture_add("cogsIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cogs.png") );
+    toolbarOptonsHolder->add_menu_option("Toggle Logs",-1,pawgui::rsm_gui->texture_add("toggleOnIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
+    toolbarOptonsHolder->add_menu_option("Toggle Editor Pane",-1,pawgui::rsm_gui->texture_add("toggleOnIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
+    toolbarOptonsHolder->add_menu_option("Toggle ResourcesBar",-1,pawgui::rsm_gui->texture_add("toggleOnIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
+    toolbarOptonsHolder->add_menu_option("Toggle Inspector",-1,pawgui::rsm_gui->texture_add("toggleOnIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
+    toolbarOptonsHolder->add_menu_option("Toggle Meta",-1,pawgui::rsm_gui->texture_add("toggleOnIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
 
     isHidden = false;
     columnBeingResizedId = -1;
@@ -405,16 +405,16 @@ gpeEditorDock::gpeEditorDock()
     defaultPanelNames[DOCK_TOP_RIGHT] = "DOCK_TOP_RIGHT";
     defaultPanelNames[DOCK_BOTTOM_RIGHT] = "DOCK_BOTTOM_RIGHT";
 
-    panels[ DOCK_TOP_MIDDLE ]->specialPanelElement = GPE_main_TabManager;
-    panels[ DOCK_BOTTOM_MIDDLE ]->specialPanelElement = GPE_main_Logs;
+    panels[ DOCK_TOP_MIDDLE ]->specialPanelElement = pawgui::main_tab_resource_bar;
+    panels[ DOCK_BOTTOM_MIDDLE ]->specialPanelElement = main_editor_log;
 }
 
 gpeEditorDock::~gpeEditorDock()
 {
-    PANEL_RESOURCE_TREE = NULL;
-    PANEL_GENERAL_EDITOR = NULL;
-    PANEL_INSPECTOR = NULL;
-    PANEL_META = NULL;
+    panel_resource_tree = NULL;
+    panel_main_area = NULL;
+    panel_inspector = NULL;
+    panel_meta = NULL;
 
     clear_defaults();
 
@@ -493,12 +493,12 @@ void gpeEditorDock::add_to_panel( std::string name, int panelId, bool open, bool
             if( panelId < DOCK_MAX_COLUMN_COUNT )
             {
                 panelHeightPercentages[panelId ] = 100.f;
-                panelHeightPercentages[panelId + DOCK_MAX_COLUMN_COUNT ] = 0.0d;
+                panelHeightPercentages[panelId + DOCK_MAX_COLUMN_COUNT ] = 0.0;
             }
             else
             {
                 panelHeightPercentages[panelId ] = 100.f;
-                panelHeightPercentages[panelId - DOCK_MAX_COLUMN_COUNT ] = 0.0d;
+                panelHeightPercentages[panelId - DOCK_MAX_COLUMN_COUNT ] = 0.0;
             }
         }
         else if( panelHeightPercentages[panelId ] <= 20.f )
@@ -599,7 +599,7 @@ int gpeEditorDock::get_dock_left_width()
 {
     if( panelColumnWidth[0] + panelColumnWidth[1] >= dockMinimumColumnPercentage * dockWidthMinusColumnPadding )
     {
-        return (panelColumnWidth[0] + panelColumnWidth[1] + GENERAL_GPE_GUI_PADDING);
+        return (panelColumnWidth[0] + panelColumnWidth[1] + pawgui::padding_default);
     }
     else
     {
@@ -622,7 +622,7 @@ int gpeEditorDock::get_dock_right_width()
 {
     if( panelColumnWidth[3] + panelColumnWidth[4] >= dockMinimumColumnPercentage * dockWidthMinusColumnPadding )
     {
-        return (panelColumnWidth[3] + panelColumnWidth[4] + GENERAL_GPE_GUI_PADDING);
+        return (panelColumnWidth[3] + panelColumnWidth[4] + pawgui::padding_default);
     }
     else
     {
@@ -689,7 +689,7 @@ int gpeEditorDock::handle_resizing()
                                 {
                                     lastLeftPanel = iCol;
                                     lastPanelWidth = panelColumnWidth[iCol];
-                                    currentPanelX+= lastPanelWidth + GENERAL_GPE_GUI_PADDING;
+                                    currentPanelX+= lastPanelWidth + pawgui::padding_default;
                                     panelsUsedOnLeft++;
                                 }
                             }
@@ -700,12 +700,12 @@ int gpeEditorDock::handle_resizing()
                         {
                             //We will move to the left
                             //If the mouse is to the right of the last panel to the left
-                            if( gpe::input->mouse_position_x > currentPanelX - lastPanelWidth - GENERAL_GPE_GUI_PADDING  )
+                            if( gpe::input->mouse_position_x > currentPanelX - lastPanelWidth - pawgui::padding_default  )
                             {
                                 //Only going to interact with the panel on the immediate left
-                                panelResizeDifference = (currentPanelX - gpe::input->mouse_position_x - GENERAL_GPE_GUI_PADDING );
+                                panelResizeDifference = (currentPanelX - gpe::input->mouse_position_x - pawgui::padding_default );
 
-                                panelResizeDifference = (float)panelResizeDifference / (  dockWidthMinusColumnPadding / 100.000000d);
+                                panelResizeDifference = (float)panelResizeDifference / (  dockWidthMinusColumnPadding / 100.000000);
                                 if( panelResizeDifference >= 0.0001 )
                                 {
                                     panelWidthPercentages[ columnBeingResizedId ] +=  panelResizeDifference;
@@ -727,7 +727,7 @@ int gpeEditorDock::handle_resizing()
                                 panelResizeDifference = ( gpe::input->mouse_position_x - currentPanelX );
 
                                 //Panel resizing only is between two panels, so let's calculate the differences;
-                                panelResizeDifference = (float)panelResizeDifference / (  dockWidthMinusColumnPadding / 100.00000d);
+                                panelResizeDifference = (float)panelResizeDifference / (  dockWidthMinusColumnPadding / 100.00000);
                                 if( panelResizeDifference >= 0.0001 )
                                 {
                                     panelWidthPercentages[ columnBeingResizedId ] -=  panelResizeDifference;
@@ -754,7 +754,7 @@ int gpeEditorDock::handle_resizing()
                     //Last check to make sure we are not out of bounds...
                     if( columnBeingResizedId >= 0 && columnBeingResizedId < DOCK_MAX_COLUMN_COUNT )
                     {
-                        panelHeightPercentages[columnBeingResizedId] = ( (float) gpe::input->mouse_position_y - widget_box.y ) / ( widget_box.h - (float)GENERAL_GPE_GUI_PADDING ) * 100.f;
+                        panelHeightPercentages[columnBeingResizedId] = ( (float) gpe::input->mouse_position_y - widget_box.y ) / ( widget_box.h - (float)pawgui::padding_default ) * 100.f;
                         panelHeightPercentages[columnBeingResizedId + DOCK_MAX_COLUMN_COUNT] = 100.f - panelHeightPercentages[columnBeingResizedId];
                     }
                     resizeExited = true;
@@ -808,20 +808,20 @@ int gpeEditorDock::handle_resizing()
                     if( tPanel->has_content() && bPanel->has_content() )
                     {
                         //NS resize
-                        if( gpe::point_between(gpe::input->mouse_position_x, gpe::input->mouse_position_y,tPanel->get_xpos(),tPanel->get_y2pos(), tPanel->get_x2pos(),tPanel->get_y2pos()+dockVerticalPadding ) )
+                        if( gpe::point_between(gpe::input->mouse_position_x, gpe::input->mouse_position_y,tPanel->get_xpos(),tPanel->get_y2(), tPanel->get_x2(),tPanel->get_y2()+dockVerticalPadding ) )
                         {
                             gpe::cursor_main_controller->cursor_change( "sizens" );
                             if(gpe::input->check_mouse_pressed(0) )
                             {
                                 resizePanelX1 = tPanel->get_xpos();
-                                resizePanelX2 = tPanel->get_x2pos();
+                                resizePanelX2 = tPanel->get_x2();
                                 columnBeingResizedId = iColumn;
                                 verticalResize = beingResized = true;
                                 horizontalResize = false;
                                 horiResizeStartX = 0;
-                                if( main_OVERLAY!=NULL )
+                                if( pawgui::main_overlay_system!=NULL )
                                 {
-                                    main_OVERLAY->take_frozen_screenshot();
+                                    pawgui::main_overlay_system->take_frozen_screenshot();
                                 }
                                 return 0;
                             }
@@ -832,7 +832,7 @@ int gpeEditorDock::handle_resizing()
                     if( !horizontalResize && ( tPanel->has_content() ||  bPanel->has_content() ) )
                     {
                         //Unlike vertical check, we only require one panel to be visible(top or bottom)
-                        if( gpe::point_between( gpe::input->mouse_position_x, gpe::input->mouse_position_y, panelX - dockHorizontalPadding,widget_box.y, panelX, widget_box.y2Pos ) )
+                        if( gpe::point_between( gpe::input->mouse_position_x, gpe::input->mouse_position_y, panelX - dockHorizontalPadding,widget_box.y, panelX, widget_box.get_y2() ) )
                         {
                             gpe::cursor_main_controller->cursor_change( "sizewe" );
                             if(gpe::input->check_mouse_pressed(0) )
@@ -841,9 +841,9 @@ int gpeEditorDock::handle_resizing()
                                 horizontalResize = beingResized = true;
                                 verticalResize = false;
                                 horiResizeStartX = gpe::input->mouse_position_x;
-                                if( main_OVERLAY!=NULL )
+                                if( pawgui::main_overlay_system!=NULL )
                                 {
-                                    main_OVERLAY->take_frozen_screenshot();
+                                    pawgui::main_overlay_system->take_frozen_screenshot();
                                 }
                                 return 0;
                             }
@@ -876,9 +876,9 @@ int gpeEditorDock::handle_resizing()
 
 void gpeEditorDock::hide_dock()
 {
-    PANEL_RESOURCE_TREE = NULL;
-    PANEL_GENERAL_EDITOR = NULL;
-    PANEL_INSPECTOR = NULL;
+    panel_resource_tree = NULL;
+    panel_main_area = NULL;
+    panel_inspector = NULL;
     for( int i = 0; i < DOCK_MAX_PANEL_COUNT; i++ )
     {
         if( panels[i] !=NULL )
@@ -897,9 +897,9 @@ bool gpeEditorDock::is_hidden()
 bool gpeEditorDock::load_dock_setings( std::string filename )
 {
     //showStatupTipsBox->set_clicked( editor_gui_main->showTipsAtStartUp );
-    if( GPE_LOADER != NULL )
+    if( pawgui::main_loader_display != NULL )
     {
-        GPE_LOADER->update_submessages( "Loading Editor Settings", "Please wait..." );
+        pawgui::main_loader_display->update_submessages( "Loading Editor Settings", "Please wait..." );
     }
 
     std::string otherColContainerName = "";
@@ -1012,23 +1012,23 @@ bool gpeEditorDock::load_dock_setings( std::string filename )
     return true;
 }
 
-void gpeEditorDock::process_dock( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam  )
+void gpeEditorDock::process_dock( gpe::shape_rect * view_space, gpe::shape_rect * cam  )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
     if( panels[DOCK_TOP_MIDDLE]!=NULL)
     {
-        panels[DOCK_TOP_MIDDLE]->process_self( viewedSpace, cam );
+        panels[DOCK_TOP_MIDDLE]->process_self( view_space, cam );
     }
     if( panels[DOCK_BOTTOM_MIDDLE]!=NULL)
     {
-        panels[DOCK_BOTTOM_MIDDLE]->process_self( viewedSpace, cam );
+        panels[DOCK_BOTTOM_MIDDLE]->process_self( view_space, cam );
     }
 
-    if( editor_gui_main->mainResourceTree!=NULL && PANEL_RESOURCE_TREE!=NULL )
+    if( editor_gui_main->mainResourceTree!=NULL && panel_resource_tree!=NULL )
     {
-        PANEL_RESOURCE_TREE->clear_panel();
-        PANEL_RESOURCE_TREE->add_gui_element_fullsize(  editor_gui_main->mainResourceTree );
+        panel_resource_tree->clear_panel();
+        panel_resource_tree->add_gui_element_fullsize(  editor_gui_main->mainResourceTree );
     }
     //Process all of the remaining panels
     gpeEditorDockPanel *  tPanel = NULL;
@@ -1042,7 +1042,7 @@ void gpeEditorDock::process_dock( gpe::shape_rect * viewedSpace, gpe::shape_rect
             tPanel = panels[iPanel];
             if( tPanel!=NULL )
             {
-                tPanel->process_self(  viewedSpace, cam );
+                tPanel->process_self(  view_space, cam );
                 if( tPanel->dockSettingsButton!=NULL && tPanel->dockSettingsButton->is_clicked() )
                 {
                     tPanelButtonHitID = iPanel;
@@ -1056,20 +1056,20 @@ void gpeEditorDock::process_dock( gpe::shape_rect * viewedSpace, gpe::shape_rect
     if( tPanelButtonHitID >=0 && tPanelButtonHitID < DOCK_MAX_PANEL_COUNT )
     {
         //Creates a context menu to allow user to move panel content over
-        GPE_open_context_menu(gpe::input->mouse_position_x-32,gpe::input->mouse_position_y+32,128);
+        pawgui::context_menu_open(gpe::input->mouse_position_x-32,gpe::input->mouse_position_y+32,128);
         for( int iPanel = 0; iPanel < DOCK_MAX_PANEL_COUNT; iPanel++)
         {
             //Prevents us from adding to main editor/log or the same panel
             if( iPanel !=tPanelButtonHitID && iPanel != DOCK_TOP_MIDDLE && iPanel != DOCK_BOTTOM_MIDDLE )
             {
-                main_CONTEXT_MENU->add_menu_option("Move to "+defaultPanelNames[iPanel], iPanel,NULL,-1,NULL,true,true);
+                pawgui::main_context_menu->add_menu_option("Move to "+defaultPanelNames[iPanel], iPanel,NULL,-1,NULL,true,true);
             }
         }
 
         int closePanelId = 128;
-        main_CONTEXT_MENU->add_menu_option("Close Content", closePanelId,NULL,-1,NULL,true,true);
+        pawgui::main_context_menu->add_menu_option("Close Content", closePanelId,NULL,-1,NULL,true,true);
         //tPanel->dockSettingsButton->set_clicked( false );
-        int menuSelection = GPE_Get_Context_Result();
+        int menuSelection = pawgui::context_menu_process();
         if( menuSelection >= 0 && menuSelection < DOCK_MAX_PANEL_COUNT )
         {
             //Add content to new panel
@@ -1081,15 +1081,15 @@ void gpeEditorDock::process_dock( gpe::shape_rect * viewedSpace, gpe::shape_rect
             //Simply removes the panel otherwise
             tPanel->remove_container( panels[tPanelButtonHitID]->get_selected_container() );
             //Temporary note to see if this is being called
-            GPE_main_Logs->log_general_line("Removing panel ["+ stg_ex::int_to_string(tPanelButtonHitID)+"]");
+            main_editor_log->log_general_line("Removing panel ["+ stg_ex::int_to_string(tPanelButtonHitID)+"]");
         }
         gpe::input->reset_all_input();
     }
 }
 
-void gpeEditorDock::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam  )
+void gpeEditorDock::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam  )
 {
-    viewedSpace = gpe::camera_find( viewedSpace );
+    view_space = gpe::camera_find( view_space );
     cam = gpe::camera_find( cam );
 
 
@@ -1097,7 +1097,7 @@ void gpeEditorDock::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect
     //If no sort of resizing occurred
     if( handle_resizing() < 0 )
     {
-        process_dock( viewedSpace, cam );
+        process_dock( view_space, cam );
     }
 }
 
@@ -1132,9 +1132,9 @@ void gpeEditorDock::remove_panel( std::string name )
     }
 }
 
-void gpeEditorDock::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam   )
+void gpeEditorDock::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam   )
 {
-    viewedSpace = gpe::camera_find(viewedSpace);
+    view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
 
     if( isHidden )
@@ -1147,15 +1147,15 @@ void gpeEditorDock::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect 
         gpe::renderer_main->reset_viewpoint();
         //if( forceRedraw )
         {
-            main_OVERLAY->render_frozen_screenshot( );
+            pawgui::main_overlay_system->render_frozen_screenshot( );
         }
         if( horizontalResize )
         {
-            gpe::gcanvas->render_rectangle( gpe::input->mouse_position_x-4, get_ypos(),gpe::input->mouse_position_x+4, get_y2pos(), theme_main->popup_box_border_color, false );
+            gpe::gcanvas->render_rectangle( gpe::input->mouse_position_x-4, get_ypos(),gpe::input->mouse_position_x+4, get_y2(), pawgui::theme_main->popup_box_border_color, false );
         }
         else if( verticalResize)
         {
-            gpe::gcanvas->render_rectangle( resizePanelX1,gpe::input->mouse_position_y+4, resizePanelX2, gpe::input->mouse_position_y-4, theme_main->popup_box_border_color, false );
+            gpe::gcanvas->render_rectangle( resizePanelX1,gpe::input->mouse_position_y+4, resizePanelX2, gpe::input->mouse_position_y-4, pawgui::theme_main->popup_box_border_color, false );
         }
     }
     else
@@ -1167,11 +1167,11 @@ void gpeEditorDock::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect 
             tPanel = panels[iPanel];
             if( tPanel!=NULL && tPanel->has_content() )
             {
-                tPanel->render_self( viewedSpace, cam);
+                tPanel->render_self( view_space, cam);
             }
         }
 
-        if( font_default == NULL )
+        if( gpe::font_default == NULL )
         {
             return;
         }
@@ -1221,8 +1221,8 @@ void gpeEditorDock::reset_dock()
         /*delete tempPair;
         tempPair = NULL; */
     }
-    panels[ DOCK_TOP_MIDDLE ]->specialPanelElement = GPE_main_TabManager;
-    panels[ DOCK_BOTTOM_MIDDLE ]->specialPanelElement = GPE_main_Logs;
+    panels[ DOCK_TOP_MIDDLE ]->specialPanelElement = pawgui::main_tab_resource_bar;
+    panels[ DOCK_BOTTOM_MIDDLE ]->specialPanelElement = main_editor_log;
     //defaultPanels.clear();
 }
 
@@ -1260,8 +1260,8 @@ bool gpeEditorDock::save_dock_setings( std::string filename )
 
 void gpeEditorDock::setup_dock()
 {
-    panels[ DOCK_TOP_MIDDLE ]->specialPanelElement = GPE_main_TabManager;
-    panels[ DOCK_BOTTOM_MIDDLE ]->specialPanelElement = GPE_main_Logs;
+    panels[ DOCK_TOP_MIDDLE ]->specialPanelElement = pawgui::main_tab_resource_bar;
+    panels[ DOCK_BOTTOM_MIDDLE ]->specialPanelElement = main_editor_log;
 
     dockWidthMinusColumnPadding = widget_box.w;
     currentColumnCount = 0;
@@ -1441,10 +1441,10 @@ void gpeEditorDock::setup_dock()
         }
     }
 
-    PANEL_RESOURCE_TREE = find_panel("Resources");
-    PANEL_GENERAL_EDITOR = find_panel("Editor");
-    PANEL_INSPECTOR = find_panel("Inspector");
-    PANEL_META = find_panel("Meta");
+    panel_resource_tree = find_panel("Resources");
+    panel_main_area = find_panel("Editor");
+    panel_inspector = find_panel("Inspector");
+    panel_meta = find_panel("Meta");
 }
 
 void gpeEditorDock::toggle_default_pane( std::string name )
@@ -1486,9 +1486,9 @@ void gpeEditorDock::toggle_panel(  std::string name, int panelId,  bool open  )
 void gpeEditorDock::unhide_dock()
 {
     isHidden = false;
-    PANEL_RESOURCE_TREE = find_panel("Resources");
-    PANEL_GENERAL_EDITOR = find_panel("Editor");
-    PANEL_INSPECTOR = find_panel("Inspector");
+    panel_resource_tree = find_panel("Resources");
+    panel_main_area = find_panel("Editor");
+    panel_inspector = find_panel("Inspector");
 }
 
 void gpeEditorDock::update_toolbar()
@@ -1498,13 +1498,13 @@ void gpeEditorDock::update_toolbar()
         return;
     }
     toolbarOptonsHolder->clear_menu();
-    if( GPE_main_Logs!=NULL && GPE_main_Logs->is_enabled() )
+    if( main_editor_log!=NULL && main_editor_log->is_enabled() )
     {
-        toolbarOptonsHolder->add_menu_option("Toggle Logs",-1,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/check-square.png"),-1,NULL,false);
+        toolbarOptonsHolder->add_menu_option("Toggle Logs",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/check-square.png"),-1,NULL,false);
     }
     else
     {
-        toolbarOptonsHolder->add_menu_option("Toggle Logs",-1,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
+        toolbarOptonsHolder->add_menu_option("Toggle Logs",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
     }
     gpe::key_pair * tempPair = NULL;
     for( int i = 0; i < (int)defaultPanels.size(); i++)
@@ -1514,11 +1514,11 @@ void gpeEditorDock::update_toolbar()
         {
             if( find_panel(tempPair->keyString)!=NULL )
             {
-                toolbarOptonsHolder->add_menu_option("Toggle "+tempPair->keyString+" Pane",-1,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/check-square.png"),-1,NULL,false);
+                toolbarOptonsHolder->add_menu_option("Toggle "+tempPair->keyString+" Pane",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/check-square.png"),-1,NULL,false);
             }
             else
             {
-                toolbarOptonsHolder->add_menu_option("Toggle "+tempPair->keyString+" Pane",-1,paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
+                toolbarOptonsHolder->add_menu_option("Toggle "+tempPair->keyString+" Pane",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
             }
         }
     }

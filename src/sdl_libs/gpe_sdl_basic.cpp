@@ -37,13 +37,13 @@ namespace gpe
 {
     bool using_sdl_system_underneath;
 
+    //initialize sdl
     bool init_sdl_main_system()
     {
         //Initialize all SDL subsystems
         error_log->report("--Starting SDL2...");
 
         error_log->report("--SDL2 systems started...");
-        error_log->report("-Setting starting cursor...");
 
         if( SDL_Init( SDL_INIT_VIDEO ) == -1 )
         {
@@ -81,8 +81,11 @@ namespace gpe
         }
 
         error_log->report("-Setting event system..");
+
+        //enable the event state, cursor and sdl_img
         SDL_EventState(SDL_DROPFILE,SDL_ENABLE);
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+        SDL_SetHint(SDL_HINT_RENDER_BATCHING, "1");
         SDL_ShowCursor(SDL_ENABLE);
 
         error_log->report("-GPE_Img_System...");

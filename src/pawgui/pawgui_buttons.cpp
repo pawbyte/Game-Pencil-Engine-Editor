@@ -40,9 +40,9 @@ namespace pawgui
         autoResizes = false;
         webUrl = "";
         wasClicked = false;
-        guiListTypeName = "iconbutton";
+        widget_type = "iconbutton";
         endsSection = lastInCol;
-        opName = name;
+        widget_name = name;
         descriptionText = name;
         opId = id;
         buttonTexture = rsm_gui->texture_add( buttonImgFile,buttonImgFile );
@@ -72,11 +72,11 @@ namespace pawgui
     {
         if( buttonTexture!=NULL)
         {
-            return guiListTypeName+":"+opName+"==|||=="+ stg_ex::int_to_string(widget_box.w)+","+buttonTexture->get_filename()+",,,"+stg_ex::int_to_string(widget_box.w)+","+stg_ex::int_to_string(widget_box.h)+","+stg_ex::int_to_string(opId);
+            return widget_type+":"+widget_name+"==|||=="+ stg_ex::int_to_string(widget_box.w)+","+buttonTexture->get_filename()+",,,"+stg_ex::int_to_string(widget_box.w)+","+stg_ex::int_to_string(widget_box.h)+","+stg_ex::int_to_string(opId);
         }
         else
         {
-            return guiListTypeName+":"+opName+"==|||=="+ stg_ex::int_to_string(widget_box.w)+",0,,,0,0,"+ stg_ex::int_to_string(opId);
+            return widget_type+":"+widget_name+"==|||=="+ stg_ex::int_to_string(widget_box.w)+",0,,,0,0,"+ stg_ex::int_to_string(opId);
         }
     }
 
@@ -107,10 +107,10 @@ namespace pawgui
         return opId;
     }
 
-    void widget_button_icon::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam)
+    void widget_button_icon::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
     {
         set_clicked( false );
-        widget_basic::process_self(viewedSpace,cam);
+        widget_basic::process_self(view_space,cam);
         if( windowInView == false )
         {
             return;
@@ -145,14 +145,14 @@ namespace pawgui
         opId = new_id;
     }
 
-    void widget_button_icon::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+    void widget_button_icon::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
 
         cam = gpe::camera_find(cam);
-        viewedSpace = gpe::camera_find(viewedSpace);
-        if( cam!=NULL && viewedSpace!=NULL)
+        view_space = gpe::camera_find(view_space);
+        if( cam!=NULL && view_space!=NULL)
         {
             if( buttonTexture!=NULL)
             {
@@ -193,7 +193,7 @@ namespace pawgui
 
     widget_button_iconbar::widget_button_iconbar( int buttonSize,bool useTabs )
     {
-        guiListTypeName = "iconbuttonbar";
+        widget_type = "iconbuttonbar";
         if( buttonSize<=0)
         {
             buttonSize = 24;
@@ -291,16 +291,16 @@ namespace pawgui
         return 0;
     }
 
-    void widget_button_iconbar::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void widget_button_iconbar::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
         cam = gpe::camera_find(cam);
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         widget_button_icon * cButton = NULL;
         widget_button_icon * dButton = NULL;
         int buttonsItr=0;
         int otherButtonsItr=0;
 
-        widget_basic::process_self(viewedSpace,cam);
+        widget_basic::process_self(view_space,cam);
 
         recalculate_width();
         if( isTabBar)
@@ -339,7 +339,7 @@ namespace pawgui
                     cButton->switch_inuse(false);
                 }
                 cButton->set_coords( newButtonXPos, widget_box.y );
-                cButton->process_self(viewedSpace, cam);
+                cButton->process_self(view_space, cam);
                 if( cButton->is_clicked()  )
                 {
                     selectedOption = cButton->get_id();
@@ -415,9 +415,9 @@ namespace pawgui
         }
     }
 
-    void widget_button_iconbar::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void widget_button_iconbar::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
 
         if( widget_box.h > 0)
@@ -429,7 +429,7 @@ namespace pawgui
                 cButton = barOptions[i];
                 if(cButton!=NULL)
                 {
-                    cButton->render_self( viewedSpace,cam);
+                    cButton->render_self( view_space,cam);
                 }
             }
             if( isInUse)
@@ -528,8 +528,8 @@ namespace pawgui
 
     widget_button_label::widget_button_label( std::string name, std::string description,int id )
     {
-        guiListTypeName = "labelbutton";
-        opName = name;
+        widget_type = "labelbutton";
+        widget_name = name;
         descriptionText = description;
         opId = -1;
 
@@ -542,7 +542,6 @@ namespace pawgui
             int textW = 0;
             int textH = 0;
             gpe::font_default->get_metrics(name,&textW, &textH);
-            //opStringTexture->loadFromRenderedText(gpe::renderer_main,new_name,pawgui::theme_main->main_box_font_color,FONT_POPUP);
             if( textH > widget_box.h)
             {
                 widget_box.h=textH+padding_default*2;
@@ -561,21 +560,11 @@ namespace pawgui
     void widget_button_label::prerender_self( )
     {
 
-        if( gpe::font_default!=NULL)
-        {
-            /*
-            int textW = 0;
-            int textH = 0;
-            gpe::font_default->get_metrics(opName,&textW, &textH);
-            //widget_box.w=textW+padding_default*2;
-            //opStringTexture->loadFromRenderedText(gpe::renderer_main,new_name,pawgui::theme_main->main_box_font_color,FONT_POPUP);
-            */
-        }
     }
 
-    void widget_button_label::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect  * cam )
+    void widget_button_label::process_self( gpe::shape_rect * view_space, gpe::shape_rect  * cam )
     {
-        widget_basic::process_self(viewedSpace,cam);
+        widget_basic::process_self(view_space,cam);
         if( isHovered)
         {
             gpe::cursor_main_controller->cursor_change("hand");
@@ -586,11 +575,11 @@ namespace pawgui
         }
     }
 
-    void widget_button_label::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect  * cam )
+    void widget_button_label::render_self( gpe::shape_rect * view_space, gpe::shape_rect  * cam )
     {
         cam = gpe::camera_find(cam);
-        viewedSpace = gpe::camera_find(viewedSpace);
-        if(cam!=NULL && viewedSpace!=NULL)
+        view_space = gpe::camera_find(view_space);
+        if(cam!=NULL && view_space!=NULL)
         {
             //Renders shadow
             if( isHovered || isInUse )
@@ -616,11 +605,11 @@ namespace pawgui
             {
                 if( isHovered)
                 {
-                    gpe::gfs->render_text( widget_box.x-cam->x+widget_box.w/2, widget_box.y-cam->y+widget_box.h/2,opName,pawgui::theme_main->button_font_highlight_color,gpe::font_default,gpe::fa_center,gpe::fa_middle);
+                    gpe::gfs->render_text( widget_box.x-cam->x+widget_box.w/2, widget_box.y-cam->y+widget_box.h/2,widget_name,pawgui::theme_main->button_font_highlight_color,gpe::font_default,gpe::fa_center,gpe::fa_middle);
                 }
                 else
                 {
-                    gpe::gfs->render_text( widget_box.x-cam->x+widget_box.w/2, widget_box.y-cam->y+widget_box.h/2,opName,pawgui::theme_main->button_font_color,gpe::font_default,gpe::fa_center,gpe::fa_middle);
+                    gpe::gfs->render_text( widget_box.x-cam->x+widget_box.w/2, widget_box.y-cam->y+widget_box.h/2,widget_name,pawgui::theme_main->button_font_color,gpe::font_default,gpe::fa_center,gpe::fa_middle);
                 }
                 /*if( widget_box.w > opStringTexture->get_width()+padding_default*2 )
                 {
@@ -665,15 +654,15 @@ namespace pawgui
             widget_box.w=textW+padding_default*2;
             widget_box.h=textH+padding_default*2;
         }
-        opName = new_name;
+        widget_name = new_name;
     }
 
     ///
     widget_button_push::widget_button_push( std::string imgLocation,std::string name, std::string description,int id)
     {
         showBackground = true;
-        guiListTypeName = "pushbutton";
-        opName = name;
+        widget_type = "pushbutton";
+        widget_name = name;
         descriptionText = description;
         opId = -1;
         opTexture = rsm_gui->texture_add_filename( imgLocation);
@@ -699,11 +688,11 @@ namespace pawgui
 
     void widget_button_push::prerender_self( )
     {
-        if( FONT_BUTTONS_FONT!=NULL && widget_box.w > 32)
+        if( font_buttons!=NULL && widget_box.w > 32)
         {
             int characterWidth = 0;
-            int nameSize = (int)opName.size();
-            FONT_BUTTONS_FONT->get_metrics("A",&buttonTextWidth, &buttonTextHeight);
+            int nameSize = (int)widget_name.size();
+            font_buttons->get_metrics("A",&buttonTextWidth, &buttonTextHeight);
             characterWidth = buttonTextWidth;
             if( characterWidth!=0 )
             {
@@ -721,13 +710,13 @@ namespace pawgui
         }
     }
 
-    void widget_button_push::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect  * cam )
+    void widget_button_push::process_self( gpe::shape_rect * view_space, gpe::shape_rect  * cam )
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if(viewedSpace!=NULL && cam!=NULL)
+        if(view_space!=NULL && cam!=NULL)
         {
-            widget_basic::process_self(viewedSpace,cam);
+            widget_basic::process_self(view_space,cam);
             prerender_self();
             if( isHovered)
             {
@@ -744,14 +733,14 @@ namespace pawgui
         }
     }
 
-    void widget_button_push::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect  * cam )
+    void widget_button_push::render_self( gpe::shape_rect * view_space, gpe::shape_rect  * cam )
     {
         if( isEnabled)
         {
-            int nameSize = (int)opName.size();
-            viewedSpace = gpe::camera_find(viewedSpace);
+            int nameSize = (int)widget_name.size();
+            view_space = gpe::camera_find(view_space);
             cam = gpe::camera_find(cam);
-            if(viewedSpace!=NULL && cam!=NULL)
+            if(view_space!=NULL && cam!=NULL)
             {
                 gpe::color * renderColor = pawgui::theme_main->button_font_color;
 
@@ -803,27 +792,27 @@ namespace pawgui
                     if( nameSize > maxCharactersToRender )
                     {
                         opTexture->render_tex_resized( widget_box.x-cam->x+iconPadding, widget_box.y-cam->y,iconSize,iconSize, NULL, renderColor);
-                        gpe::gfs->render_text( widget_box.x-cam->x+iconSize+iconPadding, widget_box.y-cam->y+widget_box.h/2, stg_ex::get_substring( opName, 0, maxCharactersToRender -2)+"...",renderColor,FONT_BUTTONS_FONT,gpe::fa_left,gpe::fa_middle);
+                        gpe::gfs->render_text( widget_box.x-cam->x+iconSize+iconPadding, widget_box.y-cam->y+widget_box.h/2, stg_ex::get_substring( widget_name, 0, maxCharactersToRender -2)+"...",renderColor,font_buttons,gpe::fa_left,gpe::fa_middle);
                     }
                     else
                     {
                         //abs(widget_box.w-buttonTextWidth)/2+ - iconSize
                         opTexture->render_tex_resized( widget_box.x - cam->x + iconPadding, widget_box.y-cam->y,iconSize,iconSize,NULL,renderColor);
-                        if( FONT_BUTTONS_FONT!=NULL)
+                        if( font_buttons!=NULL)
                         {
-                            gpe::gfs->render_text( abs(widget_box.w-buttonTextWidth)/2+widget_box.x-cam->x+iconPadding, widget_box.y-cam->y+widget_box.h/2,opName,renderColor,FONT_LABEL,gpe::fa_left,gpe::fa_middle);
+                            gpe::gfs->render_text( abs(widget_box.w-buttonTextWidth)/2+widget_box.x-cam->x+iconPadding, widget_box.y-cam->y+widget_box.h/2,widget_name,renderColor,FONT_LABEL,gpe::fa_left,gpe::fa_middle);
                         }
                     }
                 }
-                else if(FONT_BUTTONS_FONT!=NULL)
+                else if(font_buttons!=NULL)
                 {
                     if( nameSize > maxCharactersToRender )
                     {
-                        gpe::gfs->render_text( widget_box.x-cam->x+iconSize+iconPadding, widget_box.y-cam->y+widget_box.h/2,stg_ex::get_substring( opName, 0, maxCharactersToRender  -2)+"...",renderColor,FONT_BUTTONS_FONT,gpe::fa_left,gpe::fa_middle);
+                        gpe::gfs->render_text( widget_box.x-cam->x+iconSize+iconPadding, widget_box.y-cam->y+widget_box.h/2,stg_ex::get_substring( widget_name, 0, maxCharactersToRender  -2)+"...",renderColor,font_buttons,gpe::fa_left,gpe::fa_middle);
                     }
                     else
                     {
-                        gpe::gfs->render_text( widget_box.x-cam->x+widget_box.w/2, widget_box.y-cam->y+widget_box.h/2,opName,renderColor,FONT_BUTTONS_FONT,gpe::fa_center,gpe::fa_middle);
+                        gpe::gfs->render_text( widget_box.x-cam->x+widget_box.w/2, widget_box.y-cam->y+widget_box.h/2,widget_name,renderColor,font_buttons,gpe::fa_center,gpe::fa_middle);
                     }
                 }
                 if( isInUse)
@@ -836,7 +825,7 @@ namespace pawgui
 
     void widget_button_push::set_name(std::string new_name)
     {
-        opName = new_name;
+        widget_name = new_name;
         prerender_self();
     }
 
@@ -860,12 +849,12 @@ namespace pawgui
         {
             gpe::font_default->get_numbered_metrics("A",&ww,&lineHeight);
         }
-        guiListTypeName = "verticalButton";
+        widget_type = "verticalButton";
         if( buttonSize <=0)
         {
             buttonSize = 128;
         }
-        opName = parsedLines;
+        widget_name = parsedLines;
 
         if( (int)parsedLines.size() > 0 )
         {
@@ -925,19 +914,19 @@ namespace pawgui
         {
             int textW = 0;
             int textH = 0;
-            gpe::font_default->get_metrics(opName,&textW, &textH);
+            gpe::font_default->get_metrics(widget_name,&textW, &textH);
             widget_box.w = iconPadding*3+widget_box.h+textW;
         }
         */
     }
 
-    void widget_button_card_vertical::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect  * cam )
+    void widget_button_card_vertical::process_self( gpe::shape_rect * view_space, gpe::shape_rect  * cam )
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if(viewedSpace!=NULL && cam!=NULL)
+        if(view_space!=NULL && cam!=NULL)
         {
-            widget_basic::process_self(viewedSpace,cam);
+            widget_basic::process_self(view_space,cam);
             if( isHovered)
             {
                 gpe::cursor_main_controller->cursor_change("hand");
@@ -954,14 +943,14 @@ namespace pawgui
         }
     }
 
-    void widget_button_card_vertical::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect  * cam )
+    void widget_button_card_vertical::render_self( gpe::shape_rect * view_space, gpe::shape_rect  * cam )
     {
         if( isEnabled)
         {
-            viewedSpace = gpe::camera_find(viewedSpace);
+            view_space = gpe::camera_find(view_space);
             cam = gpe::camera_find(cam);
 
-            if(viewedSpace!=NULL && cam!=NULL)
+            if(view_space!=NULL && cam!=NULL)
             {
                 gpe::color * textRenderColor = pawgui::theme_main->button_font_color;
                 gpe::color * bgRenderColor = pawgui::theme_main->button_box_color;

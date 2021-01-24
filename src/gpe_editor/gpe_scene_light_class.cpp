@@ -32,21 +32,21 @@ SOFTWARE.
 */
 #include "gpe_scene_light_class.h"
 
-GPE_SceneBasicLight::GPE_SceneBasicLight(GPE_GeneralResourceContainer *pFolder)
+GPE_SceneBasicLight::GPE_SceneBasicLight(pawgui::widget_resource_container *pFolder)
 {
-    iconTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/lightbulb-o.png") ;
+    iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/lightbulb-o.png") ;
 
     branchType = gpe::branch_type::LIGHT;
     if( branchColor!=NULL)
     {
         branchColor->set_label("Light Color");
     }
-    lightIsActive = new GPE_CheckBoxBasic("Is Active","Active When Scene Starts", true );
+    lightIsActive = new pawgui::widget_checkbox("Is Active","Active When Scene Starts", true );
 
     projectParentFolder = pFolder;
     if( projectParentFolder!=NULL)
     {
-        lightInEditor = new GPE_DropDown_Resouce_Menu( "Light Source",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_light]+"s"),-1,true);
+        lightInEditor = new pawgui::widget_drop_down_resource_menu( "Light Source",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_light]),-1,true);
         lightInEditor->set_width(192);
     }
     else
@@ -66,13 +66,13 @@ GPE_SceneBasicLight::~GPE_SceneBasicLight()
 
 void GPE_SceneBasicLight::add_typed_elements()
 {
-    if( PANEL_INSPECTOR!=NULL )
+    if( panel_inspector!=NULL )
     {
-        PANEL_INSPECTOR->add_gui_element( lightIsActive, true );
+        panel_inspector->add_gui_element( lightIsActive, true );
     }
 }
 
-bool GPE_SceneBasicLight::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController )
+bool GPE_SceneBasicLight::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
 {
     GPE_SceneBasicClass::build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController);
     return true;
@@ -92,7 +92,7 @@ bool GPE_SceneBasicLight::save_branch_data(std::ofstream * fileTarget, int neste
 {
     if( fileTarget!=NULL && fileTarget->is_open() )
     {
-        std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+        std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"   GPE_AmbientLight=";
         if( xPosField!=NULL)
         {
@@ -136,7 +136,7 @@ bool GPE_SceneBasicLight::save_branch_data(std::ofstream * fileTarget, int neste
         {
             *fileTarget << "1,";
         }
-        *fileTarget << opName+",,\n";
+        *fileTarget << widget_name+",,\n";
         GPE_SceneBasicClass::save_branch_data( fileTarget, nestedFoldersIn+1 );
         return true;
     }

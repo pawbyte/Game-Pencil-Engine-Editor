@@ -38,9 +38,9 @@ namespace pawgui
     widget_input_text::widget_input_text( std::string startName,std::string placeHolderText)
     {
         resubmissionAllowed = false;
-        opName = "";
+        widget_name = "";
         lastfloatClickAction = 0;
-        guiListTypeName = "inputtext";
+        widget_type = "inputtext";
         cursorPos = 0;
         prevCursorPos =0;
         cursorHistoryPos = -1;
@@ -63,7 +63,7 @@ namespace pawgui
         widget_box.w = 192;
         widget_box.h = 24;
 
-        FONT_TEXTINPUT->get_metrics("A",&fontSizeW,&fontSizeH);
+        font_textinput->get_metrics("A",&fontSizeW,&fontSizeH);
         if( fontSizeW<=0)
         {
             fontSizeW = 12;
@@ -96,7 +96,7 @@ namespace pawgui
 
     std::string widget_input_text::get_data()
     {
-        return guiListTypeName+":"+opName+"==|||=="+textInputString;
+        return widget_type+":"+widget_name+"==|||=="+textInputString;
     }
 
     void widget_input_text::load_data(std::string dataString)
@@ -144,11 +144,11 @@ namespace pawgui
         }
     }
 
-    void widget_input_text::get_cursor_from_mouse( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+    void widget_input_text::get_cursor_from_mouse( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        cursorPos = floor( startXPos+(gpe::input->mouse_position_x-viewedSpace->x-fieldElementBox.x)/fontSizeW);
+        cursorPos = floor( startXPos+(gpe::input->mouse_position_x-view_space->x-fieldElementBox.x)/fontSizeW);
         if( cursorPos < 0)
         {
             cursorPos = 0;
@@ -224,12 +224,12 @@ namespace pawgui
         }
     }
 
-    void widget_input_text::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void widget_input_text::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
         prevCursorPos = cursorPos;
         inputSubmitted = false;
         bool pasteCommandGiven = false;
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         maxCharactersInView = widget_box.w/fontSizeW;
         cam = gpe::camera_find(cam);
         fieldElementBox.x = widget_box.x;
@@ -242,7 +242,7 @@ namespace pawgui
         }
         /*
         Old Protocol for Label Fields
-        widget_basic::process_self(viewedSpace,cam);
+        widget_basic::process_self(view_space,cam);
 
         New Protocol for labeled fields
 
@@ -253,13 +253,13 @@ namespace pawgui
             isClicked = false;
             isHovered = false;
             clickedOutside = false;
-            viewedSpace = gpe::camera_find(viewedSpace);
+            view_space = gpe::camera_find(view_space);
             cam = gpe::camera_find(cam);
-            if(viewedSpace!=NULL && cam!=NULL)
+            if(view_space!=NULL && cam!=NULL)
             {
-                if( gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,viewedSpace->x,viewedSpace->y,viewedSpace->x+viewedSpace->w,viewedSpace->y+viewedSpace->h) )
+                if( gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,view_space->x,view_space->y,view_space->x+view_space->w,view_space->y+view_space->h) )
                 {
-                    if (gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,fieldElementBox.x+viewedSpace->x-cam->x,fieldElementBox.y+viewedSpace->y-cam->y,fieldElementBox.x+fieldElementBox.w+viewedSpace->x-cam->x,fieldElementBox.y+fieldElementBox.h+viewedSpace->y-cam->y) )
+                    if (gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,fieldElementBox.x+view_space->x-cam->x,fieldElementBox.y+view_space->y-cam->y,fieldElementBox.x+fieldElementBox.w+view_space->x-cam->x,fieldElementBox.y+fieldElementBox.h+view_space->y-cam->y) )
                     {
                         isHovered = true;
                         if( (int)descriptionText.size()>0 )
@@ -268,7 +268,7 @@ namespace pawgui
                         }
                         else
                         {
-                            main_overlay_system->update_tooltip(opName);
+                            main_overlay_system->update_tooltip(widget_name);
                         }
                         if( gpe::input->check_mouse_released( mb_left))
                         {
@@ -299,7 +299,7 @@ namespace pawgui
             isInUse = true;
             inputFieldPos = 0;
             gpe::input->inputted_keys = "";
-            get_cursor_from_mouse(viewedSpace,cam);
+            get_cursor_from_mouse(view_space,cam);
         }
         if( isHovered)
         {
@@ -316,7 +316,7 @@ namespace pawgui
             {
                 if( lastfloatClickAction ==0)
                 {
-                    get_cursor_from_mouse(viewedSpace,cam);
+                    get_cursor_from_mouse(view_space,cam);
                     selectionCursorPos = cursorPos;
                     selectionEndCursorPos = cursorPos;
                     int iPrev = 0;
@@ -413,13 +413,13 @@ namespace pawgui
             }
             else if( gpe::input->check_mouse_pressed(0)   )
             {
-                get_cursor_from_mouse(viewedSpace,cam);
+                get_cursor_from_mouse(view_space,cam);
                 selectionCursorPos = cursorPos;
                 selectionEndCursorPos = cursorPos;
             }
             else if( gpe::input->check_mouse_down( mb_left )  )
             {
-                get_cursor_from_mouse(viewedSpace,cam);
+                get_cursor_from_mouse(view_space,cam);
                 selectionEndCursorPos = cursorPos;
             }
             else if( gpe::input->check_mouse_down( mb_right ))
@@ -464,7 +464,7 @@ namespace pawgui
                 if( gpe::input->check_mouse_released( mb_left))
                 {
                     gpe::cursor_main_controller->cursor_change(GPE_CURSOR_IBEAM);
-                    get_cursor_from_mouse(viewedSpace, cam);
+                    get_cursor_from_mouse(view_space, cam);
                     if( cursorPos >=0 && cursorPos <= (int)textInputString.size() )
                     {
                         set_string( stg_ex::get_substring(textInputString,0,cursorPos)+resource_dragged->get_name()+stg_ex::get_substring(textInputString,cursorPos) );
@@ -474,7 +474,7 @@ namespace pawgui
             }*/
         }
 
-        //limit_space_to_rect(viewedSpace,&INP_mouse_position_x,&INP_mouse_position_y);
+        //limit_space_to_rect(view_space,&INP_mouse_position_x,&INP_mouse_position_y);
         if( isEnabled &&  isInUse )
         {
             cursorTimer+=gpe::time_keeper->get_delta_ticks();
@@ -915,9 +915,9 @@ namespace pawgui
         }
     }
 
-    void widget_input_text::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+    void widget_input_text::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
         if( isEnabled && cam!=NULL)
         {
@@ -937,11 +937,11 @@ namespace pawgui
             {
                 if( hAlign == gpe::fa_center)
                 {
-                    gpe::gfs->render_text( widget_box.x+widget_box.w/2-cam->x,widget_box.y-2-cam->y,inputLabel,pawgui::theme_main->main_box_font_color,FONT_TEXTINPUT,gpe::fa_center,gpe::fa_top);
+                    gpe::gfs->render_text( widget_box.x+widget_box.w/2-cam->x,widget_box.y-2-cam->y,inputLabel,pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_center,gpe::fa_top);
                 }
                 else
                 {
-                    gpe::gfs->render_text( widget_box.x-cam->x,widget_box.y-2-cam->y,inputLabel,pawgui::theme_main->main_box_font_color,FONT_TEXTINPUT,gpe::fa_left,gpe::fa_top);
+                    gpe::gfs->render_text( widget_box.x-cam->x,widget_box.y-2-cam->y,inputLabel,pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_left,gpe::fa_top);
                 }
             }
 
@@ -987,7 +987,7 @@ namespace pawgui
 
             if( (int)textInputString.size()>0)
             {
-                gpe::gfs->render_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2- cam->y,stg_ex::get_substring(textInputString,startXPos,subLength),pawgui::theme_main->input_font_color,FONT_TEXTINPUT,gpe::fa_left,gpe::fa_middle,255);
+                gpe::gfs->render_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2- cam->y,stg_ex::get_substring(textInputString,startXPos,subLength),pawgui::theme_main->input_font_color,font_textinput,gpe::fa_left,gpe::fa_middle,255);
             }
             else if(showPlaceHolder && (int)placeHolderString.size() > 0 )
             {
@@ -1003,7 +1003,7 @@ namespace pawgui
                 {
                     subLength =  (int)placeHolderString.size();
                 }
-                gpe::gfs->render_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2 - cam->y,stg_ex::get_substring(placeHolderString,0,subLength),pawgui::theme_main->input_faded_font_color,FONT_TEXTINPUT,gpe::fa_left,gpe::fa_middle);
+                gpe::gfs->render_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2 - cam->y,stg_ex::get_substring(placeHolderString,0,subLength),pawgui::theme_main->input_faded_font_color,font_textinput,gpe::fa_left,gpe::fa_middle);
             }
             if(showBorderBox)
             {
@@ -1104,11 +1104,11 @@ namespace pawgui
     {
         if( (int)new_name.size() > 0)
         {
-            /*if( opName == inputLabel )
+            /*if( widget_name == inputLabel )
             {
                 set_label(new_name);
             }*/
-            opName = new_name;
+            widget_name = new_name;
         }
     }
 
@@ -1189,8 +1189,8 @@ namespace pawgui
     {
         resubmissionAllowed = false;
         textInputString = "";
-        guiListTypeName = "inputnumber";
-        guiListTypeId = 5;
+        widget_type = "inputnumber";
+        widget_type_id = 5;
         forceValidNumber = false;
         showLabel = false;
         inputLabel = "";
@@ -1214,7 +1214,7 @@ namespace pawgui
 
         fontSizeH = 12;
         fontSizeW = 12;
-        FONT_TEXTINPUT->get_metrics("A",&fontSizeW,&fontSizeH);
+        font_textinput->get_metrics("A",&fontSizeW,&fontSizeH);
         if( fontSizeW<=0)
         {
             fontSizeW = 12;
@@ -1263,10 +1263,10 @@ namespace pawgui
         return heldNumber;
     }
 
-    void widget_input_number::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam)
+    void widget_input_number::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
     {
         hasValidInput = true;
-        widget_input_text::process_self(viewedSpace,cam);
+        widget_input_text::process_self(view_space,cam);
         if( (int)textInputString.size() > 0)
         {
             if( onlyWholeNumbers)

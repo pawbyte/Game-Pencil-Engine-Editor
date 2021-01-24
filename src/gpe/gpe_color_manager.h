@@ -84,7 +84,7 @@ namespace gpe
     extern color * hudColorHighlight;
 
     //color functions
-    void GPE_Init_colors();
+    void init_colors();
 
     class color_master
     {

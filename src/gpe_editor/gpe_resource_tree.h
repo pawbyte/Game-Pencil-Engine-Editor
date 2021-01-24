@@ -34,35 +34,35 @@ SOFTWARE.
 #ifndef GPE_RESOURCE_TREE_H
 #define GPE_RESOURCE_TREE_H
 
-#include "../pawgui/paw_gui.h"
+#include "../pawgui/pawgui.h"
 
-extern int lastResTypeRendered;
+extern int resourcetype_last_rendered_type;
 
-class GPE_ResourceTree: public GPE_GeneralGuiElement
+class GPE_ResourceTree: public pawgui::widget_basic
 {
 private:
-    std::vector <GPE_GeneralResourceContainer *> subOptions;
+    std::vector <pawgui::widget_resource_container *> subOptions;
     int lastWidth;
     int barTitleWidth;
     int barTitleHeight;
 public:
     bool showYScroll;
     gpe::shape_rect entireBox, cameraBox, viewBox;
-    GPE_ScrollBar_XAxis * xScroll;
-    GPE_ScrollBar_YAxis * yScroll;
+    pawgui::widget_scrollbar_xaxis * xScroll;
+    pawgui::widget_scrollbar_yaxis * yScroll;
     int barXPadding, barYPadding;
     bool subMenuIsOpen;
     int selectedSubOption;
     gpe::texture_base * opTexture;
     GPE_ResourceTree();
     ~GPE_ResourceTree();
-    void add_resource_container( GPE_GeneralResourceContainer * new_resource );
-    GPE_GeneralResourceContainer * add_resource_folder(int resourceType, std::string projFolderName,std::string resourceTypeName);
-    GPE_GeneralResourceContainer * add_project_folder(int resourceType, std::string projFolderName,std::string resourceTypeName);
+    void add_resource_container( pawgui::widget_resource_container * new_resource );
+    pawgui::widget_resource_container * add_resource_folder(int resourceType, std::string projFolderName,std::string resourceTypeName);
+    pawgui::widget_resource_container * add_project_folder(int resourceType, std::string projFolderName,std::string resourceTypeName);
     void delete_project_resources(std::string projectFileName );
     void prerender_self( );
-    void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL );
-    void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
+    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void remove_project_resources(std::string projectFileName );
 };
 

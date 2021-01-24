@@ -2,11 +2,10 @@
 stg_ex.h
 This file is part of:
 stg_ex
-https://pawbyte.com/opensource
+https://pawbyte.com/stg_ex
 Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
 
 Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -26,7 +25,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
--stg_ex <https://pawbyte.com/opensource>
+-stg_ex <https://pawbyte.com/stg_ex>
 
 
 */
@@ -40,14 +39,14 @@ SOFTWARE.
 #include <vector>
 #include <sstream>
 #include <iostream>
-#include <fstream>
-#include <typeinfo>
-#include <ctime>
-#include <cstdlib>
 
 
 namespace stg_ex
 {
+    const int version_major = 1;
+    const int version_minor = 2;
+    const int version_patch_level = 0;
+
     bool char_is_alnum(char c, bool allowSpaces = false, bool allowUnderscores = false);
     bool char_is_alpha(char c, bool allowSpaces = false, bool allowUnderscores = false);
 

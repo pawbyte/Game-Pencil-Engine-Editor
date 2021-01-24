@@ -1170,7 +1170,7 @@ namespace pawgui
         JSLang->add_language_variable("GPE_SETTINGS_SYSTEM_OS");
         JSLang->add_language_variable("GPE_GAME_PUBLISHER");
         JSLang->add_language_variable("GPE_GAME_DEVELOPER");
-        JSLang->add_language_variable("GPE_GAME_OBJECTS_COUNT");
+        JSLang->add_language_variable("GPE_game_objects_COUNT");
         JSLang->add_language_variable("GPE_SETTINGS_IS_DEBUGGING");
         JSLang->add_language_variable("GPE_SETTINGS_SHOW_FPS");
         JSLang->add_language_variable("GPE_SETTINGS_ENTRY_LEVEL_LOCATION");
@@ -1800,7 +1800,7 @@ namespace pawgui
             int widestStringSize = std::max( (int)fullPhraseToRender.size(), (int)highlightedTerm->termDescription.size() );
             widestStringSize = std::max( (int)fullTermScope.size(), widestStringSize);
 
-            FONT_TEXTINPUT->get_metrics("A",&highlightedTermWidthh, &highlightedTermHeight);
+            font_textinput->get_metrics("A",&highlightedTermWidthh, &highlightedTermHeight);
             highlightedTermWidthh*=widestStringSize;
 
             if( highlightedTermXPos+32+highlightedTermWidthh > gpe::screen_width)
@@ -1815,12 +1815,12 @@ namespace pawgui
             gpe::gcanvas->render_rectangle(  highlightedTermXPos, highlightedTermYPos,
                                     highlightedTermXPos+highlightedTermWidthh+64, highlightedTermYPos+(default_line_height*3),pawgui::theme_main->popup_box_color,false);
 
-            gpe::gfs->render_text( highlightedTermXPos+32, highlightedTermYPos,fullPhraseToRender,pawgui::theme_main->popup_box_font_color,FONT_TERM_NAME,gpe::fa_left,gpe::fa_top,255 );
-            gpe::gfs->render_text( highlightedTermXPos+32, highlightedTermYPos+default_line_height,highlightedTerm->termDescription,pawgui::theme_main->popup_box_font_color,FONT_TERM_DESCRIPTION,gpe::fa_left,gpe::fa_top,255 );
+            gpe::gfs->render_text( highlightedTermXPos+32, highlightedTermYPos,fullPhraseToRender,pawgui::theme_main->popup_box_font_color,font_term_name,gpe::fa_left,gpe::fa_top,255 );
+            gpe::gfs->render_text( highlightedTermXPos+32, highlightedTermYPos+default_line_height,highlightedTerm->termDescription,pawgui::theme_main->popup_box_font_color,font_term_description,gpe::fa_left,gpe::fa_top,255 );
 
             if( (int)fullTermScope.size()>1 )
             {
-                gpe::gfs->render_text( highlightedTermXPos+32, highlightedTermYPos+default_line_height*2,fullTermScope,pawgui::theme_main->popup_box_font_color,FONT_TERM_SCOPE,gpe::fa_left,gpe::fa_top,255 );
+                gpe::gfs->render_text( highlightedTermXPos+32, highlightedTermYPos+default_line_height*2,fullTermScope,pawgui::theme_main->popup_box_font_color,font_term_scope,gpe::fa_left,gpe::fa_top,255 );
             }
 
             gpe::gcanvas->render_rectangle(  highlightedTermXPos, highlightedTermYPos,
@@ -1866,12 +1866,12 @@ namespace pawgui
                     if( iSuggestedEntry==iSuggestionPos)
                     {
                         gpe::gcanvas->render_rectangle(  highlightedTermXPos, currentYRenderPos,highlightedTermXPos+maxSuggestedTextWidth, currentYRenderPos+default_line_height,pawgui::theme_main->popup_box_highlight_color,false);
-                        gpe::gfs->render_only_text( highlightedTermXPos+32, currentYRenderPos,fullPhraseToRender,pawgui::theme_main->popup_box_highlight_font_color,FONT_TEXTINPUT,gpe::fa_left,gpe::fa_top,255 );
+                        gpe::gfs->render_only_text( highlightedTermXPos+32, currentYRenderPos,fullPhraseToRender,pawgui::theme_main->popup_box_highlight_font_color,font_textinput,gpe::fa_left,gpe::fa_top,255 );
                     }
                     else
                     {
                         gpe::gcanvas->render_rectangle(  highlightedTermXPos, currentYRenderPos,highlightedTermXPos+maxSuggestedTextWidth, currentYRenderPos+default_line_height,pawgui::theme_main->popup_box_color,false);
-                        gpe::gfs->render_only_text(highlightedTermXPos+32, currentYRenderPos,fullPhraseToRender,pawgui::theme_main->popup_box_font_color,FONT_TEXTINPUT,gpe::fa_left,gpe::fa_top,255 );
+                        gpe::gfs->render_only_text(highlightedTermXPos+32, currentYRenderPos,fullPhraseToRender,pawgui::theme_main->popup_box_font_color,font_textinput,gpe::fa_left,gpe::fa_top,255 );
                     }
                     iRendSuggestion++;
                 }

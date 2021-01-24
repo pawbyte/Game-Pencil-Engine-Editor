@@ -37,8 +37,8 @@ namespace gpe
 {
     shape_circle::shape_circle(float xpos, float ypos, float radiusIn)
     {
-        x = xpos;
-        y = ypos;
+        position.x = xpos;
+        position.y = ypos;
         radius = radiusIn;
     }
 
@@ -51,12 +51,7 @@ namespace gpe
     shape_rect::shape_rect(float rX, float rY, float rW, float rH)
     {
         x = rX;
-        xCenter = rX+rW/2;
-        x2Pos = rX+rW;
         y = rY;
-        yMiddle = rY+rH/2;
-        y2Pos = rY+rH;
-        y2Pos = 0;
         w = rW;
         h = rH;
     }
@@ -69,15 +64,11 @@ namespace gpe
     void shape_rect::add_x( float xPlus)
     {
         x+=xPlus;
-        x2Pos+=xPlus;
-        xCenter+=xPlus;
     }
 
     void shape_rect::add_y( float yPlus)
     {
         y+=yPlus;
-        y2Pos+=yPlus;
-        yMiddle+=yPlus;
     }
 
     void shape_rect::copy_rect( shape_rect * otherRect )
@@ -86,18 +77,14 @@ namespace gpe
         {
             x = otherRect->x;
             y = otherRect->y;
-            x2Pos = otherRect->x2Pos;
-            y2Pos = otherRect->y2Pos;
             w = otherRect->w;
             h = otherRect->h;
-            xCenter = otherRect->xCenter;
-            yMiddle = otherRect->yMiddle;
         }
     }
 
     float shape_rect::get_center()
     {
-        return xCenter;
+        return x+w/2;
     }
 
     float shape_rect::get_height()
@@ -107,7 +94,7 @@ namespace gpe
 
     float shape_rect::get_middle()
     {
-        return yMiddle;
+        return y+h/2;
     }
 
     float shape_rect::get_width()
@@ -122,7 +109,7 @@ namespace gpe
 
     float shape_rect::get_x2()
     {
-        return x2Pos;
+        return x + w;
     }
 
     float shape_rect::get_y()
@@ -132,7 +119,7 @@ namespace gpe
 
     float shape_rect::get_y2()
     {
-        return y2Pos;
+        return y+h;
     }
 
     void shape_rect::limit_space_to_rect( int * limitedX, int * limitedY )
@@ -164,39 +151,27 @@ namespace gpe
     void shape_rect::set_x( float newX)
     {
         x = newX;
-        x2Pos = x+w;
-        xCenter = x+ w/2;
     }
 
     void shape_rect::set_y( float newY )
     {
         y = newY;
-        y2Pos = y+h;
-        yMiddle = y+h/2;
     }
 
     void shape_rect::set_w( float newW)
     {
         w = newW;
-        x2Pos = x+w;
-        xCenter = x+ w/2;
     }
 
     void shape_rect::set_h( float newH )
     {
         h = newH;
-        y2Pos = y+h;
-        yMiddle = y+h/2;
     }
 
     void shape_rect::update_position( float xNew, float yNew)
     {
         x = xNew;
         y = yNew;
-        x2Pos = x+w;
-        y2Pos = y+h;
-        xCenter = x + w/2;
-        yMiddle = y+h/2;
     }
 
     void shape_rect::update_box( float xNew, float yNew, float widNew, float hgtNew)
@@ -226,11 +201,6 @@ namespace gpe
             /*if( GPE_SETTINGS_IS_DEBUGGING )
             console.log( rectHeigh);*/
         }
-        x2Pos = x+w;
-        y2Pos = y+h;
-
-        xCenter = x+w/2;
-        yMiddle = y+h/2;
     }
 
     void shape_rect::update_size( float widNew, float hgtNew)
@@ -248,11 +218,19 @@ namespace gpe
             y = y-hgtNew;
             h = fabs(hgtNew);
         }
+    }
 
-        x2Pos = x+w;
-        y2Pos = y+h;
-        xCenter = x+w/2;
-        yMiddle = y+h/2;
+    shape_triangle2d::shape_triangle2d()
+    {
+        for( int i = 0; i < 3; i++ )
+        {
+            vertices[i] = {0,0};
+        }
+    }
+
+    shape_triangle2d::~shape_triangle2d()
+    {
+
     }
 
     void update_rectangle( gpe::shape_rect * rectIn, float nx, float ny, float nw, float nh)

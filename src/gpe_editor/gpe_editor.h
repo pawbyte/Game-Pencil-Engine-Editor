@@ -34,8 +34,8 @@ SOFTWARE.
 #ifndef GPE_EDITOR_H
 #define GPE_EDITOR_H
 
-#include "../pawgui/paw_gui.h"
-#include "../pawgui/paw_gui_resource_dropdown.h"
+#include "../pawgui/pawgui.h"
+#include "../pawgui/pawgui_resource_dropdown.h"
 
 #include "gpe_editor_constants.h"
 #include "gpe_editor_globals.h"
@@ -46,7 +46,7 @@ SOFTWARE.
 
 extern std::string GPE_BUILD_NAMES[ gpe::system_os_max ];
 
-extern GPE_PopUpMenu_Option * main_TOOLBAR_RECENT_PROJECTS;
+extern pawgui::popup_menu_option * main_TOOLBAR_RECENT_PROJECTS;
 
 class GPE_Gui_Engine
 {
@@ -65,7 +65,9 @@ public:
     std::string fileSaveProjectDir;
 
     std::vector<GPE_ProjectFolder * > gpeProjects;
-    GPE_Toolbar * mainToolBar;
+    pawgui::widget_toolbar * main_toolbar;
+    pawgui::widget_notfications_holder * main_notification_holder;
+
     GPE_ResourceTree * mainResourceTree;
     GPE_Gui_Engine();
     ~GPE_Gui_Engine();
@@ -87,13 +89,13 @@ public:
     std::string get_tip(int tipId);
 
     GPE_ResourceTree  * init_resourcebar();
-    GPE_Toolbar * init_toolbar();
-    GPE_Toolbar * init_toolbar(std::string bName, gpe::shape_rect bRect);
+    pawgui::widget_toolbar * init_toolbar();
+    pawgui::widget_toolbar * init_toolbar(std::string bName, gpe::shape_rect bRect);
     void launch_new_project();
     void load_tips();
     void load_settings();
-    GPE_Toolbar * get_main_toolbar();
-    GPE_ToolIconButtonBar * get_main_buttonbar();
+    pawgui::widget_toolbar * get_main_toolbar();
+    pawgui::widget_button_iconbar * get_main_buttonbar();
     void open_project(std::string projName);
     void open_new_project();
     void prerender_gui( );
@@ -111,7 +113,7 @@ public:
     void save_all_projects();
     void save_current_project();
     void save_settings();
-    void set_main_toolbar(GPE_Toolbar * newToolbar);
+    void set_main_toolbar(pawgui::widget_toolbar * newToolbar);
     void take_live_screenshor();
     void update_recent_project_list(bool saveData);
 };

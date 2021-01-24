@@ -43,25 +43,23 @@ SOFTWARE.
 #include "gpe_resource_tree.h"
 #include "gpe_project_resources.h"
 #include "../gpe/gpe_program_state.h"
-#include "../pawgui/paw_gui.h"
-#include "../pawgui/paw_gui.h"
+#include "../pawgui/pawgui.h"
 
-class GPE_Editor_State : public gpe::program_state
+class gpe_editor_state : public gpe::program_state
 {
-private:
-    gpe::texture_base * message;
-    GPE_Toolbar * mainToolBar;
-    GPE_ToolIconButtonBar * mainButtonBar;
 protected:
-    gpe::texture_base *background;
+    gpe::texture_base * message;
+    pawgui::widget_toolbar * main_toolbar;
+    pawgui::widget_button_iconbar * main_buttonbar;
+
 public:
     gpe::texture_base * country_language_image;
     SDL_version SDL_compiled_version;
     std::string SDL_VersionText;
     //Loads intro resources
-    GPE_Editor_State( std::string sName = "");
+    gpe_editor_state( std::string s_name = "");
     //Frees intro resources
-    ~GPE_Editor_State();
+    ~gpe_editor_state();
 
     //Main loop functions
     void process_input();

@@ -38,13 +38,13 @@ GPE_SceneEditorHelper * spm = NULL;
 gameScenePopupCategories::gameScenePopupCategories( std::string cName )
 {
     name = cName;
-    categoryLabel = new GPE_Label_Title( name, name );
+    categoryLabel = new pawgui::widget_label_title( name, name );
     categoryLabel->needsNewLine = true;
 }
 
 gameScenePopupCategories::~gameScenePopupCategories()
 {
-    GPE_VerticalCardButton * tempButon = NULL;
+    pawgui::widget_button_card_vertical * tempButon = NULL;
     for( int i = (int)elements.size()-1; i >=0; i-- )
     {
         tempButon = elements[i];
@@ -62,16 +62,16 @@ gameScenePopupCategories::~gameScenePopupCategories()
     }
 }
 
-GPE_VerticalCardButton * gameScenePopupCategories::add_button(  std::string name, int id, std::string imgLocation, std::string parsedLines  )
+pawgui::widget_button_card_vertical * gameScenePopupCategories::add_button(  std::string name, int id, std::string imgLocation, std::string parsedLines  )
 {
-    GPE_VerticalCardButton * newCard = new GPE_VerticalCardButton( imgLocation, parsedLines, name, id, 64 );
+    pawgui::widget_button_card_vertical * newCard = new pawgui::widget_button_card_vertical( imgLocation, parsedLines, name, id, 64 );
     newCard->showBackground = false;
     newCard->usingFlagIcon = true;
     elements.push_back( newCard );
     return newCard;
 }
 
-void gameScenePopupCategories::add_if_available( GPE_GuiElementList *  cList, std::string str )
+void gameScenePopupCategories::add_if_available( pawgui::widget_panel_list *  cList, std::string str )
 {
     if( cList !=NULL )
     {
@@ -131,17 +131,17 @@ GPE_SceneEditorHelper::GPE_SceneEditorHelper()
     highlightRect->set_blend_mode( gpe::blend_mode_add );
     highlightRect->change_alpha( 255 );
 
-    topList = new GPE_GuiElementList();
-    middleList = new GPE_GuiElementList();
-    bottomList = new GPE_GuiElementList();
-    confirmButton = new GPE_ToolLabelButton("Create","Creates new element");
-    cancelButton = new GPE_ToolLabelButton("Cancel","Cancels Operation");
-    currentLabel = new GPE_Label_Text( "","" );
-    descriptionLabel = new GPE_Label_Paragraph( "","","" );
-    nameField = new gpe_text_widget_string("","Name...");
-    searchField = new gpe_text_widget_string("","Search...");
+    topList = new pawgui::widget_panel_list();
+    middleList = new pawgui::widget_panel_list();
+    bottomList = new pawgui::widget_panel_list();
+    confirmButton = new pawgui::widget_button_label("Create","Creates new element");
+    cancelButton = new pawgui::widget_button_label("Cancel","Cancels Operation");
+    currentLabel = new pawgui::widget_label_text ( "","" );
+    descriptionLabel = new pawgui::widget_label_paragraph( "","","" );
+    nameField = new pawgui::widget_input_text("","Name...");
+    searchField = new pawgui::widget_input_text("","Search...");
 
-    eraserAnimation = paw_gui_rsm->animation_add("guiErase", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/eraser.png",1, true );
+    eraserAnimation = pawgui::rsm_gui->animation_add("guiErase", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/eraser.png",1, true );
 
     gameScenePopupCategories * tCategory = add_category("Layer Element");
     tCategory->add_button("Layer", (int)gpe::branch_type::LAYER, gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/map.png","Layer" );
@@ -151,21 +151,21 @@ GPE_SceneEditorHelper::GPE_SceneEditorHelper()
     tCategory = add_category("Standard Element");
     tCategory->add_button("Animation",(int)gpe::branch_type::ANIMATION, gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magnet.png","Animation" );
     tCategory->add_button("Background",(int)gpe::branch_type::BACKGROUND, gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/image.png","Background" );
-    tCategory->add_button("Object", (int)gpe::branch_type::OBJECT, gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/automobile.png","Object" );
+    tCategory->add_button("Entity", (int)gpe::branch_type::OBJECT, gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/automobile.png","Object" );
     tCategory->add_button("Multi-Line Text", (int)gpe::branch_type::TEXT, gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/text-height.png","Multi-Line\nText" );
     tCategory->add_button("Single-Line Text", (int)gpe::branch_type::STEXT, gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/text-width.png","Single-Line\nText" );
 
     tCategory = add_category("Effects");
     tCategory->add_button("Light", (int)gpe::branch_type::LIGHT, gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/lightbulb-o.png","Light" );
     tCategory->add_button("Particle Emitter", (int)gpe::branch_type::PARTIClE_EMITTER, gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png","Particle\n Emitter" );
-    layerListsDropDown = new GPE_DropDown_Menu("Available Layers", false);
+    layerListsDropDown = new pawgui::widget_dropdown_menu("Available Layers", false);
 }
 
 GPE_SceneEditorHelper::~GPE_SceneEditorHelper()
 {
     if( eraserAnimation!=NULL)
     {
-        paw_gui_rsm->remove_animation( eraserAnimation->get_name() );
+        pawgui::rsm_gui->remove_animation( eraserAnimation->get_name() );
         eraserAnimation = NULL;
     }
 
@@ -216,10 +216,10 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
     {
         gpe::game_runtime->end_loop();
         currentLabel->set_name("Select an option below for a new type in your scene");
-        RESOURCE_TO_DRAG = NULL;
+        pawgui::resource_dragged = NULL;
         gpe::cursor_main_controller->cursor_change( gpe::cursor_main_controller->cursor_system_name( gpe::cursor_default_type::arrow) );
         editor_gui_main->reset_gui_info();
-        main_OVERLAY->take_frozen_screenshot( );
+        pawgui::main_overlay_system->take_frozen_screenshot( );
 
         int promptBoxWidth = gpe::screen_width *3/4;
         if( promptBoxWidth < 320 )
@@ -237,10 +237,10 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
         gpe::input->reset_all_input();
 
         gpe::renderer_main->reset_viewpoint();
-        //main_OVERLAY->render_frozen_screenshot( );
+        //pawgui::main_overlay_system->render_frozen_screenshot( );
         int selectedOptionId = (int)gpe::branch_type::BASIC_SCENE_ELEMENT;
         std::string selectedOptionStr = "";
-        GPE_VerticalCardButton * selectedButton = NULL;
+        pawgui::widget_button_card_vertical * selectedButton = NULL;
         while(exitOperation==false)
         {
             gpe::cursor_main_controller->cursor_change( gpe::cursor_main_controller->cursor_system_name( gpe::cursor_default_type::arrow) );
@@ -260,20 +260,20 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
 
             topList->barXMargin = 0;
             topList->barYMargin = 0;
-            topList->barXPadding = GENERAL_GPE_GUI_PADDING;
-            topList->barYPadding = GENERAL_GPE_GUI_PADDING;
+            topList->barXPadding = pawgui::padding_default;
+            topList->barYPadding = pawgui::padding_default;
             topList->clear_list();
             topList->add_gui_element(currentLabel,true);
             topList->add_gui_element(searchField,true);
             topList->process_self( );
 
-            middleList->set_coords(widget_box.x, topList->get_y2pos() );
+            middleList->set_coords(widget_box.x, topList->get_y2() );
             middleList->set_width(widget_box.w);
             middleList->set_height(widget_box.h - middleList->get_ypos() - bottomList->get_height());
             middleList->barXMargin = 0;
             middleList->barYMargin = 0;
-            middleList->barXPadding = GENERAL_GPE_GUI_PADDING;
-            middleList->barYPadding = GENERAL_GPE_GUI_PADDING;
+            middleList->barXPadding = pawgui::padding_default;
+            middleList->barYPadding = pawgui::padding_default;
 
             editor_gui_main->reset_gui_info();
             middleList->clear_list();
@@ -293,19 +293,19 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
                 {
                     descriptionText = selectedOptionStr;
                     descriptionLabel->update_text( descriptionText );
-                    selectedButton = (GPE_VerticalCardButton * ) middleList->selectedElement;
+                    selectedButton = (pawgui::widget_button_card_vertical * ) middleList->selectedElement;
                     selectedOptionId = selectedButton->get_id();
                 }
             }
 
 
             bottomList->clear_list();
-            bottomList->set_coords(middleList->get_xpos(), middleList->get_y2pos() );
+            bottomList->set_coords(middleList->get_xpos(), middleList->get_y2() );
             bottomList->set_width(widget_box.w);
             bottomList->barXMargin = 0;
             bottomList->barYMargin = 0;
-            bottomList->barXPadding = GENERAL_GPE_GUI_PADDING;
-            bottomList->barYPadding = GENERAL_GPE_GUI_PADDING;
+            bottomList->barXPadding = pawgui::padding_default;
+            bottomList->barYPadding = pawgui::padding_default;
 
             bottomList->clear_list();
             bottomList->add_gui_element(descriptionLabel,true);
@@ -339,20 +339,20 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
             {
                 //if( gpe::input->window_input_received )
                 {
-                    main_OVERLAY->render_frozen_screenshot( );
+                    pawgui::main_overlay_system->render_frozen_screenshot( );
                 }
                 //Update screen
-                gpe::gcanvas->render_rect( &widget_box,theme_main->main_box_color,false);
+                gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->main_box_color,false);
 
-                gpe::gcanvas->render_rectangle( widget_box.x,widget_box.y,widget_box.x+widget_box.w,widget_box.y+32,theme_main->popup_box_color,false);
-                gpe::gcanvas->render_rect( &widget_box,theme_main->popup_box_highlight_color,true);
-                gpe::gfs->render_text( widget_box.x+widget_box.w/2,widget_box.y+GENERAL_GPE_GUI_PADDING,title,theme_main->popup_box_font_color,font_default,gpe::fa_center,gpe::fa_top);
+                gpe::gcanvas->render_rectangle( widget_box.x,widget_box.y,widget_box.x+widget_box.w,widget_box.y+32,pawgui::theme_main->popup_box_color,false);
+                gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->popup_box_highlight_color,true);
+                gpe::gfs->render_text( widget_box.x+widget_box.w/2,widget_box.y+pawgui::padding_default,title,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_top);
                 topList->render_self( NULL, NULL );
                 middleList->render_self( NULL, NULL );
                 bottomList->render_self( NULL, NULL );
                 //editor_gui_main-render_gui_info(  true);
 
-                gpe::gcanvas->render_rect( &widget_box,theme_main->popup_box_border_color,true);
+                gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->popup_box_border_color,true);
                 if( editor_gui_main!= NULL )
                 {
                     editor_gui_main->render_gui_info();

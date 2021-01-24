@@ -1,5 +1,5 @@
 /*
-GPE_Spatial_Partition_Controller.cpp
+gpe_spatial_partition_controller.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,14 +31,16 @@ SOFTWARE.
 
 */
 
-#include "GPE_Spatial_Partition_Controller.h"
+#include "gpe_spatial_partition_controller.h"
 
 namespace gpe
 {
-    spatial_partition_controller * GPE_SPATIAL_GRID = NULL;
+    spatial_partition_controller * main_spatial_grid = NULL;
 
-    spatial_partition_controller::spatial_partition_controller()
+    spatial_partition_controller::spatial_partition_controller( std::string c_name )
     {
+        controller_name = c_name;
+        controller_type = "gpe_spatial_partition_controller";
         for( int i = 0; i < maxLayerCount; i++ )
         {
             collisionlayers[i] = new spatial_partition_layer( i );
@@ -91,27 +93,27 @@ namespace gpe
 
     }
 
-    void spatial_partition_controller::add_object_to_grid( game_object * gameObject , int layerId )
+    void spatial_partition_controller::add_object( game_object * g_obj , int layer_id )
     {
-        if( gameObject == NULL)
+        if( g_obj == NULL)
         {
             return;
         }
-        if( layerId < 0 )
+        if( layer_id < 0 )
         {
-            layerId =0;
+            layer_id =0;
         }
-        else if( layerId >= maxLayerCount )
+        else if( layer_id >= maxLayerCount )
         {
-            layerId = maxLayerCount -1;
+            layer_id = maxLayerCount -1;
         }
 
-        if( collisionlayers[layerId] == NULL)
+        if( collisionlayers[layer_id] == NULL)
         {
             return;
         }
 
-        collisionlayers[layerId]->add_object( gameObject );
+        collisionlayers[layer_id]->add_object( g_obj );
     }
 
     void spatial_partition_controller::clear_spaces()
@@ -182,7 +184,7 @@ namespace gpe
         tempLayer->deactivate_layer();
     }
 
-    void spatial_partition_controller::init_spatialpartioning(  int cSceneWidth, int cSceneHeight )
+    bool spatial_partition_controller::init_system(  int cSceneWidth, int cSceneHeight )
     {
         spatial_partition_layer * tempLayer = NULL;
         for( int i = maxLayerCount -1; i >=0 ; i--)
@@ -190,18 +192,29 @@ namespace gpe
             tempLayer = collisionlayers[i];
             if( tempLayer!=NULL)
             {
-                tempLayer->init_spatialpartioning( cSceneWidth, cSceneHeight );
+                tempLayer->init_collision_handler( cSceneWidth, cSceneHeight );
+            }
+            else
+            {
+                error_log->report("Spatial Partition Controller Error - Unable to create Layer["+stg_ex::int_to_string(i)+"]" );
+                return false;
             }
         }
+        return true;
     }
 
-    void spatial_partition_controller::remove_object_from_grid( game_object * gameObject )
+    bool spatial_partition_controller::quit_system()
     {
-        if( gameObject == NULL)
+        return true;
+    }
+
+    void spatial_partition_controller::remove_object( game_object * g_obj )
+    {
+        if( g_obj == NULL)
         {
             return;
         }
-        int layerId = gameObject->get_layer_id();
+        int layerId = g_obj->get_layer_id();
         if( layerId < 0 )
         {
             layerId = 0;
@@ -216,6 +229,6 @@ namespace gpe
             return;
         }
 
-        collisionlayers[layerId]->remove_object( gameObject );
+        collisionlayers[layerId]->remove_object( g_obj );
     }
 }

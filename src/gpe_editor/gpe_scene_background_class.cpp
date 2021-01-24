@@ -34,10 +34,10 @@ SOFTWARE.
 
 #include "gpe_scene_background_class.h"
 
-GPE_SceneBackground::GPE_SceneBackground(GPE_GeneralResourceContainer *pFolder)
+GPE_SceneBackground::GPE_SceneBackground(pawgui::widget_resource_container *pFolder)
 {
     branchType = gpe::branch_type::BACKGROUND;
-    iconTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/image.png") ;
+    iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/image.png") ;
 
     textureId = -1;
     texRes = NULL;
@@ -51,7 +51,7 @@ GPE_SceneBackground::GPE_SceneBackground(GPE_GeneralResourceContainer *pFolder)
 
     if( projectParentFolder!=NULL)
     {
-        backgroundInEditor = new GPE_DropDown_Resouce_Menu( "Background Texture",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_texture]+"s"),-1,true);
+        backgroundInEditor = new pawgui::widget_drop_down_resource_menu( "Background Texture",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_texture]),-1,true);
         backgroundInEditor->set_width(192);
     }
     else
@@ -59,19 +59,19 @@ GPE_SceneBackground::GPE_SceneBackground(GPE_GeneralResourceContainer *pFolder)
         backgroundInEditor = NULL;
     }
 
-    bgHorSpeedField = new gpe_text_widget_number("","");
+    bgHorSpeedField = new pawgui::widget_input_number("","");
     bgHorSpeedField->set_string("0");
     bgHorSpeedField->set_label("H-Speed");
     bgHorSpeedField->scale_width( 0.4 );
 
-    bgVertSpeedField = new gpe_text_widget_number("","");
+    bgVertSpeedField = new pawgui::widget_input_number("","");
     bgVertSpeedField->set_string("0");
     bgVertSpeedField->set_label("V-Speed");
     bgVertSpeedField->scale_width( 0.4 );
 
-    checkTileHori = new GPE_CheckBoxBasic("Tile-Hori","Repeat Tile Horizontally to fill the scene" );
-    checkTileVert = new GPE_CheckBoxBasic("Tile-Vert","Repeat Tile Vertically to fill the scene" );
-    checkStretch = new GPE_CheckBoxBasic("Stretch BG","Stretch across the entire scene" );
+    checkTileHori = new pawgui::widget_checkbox("Tile-Hori","Repeat Tile Horizontally to fill the scene" );
+    checkTileVert = new pawgui::widget_checkbox("Tile-Vert","Repeat Tile Vertically to fill the scene" );
+    checkStretch = new pawgui::widget_checkbox("Stretch BG","Stretch across the entire scene" );
 
 }
 
@@ -82,28 +82,28 @@ GPE_SceneBackground::~GPE_SceneBackground()
 
 void GPE_SceneBackground::add_typed_elements()
 {
-    if( PANEL_INSPECTOR!=NULL )
+    if( panel_inspector!=NULL )
     {
-        PANEL_INSPECTOR->add_gui_element( backgroundInEditor, true );
-        PANEL_INSPECTOR->add_gui_element( bgHorSpeedField, false );
-        PANEL_INSPECTOR->add_gui_element( bgVertSpeedField, true );
+        panel_inspector->add_gui_element( backgroundInEditor, true );
+        panel_inspector->add_gui_element( bgHorSpeedField, false );
+        panel_inspector->add_gui_element( bgVertSpeedField, true );
 
-        PANEL_INSPECTOR->add_gui_element( checkTileHori, true );
-        PANEL_INSPECTOR->add_gui_element( checkTileVert, true );
-        PANEL_INSPECTOR->add_gui_element( checkStretch, true );
+        panel_inspector->add_gui_element( checkTileHori, true );
+        panel_inspector->add_gui_element( checkTileVert, true );
+        panel_inspector->add_gui_element( checkStretch, true );
     }
 }
 
-bool GPE_SceneBackground::build_intohtml5_file( std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController )
+bool GPE_SceneBackground::build_intohtml5_file( std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
 {
-    GPE_GeneralResourceContainer * allTexturesFolder = localResTypeController->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_texture]+"s");
+    pawgui::widget_resource_container * allTexturesFolder = localResTypeController->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_texture]);
     if( allTexturesFolder == NULL)
     {
         GPE_SceneBasicClass::build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController);
         return false;
     }
-    std::string nestedTabsStr = generate_tabs( leftTabAmount );
-     GPE_GeneralResourceContainer * tempBgResource = allTexturesFolder->find_resource_from_id( textureId);
+    std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount );
+     pawgui::widget_resource_container * tempBgResource = allTexturesFolder->find_resource_from_id( textureId);
     if( tempBgResource!=NULL)
     {
         *fileTarget << nestedTabsStr << "newBranch = _scn_temp_layer.scnStartBackgrounds.push( {bgTexId:" <<stg_ex::int_to_string(tempBgResource->exportBuildGlobalId) << ",";
@@ -138,9 +138,9 @@ void GPE_SceneBackground::process_elements()
     {
         bgXSpeed = bgHorSpeedField->get_held_number();
         bgYSpeed = bgVertSpeedField->get_held_number();
-        tileHori =checkTileHori->is_checked();
-        tileVert =checkTileVert->is_checked();
-        stretchBG =checkStretch->is_checked();
+        tileHori =checkTileHori->is_clicked();
+        tileVert =checkTileVert->is_clicked();
+        stretchBG =checkStretch->is_clicked();
     }
 }
 
@@ -150,7 +150,7 @@ void GPE_SceneBackground::render_branch()
     {
         return;
     }
-    GPE_GeneralResourceContainer * texTypeContainer = spm->cSceneTexList->find_resource_from_id(textureId );
+    pawgui::widget_resource_container * texTypeContainer = spm->cSceneTexList->find_resource_from_id(textureId );
     if( texTypeContainer!=NULL)
     {
         spm->tempRect->x = floor( (xPos*spm->zoomValue)- spm->cameraFloorXPos);
@@ -199,14 +199,14 @@ void GPE_SceneBackground::render_branch()
             }
         }
     }
-    GPE_SpecialMenu_Branch::render_branch();
+    pawgui::widget_branch::render_branch();
 }
 
 bool GPE_SceneBackground::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn  )
 {
     if( fileTarget!=NULL && fileTarget->is_open() )
     {
-        std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+        std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"   background=";
         if( backgroundInEditor!=NULL)
         {
@@ -254,7 +254,7 @@ bool GPE_SceneBackground::save_branch_data(std::ofstream * fileTarget, int neste
         }
         if( checkTileHori!=NULL)
         {
-            *fileTarget << checkTileHori->is_checked() << ",";
+            *fileTarget << checkTileHori->is_clicked() << ",";
         }
         else
         {
@@ -262,7 +262,7 @@ bool GPE_SceneBackground::save_branch_data(std::ofstream * fileTarget, int neste
         }
         if( checkTileVert!=NULL)
         {
-            *fileTarget << checkTileVert->is_checked() << ",";
+            *fileTarget << checkTileVert->is_clicked() << ",";
         }
         else
         {
@@ -270,13 +270,13 @@ bool GPE_SceneBackground::save_branch_data(std::ofstream * fileTarget, int neste
         }
         if( checkStretch!=NULL)
         {
-            *fileTarget << checkStretch->is_checked() << ",";
+            *fileTarget << checkStretch->is_clicked() << ",";
         }
         else
         {
             *fileTarget << "-1,";
         }
-        *fileTarget << opName+",";
+        *fileTarget << widget_name+",";
         *fileTarget << "\n";
         GPE_SceneBasicClass::save_branch_data( fileTarget, nestedFoldersIn+1 );
         return true;

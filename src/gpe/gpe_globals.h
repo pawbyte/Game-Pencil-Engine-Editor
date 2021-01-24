@@ -51,6 +51,7 @@ namespace gpe
     extern std::string app_directory_name;
     extern std::string settings_app_folder;
 
+
     extern int screen_width;
     extern int screen_height;
     extern int system_found_os;

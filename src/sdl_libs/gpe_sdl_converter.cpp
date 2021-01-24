@@ -35,7 +35,7 @@ SOFTWARE.
 
 namespace gpe
 {
-    SDL_Color * to_sdl_color( color * color_from_gpe )
+    /*SDL_Color * to_sdl_color( color * color_from_gpe )
     {
         if( color_from_gpe == NULL )
         {
@@ -43,5 +43,5 @@ namespace gpe
         }
         SDL_Color newColor = { color_from_gpe->get_r(), color_from_gpe->get_g(), color_from_gpe->get_b(), color_from_gpe->get_a() };
         return &newColor;
-    }
+    }*/
 }

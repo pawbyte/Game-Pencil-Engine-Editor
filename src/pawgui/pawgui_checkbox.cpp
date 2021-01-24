@@ -37,9 +37,9 @@ namespace pawgui
 {
     widget_checkbox::widget_checkbox(std::string name, std::string descriptor, bool already_checked )
     {
-        guiListTypeName = "checkbox";
-        guiListTypeId = 1;
-        opName = name;
+        widget_type = "checkbox";
+        widget_type_id = 1;
+        widget_name = name;
         descriptionText = descriptor;
 
         widget_box.x = 0;
@@ -48,13 +48,13 @@ namespace pawgui
         widget_box.h = clickBoxH = 24;
         labelBoxW = 0;
         labelBoxH = 0;
-        if( (int)opName.size()>0 && gpe::font_default!=NULL )
+        if( (int)widget_name.size()>0 && gpe::font_default!=NULL )
         {
-            gpe::font_default->get_metrics(opName,&labelBoxW, &labelBoxH);
+            gpe::font_default->get_metrics(widget_name,&labelBoxW, &labelBoxH);
             widget_box.w+= labelBoxW;
         }
         //widget_box.w+=+padding_default;
-        isChecked = already_checked;
+        isClicked = already_checked;
     }
 
     widget_checkbox::~widget_checkbox()
@@ -64,12 +64,7 @@ namespace pawgui
 
     std::string widget_checkbox::get_data()
     {
-        return guiListTypeName+":"+opName+"==|||=="+ stg_ex::int_to_string(isClicked);
-    }
-
-    bool widget_checkbox::is_checked()
-    {
-        return isChecked;
+        return widget_type+":"+widget_name+"==|||=="+ stg_ex::int_to_string(isClicked);
     }
 
     void widget_checkbox::load_data(std::string dataString)
@@ -84,33 +79,42 @@ namespace pawgui
         //widget_box.h = clickBoxH;
     }
 
-    void widget_checkbox::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+    void widget_checkbox::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
         isHovered = false;
 
-        if(viewedSpace!=NULL && cam!=NULL)
+        bool past_clicked = isClicked;
+        if(view_space!=NULL && cam!=NULL)
         {
-            widget_basic::process_self( viewedSpace, cam);
+            widget_basic::process_self( view_space, cam);
             if( windowInView == false )
             {
                 return;
             }
             if( isClicked )
             {
-                isChecked = !isChecked;
+                isClicked = !past_clicked;
             }
-            if( (isInUse || isHovered ) &&( gpe::input->check_kb_pressed( kb_enter ) || gpe::input->check_kb_pressed( kb_space )  ) )
+            else if( (isInUse || isHovered ) &&( gpe::input->check_kb_pressed( kb_enter ) || gpe::input->check_kb_pressed( kb_space )  ) )
             {
-                isChecked = !isChecked;
+                isClicked = !past_clicked;
             }
+            else
+            {
+                isClicked = past_clicked;
+            }
+        }
+        else
+        {
+            isClicked = past_clicked;
         }
     }
 
-    void widget_checkbox::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam )
+    void widget_checkbox::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam )
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
         if( cam!=NULL)
         {
@@ -129,17 +133,17 @@ namespace pawgui
                 gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.x+clickBoxW-cam->x,widget_box.y+clickBoxH-cam->y,pawgui::theme_main->main_border_color,false);
                 gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.x+clickBoxW-cam->x,widget_box.y+clickBoxH-cam->y,pawgui::theme_main->main_box_font_color,true);
             }
-            if( isChecked && checkmark_texture!=NULL )
+            if( isClicked && checkmark_texture!=NULL )
             {
                 checkmark_texture->render_tex_resized( widget_box.x-cam->x,widget_box.y-cam->y,clickBoxW,clickBoxH,NULL, pawgui::theme_main->checkbox_color );
             }
-            gpe::gfs->render_text( widget_box.x+clickBoxW+padding_default-cam->x,widget_box.y+widget_box.h/2-cam->y,opName,pawgui::theme_main->main_box_font_color,FONT_LABEL,gpe::fa_left,gpe::fa_middle,255);
+            gpe::gfs->render_text( widget_box.x+clickBoxW+padding_default-cam->x,widget_box.y+widget_box.h/2-cam->y,widget_name,pawgui::theme_main->main_box_font_color,FONT_LABEL,gpe::fa_left,gpe::fa_middle,255);
         }
     }
 
     void widget_checkbox::set_checked( bool newCheckState )
     {
-        isChecked = newCheckState;
+        isClicked = newCheckState;
     }
 
     void widget_checkbox::set_checkbox_size(int nBoxSize, bool resizewidget_box)

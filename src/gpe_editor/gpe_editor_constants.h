@@ -33,6 +33,13 @@ SOFTWARE.
 #ifndef gpe_editor_constants_h
 #define gpe_editor_constants_h
 
+//Game Pencil Engine Editor
+const float editor_version_number_major = 1;
+const float editor_version_number_minor = 4;
+const float editor_version_number_update = 1;
+
+const float editor_version_number_total = editor_version_number_major + editor_version_number_minor/10.f + editor_version_number_update/100.f;
+
 const int native_option_none = 0;
 const int native_option_runtime = 1;
 const int native_option_runtime_cpp = 2;

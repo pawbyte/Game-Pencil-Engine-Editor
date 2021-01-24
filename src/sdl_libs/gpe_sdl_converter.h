@@ -39,7 +39,7 @@ SOFTWARE.
 
 namespace gpe
 {
-    SDL_Color * to_sdl_color( color * color_from_gpe );
+    //SDL_Color * to_sdl_color( color * color_from_gpe );
 }
 
 #endif // gpe_sdl_converter_h

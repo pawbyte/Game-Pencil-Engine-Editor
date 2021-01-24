@@ -34,7 +34,7 @@ SOFTWARE.
 #ifndef gpe_basic_object_h
 #define gpe_basic_object_h
 
-#include "GPE_Camera.h"
+#include "gpe_camera.h"
 #include "gpe_color.h"
 #include "gpe_constants.h"
 #include "gpe_branch.h"
@@ -133,9 +133,6 @@ namespace gpe
             bool isContinuousObject;
             bool gpeIsBeingDestroyed;
             int sceneLayerStartPos;
-            /*Make into a MAP
-            customComponents = {};
-            */
             int gpeSceneStartId;
             color * outlineTestColor;
             int objectDepth;

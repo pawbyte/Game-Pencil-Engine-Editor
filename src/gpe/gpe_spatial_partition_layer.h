@@ -62,7 +62,7 @@ namespace gpe
             void clear_spaces();
             void deactivate_layer();
             int find_spatial_at( int xIn, int yIn);
-            void init_spatialpartioning( int cSceneWidth, int cSceneHeight );
+            void init_collision_handler( int cSceneWidth, int cSceneHeight );
             bool is_active();
             void remove_object( game_object * gameObject );
     };

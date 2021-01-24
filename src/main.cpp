@@ -41,14 +41,20 @@ SDL 2.0.9 used for this version...
 
 #include "gpe/gpe.h"
 #include "sdl_libs/gpe_sdl.h"
+#include "game_state_credits_base.h"
+#include "game_state_load.h"
+#include "game_state_main_menu_base.h"
+#include "game_state_master.h"
+#include "game_state_splash.h"
 #include "gpe_editor/gpe_game_master_itenary.h"
+#include "game_state_triangle_test.h"
 
 int main( int argc, char* args[] )
 {
     int gameFailed = 0;
     gpe::init_settings(argc, args , "PawByte","GPE_Editor","game_errors.txt" );
 
-    //Initialize
+    //Initialize the base objects of gpe
     if( gpe::init_core_engine(argc, args,"game_errors.txt" ) == false )
     {
         gpe::error_log->report("Unable to properly initialize gpe_core_engine!\n");
@@ -71,7 +77,35 @@ int main( int argc, char* args[] )
         gameFailed = 1;
     }
 
-    gpe::time_keeper->set_fps( gpe::settings->defaultFPS );
+    gpe::time_keeper->set_fps( 30 );
+
+    //gpe::time_keeper->set_fps( gpe::settings->defaultFPS );
+
+    //Our preferred order, although some people may do it in their own way
+    game_state_credits_base  * game_credits = new game_state_credits_base("game_credits");
+    game_state_main_menu_base  * game_main_menu = new game_state_main_menu_base("main_menu");
+    game_loader  * game_load_screen = new game_loader("game_loading");
+    game_master * game_main_master = new game_master( "gpe_master");
+    splash_screen * game_splash_screen = new splash_screen( "game_splash" );
+    triangle_test_state * triangle_tester = new triangle_test_state("triangle_tester");
+
+    gpe::game_runtime->state_add( game_load_screen );
+    gpe::game_runtime->state_add( game_credits );
+    gpe::game_runtime->state_add( game_main_menu );
+    gpe::game_runtime->state_add( game_main_master );
+    gpe::game_runtime->state_add( game_splash_screen );
+    gpe::game_runtime->state_add( triangle_tester );
+
+    gpe::window_controller_main->scale_window(gpe::screen_width, gpe::screen_height , true );
+
+    game_splash_screen->set_state_name_next( game_load_screen->get_state_name() );
+    game_load_screen->set_state_name_next( game_main_menu->get_state_name() );
+    game_main_menu->set_state_name_next( game_credits->get_state_name() );
+    game_credits->set_state_name_next( game_main_menu->get_state_name() );
+    game_main_master->set_state_name_next( game_splash_screen->get_state_name() );
+
+    gpe::game_runtime->state_set( game_splash_screen->get_state_name() );
+
 
     if( init_gpe_master_itenary( argc, args ) == false )
     {

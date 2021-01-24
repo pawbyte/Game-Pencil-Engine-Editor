@@ -34,9 +34,9 @@ SOFTWARE.
 #ifndef gpe_editor_project_h
 #define gpe_editor_project_h
 
-#include "../pawgui/paw_gui.h"
-#include "../pawgui/paw_gui_resource_dropdown.h"
-#include "../pawgui/paw_gui_general_resource.h"
+#include "../pawgui/pawgui.h"
+#include "../pawgui/pawgui_resource_dropdown.h"
+#include "../pawgui/pawgui_general_resource.h"
 
 #include "gpe_editor_constants.h"
 #include "gpe_editor_globals.h"
@@ -59,32 +59,32 @@ private:
 public:
     gpe::asset_manager * projectRSM;
     std::string projectIconName;
-    GPE_GeneralResourceContainer * RESC_project_FOLDER;
-    GPE_GeneralResourceContainer * RESC_ANIMATIONS;
-    GPE_GeneralResourceContainer * RESC_TEXTURES;
-    GPE_GeneralResourceContainer * RESC_TILESHEETS;
-    GPE_GeneralResourceContainer * RESC_3DMODELS;
-    GPE_GeneralResourceContainer * RESC_AUDIO;
-    GPE_GeneralResourceContainer * RESC_VIDEOS;
-    GPE_GeneralResourceContainer * RESC_EMITTERS;
-    GPE_GeneralResourceContainer * RESC_LIGHTS;
-    GPE_GeneralResourceContainer * RESC_FUNCTIONS;
-    GPE_GeneralResourceContainer * RESC_OBJECTS;
-    GPE_GeneralResourceContainer * RESC_CLASSES;
-    GPE_GeneralResourceContainer * RESC_RESOURCES;
-    GPE_GeneralResourceContainer * RESC_PATHS;
-    GPE_GeneralResourceContainer * RESC_DICTIONARIES;
-    GPE_GeneralResourceContainer * RESC_SCENES;
-    GPE_GeneralResourceContainer * RESC_ACHIEVEMENTS;
-    GPE_GeneralResourceContainer * RESC_FONTS;
-    GPE_GeneralResourceContainer * RESC_SHADERS;
-    GPE_GeneralResourceContainer * RESC_project_SETTINGS;
-    GPE_GeneralResourceContainer * RESC_ALL[ gpe::resource_type_max ];
+    pawgui::widget_resource_container * RESC_project_FOLDER;
+    pawgui::widget_resource_container * RESC_ANIMATIONS;
+    pawgui::widget_resource_container * RESC_TEXTURES;
+    pawgui::widget_resource_container * RESC_TILESHEETS;
+    pawgui::widget_resource_container * RESC_3DMODELS;
+    pawgui::widget_resource_container * RESC_AUDIO;
+    pawgui::widget_resource_container * RESC_VIDEOS;
+    pawgui::widget_resource_container * RESC_EMITTERS;
+    pawgui::widget_resource_container * RESC_LIGHTS;
+    pawgui::widget_resource_container * RESC_FUNCTIONS;
+    pawgui::widget_resource_container * RESC_ENTITIES;
+    pawgui::widget_resource_container * RESC_CLASSES;
+    pawgui::widget_resource_container * RESC_RESOURCES;
+    pawgui::widget_resource_container * RESC_PATHS;
+    pawgui::widget_resource_container * RESC_DICTIONARIES;
+    pawgui::widget_resource_container * RESC_SCENES;
+    pawgui::widget_resource_container * RESC_ACHIEVEMENTS;
+    pawgui::widget_resource_container * RESC_FONTS;
+    pawgui::widget_resource_container * RESC_SHADERS;
+    pawgui::widget_resource_container * RESC_project_SETTINGS;
+    pawgui::widget_resource_container * RESC_ALL[ gpe::resource_type_max ];
     int CREATED_RESOURCE_COUNT[ gpe::resource_type_max ];
 
     //Used for code editor and hightlights of functions, resources and objects.
-    std::vector <GPE_Compiler_Term *> projectFunctions;
-    std::vector <GPE_Compiler_Term *> projectKeywords;
+    std::vector <pawgui::syntax_compiler_term *> projectFunctions;
+    std::vector <pawgui::syntax_compiler_term *> projectKeywords;
 
     //used for buld scripts
     std::vector <int >currentObjParents;
@@ -102,7 +102,7 @@ public:
     bool add_project_keyword(std::string nName, std::string nDescription = "", int nType = -1, std::string nScope="");
 
     //Name checker
-    bool check_names_against_keywords( GPE_GeneralResourceContainer * resContainer );
+    bool check_names_against_keywords( pawgui::widget_resource_container * resContainer );
 
     void clear_project_functions();
     void clear_project_keywords();
@@ -111,21 +111,21 @@ public:
     bool clean_build_folder( int buildMetaTemplate = -1 );
 
     //creates sub folders all sexy like
-    GPE_GeneralResourceContainer * create_blank_folder(GPE_GeneralResourceContainer * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    GPE_GeneralResourceContainer * create_blank_resource(int rNewType = -1,GPE_GeneralResourceContainer * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    GPE_GeneralResourceContainer * create_blank_audio( GPE_GeneralResourceContainer * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    GPE_GeneralResourceContainer * create_blank_video( GPE_GeneralResourceContainer * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    GPE_GeneralResourceContainer * create_blank_emitter( GPE_GeneralResourceContainer * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    GPE_GeneralResourceContainer * create_blank_light( GPE_GeneralResourceContainer * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    GPE_GeneralResourceContainer * create_blank_path( GPE_GeneralResourceContainer * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    GPE_GeneralResourceContainer * create_blank_font( GPE_GeneralResourceContainer * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    GPE_GeneralResourceContainer * create_blank_function( GPE_GeneralResourceContainer * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    GPE_GeneralResourceContainer * create_blank_class( GPE_GeneralResourceContainer * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    GPE_GeneralResourceContainer * create_blank_gameobject( GPE_GeneralResourceContainer * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    GPE_GeneralResourceContainer * create_blank_scene( GPE_GeneralResourceContainer * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    GPE_GeneralResourceContainer * create_blank_animation( GPE_GeneralResourceContainer * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    GPE_GeneralResourceContainer * create_blank_texture( GPE_GeneralResourceContainer * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    GPE_GeneralResourceContainer * create_blank_tilesheet( GPE_GeneralResourceContainer * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_folder(pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_resource(int rNewType = -1,pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_audio( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_video( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_emitter( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_light( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_path( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_font( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_function( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_class( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_game_enttity( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_scene( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_animation( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_texture( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_tilesheet( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
 
     //Export based functions
     bool export_and_play_native(bool launchProgram = true);
@@ -152,7 +152,7 @@ public:
     void begin_obj_reverse_inheritence();
 
     //Includes for project resources
-    bool include_local_files( GPE_GeneralResourceContainer * resContainer,std::string pBuildDir , int buildType );
+    bool include_local_files( pawgui::widget_resource_container * resContainer,std::string pBuildDir , int buildType );
 
     //used to give each resource a unique global id, like a boss
     int increment_resouce_count();

@@ -39,12 +39,12 @@ SOFTWARE.
 class GPE_SceneParticleEmitter: public GPE_SceneBasicClass
 {
 public:
-    GPE_DropDown_Resouce_Menu * emmitterInEditor;
+    pawgui::widget_drop_down_resource_menu * emmitterInEditor;
 
-    GPE_SceneParticleEmitter( GPE_GeneralResourceContainer *pFolder = NULL);
+    GPE_SceneParticleEmitter( pawgui::widget_resource_container *pFolder = NULL);
     ~GPE_SceneParticleEmitter();
     void add_typed_elements();
-    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController );
+    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
     void process_elements();
     void render_branch();
     bool save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn = 0);

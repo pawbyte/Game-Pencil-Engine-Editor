@@ -48,39 +48,39 @@ private:
     float areaMouseXPos, areaMouseYPos;
 public:
     float tempAngleExtra;
-    GPE_RadioButtonControllerBasic * lightType;
-    gpe_widget_color_picker * lightColorField;
-    gpe_text_widget_number * lightIntensityField;
+    pawgui::widget_radio_button_controller * lightType;
+    pawgui::gpe_widget_color_picker * lightColorField;
+    pawgui::widget_input_number * lightIntensityField;
 
     //Point Light Related Variables [ BEGIN ]
-    gpe_text_widget_number * lightRadiusField;
-    gpe_text_widget_number * lightSecondRadiusField;
-    gpe_text_widget_number * lightThirdRadiusField;
-    gpe_text_widget_number * lightSecondIntensityField;
-    gpe_text_widget_number * lightThirdIntensityField;
+    pawgui::widget_input_number * lightRadiusField;
+    pawgui::widget_input_number * lightSecondRadiusField;
+    pawgui::widget_input_number * lightThirdRadiusField;
+    pawgui::widget_input_number * lightSecondIntensityField;
+    pawgui::widget_input_number * lightThirdIntensityField;
     //Point Light Related Variables [ END ]
 
     //Direction Light Related Variables [ END ]
-    gpe_text_widget_number * lightLengthField;
-    gpe_text_widget_number * lightWidthField;
-    gpe_text_widget_number * lightDirectionField;
+    pawgui::widget_input_number * lightLengthField;
+    pawgui::widget_input_number * lightWidthField;
+    pawgui::widget_input_number * lightDirectionField;
      //Texture related variables
     gpe::texture_base * directionLightTexture;
-    GPE_Label_Text * textureLabel;
-    GPE_Label_Image * texturePreviewImgLabel;
-    gpe_text_widget_string * textureLocationField;
-    GPE_ToolLabelButton * browseTextureButton;
-    GPE_ToolLabelButton * clearTextureButton;
-    GPE_CheckBoxBasic * autorotateAngle;
+    pawgui::widget_label_text  * textureLabel;
+    pawgui::widget_label_image * texturePreviewImgLabel;
+    pawgui::widget_input_text * textureLocationField;
+    pawgui::widget_button_label * browseTextureButton;
+    pawgui::widget_button_label * clearTextureButton;
+    pawgui::widget_checkbox * autorotateAngle;
     //Direction Light Related Variables [ END ]
 
 
     //Light Flickering variables
-    GPE_CheckBoxBasic * lightUseFlicker;
-    gpe_text_widget_number * lightFlickerTimeField;
-    gpe_text_widget_number * lightFlickerAmountField;
+    pawgui::widget_checkbox * lightUseFlicker;
+    pawgui::widget_input_number * lightFlickerTimeField;
+    pawgui::widget_input_number * lightFlickerAmountField;
 
-    lightResource( GPE_GeneralResourceContainer * pFolder = NULL );
+    lightResource( pawgui::widget_resource_container * pFolder = NULL );
     ~lightResource();
 
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
@@ -88,7 +88,7 @@ public:
 
     void compile_cpp();
     bool include_local_files( std::string pBuildDir , int buildType );
-    bool get_mouse_coords( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    bool get_mouse_coords( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void handle_scrolling();
     bool is_build_ready();
 
@@ -96,8 +96,8 @@ public:
     void load_resource(std::string file_path = "");
     void prerender_self( );
     void process_data_fields(float versionToProcess = -1);
-    void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void revert_data_fields();
     void save_resource(std::string file_path = "", int backupId = -1);
     void update_box(int newX=-1, int newY=-1, int newW=-1, int newH=-1);

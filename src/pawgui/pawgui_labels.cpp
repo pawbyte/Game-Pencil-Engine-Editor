@@ -38,8 +38,8 @@ namespace pawgui
     {
         allowOverSize = true;
         resizeAspect = 1;
-        guiListTypeName = "labelimage";
-        opName = name_param;
+        widget_type = "labelimage";
+        widget_name = name_param;
         descriptionText = description;
         wasClicked = false;
         isHoldingCustomTexture = false;
@@ -73,12 +73,12 @@ namespace pawgui
         }
     }
 
-    void widget_label_image::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void widget_label_image::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        viewedSpace = gpe::camera_find( viewedSpace );
+        view_space = gpe::camera_find( view_space );
         cam = gpe::camera_find( cam );
-        widget_basic::process_self(viewedSpace,cam);
-        if( viewedSpace!=NULL && cam!=NULL )
+        widget_basic::process_self(view_space,cam);
+        if( view_space!=NULL && cam!=NULL )
         {
             if( isHovered && (int)webUrl.size() > 3)
             {
@@ -99,9 +99,9 @@ namespace pawgui
         }
     }
 
-    void widget_label_image::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void widget_label_image::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
         if( cam!=NULL )
         {
@@ -203,7 +203,7 @@ namespace pawgui
 
     void widget_label_image::set_name(std::string name_param)
     {
-        opName = name_param;
+        widget_name = name_param;
     }
 
     //
@@ -212,9 +212,9 @@ namespace pawgui
 
     widget_label_text::widget_label_text(std::string name_param, std::string description)
     {
-        guiListTypeName = "labeltext";
-        guiListTypeId = 7;
-        opName = name_param;
+        widget_type = "labeltext";
+        widget_type_id = 7;
+        widget_name = name_param;
         descriptionText = description;
         if( FONT_LABEL!=NULL)
         {
@@ -224,7 +224,7 @@ namespace pawgui
             widget_box.w = bWid;
             widget_box.h = bHgt;
         }
-        opName = name_param;
+        widget_name = name_param;
         hasLineBreak = true;
     }
 
@@ -235,12 +235,12 @@ namespace pawgui
 
     std::string widget_label_text::get_data()
     {
-        return guiListTypeName+":"+opName+"==|||=="+descriptionText;
+        return widget_type+":"+widget_name+"==|||=="+descriptionText;
     }
 
     std::string widget_label_text::get_plain_string()
     {
-        return "\""+opName+"\"";
+        return "\""+widget_name+"\"";
     }
 
     void widget_label_text::load_data(std::string dataString)
@@ -248,9 +248,9 @@ namespace pawgui
         descriptionText = dataString;
     }
 
-    void widget_label_text::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void widget_label_text::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        widget_basic::process_self(viewedSpace,cam);
+        widget_basic::process_self(view_space,cam);
         /*
         if( isHovered)
         {
@@ -269,18 +269,18 @@ namespace pawgui
         {
             if( gpe::input->check_kb_down(kb_ctrl) && gpe::input->check_kb_released(kb_c) )
             {
-                gpe::input->clipboard_set(opName.c_str() );
+                gpe::input->clipboard_set(widget_name.c_str() );
             }
         }
     }
 
-    void widget_label_text::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void widget_label_text::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
+        if( (int)widget_name.size() > 0 && view_space!=NULL && cam!=NULL )
         {
-            gpe::gfs->render_text( widget_box.x-cam->x,widget_box.y-cam->y,opName,pawgui::theme_main->main_box_font_color,FONT_LABEL,gpe::fa_left,gpe::fa_top);
+            gpe::gfs->render_text( widget_box.x-cam->x,widget_box.y-cam->y,widget_name,pawgui::theme_main->main_box_font_color,FONT_LABEL,gpe::fa_left,gpe::fa_top);
 
             if( isInUse)
             {
@@ -299,7 +299,7 @@ namespace pawgui
             widget_box.w = bWid;
             widget_box.h = bHgt;
         }
-        opName = name_param;
+        widget_name = name_param;
     }
 
     //
@@ -307,9 +307,9 @@ namespace pawgui
 
     widget_label_error::widget_label_error(std::string name_param, std::string description)
     {
-        guiListTypeName = "labelerror";
-        guiListTypeId = 7;
-        opName = name_param;
+        widget_type = "labelerror";
+        widget_type_id = 7;
+        widget_name = name_param;
         descriptionText = description;
         if( FONT_LABEL!=NULL)
         {
@@ -319,7 +319,7 @@ namespace pawgui
             widget_box.w = bWid;
             widget_box.h = bHgt;
         }
-        opName = name_param;
+        widget_name = name_param;
         hasLineBreak = true;
     }
 
@@ -330,12 +330,12 @@ namespace pawgui
 
     std::string widget_label_error::get_data()
     {
-        return guiListTypeName+":"+opName+"==|||=="+descriptionText;
+        return widget_type+":"+widget_name+"==|||=="+descriptionText;
     }
 
     std::string widget_label_error::get_plain_string()
     {
-        return "\""+opName+"\"";
+        return "\""+widget_name+"\"";
     }
 
     void widget_label_error::load_data(std::string dataString)
@@ -343,9 +343,9 @@ namespace pawgui
         descriptionText = dataString;
     }
 
-    void widget_label_error::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void widget_label_error::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        widget_basic::process_self(viewedSpace,cam);
+        widget_basic::process_self(view_space,cam);
         /*
         if( isHovered)
         {
@@ -364,18 +364,18 @@ namespace pawgui
         {
             if( gpe::input->check_kb_down(kb_ctrl) && gpe::input->check_kb_released(kb_c) )
             {
-                gpe::input->clipboard_set(opName.c_str() );
+                gpe::input->clipboard_set(widget_name.c_str() );
             }
         }
     }
 
-    void widget_label_error::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void widget_label_error::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
+        if( (int)widget_name.size() > 0 && view_space!=NULL && cam!=NULL )
         {
-            gpe::gfs->render_text( widget_box.x-cam->x,widget_box.y-cam->y,opName,pawgui::theme_main->input_error_font_color,FONT_LABEL,gpe::fa_left,gpe::fa_top);
+            gpe::gfs->render_text( widget_box.x-cam->x,widget_box.y-cam->y,widget_name,pawgui::theme_main->input_error_font_color,FONT_LABEL,gpe::fa_left,gpe::fa_top);
 
             if( isInUse)
             {
@@ -394,16 +394,16 @@ namespace pawgui
             widget_box.w = bWid;
             widget_box.h = bHgt;
         }
-        opName = name_param;
+        widget_name = name_param;
     }
 
     //
 
     widget_label_rotated_90::widget_label_rotated_90(std::string name_param, std::string description)
     {
-        guiListTypeName = "labeltext";
-        guiListTypeId = 7;
-        opName = name_param;
+        widget_type = "labeltext";
+        widget_type_id = 7;
+        widget_name = name_param;
         descriptionText = description;
         if( FONT_LABEL!=NULL)
         {
@@ -413,7 +413,7 @@ namespace pawgui
             widget_box.w = bHgt;
             widget_box.h = bWid;
         }
-        opName = name_param;
+        widget_name = name_param;
         hasLineBreak = true;
     }
 
@@ -424,12 +424,12 @@ namespace pawgui
 
     std::string widget_label_rotated_90::get_data()
     {
-        return guiListTypeName+":"+opName+"==|||=="+descriptionText;
+        return widget_type+":"+widget_name+"==|||=="+descriptionText;
     }
 
     std::string widget_label_rotated_90::get_plain_string()
     {
-        return "\""+opName+"\"";
+        return "\""+widget_name+"\"";
     }
 
     void widget_label_rotated_90::load_data(std::string dataString)
@@ -437,9 +437,9 @@ namespace pawgui
         descriptionText = dataString;
     }
 
-    void widget_label_rotated_90::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void widget_label_rotated_90::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        widget_basic::process_self(viewedSpace,cam);
+        widget_basic::process_self(view_space,cam);
         /*
         if( isHovered)
         {
@@ -458,18 +458,18 @@ namespace pawgui
         {
             if( gpe::input->check_kb_down(kb_ctrl) && gpe::input->check_kb_released(kb_c) )
             {
-                gpe::input->clipboard_set(opName.c_str() );
+                gpe::input->clipboard_set(widget_name.c_str() );
             }
         }
     }
 
-    void widget_label_rotated_90::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void widget_label_rotated_90::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
+        if( (int)widget_name.size() > 0 && view_space!=NULL && cam!=NULL )
         {
-            gpe::gfs->render_text_rotated( widget_box.x-cam->x,widget_box.y-cam->y+widget_box.h,opName,pawgui::theme_main->main_box_font_color,FONT_LABEL,90);
+            gpe::gfs->render_text_rotated( widget_box.x-cam->x,widget_box.y-cam->y+widget_box.h,widget_name,pawgui::theme_main->main_box_font_color,FONT_LABEL,90);
 
             if( isInUse)
             {
@@ -488,17 +488,17 @@ namespace pawgui
             widget_box.w = bHgt;
             widget_box.h = bWid;
         }
-        opName = name_param;
+        widget_name = name_param;
     }
 
     widget_label_paragraph::widget_label_paragraph(std::string name_param, std::string paragraphIn, std::string descriptionIn)
     {
-        guiListTypeName = "paragraph";
+        widget_type = "paragraph";
         paragraphWidth = 0;
         needsNewLine = true;
         isFullWidth = true;
         autoResizes= true;
-        opName = name_param;
+        widget_name = name_param;
         paragraphText = paragraphIn;
         descriptionText = descriptionIn;
     }
@@ -529,23 +529,23 @@ namespace pawgui
         return paragraphText;
     }
 
-    void widget_label_paragraph::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+    void widget_label_paragraph::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
-        if( viewedSpace!=NULL )
+        if( view_space!=NULL )
         {
-            //if( viewedSpace->w - widget_box.x !=widget_box.w || paragraphWidth == 0 )
+            //if( view_space->w - widget_box.x !=widget_box.w || paragraphWidth == 0 )
             {
                 update_paragraph();
             }
-            widget_basic::process_self(  viewedSpace, cam );
+            widget_basic::process_self(  view_space, cam );
         }
     }
 
-    void widget_label_paragraph::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam )
+    void widget_label_paragraph::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam )
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( viewedSpace!=NULL && cam!=NULL )
+        if( view_space!=NULL && cam!=NULL )
         {
             if( hAlign == gpe::fa_center)
             {
@@ -677,9 +677,9 @@ namespace pawgui
     }
     widget_label_title::widget_label_title(std::string name_param, std::string description)
     {
-        guiListTypeName = "labeltitle";
+        widget_type = "labeltitle";
         needsNewLine = true;
-        opName = name_param;
+        widget_name = name_param;
         descriptionText = description;
         if( FONT_LABEL_TITLE!=NULL)
         {
@@ -689,7 +689,7 @@ namespace pawgui
             widget_box.w = bWid;
             widget_box.h = bHgt;
         }
-        opName = name_param;
+        widget_name = name_param;
         hasLineBreak = true;
     }
 
@@ -700,12 +700,12 @@ namespace pawgui
 
     std::string widget_label_title::get_data()
     {
-        return guiListTypeName+":"+opName+"==|||=="+descriptionText;
+        return widget_type+":"+widget_name+"==|||=="+descriptionText;
     }
 
     std::string widget_label_title::get_plain_string()
     {
-        return "\""+opName+"\"";
+        return "\""+widget_name+"\"";
     }
 
     void widget_label_title::load_data(std::string dataString)
@@ -713,14 +713,14 @@ namespace pawgui
         descriptionText = dataString;
     }
 
-    void widget_label_title::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void widget_label_title::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        widget_basic::process_self(viewedSpace,cam);
+        widget_basic::process_self(view_space,cam);
         if( isInUse)
         {
             if( gpe::input->check_kb_down(kb_ctrl) && gpe::input->check_kb_released(kb_c) )
             {
-                gpe::input->clipboard_set(opName.c_str() );
+                gpe::input->clipboard_set(widget_name.c_str() );
             }
         }
         /*
@@ -739,13 +739,13 @@ namespace pawgui
         */
     }
 
-    void widget_label_title::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect *cam)
+    void widget_label_title::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( (int)opName.size() > 0 && viewedSpace!=NULL && cam!=NULL )
+        if( (int)widget_name.size() > 0 && view_space!=NULL && cam!=NULL )
         {
-            gpe::gfs->render_text( widget_box.x-cam->x,widget_box.y+widget_box.h/2-cam->y,opName,pawgui::theme_main->main_box_font_color,FONT_LABEL_TITLE,gpe::fa_left,gpe::fa_middle);
+            gpe::gfs->render_text( widget_box.x-cam->x,widget_box.y+widget_box.h/2-cam->y,widget_name,pawgui::theme_main->main_box_font_color,FONT_LABEL_TITLE,gpe::fa_left,gpe::fa_middle);
 
             if( isInUse)
             {
@@ -756,8 +756,8 @@ namespace pawgui
 
     void widget_label_title::set_name(std::string name_param)
     {
-        guiListTypeName = "labeltexturl";
-        if( FONT_LABEL_TITLE!=NULL && name_param!=opName)
+        widget_type = "labeltexturl";
+        if( FONT_LABEL_TITLE!=NULL && name_param!=widget_name)
         {
             int bWid = 0;
             int bHgt = 0;
@@ -765,6 +765,6 @@ namespace pawgui
             widget_box.w = bWid;
             widget_box.h = bHgt;
         }
-        opName = name_param;
+        widget_name = name_param;
     }
 }

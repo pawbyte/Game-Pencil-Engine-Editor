@@ -49,7 +49,6 @@ namespace gpe
             time_keeper_sdl( std::string t_name );
             ~time_keeper_sdl();
 
-            void calculate_avg_fps( bool is_minimized );
             void cap_fps( bool is_minimized );
 
             void delay( float delay_time );

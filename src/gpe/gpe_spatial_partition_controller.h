@@ -1,5 +1,5 @@
 /*
-GPE_Spatial_Partition_Controller.h
+gpe_spatial_partition_controller.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -34,11 +34,12 @@ SOFTWARE.
 #ifndef gpe_spatial_partition_controller_h
 #define gpe_spatial_partition_controller_h
 
+#include "gpe_collision_controller_base.h"
 #include "gpe_spatial_partition_layer.h"
 
 namespace gpe
 {
-    class spatial_partition_controller
+    class spatial_partition_controller : public collision_controller_base
     {
         protected:
             std::map<std::string, bool > collisionsCheckedInFrame;
@@ -47,22 +48,23 @@ namespace gpe
         public:
             static const int maxLayerCount = 32;
             spatial_partition_layer * collisionlayers[maxLayerCount];
-            spatial_partition_controller();
+
+            spatial_partition_controller( std::string c_name );
             ~spatial_partition_controller();
-            void activate_layer(int layerId );
+            void activate_layer(int layer_id );
             void activate_all_layers();
-            void add_object_to_grid( game_object * gameObject, int layerId = -1 );
+            void add_object( game_object * g_obj, int layer_id = -1 );
             void clear_spaces();
             void clear_checked_map();
             void check_collisions();
-            void deactivate_layer(int layerId );
+            void deactivate_layer(int layer_id );
             void deactivate_all_layers();
-            void init_spatialpartioning( int cSceneWidth, int cSceneHeight );
-            void remove_object_from_grid( game_object * gameObject );
-
+            bool init_system( int scene_width, int scene_height );
+            bool quit_system();
+            void remove_object( game_object * g_obj );
     };
 
-    extern spatial_partition_controller * GPE_SPATIAL_GRID;
+    extern spatial_partition_controller * main_spatial_grid;
 }
 
 #endif //gpe_spatial_partition_controller_h

@@ -32,13 +32,13 @@ SOFTWARE.
 */
 #include "gpe_scene_particle_class.h"
 
-GPE_SceneParticleEmitter::GPE_SceneParticleEmitter( GPE_GeneralResourceContainer *pFolder )
+GPE_SceneParticleEmitter::GPE_SceneParticleEmitter( pawgui::widget_resource_container *pFolder )
 {
-    iconTexture = paw_gui_rsm->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png") ;
+    iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png") ;
     branchType = gpe::branch_type::PARTIClE_EMITTER;
     if( projectParentFolder!=NULL)
     {
-        emmitterInEditor = new GPE_DropDown_Resouce_Menu( "Particle Emitter",projectParentFolder->find_resource_from_name( gpe::resource_type_names[ gpe::resource_type_emitter]+"s"),-1,true);
+        emmitterInEditor = new pawgui::widget_drop_down_resource_menu( "Particle Emitter",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_emitter]),-1,true);
         emmitterInEditor->set_width(192);
     }
     else
@@ -54,13 +54,13 @@ GPE_SceneParticleEmitter::~GPE_SceneParticleEmitter()
 
 void GPE_SceneParticleEmitter::add_typed_elements()
 {
-    if( PANEL_INSPECTOR!=NULL )
+    if( panel_inspector!=NULL )
     {
-        //PANEL_INSPECTOR->add_gui_element( lightIsActive, true );
+        //panel_inspector->add_gui_element( lightIsActive, true );
     }
 }
 
-bool GPE_SceneParticleEmitter::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController )
+bool GPE_SceneParticleEmitter::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
 {
     GPE_SceneBasicClass::build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController);
     return true;
@@ -80,7 +80,7 @@ bool GPE_SceneParticleEmitter::save_branch_data(std::ofstream * fileTarget, int 
 {
     if( fileTarget!=NULL && fileTarget->is_open() )
     {
-        std::string nestedTabsStr = generate_tabs( nestedFoldersIn );
+        std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"   GPE_AmbientLight=";
         if( xPosField!=NULL)
         {
@@ -116,7 +116,7 @@ bool GPE_SceneParticleEmitter::save_branch_data(std::ofstream * fileTarget, int 
         {
             *fileTarget << "255,";
         }
-        *fileTarget << opName+",,\n";
+        *fileTarget << widget_name+",,\n";
         GPE_SceneBasicClass::save_branch_data( fileTarget, nestedFoldersIn+1 );
         return true;
     }

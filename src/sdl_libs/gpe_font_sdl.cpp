@@ -41,8 +41,8 @@ namespace gpe
         lastAlphaRendered = 255;
         str = strIn;
         strTexture = NULL;
-        textWidth = 0;
-        textHeight = 0;
+        text_width = 0;
+        text_height = 0;
         if( fontIn!=NULL && (int)strIn.size() > 0)
         {
             //Render text surface
@@ -56,13 +56,13 @@ namespace gpe
             else
             {
                 //Create texture from surface pixels
-                textWidth = textSurface->w;
-                textHeight = textSurface->h;
+                text_width = textSurface->w;
+                text_height = textSurface->h;
                 strTexture = sdl_surface_ex::create_texture_from_surface( renderer_main_sdl->get_sdl_renderer(), textSurface);
                 if( strTexture != NULL )
                 {
                     //Get image dimensions
-                    SDL_QueryTexture(strTexture,NULL, NULL,&textWidth, &textHeight);
+                    SDL_QueryTexture(strTexture,NULL, NULL,&text_width, &text_height);
                     //SDL_SetTextureBlendMode(strTexture, SDL_BLENDMODE_ADD );
                 }
                 else
@@ -71,6 +71,10 @@ namespace gpe
                     gpe::error_log->report( "Unable to create texture from rendered text! SDL Error: "+ sdlError  );
                 }
             }
+        }
+        else
+        {
+            gpe::error_log->report("Unable to pre-render text [" + strIn +"]");
         }
     }
 
@@ -90,6 +94,7 @@ namespace gpe
 
     font_sdl_tff::font_sdl_tff(std::string fFileLocation, int fSize, bool isMonospaced, std::string fNickName,  int fontIdNumb )
     {
+        font_system_type = "sdl_ttf";
         last_used_halign = fa_left;
         last_used_valign = fa_top;
         customFontId = fontIdNumb;
@@ -153,8 +158,7 @@ namespace gpe
             characterPairs[")" ] = new font_pair_sdl(heldSDLFont,")" );
             if( isMonospaced == false)
             {
-                std::map<std::string,font_pair_sdl *>::iterator foundIterator;
-                foundIterator = characterPairs.find("9");
+                std::map<const std::string,font_pair_sdl *>::iterator foundIterator = characterPairs.find("9");
                 if( foundIterator!= characterPairs.end() )
                 {
                     font_pair_sdl * tempfont_pair_sdl = foundIterator->second;
@@ -187,7 +191,7 @@ namespace gpe
         }
         clear_cache();
         font_pair_sdl * tempfont_pair_sdl = NULL;
-        for (std::map<std::string,font_pair_sdl *>::iterator it=characterPairs.begin(); it!=characterPairs.end(); ++it)
+        for (std::map<const std::string,font_pair_sdl *>::iterator it=characterPairs.begin(); it!=characterPairs.end(); ++it)
         {
             tempfont_pair_sdl = it->second;
             if( tempfont_pair_sdl!=NULL)
@@ -203,7 +207,7 @@ namespace gpe
     void font_sdl_tff::clear_cache()
     {
         font_pair_sdl * tempfont_pair_sdl = NULL;
-        for (std::map<std::string,font_pair_sdl *>::iterator it=textPairs.begin(); it!=textPairs.end(); ++it)
+        for (std::map<const std::string,font_pair_sdl *>::iterator it=textPairs.begin(); it!=textPairs.end(); ++it)
         {
             tempfont_pair_sdl = it->second;
             if( tempfont_pair_sdl!=NULL)
@@ -273,6 +277,29 @@ namespace gpe
         }
     }
 
+    void font_sdl_tff::get_wrapped_string_metrics( const std::string strIn, int lineWidth, int linePadding, int * wVal, int *hVal )
+    {
+        if( (int)strIn.size() == 0 || lineWidth <=0 )
+        {
+            return;
+        }
+        std::vector < std::string > wrappedTextLine;
+        stg_ex::wrap_string( strIn, wrappedTextLine, lineWidth);
+        if( (int)wrappedTextLine.size() == 0  )
+        {
+            *wVal = 0;
+            *hVal = 0;
+        }
+        else if( (int)wrappedTextLine.size() == 1 )
+        {
+
+        }
+        else
+        {
+
+        }
+    }
+
     TTF_Font * font_sdl_tff::get_sdl_font()
     {
         return heldSDLFont;
@@ -287,8 +314,7 @@ namespace gpe
     {
         font_pair_sdl * fPair = NULL;
         SDL_Texture * fSDLTexture = NULL;
-        std::map<std::string,font_pair_sdl *>::iterator foundVal;
-        foundVal = characterPairs.find( numbId );
+        std::map<const std::string,font_pair_sdl *>::iterator foundVal = characterPairs.find( numbId );
         if( foundVal !=  characterPairs.end() )
         {
             fPair = foundVal->second;
@@ -318,8 +344,7 @@ namespace gpe
     {
         font_pair_sdl * fPair = NULL;
         SDL_Texture * fSDLTexture = NULL;
-        std::map<std::string,font_pair_sdl *>::iterator foundVal;
-        foundVal = textPairs.find( textToRender );
+        std::map< const std::string,font_pair_sdl *>::iterator foundVal = textPairs.find( textToRender );
         if( foundVal !=  textPairs.end() )
         {
             return foundVal->second;
@@ -420,11 +445,11 @@ namespace gpe
         }
     }
 
-    void font_sdl_tff::render_text( int xPos, int yPos, std::string textureText, color * textColor, int hAlign,int vAlign, int renderAlpha )
+    void font_sdl_tff::render_text( int xPos, int yPos, std::string textureText, color * textColor, int hAlign,int vAlign,int renderAlpha )
     {
         if( renderAlpha > 0 && textColor!=NULL)
         {
-            SDL_SetRenderDrawColor( renderer_main_sdl->get_sdl_renderer(), textColor->get_r(), textColor->get_g(), textColor->get_b(), 255 );
+            //SDL_SetRenderDrawColor( renderer_main_sdl->get_sdl_renderer(), textColor->get_r(), textColor->get_g(), textColor->get_b(), 255 );
             font_pair_sdl * strTex = find_texture_sdl(textureText);
             SDL_Texture * fPairTex=  NULL;
             if( strTex!=NULL)
@@ -478,27 +503,38 @@ namespace gpe
                     }
                     switch(vAlign)
                     {
-                    case gpe::fa_middle:
-                        yPos=yPos-texHeight/2;
-                        // last_used_valign=gpe::fa_middle;
+                        case gpe::fa_middle:
+                            yPos=yPos-texHeight/2;
+                            // last_used_valign=gpe::fa_middle;
                         break;
 
-                    case gpe::fa_bottom:
-                        yPos=yPos-texHeight;
-                        // last_used_valign=gpe::fa_middle;
+                        case gpe::fa_bottom:
+                            yPos=yPos-texHeight;
+                            // last_used_valign=gpe::fa_middle;
                         break;
 
-                    //rendering left will be the default
-                    default:
-                        //last_used_valign=gpe::fa_top;
+                        //rendering left will be the default
+                        default:
+                            //last_used_valign=gpe::fa_top;
                         break;
-                    }
+                        }
                     SDL_Rect clip = {xPos, yPos, texWid,texHeight};
                     SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),fPairTex, NULL, &clip);
-                    //SDL_SetTextureColorMod( fPairTex, c_white->get_r(), c_white->get_g(), c_white->get_b() );
-
+                    SDL_SetTextureColorMod( fPairTex, c_white->get_r(), c_white->get_g(), c_white->get_b() );
+                }
+                else
+                {
+                    gpe::error_log->report("Unable to find sdl_text for ["+textureText+"]...");
                 }
             }
+            else
+            {
+                gpe::error_log->report("Unable to render ["+textureText+"]...");
+            }
+        }
+        else
+        {
+            gpe::error_log->report("Unable to render text  ["+textureText+"]...");
         }
     }
 

@@ -37,13 +37,13 @@ namespace pawgui
 {
     widget_dropdown_menu::widget_dropdown_menu( std::string name, bool justOptions)
     {
-        guiListTypeName = "dropdown";
+        widget_type = "dropdown";
         widget_box.x = 0;
         widget_box.y = 0;
         widget_box.w = 192;
         //int nameMinSize = name.size()*
         widget_box.h = 32;
-        dropdownName = opName = name;
+        dropdownName = widget_name = name;
         opId = -1;
         selectedId = -1;
         selectedPair = NULL;
@@ -73,7 +73,7 @@ namespace pawgui
 
     std::string widget_dropdown_menu::get_data()
     {
-        std::string dataString = guiListTypeName+":"+dropdownName+"==|||==[menu]";
+        std::string dataString = widget_type+":"+dropdownName+"==|||==[menu]";
         gpe::key_pair * tPair = NULL;
         for( int i = 0; i < (int)dropDownParentPair->subOptions.size(); i++ )
         {
@@ -247,7 +247,7 @@ namespace pawgui
         {
             return selectedPair->keyString;
         }
-        return opName;
+        return widget_name;
     }
 
 
@@ -331,13 +331,13 @@ namespace pawgui
         }
     }
 
-    void widget_dropdown_menu::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam)
+    void widget_dropdown_menu::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
         isHovered = false;
         justActivated = false;
-        widget_basic::process_self(viewedSpace,cam);
+        widget_basic::process_self(view_space,cam);
         if( isHovered || isInUse)
         {
             main_overlay_system->update_tooltip(dropdownName);
@@ -355,14 +355,14 @@ namespace pawgui
             isClicked = true;
         }
 
-        if( isClicked && cam!=NULL && viewedSpace!=NULL)
+        if( isClicked && cam!=NULL && view_space!=NULL)
         {
             if( main_context_menu!=NULL)
             {
                 if( main_context_menu->subMenuIsOpen == false)
                 {
                     isOpen = true;
-                    context_menu_open(viewedSpace->x+widget_box.x-cam->x, viewedSpace->y+widget_box.y+widget_box.h-cam->y);
+                    context_menu_open(view_space->x+widget_box.x-cam->x, view_space->y+widget_box.y+widget_box.h-cam->y);
                     main_context_menu->set_width(widget_box.w);
                     gpe::key_pair * kp = NULL;
                     if( (int)dropDownParentPair->subOptions.size() > 0)
@@ -406,7 +406,7 @@ namespace pawgui
 
                         {
                             selectedId=-1;
-                            opName=dropdownName;
+                            widget_name=dropdownName;
                         }
                     }
                     context_menu_close();
@@ -465,21 +465,21 @@ namespace pawgui
         dropDownParentPair->remove_option_named( optionToRemove );
     }
 
-    void widget_dropdown_menu::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+    void widget_dropdown_menu::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( cam!=NULL && viewedSpace!=NULL)
+        if( cam!=NULL && view_space!=NULL)
         {
             gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->input_color,false);
 
             if( selectedPair!=NULL )
             {
-                gpe::gfs->render_text_resized( widget_box.x+widget_box.w/2-cam->x,widget_box.y+widget_box.h/2-cam->y,selectedPair->keyString,pawgui::theme_main->input_font_color,FONT_POPUP,gpe::fa_center,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
+                gpe::gfs->render_text_resized( widget_box.x+widget_box.w/2-cam->x,widget_box.y+widget_box.h/2-cam->y,selectedPair->keyString,pawgui::theme_main->input_font_color,font_popup,gpe::fa_center,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
             }
             else
             {
-                gpe::gfs->render_text_resized( widget_box.x+widget_box.w/2-cam->x,widget_box.y+widget_box.h/2-cam->y,opName,pawgui::theme_main->input_font_color,FONT_POPUP,gpe::fa_center,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
+                gpe::gfs->render_text_resized( widget_box.x+widget_box.w/2-cam->x,widget_box.y+widget_box.h/2-cam->y,widget_name,pawgui::theme_main->input_font_color,font_popup,gpe::fa_center,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
             }
 
             if( isInUse)
@@ -528,7 +528,7 @@ namespace pawgui
         selectedName = "";
         selectedTag = "";
         selectedValue = -1;
-        opName = dropdownName;
+        widget_name = dropdownName;
     }
 
     void widget_dropdown_menu::set_option_named(std::string newselectedOptionName )
@@ -560,7 +560,7 @@ namespace pawgui
         selectedId = -1;
         selectedName = "";
         selectedTag = "";
-        opName = dropdownName;
+        widget_name = dropdownName;
     }
 
     void widget_dropdown_menu::set_option_subvalue(std::string newselectedOptionName )
@@ -592,12 +592,12 @@ namespace pawgui
         selectedId = -1;
         selectedName = "";
         selectedTag = "";
-        opName = dropdownName;
+        widget_name = dropdownName;
     }
 
     void widget_dropdown_menu::set_name(std::string new_name)
     {
-        dropdownName = opName = new_name;
+        dropdownName = widget_name = new_name;
     }
 
     void widget_dropdown_menu::set_option_value(float sValue )

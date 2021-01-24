@@ -41,13 +41,13 @@ SOFTWARE.
 class GPE_SceneBackground: public GPE_SceneBasicClass
 {
 public:
-    GPE_DropDown_Resouce_Menu * backgroundInEditor;
-    gpe_text_widget_number * bgHorSpeedField;
-    gpe_text_widget_number * bgVertSpeedField;
+    pawgui::widget_drop_down_resource_menu * backgroundInEditor;
+    pawgui::widget_input_number * bgHorSpeedField;
+    pawgui::widget_input_number * bgVertSpeedField;
 
-    GPE_CheckBoxBasic * checkTileHori;
-    GPE_CheckBoxBasic * checkTileVert;
-    GPE_CheckBoxBasic * checkStretch;
+    pawgui::widget_checkbox * checkTileHori;
+    pawgui::widget_checkbox * checkTileVert;
+    pawgui::widget_checkbox * checkStretch;
     int textureId;
     textureResource * texRes;
     bool inFront;
@@ -56,10 +56,10 @@ public:
     bool stretchBG;
     int bgXSpeed;
     int bgYSpeed;
-    GPE_SceneBackground(GPE_GeneralResourceContainer *pFolder = NULL );
+    GPE_SceneBackground(pawgui::widget_resource_container *pFolder = NULL );
     ~GPE_SceneBackground();
     void add_typed_elements();
-    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  GPE_GeneralResourceContainer * localResTypeController );
+    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
     void calculate_size();
     void process_elements();
     void render_branch();

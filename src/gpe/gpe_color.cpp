@@ -145,4 +145,16 @@ namespace gpe
         bVal = b;
         aVal = a;
     }
+
+    void color::copy_color( color * other_color )
+    {
+        if( other_color == NULL )
+        {
+            return;
+        }
+        rVal = other_color->get_r();
+        gVal = other_color->get_g();
+        bVal = other_color->get_b();
+        aVal = other_color->get_a();
+    }
 }

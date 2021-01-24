@@ -37,7 +37,15 @@ namespace gpe
 {
     program_state::program_state( )
     {
-        stateName = "GPE_DEFAULT_STATE_NAME";
+        error_number = -1;
+        error_occurred = false;
+        state_name = "gpe_default_state_name";
+        bg_color = new color("bg_color",0,0,0,255 );
+        bg_texture = NULL;
+        if( rph!=NULL )
+        {
+            bg_texture = rph->get_new_texture();
+        }
     }
 
     program_state::~program_state()
@@ -47,7 +55,66 @@ namespace gpe
 
     std::string program_state::get_state_name()
     {
-        return stateName;
+        return state_name;
     }
 
+    std::string program_state::get_state_name_next()
+    {
+        return state_next_name;
+    }
+
+    std::string program_state::get_state_name_previous()
+    {
+        return state_previous_name;
+    }
+
+    void program_state::render()
+    {
+        if( gcanvas!= NULL )
+        {
+            gcanvas->render_rectangle( 0, 0, gpe::screen_width, gpe::screen_height, bg_color, false, 255 );
+        }
+
+        if( bg_texture!= NULL )
+        {
+            bg_texture->render_tex_resized( 0, 0, gpe::screen_width, gpe::screen_height, NULL );
+        }
+    }
+
+    void program_state::set_background_color( uint8_t r , uint8_t g, uint8_t b, uint8_t a )
+    {
+        if( bg_color != NULL )
+        {
+            bg_color->change_rgba(r, g, b, a );
+            return;
+        }
+        bg_color = new color("bg_color",r,g,b,a );
+
+    }
+
+    void program_state::set_background_image( std::string bg_file )
+    {
+        if( bg_texture = NULL )
+        {
+            bg_texture->load_new_texture( renderer_main, bg_file );
+            return;
+        }
+
+        if( rph!=NULL )
+        {
+            bg_texture = rph->get_new_texture();
+            bg_texture->load_new_texture( renderer_main, bg_file );
+        }
+    }
+
+    bool program_state::set_state_name_next( std::string s_name )
+    {
+        state_next_name = s_name;
+    }
+
+    bool program_state::set_state_name_previous( std::string s_name )
+    {
+        state_previous_name = s_name;
+        return true;
+    }
 }

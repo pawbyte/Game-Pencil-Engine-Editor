@@ -84,7 +84,7 @@ namespace pawgui
             void copy_selection();
             void cut_selection();
             void delete_selection();
-            void get_cursor_from_mouse( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+            void get_cursor_from_mouse( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             std::string get_label();
             std::string get_plain_string();
             std::string get_string();
@@ -92,9 +92,9 @@ namespace pawgui
             bool is_valid();
             void move_left(int xToMove = 1);
             void move_right(int xToMove = 1);
-            void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             void record_string( std::string strToRecord);
-            void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             void reset_selection(int resetDirection = 0);
             void select_all();
             void set_height(int newHeight);
@@ -124,7 +124,7 @@ namespace pawgui
             float get_held_number();
             std::string get_plain_string();
             float make_valid_number(float fallbackNumber );
-            void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     };
 }
 #endif //PAWGUI_INPUT_TEXT_H

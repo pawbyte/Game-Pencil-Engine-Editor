@@ -40,40 +40,40 @@ class gameScenePopupCategories
 {
 public:
     std::string name;
-    GPE_Label_Title * categoryLabel;
-    std::vector <GPE_VerticalCardButton * >elements;
+    pawgui::widget_label_title * categoryLabel;
+    std::vector <pawgui::widget_button_card_vertical * >elements;
     gameScenePopupCategories( std::string cName );
     ~gameScenePopupCategories();
-    GPE_VerticalCardButton * add_button(  std::string name, int id, std::string imgLocation, std::string parsedLines  );
-    void add_if_available( GPE_GuiElementList *  cList, std::string str);
+    pawgui::widget_button_card_vertical * add_button(  std::string name, int id, std::string imgLocation, std::string parsedLines  );
+    void add_if_available( pawgui::widget_panel_list *  cList, std::string str);
 };
 
-class GPE_SceneEditorHelper: public GPE_GeneralGuiElement
+class GPE_SceneEditorHelper: public pawgui::widget_basic
 {
 private:
     bool boxIsMoving;
     bool boxWasResized;
     bool boxBeingResized;
-    GPE_GuiElementList * topList;
-    GPE_GuiElementList * middleList;
-    GPE_GuiElementList * bottomList;
-    GPE_ToolLabelButton * confirmButton;
-    GPE_ToolLabelButton * cancelButton;
-    GPE_Label_Text * currentLabel;
-    GPE_Label_Paragraph * descriptionLabel;
-    gpe_text_widget_string * searchField;
-    gpe_text_widget_string * nameField;
+    pawgui::widget_panel_list * topList;
+    pawgui::widget_panel_list * middleList;
+    pawgui::widget_panel_list * bottomList;
+    pawgui::widget_button_label * confirmButton;
+    pawgui::widget_button_label * cancelButton;
+    pawgui::widget_label_text  * currentLabel;
+    pawgui::widget_label_paragraph * descriptionLabel;
+    pawgui::widget_input_text * searchField;
+    pawgui::widget_input_text * nameField;
 
     //Do not remove except for destructor
     std::vector <gameScenePopupCategories * > popupCategories;
 public:
     int editMode;
     gpe::animaton2d * eraserAnimation;
-    GPE_DropDown_Menu * layerListsDropDown;
-    GPE_GeneralResourceContainer * cSceneAnimtList;
-    GPE_GeneralResourceContainer * cSceneObjList;
-    GPE_GeneralResourceContainer * cSceneTexList;
-    GPE_GeneralResourceContainer * cSceneTstList;
+    pawgui::widget_dropdown_menu * layerListsDropDown;
+    pawgui::widget_resource_container * cSceneAnimtList;
+    pawgui::widget_resource_container * cSceneObjList;
+    pawgui::widget_resource_container * cSceneTexList;
+    pawgui::widget_resource_container * cSceneTstList;
     int cameraFloorXPos, cameraFloorYPos;
     bool mouseInScene;
     float mouseXPos, mouseYPos;

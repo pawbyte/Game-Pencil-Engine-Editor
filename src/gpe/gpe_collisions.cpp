@@ -87,8 +87,8 @@ namespace gpe
     bool check_collision_circles( shape_circle A, shape_circle B )
     {
         //Gets the difference between the circle points
-        float newX = A.x - B.x;
-        float newY = A.y - B.y;
+        float newX = A.position.x - B.position.x;
+        float newY = A.position.y - B.position.y;
 
         float circleSquaredDist = newX * newX + newY * newY;
 
@@ -103,8 +103,8 @@ namespace gpe
     //Thanks YellowAfterLife
     bool check_collision_circle_rect( gpe::shape_rect A, shape_circle B )
     {
-        int DeltaX = B.x - std::max( A.x, std::min(B.x, A.x2Pos) );
-        int DeltaY = B.y - std::max( A.y, std::min(B.y, A.y2Pos) );
+        int DeltaX = B.position.x - std::max( A.x, std::min(B.position.x, A.x + A.w ) );
+        int DeltaY = B.position.y - std::max( A.y, std::min(B.position.y, A.y + A.h ) );
         return (DeltaX * DeltaX + DeltaY * DeltaY) < (B.radius * B.radius);
     }
 

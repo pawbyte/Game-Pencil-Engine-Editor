@@ -51,7 +51,7 @@ namespace gpe
         if( !isActive)
         {
             clear_spaces();
-            init_spatialpartioning( spatialGridWidthSize * spatialGridWidthAmount, spatialGridHeightSize * spatialGridHeightAmount);
+            init_collision_handler( spatialGridWidthSize * spatialGridWidthAmount, spatialGridHeightSize * spatialGridHeightAmount);
         }
         isActive = true;
     }
@@ -190,7 +190,7 @@ namespace gpe
         return sPar;
     }
 
-    void spatial_partition_layer::init_spatialpartioning(  int cSceneWidth, int cSceneHeight )
+    void spatial_partition_layer::init_collision_handler(  int cSceneWidth, int cSceneHeight )
     {
 
         spatialGridWidthSize = cSceneWidth;

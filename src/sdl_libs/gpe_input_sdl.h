@@ -75,6 +75,11 @@ namespace gpe
         public:
             input_manager_sdl();
             ~input_manager_sdl();
+
+            bool clipboard_empty();
+            bool clipboard_set( std::string new_clipboard_string);
+            std::string clipboard_string();
+
             void convert_event_input();
             void key_bind_qwerty();
             void key_bind_load();

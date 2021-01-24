@@ -74,7 +74,7 @@ namespace gpe
     color * hudColor = NULL;
     color * hudColorHighlight = NULL;
 
-    void GPE_Init_colors()
+    void init_colors()
     {
         if( color_system!=NULL)
         {
@@ -298,16 +298,16 @@ namespace gpe
                 else
                 {
                     color  * result = NULL;
-                    /*
-                    result.r = merge_channel(clOne.r, clTwo.r, amount);
-                    result.g = merge_channel(clOne.g, clTwo.g, amount);
-                    result.b = merge_channel(clOne.b, clTwo.b, amount);
-                    */
+
+                    result->change_r( merge_channel(clOne.get_r(), clTwo.get_r(), amount) );
+                    result->change_g( merge_channel(clOne.get_g(), clTwo.get_g(), amount) );
+                    result->change_b( merge_channel(clOne.get_b(), clTwo.get_b(), amount) );
                     //result.a = merge_channel(a.a, b.a, amount);
                     return *result;
                 }
             }
         }
+        return clOne;
     }
 
     std::string color_master::rgb_to_hex(int r, int g, int b)

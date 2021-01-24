@@ -47,7 +47,7 @@ namespace gpe
         float bgXSpeed;
         float bgYSpeed;
         int bgId;
-        color * bgColor;
+        color * bg_color;
         bool renderBgSpeed;
         bool loopBGHori;
         bool loopBGVert;

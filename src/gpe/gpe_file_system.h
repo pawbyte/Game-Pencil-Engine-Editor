@@ -33,25 +33,16 @@ SOFTWARE.
 #ifndef gpe_file_system_h
 #define gpe_file_system_h
 
+#include "gpe_common_includes.h"
 #include "gpe_constants.h"
 #include "gpe_globals.h"
 #include "gpe_settings.h"
-#include "gpe_texture_Base.h"
+#include "gpe_texture_base.h"
 #include "../other_libs/stg_ex.h"
 
 namespace gpe
 {
-    class GPE_FileFilter
-    {
-        public:
-            std::string desc;
-            std::string exts;
-            GPE_FileFilter(std::string fDesc = "", std::string fExts = "");
-            ~GPE_FileFilter();
-    };
-
-    std::string generate_filters(const std::vector<GPE_FileFilter *> filters);
-    std::string parse_file_types(std::string fileTypesIn, std::vector <std::string> &fileTypeVector);
+    std::string parse_file_types(std::string allowedFileTypes);
     bool file_passes_filter(std::string fileTypeIn, std::vector <std::string> &fileTypeVector);
 
     class GPE_File
@@ -112,7 +103,7 @@ namespace gpe
     int copy_folder(std::string folderName, std::string targetFolder, bool copySubFolders = false, bool overwriteExistingFiles = false );
 
     std::string  get_user_settings_folder();
-    bool GPE_Seek_Settings_Folder();
+    bool seek_settings_folder();
     std::string get_user_temp_folder();
     std::string get_user_screenshot_folder();
     bool delete_file( std::string fName);

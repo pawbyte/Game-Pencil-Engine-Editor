@@ -91,7 +91,7 @@ namespace gpe
             layer_tile_map *  add_tilemap( std::string name = "", int x = 0, int y = 0, int w = -1, int h = -1 );
             void add_collision_pair( game_object *objPairA, game_object *objPairB);
 
-            void init_spatialpartioning( int cSceneWidth, int cSceneHeight );
+            void init_collision_handler( int cSceneWidth, int cSceneHeight );
             void begin_render ( std::vector< int >&spacesInView );
             void clear_spaces();
 

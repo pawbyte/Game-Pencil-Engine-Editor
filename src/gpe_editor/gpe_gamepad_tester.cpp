@@ -45,11 +45,11 @@ gamePencilgamepadTesterResource::gamePencilgamepadTesterResource()
         playerRadius[iController] = 64;
         playerX[iController] = playerRadius[iController];
         playerY[iController] = playerRadius[iController];
-        playerTestColor[iController]  = new gpe_widget_color_picker("Player Color","Change to your favorite color",228,32,32 );
-        playerFontColor[iController]  = new gpe_widget_color_picker("Player Font Color","Change to your favorite color",228,228,228 );
-        playerDeadZoneField[iController]  = new gpe_text_widget_number("Joysticks DeadZone(From 0.0 to 1.0)",false,0, 1);
+        playerTestColor[iController]  = new pawgui::gpe_widget_color_picker("Player Color","Change to your favorite color",228,32,32 );
+        playerFontColor[iController]  = new pawgui::gpe_widget_color_picker("Player Font Color","Change to your favorite color",228,228,228 );
+        playerDeadZoneField[iController]  = new pawgui::widget_input_number("Joysticks DeadZone(From 0.0 to 1.0)",false,0, 1);
         playerDeadZoneField[iController] ->set_number( playerDeadZone[iController] );
-        playerSizeRadius[iController]  = new gpe_text_widget_number("Radius(in pixels)",true,playerRadiusMin, playerRadiusMax);
+        playerSizeRadius[iController]  = new pawgui::widget_input_number("Radius(in pixels)",true,playerRadiusMin, playerRadiusMax);
         playerSizeRadius[iController] ->set_number( playerRadius[iController] );
 
     }
@@ -58,19 +58,19 @@ gamePencilgamepadTesterResource::gamePencilgamepadTesterResource()
     resourceType = -8;
     subResouceId = -8;
     controllerInView = 0;
-    detectControllersButton = new GPE_ToolPushButton("","Detect Controllers","Click to rediscover all controllers");
-    vibrateControllerButton = new GPE_ToolPushButton("","Vibrate Controller","Click to vibrate current controller");
-    previousControllerButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/arrow-left.png","Previous Controller");
-    nextControllerButton = new GPE_ToolIconButton( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/arrow-right.png","Next Controller");
-    conrollerIdField  = new gpe_text_widget_number("",true,0, gp_max_devices );
+    detectControllersButton = new pawgui::widget_button_push("","Detect Controllers","Click to rediscover all controllers");
+    vibrateControllerButton = new pawgui::widget_button_push("","Vibrate Controller","Click to vibrate current controller");
+    previousControllerButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/arrow-left.png","Previous Controller");
+    nextControllerButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/arrow-right.png","Next Controller");
+    conrollerIdField  = new pawgui::widget_input_number("",true,0, gp_max_devices );
     conrollerIdField->set_string("0");
     conrollerIdField->set_width(64);
 
-    controllerViewTitleLabel = new GPE_Label_Title("Current Controller:","Current Controller:");
-    controllerNameLabel = new GPE_Label_Text("...","XYZ Controller....");
-    requireInputToConnect = new GPE_CheckBoxBasic("Input required for connection","Delay controller connection state til a button is pressed(Useful for adapters)", gpe::input->gamepad_requires_input );
-    showControllerInfo = new GPE_CheckBoxBasic("Show Debugger","Check to see controller info overlay",true );
-    playerStats = new GPE_Label_Title("Player Stats","Player Stats");
+    controllerViewTitleLabel = new pawgui::widget_label_title("Current Controller:","Current Controller:");
+    controllerNameLabel = new pawgui::widget_label_text ("...","XYZ Controller....");
+    requireInputToConnect = new pawgui::widget_checkbox("Input required for connection","Delay controller connection state til a button is pressed(Useful for adapters)", gpe::input->gamepad_requires_input );
+    showControllerInfo = new pawgui::widget_checkbox("Show Debugger","Check to see controller info overlay",true );
+    playerStats = new pawgui::widget_label_title("Player Stats","Player Stats");
 
 }
 
@@ -127,30 +127,30 @@ void gamePencilgamepadTesterResource::load_resource(std::string file_path)
 
 }
 
-void gamePencilgamepadTesterResource::process_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam)
+void gamePencilgamepadTesterResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
 {
-    viewedSpace = gpe::camera_find( viewedSpace);
+    view_space = gpe::camera_find( view_space);
     cam = gpe::camera_find( cam );
 
     controllerNameLabel->set_name( gpe::input->gamepad_detected_name( controllerInView ) );
-    if( PANEL_GENERAL_EDITOR!=NULL )
+    if( panel_main_area!=NULL )
     {
-        PANEL_GENERAL_EDITOR->clear_panel();
+        panel_main_area->clear_panel();
 
-        PANEL_GENERAL_EDITOR->add_gui_element(showControllerInfo,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(detectControllersButton,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(requireInputToConnect,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(controllerViewTitleLabel,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(controllerNameLabel,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(previousControllerButton,false);
-        PANEL_GENERAL_EDITOR->add_gui_element(conrollerIdField,false);
-        PANEL_GENERAL_EDITOR->add_gui_element(nextControllerButton,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(playerStats,true);
-        PANEL_GENERAL_EDITOR->add_gui_element(playerTestColor[controllerInView],true);
-        PANEL_GENERAL_EDITOR->add_gui_element(playerFontColor[controllerInView],true);
-        PANEL_GENERAL_EDITOR->add_gui_element(playerSizeRadius[controllerInView],true);
-        PANEL_GENERAL_EDITOR->add_gui_element(playerDeadZoneField[controllerInView],true);
-        PANEL_GENERAL_EDITOR->process_self();
+        panel_main_area->add_gui_element(showControllerInfo,true);
+        panel_main_area->add_gui_element(detectControllersButton,true);
+        panel_main_area->add_gui_element(requireInputToConnect,true);
+        panel_main_area->add_gui_element(controllerViewTitleLabel,true);
+        panel_main_area->add_gui_element(controllerNameLabel,true);
+        panel_main_area->add_gui_element(previousControllerButton,false);
+        panel_main_area->add_gui_element(conrollerIdField,false);
+        panel_main_area->add_gui_element(nextControllerButton,true);
+        panel_main_area->add_gui_element(playerStats,true);
+        panel_main_area->add_gui_element(playerTestColor[controllerInView],true);
+        panel_main_area->add_gui_element(playerFontColor[controllerInView],true);
+        panel_main_area->add_gui_element(playerSizeRadius[controllerInView],true);
+        panel_main_area->add_gui_element(playerDeadZoneField[controllerInView],true);
+        panel_main_area->process_self();
 
         gpe::input->gamepad_requires_input = requireInputToConnect->is_clicked();
         if( detectControllersButton->is_clicked() )
@@ -177,7 +177,7 @@ void gamePencilgamepadTesterResource::process_self( gpe::shape_rect * viewedSpac
         }
         controllerInView = conrollerIdField->get_held_int();
     }
-    playerRadiusMax = std::min( viewedSpace->w , viewedSpace->h )/2;
+    playerRadiusMax = std::min( view_space->w , view_space->h )/2;
 
 
 
@@ -215,14 +215,14 @@ void gamePencilgamepadTesterResource::process_self( gpe::shape_rect * viewedSpac
             playerY[iController] += 2;
         }
 
-        if( playerX[iController] > viewedSpace->w - playerRadius[iController])
+        if( playerX[iController] > view_space->w - playerRadius[iController])
         {
-            playerX[iController] = viewedSpace->w - playerRadius[iController];
+            playerX[iController] = view_space->w - playerRadius[iController];
         }
 
-        if( playerY[iController] > viewedSpace->h - playerRadius[iController])
+        if( playerY[iController] > view_space->h - playerRadius[iController])
         {
-            playerY[iController] = viewedSpace->h - playerRadius[iController];
+            playerY[iController] = view_space->h - playerRadius[iController];
         }
 
         if( playerX[iController] < playerRadius[iController])
@@ -236,19 +236,19 @@ void gamePencilgamepadTesterResource::process_self( gpe::shape_rect * viewedSpac
     }
 }
 
-void gamePencilgamepadTesterResource::render_self( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+void gamePencilgamepadTesterResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
 
-    viewedSpace = gpe::camera_find( viewedSpace);
+    view_space = gpe::camera_find( view_space);
     cam = gpe::camera_find( cam );
 
-    gpe::gcanvas->render_rectangle( 0,0,viewedSpace->w, viewedSpace->h, theme_main->program_color, false, 255 );
+    gpe::gcanvas->render_rectangle( 0,0,view_space->w, view_space->h, pawgui::theme_main->program_color, false, 255 );
     for( int iController = gp_max_devices - 1; iController >=0 ; iController-- )
     {
         if( gpe::input->gamepad_connected( iController ) )
         {
             gpe::gcanvas->render_circle_color( playerX[iController], playerY[iController], playerRadius[iController],playerTestColor[iController]->get_color(), 255, false );
-            gpe::gfs->render_text( playerX[ iController], playerY[iController], +"[ Player "+ stg_ex::int_to_string(iController)+" ]",playerFontColor[iController]->get_color(), font_default, gpe::fa_center, gpe::fa_middle, 255);
+            gpe::gfs->render_text( playerX[ iController], playerY[iController], +"[ Player "+ stg_ex::int_to_string(iController)+" ]",playerFontColor[iController]->get_color(), gpe::font_default, gpe::fa_center, gpe::fa_middle, 255);
         }
     }
 
@@ -259,27 +259,27 @@ void gamePencilgamepadTesterResource::render_self( gpe::shape_rect * viewedSpace
         if( gpe::input->gamepad_connected( controllerInView ) )
         {
             controllerOutputString+= " is connected";
-            gpe::gfs->render_text( 32, 32, controllerOutputString, gpe::c_lime,font_default, gpe::fa_left, gpe::fa_bottom, 255);
+            gpe::gfs->render_text( 32, 32, controllerOutputString, gpe::c_lime,gpe::font_default, gpe::fa_left, gpe::fa_bottom, 255);
 
             controllerOutputString = "Buttons: ";
             for(int iCButton = 0; iCButton < gp_button_count; iCButton++)
             {
                 controllerOutputString+= "["+ stg_ex::int_to_string( gpe::input->gamepad_check_button_down( controllerInView, iCButton) ) +"], ";
             }
-            gpe::gfs->render_text( 32, 64, controllerOutputString,theme_main->main_box_font_color,font_default, gpe::fa_left, gpe::fa_bottom, 255);
+            gpe::gfs->render_text( 32, 64, controllerOutputString,pawgui::theme_main->main_box_font_color,gpe::font_default, gpe::fa_left, gpe::fa_bottom, 255);
 
             controllerOutputString = "Axis: ";
             for(int iCAxis = 0; iCAxis < gp_axes_count; iCAxis++)
             {
                 controllerOutputString+= "["+ stg_ex::float_to_string( gpe::input->gamepad_get_axis_value( controllerInView, iCAxis) ) +"], ";
             }
-            gpe::gfs->render_text( 32, 96, controllerOutputString,theme_main->main_box_font_color,font_default, gpe::fa_left, gpe::fa_bottom, 255);
+            gpe::gfs->render_text( 32, 96, controllerOutputString,pawgui::theme_main->main_box_font_color,gpe::font_default, gpe::fa_left, gpe::fa_bottom, 255);
 
         }
         else
         {
             controllerOutputString+= " is NOT connected";
-            gpe::gfs->render_text( 32, 32, controllerOutputString,gpe::c_red,font_default, gpe::fa_left, gpe::fa_bottom, 255);
+            gpe::gfs->render_text( 32, 32, controllerOutputString,gpe::c_red,gpe::font_default, gpe::fa_left, gpe::fa_bottom, 255);
 
         }
     }
@@ -287,13 +287,13 @@ void gamePencilgamepadTesterResource::render_self( gpe::shape_rect * viewedSpace
 
     if( gpe::input->gamepad_count() > 0 )
     {
-        gpe::gfs->render_text( viewedSpace->w/2, viewedSpace->h-64, "Viewing Controller ["+ stg_ex::int_to_string(controllerInView+1)+"] out of ["+ stg_ex::int_to_string(gpe::input->gamepad_count() )+"]",theme_main->main_box_font_color,font_default, gpe::fa_center, gpe::fa_bottom, 255);
-        gpe::gfs->render_text( viewedSpace->w/2, viewedSpace->h-32, gpe::input->game_pads[controllerInView]->get_name(),theme_main->main_box_font_color,font_default, gpe::fa_center, gpe::fa_bottom, 255);
+        gpe::gfs->render_text( view_space->w/2, view_space->h-64, "Viewing Controller ["+ stg_ex::int_to_string(controllerInView+1)+"] out of ["+ stg_ex::int_to_string(gpe::input->gamepad_count() )+"]",pawgui::theme_main->main_box_font_color,gpe::font_default, gpe::fa_center, gpe::fa_bottom, 255);
+        gpe::gfs->render_text( view_space->w/2, view_space->h-32, gpe::input->game_pads[controllerInView]->get_name(),pawgui::theme_main->main_box_font_color,gpe::font_default, gpe::fa_center, gpe::fa_bottom, 255);
     }
     else
     {
-        gpe::gfs->render_text( viewedSpace->w/2, viewedSpace->h-64, "No game controllers detected!",theme_main->main_box_font_color,font_default, gpe::fa_center, gpe::fa_bottom, 255);
-        gpe::gfs->render_text( viewedSpace->w/2, viewedSpace->h-32, "Experimental gamepad Tester...",theme_main->main_box_font_color,font_default, gpe::fa_center, gpe::fa_bottom, 255);
+        gpe::gfs->render_text( view_space->w/2, view_space->h-64, "No game controllers detected!",pawgui::theme_main->main_box_font_color,gpe::font_default, gpe::fa_center, gpe::fa_bottom, 255);
+        gpe::gfs->render_text( view_space->w/2, view_space->h-32, "Experimental gamepad Tester...",pawgui::theme_main->main_box_font_color,gpe::font_default, gpe::fa_center, gpe::fa_bottom, 255);
 
     }
 }

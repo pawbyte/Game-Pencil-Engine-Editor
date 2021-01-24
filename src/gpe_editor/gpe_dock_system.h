@@ -35,48 +35,48 @@ SOFTWARE.
 #ifndef GPE_DOCK_SYSTEM_H
 #define GPE_DOCK_SYSTEM_H
 
-#include "../pawgui/paw_gui.h"
-#include "../pawgui/paw_gui_resource_dropdown.h"
-#include "../pawgui/paw_gui_general_resource.h"
+#include "../pawgui/pawgui.h"
+#include "../pawgui/pawgui_resource_dropdown.h"
+#include "../pawgui/pawgui_general_resource.h"
 #include "gpe_log_manager.h"
 
-class gpeEditorDockPanel: public GPE_GeneralGuiElement
+class gpeEditorDockPanel: public pawgui::widget_basic
 {
 private:
-    GPE_TabBar * panelBar;
+    pawgui::widget_tabbar * panelBar;
     gpe::shape_rect * panelRect;
 public:
-    GPE_GeneralGuiElement * specialPanelElement;
-    GPE_ToolIconButton * dockSettingsButton;
+    pawgui::widget_basic * specialPanelElement;
+    pawgui::widget_button_icon * dockSettingsButton;
     bool justResized;
     bool beingResized;
     bool menuResized;
     bool wasProcessed;
-    GPE_GuiElementList * panelGuiList;
+    pawgui::widget_panel_list * panelGuiList;
     gpe::shape_rect * containerRect;
     gpeEditorDockPanel();
     ~gpeEditorDockPanel();
     bool add_container( std::string name, bool openNew = false );
-    void add_gui_element(GPE_GeneralGuiElement * element, bool isNLElement = true );
-    void add_gui_auto(GPE_GeneralGuiElement * element);
-    void add_gui_element_fullsize(GPE_GeneralGuiElement * element);
+    void add_gui_element(pawgui::widget_basic * element, bool isNLElement = true );
+    void add_gui_auto(pawgui::widget_basic * element);
+    void add_gui_element_fullsize(pawgui::widget_basic * element);
     void clear_panel();
     bool container_in_view( std::string name );
     int get_panel_height();
     std::string get_selected_container();
     bool has_content();
-    void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL );
+    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
     bool save_panel_data_to_file(std::ofstream * fileTarget);
     void setup_panel( bool addSpacing = true, bool clearList = true );
     bool remove_container( std::string name );
-    void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL );
+    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
     void reset_panel();
 };
 
-extern gpeEditorDockPanel * PANEL_RESOURCE_TREE;
-extern gpeEditorDockPanel * PANEL_GENERAL_EDITOR;
-extern gpeEditorDockPanel * PANEL_INSPECTOR;
-extern gpeEditorDockPanel * PANEL_META;
+extern gpeEditorDockPanel * panel_resource_tree;
+extern gpeEditorDockPanel * panel_main_area;
+extern gpeEditorDockPanel * panel_inspector;
+extern gpeEditorDockPanel * panel_meta;
 
 const int DOCK_TOP_LEFT = 0;
 const int DOCK_TOP_LEFT_CENTER = 1;
@@ -94,7 +94,7 @@ const int DOCK_MAX_COLUMN_COUNT = 5;
 const int DOCK_MAX_ROW_COUNT = 2;
 const int DOCK_MAX_PANEL_COUNT = DOCK_MAX_COLUMN_COUNT * DOCK_MAX_ROW_COUNT;
 
-class gpeEditorDock: public GPE_GeneralGuiElement
+class gpeEditorDock: public pawgui::widget_basic
 {
 private:
     bool isHidden;
@@ -108,7 +108,7 @@ public:
     float dockMinimumColumnPercentage;
     int currentColumnCount;
     float dockWidthMinusColumnPadding;
-    GPE_PopUpMenu_Option * toolbarOptonsHolder;
+    pawgui::popup_menu_option * toolbarOptonsHolder;
     bool justResized;
     bool beingResized;
     int horiResizeStartX;
@@ -142,11 +142,11 @@ public:
     void hide_dock();
     bool is_hidden();
     bool load_dock_setings( std::string filename );
-    void process_dock( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL );
-    void process_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL );
+    void process_dock( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
+    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
     void remove_panel( std::string name );
     void remove_default_panel( std::string name );
-    void render_self( gpe::shape_rect * viewedSpace = NULL, gpe::shape_rect * cam = NULL );
+    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
     void reset_dock();
     bool save_dock_setings( std::string filename );
     void setup_dock();

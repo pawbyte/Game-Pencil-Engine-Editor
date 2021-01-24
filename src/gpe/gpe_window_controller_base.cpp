@@ -44,6 +44,7 @@ namespace gpe
         window_closed = false;
         window_has_mouse= false;
         window_has_focus = false;
+        previously_scaled = false;
         resize_happened = false;
         window_width = 0;
         window_height = 0;
@@ -56,12 +57,61 @@ namespace gpe
         //Set window flag
         windowed = true;
         window_id = -1;
+        window_scaling = false;
+        use_integer_scaling = false;
+        scale_percentage_x = 1.f;
+        scale_percentage_y = 1.f;
+        scale_source_width = -1;
+        scale_source_height = -1;
+
     }
 
     window_controller_base::~window_controller_base()
     {
 
     }
+
+    bool window_controller_base::disable_scaling()
+    {
+        window_scaling = false;
+        return false;
+    }
+
+    bool window_controller_base::enable_scaling()
+    {
+        return false;
+    }
+
+    bool window_controller_base::error_check()
+    {
+        return !window_error_occurred;
+    }
+
+    bool window_controller_base::get_scaled_previous()
+    {
+        return previously_scaled;
+    }
+
+    int window_controller_base::get_scale_width()
+    {
+        return scale_source_width;
+    }
+
+    int window_controller_base::get_scale_height()
+    {
+        return scale_source_height;
+    }
+
+    float window_controller_base::get_scale_x()
+    {
+        return scale_percentage_x;
+    }
+
+    float window_controller_base::get_scale_y()
+    {
+        return scale_percentage_y;
+    }
+
 
     int window_controller_base::get_window_id()
     {
@@ -98,6 +148,10 @@ namespace gpe
         return !windowed;
     }
 
+    bool window_controller_base::is_integer_scaling()
+    {
+        return use_integer_scaling;
+    }
 
     bool window_controller_base::is_minimized()
     {
@@ -106,13 +160,14 @@ namespace gpe
 
     bool window_controller_base::is_resized()
     {
-        return resized;
+        return resize_happened;
     }
 
-    bool window_controller_base::error_check()
+    bool window_controller_base::is_scaling()
     {
-        return !window_error_occurred;
+        return window_scaling;
     }
+
 
     void window_controller_base::process_event( input_event_container * event_holder )
     {
@@ -144,15 +199,18 @@ namespace gpe
         return "";
     }
 
-    void window_controller_base::set_renderer( renderer_base * new_renderer, bool remove_current )
+    bool window_controller_base::scale_window( int s_width, int s_height , bool scale_int )
     {
-        if( remove_current && window_base_renderer!=NULL )
+        if( window_base_renderer !=NULL )
         {
-            delete window_base_renderer;
-            window_base_renderer = NULL;
+            return window_base_renderer->scale_renderer(s_width, s_height, scale_int );
         }
-        window_base_renderer = new_renderer;
-        new_renderer->resize_renderer( window_width, window_height );
+        return false;
+    }
+
+    bool window_controller_base::scale_window_factor( float s_width, float s_height, bool scale_int )
+    {
+        return false;
     }
 
     void window_controller_base::set_window_title(std::string new_title)

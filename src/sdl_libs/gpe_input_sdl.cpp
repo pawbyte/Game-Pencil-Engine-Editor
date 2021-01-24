@@ -127,6 +127,7 @@ namespace gpe
         {
             game_pads_sdl[i_gamepad] = new gamepad_sdl();
         }
+        key_bind_qwerty();
     }
 
     input_manager_sdl::~input_manager_sdl()
@@ -134,10 +135,26 @@ namespace gpe
 
     }
 
+    bool input_manager_sdl::clipboard_empty()
+    {
+        return !SDL_HasClipboardText();
+    }
+
+    bool input_manager_sdl::clipboard_set( std::string new_clipboard_string)
+    {
+        SDL_SetClipboardText( new_clipboard_string.c_str() );
+    }
+
+    std::string input_manager_sdl::clipboard_string()
+    {
+        return SDL_GetClipboardText();
+    }
+
     void input_manager_sdl::convert_event_input( )
     {
         if( event_container == NULL )
         {
+            error_log->report("Unable to convert event container, it's null!");
             return;
         }
         event_container->reset_event();
@@ -209,7 +226,17 @@ namespace gpe
         int currentControllerId = 0;
         gamepad_current_count = 0;
 
-        for ( int i_gamepad = 0; i_gamepad < SDL_NumJoysticks(); ++i_gamepad )
+        int foundJoyStickCount = SDL_NumJoysticks();
+
+        if( debug_input )
+        {
+            if( debug_input )
+            {
+                error_log->report("Attempting to process ["+ stg_ex::int_to_string( foundJoyStickCount )+"] SDL_JoySticks...");
+            }
+        }
+
+        for ( int i_gamepad = 0; i_gamepad < foundJoyStickCount; i_gamepad++ )
         {
             gamepad_setup( i_gamepad );
         }
@@ -319,6 +346,7 @@ namespace gpe
                         if( jStick !=NULL )
                         {
                             temp_sdl_gamepad->assigned_sdl_controller = jStick;
+                            temp_sdl_gamepad->set_connected( true );
                         }
                         else
                         {
@@ -407,7 +435,7 @@ namespace gpe
             {
                 case SDL_WINDOWEVENT:
                     input_received = true;
-                    kb_input_received = true;
+                    kb_input_received = false;
                     //Window related events
                     if( rph!=NULL )
                     {

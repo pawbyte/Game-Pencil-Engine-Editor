@@ -1,5 +1,5 @@
 /*
-gpe_runtime.h
+gpe_cursor_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -58,16 +58,22 @@ namespace gpe
         max_default_cursor
     };
 
+    extern int cursor_controller_counter;
 
     class cursor_controller_base
     {
+        private:
+            int cursor_controller_id;
         protected:
             std::string cursor_previous;
             std::string cursor_current;
             std::vector<std::string >cursor_default_names;
+            std::string cursor_controller_type;
+            int cursor_window_id;
         public:
             cursor_controller_base();
             virtual ~cursor_controller_base();
+
             //Cursor logic
             virtual void cursor_change( std::string newCursor );
             virtual void cursor_change_system( int system_cursor_id );
@@ -76,6 +82,12 @@ namespace gpe
             virtual bool cursor_create_from_image(std::string fName );
             virtual int cursor_map_size();
             virtual std::string cursor_system_name( int cId );
+
+            int equals( cursor_controller_base * other );
+            std::string get_type();
+            int get_id();
+            int get_window_id();
+
             virtual void process_cursors();
     };
 

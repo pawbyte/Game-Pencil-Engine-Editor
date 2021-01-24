@@ -324,12 +324,12 @@ namespace gpe
             {
                 //if(check_collision(*cam,(int)xPos,(int)yPos,(int)xPos+animationToDraw->width,yPos+animationToDraw->height) == true )
                 {
-                     animationTexture->render_tex_special_at_point( xPos-cam->x,yPos-cam->y, newAngle,abs(colBox->xCenter*xScale),abs(colBox->yMiddle*yScale), newWidth, newHeight, NULL,animFrames.at(subImageToDraw) );
+                     animationTexture->render_tex_special_at_point( xPos-cam->x,yPos-cam->y, newAngle,abs(colBox->get_center()*xScale),abs(colBox->get_middle()*yScale), newWidth, newHeight, NULL,animFrames.at(subImageToDraw) );
                 }
             }
             else
             {
-                animationTexture->render_tex_special_at_point( xPos,yPos, newAngle, abs(colBox->xCenter*xScale),abs(colBox->yMiddle*yScale), newWidth, newHeight,NULL,animFrames.at(subImageToDraw) );
+                animationTexture->render_tex_special_at_point( xPos,yPos, newAngle, abs(colBox->get_center()*xScale),abs(colBox->get_middle()*yScale), newWidth, newHeight,NULL,animFrames.at(subImageToDraw) );
             }
             //animationTexture->change_color(c_white);
         }
@@ -347,11 +347,11 @@ namespace gpe
             if( cam!=NULL)
             {
                 //if(check_collision(*cam,(int)xPos,(int)yPos,(int)xPos+animationToDraw->width,yPos+animationToDraw->height) == true )
-                animationTexture->render_tex_scaled( xPos-cam->x-abs(colBox->xCenter*xScale),yPos-cam->y-abs(colBox->yMiddle*yScale),xScale, yScale, animFrames.at(subImageToDraw) );
+                animationTexture->render_tex_scaled( xPos-cam->x-abs(colBox->get_center()*xScale),yPos-cam->y-abs(colBox->get_middle()*yScale),xScale, yScale, animFrames.at(subImageToDraw) );
             }
             else
             {
-                animationTexture->render_tex_scaled(   xPos-abs(colBox->xCenter*xScale),yPos-abs(colBox->yMiddle*yScale), xScale, yScale,animFrames.at(subImageToDraw) );
+                animationTexture->render_tex_scaled(   xPos-abs(colBox->get_center()*xScale),yPos-abs(colBox->get_middle()*yScale), xScale, yScale,animFrames.at(subImageToDraw) );
             }
         }
     }

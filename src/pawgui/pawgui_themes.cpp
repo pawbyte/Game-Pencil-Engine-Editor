@@ -40,26 +40,25 @@ namespace pawgui
     gui_theme * theme_default = NULL;
 
     //Define GUI fonts to NULL
-    gpe::font_base * FONT_BUTTONS_FONT = NULL;
+    gpe::font_base * font_buttons = NULL;
     //
-    gpe::font_base * FONT_POPUP = NULL;
-    gpe::font_base * FONT_TOOLBAR = NULL;
-    gpe::font_base * FONT_RESOURCEBAR = NULL;
-    gpe::font_base * FONT_TEXTINPUT = NULL;
-    gpe::font_base * FONT_TEXTinput_COMMENT = NULL;
-    gpe::font_base * FONT_TEXTinput_KEYWORD = NULL;
-    gpe::font_base * FONT_TEXTinput_FUNCTION = NULL;
-    gpe::font_base * FONT_TEXTinput_NUMBER = NULL;
-    gpe::font_base * FONT_TEXTinput_QUOTE = NULL;
-    gpe::font_base * FONT_TEXTinput_BOLD = NULL;
-    gpe::font_base * FONT_TEXTinput_SYMBOL = NULL;
-    gpe::font_base * FONT_TEXTinput_project_FUNCTION = NULL;
+    gpe::font_base * font_popup = NULL;
+    gpe::font_base * font_toolbar = NULL;
+    gpe::font_base * font_resourcebar = NULL;
+    gpe::font_base * font_textinput = NULL;
+    gpe::font_base * font_textinput_comment = NULL;
+    gpe::font_base * font_textinput_keyword = NULL;
+    gpe::font_base * font_textinput_function = NULL;
+    gpe::font_base * font_textinput_number = NULL;
+    gpe::font_base * font_textinput_quote = NULL;
+    gpe::font_base * font_textinput_symbol = NULL;
+    gpe::font_base * font_textinput_project_function = NULL;
     gpe::font_base * FONT_TEXTinput_project_keyword = NULL;
-    gpe::font_base * GUI_TAB_FONT = NULL;
+    gpe::font_base * font_tab = NULL;
 
-    gpe::font_base * FONT_TERM_NAME = NULL;
-    gpe::font_base * FONT_TERM_DESCRIPTION = NULL;
-    gpe::font_base * FONT_TERM_SCOPE = NULL;
+    gpe::font_base * font_term_name = NULL;
+    gpe::font_base * font_term_description = NULL;
+    gpe::font_base * font_term_scope = NULL;
     gpe::font_base * FONT_TOOLTIP = NULL;
 
     gpe::font_base * font_default_prompt = NULL;
@@ -85,7 +84,7 @@ namespace pawgui
         }
 
         //Background info
-        themeBgFileLocation = "";
+        theme_bg_location = "";
         theme_texture_bg = NULL;
         //animations
         main_menu_animation = NULL;
@@ -299,12 +298,12 @@ namespace pawgui
         return non_default_theme;
     }
 
-    bool gui_theme::load_background( std::string bgTextureLocation)
+    bool gui_theme::load_background( std::string bg_textureLocation)
     {
-        if( (int)bgTextureLocation.size() > 0 )
+        if( (int)bg_textureLocation.size() > 0 )
         {
-            themeBgFileLocation = stg_ex::get_local_from_global_file( bgTextureLocation );
-            theme_texture_bg = rsm_gui->texture_add_filename( bgTextureLocation );
+            theme_bg_location = stg_ex::get_local_from_global_file( bg_textureLocation );
+            theme_texture_bg = rsm_gui->texture_add_filename( bg_textureLocation );
             if( theme_texture_bg == NULL)
             {
                 return false;
@@ -421,11 +420,11 @@ namespace pawgui
         return false;
     }
 
-    bool gui_theme::render_background( gpe::shape_rect * viewedSpace, gpe::shape_rect * cam )
+    bool gui_theme::render_background( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
-        viewedSpace = gpe::camera_find(viewedSpace);
+        view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if(cam!=NULL && viewedSpace!=NULL )
+        if(cam!=NULL && view_space!=NULL )
         {
             gpe::gcanvas->render_rectangle( cam->x, cam->y,cam->w,cam->h,pawgui::theme_main->program_color,false);
             if( theme_texture_bg!=NULL )
@@ -473,7 +472,7 @@ namespace pawgui
             //makes sure the file is open
             if (templateFileOut.is_open())
             {
-                templateFileOut << "Background="+stg_ex::get_local_from_global_file( themeBgFileLocation )+"\n";
+                templateFileOut << "Background="+stg_ex::get_local_from_global_file( theme_bg_location )+"\n";
                 gpe::color * tempColor = NULL;
                 for(int i = 0; i < (int)theme_colors.size(); i++ )
                 {
@@ -489,8 +488,12 @@ namespace pawgui
         templateFileOut.close();
     }
 
-    bool load_default_fonts()
+    bool load_default_fonts( std::string mono_font_location, int font_min_size )
     {
+        if( font_min_size < 0 )
+        {
+            gpe::error_log->report("BEWARE load_default_fonts("+ mono_font_location + ","+ stg_ex::int_to_string( font_min_size) + ") function called!" );
+        }
         std::string mainGuiFontLocation = gpe::app_directory_name+"resources/fonts/dejavu_sans_mono/DejaVuSansMono.ttf";
         std::string textEditorFontLocation = gpe::app_directory_name+"resources/fonts/dejavu_sans_mono/DejaVuSansMono.ttf";
         bool fontIsMonoSpaced = true;
@@ -512,39 +515,39 @@ namespace pawgui
         }
         gpe::error_log->report("Using "+mainGuiFontLocation+" font..." );
         //Open the fonts
-        FONT_BUTTONS_FONT = gpe::gfs->open_font(textEditorFontLocation,12,true, "Buttons Font");
+        font_buttons = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "Buttons Font");
 
-        gpe::font_default = gpe::gfs->open_font(mainGuiFontLocation,14,fontIsMonoSpaced, "gpe::font_default");
-        GUI_TAB_FONT = gpe::gfs->open_font(mainGuiFontLocation,11,fontIsMonoSpaced, "GPE_TAB_FONT");
+        gpe::font_default = gpe::gfs->open_font(mainGuiFontLocation,font_min_size,fontIsMonoSpaced, "gpe::font_default");
+        font_tab = gpe::gfs->open_font(mainGuiFontLocation,font_min_size,fontIsMonoSpaced, "GPE_TAB_FONT");
 
-        FONT_POPUP = gpe::gfs->open_font(mainGuiFontLocation,14,fontIsMonoSpaced, "FONT_POPUP");
+        font_popup = gpe::gfs->open_font(mainGuiFontLocation,font_min_size,fontIsMonoSpaced, "font_popup");
 
-        FONT_TOOLBAR = gpe::gfs->open_font(mainGuiFontLocation,14,fontIsMonoSpaced, "FONT_TOOLBAR");
-        FONT_RESOURCEBAR = gpe::gfs->open_font(mainGuiFontLocation,12,fontIsMonoSpaced, "FONT_RESOURCEBAR");
-        FONT_STREE_BRANCH = gpe::gfs->open_font(mainGuiFontLocation,12,fontIsMonoSpaced, "FONT_STREE");
+        font_toolbar = gpe::gfs->open_font(mainGuiFontLocation,font_min_size,fontIsMonoSpaced, "font_toolbar");
+        font_resourcebar = gpe::gfs->open_font(mainGuiFontLocation,font_min_size,fontIsMonoSpaced, "font_resourcebar");
+        FONT_STREE_BRANCH = gpe::gfs->open_font(mainGuiFontLocation,font_min_size,fontIsMonoSpaced, "FONT_STREE");
 
-        FONT_TEXTINPUT = gpe::gfs->open_font(textEditorFontLocation,11,true, "FONT_TEXTinput_GENERAL");
-        FONT_TEXTinput_COMMENT = gpe::gfs->open_font(textEditorFontLocation,11,true, "FONT_TEXTinput_COMMENT");
-        FONT_TEXTinput_KEYWORD = gpe::gfs->open_font(textEditorFontLocation,11,true, "FONT_TEXTinput_KEYWORD");
-        FONT_TEXTinput_FUNCTION = gpe::gfs->open_font(textEditorFontLocation,11,true, "FONT_TEXTinput_FUNCTION");
-        FONT_TEXTinput_NUMBER = gpe::gfs->open_font(textEditorFontLocation,11,true, "FONT_TEXTinput_NUMBER");
-        FONT_TEXTinput_QUOTE = gpe::gfs->open_font(textEditorFontLocation,11,true, "FONT_TEXTinput_QUOTE");
-        FONT_TEXTinput_SYMBOL = gpe::gfs->open_font(textEditorFontLocation,11,true, "FONT_TEXTinput_SYMBOL");
-        FONT_TEXTinput_project_FUNCTION = gpe::gfs->open_font(textEditorFontLocation,11,true, "FONT_TEXTinput_project_FUNCTION");
-        FONT_TEXTinput_project_keyword = gpe::gfs->open_font(textEditorFontLocation,11,true, "FONT_TEXTinput_project_keyword");
+        font_textinput = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "FONT_TEXTinput_GENERAL");
+        font_textinput_comment = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_textinput_comment");
+        font_textinput_keyword = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_textinput_keyword");
+        font_textinput_function = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_textinput_function");
+        font_textinput_number = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_textinput_number");
+        font_textinput_quote = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_textinput_quote");
+        font_textinput_symbol = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_textinput_symbol");
+        font_textinput_project_function = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_textinput_project_function");
+        FONT_TEXTinput_project_keyword = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "FONT_TEXTinput_project_keyword");
 
-        FONT_TERM_NAME = gpe::gfs->open_font(textEditorFontLocation,11,true, "FONT_TERM_NAME");
-        FONT_TERM_DESCRIPTION = gpe::gfs->open_font(textEditorFontLocation,11,true, "FONT_TERM_DESCRIPTION");
-        FONT_TERM_SCOPE = gpe::gfs->open_font(textEditorFontLocation,11,true, "FONT_TERM_SCOPE");
-        FONT_TOOLTIP = gpe::gfs->open_font(textEditorFontLocation,12,true, "FONT_TOOLTIP");
+        font_term_name = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_term_name");
+        font_term_description = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_term_description");
+        font_term_scope = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_term_scope");
+        FONT_TOOLTIP = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "FONT_TOOLTIP");
 
-        font_default_prompt = gpe::gfs->open_font(textEditorFontLocation,16,true, "font_default_prompt");
+        font_default_prompt = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "font_default_prompt");
 
-        FONT_HEADER = gpe::gfs->open_font( mainGuiFontLocation, 18,fontIsMonoSpaced, "FONT_HEADER");
-        FONT_LABEL = gpe::gfs->open_font( mainGuiFontLocation, 14,fontIsMonoSpaced, "FONT_LABEL");
-        FONT_LABEL_ANCHOR = gpe::gfs->open_font( mainGuiFontLocation, 14,fontIsMonoSpaced, "FONT_LABEL_ANCHOR");
-        FONT_LABEL_TITLE = gpe::gfs->open_font( mainGuiFontLocation, 18,fontIsMonoSpaced, "FONT_LABEL_TITLE");
-        FONT_STATUSBAR = gpe::gfs->open_font( textEditorFontLocation, 12,true, "FONT_STATUSBAR" );
+        FONT_HEADER = gpe::gfs->open_font( mainGuiFontLocation, font_min_size,fontIsMonoSpaced, "FONT_HEADER");
+        FONT_LABEL = gpe::gfs->open_font( mainGuiFontLocation, font_min_size,fontIsMonoSpaced, "FONT_LABEL");
+        FONT_LABEL_ANCHOR = gpe::gfs->open_font( mainGuiFontLocation, font_min_size,fontIsMonoSpaced, "FONT_LABEL_ANCHOR");
+        FONT_LABEL_TITLE = gpe::gfs->open_font( mainGuiFontLocation, font_min_size,fontIsMonoSpaced, "FONT_LABEL_TITLE");
+        FONT_STATUSBAR = gpe::gfs->open_font( textEditorFontLocation, font_min_size,true, "FONT_STATUSBAR" );
 
         if(gpe::font_default==NULL )
         {
@@ -552,14 +555,14 @@ namespace pawgui
             return false;
         }
 
-        if(FONT_TOOLBAR==NULL)
+        if(font_toolbar==NULL)
         {
             gpe::error_log->report("Unable to load TOOLLBAR font");
             return false;
 
         }
 
-        if(FONT_TEXTINPUT==NULL)
+        if(font_textinput==NULL)
         {
             gpe::error_log->report("Unable to load INPUT-FIELD font");
             return false;
@@ -571,45 +574,45 @@ namespace pawgui
     {
         //Close the fonts that was used
         //
-        if( FONT_POPUP!=NULL)
+        if( font_popup!=NULL)
         {
-            gpe::gfs->close_font( FONT_POPUP );
-            FONT_POPUP = NULL;
+            gpe::gfs->close_font( font_popup );
+            font_popup = NULL;
         }
 
-        if( FONT_TOOLBAR!=NULL)
+        if( font_toolbar!=NULL)
         {
-            gpe::gfs->close_font( FONT_TOOLBAR );
-            FONT_TOOLBAR = NULL;
+            gpe::gfs->close_font( font_toolbar );
+            font_toolbar = NULL;
         }
-        if( FONT_RESOURCEBAR!=NULL)
+        if( font_resourcebar!=NULL)
         {
-            gpe::gfs->close_font( FONT_RESOURCEBAR );
-            FONT_RESOURCEBAR = NULL;
+            gpe::gfs->close_font( font_resourcebar );
+            font_resourcebar = NULL;
         }
         //
-        if( FONT_TEXTINPUT!=NULL)
+        if( font_textinput!=NULL)
         {
-            gpe::gfs->close_font(FONT_TEXTINPUT);
-            FONT_TEXTINPUT = NULL;
+            gpe::gfs->close_font(font_textinput);
+            font_textinput = NULL;
         }
 
-        if( FONT_TERM_NAME!=NULL)
+        if( font_term_name!=NULL)
         {
-            gpe::gfs->close_font(FONT_TERM_NAME);
-            FONT_TERM_NAME = NULL;
+            gpe::gfs->close_font(font_term_name);
+            font_term_name = NULL;
         }
 
-        if( FONT_TERM_DESCRIPTION!=NULL)
+        if( font_term_description!=NULL)
         {
-            gpe::gfs->close_font(FONT_TERM_DESCRIPTION);
-            FONT_TERM_DESCRIPTION = NULL;
+            gpe::gfs->close_font(font_term_description);
+            font_term_description = NULL;
         }
 
-        if( FONT_TERM_SCOPE!=NULL)
+        if( font_term_scope!=NULL)
         {
-            gpe::gfs->close_font(FONT_TERM_SCOPE);
-            FONT_TERM_SCOPE = NULL;
+            gpe::gfs->close_font(font_term_scope);
+            font_term_scope = NULL;
         }
         if( font_default_prompt!=NULL)
         {
