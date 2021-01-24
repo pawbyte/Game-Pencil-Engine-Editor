@@ -40,6 +40,14 @@
 
 using std::string;
 
+  namespace {
+
+    string caption;
+    string current_icon;
+
+    int const btn_array_len = 7;
+    string btn_array[btn_array_len] = { "Abort", "Ignore", "OK", "Cancel", "Yes", "No", "Retry" };
+
 enum BUTTON_TYPES {
   BUTTON_ABORT,
   BUTTON_IGNORE,
@@ -53,14 +61,6 @@ enum BUTTON_TYPES {
 const char *cocoa_widget_get_button_name(int type) {
   return widget_get_button_name(type);
 }
-
-  namespace {
-
-    string caption;
-    string current_icon;
-
-    int const btn_array_len = 7;
-    string btn_array[btn_array_len] = { "Abort", "Ignore", "OK", "Cancel", "Yes", "No", "Retry" };
 
 char *owner = NULL;
 
