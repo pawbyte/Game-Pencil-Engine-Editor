@@ -30,6 +30,8 @@ SOFTWARE.
 
 */
 
+#include <cstring>
+
 #include "gpe_file_system.h"
 #include "gpe_globals.h"
 

@@ -31,8 +31,9 @@ SOFTWARE.
 
 */
 
-
 #include "gpe_texture_sdl.h"
+
+#define SDL_BLENDMODE_MUL (SDL_BlendMode)0x00000008
 
 namespace gpe
 {

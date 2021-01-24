@@ -37,7 +37,7 @@ SOFTWARE.
 #include "gpe_constants.h"
 #include "gpe_globals.h"
 #include "gpe_settings.h"
-#include "gpe_texture_Base.h"
+#include "gpe_texture_base.h"
 #include "../other_libs/stg_ex.h"
 
 namespace gpe
