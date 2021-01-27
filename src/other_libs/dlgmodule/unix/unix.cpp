@@ -69,8 +69,6 @@ typedef pid_t process_t;
 typedef std::string wid_t;
 typedef unsigned long long window_t;
 
-namespace dialog_module {
-
 namespace {
 
 int const dm_x11     = -1;
@@ -1105,5 +1103,3 @@ void widget_set_button_name(int type, char *name) {
 char *widget_get_button_name(int type) {
   return (char *)btn_array[type].c_str();
 }
-
-} // namepace dialog_module
