@@ -661,7 +661,7 @@ int show_error(char *str, bool abort) {
       str_command = string("kdialog ") +
       string("--sorry \"") + add_escaping(str, false, "") + string("\" ") +
       string("--ok-label \"") + add_escaping(btn_array[BUTTON_ABORT], true, "") + string("\" ") +
-      string("--title \"") + str_title + string("\" --icon dialog-warning;") + str_echo;
+      string("--title \"") + str_title + string("\" ") + str_icon + string(";") + str_echo;
     } else {
       str_command = string("kdialog ") +
       string("--warningyesno \"") + add_escaping(str, false, "") + string("\" ") +
