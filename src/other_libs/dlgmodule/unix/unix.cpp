@@ -43,7 +43,7 @@
 #if defined (__APPLE__) && defined(__MACH__)
 #include <sys/sysctl.h>
 #include <libproc.h>
-#elif defined(__linux__)
+#elif defined(__linux__) && !defined(__ANDROID__)
 #include <proc/readproc.h>
 #elif defined(__FreeBSD__)
 #include <sys/sysctl.h>
@@ -242,7 +242,7 @@ process_t ppid_from_pid(process_t pid) {
   if (proc_pidinfo(pid, PROC_PIDTBSDINFO, 0, &proc_info, sizeof(proc_info)) > 0) {
     ppid = proc_info.pbi_ppid;
   }
-  #elif defined(__linux__)
+  #elif defined(__linux__) && !defined(__ANDROID__)
   PROCTAB *proc = openproc(PROC_FILLSTATUS | PROC_PID, &pid);
   if (proc_t *proc_info = readproc(proc, nullptr)) {
     ppid = proc_info->ppid;
@@ -265,7 +265,7 @@ string path_from_pid(process_t pid) {
   if (proc_pidpath(pid, exe, sizeof(exe)) > 0) {
     return exe;
   }
-  #elif defined(__linux__)
+  #elif defined(__linux__) && !defined(__ANDROID__)
   char exe[PATH_MAX];
   string symLink = string("/proc/") + to_string(pid) + string("/exe");
   if (realpath(symLink.c_str(), exe)) {
