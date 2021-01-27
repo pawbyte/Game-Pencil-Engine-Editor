@@ -43,7 +43,7 @@
 #include <commctrl.h>
 #include <comdef.h>
 #ifdef _MSC_VER
-#include <atlbase.h>a
+#include <atlbase.h>
 #include <activscp.h>
 #endif
 #include <Objbase.h>
