@@ -646,7 +646,7 @@ int show_error(char *str, bool abort) {
       str_command = string("ans=$(zenity ") +
       string("--info --ok-label=\"") + add_escaping(btn_array[BUTTON_ABORT], true, "") + string("\" ") +
       string("--title=\"") + str_title + string("\" --no-wrap --text=\"") +
-      add_escaping(str, false, "") + string("\" --icon-name=dialog-error --window-icon=dialog-error);") + str_echo;
+      add_escaping(str, false, "") + string("\" --icon-name=dialog-error ") + str_icon + string(");") + str_echo;
     } else {
       str_command = string("ans=$(zenity ") +
       string("--question --ok-label=\"") + add_escaping(btn_array[BUTTON_ABORT], true, "") + string("\" --cancel-label=\"") + add_escaping(btn_array[BUTTON_IGNORE], true, "") + string("\" ") +
