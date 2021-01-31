@@ -42,7 +42,16 @@ SOFTWARE.
 
 namespace gpe
 {
-    std::string parse_file_types(std::string allowedFileTypes);
+    class GPE_FileFilter
+    {
+        public:
+            std::string desc;
+            std::string exts;
+            GPE_FileFilter(std::string fDesc = "", std::string fExts = "");
+            ~GPE_FileFilter();
+    };
+
+    std::string parse_file_types(std::string  allowedFileTypes, std::vector <std::string> &fileTypeVector);
     bool file_passes_filter(std::string fileTypeIn, std::vector <std::string> &fileTypeVector);
 
     class GPE_File
