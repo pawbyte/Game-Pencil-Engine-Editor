@@ -51,7 +51,7 @@ namespace gpe
             ~GPE_FileFilter();
     };
 
-    std::string parse_file_types(std::string  allowedFileTypes, std::vector <std::string> &fileTypeVector);
+    std::string parse_file_types(std::string allowedFileTypes, std::vector <std::string> &fileTypeVector);
     bool file_passes_filter(std::string fileTypeIn, std::vector <std::string> &fileTypeVector);
 
     class GPE_File
