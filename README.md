@@ -52,9 +52,10 @@ Building Game Pencil From Source Code
 =====================================
 We have made a helpful guide on how to compile Game Pencil from source [here](https://pawbyte.com/building-game-pencil-from-source-code/)
 
-**This editor is coded completely in C/C++ and uses the SDL Library for display, input, output and audio.**
+**This editor is coded completely in C/C++ and uses a modular design for display, input, output and audio.**
+**Currently, the first modular block is SDL2, with plans to expand to SFML, OPENGL and Vulkan in later updates **
 
-Please note that using the .MP3 format is strongly not recommended due to licensing fees.
+Please note that using the .MP3/.MP4 formats is strongly not recommended due to licensing fees.
 
 Developers
 ----------
