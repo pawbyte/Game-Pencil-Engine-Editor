@@ -1,4 +1,4 @@
-The Game Pencil Engine Version 1.2.1 and beyond!
+The Game Pencil Engine Version 1.4.1 and beyond!
 ================================================
 
 ![](https://raw.githubusercontent.com/pawbyte/Game-Pencil-Engine/master/screenshots/ss4.png)
@@ -38,7 +38,7 @@ If you would like to see our documentation to this project, go [here](http://doc
 
 Discord Chat
 ======
-Come and  [join our discord server](https://discord.gg/aNX3Fcx)!  Here, you can engage in chats about game pencil, get help and even voice chat the developers and users!
+Come and  [join our discord server](https://discord.gg/dCrCwrQutP)!  Here, you can engage in chats about game pencil, get help and even voice chat the developers and users!
 
 Forums
 ======
