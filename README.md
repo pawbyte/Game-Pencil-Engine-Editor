@@ -1,3 +1,5 @@
+![](https://raw.githubusercontent.com/pawbyte/Game-Pencil-Engine/master/logo_black.png)
+
 The Game Pencil Engine Version 1.4.1 and beyond!
 ================================================
 
