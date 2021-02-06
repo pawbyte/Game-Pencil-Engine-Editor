@@ -48,10 +48,6 @@ Download Newest Version
 =======================
 If you would like to download the newest version of the engine, go [here](https://pawbyte.com/gamepencilengine/)
 
-Building Game Pencil From Source Code
-=====================================
-We have made a helpful guide on how to compile Game Pencil from source [here](https://pawbyte.com/building-game-pencil-from-source-code/)
-
 
 Coding with Game Pencil Engine
 =======================
@@ -61,6 +57,11 @@ This editor is coded completely in C/C++ and uses a modular design for display, 
 Currently, the first modular block is SDL2, with plans to expand to SFML, OPENGL and Vulkan in later updates.
 
 Please note that using the .MP3/.MP4 formats is strongly not recommended due to licensing fees.
+
+
+Building Game Pencil From Source Code
+=====================================
+We have made a helpful guide on how to compile Game Pencil from source [here](https://pawbyte.com/building-game-pencil-from-source-code/)
 
 Developers
 ----------
