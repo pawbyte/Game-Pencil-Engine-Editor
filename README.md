@@ -2,6 +2,9 @@ The Game Pencil Engine Version 1.2.1 and beyond!
 ================================================
 
 ![](https://raw.githubusercontent.com/pawbyte/Game-Pencil-Engine/master/screenshots/ss4.png)
+![](https://raw.githubusercontent.com/pawbyte/Game-Pencil-Engine/master/screenshots/ss3.png)
+![](https://raw.githubusercontent.com/pawbyte/Game-Pencil-Engine/master/screenshots/ss2.png)
+![](https://raw.githubusercontent.com/pawbyte/Game-Pencil-Engine/master/screenshots/ss1.png)
 
 
 *New files added to github, but does not currently compile to C++, pending a few changes*
