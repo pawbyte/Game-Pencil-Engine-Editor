@@ -68,7 +68,7 @@ namespace misc {
         fs::copy(path1, path2, fs::copy_options::recursive, ec);
         result = (ec.value() == 0);
       } else if (path1.u8string() == path3.u8string()) {
-        vector<string> itemVec = split_string(directory_contents_helper(dname, "*.*", true), '\n');
+        vector<string> itemVec = string_split(directory_contents_helper(dname, "*.*", true), '\n');
         if (!directory_exists(newname)) {
           directory_create(newname);
           for (const string &item : itemVec) {
@@ -103,7 +103,7 @@ namespace misc {
   }
 
   // splits string by delimiter character and convert to vector...
-  vector<string> stdfilesystem::split_string(const string &str, char delimiter) {
+  vector<string> stdfilesystem::string_split(const string &str, char delimiter) {
     vector<string> vec;
     stringstream sstr(str);
     string tmp;
@@ -444,8 +444,8 @@ namespace misc {
     if (result.back() == '\n') result.pop_back();
     pattern = string_replace_all(pattern, " ", "");
     pattern = string_replace_all(pattern, "*", "");
-    vector<string> itemVec = split_string(result, '\n');
-    vector<string> extVec = split_string(pattern, ';');
+    vector<string> itemVec = string_split(result, '\n');
+    vector<string> extVec = string_split(pattern, ';');
     std::set<string> filteredItems;
     for (const string &item : itemVec) {
       for (const string &ext : extVec) {
