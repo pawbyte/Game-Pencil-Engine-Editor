@@ -3,10 +3,10 @@ gpe_layer.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -46,43 +46,43 @@ namespace gpe
     class scene_layer: public branch
     {
         private:
-            std::vector< branch * > masterLayerList;
-            int collisionPairsTotal;
+            std::vector< branch * > master_layer_list;
+            int collision_pairs_total;
             int parsed_objects;
             //Spatial Grid stuff
-            bool spatialGridIsCreated;
-            int spatialMapWidthSize;
-            int spatialMapHeightSize;
-            int spatialGridBoxSize;
-            int spatialGridWidthSize;
-            int spatialGridHeightSize;
-            int spatialGridWidthAmount;
-            int spatialGridHeightAmount;
-            int objectCollisionHashesChecked;
-            int spatialCollisionChecks;
+            bool spatial_grid_created;
+            int spatial_map_width_size;
+            int spatial_map_height_size;
+            int spatial_grid_box_size;
+            int spatial_grid_width_size;
+            int spatial_grid_height_size;
+            int spatial_grid_x_amount;
+            int spatial_grid_y_amount;
+            int entity_collisions_hashes_checked;
+            int spatial_collisions_checked_counter;
 
-            std::vector<layer_tile_map * > layerMaps;
-            std::vector<game_object * > layerObjects;
-            std::vector<game_object * > independentObjects;
-            std::vector<background * >layerBackgrounds;
-            std::vector< light_basic_2d * > layerAmbientLights;
-            std::vector< light_direction2d * > layerDirectionLights;
-            std::vector< light_point2d * > layerPointLights;
+            std::vector<layer_tile_map * > layer_maps;
+            std::vector<game_object * > layer_entities;
+            std::vector<game_object * > independent_entities;
+            std::vector<background * >layer_backgrounds;
+            std::vector< light_basic_2d * > layer_lights_ambient;
+            std::vector< light_direction2d * > layer_lights_direction;
+            std::vector< light_point2d * > layer_lights_points;
             /*
             scnStartBackgrounds = [];
             scnStartObjects = [];
             scnStartTiles  = [];
             */
 
-            int layerId;
-            int layerAlpha;
+            int layer_id;
+            int layer_alpha;
             //Collision related variables
-            std::vector<spatial_partition * > collisionSpacesInView;
+            std::vector<spatial_partition * > collision_spaces_in_view;
 
-            std::vector<game_object * > prerenderObjectRenderList;
-            std::vector<game_object * > regularObjectRenderList;
-            std::vector<game_object * > renderAboveObjectRenderList;
-            std::vector<game_object * > renderHudObjectRenderList;
+            std::vector<game_object * > render_list_prerender_entities;
+            std::vector<game_object * > render_list_regular_entities;
+            std::vector<game_object * > render_list_front_entities;
+            std::vector<game_object * > render_list_hud_entities;
         public:
             scene_layer( int newLayerId, float newLayerAlpha = 1);
             ~scene_layer();
@@ -91,7 +91,7 @@ namespace gpe
             layer_tile_map *  add_tilemap( std::string name = "", int x = 0, int y = 0, int w = -1, int h = -1 );
             void add_collision_pair( game_object *objPairA, game_object *objPairB);
 
-            void init_collision_handler( int cSceneWidth, int cSceneHeight );
+            void init_collision_handler( int camera_scene_width, int camera_scene_height );
             void begin_render ( std::vector< int >&spacesInView );
             void clear_spaces();
 
@@ -103,7 +103,7 @@ namespace gpe
             void reset_branch();
             void scroll_backgrounds();
             void set_default_grid_size();
-            void set_layer_background ( int layerBeingChanged, int bgId, int newBgId );
+            void set_layer_background ( int layerBeingChanged, int bg_id, int newBgId );
             void update();
     };
 

@@ -3,10 +3,10 @@ gpe_resources_controller.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,7 +39,7 @@ namespace gpe
 
     asset_manager::asset_manager(render_package * start_package, std::string start_name)
     {
-        rRenderPackage = start_package;
+        rr_package = start_package;
         managerName = start_name;
     }
 
@@ -63,16 +63,16 @@ namespace gpe
         {
             //error_log->report("Loading "+resource_file_name+" animation with "+ stg_ex::int_to_string(imgnumb)+" needed images.");
             //loads in the animation's texture
-            newAnimation = new animaton2d( rRenderPackage, resource_name, resource_file_name, transparent );
+            newAnimation = new animaton2d( rr_package, resource_name, resource_file_name, transparent );
             atlas_animations[resource_name] = newAnimation;
             last_animation_loaded = resource_name;
             return newAnimation;
         }
         else
         {
-            std::stringstream outString;
-            outString << "Unable to load animation from file location: (" << resource_file_name << ") due to negative dimensions given";
-            error_log->report( outString.str());
+            std::stringstream outstring;
+            outstring << "Unable to load animation from file location: (" << resource_file_name << ") due to negative dimensions given";
+            error_log->report( outstring.str());
             return NULL;
         }
     }
@@ -88,7 +88,7 @@ namespace gpe
         {
             error_log->report("Loading" +resource_file_name+" animation...");
             //loads in the animation's texture
-            new_animation = new animaton2d( rRenderPackage, resource_file_name,resource_file_name, transparent);
+            new_animation = new animaton2d( rr_package, resource_file_name,resource_file_name, transparent);
             new_animation->edit_collision_box(cx, cy, cw, ch);
             atlas_animations[resource_name] = new_animation;
             last_animation_loaded = resource_name;
@@ -96,9 +96,9 @@ namespace gpe
         }
         else
         {
-            std::stringstream outString;
-            outString << "Unable to load animation from file location: (" << resource_file_name << ") due to negative dimensions given";
-            error_log->report( outString.str());
+            std::stringstream outstring;
+            outstring << "Unable to load animation from file location: (" << resource_file_name << ") due to negative dimensions given";
+            error_log->report( outstring.str());
             return NULL;
         }
     }
@@ -111,16 +111,16 @@ namespace gpe
             return newAnimation;
         if(( height>0)&&(width>0) )
         {
-            newAnimation = new animaton2d(rRenderPackage, resource_file_name,resource_file_name, transparent);
+            newAnimation = new animaton2d(rr_package, resource_file_name,resource_file_name, transparent);
             atlas_animations[resource_name] = newAnimation;
             last_animation_loaded = resource_name;
             return newAnimation;
         }
         else
         {
-            std::stringstream outString;
-            outString << "Unable to load animation from file location: (" << resource_file_name << " due to negative dimensions given)";
-            error_log->report( outString.str());
+            std::stringstream outstring;
+            outstring << "Unable to load animation from file location: (" << resource_file_name << " due to negative dimensions given)";
+            error_log->report( outstring.str());
             return NULL;
         }
     }
@@ -133,16 +133,16 @@ namespace gpe
             return newAnimation;
         if(( height!=0)&&(width!=0) )
         {
-            newAnimation = new animaton2d(rRenderPackage, resource_file_name, resource_file_name, transparent);
+            newAnimation = new animaton2d(rr_package, resource_file_name, resource_file_name, transparent);
             atlas_animations[resource_name] = newAnimation;
             last_animation_loaded = resource_name;
             return newAnimation;
         }
         else
         {
-            std::stringstream outString;
-            outString << "Unable to load animation from file location: (" << resource_file_name << " due to negative dimensions given)";
-            error_log->report( outString.str());
+            std::stringstream outstring;
+            outstring << "Unable to load animation from file location: (" << resource_file_name << " due to negative dimensions given)";
+            error_log->report( outstring.str());
             return NULL;
         }
     }
@@ -169,15 +169,15 @@ namespace gpe
         {
             return newTexture;
         }
-        else if( sff_ex::file_exists( texture_file_name) )
+        else if( main_file_url_manager->file_exists( texture_file_name) )
         {
             gpe::error_log->report("Attempting to add Texture["+resource_name+"+,"+texture_file_name+"]" );
             error_log->report("Loading "+texture_file_name+" texture image.");
             //loads in the animation's texture
-            newTexture = rRenderPackage->create_texture();
+            newTexture = rr_package->create_texture();
             if( newTexture!=NULL)
             {
-                newTexture->load_new_texture( rRenderPackage->packageRenderer,texture_file_name, -1,true );
+                newTexture->load_new_texture( rr_package->packageRenderer,texture_file_name, -1,true );
                 if(newTexture->get_width() > 0)
                 {
                     error_log->report( "Texture_Add "+stg_ex::get_local_from_global_file( texture_file_name )+ "["+ stg_ex::int_to_string( (int)atlas_textures.size() )+"]");

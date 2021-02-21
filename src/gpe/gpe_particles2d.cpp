@@ -3,10 +3,10 @@ gpe_particles2d.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -40,25 +40,25 @@ namespace gpe
     particle::particle( )
     {
         //Defaults
-        rotateParticle = true;
-        xPos = xStart = 0;
-        yPos = yStart = 0;
+        rotate_particle = true;
+        x_pos = x_start = 0;
+        y_pos = y_start = 0;
         startLife = 1;
         particleLife = 0;
-        startScale = particleScale = 1;
+        start_scale = particle_scale = 1;
         shapeType = part_shape_circle;
-        pDirection = 0;
-        xVelocity = 0;
-        yVelocity = 0;
+        p_direction = 0;
+        x_velocity = 0;
+        y_velocity = 0;
 
-        pSpeed = 0;
-        pTex = NULL;
+        p_speed = 0;
+        particle_texture = NULL;
         startColor = new color("startColor",255,255,0);
         myColor = new color("myColor",255,255,255,0);
         endColor = new color("endColor",0,0,0,0 );
         width = height = 32;
-        pGravity = 0;
-        pGravityDirection = 0;
+        p_gravity = 0;
+        p_gravity_direction = 0;
 
     }
 
@@ -77,9 +77,9 @@ namespace gpe
     {
         if( particleLife > 0 && myColor->get_a() > 0 )
         {
-            if( pTex!=NULL )
+            if( particle_texture!=NULL )
             {
-                pTex->render_tex_scaled(xPos-camera_current->x - (width*particleScale)/2,yPos-camera_current->y - (height*particleScale)/2,particleScale,particleScale,NULL, myColor, myColor->get_a() );
+                particle_texture->render_tex_scaled(x_pos-camera_current->x - (width*particle_scale)/2,y_pos-camera_current->y - (height*particle_scale)/2,particle_scale,particle_scale,NULL, myColor, myColor->get_a() );
             }
         }
     }
@@ -88,37 +88,41 @@ namespace gpe
     {
         if( particleLife > 0 && myColor->get_a() > 0 )
         {
-            if( particleScale!=0 )
+            if( particle_scale!=0 )
             {
                 switch( shapeType)
                 {
                     case part_shape_circle:
-                        gcanvas->render_circle_color( xPos-camera_current->x,yPos-camera_current->y,particleScale * width,myColor, myColor->get_a() );
+                        gcanvas->render_circle_filled_color( x_pos-camera_current->x,y_pos-camera_current->y,particle_scale * width,myColor, myColor->get_a() );
+                    break;
+
+                    case part_shape_circle_outline:
+                        gcanvas->render_circle_outline_color( x_pos-camera_current->x,y_pos-camera_current->y,particle_scale * width,myColor, myColor->get_a() );
                     break;
 
                     case part_shape_rectangle:
-                        gcanvas->render_rectangle( xPos-camera_current->x,yPos-camera_current->y,xPos-camera_current->x+particleScale*width, yPos-camera_current->y+ particleScale*height, myColor, false, myColor->get_a() );
+                        gcanvas->render_rectangle( x_pos-camera_current->x,y_pos-camera_current->y,x_pos-camera_current->x+particle_scale*width, y_pos-camera_current->y+ particle_scale*height, myColor, false, myColor->get_a() );
                     break;
                     case part_shape_rectangle_outline:
-                        gcanvas->render_rectangle( xPos-camera_current->x,yPos-camera_current->y,xPos-camera_current->x+particleScale*width, yPos-camera_current->y+ particleScale*height, myColor, true, myColor->get_a() );
+                        gcanvas->render_rectangle( x_pos-camera_current->x,y_pos-camera_current->y,x_pos-camera_current->x+particle_scale*width, y_pos-camera_current->y+ particle_scale*height, myColor, true, myColor->get_a() );
                     break;
 
                     case part_shape_square_outline:
                     //defaults to square
-                        gcanvas->render_square( xPos-camera_current->x,yPos-camera_current->y,particleScale*width, myColor, true, myColor->get_a() );
+                        gcanvas->render_square( x_pos-camera_current->x,y_pos-camera_current->y,particle_scale*width, myColor, true, myColor->get_a() );
                     break;
 
                     case part_shape_line:
-                        gcanvas->render_line_width_color( xStart-camera_current->x,yStart-camera_current->y, xPos-camera_current->x, yPos- camera_current->y,particleScale*width, myColor, myColor->get_a() );
+                        gcanvas->render_line_width_color( x_start-camera_current->x,y_start-camera_current->y, x_pos-camera_current->x, y_pos- camera_current->y,particle_scale*width, myColor, myColor->get_a() );
                     break;
 
                     case part_shape_linecapped:
-                        gcanvas->render_line_capped_color( xStart-camera_current->x,yStart-camera_current->y, xPos-camera_current->x, yPos- camera_current->y,particleScale*width, myColor, myColor->get_a() );
+                        gcanvas->render_line_capped_color( x_start-camera_current->x,y_start-camera_current->y, x_pos-camera_current->x, y_pos- camera_current->y,particle_scale*width, myColor, myColor->get_a() );
                     break;
 
                     default:
                     //defaults to square
-                        gcanvas->render_square( xPos-camera_current->x,yPos-camera_current->y,particleScale*width, myColor, false, myColor->get_a() );
+                        gcanvas->render_square( x_pos-camera_current->x,y_pos-camera_current->y,particle_scale*width, myColor, false, myColor->get_a() );
                     break;
                 }
             }
@@ -129,34 +133,34 @@ namespace gpe
     {
         if( particleLife > 0 && myColor->get_a() > 25 )
         {
-            if( pTex!=NULL )
+            if( particle_texture!=NULL )
             {
-                pTex->render_tex_special(xPos-camera_current->x,yPos-camera_current->y,pDirection, abs(particleScale * width),abs(particleScale * height), myColor, NULL,myColor->get_a() );
+                particle_texture->render_tex_special(x_pos-camera_current->x,y_pos-camera_current->y,p_direction, abs(particle_scale * width),abs(particle_scale * height), myColor, NULL,myColor->get_a() );
             }
         }
     }
 
     void particle::set_position(  float x, float y )
     {
-        xPos = xStart = x;
-        yPos = yStart = y;
+        x_pos = x_start = x;
+        y_pos = y_start = y;
     }
 
     void particle::set_velocity(  float angle, float speed )
     {
-        pDirection = angle;
-        float angleInRadians = pDirection * semath::math_radians_multiplier;
+        p_direction = angle;
+        float angleInRadians = p_direction * semath::math_radians_multiplier;
 
         if( speed == 0.f )
         {
-            pSpeed = 0.f;
+            p_speed = 0.f;
         }
         else
         {
-            pSpeed = speed / 100.f;
+            p_speed = speed / 100.f;
         }
-        xVelocity = cos(angleInRadians);
-        yVelocity = sin(angleInRadians);
+        x_velocity = cos(angleInRadians);
+        y_velocity = sin(angleInRadians);
 
     }
 
@@ -177,16 +181,16 @@ namespace gpe
             int newB = color_system->merge_channel(endColor->get_b(),startColor->get_b(), ageRatio );
             int newA = color_system->merge_channel(endColor->get_a(),startColor->get_a(), ageRatio );
             myColor->change_and_verify_rgba( newR, newG, newB, newA );
-            particleScale = startScale * ageRatio;
+            particle_scale = start_scale * ageRatio;
 
             //Moves based on MS
-            xPos += xVelocity*pSpeed * delta;
-            yPos += yVelocity*pSpeed * delta;
+            x_pos += x_velocity*p_speed * delta;
+            y_pos += y_velocity*p_speed * delta;
         }
         else
         {
             myColor->change_and_verify_rgba( 255, 0, 0, 0  );
-            particleScale = 0;
+            particle_scale = 0;
         }
     }
 
@@ -200,8 +204,10 @@ namespace gpe
         yRandom = 16;
         emitterXPos = x;
         emitterYPos = y;
-        emissionPaused = false;
-        pTex = NULL;
+        emission_disabled = false;
+        emission_paused = false;
+        reverse_draw = false;
+        particle_texture = NULL;
 
         currentParticleCount = 0;
         texBlendMode = blend_mode_blend;
@@ -264,23 +270,23 @@ namespace gpe
         return ( get_remaining() > 0 );
     }
 
-    void particle_emitter::change_texture( texture_base * newTex, int newBlendMode )
+    void particle_emitter::change_texture( texture_base * newTex, int blend_mode_new )
     {
-        texBlendMode = newBlendMode;
-        pTex = newTex;
+        texBlendMode = blend_mode_new;
+        particle_texture = newTex;
         if( newTex!=NULL )
         {
             if( newTex->get_width() > 512 || newTex->get_height() > 512 )
             {
-                pTex = NULL;
+                particle_texture = NULL;
             }
         }
         int maxI = (int)particles.size();
         particle * cParticle = NULL;
 
-        if( pTex !=NULL )
+        if( particle_texture !=NULL )
         {
-            pTex->set_blend_mode( texBlendMode );
+            particle_texture->set_blend_mode( texBlendMode );
         }
 
         for( int i = 0; i < maxI; i++)
@@ -288,7 +294,7 @@ namespace gpe
             cParticle = particles[i];
             if( cParticle !=NULL )
             {
-                cParticle->pTex = pTex;
+                cParticle->particle_texture = particle_texture;
                 cParticle->shapeType = fallBackShapeType;
             }
         }
@@ -327,7 +333,7 @@ namespace gpe
 
     void particle_emitter::process_emitter( )
     {
-        if( emissionPaused )
+        if( emission_paused || emission_disabled )
         {
             return;
         }
@@ -337,7 +343,7 @@ namespace gpe
 
         bool particleIsAlive = true;
 
-        if( !emissionPaused )
+        if( !emission_paused && !emission_disabled  )
         {
             emissionCounter+= delta;
             if( emissionCounter >= emissionMSRate && can_emit() )
@@ -382,23 +388,83 @@ namespace gpe
 
     void particle_emitter::render()
     {
+        if( emission_disabled || !branch_visible )
+        {
+            return;
+        }
         //render_text( emitterXPos - cam->x, emitterYPos - cam->y, "Particle count"+ stg_ex::int_to_string(currentParticleCount)+" / "+ stg_ex::int_to_string(maxParticles),c_white,font_default,gpe::fa_left,gpe::fa_top );
 
         int particleCount = std::min( currentParticleCount, (int)particles.size() );
 
         particle * cParticle = NULL;
         int i = 0;
-        if( pTex!=NULL )
+        if( particle_texture!=NULL )
         {
-            pTex->set_blend_mode( texBlendMode);
+            particle_texture->set_blend_mode( texBlendMode);
             if( rotateTexture)
             {
-                for( i = 0; i < particleCount; i++ )
+                if( reverse_draw )
+                {
+                    for( i = particleCount -1; i >= 0; i-- )
+                    {
+                        cParticle = particles[i];
+                        if( cParticle !=NULL )
+                        {
+                            cParticle->render_particle_rotated();
+                        }
+                    }
+                }
+                else
+                {
+                    for( i = 0; i < particleCount; i++ )
+                    {
+                        cParticle = particles[i];
+                        if( cParticle !=NULL )
+                        {
+                            cParticle->render_particle_rotated();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if( reverse_draw )
+                {
+                    for( i = particleCount -1; i >= 0; i-- )
+                    {
+                        cParticle = particles[i];
+                        if( cParticle !=NULL )
+                        {
+                            cParticle->render_particle();
+                        }
+                    }
+                }
+                else
+                {
+                    for( i = 0; i < particleCount; i++ )
+                    {
+                        cParticle = particles[i];
+                        if( cParticle !=NULL )
+                        {
+                            cParticle->render_particle();
+                        }
+                    }
+                }
+            }
+            particle_texture->set_blend_mode( blend_mode_blend);
+        }
+        else if( particleCount > 0 )
+        {
+            //renderer_main->set_render_blend_mode(texBlendMode );
+            gcanvas->set_artist_blend_mode( texBlendMode );
+            if( reverse_draw )
+            {
+                for( i = particleCount -1; i >= 0; i-- )
                 {
                     cParticle = particles[i];
                     if( cParticle !=NULL )
                     {
-                        cParticle->render_particle_rotated();
+                        cParticle->render_particle_shape();
                     }
                 }
             }
@@ -409,22 +475,8 @@ namespace gpe
                     cParticle = particles[i];
                     if( cParticle !=NULL )
                     {
-                        cParticle->render_particle();
+                        cParticle->render_particle_shape();
                     }
-                }
-            }
-            pTex->set_blend_mode( blend_mode_blend);
-        }
-        else if( particleCount > 0 )
-        {
-            //renderer_main->set_render_blend_mode(texBlendMode );
-            gcanvas->set_artist_blend_mode( texBlendMode );
-            for( i = 0; i < particleCount; i++ )
-            {
-                cParticle = particles[i];
-                if( cParticle !=NULL )
-                {
-                    cParticle->render_particle_shape();
                 }
             }
             gcanvas->set_artist_blend_mode( blend_mode_blend );
@@ -446,14 +498,14 @@ namespace gpe
             part->set_position( emitterXPos+emitXPos+semath::random_float(-xRandom, xRandom), emitterYPos+emitYPos+semath::random_float(-yRandom, yRandom) );
             part->particleLife = part->startLife = semath::random_float( lifeMin, lifeMax ) * 1000; //* 10000ms
             part->set_velocity( semath::random_float( angleMin, angleMax) , semath::random_float( speedMin, speedMax) );
-            part->pTex = pTex;
-            part->rotateParticle = rotateTexture;
+            part->particle_texture = particle_texture;
+            part->rotate_particle = rotateTexture;
             part->width = shapeW;
             part->height = shapeH;
-            if( pTex!=NULL )
+            if( particle_texture!=NULL )
             {
-                part->width = pTex->get_width();
-                part->height = pTex->get_height();
+                part->width = particle_texture->get_width();
+                part->height = particle_texture->get_height();
             }
             //Changes the color values of the particle
             int variedRColor = semath::bound_number( startColor->get_r() + semath::random( -startColorVar->get_r(), startColorVar->get_r() ) ,0,255 );
@@ -482,9 +534,9 @@ namespace gpe
     void particle_emitter::set_blend_mode( int newMode )
     {
         texBlendMode = newMode;
-        if( pTex!=NULL )
+        if( particle_texture!=NULL )
         {
-            pTex->set_blend_mode( newMode );
+            particle_texture->set_blend_mode( newMode );
         }
     }
 
@@ -540,7 +592,7 @@ namespace gpe
     void particle_emitter::set_max_particles( int newMax, bool removeExtra  )
     {
         newMax = std::max( 0, newMax );
-        newMax = std::min( PARTICLE_MAX_PER_EMITTER, newMax );
+        newMax = std::min( partical_max_per_emitter, newMax );
         int i = 0;
         particle * cParticle = NULL;
         int currentSize = (int)particles.size();

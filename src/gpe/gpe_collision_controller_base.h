@@ -3,10 +3,10 @@ gpe_collision_controller_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -44,20 +44,21 @@ namespace gpe
     class collision_controller_base
     {
         protected:
+            int layer_id;
             int controller_id;
             std::string controller_name;
             std::string controller_type;
         public:
             collision_controller_base();
             virtual ~collision_controller_base();
-            virtual void activate_layer(int layer_id );
+            virtual void activate_layer(int l_id );
             virtual void activate_all_layers();
-            virtual void add_object( game_object * g_obj, int layer_id = -1 );
+            virtual void add_object( game_object * g_obj, int l_id = -1 );
             virtual void check_collisions();
             virtual void clear_all();
-            virtual void clear_layer( int layer_id );
+            virtual void clear_layer( int l_id );
             int compare( collision_controller_base * other );
-            virtual void deactivate_layer(int layer_id );
+            virtual void deactivate_layer(int l_id );
             virtual void deactivate_all_layers();
             virtual bool init_system( int scene_width, int scene_height );
             virtual void remove_object( game_object * g_obj );

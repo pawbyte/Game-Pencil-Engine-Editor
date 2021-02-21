@@ -3,10 +3,10 @@ gpe_scene.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -81,11 +81,11 @@ namespace gpe
             scene_layer * add_layer( int newLayerId, float newLayerAlpha );
             scene_layer * add_start_layer( int newLayerId, float newLayerAlpha );
 
-            branch * find_branch( const std::string branchName );
-            branch * find_tagged_branch( const std::string branchName );
-            int find_tagged_branch_count( const std::string branchName );
-            branch * find_tagged_branch_last( const std::string branchName );
-            std::vector< branch *> find_all_tagged_branches( const std::string branchName );
+            branch * find_branch( const std::string branch_name );
+            branch * find_tagged_branch( const std::string branch_name );
+            int find_tagged_branch_count( const std::string branch_name );
+            branch * find_tagged_branch_last( const std::string branch_name );
+            std::vector< branch *> find_all_tagged_branches( const std::string branch_name );
 
             void reset_scene_meta();
             bool add_to_persistent_objects( game_object * nObject);
@@ -99,7 +99,7 @@ namespace gpe
 
             bool scene_activated();
             void scene_init();
-            void update_scene_specs( int lvlW, int lvlH);
+            void update_scene_specs( int scene_width, int scene_height);
             void update_tilemap();
             void add_background( int bSurf, bool loopH, bool loopV, float bgX, float bgY, float bgXSpd, float bgYSpd);
             void replace_background( int layerBeingChanged, int needleBgId, int newBgId );
@@ -114,8 +114,8 @@ namespace gpe
             void apply_postlogic();
             std::string get_scene_name();
             void set_scene_name(std::string inSceneName);
-            void change_background( int newBG, int bgNumber);
-            void change_foreground( int newBG, int bgNumber);
+            void change_background( int new_bg_id, int bgNumber);
+            void change_foreground( int new_bg_id, int bgNumber);
 
             bool load_scene(std::string sceneFileName);
             void load_and_parse_scene();

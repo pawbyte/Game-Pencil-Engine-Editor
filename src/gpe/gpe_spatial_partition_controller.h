@@ -3,10 +3,10 @@ gpe_spatial_partition_controller.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -43,8 +43,8 @@ namespace gpe
     {
         protected:
             std::map<std::string, bool > collisionsCheckedInFrame;
-            int spatialMapWidthSize;
-            int spatialMapHeightSize;
+            int spatial_map_width_size;
+            int spatial_map_height_size;
         public:
             static const int maxLayerCount = 32;
             spatial_partition_layer * collisionlayers[maxLayerCount];

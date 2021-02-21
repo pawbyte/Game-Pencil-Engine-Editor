@@ -3,10 +3,10 @@ gpe_tiles.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -133,10 +133,10 @@ namespace gpe
         layerTiles.clear();
     }
 
-    void layer_tile_map::create_new_map ( int newTX, int newTY)
+    void layer_tile_map::create_new_map ( int new_xt, int new_yt)
     {
-        tileAmountX=newTX;
-        tileAmountY=newTY;
+        tileAmountX=new_xt;
+        tileAmountY=new_yt;
         int newSize = tileAmountX*tileAmountY;
         int i=0;
         clear_tiles();
@@ -147,18 +147,18 @@ namespace gpe
         }
     }
 
-    int layer_tile_map::find_tile ( int xPos, int yPos )
+    int layer_tile_map::find_tile ( int x_pos, int y_pos )
     {
         if( tileWidth==0 || tileHeight == 0)
         {
             return is_null;
         }
         // find rectangle to check (limited to field size):
-        xPos = std::max(0, std::min(gridWidth - 1, (xPos / tileWidth)|0 ) );
-        yPos = std::max(0, std::min(gridHeight - 1,(yPos / tileHeight)|0 ) );
+        x_pos = std::max(0, std::min(gridWidth - 1, (x_pos / tileWidth)|0 ) );
+        y_pos = std::max(0, std::min(gridHeight - 1,(y_pos / tileHeight)|0 ) );
 
         layer_game_tile * foundTile = NULL;
-        foundTile = get_tile_at(xPos, yPos);
+        foundTile = get_tile_at(x_pos, y_pos);
         if(foundTile!= NULL )
         {
             return foundTile->tset;
@@ -199,7 +199,7 @@ namespace gpe
         return is_null;
     }
 
-    bool layer_tile_map::find_matching_tile( int xPos,  int yPos,  int tileTypeToSearchFor )
+    bool layer_tile_map::find_matching_tile( int x_pos,  int y_pos,  int tileTypeToSearchFor )
     {
         //if we have an actual layer to look for
         if( tileWidth==0 || tileHeight == 0)
@@ -208,9 +208,9 @@ namespace gpe
         }
         layer_game_tile * foundTile = NULL;
         // find rectangle to check (limited to field size):
-        xPos = std::max(0, std::min(gridWidth - 1, (xPos / tileWidth)|0 ) );
-        yPos = std::max(0, std::min(gridHeight - 1,(yPos / tileHeight)|0 ) );
-        foundTile = get_tile_at(xPos, yPos);
+        x_pos = std::max(0, std::min(gridWidth - 1, (x_pos / tileWidth)|0 ) );
+        y_pos = std::max(0, std::min(gridHeight - 1,(y_pos / tileHeight)|0 ) );
+        foundTile = get_tile_at(x_pos, y_pos);
         if( foundTile!= NULL && foundTile->tset == tileTypeToSearchFor )
         {
             return true;

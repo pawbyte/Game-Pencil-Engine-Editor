@@ -3,10 +3,10 @@ gpe_input_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -210,6 +210,7 @@ namespace gpe
             int touch_mouse_position_y;
 
         public:
+            int gamepad_id_number;
             //Controller buttons
             int button_previous[gp_button_count];
             int button_button[gp_button_count];
@@ -244,7 +245,7 @@ namespace gpe
             virtual void reset_temp_input();
             void set_connected( bool now_connected);
             void set_name( std::string new_name);
-            virtual void setup_default_mapping( bool mapButtons = true , bool mapAxis = true );
+            virtual void setup_default_mapping( bool map_buttons = true , bool mapAxis = true );
     };
 
     class input_manager_base

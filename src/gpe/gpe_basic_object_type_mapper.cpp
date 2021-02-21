@@ -3,10 +3,10 @@ gpe_basic_object_type_mapper.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,15 +45,15 @@ namespace gpe
         clear_map();
     }
 
-    bool object_mapper::add_to_map(std::string objName, game_object *( *mFunction)(int xPosIn,  int yPosIn,  int objectLayerId) )
+    bool object_mapper::add_to_map(std::string object_name, game_object *( *mFunction)(int x_pos_in,  int y_pos_in,  int object_layer_id) )
     {
-        auto pairExists = objMap.find( objName );
+        auto pairExists = objMap.find( object_name );
 
         if (pairExists == objMap.end() )
         {
             return false;
         }
-        objMap[objName] = mFunction;
+        objMap[object_name] = mFunction;
         return true;
     }
 
@@ -62,13 +62,13 @@ namespace gpe
         objMap.clear();
     }
 
-    game_object * object_mapper::create_object(std::string objName, int xPosIn,  int yPosIn,  int objectLayerId)
+    game_object * object_mapper::create_object(std::string object_name, int x_pos_in,  int y_pos_in,  int object_layer_id)
     {
-        auto pairExists = objMap.find( objName );
+        auto pairExists = objMap.find( object_name );
         if (pairExists == objMap.end() )
         {
             return NULL;
         }
-        return objMap[objName](xPosIn, yPosIn, objectLayerId);
+        return objMap[object_name](x_pos_in, y_pos_in, object_layer_id);
     }
 }

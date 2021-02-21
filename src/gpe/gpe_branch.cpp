@@ -3,10 +3,10 @@ gpe_branch.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,6 +37,7 @@ namespace gpe
 {
     branch::branch()
     {
+        branch_visible = true;
 
     }
 
@@ -53,12 +54,12 @@ namespace gpe
         }
     }
 
-    branch * branch::find_branch_by_name( std::string branchName , bool nestDown )
+    branch * branch::find_branch_by_name( std::string branch_name , bool nest_down )
     {
         return NULL;
     }
 
-    branch * branch::find_typed_branch_by_name( int bType, std::string branchName , bool nestDown )
+    branch * branch::find_typed_branch_by_name( int branch_type, std::string branch_name , bool nest_down )
     {
         return NULL;
     }
@@ -70,12 +71,12 @@ namespace gpe
 
     branch * branch::get_parent()
     {
-        return parentBranch;
+        return branch_parent;
     }
 
     branch * branch::get_parent_tree()
     {
-        return treeBranch;
+        return branch_tree;
     }
 
     float branch::getx()
@@ -90,7 +91,7 @@ namespace gpe
 
     int branch::get_layer_id()
     {
-        return currentLayer;
+        return current_layer;
     }
 
     float branch::get_width()
@@ -106,7 +107,7 @@ namespace gpe
 
     branch_type branch::get_type()
     {
-        return branchType;
+        return branch_type_id;
     }
 
     std::string branch::get_type_string()
@@ -134,12 +135,17 @@ namespace gpe
         return yscale;
     }
 
-    bool branch::remove_branch_by_name( std::string branchName , bool nestDown )
+    bool branch::is_visible()
+    {
+        return branch_visible;
+    }
+
+    bool branch::remove_branch_by_name( std::string branch_name , bool nest_down )
     {
 
     }
 
-    bool branch::remove_typed_branch_by_name( int bType, std::string branchName , bool nestDown )
+    bool branch::remove_typed_branch_by_name( int branch_type_id, std::string branch_name , bool nest_down )
     {
 
     }
@@ -157,6 +163,7 @@ namespace gpe
         }
     }
 
+
     void branch::reset_branch()
     {
         branch * current_branch = NULL;
@@ -170,68 +177,82 @@ namespace gpe
         }
     }
 
-    void branch::set_angle(float newAngle )
+    bool branch::self_destruct()
     {
-        angle = newAngle;
+        return true;
     }
 
-    void branch::set_coords(float newX, float newY )
+    void branch::set_angle(float new_angle )
     {
-        xpos = newX;
-        ypos = newY;
+        angle = new_angle;
     }
 
-    void branch::set_height(int newHeight )
+    void branch::set_coords(float x_new, float y_new )
     {
-        height = newHeight;
+        xpos = x_new;
+        ypos = y_new;
     }
 
-    void branch::set_tag( std::string newTag)
+    void branch::set_frames_before_deleted( int frames_remaining )
     {
-        branchTag = newTag;
+        if( frames_remaining > 0 )
+        {
+            frames_til_deletion = true;
+            branch_being_removed = true;
+        }
     }
 
-    void branch::set_width(int newWidth )
+    void branch::set_height(int new_height )
     {
-        width = newWidth;
+        height = new_height;
     }
 
-    void branch::set_size(int newWidth, int newHeight )
+    void branch::set_tag( std::string tag_new)
     {
-        width = newWidth;
-        height = newHeight;
+        branch_tag = tag_new;
     }
 
-    void branch::set_pivots(int newXPivot, int newYPivot )
+    void branch::set_width(int new_width )
     {
-        xpivot = newXPivot;
-        ypivot = newYPivot;
+        width = new_width;
     }
 
-    void branch::set_scale( float newScale )
+    void branch::set_size(int new_width, int new_height )
     {
-        xscale = newScale;
-        yscale = newScale;
+        width = new_width;
+        height = new_height;
     }
 
-    void branch::setx(float newX )
+    void branch::set_pivots(int new_x_pivot, int new_y_pivot )
     {
-        xpos = newX;
+        xpivot = new_x_pivot;
+        ypivot = new_y_pivot;
     }
 
-    void branch::set_xscale( float newScale )
+    void branch::set_scale( float new_scale )
     {
-        xscale = newScale;
+        xscale = new_scale;
+        yscale = new_scale;
     }
 
-    void branch::sety(float newY )
+    void branch::setx(float x_new )
     {
-        ypos = newY;
+        xpos = x_new;
     }
 
-    void branch::set_yscale( float newScale )
+    void branch::set_xscale( float new_scale )
     {
-        yscale = newScale;
+        xscale = new_scale;
+    }
+
+    void branch::sety(float y_new )
+    {
+        ypos = y_new;
+    }
+
+    void branch::set_yscale( float new_scale )
+    {
+        yscale = new_scale;
     }
 
     void branch::update()

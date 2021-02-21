@@ -3,10 +3,10 @@ gpe_scene.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -165,9 +165,9 @@ namespace gpe
         return true;
     }
 
-    branch * game_scene::find_branch( const std::string branchName )
+    branch * game_scene::find_branch( const std::string branch_name )
     {
-        auto branchIterator = branchesByName.find( branchName );
+        auto branchIterator = branchesByName.find( branch_name );
 
         if( branchIterator != branchesByName.end() )
         {
@@ -176,9 +176,9 @@ namespace gpe
         return nullptr;
     }
 
-    branch * game_scene::find_tagged_branch( const std::string branchName )
+    branch * game_scene::find_tagged_branch( const std::string branch_name )
     {
-        std::vector<branch *> foundVector = find_all_tagged_branches( branchName );
+        std::vector<branch *> foundVector = find_all_tagged_branches( branch_name );
         if( foundVector.size() > 0 )
         {
             return foundVector[ 0 ];
@@ -186,15 +186,15 @@ namespace gpe
         return NULL;
     }
 
-    int game_scene::find_tagged_branch_count( const std::string branchName )
+    int game_scene::find_tagged_branch_count( const std::string branch_name )
     {
-        std::vector< branch * > foundVector = find_all_tagged_branches( branchName );
+        std::vector< branch * > foundVector = find_all_tagged_branches( branch_name );
         return (int)foundVector.size();
     }
 
-    branch * game_scene::find_tagged_branch_last( const std::string branchName )
+    branch * game_scene::find_tagged_branch_last( const std::string branch_name )
     {
-        auto foundVector = find_all_tagged_branches( branchName );
+        auto foundVector = find_all_tagged_branches( branch_name );
         if( foundVector.size() > 0 )
         {
             return foundVector[ foundVector.size() -1 ];
@@ -202,11 +202,11 @@ namespace gpe
         return NULL;
     }
 
-    std::vector< branch * > game_scene::find_all_tagged_branches( const std::string branchName )
+    std::vector< branch * > game_scene::find_all_tagged_branches( const std::string branch_name )
     {
         std::vector<branch *> foundVector;
 
-        auto branchIterator = branchesByTags.find( branchName );
+        auto branchIterator = branchesByTags.find( branch_name );
 
         if( branchIterator != branchesByTags.end() )
         {
@@ -306,17 +306,17 @@ namespace gpe
 
     }
 
-    void game_scene::update_scene_specs( int lvlW, int lvlH)
+    void game_scene::update_scene_specs( int scene_width, int scene_height)
     {
-        /*lvlW = abs(lvlW);
-        lvlH = abs(lvlH);
-        cSceneWidth = lvlW;
-        cSceneHeight = lvlH;
-        gpe.sceneWidth = lvlW;
-        gpe.sceneHeight = lvlH;
+        /*scene_width = abs(scene_width);
+        scene_height = abs(scene_height);
+        camera_scene_width = scene_width;
+        camera_scene_height = scene_height;
+        gpe.sceneWidth = scene_width;
+        gpe.sceneHeight = scene_height;
         for(var iV=gpe.maxCameras-1; iV>=0; iV--)
         {
-            this.sceneCamera[iV].cameraBoundaries.update_shape(0,0,lvlW, lvlH);
+            this.sceneCamera[iV].camera_boundaries.update_shape(0,0,scene_width, scene_height);
         }*/
     }
 
@@ -351,12 +351,12 @@ namespace gpe
         name = inSceneName;
     }
 
-    void game_scene::change_background( int newBG, int bgNumber)
+    void game_scene::change_background( int new_bg_id, int bgNumber)
     {
 
     }
 
-    void game_scene::change_foreground( int newBG, int bgNumber)
+    void game_scene::change_foreground( int new_bg_id, int bgNumber)
     {
 
     }
@@ -365,7 +365,7 @@ namespace gpe
     bool game_scene::load_scene( std::string sceneFileName )
     {
         //
-        if( ! sff_ex::file_exists( sceneFileName) )
+        if( ! main_file_url_manager->file_exists( sceneFileName) )
         {
             return false;
         }
@@ -383,9 +383,9 @@ namespace gpe
         int equalPos = 0;
         std::string firstChar="";
         std::string section="";
-        std::string keyString="";
-        std::string valString="";
-        std::string subValString="";
+        std::string key_string="";
+        std::string valstring="";
+        std::string subValstring="";
         std::string currLine="";
         std::string currLineToBeProcessed;
         std::string sprDataStr;
@@ -410,11 +410,11 @@ namespace gpe
                         if(equalPos!=(int)std::string::npos)
                         {
                             //if the equalPos is present, then parse on through and carryon
-                            keyString = currLineToBeProcessed.substr(0,equalPos);
-                            valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                            if( keyString=="Version")
+                            key_string = currLineToBeProcessed.substr(0,equalPos);
+                            valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                            if( key_string=="Version")
                             {
-                                foundFileVersion = stg_ex::string_to_float(valString);
+                                foundFileVersion = stg_ex::string_to_float(valstring);
                             }
                         }
                     }
@@ -432,47 +432,47 @@ namespace gpe
                         if(equalPos!=(int)std::string::npos)
                         {
                             //if the equalPos is present, then parse on through and carryon
-                            keyString = currLineToBeProcessed.substr(0,equalPos);
-                            keyString= stg_ex::string_lower( keyString );
-                            valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                            key_string = currLineToBeProcessed.substr(0,equalPos);
+                            key_string= stg_ex::string_lower( key_string );
+                            valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
-                            if( keyString == "name" )
+                            if( key_string == "name" )
                             {
-                                set_scene_name( valString );
+                                set_scene_name( valstring );
                             }
-                            else if( keyString == "width")
+                            else if( key_string == "width")
                             {
-                                sceneWidth = stg_ex::string_to_int( valString, 0);
+                                sceneWidth = stg_ex::string_to_int( valstring, 0);
                             }
-                            else if( keyString == "height")
+                            else if( key_string == "height")
                             {
-                                sceneHeight = stg_ex::string_to_int( valString, 0);
+                                sceneHeight = stg_ex::string_to_int( valstring, 0);
                             }
-                            else if( keyString == "space_width")
+                            else if( key_string == "space_width")
                             {
-                                spatialWidth = stg_ex::string_to_int( valString, 0);
+                                spatialWidth = stg_ex::string_to_int( valstring, 0);
                             }
-                            else if( keyString == "space_height")
+                            else if( key_string == "space_height")
                             {
-                                spatialHeight = stg_ex::string_to_int( valString, 0);
+                                spatialHeight = stg_ex::string_to_int( valstring, 0);
                             }
-                            else if( keyString == "gridwidth")
+                            else if( key_string == "gridwidth")
                             {
-                                //sceneWidth = stg_ex::string_to_int( valString, 0);
+                                //sceneWidth = stg_ex::string_to_int( valstring, 0);
                             }
-                            else if( keyString == "gridheight")
+                            else if( key_string == "gridheight")
                             {
-                                //sceneHeight = stg_ex::string_to_int( valString, 0);
+                                //sceneHeight = stg_ex::string_to_int( valstring, 0);
                             }
-                            else if( keyString == "bgcolor")
+                            else if( key_string == "bgcolor")
                             {
                                 //;
                             }
-                            else if( keyString=="continuous" )
+                            else if( key_string=="continuous" )
                             {
 
                             }
-                            else if( keyString =="layer" )
+                            else if( key_string =="layer" )
                             {
 
                             }
@@ -547,7 +547,7 @@ namespace gpe
             GPE.currentCameraInView = 0;
             //
 
-            int cSpacesIn = state_controller.collisionSpacesInView;
+            int cSpacesIn = state_controller.collision_spaces_in_view;
             gpe.render_calls = 0;
 
             //Loops through each scene layer to prepare for rendering...
@@ -569,7 +569,7 @@ namespace gpe
             {
                 GPE.currentCameraInView = gTemp;
                 camInUse = sceneCamera[ gTemp];
-                if( camInUse.isVisible == true )
+                if( camInUse.is_visible == true )
                 {
                     renderToArea = gpe.GPE_Current_Context = gpe.EXTRA_CONTEXTS[gTemp];
                     renderToArea.fillStyle = bg_color;
@@ -584,15 +584,15 @@ namespace gpe
                         hTemp = 0;
                         jTemp = 0;
 
-                        iYTempFrom = camInUse.cameraRect.get_y();
-                        jXTempFrom = camInUse.cameraRect.get_x();
+                        iYTempFrom = camInUse.camera_rect.get_y();
+                        jXTempFrom = camInUse.camera_rect.get_x();
 
-                        iYTempTo = camInUse.cameraRect.get_y()+camInUse.cameraRect.get_height();
-                        jXTempTo = camInUse.cameraRect.get_x()+camInUse.cameraRect.get_width();
+                        iYTempTo = camInUse.camera_rect.get_y()+camInUse.camera_rect.get_height();
+                        jXTempTo = camInUse.camera_rect.get_x()+camInUse.camera_rect.get_width();
 
                         //Used to offset render calls by camera data.
                         gpe.CURRENT_VIEW = camInUse;
-                        gpe.CURRENT_VIEW_BOX = camInUse.cameraRect;
+                        gpe.CURRENT_VIEW_BOX = camInUse.camera_rect;
 
                         for  (hTemp=0; hTemp<sceneLayers.length; hTemp++ )
                         {
@@ -614,16 +614,16 @@ namespace gpe
                                             {
                                                 cTile = cLayer.get_tile_at(jTemp, iTemp);
                                                 if( typeof cTile!="undefined" && cTile!=-1)
-                                                    cTile.render_self( renderToArea,camInUse.cameraRect );
+                                                    cTile.render_self( renderToArea,camInUse.camera_rect );
                                             }
                                         }
                                     }
                                 }
-                                else if( cLayer.layerType == GPE_LAYER_TYPE_BACKGROUND && cLayer.layerBackgrounds.length > 0 )
+                                else if( cLayer.layerType == GPE_LAYER_TYPE_BACKGROUND && cLayer.layer_backgrounds.length > 0 )
                                 {
-                                    for( iTemp = 0; iTemp < cLayer.layerBackgrounds.length ; iTemp++)
+                                    for( iTemp = 0; iTemp < cLayer.layer_backgrounds.length ; iTemp++)
                                     {
-                                        cLayer.layerBackgrounds[iTemp].render_bg(renderToArea, camInUse.cameraRect, camInUse.cameraRect,sceneWidth, sceneHeight);
+                                        cLayer.layer_backgrounds[iTemp].render_bg(renderToArea, camInUse.camera_rect, camInUse.camera_rect,sceneWidth, sceneHeight);
                                     }
                                 }
                                 cLayer.render_objects();
@@ -633,10 +633,10 @@ namespace gpe
 
                         //
                         //Render HUD/GUI elements
-                        GPR.HUD_RECT.copy_rect( camInUse.cameraRect );
+                        GPR.HUD_RECT.copy_rect( camInUse.camera_rect );
                         gpe.CURRENT_VIEW_BOX = GPR.HUD_RECT;
-                        gpe.CURRENT_VIEW_BOX.xPos = 0;
-                        gpe.CURRENT_VIEW_BOX.yPos = 0;
+                        gpe.CURRENT_VIEW_BOX.x_pos = 0;
+                        gpe.CURRENT_VIEW_BOX.y_pos = 0;
                         for (hTemp=0; hTemp<sceneLayers.length; hTemp++)
                         {
                             cLayer = sceneLayers.at(hTemp);
@@ -649,7 +649,7 @@ namespace gpe
                         if( typeof mainRenderToArea!="undefined")
                         {
                             mainRenderToArea.drawImage(gpe.EXTRA_CANVASES[gTemp],
-                            camInUse.renderRect.get_x(),camInUse.renderRect.get_y(), camInUse.renderRect.get_width(), camInUse.renderRect.get_height() );
+                            camInUse.render_rect.get_x(),camInUse.render_rect.get_y(), camInUse.render_rect.get_width(), camInUse.render_rect.get_height() );
 
                         }
                     }
@@ -668,9 +668,9 @@ namespace gpe
                 {
                     game_runtime->currentCameraInView = gTemp;
                     camInUse = sceneCamera[ gTemp];
-                    if( camInUse.isVisible )
+                    if( camInUse.is_visible )
                     {
-                        //renderToArea.fillText("["+gTemp+"] "+camInUse.cameraRect.get_x()+","+camInUse.cameraRect.get_y()+","+ camInUse.cameraRect.get_width()+","+ camInUse.cameraRect.get_height(), gpe.screen_width-32,48*(2+gTemp ) );
+                        //renderToArea.fillText("["+gTemp+"] "+camInUse.camera_rect.get_x()+","+camInUse.camera_rect.get_y()+","+ camInUse.camera_rect.get_width()+","+ camInUse.camera_rect.get_height(), gpe.screen_width-32,48*(2+gTemp ) );
 
                         var iii = 0;
                         var tempColSpace = 0;
@@ -680,9 +680,9 @@ namespace gpe
                             tempColSpacee = state_controller.COLLISION_AREA_SPACES[iii];
                             tempColSpace = tempColSpacee.boxArea;
                             mainRenderToArea.beginPath();
-                            mainRenderToArea.rect(tempColSpace.get_x()-camInUse.cameraRect.get_x(), tempColSpace.get_y()-camInUse.cameraRect.get_y(), tempColSpace.get_width(), tempColSpace.get_height() );
-                            mainRenderToArea.lineWidth = 1;
-                            if(GPR.collisionSpacesInView.indexOf( iii) >= 0 )
+                            mainRenderToArea.rect(tempColSpace.get_x()-camInUse.camera_rect.get_x(), tempColSpace.get_y()-camInUse.camera_rect.get_y(), tempColSpace.get_width(), tempColSpace.get_height() );
+                            mainRenderToArea.line_width = 1;
+                            if(GPR.collision_spaces_in_view.indexOf( iii) >= 0 )
                             {
                                 mainRenderToArea.strokeStyle = 'red';
                             }
@@ -694,7 +694,7 @@ namespace gpe
                             mainRenderToArea.font = 'bold 16pt Calibri';
                             mainRenderToArea.textAlign = 'center';
                             mainRenderToArea.fillStyle = 'blue';
-                            mainRenderToArea.fillText( iii, tempColSpace.get_x()-camInUse.cameraRect.get_x()+32, tempColSpace.get_y()-camInUse.cameraRect.get_y() +32);
+                            mainRenderToArea.fillText( iii, tempColSpace.get_x()-camInUse.camera_rect.get_x()+32, tempColSpace.get_y()-camInUse.camera_rect.get_y() +32);
                         }
                     }
                 }
@@ -705,7 +705,7 @@ namespace gpe
                 renderToArea.fillStyle = 'maroon';
                 renderToArea.fillText('Scene Info || Version: '+sceneVersion+" | "+sceneWidth+" | "+sceneHeight, 32, 300);
 
-                renderToArea.fillText('Collision Grids: '+state_controller.COLLISION_AREA_SPACES.length+' ('+state_controller.spatialGridWidthAmount+' X '+state_controller.spatialGridHeightAmount+') for '+state_controller.object_count+' objects', 32, 364);
+                renderToArea.fillText('Collision Grids: '+state_controller.COLLISION_AREA_SPACES.length+' ('+state_controller.spatial_grid_x_amount+' X '+state_controller.spatial_grid_y_amount+') for '+state_controller.object_count+' objects', 32, 364);
                 renderToArea.textAlign = 'left';
                 renderToArea.fillText('Scene Name: '+sceneName, 32, gpe.SCREEN2_HEIGHT-64);
             }

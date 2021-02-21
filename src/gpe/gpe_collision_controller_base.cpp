@@ -3,10 +3,10 @@ gpe_collision_controller_base.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,10 +35,10 @@ gpe_collision_controller_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -74,6 +74,7 @@ namespace gpe
     {
         controller_id = collision_controller_counter;
         collision_controller_counter++;
+        layer_id = -1;
     }
 
     collision_controller_base::~collision_controller_base()
@@ -81,7 +82,7 @@ namespace gpe
 
     }
 
-    void collision_controller_base::activate_layer(int layer_id )
+    void collision_controller_base::activate_layer(int l_id )
     {
 
     }
@@ -91,7 +92,7 @@ namespace gpe
 
     }
 
-    void collision_controller_base::add_object( game_object * g_obj, int layer_id  )
+    void collision_controller_base::add_object( game_object * g_obj, int l_id  )
     {
 
     }
@@ -106,7 +107,7 @@ namespace gpe
 
     }
 
-    void collision_controller_base::clear_layer( int layer_id )
+    void collision_controller_base::clear_layer( int l_id )
     {
 
     }
@@ -131,7 +132,7 @@ namespace gpe
         }
         return 1;
     }
-    void collision_controller_base::deactivate_layer(int layer_id )
+    void collision_controller_base::deactivate_layer(int l_id )
     {
 
     }

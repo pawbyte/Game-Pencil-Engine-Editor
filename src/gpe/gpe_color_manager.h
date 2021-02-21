@@ -3,10 +3,10 @@ gpe_color_manager.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -44,7 +44,6 @@ SOFTWARE.
 namespace gpe
 {
     //The color of the font
-    extern color * textColor;
 
     extern color * c_aqua;
     extern color * c_alblack;
@@ -80,8 +79,8 @@ namespace gpe
     extern color * c_white;
     extern color * c_yellow;
 
-    extern color * hudColor;
-    extern color * hudColorHighlight;
+    extern color * color_hud;
+    extern color * color_hud_highlight;
 
     //color functions
     void init_colors();
@@ -89,18 +88,18 @@ namespace gpe
     class color_master
     {
     private:
-        std::vector <color *> COLOR_OBJECTS;
-        int biggestStringSize;
+        std::vector <color *> color_directory_list;
+        int largest_string_size;
     public:
         color_master();
-        void add_color( color *colorIn,std::string stringIn);
-        bool color_equals(color cOne, color cTwo);
+        void add_color( color *color_in,std::string string_input);
+        bool color_equals(color color_one, color color_two);
 
         bool define_colors();
-        int find_color_id(std::string stringInForSearch);
+        int find_color_id(std::string string_in_search);
         int get_longest_color_name();
         int get_color_count();
-        color * get_color(std::string stringInForSearch);
+        color * get_color(std::string string_in_search);
         color * get_color_from_id(int pos);
         std::string get_color_name(int pos);
 

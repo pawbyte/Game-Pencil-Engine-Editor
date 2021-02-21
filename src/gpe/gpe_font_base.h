@@ -3,10 +3,10 @@ gpe_font_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -51,38 +51,37 @@ namespace gpe
             int alpha_last_rendered;
             font_pair_base();
             ~font_pair_base();
-            bool texture_matches(std::string strCheck);
+            bool texture_matches(std::string str_check);
             int get_width();
             int get_height();
     };
 
-    const int GPE_MonoNumberPairCount = 15;
     class font_base
     {
         protected:
             int last_used_halign;
             int last_used_valign;
-            int customFontId;
-            std::string fontFileLocation;
-            std::string fontFamilyName;
+            int font_id;
+            std::string font_file_location;
+            std::string font_family_name;
             std::string font_system_type;
-            int fontSize;
-            bool fontIsMonoSpaced;
-            int monoWidth;
-            int monoHeight;
-            int numberWidth;
-            int numberHeight;
+            int font_size;
+            bool font_is_monospaced;
+            int mono_width;
+            int mono_height;
+            int number_width;
+            int number_height;
         public:
-            std::string fontNickName;
+            std::string font_nickname;
             font_base();
             virtual ~font_base();
             virtual void clear_cache();
-            virtual font_base * create_new(std::string fFileLocation, int fSize, bool isMonospaced = false, const std::string fNickName = "", int fontIdNumb =-1);
-            virtual font_pair_base * find_character_texture( const std::string numbId);
-            virtual font_pair_base * find_texture( const std::string textToRender);
-            virtual void get_metrics(std::string textToRender, int * wVal, int *hVal);
-            virtual void get_numbered_metrics(std::string textToRender, int * wVal, int *hVal);
-            virtual void get_wrapped_string_metrics( const std::string strIn, int lineWidth, int linePadding, int * wVal, int *hVal);
+            virtual font_base * create_new(std::string file_loc, int f_size, bool make_monospaced = false, const std::string f_nickname = "", int id_number =-1);
+            virtual font_pair_base * find_character_texture( const std::string id_number);
+            virtual font_pair_base * find_texture( const std::string text_to_render);
+            virtual void get_metrics(std::string text_to_render, int * width_value, int *height_value);
+            virtual void get_numbered_metrics(std::string text_to_render, int * width_value, int *height_value);
+            virtual void get_wrapped_string_metrics( const std::string str_in, int line_width, int linePadding, int * width_value, int *height_value);
             int get_mono_height();
             int get_mono_width();
             std::string get_nickname();
@@ -93,13 +92,13 @@ namespace gpe
             int get_font_size();
             bool is_monospaced();
 
-            virtual void render_bitmapped_text( int xPos, int yPos, std::string numberToRender, color * textColor, int hAlign=gpe::fa_top,int vAlign=gpe::fa_top,int renderAlpha = 255);
-            virtual void render_text( int xPos, int yPos, std::string textureText, color * textColor, int hAlign=gpe::fa_left,int vAlign=gpe::fa_top,int renderAlpha = 255);
-            virtual void render_text_boxed( int xPos, int yPos, std::string textureText, color * textColor,color * boxColor,int hAlign=gpe::fa_left,int vAlign=gpe::fa_top,int renderAlpha = 255);
-            virtual void render_text_scaled( int xPos, int yPos, std::string textureText, color * textColor, float textScale, int hAlign=gpe::fa_left,int vAlign=gpe::fa_top, int renderAlpha = 255);
-            virtual void render_text_resized( int xPos, int yPos, std::string textureText, color * textColor, int hAlign=gpe::fa_left,int vAlign=gpe::fa_top, int rendWid = -1, int rendHeight = -1,int renderAlpha = 255);
-            virtual void render_text_rotated( int xPos, int yPos, std::string textureText, color * textColor, float textAngle = 0,int renderAlpha = 255);
-            virtual bool render_text_special( int xPos, int yPos, std::string textureText, color * textColor, int hAlign=gpe::fa_left,int vAlign=gpe::fa_top, float renderAngle = 0, float renderScale = 1.f, int renderAlpha = 255);
+            virtual void render_bitmapped_text( int x_pos, int y_pos, std::string number_to_render, color * text_color, int alignment_h=gpe::fa_top,int alignment_v=gpe::fa_top,int render_alpha = 255);
+            virtual void render_text( int x_pos, int y_pos, std::string text_to_render, color * text_color, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top,int render_alpha = 255);
+            virtual void render_text_boxed( int x_pos, int y_pos, std::string text_to_render, color * text_color,color * boxColor,int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top,int render_alpha = 255);
+            virtual void render_text_scaled( int x_pos, int y_pos, std::string text_to_render, color * text_color, float text_scale, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
+            virtual void render_text_resized( int x_pos, int y_pos, std::string text_to_render, color * text_color, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_width = -1, int render_height = -1,int render_alpha = 255);
+            virtual void render_text_rotated( int x_pos, int y_pos, std::string text_to_render, color * text_color, float textAngle = 0,int render_alpha = 255);
+            virtual bool render_text_special( int x_pos, int y_pos, std::string text_to_render, color * text_color, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, float render_angle = 0, float render_scale = 1.f, int render_alpha = 255);
     };
 
     extern font_base * font_default;
@@ -107,7 +106,7 @@ namespace gpe
     class font_system_controller
     {
         private:
-            int newFontIdNumber;
+            int newid_numberer;
             int fontTotalCount;
             font_base * lastFontUsed;
             std::vector < font_base * > loadedFonts;
@@ -116,8 +115,8 @@ namespace gpe
             font_system_controller();
             ~font_system_controller();
             //Font  Handling Functions [ BEGIN ]
-            font_base *  copy_font( font_base * parent_font, std::string font_nickname , int dynamicId );
-            font_base *  open_font( std::string fontLocation, int fontSize = 12, bool isMonoSpaced = false, std::string fNickName = "", int dynamicId = -1 );
+            font_base *  copy_font( font_base * parent_font, std::string font_nickname , int dynamic_id );
+            font_base *  open_font( std::string fontLocation, int font_size = 12, bool make_monospaced = false, std::string f_nickname = "", int dynamic_id = -1 );
             void close_font(int fontId );
             void close_font(font_base * fontIn);
             void clear_font_cache();
@@ -127,16 +126,16 @@ namespace gpe
 
             //Font Rendering [ BEGIN ]
             //Auto-translates
-            bool render_bitmap_text( int xPos, int yPos, std::string textureText, color * textColor,font_base * textFont=NULL, int hAlign=gpe::fa_left,int vAlign=gpe::fa_top, int renderAlpha = 255);
-            void render_fps( font_base * textFont,color * color = NULL , int xPos = 0, int yPos = 0, int hAlign = gpe::fa_right, int vAlign = gpe::fa_top );
-            bool render_text( int xPos, int yPos, std::string textureText, color * textColor,font_base * textFont=NULL, int hAlign=gpe::fa_left,int vAlign=gpe::fa_top, int renderAlpha = 255);
-            bool render_text_boxed( int xPos, int yPos, std::string textureText, color * textColor,color * boxColor, font_base * textFont=NULL, int hAlign=gpe::fa_left,int vAlign=gpe::fa_top, int renderAlpha = 255);
-            bool render_text_resized( int xPos, int yPos, std::string textureText, color * textColor, font_base * textFont=NULL, int hAlign=gpe::fa_left,int vAlign=gpe::fa_top, int rendWid = -1, int rendHeight = -1, int renderAlpha = 255);
-            bool render_text_rotated( int xPos, int yPos, std::string textureText, color * textColor, font_base * textFont, float textAngle = 0, int renderAlpha  = 255);
-            bool render_text_scaled( int xPos, int yPos, std::string textureText, color * textColor, float scaleValue, font_base * textFont=NULL,  int hAlign=gpe::fa_left,int vAlign=gpe::fa_top, int renderAlpha = 255);
-            bool render_text_special( int xPos, int yPos, std::string textureText, color * textColor, font_base * textFont=NULL, int hAlign=gpe::fa_left,int vAlign=gpe::fa_top, float renderAngle = 0, float renderScale = 1.f, int renderAlpha = 255);
+            bool render_bitmap_text( int x_pos, int y_pos, std::string text_to_render, color * text_color,font_base * text_font=NULL, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
+            void render_fps( font_base * text_font,color * color = NULL , int x_pos = 0, int y_pos = 0, int alignment_h = gpe::fa_right, int alignment_v = gpe::fa_top );
+            bool render_text( int x_pos, int y_pos, std::string text_to_render, color * text_color,font_base * text_font=NULL, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
+            bool render_text_boxed( int x_pos, int y_pos, std::string text_to_render, color * text_color,color * boxColor, font_base * text_font=NULL, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
+            bool render_text_resized( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font=NULL, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_width = -1, int render_height = -1, int render_alpha = 255);
+            bool render_text_rotated( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font, float textAngle = 0, int render_alpha  = 255);
+            bool render_text_scaled( int x_pos, int y_pos, std::string text_to_render, color * text_color, float scaleValue, font_base * text_font=NULL,  int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
+            bool render_text_special( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font=NULL, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, float render_angle = 0, float render_scale = 1.f, int render_alpha = 255);
             //Doesnt translate ( useful for textfields and code/text editors)
-            bool render_only_text( int xPos, int yPos, std::string textureText, color * textColor,font_base * textFont=NULL, int hAlign=gpe::fa_left,int vAlign=gpe::fa_top, int renderAlpha = 255);
+            bool render_only_text( int x_pos, int y_pos, std::string text_to_render, color * text_color,font_base * text_font=NULL, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
             //Font Rendering [ END ]
     };
 

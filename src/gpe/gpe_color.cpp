@@ -3,10 +3,10 @@ gpe_color.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,15 +37,15 @@ namespace gpe
 {
     color::color(std::string name, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
     {
-        colorName = name;
-        rVal=r;
-        gVal=g;
-        bVal=b;
-        aVal=a;
+        color_name = name;
+        r_val=r;
+        g_val=g;
+        b_val=b;
+        a_val=a;
     }
-    color::color(int hexDec)
+    color::color(int hex_dec_number )
     {
-        hexDecNumb = hexDec;
+        color_hex_number = hex_dec_number;
     }
 
     color::~color()
@@ -53,15 +53,15 @@ namespace gpe
 
     }
 
-    bool color::checkEquality(color otherColor)
+    bool color::checkEquality(color other_color)
     {
-        if(rVal==otherColor.rVal)
+        if(r_val==other_color.r_val)
         {
-            if(gVal==otherColor.gVal)
+            if(g_val==other_color.g_val)
             {
-                if(bVal==otherColor.bVal)
+                if(b_val==other_color.b_val)
                 {
-                    if(aVal==otherColor.aVal)
+                    if(a_val==other_color.a_val)
                     {
                         return true;
                     }
@@ -74,76 +74,76 @@ namespace gpe
 
     color * color::duplicate_color()
     {
-        color * duplicatedColor = new color(colorName,rVal,gVal,bVal,aVal);
+        color * duplicatedColor = new color(color_name,r_val,g_val,b_val,a_val);
         return duplicatedColor;
     }
 
     std::string color::get_name()
     {
-        return colorName;
+        return color_name;
     }
 
 
 
-    void color::set_hex(int newHex)
+    void color::set_hex(int hex_dec_number)
     {
-        hexDecNumb = newHex;
+        color_hex_number = hex_dec_number;
     }
 
     uint8_t color::get_r()
     {
-        return rVal;
+        return r_val;
     }
 
     uint8_t color::get_g()
     {
-        return gVal;
+        return g_val;
     }
 
     uint8_t color::get_b()
     {
-        return bVal;
+        return b_val;
     }
 
     uint8_t color::get_a()
     {
-        return aVal;
+        return a_val;
     }
 
     void color::change_r(uint8_t r)
     {
-        rVal=r;
+        r_val=r;
     }
 
     void color::change_g(uint8_t g)
     {
-        gVal=g;
+        g_val=g;
     }
 
     void color::change_b(uint8_t b)
     {
-        bVal=b;
+        b_val=b;
     }
     void color::change_a(uint8_t a)
     {
-        aVal=a;
+        a_val=a;
     }
 
     void color::change_rgba(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
     {
-        rVal=r;
-        gVal=g;
-        bVal=b;
-        aVal=a;
+        r_val=r;
+        g_val=g;
+        b_val=b;
+        a_val=a;
     }
 
     void color::change_and_verify_rgba(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
     {
 
-        rVal= r;
-        gVal= g;
-        bVal = b;
-        aVal = a;
+        r_val= r;
+        g_val= g;
+        b_val = b;
+        a_val = a;
     }
 
     void color::copy_color( color * other_color )
@@ -152,9 +152,9 @@ namespace gpe
         {
             return;
         }
-        rVal = other_color->get_r();
-        gVal = other_color->get_g();
-        bVal = other_color->get_b();
-        aVal = other_color->get_a();
+        r_val = other_color->get_r();
+        g_val = other_color->get_g();
+        b_val = other_color->get_b();
+        a_val = other_color->get_a();
     }
 }

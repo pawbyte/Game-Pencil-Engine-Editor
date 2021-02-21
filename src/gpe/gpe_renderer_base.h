@@ -3,10 +3,10 @@ renderer_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -68,7 +68,7 @@ namespace gpe
             std::string r_name;
             std::string r_type;
         public:
-            bool resize_happened;
+            bool resized;
             renderer_base();
             renderer_base(int rId, int widthStart, int heightStart );
             virtual ~renderer_base();
@@ -112,7 +112,7 @@ namespace gpe
             virtual bool scale_renderer_factor( float s_width, float s_height, bool scale_int );
 
             virtual bool screen_was_cleared();
-            virtual void set_render_blend_mode( int newBlendMode );
+            virtual void set_render_blend_mode( int blend_mode_new );
             virtual void set_viewpoint( gpe::shape_rect * newViewPoint = NULL);
             virtual void update_renderer( bool windowIsMinimized );
     };

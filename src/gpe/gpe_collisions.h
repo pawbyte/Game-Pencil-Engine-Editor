@@ -3,10 +3,10 @@ gpe_collisions.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -48,10 +48,10 @@ namespace gpe
     bool check_collision_circles( shape_circle A, shape_circle B );
     bool check_collision_circle_rect( gpe::shape_rect A, shape_circle B );
 
-    bool point_within(int pointX, int pointY,int mxmin,int mymin, int mxmax, int mymax);
-    bool point_between(int pointX, int pointY,int mxmin,int mymin, int mxmax, int mymax);
-    bool point_between_rect(int pointX, int pointY, gpe::shape_rect * rectIn= NULL);
-    bool point_within_rect(int pointX, int pointY, gpe::shape_rect * rectIn= NULL);
+    bool point_within(int point_x, int point_y,int mxmin,int mymin, int mxmax, int mymax);
+    bool point_between(int point_x, int point_y,int mxmin,int mymin, int mxmax, int mymax);
+    bool point_between_rect(int point_x, int point_y, gpe::shape_rect * rect_in= NULL);
+    bool point_within_rect(int point_x, int point_y, gpe::shape_rect * rect_in= NULL);
     //bool mouse_btw(int mxmin,int mymin, int mxmax, int mymax);
 }
 #endif //gpe_collisions_h

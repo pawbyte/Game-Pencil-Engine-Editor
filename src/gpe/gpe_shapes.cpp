@@ -3,10 +3,10 @@ gpe_shapes.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -148,14 +148,14 @@ namespace gpe
         }
     }
 
-    void shape_rect::set_x( float newX)
+    void shape_rect::set_x( float x_new)
     {
-        x = newX;
+        x = x_new;
     }
 
-    void shape_rect::set_y( float newY )
+    void shape_rect::set_y( float y_new )
     {
-        y = newY;
+        y = y_new;
     }
 
     void shape_rect::set_w( float newW)
@@ -233,11 +233,11 @@ namespace gpe
 
     }
 
-    void update_rectangle( gpe::shape_rect * rectIn, float nx, float ny, float nw, float nh)
+    void update_rectangle( gpe::shape_rect * rect_in, float nx, float ny, float nw, float nh)
     {
-        if( rectIn!=NULL)
+        if( rect_in!=NULL)
         {
-            rectIn->update_shape( nx, ny, nw, nh);
+            rect_in->update_shape( nx, ny, nw, nh);
         }
     }
 }

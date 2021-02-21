@@ -3,10 +3,10 @@ renderer_base.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -172,7 +172,7 @@ namespace gpe
     void renderer_base::resize_renderer(int newW, int newH )
     {
         r_width = newW;
-        r_height =newH;
+        r_height = newH;
     }
 
     std::string renderer_base::save_screenshot(std::string file_location )
@@ -195,7 +195,7 @@ namespace gpe
         return cleared_this_frame;
     }
 
-    void renderer_base::set_render_blend_mode( int newBlendMode )
+    void renderer_base::set_render_blend_mode( int blend_mode_new )
     {
 
     }

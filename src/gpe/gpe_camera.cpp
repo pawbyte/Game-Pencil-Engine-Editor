@@ -3,10 +3,10 @@ gpe_camera.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -40,13 +40,13 @@ namespace gpe
     shape_rect * camera_default = NULL;
     shape_rect * camera_current = NULL;
 
-    shape_rect * camera_find( shape_rect * rectIn)
+    shape_rect * camera_find( shape_rect * rect_in)
     {
-        if(rectIn==NULL)
+        if(rect_in==NULL)
         {
             return camera_default;
         }
-        return rectIn;
+        return rect_in;
     }
 
     void camera_reset()
@@ -61,160 +61,160 @@ namespace gpe
     }
 
 
-    scene_camera::scene_camera( float cameraX, float cameraY, float cameraW, float cameraH, int cameraIdNumber )
+    scene_camera::scene_camera( float camera_x, float camera_y, float camera_w, float camera_h, int cameraIdNumber )
     {
-        cameraRect = new gpe::shape_rect();
-        cameraBoundaries = new gpe::shape_rect();
-        cameraRect->update_shape(cameraX, cameraY, cameraW, cameraH);
+        camera_rect = new gpe::shape_rect();
+        camera_boundaries = new gpe::shape_rect();
+        camera_rect->update_shape(camera_x, camera_y, camera_w, camera_h);
 
-        renderRect = new gpe::shape_rect();
-        scaledRect = new gpe::shape_rect();
-        scaledRect->update_shape(cameraX, cameraY, cameraW, cameraH);
-        viewTarget = is_null;
-        horiBorder = is_null;
-        vertBorder = is_null;
+        render_rect = new gpe::shape_rect();
+        scaled_rect = new gpe::shape_rect();
+        scaled_rect->update_shape(camera_x, camera_y, camera_w, camera_h);
+        view_target = is_null;
+        border_horizontal = is_null;
+        border_vertical = is_null;
 
-        hSpeed = 0;
-        vSpeed = 0;
+        speed_horizontal = 0;
+        speed_vertical = 0;
 
-        isVisible = true;
+        camera_visible = true;
 
-        maxXTilesInView = 0;
-        maxYTilesInView = 0;
+        max_tiles_x_in_view = 0;
+        max_tiles_y_in_view = 0;
 
-        cSceneWidth = 0;
-        cSceneHeight = 0;
+        camera_scene_width = 0;
+        camera_scene_height = 0;
     }
 
     scene_camera::~scene_camera()
     {
-        if( cameraRect!=NULL )
+        if( camera_rect!=NULL )
         {
-            delete cameraRect;
-            cameraRect = NULL;
+            delete camera_rect;
+            camera_rect = NULL;
         }
 
-        if( cameraBoundaries!=NULL )
+        if( camera_boundaries!=NULL )
         {
-            delete cameraBoundaries;
-            cameraBoundaries = NULL;
+            delete camera_boundaries;
+            camera_boundaries = NULL;
         }
 
-        if( renderRect!=NULL )
+        if( render_rect!=NULL )
         {
-            delete renderRect;
-            renderRect = NULL;
+            delete render_rect;
+            render_rect = NULL;
         }
 
-        if( scaledRect!=NULL )
+        if( scaled_rect!=NULL )
         {
-            delete scaledRect;
-            scaledRect = NULL;
+            delete scaled_rect;
+            scaled_rect = NULL;
         }
     }
 
-    void scene_camera::center_camera ( float centerX, float centerY)
+    void scene_camera::center_camera ( float center_x, float center_y)
     {
-        cameraRect->update_position(centerX-cameraRect->get_width()/2,centerY-cameraRect->get_height()/2);
-        if( cameraRect->get_x2() > cameraBoundaries->get_width() )
+        camera_rect->update_position(center_x-camera_rect->get_width()/2,center_y-camera_rect->get_height()/2);
+        if( camera_rect->get_x2() > camera_boundaries->get_width() )
         {
-            cameraRect->set_x(cameraBoundaries->get_width()-cameraRect->get_width() );
+            camera_rect->set_x(camera_boundaries->get_width()-camera_rect->get_width() );
         }
-        if( cameraRect->get_y2() > cameraBoundaries->get_height() )
+        if( camera_rect->get_y2() > camera_boundaries->get_height() )
         {
-            cameraRect->set_y( cameraBoundaries->get_height()-cameraRect->get_height() );
+            camera_rect->set_y( camera_boundaries->get_height()-camera_rect->get_height() );
         }
 
-        if( cameraRect->get_x() < 0 )
+        if( camera_rect->get_x() < 0 )
         {
-            cameraRect->set_x(0);
+            camera_rect->set_x(0);
             //console.log("Setting cam X to 0 for protection...");
         }
-        if( cameraRect->get_y() < 0)
+        if( camera_rect->get_y() < 0)
         {
-            cameraRect->set_y(0);
+            camera_rect->set_y(0);
             //console.log("Setting cam Y to 0 for protection...");
 
         }
-        //console.log( "New Camera Pos:	("+cameraRect.get_x()+" , "+cameraRect.get_y()+")" );
+        //console.log( "New Camera Pos:	("+camera_rect.get_x()+" , "+camera_rect.get_y()+")" );
 
     }
 
     bool scene_camera::is_visible()
     {
-        return isVisible;
+        return camera_visible;
     }
 
-    void scene_camera::move_hori ( float movSpace )
+    void scene_camera::move_hori ( float move_px )
     {
-        if (movSpace < 0 )
+        if (move_px < 0 )
         {
-            if( cameraBoundaries->get_x() < cameraRect->get_x() +movSpace )
+            if( camera_boundaries->get_x() < camera_rect->get_x() +move_px )
             {
-                cameraRect->add_x( movSpace);
+                camera_rect->add_x( move_px);
             }
             else
             {
-                cameraRect->set_x(0);
+                camera_rect->set_x(0);
             }
         }
         else
         {
-            if( cameraBoundaries->get_x2() > cameraRect->get_x2() +movSpace )
+            if( camera_boundaries->get_x2() > camera_rect->get_x2() +move_px )
             {
-                cameraRect->add_x( movSpace);
+                camera_rect->add_x( move_px);
             }
         }
     }
 
-    void scene_camera::move_vert ( float movSpace )
+    void scene_camera::move_vert ( float move_px )
     {
-        if (movSpace < 0 )
+        if (move_px < 0 )
         {
-            if( cameraBoundaries->get_y() < cameraRect->get_y() +movSpace )
+            if( camera_boundaries->get_y() < camera_rect->get_y() +move_px )
             {
-                cameraRect->add_y( movSpace);
+                camera_rect->add_y( move_px);
             }
             else
             {
-                cameraRect->set_y(0);
+                camera_rect->set_y(0);
             }
         }
         else
         {
-            if( cameraBoundaries->get_y2() > cameraRect->get_y2() +movSpace )
+            if( camera_boundaries->get_y2() > camera_rect->get_y2() +move_px )
             {
-                cameraRect->add_y( movSpace);
+                camera_rect->add_y( move_px);
             }
         }
     }
 
     void scene_camera::set_visible( bool visiblility )
     {
-        isVisible = visiblility;
+        camera_visible = visiblility;
     }
 
-    void scene_camera::setup_camera (float cameraX,float cameraY, float cameraW, float cameraH)
+    void scene_camera::setup_camera (float camera_x,float camera_y, float camera_w, float camera_h)
     {
-        isVisible = true;
-        //console.log("Updaing Camera with ("+cameraX+", "+cameraY+", "+ cameraW+", "+cameraH+") dimensions...");
-        renderRect->update_shape(cameraX, cameraY, cameraW, cameraH);
-        cameraRect->update_shape(cameraX, cameraY, cameraW, cameraH);
+        camera_visible = true;
+        //console.log("Updaing Camera with ("+camera_x+", "+camera_y+", "+ camera_w+", "+camera_h+") dimensions...");
+        render_rect->update_shape(camera_x, camera_y, camera_w, camera_h);
+        camera_rect->update_shape(camera_x, camera_y, camera_w, camera_h);
     }
 
-    void scene_camera::update_tile_size (int newTX, int newTY)
+    void scene_camera::update_tile_size (int new_xt, int new_yt)
     {
-        maxXTilesInView = newTX;
-        maxYTilesInView = newTY;
+        max_tiles_x_in_view = new_xt;
+        max_tiles_y_in_view = new_yt;
     }
 
-    void scene_camera::update_screen_space ( float cameraX, float cameraY, float cameraW, float cameraH)
+    void scene_camera::update_screen_space ( float camera_x, float camera_y, float camera_w, float camera_h)
     {
-        renderRect->update_shape(cameraX, cameraY, cameraW, cameraH);
+        render_rect->update_shape(camera_x, camera_y, camera_w, camera_h);
     }
 
-    void scene_camera::update_view_space ( float cameraX, float cameraY, float cameraW, float cameraH)
+    void scene_camera::update_view_space ( float camera_x, float camera_y, float camera_w, float camera_h)
     {
-        cameraRect->update_shape(cameraX, cameraY, cameraW, cameraH);
+        camera_rect->update_shape(camera_x, camera_y, camera_w, camera_h);
     }
 }

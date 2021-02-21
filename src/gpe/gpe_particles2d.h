@@ -3,10 +3,10 @@ gpe_particles2d.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -58,23 +58,23 @@ namespace gpe
     const int part_shape_line = 7;
     const int part_shape_linecapped = 8;
 
-    const int PARTICLE_MAX_PER_EMITTER = 3000;
+    const int partical_max_per_emitter = 1000000;
 
     class particle
     {
         public:
-            texture_base * pTex;
-            bool rotateParticle;
-            float xStart,  yStart;
-            float pSpeed;
-            float pDirection;
-            float pGravity;
-            float pGravityDirection;
-            float xPos,  yPos;
-            float xVelocity, yVelocity;
+            texture_base * particle_texture;
+            bool rotate_particle;
+            float x_start,  y_start;
+            float p_speed;
+            float p_direction;
+            float p_gravity;
+            float p_gravity_direction;
+            float x_pos,  y_pos;
+            float x_velocity, y_velocity;
             float width, height;
-            float startScale;
-            float particleScale;
+            float start_scale;
+            float particle_scale;
             int shapeType;
             float particleLife;
             float startLife;
@@ -97,7 +97,7 @@ namespace gpe
     {
         private:
             std::vector< particle * > particles;
-            texture_base * pTex;
+            texture_base * particle_texture;
             int maxParticles;
             int currentParticleCount;
             float emissionRate;
@@ -106,6 +106,8 @@ namespace gpe
             float emissionCounter;
             int fallBackShapeType;
         public:
+            bool emission_disabled, emission_paused;
+            bool reverse_draw;
             float angleMin, angleMax;
             float speedMin, speedMax;
             float emitXPos, emitYPos;
@@ -118,7 +120,6 @@ namespace gpe
             float emitterYPos;
             bool sortByIndex;
             bool loopEmission;
-            bool emissionPaused;
             float radius;
             float lifeMin, lifeMax;
             int shapeType;
@@ -134,7 +135,7 @@ namespace gpe
             ~particle_emitter();
             bool can_emit();
             void burst_emit();
-            void change_texture( texture_base * newTex, int newBlendMode = blend_mode_blend );
+            void change_texture( texture_base * newTex, int blend_mode_new = blend_mode_blend );
             void clear_particles();
             int get_count();
             int get_remaining();

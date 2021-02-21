@@ -3,10 +3,10 @@ gpe_color_manager.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,7 +35,6 @@ SOFTWARE.
 namespace gpe
 {
     color_master * color_system = NULL;
-    color * textColor = NULL;
 
     color * c_aqua = NULL;
     color * c_black = NULL;
@@ -71,8 +70,8 @@ namespace gpe
     color * c_white = NULL;
     color * c_yellow = NULL;
 
-    color * hudColor = NULL;
-    color * hudColorHighlight = NULL;
+    color * color_hud = NULL;
+    color * color_hud_highlight = NULL;
 
     void init_colors()
     {
@@ -81,7 +80,6 @@ namespace gpe
             delete color_system;
             color_system= NULL;
         }
-        textColor = new color("text",228, 228, 228 );
         c_aqua = new color(   "aqua", 000,255,255);
         c_black =new color(  "black", 0,0,0);
         c_alblack = new color("alblack", 27,27,29);
@@ -96,7 +94,7 @@ namespace gpe
         c_jetblack = new color("jetblack", 52,52,52);
         c_lime =new color(   "lime",000,255,000);
         c_ltblue =new color( "ltblue",128,128,255);
-        c_ltgray =new color( "ltgray",211,211,211);
+        c_ltgray =new color( "ltgray",228,228,228);
         c_ltgreen =new color( "ltgreen", 128,255,128);
         c_ltlime =new color( "ltlime", 96,255,96);
         c_ltorange =new color( "ltorange",255,145,0);
@@ -116,8 +114,8 @@ namespace gpe
         c_white =new color(  "white", 255,255,255);
         c_yellow =new color( "yellow", 255,255,000);
 
-        hudColor = c_blgray;
-        hudColorHighlight = c_black;
+        color_hud = c_blgray;
+        color_hud_highlight = c_black;
 
         color_system = new color_master();
         color_system->define_colors();
@@ -128,12 +126,12 @@ namespace gpe
 
     }
 
-    void color_master::add_color( color *colorIn,std::string stringIn)
+    void color_master::add_color( color *color_in,std::string string_input)
     {
-        COLOR_OBJECTS.push_back(colorIn);
-        if(biggestStringSize<(int)stringIn.size())
+        color_directory_list.push_back(color_in);
+        if(largest_string_size<(int)string_input.size())
         {
-            biggestStringSize=(int)stringIn.size();
+            largest_string_size=(int)string_input.size();
         }
     }
 
@@ -166,23 +164,23 @@ namespace gpe
 
     int color_master::get_longest_color_name()
     {
-        return biggestStringSize;
+        return largest_string_size;
     }
 
     int color_master::get_color_count()
     {
-        return (int)COLOR_OBJECTS.size();
+        return (int)color_directory_list.size();
     }
 
-    color * color_master::get_color(std::string stringInForSearch)
+    color * color_master::get_color(std::string string_in_search)
     {
-        for(int i=0; i<(int)COLOR_OBJECTS.size(); i++)
+        for(int i=0; i<(int)color_directory_list.size(); i++)
         {
-            if(COLOR_OBJECTS[i]!=NULL)
+            if(color_directory_list[i]!=NULL)
             {
-                if(COLOR_OBJECTS[i]->get_name()==stringInForSearch)
+                if(color_directory_list[i]->get_name()==string_in_search)
                 {
-                    return COLOR_OBJECTS[i];
+                    return color_directory_list[i];
                 }
             }
         }
@@ -190,13 +188,13 @@ namespace gpe
     }
 
 
-    int color_master::find_color_id(std::string stringInForSearch)
+    int color_master::find_color_id(std::string string_in_search)
     {
-        for(unsigned i=0; i<(unsigned)COLOR_OBJECTS.size(); i++)
+        for(unsigned i=0; i<(unsigned)color_directory_list.size(); i++)
         {
-            if(COLOR_OBJECTS[i]!=NULL)
+            if(color_directory_list[i]!=NULL)
             {
-                if(COLOR_OBJECTS[i]->get_name()==stringInForSearch)
+                if(color_directory_list[i]->get_name()==string_in_search)
                 {
                     return i;
                 }
@@ -207,9 +205,9 @@ namespace gpe
 
     color *color_master::get_color_from_id(int pos)
     {
-        if((pos<(int)COLOR_OBJECTS.size())&&(pos>0))
+        if((pos<(int)color_directory_list.size())&&(pos>0))
         {
-            return COLOR_OBJECTS[pos];
+            return color_directory_list[pos];
         }
         else
         {
@@ -219,9 +217,9 @@ namespace gpe
 
     std::string color_master::get_color_name(int pos)
     {
-        if((pos<(int)COLOR_OBJECTS.size())&&(pos>0))
+        if((pos<(int)color_directory_list.size())&&(pos>0))
         {
-            return COLOR_OBJECTS[pos]->get_name();
+            return color_directory_list[pos]->get_name();
         }
         else
         {

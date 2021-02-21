@@ -3,10 +3,10 @@ gpe_basic_object.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -40,15 +40,15 @@ namespace gpe
 {
     int object_max_types = 0;
 
-    int gpeSpatialGridData::sPxWidth = 0;
-    int gpeSpatialGridData::sPxHeight = 0;
-    int gpeSpatialGridData::sGridXAmount = 0;
-    int gpeSpatialGridData::sGridYAmount = 0;
-    int gpeSpatialGridData::sGridTotalCells = gpeSpatialGridData::sGridXAmount  * gpeSpatialGridData::sGridYAmount;
-    std::map<std::string, bool > gpeSpatialGridData::collisionsCheckedInFrame;
-    bool gpeSpatialGridData::soryByXAxis = true;
+    int spatial_grid_data::sPxWidth = 0;
+    int spatial_grid_data::sPxHeight = 0;
+    int spatial_grid_data::sGridXAmount = 0;
+    int spatial_grid_data::sGridYAmount = 0;
+    int spatial_grid_data::sGridTotalCells = spatial_grid_data::sGridXAmount  * spatial_grid_data::sGridYAmount;
+    std::map<std::string, bool > spatial_grid_data::collisionsCheckedInFrame;
+    bool spatial_grid_data::soryByXAxis = true;
 
-    game_object::game_object(int xPosIn,  int yPosIn,  int objectLayerId)
+    game_object::game_object(int x_pos_in,  int y_pos_in,  int object_layer_id)
     {
         pathId = -1;
         foundPathObject = -1;
@@ -64,11 +64,11 @@ namespace gpe
         pathCurrentDirection = 0;
         pathGoingForward = true;
 
-        sceneLayerPos = objectLayerId;
-        sceneLayerStartPos = objectLayerId;
+        sceneLayerPos = object_layer_id;
+        sceneLayerStartPos = object_layer_id;
         //customComponents = {};
         gpeSceneStartId = is_null;
-        animId = is_null;
+        animation_id = is_null;
         outlineTestColor = c_lime;
         objectDepth = 0;
         prevObjectDepth = 0;
@@ -85,7 +85,7 @@ namespace gpe
         isMovingObject = false;
 
         collisionBox = new shape_rect();
-        collisionBox->update_shape( xPosIn, yPosIn, 32, 32);
+        collisionBox->update_shape( x_pos_in, y_pos_in, 32, 32);
         /************ END OF GETTER/SETTER ONLY VARIABLES *///////////////
         isOutsideScene = false;
         lastCollisionObjId = -1;
@@ -95,13 +95,13 @@ namespace gpe
         animationFrame = 0;
         imageSpeed = 0;
         animationEnded = false;
-        isVisible = true;
-        xBegin = xPosIn;
-        xpos = xPosIn;
-        x2Pos = xPosIn + 32;
-        yBegin = yPosIn;
-        ypos = yPosIn;
-        y2Pos = yPosIn + 32;
+        branch_visible = true;
+        xBegin = x_pos_in;
+        xpos = x_pos_in;
+        x2Pos = x_pos_in + 32;
+        yBegin = y_pos_in;
+        ypos = y_pos_in;
+        y2Pos = y_pos_in + 32;
         xEnd = 0;
         yEnd = 0;
         xVel = 0;
@@ -180,7 +180,7 @@ namespace gpe
 
     void game_object::check_spatial_movement()
     {
-        partitionIndexNextID = (  (xpos / gpeSpatialGridData::sPxWidth ) * gpeSpatialGridData::sPxHeight  )+ ( ypos /gpeSpatialGridData::sPxHeight);
+        partitionIndexNextID = (  (xpos / spatial_grid_data::sPxWidth ) * spatial_grid_data::sPxHeight  )+ ( ypos /spatial_grid_data::sPxHeight);
 
         if( partitionIndexNextID < 0 )
         {
@@ -236,11 +236,6 @@ namespace gpe
         return isMovingObject;
     }
 
-    bool game_object::is_visible()
-    {
-        return isVisible;
-    }
-
     void game_object::move_left(float leftMore)
     {
 
@@ -294,6 +289,11 @@ namespace gpe
 
     }
 
+    bool game_object::self_destruct()
+    {
+        return true;
+    }
+
     void game_object::set_animation(std::string nextAnimation, bool animIsMaskToo )
     {
 
@@ -309,12 +309,12 @@ namespace gpe
 
     }
 
-    void game_object::setx(float newX)
+    void game_object::setx(float x_new)
     {
 
     }
 
-    void game_object::sety(float newY)
+    void game_object::sety(float y_new)
     {
 
     }
@@ -333,15 +333,6 @@ namespace gpe
 
     }
 
-    void game_object::self_obliterate()
-    {
-
-    }
-
-    void game_object::self_destruct()
-    {
-
-    }
 
     void game_object::update()
     {
@@ -356,7 +347,7 @@ namespace gpe
 
     }
 
-    void game_object::update_cords(float newX,  float newY)
+    void game_object::update_cords(float x_new,  float y_new)
     {
 
     }

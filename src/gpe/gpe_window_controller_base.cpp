@@ -3,10 +3,10 @@ gpe_window_controller_base.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,7 +45,6 @@ namespace gpe
         window_has_mouse= false;
         window_has_focus = false;
         previously_scaled = false;
-        resize_happened = false;
         window_width = 0;
         window_height = 0;
         resized = false;
@@ -160,7 +159,7 @@ namespace gpe
 
     bool window_controller_base::is_resized()
     {
-        return resize_happened;
+        return resized;
     }
 
     bool window_controller_base::is_scaling()
@@ -209,6 +208,16 @@ namespace gpe
     }
 
     bool window_controller_base::scale_window_factor( float s_width, float s_height, bool scale_int )
+    {
+        return false;
+    }
+
+    void window_controller_base::set_window_position( int new_x, int new_y )
+    {
+
+    }
+
+    bool window_controller_base::set_window_size( int n_width, int n_height )
     {
         return false;
     }

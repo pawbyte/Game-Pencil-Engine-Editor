@@ -3,10 +3,10 @@ gpe_runtime.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the ԓoftwareԩ, to deal
@@ -201,8 +201,8 @@ namespace gpe
             {
                 cursor_main_controller->process_cursors();
             }
-            //screen_width = window_controller_main->get_window_width();
-            //screen_height = window_controller_main->get_window_height();
+            screen_width = window_controller_main->get_window_width();
+            screen_height = window_controller_main->get_window_height();
         }
         loop_started  = true;
         uint64_t eTicks = time_keeper->get_ticks();
@@ -214,8 +214,8 @@ namespace gpe
         loop_started = false;
         if(  window_controller_main->is_minimized() )
         {
-            error_log->report("End loop resetting timer...");
-            time_keeper->reset_timer();
+            //error_log->report("End loop resetting timer...");
+            //time_keeper->reset_timer();
             return;
         }
 

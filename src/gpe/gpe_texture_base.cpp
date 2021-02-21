@@ -3,10 +3,10 @@ texture_base.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -61,7 +61,7 @@ namespace gpe
 
     }
 
-    void texture_base::change_color( color * newColor)
+    void texture_base::change_color( color * color_new)
     {
 
     }
@@ -71,7 +71,7 @@ namespace gpe
 
     }
 
-    bool texture_base::copy_image_source(std::string outDirectoryName)
+    bool texture_base::copy_image_source(std::string directory_output_name)
     {
         return false;
     }
@@ -106,7 +106,7 @@ namespace gpe
         return textureType;
     }
 
-    void texture_base::load_new_texture( renderer_base * renderer, std::string fileName, int id , bool transparent , bool useLinearScaling )
+    void texture_base::load_new_texture( renderer_base * renderer, std::string file_name, int id , bool transparent , bool useLinearScaling )
     {
 
     }
@@ -121,7 +121,7 @@ namespace gpe
 
     }
 
-    void texture_base::prerender_rectangle( renderer_base * renderer,int w, int h, color * newColor, int id , bool transparent, bool useLinearScaling, bool isOutline  )
+    void texture_base::prerender_rectangle( renderer_base * renderer,int w, int h, color * color_new, int id , bool transparent, bool useLinearScaling, bool isOutline  )
     {
 
     }
@@ -132,12 +132,12 @@ namespace gpe
     }
 
 
-    void texture_base::render_align(  int x, int y, int hAlign, int vAlign, shape_rect* clip, color * rendColor, int alpha )
+    void texture_base::render_align(  int x, int y, int alignment_h, int alignment_v, shape_rect* clip, color * render_color, int alpha )
     {
 
     }
 
-    void texture_base::render_align_resized(  int x, int y,int newWidth, int newHeight, int hAlign, int vAlign, shape_rect* clip , color * rendColor , int alpha)
+    void texture_base::render_align_resized(  int x, int y,int new_width, int new_height, int alignment_h, int alignment_v, shape_rect* clip , color * render_color , int alpha)
     {
 
     }
@@ -147,37 +147,37 @@ namespace gpe
 
     }
 
-    void texture_base::render_tex_colored(  int x, int y, color * rendColor, int alpha, shape_rect* clip )
+    void texture_base::render_tex_colored(  int x, int y, color * render_color, int alpha, shape_rect* clip )
     {
 
     }
 
-    void texture_base::render_tex_resized(  int x, int y,float newWidth, float newHeight, shape_rect* clip, color * rendColor, int alpha)
+    void texture_base::render_tex_resized(  int x, int y,float new_width, float new_height, shape_rect* clip, color * render_color, int alpha)
     {
 
     }
 
-    void texture_base::render_tex_scaled(  int x, int y,float xScale, float yScale, shape_rect* clip, color * rendColor, int alpha )
+    void texture_base::render_tex_scaled(  int x, int y,float x_scale, float y_scale, shape_rect* clip, color * render_color, int alpha )
     {
 
     }
 
-    void texture_base::render_tex_rotated(  int x, int y, float renderAngle,  color * renderColor, shape_rect* clip , int alpha )
+    void texture_base::render_tex_rotated(  int x, int y, float render_angle,  color * render_color, shape_rect* clip , int alpha )
     {
 
     }
 
-    void texture_base::render_tex_rotated_at_point(  int x, int y, float renderAngle, int pointX, int pointY, color * renderColor , shape_rect* clip, int alpha )
+    void texture_base::render_tex_rotated_at_point(  int x, int y, float render_angle, int point_x, int point_y, color * render_color , shape_rect* clip, int alpha )
     {
 
     }
 
-    void texture_base::render_tex_special(  int x, int y, float renderAngle, int newWidth , int newHeight, color * renderColor, shape_rect* clip , int alpha )
+    void texture_base::render_tex_special(  int x, int y, float render_angle, int new_width , int new_height, color * render_color, shape_rect* clip , int alpha )
     {
 
     }
 
-    void texture_base::render_tex_special_at_point(  int x, int y, float renderAngle, int pointX, int pointY,int newWidth, int newHeight, color * renderColor, shape_rect* clip, int alpha )
+    void texture_base::render_tex_special_at_point(  int x, int y, float render_angle, int point_x, int point_y,int new_width, int new_height, color * render_color, shape_rect* clip, int alpha )
     {
 
     }
@@ -189,7 +189,7 @@ namespace gpe
     }
 
 
-    void texture_base::set_blend_mode( int newBlendMode)
+    void texture_base::set_blend_mode( int blend_mode_new)
     {
 
     }

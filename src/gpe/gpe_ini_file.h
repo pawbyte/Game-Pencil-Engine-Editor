@@ -3,10 +3,10 @@ gpe_ini_file.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -34,30 +34,31 @@ SOFTWARE.
 #ifndef gpe_ini_file_h
 #define gpe_ini_file_h
 
-#include "../other_libs/sff_ex.h"
-#include "../other_libs/stg_ex.h"
+#include "gpe_file_system.h"
 #include "gpe_parser.h"
+
+#include "../other_libs/stg_ex.h"
 
 namespace gpe
 {
     class gpe_ini_file
     {
         private:
-            std::vector <gpe::key_pair *> iniFileSections;
+            std::vector <gpe::key_pair *> ini_sections;
         public:
         gpe_ini_file();
         ~gpe_ini_file();
-        gpe::key_pair * add_section( std::string sectionName);
-        void clear_all_sections();
-        void clear_section( std::string sectionName );
-        float find_float_keypair( std::string sectionName,std::string sKey);
-        std::string find_string_keypair( std::string sectionName,std::string sKey);
-        gpe::key_pair * find_section( std::string sectionName);
-        bool map_key_pair( std::string sectionName,std::string sKey, std::string sValue);
-        bool read_ini_file(std::string fName, int lineTrimStyle = 0);
-        void remove_all_sections();
-        void remove_section( std::string sectionName );
-        bool write_ini_file(std::string fName);
+        virtual gpe::key_pair * add_section( std::string section_name);
+        virtual void clear_all_sections();
+        virtual void clear_section( std::string section_name );
+        virtual float find_float_keypair( std::string section_name,std::string section_key);
+        virtual std::string find_string_keypair( std::string section_name,std::string section_key);
+        virtual gpe::key_pair * find_section( std::string section_name);
+        virtual bool map_key_pair( std::string section_name,std::string section_key, std::string section_value);
+        virtual bool read_ini_file(std::string f_name, int lineTrimStyle = 0);
+        virtual void remove_all_sections();
+        virtual void remove_section( std::string section_name );
+        virtual bool write_ini_file(std::string f_name);
     };
 }
 #endif //gpe_ini_file_h

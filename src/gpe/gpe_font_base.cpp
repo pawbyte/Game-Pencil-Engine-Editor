@@ -3,10 +3,10 @@ gpe_font_base.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -53,9 +53,9 @@ namespace gpe
 
     }
 
-    bool font_pair_base::texture_matches(std::string strCheck)
+    bool font_pair_base::texture_matches(std::string str_check)
     {
-        if( str==strCheck)
+        if( str==str_check)
         {
             return true;
         }
@@ -75,16 +75,16 @@ namespace gpe
     font_base::font_base()
     {
         font_system_type = "base";
-        fontFamilyName = "";
-        fontNickName = "";
+        font_family_name = "";
+        font_nickname = "";
         last_used_halign = fa_left;
         last_used_valign = fa_top;
-        customFontId = -1;
-        monoWidth = 0;
-        monoHeight = 0;
-        numberWidth = 0;
-        numberHeight = 0;
-        fontIsMonoSpaced = false;
+        font_id = -1;
+        mono_width = 0;
+        mono_height = 0;
+        number_width = 0;
+        number_height = 0;
+        font_is_monospaced = false;
     }
 
     font_base::~font_base()
@@ -97,17 +97,17 @@ namespace gpe
 
     }
 
-    font_base * font_base::create_new(std::string fFileLocation, int fSize, bool isMonospaced, const std::string fNickName, int fontIdNumb )
+    font_base * font_base::create_new(std::string file_loc, int f_size, bool make_monospaced, const std::string f_nickname, int id_number )
     {
         return NULL;
     }
 
-        font_pair_base * font_base::find_character_texture( const std::string numbId )
+        font_pair_base * font_base::find_character_texture( const std::string id_number )
     {
         return NULL;
     }
 
-    font_pair_base * font_base::find_texture( const std::string textToRender)
+    font_pair_base * font_base::find_texture( const std::string text_to_render)
     {
         return NULL;
     }
@@ -119,67 +119,67 @@ namespace gpe
 
     int font_base::get_font_id()
     {
-        return customFontId;
+        return font_id;
     }
 
-    void font_base::get_metrics(std::string textToRender, int * wVal, int * hVal)
+    void font_base::get_metrics(std::string text_to_render, int * width_value, int * height_value)
     {
-        int tSize = (int)textToRender.size();
+        int tSize = (int)text_to_render.size();
         if( tSize > 0)
         {
-            *wVal = monoWidth*tSize;
-            *hVal = monoHeight;
+            *width_value = mono_width*tSize;
+            *height_value = mono_height;
         }
         else
         {
-            *wVal = 0;
-            *hVal = 0;
+            *width_value = 0;
+            *height_value = 0;
         }
     }
 
-    void font_base::get_numbered_metrics(std::string textToRender, int * wVal, int * hVal)
+    void font_base::get_numbered_metrics(std::string text_to_render, int * width_value, int * height_value)
     {
-        int tSize = (int)textToRender.size();
+        int tSize = (int)text_to_render.size();
         if( tSize > 0)
         {
-            *wVal = numberWidth*tSize;
-            *hVal = numberHeight;
+            *width_value = number_width*tSize;
+            *height_value = number_height;
         }
         else
         {
-            *wVal = 0;
-            *hVal = 0;
+            *width_value = 0;
+            *height_value = 0;
         }
     }
 
-    void font_base::get_wrapped_string_metrics( const std::string strIn, int lineWidth, int linePadding, int * wVal, int *hVal )
+    void font_base::get_wrapped_string_metrics( const std::string str_in, int line_width, int linePadding, int * width_value, int *height_value )
     {
 
     }
 
     int font_base::get_mono_height()
     {
-        return monoHeight;
+        return mono_height;
     }
 
     int font_base::get_mono_width()
     {
-        return monoWidth;
+        return mono_width;
     }
 
     std::string font_base::get_nickname()
     {
-        return fontNickName;
+        return font_nickname;
     }
 
     std::string font_base::get_family_name()
     {
-        return fontFamilyName;
+        return font_family_name;
     }
 
     int font_base::get_font_size()
     {
-        return fontSize;
+        return font_size;
     }
 
     std::string font_base::get_font_type()
@@ -189,40 +189,40 @@ namespace gpe
 
     bool font_base::is_monospaced()
     {
-        return fontIsMonoSpaced;
+        return font_is_monospaced;
     }
 
-    void font_base::render_bitmapped_text( int xPos, int yPos, std::string numberToRender, color * textColor, int hAlign,int vAlign, int renderAlpha )
+    void font_base::render_bitmapped_text( int x_pos, int y_pos, std::string number_to_render, color * text_color, int alignment_h,int alignment_v, int render_alpha )
     {
         error_log->report("Base class rendering font bitmapped!");
     }
 
-    void font_base::render_text( int xPos, int yPos, std::string textureText, color * textColor, int hAlign,int vAlign, int renderAlpha )
+    void font_base::render_text( int x_pos, int y_pos, std::string text_to_render, color * text_color, int alignment_h,int alignment_v, int render_alpha )
     {
         error_log->report("Base class rendering font!");
     }
 
-    void font_base::render_text_scaled( int xPos, int yPos, std::string textureText, color * textColor, float textScale, int hAlign,int vAlign, int renderAlpha )
+    void font_base::render_text_scaled( int x_pos, int y_pos, std::string text_to_render, color * text_color, float text_scale, int alignment_h,int alignment_v, int render_alpha )
     {
         error_log->report("Base class rendering font scaled!");
     }
 
-    void font_base::render_text_resized( int xPos, int yPos, std::string textureText, color * textColor, int hAlign,int vAlign, int rendWid, int rendHeight, int renderAlpha )
+    void font_base::render_text_resized( int x_pos, int y_pos, std::string text_to_render, color * text_color, int alignment_h,int alignment_v, int render_width, int render_height, int render_alpha )
     {
         error_log->report("Base class rendering font resized!");
     }
 
-    void font_base::render_text_boxed( int xPos, int yPos, std::string textureText, color * textColor,color * boxColor,int hAlign,int vAlign, int renderAlpha )
+    void font_base::render_text_boxed( int x_pos, int y_pos, std::string text_to_render, color * text_color,color * boxColor,int alignment_h,int alignment_v, int render_alpha )
     {
         error_log->report("Base class rendering font boxed!");
     }
 
-    void font_base::render_text_rotated( int xPos, int yPos, std::string textureText, color * textColor, float textAngle, int renderAlpha )
+    void font_base::render_text_rotated( int x_pos, int y_pos, std::string text_to_render, color * text_color, float textAngle, int render_alpha )
     {
         error_log->report("Base class rendering font rotated!");
     }
 
-    bool font_base::render_text_special( int xPos, int yPos, std::string textureText, color * textColor, int hAlign,int vAlign, float renderAngle , float renderScale, int renderAlpha )
+    bool font_base::render_text_special( int x_pos, int y_pos, std::string text_to_render, color * text_color, int alignment_h,int alignment_v, float render_angle , float render_scale, int render_alpha )
     {
         error_log->report("Base class rendering font special!");
         return false;
@@ -230,7 +230,7 @@ namespace gpe
 
     font_system_controller::font_system_controller()
     {
-        newFontIdNumber = 0;
+        newid_numberer = 0;
         fontTotalCount = 0;
         lastFontUsed = NULL;
     }
@@ -240,35 +240,35 @@ namespace gpe
 
     }
 
-    font_base *  font_system_controller::copy_font( font_base * parent_font, std::string font_nickname , int dynamicId )
+    font_base *  font_system_controller::copy_font( font_base * parent_font, std::string font_nickname , int dynamic_id )
     {
         if( parent_font == NULL )
         {
             return NULL;
         }
-        if( dynamicId < 0)
+        if( dynamic_id < 0)
         {
-            dynamicId = newFontIdNumber;
+            dynamic_id = newid_numberer;
         }
-        font_base *  returnVal = font_template->create_new( parent_font->get_family_name(),parent_font->get_font_size(), parent_font->is_monospaced(), font_nickname, newFontIdNumber );
+        font_base *  returnVal = font_template->create_new( parent_font->get_family_name(),parent_font->get_font_size(), parent_font->is_monospaced(), font_nickname, newid_numberer );
         loadedFonts.push_back(returnVal);
-        newFontIdNumber++;
+        newid_numberer++;
         fontTotalCount++;
         return returnVal;
     }
 
 
-    font_base * font_system_controller::open_font(std::string fontLocation, int fontSize, bool isMonospaced, std::string fNickName, int dynamicId )
+    font_base * font_system_controller::open_font(std::string fontLocation, int font_size, bool make_monospaced, std::string f_nickname, int dynamic_id )
     {
-        if( dynamicId < 0)
+        if( dynamic_id < 0)
         {
-            dynamicId = newFontIdNumber;
+            dynamic_id = newid_numberer;
         }
         if( font_template != NULL )
         {
-            font_base *  returnVal = font_template->create_new( fontLocation.c_str(),fontSize, isMonospaced, fNickName,dynamicId );
+            font_base *  returnVal = font_template->create_new( fontLocation.c_str(),font_size, make_monospaced, f_nickname,dynamic_id );
             loadedFonts.push_back(returnVal);
-            newFontIdNumber++;
+            newid_numberer++;
             fontTotalCount++;
             return returnVal;
         }
@@ -329,7 +329,7 @@ namespace gpe
                 {
                     foundCache =cFont->get_cache_count();
                     cacheCount+=foundCache;
-                    gpe::error_log->report("      Font["+cFont->fontNickName+"] Cache total: ["+ stg_ex::int_to_string(foundCache )+"]...");
+                    gpe::error_log->report("      Font["+cFont->font_nickname+"] Cache total: ["+ stg_ex::int_to_string(foundCache )+"]...");
                 }
             }
             gpe::error_log->report("Font Cache total: ["+ stg_ex::int_to_string(cacheCount )+"]...");
@@ -354,25 +354,25 @@ namespace gpe
         return fontTotalCount;
     }
 
-    bool font_system_controller::render_bitmap_text( int xPos, int yPos, std::string textureText, color * textColor, font_base * textFont, int hAlign, int vAlign, int renderAlpha)
+    bool font_system_controller::render_bitmap_text( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font, int alignment_h, int alignment_v, int render_alpha)
     {
-        if( textFont==NULL)
+        if( text_font==NULL)
         {
-            textFont = lastFontUsed;
+            text_font = lastFontUsed;
         }
-        if( textFont!=NULL)
+        if( text_font!=NULL)
         {
-            textFont->render_bitmapped_text( xPos,yPos,textureText,textColor,hAlign,vAlign,renderAlpha);
+            text_font->render_bitmapped_text( x_pos,y_pos,text_to_render,text_color,alignment_h,alignment_v,render_alpha);
             return true;
         }
         else
         {
-            gpe::error_log->report( "Unable to render number ("+ textureText + ")");
+            gpe::error_log->report( "Unable to render number ("+ text_to_render + ")");
         }
         return false;
     }
 
-    void font_system_controller::render_fps( font_base * textFont, color * color,  int xPos, int yPos, int hAlign , int vAlign  )
+    void font_system_controller::render_fps( font_base * text_font, color * color,  int x_pos, int y_pos, int alignment_h , int alignment_v  )
     {
         //if( fps_show_counter )
         {
@@ -385,118 +385,118 @@ namespace gpe
             {
                 color =  c_red;
             }
-            if( xPos < 0 )
+            if( x_pos < 0 )
             {
-                xPos = gpe::screen_width;
+                x_pos = gpe::screen_width;
             }
-            if( yPos < 0 )
+            if( y_pos < 0 )
             {
-                yPos = 0;
+                y_pos = 0;
             }
-            render_text( xPos, yPos, stg_ex::float_to_string(fps_current)+" / "+ stg_ex::float_to_string(fps_cap)+" fps | "+ stg_ex::float_to_string( delta_current )+" / " + stg_ex::float_to_string( time_keeper->get_needed_ticks() ) + " ms ",color,textFont,hAlign, vAlign );
+            render_text( x_pos, y_pos, stg_ex::float_to_string(fps_current)+" / "+ stg_ex::float_to_string(fps_cap)+" fps | "+ stg_ex::float_to_string( delta_current )+" / " + stg_ex::float_to_string( time_keeper->get_needed_ticks() ) + " ms ",color,text_font,alignment_h, alignment_v );
 
         }
     }
 
-    bool font_system_controller::render_only_text( int xPos, int yPos, std::string textureText, color * textColor, font_base * textFont, int hAlign, int vAlign, int renderAlpha)
+    bool font_system_controller::render_only_text( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font, int alignment_h, int alignment_v, int render_alpha)
     {
-        if( textFont==NULL)
+        if( text_font==NULL)
         {
-            textFont = lastFontUsed;
+            text_font = lastFontUsed;
         }
-        if( (int)textureText.size() > 0)
+        if( (int)text_to_render.size() > 0)
         {
-            if( textFont!=NULL)
+            if( text_font!=NULL)
             {
-                textFont->render_text( xPos,yPos,textureText,textColor,hAlign,vAlign,renderAlpha);
+                text_font->render_text( x_pos,y_pos,text_to_render,text_color,alignment_h,alignment_v,render_alpha);
                 return true;
             }
         }
         return false;
     }
 
-    bool font_system_controller::render_text( int xPos, int yPos, std::string textureText, color * textColor, font_base * textFont, int hAlign, int vAlign, int renderAlpha)
+    bool font_system_controller::render_text( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font, int alignment_h, int alignment_v, int render_alpha)
     {
-        if( textFont==NULL)
+        if( text_font==NULL)
         {
-            textFont = lastFontUsed;
+            text_font = lastFontUsed;
         }
-        if( (int)textureText.size() > 0 && textFont!=NULL )
+        if( (int)text_to_render.size() > 0 && text_font!=NULL )
         {
-            //error_log->report("Rendering Text["+ textureText+"]");
-            textFont->render_text( xPos,yPos,textureText,textColor,hAlign,vAlign,renderAlpha);
+            //error_log->report("Rendering Text["+ text_to_render+"]");
+            text_font->render_text( x_pos,y_pos,text_to_render,text_color,alignment_h,alignment_v,render_alpha);
             return true;
         }
-        else if( (int)textureText.size() > 0 )
+        else if( (int)text_to_render.size() > 0 )
         {
-            // std::cout << "Unable to render text (" << textureText << ").\n";
-            error_log->report("Unable to render text [" + textureText + "]");
+            // std::cout << "Unable to render text (" << text_to_render << ").\n";
+            error_log->report("Unable to render text [" + text_to_render + "]");
             return false;
         }
 
         return false;
     }
 
-    bool font_system_controller::render_text_boxed( int xPos, int yPos, std::string textureText, color * textColor,color * boxColor, font_base * textFont, int hAlign,int vAlign, int renderAlpha)
+    bool font_system_controller::render_text_boxed( int x_pos, int y_pos, std::string text_to_render, color * text_color,color * boxColor, font_base * text_font, int alignment_h,int alignment_v, int render_alpha)
     {
-        if( textFont==NULL)
+        if( text_font==NULL)
         {
-            textFont = lastFontUsed;
+            text_font = lastFontUsed;
         }
-        if( textFont!=NULL)
+        if( text_font!=NULL)
         {
-            textFont->render_text_boxed( xPos,yPos,textureText,textColor,boxColor,hAlign,vAlign,renderAlpha);
+            text_font->render_text_boxed( x_pos,y_pos,text_to_render,text_color,boxColor,alignment_h,alignment_v,render_alpha);
             return true;
         }
         return false;
     }
 
-    bool font_system_controller::render_text_resized( int xPos, int yPos, std::string textureText, color * textColor, font_base * textFont, int hAlign, int vAlign, int rendWid, int rendHeight, int renderAlpha )
+    bool font_system_controller::render_text_resized( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font, int alignment_h, int alignment_v, int render_width, int render_height, int render_alpha )
     {
-        if( textFont==NULL)
+        if( text_font==NULL)
         {
-            textFont = lastFontUsed;
+            text_font = lastFontUsed;
         }
-        if( textFont!=NULL)
+        if( text_font!=NULL)
         {
-            textFont->render_text_resized( xPos,yPos,textureText,textColor,hAlign,vAlign,rendWid,rendHeight,renderAlpha);
+            text_font->render_text_resized( x_pos,y_pos,text_to_render,text_color,alignment_h,alignment_v,render_width,render_height,render_alpha);
             return true;
         }
-        else if( textFont!=NULL )
+        else if( text_font!=NULL )
         {
-            std::cout << "Unable to render EXT text (" << textureText << ").\n";
+            std::cout << "Unable to render EXT text (" << text_to_render << ").\n";
         }
         return false;
     }
 
-    bool font_system_controller::render_text_rotated( int xPos, int yPos, std::string textureText, color * textColor, font_base * textFont, float textAngle, int renderAlpha )
+    bool font_system_controller::render_text_rotated( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font, float textAngle, int render_alpha )
     {
-        if( textFont==NULL)
+        if( text_font==NULL)
         {
-            textFont = lastFontUsed;
+            text_font = lastFontUsed;
         }
-        if( textFont!=NULL)
+        if( text_font!=NULL)
         {
-            textFont->render_text_rotated( xPos,yPos,textureText,textColor,textAngle,renderAlpha);
+            text_font->render_text_rotated( x_pos,y_pos,text_to_render,text_color,textAngle,render_alpha);
             return true;
         }
         return false;
     }
 
-    bool font_system_controller::render_text_scaled( int xPos, int yPos, std::string textureText,color * textColor, float scaleValue, font_base * textFont, int hAlign,int vAlign, int renderAlpha )
+    bool font_system_controller::render_text_scaled( int x_pos, int y_pos, std::string text_to_render,color * text_color, float scaleValue, font_base * text_font, int alignment_h,int alignment_v, int render_alpha )
     {
-        if( textFont!=NULL)
+        if( text_font!=NULL)
         {
-            textFont->render_text_scaled( xPos, yPos, textureText, textColor, scaleValue, hAlign, vAlign, renderAlpha );
+            text_font->render_text_scaled( x_pos, y_pos, text_to_render, text_color, scaleValue, alignment_h, alignment_v, render_alpha );
         }
         return false;
     }
 
-    bool font_system_controller::render_text_special( int xPos, int yPos, std::string textureText, color * textColor, font_base * textFont, int hAlign,int vAlign, float renderAngle, float renderScale, int renderAlpha )
+    bool font_system_controller::render_text_special( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font, int alignment_h,int alignment_v, float render_angle, float render_scale, int render_alpha )
     {
-        if( textFont!=NULL)
+        if( text_font!=NULL)
         {
-            return textFont->render_text_special( xPos, yPos, textureText, textColor, hAlign, vAlign, renderAngle, renderScale, renderAlpha );
+            return text_font->render_text_special( x_pos, y_pos, text_to_render, text_color, alignment_h, alignment_v, render_angle, render_scale, render_alpha );
         }
         return false;
     }

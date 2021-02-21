@@ -3,10 +3,10 @@ texture_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -57,9 +57,9 @@ namespace gpe
             texture_base();
             virtual ~texture_base();
             virtual void change_alpha( uint8_t alpha );
-            virtual void change_color( color * newColor);
+            virtual void change_color( color * color_new);
             virtual void change_color( uint8_t red, uint8_t green, uint8_t blue );
-            virtual bool copy_image_source(std::string outDirectoryName);
+            virtual bool copy_image_source(std::string directory_output_name);
             virtual texture_base * create_new();
 
             std::string get_filename();
@@ -70,27 +70,27 @@ namespace gpe
             int get_width();
 
             //Loader functions
-            virtual void load_new_texture( renderer_base * renderer, std::string fileName, int id = -1, bool transparent = true, bool useLinearScaling = false );
+            virtual void load_new_texture( renderer_base * renderer, std::string file_name, int id = -1, bool transparent = true, bool useLinearScaling = false );
 
             //pre-render functions...
             virtual void prerender_circle( renderer_base * renderer, int rad, color * circleColor,  uint8_t alpha = 255,int id = -1, bool transparent = true, bool useLinearScaling = true, bool isOutline = false  );
             virtual void prerender_triangle( renderer_base * renderer, shape_triangle2d,  color * circleColor,  uint8_t alpha = 255 );
-            virtual void prerender_rectangle( renderer_base * renderer, int w, int h, color * newColor, int id = -1, bool transparent = true, bool useLinearScaling = true , bool isOutline = false);
+            virtual void prerender_rectangle( renderer_base * renderer, int w, int h, color * color_new, int id = -1, bool transparent = true, bool useLinearScaling = true , bool isOutline = false);
 
             //
-            virtual void render_align(  int x, int y, int hAlign, int vAlign, shape_rect* clip = NULL, color * rendColor = NULL, int alpha = 255  );
-            virtual void render_align_resized(  int x, int y,int newWidth, int newHeight, int hAlign, int vAlign, shape_rect* clip = NULL, color * rendColor = NULL, int alpha = 255 );
+            virtual void render_align(  int x, int y, int alignment_h, int alignment_v, shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255  );
+            virtual void render_align_resized(  int x, int y,int new_width, int new_height, int alignment_h, int alignment_v, shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
             virtual void render_tex(  int x, int y, shape_rect* clip = NULL, int alpha = 255  );
-            virtual void render_tex_colored(  int x, int y, color * rendColor, int alpha = 255, shape_rect* clip = NULL  );
-            virtual void render_tex_resized(  int x, int y,float newWidth, float newHeight, shape_rect* clip = NULL, color * rendColor = NULL, int alpha = 255 );
-            virtual void render_tex_scaled(  int x, int y,float xScale, float yScale, shape_rect* clip = NULL, color * rendColor = NULL, int alpha = 255 );
-            virtual void render_tex_rotated(  int x, int y, float renderAngle,  color * renderColor = NULL, shape_rect* clip = NULL , int alpha = 255 );
-            virtual void render_tex_rotated_at_point(  int x, int y, float renderAngle, int pointX, int pointY, color * renderColor = NULL, shape_rect* clip = NULL , int alpha = 255 );
-            virtual void render_tex_special(  int x, int y, float renderAngle, int newWidth = -1, int newHeight = -1, color * renderColor = NULL, shape_rect* clip = NULL , int alpha = 255 );
-            virtual void render_tex_special_at_point(  int x, int y, float renderAngle, int pointX, int pointY,int newWidth = -1, int newHeight = -1, color * renderColor = NULL, shape_rect* clip = NULL , int alpha = 255 );
+            virtual void render_tex_colored(  int x, int y, color * render_color, int alpha = 255, shape_rect* clip = NULL  );
+            virtual void render_tex_resized(  int x, int y,float new_width, float new_height, shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
+            virtual void render_tex_scaled(  int x, int y,float x_scale, float y_scale, shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
+            virtual void render_tex_rotated(  int x, int y, float render_angle,  color * render_color = NULL, shape_rect* clip = NULL , int alpha = 255 );
+            virtual void render_tex_rotated_at_point(  int x, int y, float render_angle, int point_x, int point_y, color * render_color = NULL, shape_rect* clip = NULL , int alpha = 255 );
+            virtual void render_tex_special(  int x, int y, float render_angle, int new_width = -1, int new_height = -1, color * render_color = NULL, shape_rect* clip = NULL , int alpha = 255 );
+            virtual void render_tex_special_at_point(  int x, int y, float render_angle, int point_x, int point_y,int new_width = -1, int new_height = -1, color * render_color = NULL, shape_rect* clip = NULL , int alpha = 255 );
 
             virtual void set_alpha( int alpha);
-            virtual void set_blend_mode( int newBlendMode);
+            virtual void set_blend_mode( int blend_mode_new);
     };
 }
 #endif //gpe_texture_base_h

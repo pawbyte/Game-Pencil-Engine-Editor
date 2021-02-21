@@ -3,10 +3,10 @@ gpe_input_base.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -42,6 +42,7 @@ namespace gpe
 
     gamepad_base::gamepad_base()
     {
+        gamepad_id_number = 0;
         system_handler = "";
         gp_system_axes_count = 0;
         device_extension = "";
@@ -94,9 +95,9 @@ namespace gpe
             }
             else if( button_id == gp_anybutton )
             {
-                for( int iAnyButton = gp_button_count-1; iAnyButton >=0; iAnyButton-- )
+                for( int iAny_button = gp_button_count-1; iAny_button >=0; iAny_button-- )
                 {
-                    if( button_button[ button_map[iAnyButton] ] > 0 )
+                    if( button_button[ button_map[iAny_button] ] > 0 )
                     {
                         return true;
                     }
@@ -105,9 +106,9 @@ namespace gpe
             }
             else if( button_id == gp_nobutton )
             {
-                for(int iNoButton = gp_button_count-1; iNoButton >=0; iNoButton-- )
+                for(int iNo_button = gp_button_count-1; iNo_button >=0; iNo_button-- )
                 {
-                    if( button_button[ button_map[iNoButton] ] > 0 )
+                    if( button_button[ button_map[iNo_button] ] > 0 )
                     {
                         return false;
                     }
@@ -131,9 +132,9 @@ namespace gpe
             }
             else if( button_id == gp_anybutton )
             {
-                for(int iAnyButton = gp_button_count-1; iAnyButton >=0; iAnyButton-- )
+                for(int iAny_button = gp_button_count-1; iAny_button >=0; iAny_button-- )
                 {
-                    if( button_pressed[ button_map[iAnyButton] ] > 0 )
+                    if( button_pressed[ button_map[iAny_button] ] > 0 )
                     {
                         return true;
                     }
@@ -142,9 +143,9 @@ namespace gpe
             }
             else if( button_id == gp_nobutton )
             {
-                for( int iNoButton = gp_button_count-1; iNoButton >=0; iNoButton-- )
+                for( int iNo_button = gp_button_count-1; iNo_button >=0; iNo_button-- )
                 {
-                    if( button_pressed[ button_map[iNoButton] ] > 0 )
+                    if( button_pressed[ button_map[iNo_button] ] > 0 )
                     {
                         return false;
                     }
@@ -168,9 +169,9 @@ namespace gpe
             }
             else if( button_id == gp_anybutton )
             {
-                for( int iAnyButton = gp_button_count-1; iAnyButton >=0; iAnyButton-- )
+                for( int iAny_button = gp_button_count-1; iAny_button >=0; iAny_button-- )
                 {
-                    if( button_released[ button_map[iAnyButton] ] > 0 )
+                    if( button_released[ button_map[iAny_button] ] > 0 )
                     {
                         return true;
                     }
@@ -179,9 +180,9 @@ namespace gpe
             }
             else if( button_id == gp_nobutton )
             {
-                for( int iNoButton = gp_button_count-1; iNoButton >=0; iNoButton-- )
+                for( int iNo_button = gp_button_count-1; iNo_button >=0; iNo_button-- )
                 {
-                    if( button_released[ button_map[iNoButton] ] > 0 )
+                    if( button_released[ button_map[iNo_button] ] > 0 )
                     {
                         return false;
                     }
@@ -311,9 +312,9 @@ namespace gpe
         device_name = new_name;
     }
 
-    void gamepad_base::setup_default_mapping( bool mapButtons, bool mapAxis)
+    void gamepad_base::setup_default_mapping( bool map_buttons, bool mapAxis)
     {
-        if( mapButtons)
+        if( map_buttons)
         {
             for(int but=0; but <gp_button_count; but++)
             {
@@ -915,7 +916,7 @@ namespace gpe
             {
                 time(&last_screen_resize);
             }
-            reset_all_input();
+            //reset_all_input();
         }
 
         if( window_controller_main->window_closed)
@@ -1031,21 +1032,21 @@ namespace gpe
 
     bool input_manager_base::load_input_settings(std::string file_path )
     {
-        std::string inputSettingsFile = app_directory_name + "gpe_input_settings.txt";
-        if( sff_ex::file_exists(file_path) )
+        std::string input_settingsFile = app_directory_name + "gpe_input_settings.txt";
+        if( main_file_url_manager->file_exists(file_path) )
         {
-            inputSettingsFile = inputSettingsFile;
+            input_settingsFile = input_settingsFile;
         }
-        if( sff_ex::file_exists(inputSettingsFile) )
+        if( main_file_url_manager->file_exists(input_settingsFile) )
         {
-            std::ifstream gameResourceFileIn( inputSettingsFile.c_str() );
+            std::ifstream gameResourceFileIn( input_settingsFile.c_str() );
             if (gameResourceFileIn.is_open() )
             {
                 int equalPos = 0;
                 std::string firstChar="";
-                std::string keyString="";
-                std::string valString="";
-                std::string subValString="";
+                std::string key_string="";
+                std::string valstring="";
+                std::string subValstring="";
                 std::string currLine="";
                 std::string currLineToBeProcessed;
 
@@ -1070,11 +1071,11 @@ namespace gpe
                                 if(equalPos!=(int)std::string::npos)
                                 {
                                     //if the equalPos is present, then parse on through and carryon
-                                    keyString = currLineToBeProcessed.substr(0,equalPos);
-                                    valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                                    if( keyString=="Version")
+                                    key_string = currLineToBeProcessed.substr(0,equalPos);
+                                    valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                    if( key_string=="Version")
                                     {
-                                        foundFileVersion = stg_ex::string_to_float(valString);
+                                        foundFileVersion = stg_ex::string_to_float(valstring);
                                     }
                                 }
                             }
@@ -1089,12 +1090,12 @@ namespace gpe
                             if(equalPos!=(int)std::string::npos)
                             {
                                 //if the equalPos is present, then parse on through and carryon
-                                keyString = currLineToBeProcessed.substr(0,equalPos);
-                                valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                key_string = currLineToBeProcessed.substr(0,equalPos);
+                                valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
-                                if( keyString=="deput_input")
+                                if( key_string=="deput_input")
                                 {
-                                    debug_input = stg_ex::string_to_bool( valString);
+                                    debug_input = stg_ex::string_to_bool( valstring);
                                 }
                             }
                         }

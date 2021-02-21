@@ -3,10 +3,10 @@ gpe_lights2d.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,51 +39,51 @@ namespace gpe
 {
     light_basic_2d::light_basic_2d()
     {
-        lightX = 0;
-        lightY = 0;
-        lightIntensity = 255;
-        lightIsActive = true;
-        lightActiveOnStart = true;
-        lightColor = new color("Light",255,255 );
+        xpos = 0;
+        ypos = 0;
+        light_intensity = 255;
+        light_is_active = true;
+        light_active_on_start = true;
+        light_color = new color("Light",255,255 );
     }
 
     light_basic_2d::~light_basic_2d()
     {
-        if( lightColor!=NULL )
+        if( light_color!=NULL )
         {
-            delete lightColor;
-            lightColor = NULL;
+            delete light_color;
+            light_color = NULL;
         }
     }
 
     void light_basic_2d::render_light( float scale, gpe::shape_rect * cam )
     {
         cam = gpe::camera_find( cam );
-        gpe::gcanvas->render_rectangle(0,0, cam->w, cam->h, lightColor, false, lightIntensity );
+        gpe::gcanvas->render_rectangle(0,0, cam->w, cam->h, light_color, false, light_intensity );
     }
 
     void light_basic_2d::render_light_at( float x, float y, float scale, gpe::shape_rect * cam )
     {
         cam = gpe::camera_find( cam );
-        gpe::gcanvas->render_rect( cam, lightColor, false, lightIntensity );
+        gpe::gcanvas->render_rect( cam, light_color, false, light_intensity );
     }
 
     void light_basic_2d::setup_light( int x, int y, int intensity, bool activeNow, bool activeOnLoad )
     {
-        lightX = x;
-        lightY = y;
-        lightIntensity = intensity;
-        lightIsActive = activeNow;
-        lightActiveOnStart = activeOnLoad;
+        xpos = x;
+        ypos = y;
+        light_intensity = intensity;
+        light_is_active = activeNow;
+        light_active_on_start = activeOnLoad;
     }
 
     light_direction2d::light_direction2d()
     {
-        lightX2 = lightY2 = 0;
-        lightWidth = 64;
-        lightLength = 128;
-        lightDirection = 0;
-        lightTexture = NULL;
+        light_x2 = light_y2 = 0;
+        light_width = 64;
+        light_length = 128;
+        light_direction = 0;
+        light_texture = NULL;
     }
 
     light_direction2d::~light_direction2d()
@@ -93,27 +93,27 @@ namespace gpe
 
     float light_direction2d::get_direction()
     {
-        return lightDirection;
+        return light_direction;
     }
 
     void light_direction2d::render_light( float scale, gpe::shape_rect * cam )
     {
-        render_light_at(lightX, lightY, scale, cam );
+        render_light_at(xpos, ypos, scale, cam );
     }
 
     void light_direction2d::render_light_at( float x, float y, float scale, gpe::shape_rect * cam )
     {
         cam = gpe::camera_find( cam );
-        if( lightTexture!=NULL )
+        if( light_texture!=NULL )
         {
-            lightTexture->render_tex_rotated( x - cam->x, y - cam->y,lightDirection, lightColor, NULL, lightIntensity );
+            light_texture->render_tex_rotated( x - cam->x, y - cam->y,light_direction, light_color, NULL, light_intensity );
         }
         else
         {
-            lightX2 = x + semath::lengthdir_x( lightLength*scale,lightDirection ) - cam->x;
-            lightY2 = y + semath::lengthdir_y( lightLength*scale,lightDirection ) - cam->y;
-            //gpe::gcanvas->render_semi_circle(x,y,lightWidth,lightDirection, false );
-            gpe::gcanvas->render_line_width_color(x- cam->x, y - cam->y, lightX2, lightY2, lightWidth, lightColor, lightIntensity );
+            light_x2 = x + semath::lengthdir_x( light_length*scale,light_direction ) - cam->x;
+            light_y2 = y + semath::lengthdir_y( light_length*scale,light_direction ) - cam->y;
+            //gpe::gcanvas->render_semi_circle(x,y,light_width,light_direction, false );
+            gpe::gcanvas->render_line_width_color(x- cam->x, y - cam->y, light_x2, light_y2, light_width, light_color, light_intensity );
         }
     }
 
@@ -127,21 +127,21 @@ namespace gpe
         {
             newDir -= 360.f;
         }
-        lightDirection = newDir;
+        light_direction = newDir;
     }
 
     light_point2d::light_point2d()
     {
-        lightRadius = 32;
-        secondRadius = 16;
-        thirdRadius = 0;
-        useFlicker = true;
-        currentFlicker = 0;
-        lightFlickerTime = 0;
-        lightFlickerTimeGoal = 250;
-        lightFlickerRange = 2;
-        secondRadiusIntensity = 255;
-        thirdRadiusIntensity = 0;
+        light_radius = 32;
+        light_radius_second = 16;
+        light_radius_third = 0;
+        light_flickers = true;
+        light_flicker_amount = 0;
+        light_flicker_time = 0;
+        light_flicker_time_goal = 250;
+        light_flicker_range = 2;
+        light_radius_second_intensity = 255;
+        light_radius_third_intensity = 0;
     }
 
     light_point2d::~light_point2d()
@@ -151,32 +151,32 @@ namespace gpe
 
     void light_point2d::disable_flicker()
     {
-        useFlicker = false;
-        lightFlickerTime = 0;
-        currentFlicker = 0;
+        light_flickers = false;
+        light_flicker_time = 0;
+        light_flicker_amount = 0;
     }
 
     void light_point2d::enable_flicker()
     {
-        useFlicker = true;
+        light_flickers = true;
     }
 
     void light_point2d::render_light( float scale, gpe::shape_rect * cam )
     {
-        render_light_at(lightX, lightY, scale, cam );
+        render_light_at(xpos, ypos, scale, cam );
     }
 
     void light_point2d::render_light_at( float x, float y, float scale, gpe::shape_rect * cam )
     {
         cam = gpe::camera_find( cam );
-        gpe::gcanvas->render_circle_color( x, y, (lightRadius+currentFlicker)*scale,lightColor, lightIntensity );
-        if( secondRadius > 0 )
+        gpe::gcanvas->render_circle_filled_color( x, y, (light_radius+light_flicker_amount)*scale,light_color, light_intensity );
+        if( light_radius_second > 0 )
         {
-            gpe::gcanvas->render_circle_color( x, y, (secondRadius+currentFlicker)*scale, lightColor, secondRadiusIntensity );
+            gpe::gcanvas->render_circle_filled_color( x, y, (light_radius_second+light_flicker_amount)*scale, light_color, light_radius_second_intensity );
         }
-        if( thirdRadius > 0 )
+        if( light_radius_third > 0 )
         {
-            gpe::gcanvas->render_circle_color( x, y, (thirdRadius+currentFlicker)*scale, lightColor, thirdRadiusIntensity  );
+            gpe::gcanvas->render_circle_filled_color( x, y, (light_radius_third+light_flicker_amount)*scale, light_color, light_radius_third_intensity  );
         }
     }
 
@@ -185,15 +185,15 @@ namespace gpe
         if( fTime > 0 && fRange > 0 )
         {
             enable_flicker();
-            lightFlickerTimeGoal = fTime;
-            lightFlickerRange = fRange;
-            if( currentFlicker < -fRange)
+            light_flicker_time_goal = fTime;
+            light_flicker_range = fRange;
+            if( light_flicker_amount < -fRange)
             {
-                currentFlicker = -fRange;
+                light_flicker_amount = -fRange;
             }
-            else if( currentFlicker > fRange )
+            else if( light_flicker_amount > fRange )
             {
-                currentFlicker = fRange;
+                light_flicker_amount = fRange;
             }
         }
         else
@@ -204,13 +204,13 @@ namespace gpe
 
     void light_point2d::update_light( int delta )
     {
-        if( useFlicker )
+        if( light_flickers )
         {
-            lightFlickerTime+=delta;
-            if( lightFlickerTime >= lightFlickerTimeGoal )
+            light_flicker_time+=delta;
+            if( light_flicker_time >= light_flicker_time_goal )
             {
-                currentFlicker = semath::random( -lightFlickerRange, lightFlickerRange );
-                lightFlickerTime = 0;
+                light_flicker_amount = semath::random( -light_flicker_range, light_flicker_range );
+                light_flicker_time = 0;
             }
         }
     }

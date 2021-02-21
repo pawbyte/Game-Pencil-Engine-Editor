@@ -2,10 +2,10 @@
 gpe_file_system.cpp
 This file is part of:GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,10 +37,12 @@ SOFTWARE.
 
 namespace gpe
 {
-    std::string generate_filters(const std::vector<GPE_FileFilter *> filters)
+    file_and_url_manager * main_file_url_manager = NULL;
+
+    std::string generate_filters(const std::vector<filetype_filter *> filters)
     {
         std::string result ="";
-        GPE_FileFilter * tempFilter = NULL;
+        filetype_filter * tempFilter = NULL;
         for(int i = 0; i < (int)filters.size(); i++)
         {
             tempFilter = filters[i];
@@ -58,9 +60,9 @@ namespace gpe
     std::string parse_file_types(std::string allowedFileTypes,std::vector <std::string> &fileTypeVector)
     {
         fileTypeVector.clear();
-        std::string returnFileFilterString = "All types(*.*)\0*.*\0";
-        std::vector<GPE_FileFilter *> filters;
-        GPE_FileFilter * tempNewFilter = NULL;
+        std::string returnFileFilterstring = "All types(*.*)\0*.*\0";
+        std::vector<filetype_filter *> filters;
+        filetype_filter * tempNewFilter = NULL;
         if( (int)allowedFileTypes.size() > 0)
         {
             if( allowedFileTypes=="All types(*.*)" ||  allowedFileTypes=="All Files" || allowedFileTypes=="None" ||  allowedFileTypes=="All Files*")
@@ -69,7 +71,7 @@ namespace gpe
             }
             else if( allowedFileTypes=="Image Only" || allowedFileTypes=="Image" || allowedFileTypes=="Images" || allowedFileTypes=="Photos")
             {
-                tempNewFilter = new GPE_FileFilter("Images (*.bmp | *.png | *.jpg)", "*.bmp;*.png;*.jpg");
+                tempNewFilter = new filetype_filter("Images (*.bmp | *.png | *.jpg)", "*.bmp;*.png;*.jpg");
                 filters.push_back(tempNewFilter );
                 fileTypeVector.push_back("bmp");
                 fileTypeVector.push_back("BMP");
@@ -93,12 +95,12 @@ namespace gpe
                 fileTypeVector.push_back("wav");
                 fileTypeVector.push_back("WAV");
 
-                tempNewFilter = new GPE_FileFilter("Audio (*.aac | *.mp3 | *.ogg| *.wav)", "*.aac;*.mp3;*.ogg;*.wav");
+                tempNewFilter = new filetype_filter("Audio (*.aac | *.mp3 | *.ogg| *.wav)", "*.aac;*.mp3;*.ogg;*.wav");
                 filters.push_back(tempNewFilter );
             }
             else if( allowedFileTypes=="Video Only" || allowedFileTypes=="Video" || allowedFileTypes=="Videos")
             {
-                tempNewFilter = new GPE_FileFilter("Video (*.mp4 | *.ogg| *.webm)", "*.mp4;*.ogg;*.webm");
+                tempNewFilter = new filetype_filter("Video (*.mp4 | *.ogg| *.webm)", "*.mp4;*.ogg;*.webm");
                 filters.push_back(tempNewFilter );
                 fileTypeVector.push_back("mp4");
                 fileTypeVector.push_back("MP4");
@@ -109,7 +111,7 @@ namespace gpe
             }
             else if( allowedFileTypes=="Fonts Only" || allowedFileTypes=="Font" || allowedFileTypes=="Fonts")
             {
-                tempNewFilter = new GPE_FileFilter("Fonts (*.eot | *.svg| *.ttf)", "*.eot;*.svg;*.ttf");
+                tempNewFilter = new filetype_filter("Fonts (*.eot | *.svg| *.ttf)", "*.eot;*.svg;*.ttf");
                 filters.push_back(tempNewFilter );
                 fileTypeVector.push_back("eot");
                 fileTypeVector.push_back("EOT");
@@ -120,7 +122,7 @@ namespace gpe
             }
             else if( allowedFileTypes=="Game Pencil Projects" || allowedFileTypes=="GPE Project")
             {
-                tempNewFilter = new GPE_FileFilter("Game Pencil Projects (*.gppf)", "*.gppf");
+                tempNewFilter = new filetype_filter("Game Pencil Projects (*.gppf)", "*.gppf");
                 fileTypeVector.push_back("gppf");
             }
             else if( allowedFileTypes.size() > 2)
@@ -143,9 +145,9 @@ namespace gpe
                 }
             }
         }
-        tempNewFilter = new GPE_FileFilter("All Files (*.*)", "*.*");
+        tempNewFilter = new filetype_filter("All Files (*.*)", "*.*");
         filters.push_back(tempNewFilter );
-        returnFileFilterString = generate_filters(filters);
+        returnFileFilterstring = generate_filters(filters);
         for( int iDelete = (int)filters.size()-1; iDelete>=0; iDelete--)
         {
             tempNewFilter = filters.at(iDelete);
@@ -156,7 +158,7 @@ namespace gpe
             }
         }
         filters.clear();
-        return returnFileFilterString;
+        return returnFileFilterstring;
     }
 
     bool file_passes_filter(std::string fileTypeIn, std::vector <std::string> &fileTypeVector)
@@ -183,157 +185,157 @@ namespace gpe
         return false;
     }
 
-    GPE_FileFilter::GPE_FileFilter(std::string fDesc, std::string fExts )
+    filetype_filter::filetype_filter(std::string filter_desc, std::string filter_extensions )
     {
-        desc = fDesc;
-        exts = fExts;
+        desc = filter_desc;
+        exts = filter_extensions;
     }
 
-    GPE_FileFilter::~GPE_FileFilter()
+    filetype_filter::~filetype_filter()
     {
 
     }
 
-    GPE_File::GPE_File(std::string fName,bool fileIsDirectory)
+    file_object::file_object(std::string f_name,bool f_is_dir)
     {
-        isDirectory = fileIsDirectory;
-        if( (int)fName.size() > 0)
+        file_is_dir = f_is_dir;
+        if( (int)f_name.size() > 0)
         {
-            fileName = fName;
-            if( isDirectory)
+            file_name = f_name;
+            if( file_is_dir)
             {
                 fileType = "";
             }
             else
             {
-                fileType = stg_ex::get_file_ext(fName);
+                fileType = stg_ex::get_file_ext(f_name);
             }
         }
         else
         {
-            fileName = "";
+            file_name = "";
             fileType = "";
         }
-        fileThumbnail = NULL;
-        fileSizeInfo = 0;
-        dataCreatedInfo = "";
-        dataModifiedInfo = "";
+        thumbnail_texture = NULL;
+        file_size_info = 0;
+        date_creation_info = "";
+        date_modified_info = "";
     }
 
-    GPE_File::~GPE_File()
+    file_object::~file_object()
     {
-        if( fileThumbnail!=NULL)
+        if( thumbnail_texture!=NULL)
         {
-            delete fileThumbnail;
-            fileThumbnail = NULL;
+            delete thumbnail_texture;
+            thumbnail_texture = NULL;
         }
     }
 
-    bool GPE_File::is_directory()
+    bool file_object::is_directory()
     {
-        return isDirectory;
+        return file_is_dir;
     }
 
-    std::string GPE_File::get_name()
+    std::string file_object::get_name()
     {
-        return fileName;
+        return file_name;
     }
 
-    std::string GPE_File::get_type()
+    std::string file_object::get_type()
     {
         return fileType;
     }
 
-    GPE_FileDirectory::GPE_FileDirectory()
+    file_directory_class::file_directory_class()
     {
-        fdPosition= 0;
-        fileCount= 0;
-        subdirectoryCount= 0;
+        file_position= 0;
+        file_count= 0;
+        sub_directory_count= 0;
     }
 
-    GPE_FileDirectory::~GPE_FileDirectory()
+    file_directory_class::~file_directory_class()
     {
         close_directory();
     }
 
 
-    bool GPE_FileDirectory::open_directory(std::string directoryIn)
+    bool file_directory_class::open_directory(std::string directory_string)
     {
-        return open_directory_sorted(directoryIn);
+        return open_directory_sorted(directory_string);
     }
 
-    void GPE_FileDirectory::close_directory()
+    void file_directory_class::close_directory()
     {
-        GPE_File * tFile = NULL;
-        for( int i = (int)myFiles.size()-1; i>=0; i--)
+        file_object * tFile = NULL;
+        for( int i = (int)files_list.size()-1; i>=0; i--)
         {
-            tFile = myFiles[i];
+            tFile = files_list[i];
             if( tFile!=NULL)
             {
                 delete tFile;
                 tFile = NULL;
             }
         }
-        myFiles.clear();
-        fdPosition= 0;
-        fileCount= 0;
-        subdirectoryCount= 0;
+        files_list.clear();
+        file_position= 0;
+        file_count= 0;
+        sub_directory_count= 0;
     }
 
-    void GPE_FileDirectory::filter_directory(bool onlyFolders, std::vector <std::string> &fTypesToUse)
+    void file_directory_class::filter_directory(bool only_folders, std::vector <std::string> &file_types_to_use)
     {
-        GPE_File * tempFile = NULL;
-        fdPosition = 0;
-        fileCount = 0;
-        subdirectoryCount = 0;
-        for( int i = (int)myFiles.size() - 1; i >=0; i--)
+        file_object * tempFile = NULL;
+        file_position = 0;
+        file_count = 0;
+        sub_directory_count = 0;
+        for( int i = (int)files_list.size() - 1; i >=0; i--)
         {
-            tempFile = myFiles[i];
+            tempFile = files_list[i];
             if( tempFile!=NULL)
             {
-                if( onlyFolders)
+                if( only_folders)
                 {
                     if( tempFile->is_directory() )
                     {
-                        subdirectoryCount++;
+                        sub_directory_count++;
                     }
                 }
                 else if( tempFile->is_directory() )
                 {
-                    subdirectoryCount++;
+                    sub_directory_count++;
                 }
-                else if( file_passes_filter (tempFile->get_type(), fTypesToUse) )
+                else if( file_passes_filter (tempFile->get_type(), file_types_to_use) )
                 {
-                    fileCount++;
+                    file_count++;
                 }
                 else
                 {
                     delete tempFile;
                     tempFile = NULL;
-                    myFiles.erase(myFiles.begin()+i);
+                    files_list.erase(files_list.begin()+i);
                 }
             }
             else
             {
-                myFiles.erase(myFiles.begin()+i);
+                files_list.erase(files_list.begin()+i);
             }
         }
     }
 
-    bool GPE_FileDirectory::open_directory_sorted(std::string directoryIn)
+    bool file_directory_class::open_directory_sorted(std::string directory_string)
     {
-        if( sff_ex::path_exists(directoryIn) )
+        if( main_file_url_manager->folder_exists(directory_string) )
         {
             close_directory();
             std::string foundErrorMessage;
             DIR *dir;
             struct dirent *ent;
-            dir = opendir( directoryIn.c_str() );
+            dir = opendir( directory_string.c_str() );
             if( dir==NULL)
             {
                 foundErrorMessage = strerror(errno);
 
-                error_log->report("Unable to open directory["+directoryIn+"]");
+                error_log->report("Unable to open directory["+directory_string+"]");
                 error_log->report("Error: "+foundErrorMessage);
 
                 //tinydir_close(&dir);
@@ -341,8 +343,8 @@ namespace gpe
             }
             else
             {
-                GPE_File * newFile = NULL;
-                GPE_File * tFile = NULL;
+                file_object * newFile = NULL;
+                file_object * tFile = NULL;
                 int i = 0;
                 int j = 0;
                 bool foundNewPosition = false;
@@ -366,38 +368,38 @@ namespace gpe
                         new_file_name = ent->d_name;
                         if(new_file_name!=".." && new_file_name!=".")
                         {
-                            newFileIsDirectory = sff_ex::path_exists(directoryIn+"/"+ent->d_name);
+                            newFileIsDirectory = main_file_url_manager->folder_exists(directory_string+"/"+ent->d_name);
                             //if( ( main_editor_settings!=NULL && main_editor_settings->showHiddenFilesInBrowser->is_clicked() ) || system_found_os!=GPE_IDE_LINUX || (system_found_os==GPE_IDE_LINUX && new_file_name.find_first_of(".",0)!=0) )
                             {
-                                newFile = new GPE_File(new_file_name, newFileIsDirectory);
+                                newFile = new file_object(new_file_name, newFileIsDirectory);
                                 if( newFile!=NULL)
                                 {
-                                    newFile->fileLocationDirectory = directoryIn;
+                                    newFile->file_directory_location = directory_string;
                                     foundNewPosition = false;
 
-                                    for( j = (int)myFiles.size()-1; j >=0 && foundNewPosition==false; j--)
+                                    for( j = (int)files_list.size()-1; j >=0 && foundNewPosition==false; j--)
                                     {
-                                        tFile = myFiles[j];
+                                        tFile = files_list[j];
                                         if( tFile!=NULL)
                                         {
                                             if( tFile->get_name() >= new_file_name )
                                             {
-                                                myFiles.insert(myFiles.begin()+j,newFile);
+                                                files_list.insert(files_list.begin()+j,newFile);
                                                 foundNewPosition = true;
                                             }
                                         }
                                     }
                                     if( !foundNewPosition)
                                     {
-                                        myFiles.push_back(newFile);
+                                        files_list.push_back(newFile);
                                     }
                                     if( newFileIsDirectory )
                                     {
-                                        subdirectoryCount++;
+                                        sub_directory_count++;
                                     }
                                     else
                                     {
-                                        fileCount++;
+                                        file_count++;
                                     }
                                 }
                             }
@@ -415,453 +417,132 @@ namespace gpe
         return false;
     }
 
-    GPE_File * GPE_FileDirectory::get_file(int position)
+    file_object * file_directory_class::get_file(int position)
     {
-        if( position >=0 && position < (int)myFiles.size() )
+        if( position >=0 && position < (int)files_list.size() )
         {
-            return myFiles.at(position);
+            return files_list.at(position);
         }
         return NULL;
     }
 
-    int GPE_FileDirectory::get_count()
+    int file_directory_class::get_count()
     {
-        return (int)myFiles.size();
+        return (int)files_list.size();
     }
 
-    int GPE_FileDirectory::get_subdirectory_count()
+    int file_directory_class::get_subdirectory_count()
     {
-        return subdirectoryCount;
+        return sub_directory_count;
     }
 
-    int GPE_FileDirectory::get_file_count()
+    int file_directory_class::get_file_count()
     {
-        return fileCount;
+        return file_count;
     }
 
-    GPE_File * GPE_FileDirectory::get_next_file()
+    file_object * file_directory_class::get_next_file()
     {
         if( has_next_file() )
         {
-            fdPosition++;
-            return get_file(fdPosition);
+            file_position++;
+            return get_file(file_position);
         }
         return NULL;
     }
 
-    bool GPE_FileDirectory::has_next_file()
+    bool file_directory_class::has_next_file()
     {
-        if( fdPosition>=0 && fdPosition < (int)myFiles.size()-1 )
+        if( file_position>=0 && file_position < (int)files_list.size()-1 )
         {
             return true;
         }
         return false;
     }
 
-    bool GPE_FileDirectory::set_position(int position)
+    bool file_directory_class::set_position(int position)
     {
-        if( position >=0 && position < (int)myFiles.size() )
+        if( position >=0 && position < (int)files_list.size() )
         {
-            fdPosition = position;
+            file_position = position;
         }
         return false;
     }
 
-
-
-    void external_open_program(std::string programLocation, std::string programInfo, bool openProgrmaInfoOnFail )
+    file_and_url_manager::file_and_url_manager()
     {
-        error_log->report("Attempting to open ["+programLocation+"] with ["+programInfo+"] data...");
-        if( sff_ex::file_exists(programLocation) || sff_ex::path_exists(programLocation) )
-        {
-    #ifdef _WIN32
-            // win implementation
-            //programLocation = "start "+urlIn;
-            programInfo = stg_ex::string_replace_all(programInfo,"/","\\");
-            ShellExecute(NULL,NULL,programLocation.c_str(),programInfo.c_str(),NULL,SW_SHOW );
-    #elif __APPLE__
-            // apple implementation
-            programLocation = "open "+programLocation;
 
-            system(programLocation.c_str() );
-    #else
-            // Linux and others implementation
-            programLocation = "xdg-open \""+programLocation+"\"";
-            system(programLocation.c_str() );
-    #endif
-        }
-        else if( openProgrmaInfoOnFail )
-        {
-            external_open_url(programInfo);
-        }
     }
 
-    void external_open_url(std::string urlIn)
+    file_and_url_manager::~file_and_url_manager()
     {
-        //urlIn+="&";
-        /**/
-    #ifdef _WIN32
-        // win implementation
-        ShellExecute(NULL, "open", urlIn.c_str(), NULL, NULL, SW_SHOWNORMAL);
-    #elif __APPLE__
-        // apple implementation
-        urlIn = "open "+urlIn;
-        system(urlIn.c_str() );
-    #else
-        // Linux and others implementation
-        urlIn = "xdg-open \""+urlIn+"\"";
-        system(urlIn.c_str() );
-    #endif
+
     }
 
-    int getFileSize(const std::string &fileName)
+    void file_and_url_manager::external_open_program(std::string program_location, std::string program_info, bool show_program_info_on_fail )
     {
-        std::ifstream file(fileName.c_str(), std::ifstream::in | std::ifstream::binary);
 
-        if(!file.is_open())
-        {
-            return -1;
-        }
-
-        file.seekg(0, std::ios::end);
-        int fileSize = file.tellg();
-        file.close();
-
-        return fileSize;
     }
 
-    std::string getFileSizeString(const std::string &fileName)
+    void file_and_url_manager::external_open_url(std::string url_string)
     {
-        float fSizeInBytes = getFileSize( fileName );
-        if( fSizeInBytes <  0 )
-        {
-            return "Error: File Size not found...";
-        }
-        if( fSizeInBytes >=BSIZE_TB )
-        {
-            return stg_ex::float_to_string( fSizeInBytes/BSIZE_TB )+"GB";
-        }
-        else if( fSizeInBytes >=BSIZE_GB )
-        {
-            return stg_ex::float_to_string( fSizeInBytes/BSIZE_GB )+"GB";
-        }
-        else if( fSizeInBytes >=BSIZE_MB )
-        {
-            return stg_ex::float_to_string( fSizeInBytes/BSIZE_MB )+"MB";
-        }
-        else if( fSizeInBytes >=BSIZE_KB )
-        {
-            return stg_ex::float_to_string( fSizeInBytes/BSIZE_KB )+"KB";
-        }
-        return stg_ex::float_to_string( fSizeInBytes )+" bytes";
+
     }
 
-    int clean_folder(std::string folderName)
+    int file_and_url_manager::file_get_size_bytes(const std::string &file_name)
     {
-        GPE_FileDirectory * dir = new GPE_FileDirectory();
-        GPE_File * file = NULL;
-        int iFile = 0;
-        int iDirectory = 0;
-
-        std::string fileToClick = "";
-        std::vector< std::string > foldersToDelete;
-        foldersToDelete.push_back(folderName);
-        std::string currentFolderToClear = folderName;
-        int filesDeletedCount = 0;
-        if( dir!=NULL)
-        {
-            while( (int)foldersToDelete.size() > 0 )
-            {
-                currentFolderToClear = foldersToDelete[0];
-                dir->open_directory(currentFolderToClear);
-                for (iFile = (int)dir->get_count()-1; iFile>=0; iFile--)
-                {
-                    file = dir->get_file(iFile);
-                    if( file!=NULL)
-                    {
-                        fileToClick = file->get_name();
-                        if( fileToClick!="." && fileToClick!="..")
-                        {
-                            fileToClick = currentFolderToClear+"/"+fileToClick;
-                            if( file->is_directory() )
-                            {
-                                foldersToDelete.push_back(fileToClick );
-                            }
-                            else
-                            {
-                                remove(fileToClick.c_str() );
-                                filesDeletedCount++;
-                            }
-                        }
-                    }
-                }
-                for( iDirectory = (int)foldersToDelete.size()-1; iDirectory >=0; iDirectory--)
-                {
-                    if( currentFolderToClear==foldersToDelete.at(iDirectory) )
-                    {
-                        foldersToDelete.erase( foldersToDelete.begin()+iDirectory);
-                    }
-                }
-            }
-            delete dir;
-            dir = NULL;
-            return filesDeletedCount;
-        }
-        return 0;
+        return 0 ;
     }
 
-    int copy_folder(std::string folderName, std::string targetFolder, bool copySubFolders, bool overwriteExistingFiles )
+    std::string file_and_url_manager::file_get_size_string(const std::string &file_name)
     {
-        if( sff_ex::path_exists( folderName ) == false )
-        {
-            return -1;
-        }
-        if( sff_ex::path_exists(targetFolder) == false )
-        {
-            return -2;
-        }
+        return "0";
+    }
 
-        int filesCopiedCount = 0;
-        GPE_FileDirectory * dir = new GPE_FileDirectory();
-        GPE_File * file = NULL;
-        std::string currentFileName = "";
-        int iFile = 0;
-        int iDirectory = 0;
-        int addedFolderFileCount = 0;
-        if( dir!=NULL )
-        {
-            dir->open_directory(folderName);
-            for (iFile = 0; iFile < (int)dir->get_count(); iFile++)
-            {
-                file = dir->get_file(iFile);
-                if( file!=NULL)
-                {
-                    currentFileName = file->get_name();
-                    if( currentFileName!="." && currentFileName!="..")
-                    {
-                        //displayMessageString = "Copying "+currentFileName;
-                        currentFileName = folderName+"/"+currentFileName;
-                        if( file->is_directory() )
-                        {
-                            if( copySubFolders)
-                            {
-                                sff_ex::create_directory(targetFolder+"/"+file->get_name() );
-                                addedFolderFileCount= copy_folder( currentFileName, targetFolder+"/"+ file->get_name(), true, overwriteExistingFiles );
-
-                                if( addedFolderFileCount > 0 )
-                                {
-                                    filesCopiedCount += addedFolderFileCount;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if( sff_ex::file_copy(currentFileName,targetFolder+"/"+ file->get_name(), overwriteExistingFiles ) )
-                            {
-                                filesCopiedCount++;
-                            }
-                        }
-                    }
-                }
-            }
-            delete dir;
-            dir = NULL;
-            return filesCopiedCount;
-        }
-        return 0;
+    int file_and_url_manager::folder_clean(std::string folder_name)
+    {
+        return -1;
     }
 
 
-    bool seek_settings_folder()
+    int file_and_url_manager::folder_copy(std::string folder_name, std::string folder_target, bool copy_subfolders, bool overwrite_existing_files )
     {
-        //Sets the folder used in all  get_user_settings_folder() calls based on the 2 parameters above
-        settings_app_folder = app_directory_name;
-        if( (int)settings->programPublisher.size() ==0 )
-        {
-            return false;
-        }
-        //if a publisher is said to be to this program
-        //Here is where he fun happens...
-        bool useProgramFolder = false;
-        bool homeDirFound  = true;
-
-        //Going thru all of the possible getenv paramters that i know of...
-        char* homeDir = getenv("%UserProfile%");
-        std::string foundPath = "";
-        //Attempt 1...
-        if( homeDir!=NULL)
-        {
-            //Attempt 1...
-            foundPath = homeDir;
-        }
-        else
-        {
-            //Attempt 2...
-            homeDir = getenv("home");
-            if( homeDir!=NULL )
-            {
-                foundPath = homeDir;
-            }
-            else
-            {
-                //Attempt 3...
-                homeDir = getenv("HOME");
-                if( homeDir!=NULL)
-                {
-                    foundPath = homeDir;
-                }
-                else
-                {
-                    //final shot...
-                    homeDir = getenv("homepath");
-                    if( homeDir!=NULL )
-                    {
-                        foundPath = homeDir;
-                    }
-                    else
-                    {
-                        //All attempts failed defaults to program folder...
-                        return false;
-                    }
-                }
-            }
-        }
-
-        if( homeDirFound && sff_ex::path_exists(foundPath) )
-        {
-            std::string appDataPath = foundPath;
-            if( system_found_os== system_os_windows)
-            {
-                //First Layer of Windows unlocked :-)
-                if( sff_ex::create_directory(appDataPath+"/AppData")!=-1)
-                {
-                    foundPath = appDataPath = appDataPath+"/AppData";
-
-                    //See if we can get into the Roaming folder now
-                    if( sff_ex::create_directory(appDataPath+"/Roaming")!=-1)
-                    {
-                        foundPath = appDataPath = appDataPath+"/Roaming";
-                    }
-                    else if( sff_ex::create_directory(appDataPath+"/Local")!=-1 )
-                    {
-                        //If failed, lets see if we can get into the Local folder now
-                        foundPath = appDataPath = appDataPath+"/Local";
-                    }
-                    else if( sff_ex::create_directory(appDataPath+"/LocalLow")!=-1 )
-                    {
-                        foundPath = appDataPath = appDataPath+"/LocalLow";
-                    }
-                    else
-                    {
-                        //Windows failed to get into settings...
-                        return false;
-                    }
-                }
-                else
-                {
-                    useProgramFolder = true;
-                    appDataPath = foundPath = "";
-                }
-            }
-            else if( system_found_os== system_os_mac)
-            {
-                appDataPath = foundPath+"/~/Library/Preferences";
-                if( sff_ex::create_directory(appDataPath)==-1)
-                {
-                    useProgramFolder = true;
-                    appDataPath = foundPath = "";
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            if( useProgramFolder )
-            {
-                //Something failed above so now we just use the program folder...
-                return false;
-            }
-
-            //If we have some sort of file path...
-            if( system_found_os== system_os_linux )
-            {
-                appDataPath = appDataPath+"/."+settings->programPublisher;
-            }
-            else
-            {
-                //Windows, Mac, etc afaik...
-                appDataPath = appDataPath+"/"+settings->programPublisher;
-            }
-
-            //If we are able to get into the publisher folder
-            if( sff_ex::create_directory(appDataPath)!=-1)
-            {
-                foundPath = appDataPath;
-                settings_app_folder = foundPath;
-                if( (int)settings->programTitle.size() > 0 )
-                {
-                    //If we are able to get into the titled program's folder
-                    if( sff_ex::create_directory( foundPath+"/"+settings->programTitle )!=-1 )
-                    {
-                        foundPath = foundPath+"/"+settings->programTitle;
-                        settings_app_folder = foundPath;
-                    }
-                    settings_app_folder = settings_app_folder+"/";
-                    //If this fails we will just default to the publisher and call it a day...
-                }
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-
-        //save the settings and local directory to the application directory
-        if( useProgramFolder )
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return -1;
     }
 
-    std::string  get_user_settings_folder()
+    int file_and_url_manager::folder_create( std::string new_path_name)
     {
-        return settings_app_folder;
+        return -1;
     }
 
-    std::string get_user_temp_folder()
+    bool file_and_url_manager::folder_exists(std::string path_name)
     {
-        std::string foundPath =  get_user_settings_folder();
-        std::string tempFolderString = foundPath;
-        foundPath = foundPath+"/temp_files";
-        if( sff_ex::create_directory(foundPath)!=-1)
-        {
-            tempFolderString = foundPath+"/";
-        }
-        return tempFolderString;
-    }
-
-    std::string get_user_screenshot_folder()
-    {
-        std::string foundPath =  get_user_settings_folder();
-        std::string tempScreenshotString = foundPath;
-        foundPath = foundPath+"/screenshots";
-        if( sff_ex::create_directory(foundPath)!=-1)
-        {
-            tempScreenshotString = foundPath+"/";
-        }
-        return tempScreenshotString;
-    }
-
-    bool delete_file( std::string fName)
-    {
-        //Function not yet created
         return false;
     }
+
+    std::string  file_and_url_manager::get_user_settings_folder()
+    {
+        return "";
+    }
+
+    bool file_and_url_manager::seek_settings_folder()
+    {
+        return false;
+    }
+
+    std::string file_and_url_manager::get_user_temp_folder()
+    {
+        return "";
+    }
+
+    std::string file_and_url_manager::get_user_screenshot_folder()
+    {
+        return "";
+    }
+
+    bool file_and_url_manager::delete_file( std::string f_name)
+    {
+        return false;
+    }
+
 }

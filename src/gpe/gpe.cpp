@@ -3,10 +3,10 @@ gpe.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -123,23 +123,23 @@ namespace gpe
         sound_type_names[ sound_format_wav ] = "wav";
 
         //Sets the folder used in all  get_user_settings_folder() calls based on the 2 paramers above
-        seek_settings_folder();
+        main_file_url_manager->seek_settings_folder();
 
         //General Debug Info
         //error_log->report("    WARNING: DO NOT CLOSE THE CONSOLE WINDOW. UNSAVED FILES AND DATA WILL BE LOST!");
         //Clears the error logs and such
 
-        std::string errorLogName =  get_user_settings_folder()+"gpe_error_log.txt";
+        std::string errorLogName =  main_file_url_manager->get_user_settings_folder()+"gpe_error_log.txt";
         remove(errorLogName.c_str() );
-        std::string buildEerrorLogName =  get_user_settings_folder()+"build_errors.txt";
+        std::string buildEerrorLogName =  main_file_url_manager->get_user_settings_folder()+"build_errors.txt";
         remove( buildEerrorLogName.c_str() );
-        buildEerrorLogName =  get_user_settings_folder()+"resources_check.txt";
+        buildEerrorLogName =  main_file_url_manager->get_user_settings_folder()+"resources_check.txt";
         remove( buildEerrorLogName.c_str() );
 
         error_log->report("Attempting to initialize GPE-Engine( Version " + stg_ex::float_to_string( gpe::version_number_total ) + ")");
         error_log->report("Program Publisher:"+ settings->programPublisher );
         error_log->report("Program Title:"+settings->programTitle );
-        error_log->report("Settings Folder: "+ get_user_settings_folder() );
+        error_log->report("_settings Folder: "+ main_file_url_manager->get_user_settings_folder() );
 
         error_log->report("Initializing Color_System..");
         init_colors();

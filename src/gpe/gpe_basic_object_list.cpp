@@ -3,10 +3,10 @@ gpe_basic_object_list.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -42,28 +42,28 @@ namespace gpe
 
     game_object_list::~game_object_list()
     {
-        internalArray.clear();
+        internal_list.clear();
     }
 
-    void game_object_list::add_object( game_object * objectIn)
+    void game_object_list::add_object( game_object * object_in)
     {
-        if( objectIn!=NULL)
+        if( object_in!=NULL)
         {
-            internalArray.push_back(objectIn);
+            internal_list.push_back(object_in);
         }
     }
 
-    void game_object_list::remove_held_object( game_object * objectIn)
+    void game_object_list::remove_held_object( game_object * object_in)
     {
-        if( objectIn!=NULL )
+        if( object_in!=NULL )
         {
             game_object * foundHeldObject = NULL;
-            for( int ii = (int)internalArray.size()-1;  ii>=0; ii--)
+            for( int ii = (int)internal_list.size()-1;  ii>=0; ii--)
             {
-                foundHeldObject = internalArray[ii];
-                if( foundHeldObject->get_id()==objectIn->get_id() )
+                foundHeldObject = internal_list[ii];
+                if( foundHeldObject->get_id()==object_in->get_id() )
                 {
-                    internalArray.erase( internalArray.begin()+ii);
+                    internal_list.erase( internal_list.begin()+ii);
                 }
             }
         }

@@ -3,10 +3,10 @@ gpe_basic_object_list.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -41,13 +41,13 @@ namespace gpe
     class game_object_list
     {
         public:
-            std::vector<game_object *> internalArray;
-            int objListTypeId;
-            std::string objectTag;
+            std::vector<game_object *> internal_list;
+            int object_type_id;
+            std::string object_tag;
             game_object_list();
             ~game_object_list();
-            void add_object(game_object * objectIn);
-            void remove_held_object(game_object * objectIn);
+            void add_object(game_object * object_in);
+            void remove_held_object(game_object * object_in);
 
     };
 }

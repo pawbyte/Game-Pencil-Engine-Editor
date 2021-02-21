@@ -3,10 +3,10 @@ gpe_background.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -41,30 +41,30 @@ namespace gpe
     class background: public branch
     {
     private:
-        texture_base * backgroundTexture;
-        float bgXOffset;
-        float bgYOffset;
-        float bgXSpeed;
-        float bgYSpeed;
-        int bgId;
+        texture_base * texture_background;
+        float bg_xoffset;
+        float bg_yoffset;
+        float bg_xspeed;
+        float bg_yspeed;
+        int bg_id;
         color * bg_color;
-        bool renderBgSpeed;
-        bool loopBGHori;
-        bool loopBGVert;
-        bool stretchBG;
+        bool render_using_bg_speed;
+        bool loop_bg_hori;
+        bool loop_bg_vert;
+        bool strech_bg;
     public:
         background();
         ~background();
         int get_background_id();
         color * get_scene_background_color();
         void render();
-        void render_bg_speed( int xx, int yy, shape_rect *  cam, shape_rect * renderCam);
-        void render_bg( shape_rect * renderToArea, shape_rect *  cam, shape_rect * renderCam, int lvlW, int lvlH);
+        void render_bg_speed( int xx, int yy, shape_rect *  cam, shape_rect * render_camera);
+        void render_bg( shape_rect * renderToArea, shape_rect *  cam, shape_rect * render_camera, int scene_width, int scene_height);
         void scroll_bg();
-        void set_bgspeed( float speedX, float speedY );
+        void set_bgspeed( float speed_x, float speed_y );
         void set_bgoffsets( float nextX, float nextY );
-        void set_background( int newBG);
-        void set_background_color( color * colorIn);
+        void set_background( int new_bg_id);
+        void set_background_color( color * color_in);
         void update();
     };
 }

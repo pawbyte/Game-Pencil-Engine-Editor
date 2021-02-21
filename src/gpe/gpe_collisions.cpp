@@ -3,10 +3,10 @@ gpe_collisions.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -87,10 +87,10 @@ namespace gpe
     bool check_collision_circles( shape_circle A, shape_circle B )
     {
         //Gets the difference between the circle points
-        float newX = A.position.x - B.position.x;
-        float newY = A.position.y - B.position.y;
+        float x_new = A.position.x - B.position.x;
+        float y_new = A.position.y - B.position.y;
 
-        float circleSquaredDist = newX * newX + newY * newY;
+        float circleSquaredDist = x_new * x_new + y_new * y_new;
 
         float newRadius = A.radius + B.radius;
         float radiusSquared = newRadius * newRadius;
@@ -108,7 +108,7 @@ namespace gpe
         return (DeltaX * DeltaX + DeltaY * DeltaY) < (B.radius * B.radius);
     }
 
-    bool point_within(int pointX, int pointY,int mxmin,int mymin, int mxmax, int mymax)
+    bool point_within(int point_x, int point_y,int mxmin,int mymin, int mxmax, int mymax)
     {
         int pxmin, pxmax, pymin, pymax;
         pxmin=std::min(mxmin, mxmax);
@@ -116,9 +116,9 @@ namespace gpe
         pymin=std::min(mymin,mymax);
         pymax=std::max(mymin,mymax);
 
-        if((pointX>=pxmin) && (pointX<=pxmax) )
+        if((point_x>=pxmin) && (point_x<=pxmax) )
         {
-            if( (pointY>=pymin) && (pointY<=pymax) )
+            if( (point_y>=pymin) && (point_y<=pymax) )
             {
                 return true;
             }
@@ -126,7 +126,7 @@ namespace gpe
         return false;
     }
 
-    bool point_between(int pointX, int pointY,int mxmin,int mymin, int mxmax, int mymax)
+    bool point_between(int point_x, int point_y,int mxmin,int mymin, int mxmax, int mymax)
     {
         int pxmin, pxmax, pymin, pymax;
         pxmin=std::min(mxmin, mxmax);
@@ -134,9 +134,9 @@ namespace gpe
         pymin=std::min(mymin,mymax);
         pymax=std::max(mymin,mymax);
 
-        if((pointX>pxmin) && (pointX<pxmax) )
+        if((point_x>pxmin) && (point_x<pxmax) )
         {
-            if( (pointY>pymin) && (pointY<pymax) )
+            if( (point_y>pymin) && (point_y<pymax) )
             {
                 return true;
             }
@@ -145,19 +145,19 @@ namespace gpe
     }
 
 
-    bool point_within_rect(int pointX, int pointY, gpe::shape_rect * rectIn)
+    bool point_within_rect(int point_x, int point_y, gpe::shape_rect * rect_in)
     {
-        if( rectIn!=NULL)
+        if( rect_in!=NULL)
         {
             int pxmin, pxmax, pymin, pymax;
-            pxmin=rectIn->x;
-            pymin=rectIn->y;
-            pxmax=pxmin+rectIn->w;
-            pymax=pymin+rectIn->h;
+            pxmin=rect_in->x;
+            pymin=rect_in->y;
+            pxmax=pxmin+rect_in->w;
+            pymax=pymin+rect_in->h;
 
-            if((pointX>=pxmin) && (pointX<=pxmax) )
+            if((point_x>=pxmin) && (point_x<=pxmax) )
             {
-                if( (pointY>=pymin) && (pointY<=pymax) )
+                if( (point_y>=pymin) && (point_y<=pymax) )
                 {
                     return true;
                 }
@@ -166,18 +166,18 @@ namespace gpe
         return false;
     }
 
-    bool point_between_rect(int pointX, int pointY, gpe::shape_rect * rectIn)
+    bool point_between_rect(int point_x, int point_y, gpe::shape_rect * rect_in)
     {
-        if( rectIn!=NULL)
+        if( rect_in!=NULL)
         {
             int pxmin, pxmax, pymin, pymax;
-            pxmin=rectIn->x;
-            pymin=rectIn->y;
-            pxmax=pxmin+rectIn->w;
-            pymax=pymin+rectIn->h;
-            if((pointX>pxmin) && (pointX<pxmax) )
+            pxmin=rect_in->x;
+            pymin=rect_in->y;
+            pxmax=pxmin+rect_in->w;
+            pymax=pymin+rect_in->h;
+            if((point_x>pxmin) && (point_x<pxmax) )
             {
-                if( (pointY>pymin) && (pointY<pymax) )
+                if( (point_y>pymin) && (point_y<pymax) )
                 {
                     return true;
                 }

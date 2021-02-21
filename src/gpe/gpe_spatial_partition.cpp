@@ -3,10 +3,10 @@ GPE_Spatial_Partition.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -82,7 +82,7 @@ namespace gpe
                         otherColPairStr = stg_ex::int_to_string( secondHeldObject->get_id() ) + "-" + stg_ex::int_to_string( foundHeldObject->get_id() );
 
                         //If the pair hasn't been found
-                        if( gpeSpatialGridData::collisionsCheckedInFrame.find(tempColPairStr) ==  gpeSpatialGridData::collisionsCheckedInFrame.end() )
+                        if( spatial_grid_data::collisionsCheckedInFrame.find(tempColPairStr) ==  spatial_grid_data::collisionsCheckedInFrame.end() )
                         {
                             if( foundHeldObject->check_collison_with_object( secondHeldObject ) )
                             {
@@ -90,8 +90,8 @@ namespace gpe
                                 secondHeldObject->add_collision_object( foundHeldObject );
                             }
                             //We add the pair as checked to the giant list
-                            gpeSpatialGridData::collisionsCheckedInFrame[tempColPairStr] = true;
-                            gpeSpatialGridData::collisionsCheckedInFrame[otherColPairStr] = true;
+                            spatial_grid_data::collisionsCheckedInFrame[tempColPairStr] = true;
+                            spatial_grid_data::collisionsCheckedInFrame[otherColPairStr] = true;
                         }
                     }
                 }
@@ -126,7 +126,7 @@ namespace gpe
                         otherColPairStr = stg_ex::int_to_string( secondHeldObject->get_id() ) + "-" + stg_ex::int_to_string( foundHeldObject->get_id() );
 
                         //If the pair hasn't been found
-                        if( gpeSpatialGridData::collisionsCheckedInFrame.find(tempColPairStr) ==  gpeSpatialGridData::collisionsCheckedInFrame.end() )
+                        if( spatial_grid_data::collisionsCheckedInFrame.find(tempColPairStr) ==  spatial_grid_data::collisionsCheckedInFrame.end() )
                         {
                             if( foundHeldObject->check_collison_with_object( secondHeldObject ) )
                             {
@@ -134,8 +134,8 @@ namespace gpe
                                 secondHeldObject->add_collision_object( foundHeldObject );
                             }
                             //We add the pair as checked to the giant list
-                            gpeSpatialGridData::collisionsCheckedInFrame[tempColPairStr] = true;
-                            gpeSpatialGridData::collisionsCheckedInFrame[otherColPairStr] = true;
+                            spatial_grid_data::collisionsCheckedInFrame[tempColPairStr] = true;
+                            spatial_grid_data::collisionsCheckedInFrame[otherColPairStr] = true;
                         }
                     }
                 }
@@ -158,9 +158,9 @@ namespace gpe
         return NULL;
     }
 
-    void spatial_partition::remove_held_object(game_object * objectIn)
+    void spatial_partition::remove_held_object(game_object * object_in)
     {
-        if( objectIn==NULL )
+        if( object_in==NULL )
         {
             return;
         }
@@ -169,7 +169,7 @@ namespace gpe
         for( ii = objectsCount-1;  ii>=0; ii--)
         {
             foundHeldObject = objectsArray[ii];
-            if( foundHeldObject!=NULL && foundHeldObject->get_id()==objectIn->get_id() )
+            if( foundHeldObject!=NULL && foundHeldObject->get_id()==object_in->get_id() )
             {
                 objectsArray.erase( objectsArray.begin()+ii);
                 objectsHeld-=1;
@@ -177,8 +177,8 @@ namespace gpe
         }
     }
 
-    void spatial_partition::set_space(int newX, int newY, int newW, int newHeight)
+    void spatial_partition::set_space(int x_new, int y_new, int newW, int new_height)
     {
-        boxArea->update_shape(newX, newY, newW, newHeight);
+        boxArea->update_shape(x_new, y_new, newW, new_height);
     }
 }

@@ -3,10 +3,10 @@ gpe_spatial_partition_controller.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -64,13 +64,13 @@ namespace gpe
     }
 
 
-    void spatial_partition_controller::activate_layer(int layerId )
+    void spatial_partition_controller::activate_layer(int layer_id )
     {
-        if( layerId < 0 || layerId  >= maxLayerCount )
+        if( layer_id < 0 || layer_id  >= maxLayerCount )
         {
             return;
         }
-        spatial_partition_layer * tempLayer = collisionlayers[layerId];
+        spatial_partition_layer * tempLayer = collisionlayers[layer_id];
         tempLayer->activate_layer();
 
     }
@@ -174,17 +174,17 @@ namespace gpe
         }
     }
 
-    void spatial_partition_controller::deactivate_layer(int layerId )
+    void spatial_partition_controller::deactivate_layer(int layer_id )
     {
-        if( layerId < 0 || layerId  >= maxLayerCount )
+        if( layer_id < 0 || layer_id  >= maxLayerCount )
         {
             return;
         }
-        spatial_partition_layer * tempLayer = collisionlayers[layerId];
+        spatial_partition_layer * tempLayer = collisionlayers[layer_id];
         tempLayer->deactivate_layer();
     }
 
-    bool spatial_partition_controller::init_system(  int cSceneWidth, int cSceneHeight )
+    bool spatial_partition_controller::init_system(  int camera_scene_width, int camera_scene_height )
     {
         spatial_partition_layer * tempLayer = NULL;
         for( int i = maxLayerCount -1; i >=0 ; i--)
@@ -192,7 +192,7 @@ namespace gpe
             tempLayer = collisionlayers[i];
             if( tempLayer!=NULL)
             {
-                tempLayer->init_collision_handler( cSceneWidth, cSceneHeight );
+                tempLayer->init_collision_handler( camera_scene_width, camera_scene_height );
             }
             else
             {
@@ -214,21 +214,21 @@ namespace gpe
         {
             return;
         }
-        int layerId = g_obj->get_layer_id();
-        if( layerId < 0 )
+        int layer_id = g_obj->get_layer_id();
+        if( layer_id < 0 )
         {
-            layerId = 0;
+            layer_id = 0;
         }
-        else if( layerId >= maxLayerCount )
+        else if( layer_id >= maxLayerCount )
         {
-            layerId = maxLayerCount -1;
+            layer_id = maxLayerCount -1;
         }
 
-        if( collisionlayers[layerId] == NULL)
+        if( collisionlayers[layer_id] == NULL)
         {
             return;
         }
 
-        collisionlayers[layerId]->remove_object( g_obj );
+        collisionlayers[layer_id]->remove_object( g_obj );
     }
 }

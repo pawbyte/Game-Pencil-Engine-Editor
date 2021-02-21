@@ -3,10 +3,10 @@ spatial_partition_layer.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,7 +37,7 @@ namespace gpe
 {
     spatial_partition_layer::spatial_partition_layer( int myLayerId )
     {
-        spatialGridIsCreated = false;
+        spatial_grid_created = false;
         layerID = myLayerId;
     }
 
@@ -51,7 +51,7 @@ namespace gpe
         if( !isActive)
         {
             clear_spaces();
-            init_collision_handler( spatialGridWidthSize * spatialGridWidthAmount, spatialGridHeightSize * spatialGridHeightAmount);
+            init_collision_handler( spatial_grid_width_size * spatial_grid_x_amount, spatial_grid_height_size * spatial_grid_y_amount);
         }
         isActive = true;
     }
@@ -108,7 +108,7 @@ namespace gpe
                     }
                 }
 
-                tempAbovePos = i - gpeSpatialGridData::sGridYAmount;
+                tempAbovePos = i - spatial_grid_data::sGridYAmount;
                 if( tempAbovePos > 0 && tempAbovePos < collisionSpaceCount)
                 {
                     tempPartitionAbove = layerPartitions[tempAbovePos];
@@ -118,7 +118,7 @@ namespace gpe
                     }
                 }
 
-                tempAboveLeftPos = i - gpeSpatialGridData::sGridYAmount -1;
+                tempAboveLeftPos = i - spatial_grid_data::sGridYAmount -1;
                 if( tempAboveLeftPos > 0 && tempAboveLeftPos < collisionSpaceCount)
                 {
                     tempPartitionAboveLeft = layerPartitions[tempAboveLeftPos];
@@ -149,7 +149,7 @@ namespace gpe
             }
         }
         layerPartitions.clear();
-        spatialGridIsCreated = false;
+        spatial_grid_created = false;
     }
 
     void spatial_partition_layer::deactivate_layer()
@@ -176,8 +176,8 @@ namespace gpe
 
         if( xIn >=0 && yIn >=0 )
         {
-            sPar =  (( xIn / spatialGridWidthSize)|0 )*spatialGridHeightAmount;
-            sPar+=( yIn / spatialGridHeightSize)|0;
+            sPar =  (( xIn / spatial_grid_width_size)|0 )*spatial_grid_y_amount;
+            sPar+=( yIn / spatial_grid_height_size)|0;
             if( sPar < 0 )
             {
                 sPar = 0;
@@ -190,44 +190,44 @@ namespace gpe
         return sPar;
     }
 
-    void spatial_partition_layer::init_collision_handler(  int cSceneWidth, int cSceneHeight )
+    void spatial_partition_layer::init_collision_handler(  int camera_scene_width, int camera_scene_height )
     {
 
-        spatialGridWidthSize = cSceneWidth;
-        spatialGridHeightSize = cSceneHeight;
+        spatial_grid_width_size = camera_scene_width;
+        spatial_grid_height_size = camera_scene_height;
 
-        spatialGridWidthAmount = ceil(cSceneWidth/spatialGridWidthSize);
-        if( spatialGridWidthAmount<2)
+        spatial_grid_x_amount = ceil(camera_scene_width/spatial_grid_width_size);
+        if( spatial_grid_x_amount<2)
         {
-            spatialGridWidthSize = cSceneWidth/2;
-            spatialGridWidthAmount = 2;
+            spatial_grid_width_size = camera_scene_width/2;
+            spatial_grid_x_amount = 2;
         }
-        spatialGridHeightAmount = ceil(cSceneHeight/spatialGridHeightSize);
-        if( spatialGridHeightAmount<2 )
+        spatial_grid_y_amount = ceil(camera_scene_height/spatial_grid_height_size);
+        if( spatial_grid_y_amount<2 )
         {
-            spatialGridHeightSize = cSceneHeight/2;
-            spatialGridHeightAmount = 2;
+            spatial_grid_height_size = camera_scene_height/2;
+            spatial_grid_y_amount = 2;
         }
 
 
         //smallest size possible is 2x2
         int iGrid, jGrid;
-        int xStart=0, yStart=0;
+        int x_start=0, y_start=0;
         spatial_partition * newSpace = NULL;
-        for( iGrid =0; iGrid < spatialGridWidthAmount; iGrid+=1)
+        for( iGrid =0; iGrid < spatial_grid_x_amount; iGrid+=1)
         {
-            for( jGrid=0; jGrid < spatialGridHeightAmount; jGrid+=1)
+            for( jGrid=0; jGrid < spatial_grid_y_amount; jGrid+=1)
             {
                 newSpace = new spatial_partition();
-                newSpace->set_space(xStart,yStart,spatialGridWidthSize,spatialGridHeightSize);
-                yStart+=spatialGridHeightSize;
+                newSpace->set_space(x_start,y_start,spatial_grid_width_size,spatial_grid_height_size);
+                y_start+=spatial_grid_height_size;
                 newSpace->spaceName+="testrun_"+ stg_ex::int_to_string(iGrid)+"_"+ stg_ex::int_to_string(jGrid)+"_test";
                 layerPartitions.push_back(newSpace);
             }
-            yStart = 0;
-            xStart+=spatialGridWidthSize;
+            y_start = 0;
+            x_start+=spatial_grid_width_size;
         }
-        spatialGridIsCreated = true;
+        spatial_grid_created = true;
     }
 
     bool spatial_partition_layer::is_active()

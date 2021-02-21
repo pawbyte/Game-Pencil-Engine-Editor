@@ -3,10 +3,10 @@ gpe_render_package_handler.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -41,10 +41,10 @@ namespace gpe
     class render_package_handler
     {
         protected:
-            std::vector <render_package *> renderPackages;
-            int renderPackageCount;
+            std::vector <render_package *> r_packages;
+            int r_packageCount;
         public:
-            std::string defaultRenderPackageName;
+            std::string defaultr_packageName;
             render_package_handler();
             ~render_package_handler();
 
@@ -59,7 +59,7 @@ namespace gpe
             render_package * get_render_package_from_id( int packageId );
             render_package * get_render_package_from_name( std::string packageName );
             texture_base * get_new_texture();
-            texture_base * get_new_texture_from_package( render_package * renderPackage);
+            texture_base * get_new_texture_from_package( render_package * r_package);
             texture_base * get_new_texture_from_id( int packageId );
             texture_base * get_new_texture_from_name( std::string packageName );
 

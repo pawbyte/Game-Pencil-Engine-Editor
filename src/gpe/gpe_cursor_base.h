@@ -3,10 +3,10 @@ gpe_cursor_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -75,11 +75,11 @@ namespace gpe
             virtual ~cursor_controller_base();
 
             //Cursor logic
-            virtual void cursor_change( std::string newCursor );
+            virtual void cursor_change( std::string new_cursor );
             virtual void cursor_change_system( int system_cursor_id );
             virtual void cursor_clear_dynamic();
-            virtual bool cursor_contains( std::string cursorName );
-            virtual bool cursor_create_from_image(std::string fName );
+            virtual bool cursor_contains( std::string cursor_name );
+            virtual bool cursor_create_from_image(std::string f_name );
             virtual int cursor_map_size();
             virtual std::string cursor_system_name( int cId );
 

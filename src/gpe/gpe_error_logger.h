@@ -3,10 +3,10 @@ gpe_error_logger.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,7 +36,7 @@ SOFTWARE.
 
 #include <string>
 #include <vector>
-#include "../other_libs/sff_ex.h"
+#include "gpe_file_system.h"
 #include "../other_libs/stg_ex.h"
 
 namespace gpe
@@ -53,8 +53,8 @@ namespace gpe
             void clear_log();
             std::string get_line(int line_id);
             int get_size();
-            void log_ms_action(std::string output_string, int ms_in, int ms_required = 1 );
-            void report(std::string output_string );
+            void log_ms_action(std::string str_in, int ms_in, int ms_required = 1 );
+            void report(std::string str_in );
             void set_output_file( std::string output_file_name );
             void write_to_file( const std::string output_file_name );
     };

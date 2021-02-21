@@ -3,10 +3,10 @@ gpe_color.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -42,25 +42,25 @@ namespace gpe
     class color
     {
         private:
-            uint8_t rVal;
-            uint8_t gVal;
-            uint8_t bVal;
-            uint8_t aVal;
-            std::string colorName;
-            int hexDecNumb;
+            uint8_t r_val;
+            uint8_t g_val;
+            uint8_t b_val;
+            uint8_t a_val;
+            std::string color_name;
+            int color_hex_number;
         public:
             color(std::string name,uint8_t r = 0, uint8_t g = 0, uint8_t b = 0, uint8_t a=255);
-            color(int hexDec);
+            color(int hex_dec_number );
             ~color();
 
-            bool checkEquality(color otherColor);
+            bool checkEquality(color other_color);
             color * duplicate_color();
             std::string get_name();
             uint8_t get_r();
             uint8_t get_g();
             uint8_t get_b();
             uint8_t get_a();
-            void set_hex(int newHex);
+            void set_hex(int hex_dec_number);
             void change_r(uint8_t r);
             void change_g(uint8_t g);
             void change_b(uint8_t b);

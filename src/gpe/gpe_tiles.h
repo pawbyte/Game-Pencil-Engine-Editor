@@ -3,10 +3,10 @@ gpe_tiles.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -81,10 +81,10 @@ namespace gpe
             layer_tile_map();
             ~layer_tile_map();
             void clear_tiles();
-            void create_new_map ( int newTX, int newTY);
-            int find_tile (  int xPos, int yPos );
+            void create_new_map ( int new_xt, int new_yt);
+            int find_tile (  int x_pos, int y_pos );
             int find_tile_in_box(  int x1,  int y1,  int x2, int y2 );
-            bool find_matching_tile (   int xPos,  int yPos,  int tileTypeToSearchFor );
+            bool find_matching_tile (   int x_pos,  int y_pos,  int tileTypeToSearchFor );
             bool find_matching_tile_in_box(  int x1,  int y1,  int x2, int y2,  int tileTypeToSearchFor);
             layer_game_tile * get_tile_at ( int xIn,  int yIn );
             int get_map_size();

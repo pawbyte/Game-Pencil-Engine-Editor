@@ -3,10 +3,10 @@ gpe_shapes.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -89,8 +89,8 @@ namespace gpe
             float get_y2();
             //Limitations
             void limit_space_to_rect(int * limitedX = NULL, int * limitedY = NULL);
-            void set_x( float newX );
-            void set_y( float newY );
+            void set_x( float x_new );
+            void set_y( float y_new );
             void set_w( float newW );
             void set_h( float newH );
             void update_position( float xNew, float yNew);

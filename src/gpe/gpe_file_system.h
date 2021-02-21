@@ -2,10 +2,10 @@
 gpe_file_system.h
 This file is part of:GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -42,54 +42,54 @@ SOFTWARE.
 
 namespace gpe
 {
-    class GPE_FileFilter
+    class filetype_filter
     {
         public:
             std::string desc;
             std::string exts;
-            GPE_FileFilter(std::string fDesc = "", std::string fExts = "");
-            ~GPE_FileFilter();
+            filetype_filter(std::string filter_desc = "", std::string filter_extensions = "");
+            ~filetype_filter();
     };
 
-    std::string generate_filters(const std::vector<GPE_FileFilter *> filters);
+    std::string generate_filters(const std::vector<filetype_filter *> filters);
     std::string parse_file_types(std::string fileTypesIn, std::vector <std::string> &fileTypeVector);
     bool file_passes_filter(std::string fileTypeIn, std::vector <std::string> &fileTypeVector);
 
-    class GPE_File
+    class file_object
     {
         private:
-            std::string fileName;
+            std::string file_name;
             std::string fileType;
-            bool isDirectory;
+            bool file_is_dir;
         public:
-            std::string fileLocationDirectory;
-            texture_base * fileThumbnail;
-            int fileSizeInfo;
-            std::string dataCreatedInfo;
-            std::string dataModifiedInfo;
-            GPE_File(std::string fName,bool fileIsDirectory);
-            ~GPE_File();
+            std::string file_directory_location;
+            texture_base * thumbnail_texture;
+            int file_size_info;
+            std::string date_creation_info;
+            std::string date_modified_info;
+            file_object(std::string f_name,bool f_is_dir);
+            ~file_object();
             bool is_directory();
             std::string get_name();
             std::string get_type();
     };
 
-    class GPE_FileDirectory
+    class file_directory_class
     {
         private:
-            std::vector< GPE_File * >myFiles;
-            int fdPosition;
-            int fileCount;
-            int subdirectoryCount;
+            std::vector< file_object * >files_list;
+            int file_position;
+            int file_count;
+            int sub_directory_count;
         public:
-            GPE_FileDirectory();
-            ~GPE_FileDirectory();
-            bool open_directory(std::string directoryIn);
-            bool open_directory_sorted(std::string directoryIn);
+            file_directory_class();
+            ~file_directory_class();
+            bool open_directory(std::string directory_string);
+            bool open_directory_sorted(std::string directory_string);
             void close_directory();
-            void filter_directory(bool onlyFolders, std::vector <std::string> &fTypesToUse);
-            GPE_File * get_file(int position);
-            GPE_File * get_next_file();
+            void filter_directory(bool only_folders, std::vector <std::string> &file_types_to_use);
+            file_object * get_file(int position);
+            file_object * get_next_file();
             bool has_next_file();
             int get_count();
             int get_subdirectory_count();
@@ -97,26 +97,45 @@ namespace gpe
             bool set_position(int position);
     };
 
-    const float BSIZE_KB = 1024; //if this is wrong, change it to 1000 in your own time. :-)
-    const float BSIZE_MB = BSIZE_KB*1024;
-    const float BSIZE_GB = BSIZE_MB*1024;
-    const float BSIZE_TB = BSIZE_GB*1024;
-    const float BSIZE_PB = BSIZE_TB*1024;
+    const float byte_size_kb = 1024; //if this is wrong, change it to 1000 in your own time. :-)
+    const float byte_size_mb = byte_size_kb*1024;
+    const float byte_size_gb = byte_size_mb*1024;
+    const float byte_size_tb = byte_size_gb*1024;
+    const float byte_size_pb = byte_size_tb*1024;
 
-    void external_open_program(std::string programLocation, std::string programInfo="", bool openProgrmaInfoOnFail = false);
-    void external_open_url(std::string urlIn);
+    class file_and_url_manager
+    {
+        protected:
+            std::string manager_type;
+        public:
+            file_and_url_manager();
+            ~file_and_url_manager();
 
-    int getFileSize(const std::string &fileName);
-    std::string getFileSizeString(const std::string &fileName);
+            virtual void external_open_program(std::string program_location, std::string program_info="", bool show_program_info_on_fail = false);
+            virtual void external_open_url(std::string url_string);
 
-    int clean_folder(std::string folderName);
-    int copy_folder(std::string folderName, std::string targetFolder, bool copySubFolders = false, bool overwriteExistingFiles = false );
+            virtual void file_ammend_string(std::string file_name, std::string str_in );
+            virtual bool file_copy(std::string source_file_name, std::string destination_file_name, bool overwrite_existing = true);
+            virtual bool file_exists(std::string new_file_name);
 
-    std::string  get_user_settings_folder();
-    bool seek_settings_folder();
-    std::string get_user_temp_folder();
-    std::string get_user_screenshot_folder();
-    bool delete_file( std::string fName);
+
+            virtual int file_get_size_bytes(const std::string &file_name);
+            virtual std::string file_get_size_string(const std::string &file_name);
+
+            virtual int folder_clean(std::string folder_name);
+            virtual int folder_copy(std::string folder_name, std::string folder_target, bool copy_subfolders = false, bool overwrite_existing_files = false );
+            virtual int folder_create( std::string new_path_name);
+            virtual bool folder_exists(std::string path_name);
+
+
+            virtual std::string  get_user_settings_folder();
+            virtual bool seek_settings_folder();
+            virtual std::string get_user_temp_folder();
+            virtual std::string get_user_screenshot_folder();
+            virtual bool delete_file( std::string f_name);
+    };
+
+    extern file_and_url_manager * main_file_url_manager;
 
 }
 

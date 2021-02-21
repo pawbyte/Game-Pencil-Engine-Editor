@@ -3,10 +3,10 @@ gpe_settings.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -42,8 +42,8 @@ namespace gpe
         programPublisher = app_publisher;
         programTitle = appTitle;
 
-        defaultWindowWidth = 320;
-        defaultWindowHeight = 180;
+        defaultWindowWidth = 640;
+        defaultWindowHeight = 480;
 
         minWindowWidth = 320;
         minWindowHeight = 180;
@@ -62,7 +62,7 @@ namespace gpe
         showFPS = false;
         showFPSX = 32;
         showFPSY = 32;
-        settingsLeadPair = new key_pair( -1, "gpe_settings" );
+        settingsLeadPair = new key_pair( -1, "gpeSettings" );
         gameResourcesInstructions = new gpe::key_pair(-1, "gameResourcesInstructions", "gameResourcesInstructions", -1 );
 
         animationsInstructions = gameResourcesInstructions->add_keypair("animations","animations", -1 );
@@ -90,7 +90,7 @@ namespace gpe
 
         if( fPair != NULL )
         {
-            return fPair->keyValue;
+            return fPair->key_value;
         }
         return -1;
     }
@@ -101,7 +101,7 @@ namespace gpe
 
         if( fPair != NULL )
         {
-            return fPair->keyValue;
+            return fPair->key_value;
         }
         return -1;
     }
@@ -112,7 +112,7 @@ namespace gpe
 
         if( fPair != NULL )
         {
-            return fPair->keySubString;
+            return fPair->key_substring;
         }
         return "";
 
@@ -124,8 +124,8 @@ namespace gpe
 
         if( fPair != NULL )
         {
-            fPair->keySubString = stg_ex::float_to_string( s_val );
-            fPair->keyValue = s_val;
+            fPair->key_substring = stg_ex::float_to_string( s_val );
+            fPair->key_value = s_val;
         }
         else
         {
@@ -140,8 +140,8 @@ namespace gpe
 
         if( fPair != NULL )
         {
-            fPair->keySubString = stg_ex::int_to_string( s_val );
-            fPair->keyValue = s_val;
+            fPair->key_substring = stg_ex::int_to_string( s_val );
+            fPair->key_value = s_val;
         }
         else
         {
@@ -156,8 +156,8 @@ namespace gpe
 
         if( fPair != NULL )
         {
-            fPair->keySubString = s_val;
-            fPair->keyValue = stg_ex::string_to_float( s_val, 0 );
+            fPair->key_substring = s_val;
+            fPair->key_value = stg_ex::string_to_float( s_val, 0 );
         }
         else
         {

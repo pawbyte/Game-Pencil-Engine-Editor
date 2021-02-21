@@ -3,10 +3,10 @@ gpe_basic_object.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -46,7 +46,7 @@ namespace gpe
     //used to keep track of the spatial grid
     //should only by edited by the scene/runtime, not local objects.
 
-    namespace gpeSpatialGridData
+    namespace spatial_grid_data
     {
         extern int sPxWidth;
         extern int sPxHeight;
@@ -80,7 +80,7 @@ namespace gpe
             std::string gpeObjName;
 
             //Animation variables
-            std::string animId;
+            std::string animation_id;
             std::string collisionMask;
             animaton2d * animationPtr;
             animaton2d * collisionMaskPtr;
@@ -96,7 +96,6 @@ namespace gpe
             bool applyGravity;
             float gravityDirection;
             float gravityEffect;
-            bool isVisible;
             float xBegin;
             float x2Pos;
             float yBegin;
@@ -145,13 +144,13 @@ namespace gpe
             bool gpeAddedToContinuousList;
             bool gpeSceneStartCodeUsed;
 
-            game_object(  int xPosIn,  int yPosIn,  int objectLayerId);
+            game_object(  int x_pos_in,  int y_pos_in,  int object_layer_id);
             virtual ~game_object();
             void apply_gravity();
             void check_spatial_movement();
             void clear_collisions();
             void add_collision_object( game_object * other );
-            static game_object * create_object(int xPosIn,  int yPosIn,  int objectLayerId) { return new game_object( xPosIn,   yPosIn, objectLayerId); }
+            static game_object * create_object(int x_pos_in,  int y_pos_in,  int object_layer_id) { return new game_object( x_pos_in,   y_pos_in, object_layer_id); }
             bool check_collison_with_object(  game_object * otherObj );
             bool under_mouse( int cameraId );
             void bounce_from( game_object * otherObj);
@@ -183,7 +182,6 @@ namespace gpe
 
             bool is_init();
             bool is_moving_object();
-            bool is_visible();
             void make_view_dependent();
             void make_view_independent();
             void move_left(float leftMore);
@@ -213,8 +211,7 @@ namespace gpe
             void reset_branch();
             virtual void scene_end();
             virtual void scene_start();
-            virtual void self_obliterate();
-            void self_destruct();
+            virtual bool self_destruct();
 
             void set_animation(std::string nextAnimation, bool animIsMaskToo = false);
             void set_collision_mask( std::string animationMask );
@@ -222,8 +219,8 @@ namespace gpe
             void set_layer_id( int nLayerId, bool updatedOnGrid = false );
 
             void set_angle(float angle );
-            void setx(float newX);
-            void sety(float newY);
+            void setx(float x_new);
+            void sety(float y_new);
             void speed_move();
             void set_velocity(float newDir, float newSpeed );
             void start_countdown ( int timerId, int countDownStart);
@@ -233,7 +230,7 @@ namespace gpe
             virtual void start_frame_logic();
             void update();
             void update_animation();
-            void update_cords( float newX,  float newY);
+            void update_cords( float x_new,  float y_new);
             bool touches_tile(int layerToCheck);
             bool touches_certain_tile(int layerToCheck, int needleTile);
     };

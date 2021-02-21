@@ -3,10 +3,10 @@ gpe_error_logger.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -76,21 +76,21 @@ namespace gpe
     }
 
 
-    void error_log_system::log_ms_action( std::string output_string, int ms_in, int ms_required )
+    void error_log_system::log_ms_action( std::string str_in, int ms_in, int ms_required )
     {
         /*
         if( ms_in > ms_required )
         {
-            output_string += " elapsed " + stg_ex::int_to_string( ms_in ) + "ms";
-            report( output_string );
+            str_in += " elapsed " + stg_ex::int_to_string( ms_in ) + "ms";
+            report( str_in );
         }
         */
     }
 
-    void error_log_system::report(std::string output_string)
+    void error_log_system::report(std::string str_in)
     {
-        system_log.push_back( output_string );
-        sff_ex::append_to_file( output_file, output_string );
+        system_log.push_back( str_in );
+        main_file_url_manager->file_ammend_string( output_file, str_in );
     }
 
     void error_log_system::set_output_file( std::string output_file_name )

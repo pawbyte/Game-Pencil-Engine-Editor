@@ -3,10 +3,10 @@ GPE_Spatial_Partition.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -55,8 +55,8 @@ namespace gpe
             void empty_list();
             game_object * get_object(int pos);
             int get_size();
-            void set_space(int newX, int newY, int newW, int newHeight);
-            void remove_held_object(game_object * objectIn);
+            void set_space(int x_new, int y_new, int newW, int new_height);
+            void remove_held_object(game_object * object_in);
     };
 }
 #endif //gpe_spatial_partition_h

@@ -3,10 +3,10 @@ gpe_branch.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -74,25 +74,30 @@ namespace gpe
     class branch
     {
         private:
-
+            int frames_til_deletion;
+            bool branch_being_removed;
         protected:
-            branch * parentBranch;
-            branch * treeBranch;
+            branch * branch_parent;
+            branch * branch_tree;
             std::vector< branch * > sub_elements;
-            std::string name, branchTag;
+            std::string name, branch_tag;
             float xpos, ypos;
             float xscale, yscale;
             float angle;
             float xpivot, ypivot;
             int width, height;
-            branch_type branchType;
-            int currentLayer;
+            branch_type branch_type_id;
+            int current_layer;
+            bool branch_visible;
+
         public:
             branch();
             virtual ~branch();
             virtual void add_branch( branch * new_branch );
-            branch * find_branch_by_name( std::string branchName , bool nestDown = false );
-            branch * find_typed_branch_by_name( int bType, std::string branchName , bool nestDown = false  );
+            void being_deleted();
+            int get_frames_before_deleted();
+            branch * find_branch_by_name( std::string branch_name , bool nest_down = false );
+            branch * find_typed_branch_by_name( int branch_type, std::string branch_name , bool nest_down = false  );
             float get_angle();
             std::string get_name();
             branch * get_parent();
@@ -111,36 +116,42 @@ namespace gpe
             float get_xscale();
             float get_ypivot();
             float get_yscale();
+
+            bool is_visible();
+
             virtual void update();
 
-
-            bool remove_branch_by_name( std::string branchName , bool nestDown = true );
-            bool remove_typed_branch_by_name( int bType, std::string branchName , bool nestDown = true );
+            bool remove_branch_by_name( std::string branch_name , bool nest_down = true );
+            bool remove_typed_branch_by_name( int branch_type_id, std::string branch_name , bool nest_down = true );
 
             virtual void render();
             virtual void reset_branch();
-            virtual void set_angle(float newAngle );
-            virtual void set_coords(float newX, float newY );
-            virtual void set_height(int newHeight );
-            void set_tag( std::string newTag);
-            virtual void set_width(int newWidth );
-            virtual void set_size(int newWidth, int newHeight );
-            virtual void set_pivots(int newXPivot, int newYPivot );
-            virtual void set_scale( float newScale );
-            virtual void setx(float newX );
-            virtual void set_xscale( float newScale );
-            virtual void sety(float newY );
-            virtual void set_yscale( float newScale );
+            virtual bool self_destruct();
+
+            virtual void set_angle(float new_angle );
+            virtual void set_coords(float x_new, float y_new );
+            virtual void set_frames_before_deleted( int frames_remaining );
+
+            virtual void set_height(int new_height );
+            void set_tag( std::string tag_new);
+            virtual void set_width(int new_width );
+            virtual void set_size(int new_width, int new_height );
+            virtual void set_pivots(int new_x_pivot, int new_y_pivot );
+            virtual void set_scale( float new_scale );
+            virtual void setx(float x_new );
+            virtual void set_xscale( float new_scale );
+            virtual void sety(float y_new );
+            virtual void set_yscale( float new_scale );
     };
 
 
-    class branchType: public branch
+    class branch_type_id: public branch
     {
         protected:
-            int branchCategory;
+            int branch_category;
         public:
-            branchType( int bCategory );
-            ~branchType();
+            branch_type_id( int branch_catetory_start );
+            ~branch_type_id();
     };
 }
 

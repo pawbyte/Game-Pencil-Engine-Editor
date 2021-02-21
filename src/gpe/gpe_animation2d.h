@@ -3,10 +3,10 @@ gpe_animation2d.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,10 +39,12 @@ SOFTWARE.
 #include <cmath>
 #include <sstream>
 #include "gpe_collisions.h"
-#include "../other_libs/stg_ex.h"
+#include "gpe_file_system.h"
 #include "gpe_globals.h"
 #include "gpe_branch.h"
 #include "gpe_render_package.h"
+#include "../other_libs\stg_ex.h"
+
 
 namespace gpe
 {
@@ -64,23 +66,23 @@ namespace gpe
     class animaton2d : public branch
     {
         private:
-            texture_base * animationTexture;
-            std::string fileName;
+            texture_base * animation_texture;
+            std::string file_name;
             //texture_base *animationFlipSurface;
             //texture_base *animationMirFlipSurface;
             int xoffset, yoffset, frameCount;
             int hPadding, vPadding;
-            std::vector <shape_rect * > animFrames;
-            int xMiddle, yMiddle;
+            std::vector <shape_rect * > animation_frames;
+            int x_middle, y_middle;
         public:
-            int animId;
-            int colRadius;
-            shape_rect * colBox;
+            int animation_id;
+            int collision_radius;
+            shape_rect * collision_box;
             animation2d_collision_zone collision_zone;
-            animaton2d( render_package * renderPackage, std::string animName= "", std::string animFileName = "", bool imgTransparent=false);
+            animaton2d( render_package * r_package, std::string anim_name= "", std::string anim_filename = "", bool transparent_image=false);
             ~animaton2d();
-            void change_name(std::string animName);
-            bool copy_image_source(std::string outDirectoryName);
+            void change_name(std::string anim_name);
+            bool copy_image_source(std::string directory_output_name);
             animaton2d * copy_self();
             void clean_up();
             void edit_collision_box(int cx, int cy, int cw, int ch);
@@ -98,17 +100,17 @@ namespace gpe
             std::string get_file_name();
             std::string get_name();
             bool has_texture();
-            void load_image( render_package * renderPackage,std::string animFileName, bool transparent = true );
-            void render(int subImageToDraw, int xPos, int yPos,  shape_rect * cam = NULL);
-            void render_colored(int subImageToDraw, int xPos, int yPos, color * renderColor, int alpha = 255, shape_rect * cam = NULL);
-            void render_piece( int xPos, int yPos, shape_rect * rectPiece = NULL, shape_rect * cam = NULL);
-            void render_piece_resized( int xPos, int yPos, int newWidth, int newHeight, shape_rect * rectPiece = NULL, shape_rect * cam = NULL);
-            void render_resized(int subImageToDraw, int xPos, int yPos, float newWidth, float newHeight, shape_rect * cam = NULL);
-            void render_rotated(int subImageToDraw, int xPos, int yPos, float newAngle, float xScale, float yScale, shape_rect * cam= NULL);
-            void render_scaled(int subImageToDraw, int xPos, int yPos, float xScale, float yScale, shape_rect * cam = NULL);
-            void render_special(int subImageToDraw, int xPos, int yPos, float xScale, float yScale,float newAngle = 0,color * renderColor = NULL, int alpha = 255, shape_rect * cam= NULL);
+            void load_image( render_package * r_package,std::string anim_filename, bool transparent = true );
+            void render(int sub_image_to_draw, int x_pos, int y_pos,  shape_rect * cam = NULL);
+            void render_colored(int sub_image_to_draw, int x_pos, int y_pos, color * render_color, int alpha = 255, shape_rect * cam = NULL);
+            void render_piece( int x_pos, int y_pos, shape_rect * rect_piece = NULL, shape_rect * cam = NULL);
+            void render_piece_resized( int x_pos, int y_pos, int new_width, int new_height, shape_rect * rect_piece = NULL, shape_rect * cam = NULL);
+            void render_resized(int sub_image_to_draw, int x_pos, int y_pos, float new_width, float new_height, shape_rect * cam = NULL);
+            void render_rotated(int sub_image_to_draw, int x_pos, int y_pos, float new_angle, float x_scale, float y_scale, shape_rect * cam= NULL);
+            void render_scaled(int sub_image_to_draw, int x_pos, int y_pos, float x_scale, float y_scale, shape_rect * cam = NULL);
+            void render_special(int sub_image_to_draw, int x_pos, int y_pos, float x_scale, float y_scale,float new_angle = 0,color * render_color = NULL, int alpha = 255, shape_rect * cam= NULL);
             void reset_frames();
-            void setup_animation( int fCount, int aw, int ah, int sofx, int sofy, int hPad, int vPad );
+            void setup_animation( int frame_count, int aw, int ah, int sofx, int sofy, int hPad, int vPad );
             void setup_fullimg_animation(  int aw, int ah, int sofx, int sofy, int hPad, int vPad );
     };
 }

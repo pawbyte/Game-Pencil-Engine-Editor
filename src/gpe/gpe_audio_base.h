@@ -3,10 +3,10 @@ gpe_audio_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -43,10 +43,11 @@ namespace gpe
     extern float sound_global_volume;
 
     const int sound_format_acc = 0;
-    const int sound_format_mp3 = 1;
-    const int sound_format_mod = 2;
+    const int sound_format_mod = 1;
+    const int sound_format_mp3 = 2;
     const int sound_format_ogg = 3;
     const int sound_format_wav = 4;
+    const int sound_format_xm = 5;
 
     const int sound_format_max = 10; //Adding some extras for extensions...
 

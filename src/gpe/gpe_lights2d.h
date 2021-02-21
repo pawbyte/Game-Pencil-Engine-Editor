@@ -3,10 +3,10 @@ gpe_lights2d.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -47,10 +47,9 @@ namespace gpe
     class light_basic_2d: public branch
     {
         public:
-            float lightX, lightY;
-            int lightIntensity;
-            color * lightColor;
-            bool lightIsActive, lightActiveOnStart;
+            color * light_color;
+            int light_intensity;
+            bool light_is_active, light_active_on_start;
             light_basic_2d();
             virtual ~light_basic_2d();
             virtual void render_light( float scale = 1, gpe::shape_rect * cam = NULL);
@@ -60,13 +59,13 @@ namespace gpe
 
     class light_direction2d: public light_basic_2d
     {
-        private:
-            float lightDirection;
+        protected:
+            float light_direction;
         public:
-            int lightX2, lightY2;
-            texture_base * lightTexture;
-            int lightWidth;
-            int lightLength;
+            int light_x2, light_y2;
+            texture_base * light_texture;
+            int light_width;
+            int light_length;
             light_direction2d();
             ~light_direction2d();
             float get_direction();
@@ -77,16 +76,16 @@ namespace gpe
 
     class light_point2d: public light_basic_2d
     {
-        private:
-            bool useFlicker;
-            int currentFlicker, lightFlickerRange; // in pixels
-            int lightFlickerTime, lightFlickerTimeGoal; // in milliseconds
+        protected:
+            bool light_flickers;
+            int light_flicker_amount, light_flicker_range; // in pixels
+            int light_flicker_time, light_flicker_time_goal; // in milliseconds
         public:
-            int lightRadius;
-            int secondRadius;
-            int thirdRadius;
-            int secondRadiusIntensity;
-            int thirdRadiusIntensity;
+            int light_radius;
+            int light_radius_second;
+            int light_radius_third;
+            int light_radius_second_intensity;
+            int light_radius_third_intensity;
             light_point2d();
             ~light_point2d();
             void disable_flicker();

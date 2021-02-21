@@ -3,10 +3,10 @@ gpe_window_controller_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,13 +45,13 @@ namespace gpe
     class window_controller_base
     {
         protected:
-            //Scale based properties [ start]
+            //_scale based properties [ start]
             bool previously_scaled;
             bool window_scaling;
             bool use_integer_scaling;
             float scale_percentage_x, scale_percentage_y;
             int scale_source_width, scale_source_height;
-            //Scale based properties [ end ]
+            //_scale based properties [ end ]
 
             bool windowed;
             //Whether the window is windowed or not
@@ -68,7 +68,6 @@ namespace gpe
             bool window_has_focus;
             bool window_has_mouse;
             bool window_closed;
-            bool resize_happened;
 
             window_controller_base();
             virtual ~window_controller_base();
@@ -110,6 +109,8 @@ namespace gpe
             virtual bool scale_window( int s_width, int s_height , bool scale_int );
             virtual bool scale_window_factor( float s_width, float s_height, bool scale_int );
 
+            virtual void set_window_position( int new_x, int new_y );
+            virtual bool set_window_size( int n_width, int n_height );
             virtual void set_window_title(std::string new_title);
             virtual std::string save_screenshot(std::string file_location = "");
 

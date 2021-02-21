@@ -3,10 +3,10 @@ texture_target_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,7 +45,7 @@ namespace gpe
             virtual ~texture_target_base();
             texture_base * create_new();
             virtual void render_overlay(  renderer_base * renderer,int x, int y, gpe::shape_rect* clip = NULL, int alpha = 255  );
-            virtual void render_overlay_scaled(  renderer_base * renderer,int x, int y,float xScale, float yScale, gpe::shape_rect* clip = NULL, color * rendColor = NULL, int alpha = 255 );
+            virtual void render_overlay_scaled(  renderer_base * renderer,int x, int y,float x_scale, float y_scale, gpe::shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
 
             virtual void resize_target( renderer_base * renderer,int w, int h, int id = -1,bool useLinearScaling = true  );
     };

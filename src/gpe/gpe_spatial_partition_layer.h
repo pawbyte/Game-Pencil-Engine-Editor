@@ -3,10 +3,10 @@ spatial_partition_layer.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -43,15 +43,15 @@ namespace gpe
         protected:
             std::vector<spatial_partition * > layerPartitions; //Used for spatial partitioning collision checker
             bool superDebugCollisions;
-            bool spatialGridIsCreated;
+            bool spatial_grid_created;
 
-            std::map<std::string,bool> objectCollisionIsChecked;
+            std::map<std::string,bool> object_collision_is_checked;
             std::vector<game_object * > collisionPairA;
             std::vector<game_object * > collisionPairB;
             int layerID;
             bool isActive;
-            int spatialGridWidthSize ,  spatialGridHeightSize;
-            int spatialGridWidthAmount, spatialGridHeightAmount;
+            int spatial_grid_width_size ,  spatial_grid_height_size;
+            int spatial_grid_x_amount, spatial_grid_y_amount;
         public:
             spatial_partition_layer( int myLayerId );
             ~spatial_partition_layer();
@@ -62,7 +62,7 @@ namespace gpe
             void clear_spaces();
             void deactivate_layer();
             int find_spatial_at( int xIn, int yIn);
-            void init_collision_handler( int cSceneWidth, int cSceneHeight );
+            void init_collision_handler( int camera_scene_width, int camera_scene_height );
             bool is_active();
             void remove_object( game_object * gameObject );
     };
