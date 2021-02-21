@@ -2,7 +2,7 @@
 
  MIT License
 
- Copyright © 2020 Samuel Venable
+ Copyright © 2021 Samuel Venable
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -28,26 +28,25 @@
 #include <sstream>
 #include <set>
 
+#include <cwchar>
 #include <cstddef>
 
 #include "../filesystem.h"
 
 #if defined(_WIN32)
-#include <cwchar>
-
 #include <windows.h>
 #endif
 
 namespace fs = std::filesystem;
 
 using std::string;
+using std::wstring;
+
+using std::size_t;
+using std::uintmax_t;
+
 using std::vector;
 using std::stringstream;
-using std::size_t;
-
-#if defined(_WIN32)
-using std::wstring;
-#endif
 
 namespace misc {
 
@@ -294,11 +293,11 @@ namespace misc {
   }
 
   // get filesize in bytes for filename...
-  std::uintmax_t stdfilesystem::file_size(string fname) {
+  uintmax_t stdfilesystem::file_size(string fname) {
     std::error_code ec;
     if (!file_exists(fname)) return 0;
     const fs::path path = fs::u8path(fname);
-    std::uintmax_t result = fs::file_size(path, ec);
+    uintmax_t result = fs::file_size(path, ec);
     return (ec.value() == 0) ? result : 0;
   }
 
@@ -343,8 +342,8 @@ namespace misc {
   }
 
   // gets the entire directory size in bytes...
-  std::uintmax_t stdfilesystem::directory_size(string dname) {
-    std::uintmax_t result = 0;
+  uintmax_t stdfilesystem::directory_size(string dname) {
+    uintmax_t result = 0;
     if (!directory_exists(dname)) return 0;
     const fs::path path = fs::u8path(filename_remove_slash(dname, true));
     if (fs::exists(path)) {
