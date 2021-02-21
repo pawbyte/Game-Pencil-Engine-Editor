@@ -28,27 +28,55 @@
 #include <vector>
 #include <cstddef>
 
-namespace cppfilesystem {
+namespace misc {
 
-  std::string get_working_directory();
-  bool set_working_directory(std::string dname);
-  std::string get_executable_path();
-  std::string get_temp_directory();
-  std::string environment_get_variable(std::string name);
-  bool environment_set_variable(std::string name, std::string value)
-  std::string filename_absolute(std::string fname);
-  std::string filename_canonical(std::string fname);
-  bool file_exists(std::string fname);
-  bool file_delete(std::string fname);
-  bool file_rename(std::string oldname, std::string newname);
-  bool file_copy(std::string fname, std::string newname);
-  std::uintmax_t file_size(std::string fname);
-  bool directory_exists(std::string dname);
-  bool directory_create(std::string dname);
-  bool directory_destroy(std::string dname);
-  bool directory_rename(std::string oldname, std::string newname);
-  bool directory_copy(std::string dname, std::string newname);
-  std::uintmax_t directory_size(std::string dname);
-  std::vector directory_contents(std::string dname, std::string pattern, bool includedirs);
+  class stdfilesystem {
 
-} // namespace cppfilesystem
+    private:
+
+      std::string retained_string;
+      std::size_t retained_length;
+      std::uintmax_t szsource = 0;
+
+      bool directory_copy_retained(std::string dname, std::string newname);
+      std::string string_replace_all(std::string str, std::string sstr, std::string nstr);
+      std::vector<std::string> split_string(const std::string &str, char delimiter);.
+
+    public:
+
+      std::wstring stdfilesystem::widen(std::string str);
+      std::string stdfilesystem::narrow(std::wstring wstr);
+
+      std::string get_working_directory();
+      bool set_working_directory(std::string dname);
+      std::string get_executable_path();
+      std::string get_temp_directory();
+
+      std::string environment_get_variable(std::string name);
+      bool environment_set_variable(std::string name, std::string value);
+
+      std::string filename_canonical(std::string fname);
+      std::string filename_weakly_canonical(std::string fname);
+      std::string filename_remove_slash(std::string dname, bool canonical = false);
+      std::string filename_add_slash(std::string dname, bool canonical = false);
+      std::string filename_path(std::string fname);
+      std::string filename_name(std::string fname);
+      std::string filename_ext(std::string fname);
+
+      bool file_exists(std::string fname);
+      bool file_delete(std::string fname);
+      bool file_rename(std::string oldname, std::string newname);
+      bool file_copy(std::string fname, std::string newname);
+      std::uintmax_t file_size(std::string fname);
+
+      bool directory_exists(std::string dname);
+      bool directory_create(std::string dname);
+      bool directory_destroy(std::string dname);
+      bool directory_rename(std::string oldname, std::string newname);
+      bool directory_copy(std::string dname, std::string newname);
+      std::uintmax_t directory_size(std::string dname);
+      std::vector directory_contents(std::string dname, std::string pattern);
+
+  }; // class stdfilesystem
+
+} // namespace misc
