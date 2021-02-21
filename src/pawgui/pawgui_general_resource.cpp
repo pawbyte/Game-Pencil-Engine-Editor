@@ -3,10 +3,10 @@ pawgui_general_resource.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -194,15 +194,15 @@ namespace pawgui
     {
         globalResouceIdNumber = newRId;
     }
-    void general_resource::update_box(int newX, int newY, int newW, int newH)
+    void general_resource::update_box(int x_new, int y_new, int newW, int newH)
     {
-        if( newX!=-1)
+        if( x_new!=-1)
         {
-            encapBox.x = newX;
+            encapBox.x = x_new;
         }
-        if(newY!=-1)
+        if(y_new!=-1)
         {
-            encapBox.y = newY;
+            encapBox.y = y_new;
         }
 
         if( newW!=-1)

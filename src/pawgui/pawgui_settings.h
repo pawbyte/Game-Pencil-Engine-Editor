@@ -3,10 +3,10 @@ pawgui_settings.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PAWGUI contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PAWGUI contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -44,7 +44,7 @@ namespace pawgui
             int defaultElementHeight;
             gpe::shape_rect textAreaFindBox;
             bool useShortProjectNames;
-            //Text Editor Related Settings [ BEGIN ]
+            //Text Editor Related _settings [ BEGIN ]
             float textInputDelayTime;
             float normalInputDelayTime;
             float textAreaDelayTime;
@@ -55,8 +55,8 @@ namespace pawgui
             bool showTextEditorLineCount;
             bool showTextEditorSyntaxHightlight;
             int defaultLineCountWidth;
-            //Text Editor Related Settings [ END ]
-            //Default Folder Related Settings [ BEGIN ]
+            //Text Editor Related _settings [ END ]
+            //Default Folder Related _settings [ BEGIN ]
             std::string fileOpenAudioDir;
             std::string fileOpenVideoDir;
             std::string fileOpenanimationDir;
@@ -71,7 +71,7 @@ namespace pawgui
             std::string fileSaveTextFileDir;
             std::string fileOpenDefaultDir;
             std::string fileSaveDefaultDir;
-            //Default Folder RelatedSettings [ END ]
+            //Default Folder Related_settings [ END ]
             //std::string
             gui_settings();
             virtual ~gui_settings();

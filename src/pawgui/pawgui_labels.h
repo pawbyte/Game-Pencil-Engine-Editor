@@ -3,10 +3,10 @@ pawgui_labels.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -48,7 +48,7 @@ namespace pawgui
         float resizeAspect;
         bool wasClicked;
         std::string webUrl;
-        widget_label_image( std::string name_param , std::string file_name,std::string description = "", std::string urlIn = "");
+        widget_label_image( std::string name_param , std::string file_name,std::string description = "", std::string url_string = "");
         ~widget_label_image();
         void load_label_image(std::string new_file_name);
         void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
@@ -67,7 +67,7 @@ namespace pawgui
         ~widget_label_text();
         std::string get_data();
         std::string get_plain_string();
-        void load_data(std::string dataString);
+        void load_data(std::string datastring);
         void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void set_name(std::string name_param);
@@ -80,7 +80,7 @@ namespace pawgui
         ~widget_label_error();
         std::string get_data();
         std::string get_plain_string();
-        void load_data(std::string dataString);
+        void load_data(std::string datastring);
         void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void set_name(std::string name_param);
@@ -93,7 +93,7 @@ namespace pawgui
         ~widget_label_rotated_90();
         std::string get_data();
         std::string get_plain_string();
-        void load_data(std::string dataString);
+        void load_data(std::string datastring);
         void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void set_name(std::string name_param);
@@ -116,8 +116,8 @@ namespace pawgui
         void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void set_name(std::string name_param);
-        void set_width(int newWidth);
-        void set_height(int newHeight);
+        void set_width(int new_width);
+        void set_height(int new_height);
         void set_max_width( int nMW);
         void set_max_height( int nMH);
         void update_paragraph();
@@ -131,7 +131,7 @@ namespace pawgui
         ~widget_label_title();
         std::string get_data();
         std::string get_plain_string();
-        void load_data(std::string dataString);
+        void load_data(std::string datastring);
         void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void set_name(std::string name_param);

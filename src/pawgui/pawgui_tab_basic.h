@@ -3,10 +3,10 @@ pawgui_tab_basic.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -42,7 +42,7 @@ namespace pawgui
     class widget_tabbar: public widget_basic
     {
         private:
-            std::vector <std::string> subOptions;
+            std::vector <std::string> sub_options;
         public:
             bool canCloseTabs;
             bool tabIsRightClicked;
@@ -69,6 +69,7 @@ namespace pawgui
             void open_tab(std::string tabName);
             std::string get_selected_name();
             int get_selected_tab();
+            std::string get_tab_at( int pos );
             int get_tab_count();
             void process_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect *cam = NULL);
             void remove_all_tabs( );

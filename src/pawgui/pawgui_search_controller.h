@@ -3,10 +3,10 @@ pawgui_search_controller.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -47,20 +47,20 @@ namespace pawgui
     class search_controller
     {
         public:
-            //Search Settings
+            //Search _settings
             int findAllStartXPos, findAllStartYPos;
             pawgui::search_mode previousSearchMode;
             pawgui::search_mode textSearchMode;
             bool showFindAllResults;
             //For Find/Replace Box of TextArea
-            widget_input_text * findTextStringBox;
-            widget_input_number * goToLineStringBox;
-            widget_input_text * replaceTextStringBox;
-            widget_button_label * findButton;
-            widget_button_label * findAllButton;
-            widget_button_label * goToButton;
-            widget_button_label * replaceButton;
-            widget_button_label * replaceAllButton;
+            widget_input_text * findTextstringBox;
+            widget_input_number * goToLinestringBox;
+            widget_input_text * replaceTextstringBox;
+            widget_button_label * find_button;
+            widget_button_label * findAll_button;
+            widget_button_label * goTo_button;
+            widget_button_label * replace_button;
+            widget_button_label * replaceAll_button;
             widget_checkbox * findMatchCase;
 
             widget_label_text * scopeLabel;

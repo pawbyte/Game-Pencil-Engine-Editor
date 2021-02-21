@@ -3,10 +3,10 @@ pawgui_text_input.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -43,32 +43,32 @@ namespace pawgui
         widget_type = "inputtext";
         cursorPos = 0;
         prevCursorPos =0;
-        cursorHistoryPos = -1;
+        cursorHistory_pos = -1;
         showPlaceHolder = true;
         if( (int)startName.size()>512)
         {
             startName = startName.substr(0,512);
         }
-        textInputString = startName;
-        cursorPos = (int) textInputString.size();
+        textInputstring = startName;
+        cursorPos = (int) textInputstring.size();
         showLabel = false;
         inputLabel = "";
         if( (int)placeHolderText.size()>512)
         {
             placeHolderText = placeHolderText.substr(0,512);
         }
-        placeHolderString = placeHolderText;
+        placeHolderstring = placeHolderText;
         widget_box.x = 0;
         widget_box.y = 0;
         widget_box.w = 192;
         widget_box.h = 24;
 
-        font_textinput->get_metrics("A",&fontSizeW,&fontSizeH);
-        if( fontSizeW<=0)
+        font_textinput->get_metrics("A",&font_sizeW,&font_sizeH);
+        if( font_sizeW<=0)
         {
-            fontSizeW = 12;
+            font_sizeW = 12;
         }
-        maxCharactersInView = widget_box.w/fontSizeW;
+        maxCharactersInView = widget_box.w/font_sizeW;
 
         inputFieldPos = 0;
         hasValidInput = true;
@@ -96,21 +96,21 @@ namespace pawgui
 
     std::string widget_input_text::get_data()
     {
-        return widget_type+":"+widget_name+"==|||=="+textInputString;
+        return widget_type+":"+widget_name+"==|||=="+textInputstring;
     }
 
-    void widget_input_text::load_data(std::string dataString)
+    void widget_input_text::load_data(std::string datastring)
     {
-        textInputString = dataString;
+        textInputstring = datastring;
     }
 
     void widget_input_text::copy_selection()
     {
-        if( selectionCursorPos >=0 && selectionCursorPos < (int)textInputString.size() && selectionEndCursorPos >=0 && selectionEndCursorPos <= (int)textInputString.size() )
+        if( selectionCursorPos >=0 && selectionCursorPos < (int)textInputstring.size() && selectionEndCursorPos >=0 && selectionEndCursorPos <= (int)textInputstring.size() )
         {
             int minHighlightPos = std::min(selectionCursorPos,selectionEndCursorPos);
             int maxHighlightPos = std::max(selectionCursorPos,selectionEndCursorPos);
-            std::string strToCopy = stg_ex::get_substring(textInputString,minHighlightPos,maxHighlightPos-minHighlightPos);
+            std::string strToCopy = stg_ex::get_substring(textInputstring,minHighlightPos,maxHighlightPos-minHighlightPos);
             gpe::input->clipboard_set( strToCopy );
             //main_overlay_system->update_temporary_message("Selection copied","","",0.25);
         }
@@ -124,15 +124,15 @@ namespace pawgui
 
     void widget_input_text::delete_selection()
     {
-        if(  (int)textInputString.size() > 0 && selectionCursorPos!=selectionEndCursorPos )
+        if(  (int)textInputstring.size() > 0 && selectionCursorPos!=selectionEndCursorPos )
         {
             int minHighlightPos = std::min(selectionCursorPos,selectionEndCursorPos);
             int maxHighlightPos = std::max(selectionCursorPos,selectionEndCursorPos);
-            if(minHighlightPos >=0 && minHighlightPos < (int)textInputString.size() && maxHighlightPos >0 && maxHighlightPos <= (int)textInputString.size() )
+            if(minHighlightPos >=0 && minHighlightPos < (int)textInputstring.size() && maxHighlightPos >0 && maxHighlightPos <= (int)textInputstring.size() )
             {
-                std::string leftSideString = stg_ex::get_substring(textInputString,0,minHighlightPos);
-                std::string rightSideString = stg_ex::get_substring(textInputString,maxHighlightPos);
-                textInputString = leftSideString+rightSideString;
+                std::string leftSidestring = stg_ex::get_substring(textInputstring,0,minHighlightPos);
+                std::string rightSidestring = stg_ex::get_substring(textInputstring,maxHighlightPos);
+                textInputstring = leftSidestring+rightSidestring;
                 selectionCursorPos = 0;
                 selectionEndCursorPos = 0;
                 cursorPos = minHighlightPos;
@@ -148,22 +148,22 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        cursorPos = floor( startXPos+(gpe::input->mouse_position_x-view_space->x-fieldElementBox.x)/fontSizeW);
+        cursorPos = floor( startXPos+(gpe::input->mouse_position_x-view_space->x-fieldElementBox.x)/font_sizeW);
         if( cursorPos < 0)
         {
             cursorPos = 0;
         }
-        if( cursorPos > (int)textInputString.size() )
+        if( cursorPos > (int)textInputstring.size() )
         {
-            cursorPos = (int)textInputString.size();
+            cursorPos = (int)textInputstring.size();
         }
     }
 
     std::string widget_input_text::get_plain_string()
     {
-        if( stg_ex::is_alnum(textInputString,true,true) )
+        if( stg_ex::is_alnum(textInputstring,true,true) )
         {
-            return textInputString;
+            return textInputstring;
         }
         else
         {
@@ -178,12 +178,12 @@ namespace pawgui
 
     std::string widget_input_text::get_string()
     {
-        return textInputString;
+        return textInputstring;
     }
 
     bool widget_input_text::has_content()
     {
-        return ( (int)textInputString.size() > 0);
+        return ( (int)textInputstring.size() > 0);
     }
 
     bool widget_input_text::is_valid()
@@ -205,7 +205,7 @@ namespace pawgui
 
     void widget_input_text::move_right(int xToMove )
     {
-        int currStrSize = (int)textInputString.size();
+        int currStrSize = (int)textInputstring.size();
         if( xToMove > 0 && currStrSize > maxCharactersInView )
         {
             startXPos+=xToMove;
@@ -230,7 +230,7 @@ namespace pawgui
         inputSubmitted = false;
         bool pasteCommandGiven = false;
         view_space = gpe::camera_find(view_space);
-        maxCharactersInView = widget_box.w/fontSizeW;
+        maxCharactersInView = widget_box.w/font_sizeW;
         cam = gpe::camera_find(cam);
         fieldElementBox.x = widget_box.x;
         fieldElementBox.y = widget_box.y;
@@ -321,13 +321,13 @@ namespace pawgui
                     selectionEndCursorPos = cursorPos;
                     int iPrev = 0;
                     int jNext = 0;
-                    if( cursorPos>=0 &&  cursorPos <= (int)textInputString.size() )
+                    if( cursorPos>=0 &&  cursorPos <= (int)textInputstring.size() )
                     {
-                        if( textInputString[cursorPos]==' ')
+                        if( textInputstring[cursorPos]==' ')
                         {
                             for(iPrev = cursorPos-1; iPrev >=0; iPrev-- )
                             {
-                                if( textInputString[iPrev]==' ')
+                                if( textInputstring[iPrev]==' ')
                                 {
                                     selectionCursorPos--;
                                 }
@@ -336,9 +336,9 @@ namespace pawgui
                                     break;
                                 }
                             }
-                            for(jNext = cursorPos; jNext < (int)textInputString.size(); jNext++ )
+                            for(jNext = cursorPos; jNext < (int)textInputstring.size(); jNext++ )
                             {
-                                if( textInputString[jNext]==' ')
+                                if( textInputstring[jNext]==' ')
                                 {
                                     selectionEndCursorPos++;
                                 }
@@ -348,11 +348,11 @@ namespace pawgui
                                 }
                             }
                         }
-                        else if( stg_ex::char_is_alnum( textInputString[cursorPos],false,false) )
+                        else if( stg_ex::char_is_alnum( textInputstring[cursorPos],false,false) )
                         {
                             for(iPrev = cursorPos-1; iPrev >=0; iPrev-- )
                             {
-                                if( stg_ex::char_is_alnum( textInputString[iPrev],false,false) )
+                                if( stg_ex::char_is_alnum( textInputstring[iPrev],false,false) )
                                 {
                                     selectionCursorPos--;
                                 }
@@ -362,9 +362,9 @@ namespace pawgui
                                 }
                             }
 
-                            for(jNext = cursorPos; jNext < (int)textInputString.size(); jNext++ )
+                            for(jNext = cursorPos; jNext < (int)textInputstring.size(); jNext++ )
                             {
-                                if( stg_ex::char_is_alnum( textInputString[jNext],false,false) )
+                                if( stg_ex::char_is_alnum( textInputstring[jNext],false,false) )
                                 {
                                     selectionEndCursorPos++;
                                 }
@@ -379,7 +379,7 @@ namespace pawgui
                             //for symbols
                             for(iPrev = cursorPos-1; iPrev >=0; iPrev-- )
                             {
-                                if( stg_ex::char_is_alnum( textInputString[iPrev],false,false)==false)
+                                if( stg_ex::char_is_alnum( textInputstring[iPrev],false,false)==false)
                                 {
                                     selectionCursorPos--;
                                 }
@@ -388,9 +388,9 @@ namespace pawgui
                                     break;
                                 }
                             }
-                            for(jNext = cursorPos; jNext < (int)textInputString.size(); jNext++ )
+                            for(jNext = cursorPos; jNext < (int)textInputstring.size(); jNext++ )
                             {
-                                if( stg_ex::char_is_alnum( textInputString[jNext],false,false)==false)
+                                if( stg_ex::char_is_alnum( textInputstring[jNext],false,false)==false)
                                 {
                                     selectionEndCursorPos++;
                                 }
@@ -425,12 +425,12 @@ namespace pawgui
             else if( gpe::input->check_mouse_down( mb_right ))
             {
                 context_menu_open(-1,-1,128);
-                main_context_menu->add_menu_option("Undo",0,rsm_gui->texture_add("backButtonIcon", gpe::app_directory_name+"resources/buttons/backward.png"),-1,NULL,true,true);
-                main_context_menu->add_menu_option("Cut",1,rsm_gui->texture_add("cutButtonIcon", gpe::app_directory_name+"resources/buttons/cut.png"),-1,NULL,false,true);
-                main_context_menu->add_menu_option("Copy",2,rsm_gui->texture_add("copyButtonIcon", gpe::app_directory_name+"resources/buttons/copy.png"),-1,NULL,false,true);
-                main_context_menu->add_menu_option("Paste",3,rsm_gui->texture_add("pasteButtonIcon", gpe::app_directory_name+"resources/buttons/paste.png"),-1,NULL,false,true);
-                main_context_menu->add_menu_option("Delete",4,rsm_gui->texture_add("removeButtonIcon", gpe::app_directory_name+"resources/buttons/remove.png"),-1,NULL,true,true);
-                main_context_menu->add_menu_option("Select All",5,rsm_gui->texture_add("stickyButtonIcon", gpe::app_directory_name+"resources/buttons/sticky-note.png"),-1,NULL,true,true);
+                main_context_menu->add_menu_option("Undo",0,rsm_gui->texture_add("back_buttonIcon", gpe::app_directory_name+"resources/buttons/backward.png"),-1,NULL,true,true);
+                main_context_menu->add_menu_option("Cut",1,rsm_gui->texture_add("cut_buttonIcon", gpe::app_directory_name+"resources/buttons/cut.png"),-1,NULL,false,true);
+                main_context_menu->add_menu_option("Copy",2,rsm_gui->texture_add("copy_buttonIcon", gpe::app_directory_name+"resources/buttons/copy.png"),-1,NULL,false,true);
+                main_context_menu->add_menu_option("Paste",3,rsm_gui->texture_add("paste_buttonIcon", gpe::app_directory_name+"resources/buttons/paste.png"),-1,NULL,false,true);
+                main_context_menu->add_menu_option("Delete",4,rsm_gui->texture_add("remove_buttonIcon", gpe::app_directory_name+"resources/buttons/remove.png"),-1,NULL,true,true);
+                main_context_menu->add_menu_option("Select All",5,rsm_gui->texture_add("sticky_buttonIcon", gpe::app_directory_name+"resources/buttons/sticky-note.png"),-1,NULL,true,true);
                 int menuSelection = context_menu_process();
                 if( menuSelection==5)
                 {
@@ -465,9 +465,9 @@ namespace pawgui
                 {
                     gpe::cursor_main_controller->cursor_change(GPE_CURSOR_IBEAM);
                     get_cursor_from_mouse(view_space, cam);
-                    if( cursorPos >=0 && cursorPos <= (int)textInputString.size() )
+                    if( cursorPos >=0 && cursorPos <= (int)textInputstring.size() )
                     {
-                        set_string( stg_ex::get_substring(textInputString,0,cursorPos)+resource_dragged->get_name()+stg_ex::get_substring(textInputString,cursorPos) );
+                        set_string( stg_ex::get_substring(textInputstring,0,cursorPos)+resource_dragged->get_name()+stg_ex::get_substring(textInputstring,cursorPos) );
                         resource_dragged = NULL;
                     }
                 }
@@ -590,22 +590,22 @@ namespace pawgui
                             selectionCursorPos = cursorPos;
                         }
                     }
-                    if( cursorPos >=0 && cursorPos <= (int)textInputString.size() )
+                    if( cursorPos >=0 && cursorPos <= (int)textInputstring.size() )
                     {
-                        if( cursorPos >=(int)textInputString.size() )
+                        if( cursorPos >=(int)textInputstring.size() )
                         {
-                            cursorPos = (int)textInputString.size()-1;
+                            cursorPos = (int)textInputstring.size()-1;
                         }
                         if( cursorPos < 0)
                         {
                             cursorPos = 0;
                         }
-                        else if( cursorPos < (int)textInputString.size() )
+                        else if( cursorPos < (int)textInputstring.size() )
                         {
                             int iNCursorX = cursorPos-1;
                             for( iNCursorX = cursorPos-1; iNCursorX >=0; iNCursorX--)
                             {
-                                if( stg_ex::char_is_alnum(textInputString[iNCursorX],false,false)==false )
+                                if( stg_ex::char_is_alnum(textInputstring[iNCursorX],false,false)==false )
                                 {
                                     break;
                                 }
@@ -640,22 +640,22 @@ namespace pawgui
                             selectionCursorPos = cursorPos;
                         }
                     }
-                    if( cursorPos >=0 && cursorPos < (int)textInputString.size() )
+                    if( cursorPos >=0 && cursorPos < (int)textInputstring.size() )
                     {
-                        if( cursorPos >=(int)textInputString.size() )
+                        if( cursorPos >=(int)textInputstring.size() )
                         {
-                            cursorPos = (int)textInputString.size()-1;
+                            cursorPos = (int)textInputstring.size()-1;
                         }
                         if( cursorPos < 0)
                         {
                             cursorPos = 0;
                         }
-                        else if( cursorPos < (int)textInputString.size()-1 )
+                        else if( cursorPos < (int)textInputstring.size()-1 )
                         {
                             int iNCursorX = cursorPos-1;
-                            for( iNCursorX = cursorPos+1; iNCursorX < (int)textInputString.size(); iNCursorX++)
+                            for( iNCursorX = cursorPos+1; iNCursorX < (int)textInputstring.size(); iNCursorX++)
                             {
-                                if( stg_ex::char_is_alnum(textInputString[iNCursorX],false,false)==false )
+                                if( stg_ex::char_is_alnum(textInputstring[iNCursorX],false,false)==false )
                                 {
                                     break;
                                 }
@@ -708,14 +708,14 @@ namespace pawgui
                 }
                 else
                 {
-                    int prevSize = (int)textInputString.size();
+                    int prevSize = (int)textInputstring.size();
                     if( prevSize>0  && cursorPos>0)
                     {
                         cursorPos-=1;
-                        std::string lineToEdit = textInputString+"";
-                        textInputString = stg_ex::get_substring(lineToEdit,0,cursorPos );
+                        std::string lineToEdit = textInputstring+"";
+                        textInputstring = stg_ex::get_substring(lineToEdit,0,cursorPos );
                         std::string rightSide = stg_ex::get_substring(lineToEdit,cursorPos+1);
-                        textInputString+=rightSide;
+                        textInputstring+=rightSide;
                         startXPos-=1;
                         if( startXPos < 0)
                         {
@@ -737,13 +737,13 @@ namespace pawgui
                 }
                 else
                 {
-                    int prevSize = (int)textInputString.size();
+                    int prevSize = (int)textInputstring.size();
                     if( prevSize>0  && cursorPos>0)
                     {
-                        std::string lineToEdit = textInputString+"";
-                        textInputString = stg_ex::get_substring(lineToEdit,0,cursorPos );
+                        std::string lineToEdit = textInputstring+"";
+                        textInputstring = stg_ex::get_substring(lineToEdit,0,cursorPos );
                         std::string rightSide = stg_ex::get_substring(lineToEdit,cursorPos+1);
-                        textInputString+=rightSide;
+                        textInputstring+=rightSide;
                         startXPos-=1;
                         if( startXPos < 0)
                         {
@@ -776,7 +776,7 @@ namespace pawgui
             else if( rightArrowDelay >= main_settings->textInputDelayTime  )
             {
                 reset_selection(1);
-                if( cursorPos < (int)textInputString.size() )
+                if( cursorPos < (int)textInputstring.size() )
                 {
                     cursorPos+=1;
                     if( cursorPos >= startXPos+maxCharactersInView)
@@ -792,12 +792,12 @@ namespace pawgui
             }
             else if( upArrowDelay >= main_settings->textInputDelayTime  )
             {
-                cursorHistoryPos--;
+                cursorHistory_pos--;
                 cursorPos = 0;
-                if( cursorHistoryPos >=0 && (int)listOfPastStrings.size() > 0 )
+                if( cursorHistory_pos >=0 && (int)listOfPaststrings.size() > 0 )
                 {
-                    record_string(textInputString);
-                    set_string(listOfPastStrings[cursorHistoryPos]);
+                    record_string(textInputstring);
+                    set_string(listOfPaststrings[cursorHistory_pos]);
                     select_all();
                     showCursor = true;
                     cursorTimer = 0;
@@ -808,17 +808,17 @@ namespace pawgui
             }
             else if( downArrowDelay >= main_settings->textInputDelayTime  )
             {
-                if( (int)listOfPastStrings.size() >0 && cursorHistoryPos>=-1 && cursorHistoryPos < (int)listOfPastStrings.size() -1 )
+                if( (int)listOfPaststrings.size() >0 && cursorHistory_pos>=-1 && cursorHistory_pos < (int)listOfPaststrings.size() -1 )
                 {
-                    cursorHistoryPos++;
+                    cursorHistory_pos++;
                     cursorPos = 0;
-                    record_string(textInputString);
-                    set_string(listOfPastStrings[cursorHistoryPos]);
+                    record_string(textInputstring);
+                    set_string(listOfPaststrings[cursorHistory_pos]);
                     select_all();
                 }
                 else
                 {
-                    gpe::error_log->report("Unable to navigate from ["+ stg_ex::int_to_string(cursorHistoryPos)+" with ["+ stg_ex::int_to_string( (int)listOfPastStrings.size() )+"] past strings....");
+                    gpe::error_log->report("Unable to navigate from ["+ stg_ex::int_to_string(cursorHistory_pos)+" with ["+ stg_ex::int_to_string( (int)listOfPaststrings.size() )+"] past strings....");
                 }
                 showCursor = true;
                 cursorTimer = 0;
@@ -835,15 +835,15 @@ namespace pawgui
             }
             else
             {
-                int moreStringSize = (int)gpe::input->inputted_keys.size();
-                if( moreStringSize > 0)
+                int morestringSize = (int)gpe::input->inputted_keys.size();
+                if( morestringSize > 0)
                 {
                     delete_selection();
-                    textInputString=stg_ex::get_substring(textInputString,0,cursorPos)+gpe::input->inputted_keys+stg_ex::get_substring(textInputString,cursorPos);
+                    textInputstring=stg_ex::get_substring(textInputstring,0,cursorPos)+gpe::input->inputted_keys+stg_ex::get_substring(textInputstring,cursorPos);
                     cursorPos+=(int)gpe::input->inputted_keys.size();
                     if( cursorPos>startXPos+maxCharactersInView)
                     {
-                        startXPos+=moreStringSize;
+                        startXPos+=morestringSize;
                     }
                     showCursor = true;
                     cursorTimer = 0;
@@ -858,13 +858,13 @@ namespace pawgui
                 clipboardStr = stg_ex::string_replace_all(clipboardStr,"\r\n","\n");
                 clipboardStr = stg_ex::string_replace_all(clipboardStr,"\r","\n");
                 clipboardStr = stg_ex::string_replace_all(clipboardStr,"\t","    ");
-                std::string leftBeforePaste = stg_ex::get_substring(textInputString,0,cursorPos);
+                std::string leftBeforePaste = stg_ex::get_substring(textInputstring,0,cursorPos);
                 std::string rightBeforePaste = "";
-                if( cursorPos < (int)textInputString.size() )
+                if( cursorPos < (int)textInputstring.size() )
                 {
-                    rightBeforePaste = stg_ex::get_substring(textInputString,cursorPos+1);
+                    rightBeforePaste = stg_ex::get_substring(textInputstring,cursorPos+1);
                 }
-                textInputString=leftBeforePaste+clipboardStr+rightBeforePaste;
+                textInputstring=leftBeforePaste+clipboardStr+rightBeforePaste;
                 cursorPos+=(int)clipboardStr.size();
                 move_right( (int)clipboardStr.size() );
                 showCursor = true;
@@ -887,30 +887,30 @@ namespace pawgui
     {
         if( (int)strToRecord.size() > 0)
         {
-            int recordListSize = (int)listOfPastStrings.size();
+            int recordListSize = (int)listOfPaststrings.size();
             if( recordListSize > 0)
             {
                 bool duplicateStr = false;
                 for( int i = 0; i < recordListSize; i++)
                 {
-                    if( strToRecord ==listOfPastStrings[i])
+                    if( strToRecord ==listOfPaststrings[i])
                     {
                         duplicateStr = true;
                     }
                 }
                 if( !duplicateStr )
                 {
-                    listOfPastStrings.insert( listOfPastStrings.begin(),strToRecord);
+                    listOfPaststrings.insert( listOfPaststrings.begin(),strToRecord);
                     /*if( recordListSize > MAX_STORED_TEXT_PREVIOUS_ENTRIES)
                     {
-                        listOfPastStrings.erase(listOfPastStrings.begin() );
+                        listOfPaststrings.erase(listOfPaststrings.begin() );
                     }*/
 
                 }
             }
             else
             {
-                listOfPastStrings.push_back( strToRecord);
+                listOfPaststrings.push_back( strToRecord);
             }
         }
     }
@@ -935,7 +935,7 @@ namespace pawgui
 
             if( showLabel && (int)inputLabel.size() > 0)
             {
-                if( hAlign == gpe::fa_center)
+                if( alignment_h == gpe::fa_center)
                 {
                     gpe::gfs->render_text( widget_box.x+widget_box.w/2-cam->x,widget_box.y-2-cam->y,inputLabel,pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_center,gpe::fa_top);
                 }
@@ -960,16 +960,16 @@ namespace pawgui
                 maxHighlightPos = std::min(startXPos+maxCharactersInView,maxHighlightPos);
 
                 gpe::gcanvas->render_rectangle(
-                    fieldElementBox.x+(minHighlightPos-startXPos)*fontSizeW - cam->x,
+                    fieldElementBox.x+(minHighlightPos-startXPos)*font_sizeW - cam->x,
                     fieldElementBox.y+1 - cam->y,
-                    fieldElementBox.x+2+(maxHighlightPos-startXPos)*fontSizeW- cam->x,
+                    fieldElementBox.x+2+(maxHighlightPos-startXPos)*font_sizeW- cam->x,
                     fieldElementBox.y+fieldElementBox.h-1 - cam->y,
                     pawgui::theme_main->input_selected_color,false, 128 );
             }
             int subLength = 0;
-            if( (int)textInputString.size() > maxCharactersInView)
+            if( (int)textInputstring.size() > maxCharactersInView)
             {
-                subLength = (int)textInputString.size()-startXPos;
+                subLength = (int)textInputstring.size()-startXPos;
                 if( subLength >maxCharactersInView)
                 {
                     subLength = maxCharactersInView;
@@ -977,7 +977,7 @@ namespace pawgui
             }
             else
             {
-                subLength =  (int)textInputString.size();
+                subLength =  (int)textInputstring.size();
             }
 
             if( subLength < 0)
@@ -985,15 +985,15 @@ namespace pawgui
                 subLength = 0;
             }
 
-            if( (int)textInputString.size()>0)
+            if( (int)textInputstring.size()>0)
             {
-                gpe::gfs->render_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2- cam->y,stg_ex::get_substring(textInputString,startXPos,subLength),pawgui::theme_main->input_font_color,font_textinput,gpe::fa_left,gpe::fa_middle,255);
+                gpe::gfs->render_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2- cam->y,stg_ex::get_substring(textInputstring,startXPos,subLength),pawgui::theme_main->input_font_color,font_textinput,gpe::fa_left,gpe::fa_middle,255);
             }
-            else if(showPlaceHolder && (int)placeHolderString.size() > 0 )
+            else if(showPlaceHolder && (int)placeHolderstring.size() > 0 )
             {
-                if( (int)placeHolderString.size() > maxCharactersInView)
+                if( (int)placeHolderstring.size() > maxCharactersInView)
                 {
-                    subLength = (int)placeHolderString.size()-startXPos;
+                    subLength = (int)placeHolderstring.size()-startXPos;
                     if( subLength >maxCharactersInView)
                     {
                         subLength = maxCharactersInView;
@@ -1001,9 +1001,9 @@ namespace pawgui
                 }
                 else
                 {
-                    subLength =  (int)placeHolderString.size();
+                    subLength =  (int)placeHolderstring.size();
                 }
-                gpe::gfs->render_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2 - cam->y,stg_ex::get_substring(placeHolderString,0,subLength),pawgui::theme_main->input_faded_font_color,font_textinput,gpe::fa_left,gpe::fa_middle);
+                gpe::gfs->render_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2 - cam->y,stg_ex::get_substring(placeHolderstring,0,subLength),pawgui::theme_main->input_faded_font_color,font_textinput,gpe::fa_left,gpe::fa_middle);
             }
             if(showBorderBox)
             {
@@ -1023,18 +1023,18 @@ namespace pawgui
 
             if(isInUse && prevCursorPos!=cursorPos && prevCursorPos >=startXPos && prevCursorPos <= startXPos+maxCharactersInView )
             {
-                gpe::gcanvas->render_vertical_line_color( fieldElementBox.x+padding_default/2+(prevCursorPos-startXPos)*fontSizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_color);
+                gpe::gcanvas->render_vertical_line_color( fieldElementBox.x+padding_default/2+(prevCursorPos-startXPos)*font_sizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_color);
             }
 
             if(isInUse && cursorPos >=startXPos && cursorPos <= startXPos+maxCharactersInView )
             {
                 if(showCursor)
                 {
-                    gpe::gcanvas->render_vertical_line_color( fieldElementBox.x+padding_default/2+(cursorPos-startXPos)*fontSizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_font_color);
+                    gpe::gcanvas->render_vertical_line_color( fieldElementBox.x+padding_default/2+(cursorPos-startXPos)*font_sizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_font_color);
                 }
                 else
                 {
-                    gpe::gcanvas->render_vertical_line_color( fieldElementBox.x+padding_default/2+(cursorPos-startXPos)*fontSizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_color);
+                    gpe::gcanvas->render_vertical_line_color( fieldElementBox.x+padding_default/2+(cursorPos-startXPos)*font_sizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_color);
                 }
             }
         }
@@ -1060,23 +1060,23 @@ namespace pawgui
     void widget_input_text::select_all()
     {
         selectionCursorPos = 0;
-        selectionEndCursorPos = textInputString.size();
+        selectionEndCursorPos = textInputstring.size();
         cursorPos = 0;
         gpe::input->reset_all_input();
     }
 
-    void widget_input_text::set_height(int newHeight)
+    void widget_input_text::set_height(int new_height)
     {
         if( showLabel)
         {
-            fieldElementBox.h = newHeight;
+            fieldElementBox.h = new_height;
         }
         else
         {
-            widget_box.h = newHeight;
-            fieldElementBox.h = newHeight;
+            widget_box.h = new_height;
+            fieldElementBox.h = new_height;
         }
-        prevwidget_boxH = newHeight;
+        prevwidget_boxH = new_height;
     }
 
     void widget_input_text::set_label(std::string newLabel)
@@ -1086,10 +1086,10 @@ namespace pawgui
             inputLabel = newLabel;
             showLabel = true;
 
-            widget_box.h=prevwidget_boxH+fontSizeH;
-            //widget_box.w = std::max( prevwidget_boxW, ( fontSizeW *(int)inputLabel.size()  ) );
+            widget_box.h=prevwidget_boxH+font_sizeH;
+            //widget_box.w = std::max( prevwidget_boxW, ( font_sizeW *(int)inputLabel.size()  ) );
             fieldElementBox.x = widget_box.x;
-            fieldElementBox.y = widget_box.y+fontSizeH;
+            fieldElementBox.y = widget_box.y+font_sizeH;
             //fieldElementBox.w = prevwidget_boxW;
             fieldElementBox.h = prevwidget_boxH;
         }
@@ -1114,46 +1114,46 @@ namespace pawgui
 
     void widget_input_text::set_number( float numberIn)
     {
-        std::string newString = stg_ex::float_to_string(numberIn);
-        textInputString = newString;
-        record_string(textInputString);
-        cursorPos = (int) textInputString.size();
+        std::string newstring = stg_ex::float_to_string(numberIn);
+        textInputstring = newstring;
+        record_string(textInputstring);
+        cursorPos = (int) textInputstring.size();
 
     }
 
-    void widget_input_text::set_string(std::string newString)
+    void widget_input_text::set_string(std::string newstring)
     {
-        if( (int)textInputString.size() > 0)
+        if( (int)textInputstring.size() > 0)
         {
-            record_string( textInputString );
+            record_string( textInputstring );
         }
-        if( (int)newString.size() > 0)
+        if( (int)newstring.size() > 0)
         {
-            record_string( newString );
+            record_string( newstring );
         }
-        textInputString = newString;
-        cursorPos = (int) textInputString.size();
+        textInputstring = newstring;
+        cursorPos = (int) textInputstring.size();
     }
 
-    void widget_input_text::set_placeholder(std::string newString)
+    void widget_input_text::set_placeholder(std::string newstring)
     {
-        placeHolderString = newString;
+        placeHolderstring = newstring;
     }
 
-    void widget_input_text::set_width(int newWidth)
+    void widget_input_text::set_width(int new_width)
     {
         if( showLabel)
         {
-            fieldElementBox.w = newWidth;
+            fieldElementBox.w = new_width;
         }
         else
         {
-            widget_box.w = newWidth;
-            fieldElementBox.w = newWidth;
+            widget_box.w = new_width;
+            fieldElementBox.w = new_width;
         }
-        widget_box.w = newWidth;
-        fieldElementBox.w = newWidth;
-        prevwidget_boxW = newWidth;
+        widget_box.w = new_width;
+        fieldElementBox.w = new_width;
+        prevwidget_boxW = new_width;
     }
 
     void widget_input_text::set_max_width( int nMW)
@@ -1188,7 +1188,7 @@ namespace pawgui
     widget_input_number::widget_input_number( std::string placeHolderText, bool onlyWholeNums, float hMin, float hMax)
     {
         resubmissionAllowed = false;
-        textInputString = "";
+        textInputstring = "";
         widget_type = "inputnumber";
         widget_type_id = 5;
         forceValidNumber = false;
@@ -1198,7 +1198,7 @@ namespace pawgui
         {
             placeHolderText = placeHolderText.substr(0,512);
         }
-        placeHolderString = placeHolderText;
+        placeHolderstring = placeHolderText;
         showPlaceHolder = true;
         widget_box.x = 0;
         widget_box.y = 0;
@@ -1212,20 +1212,20 @@ namespace pawgui
         maxInputNumber = hMax;
 
 
-        fontSizeH = 12;
-        fontSizeW = 12;
-        font_textinput->get_metrics("A",&fontSizeW,&fontSizeH);
-        if( fontSizeW<=0)
+        font_sizeH = 12;
+        font_sizeW = 12;
+        font_textinput->get_metrics("A",&font_sizeW,&font_sizeH);
+        if( font_sizeW<=0)
         {
-            fontSizeW = 12;
+            font_sizeW = 12;
         }
-        maxCharactersInView = widget_box.w/fontSizeW;
+        maxCharactersInView = widget_box.w/font_sizeW;
 
         hasValidInput = true;
         heldNumber = 0;
         startXPos = 0;
         cursorPos = 0;
-        textInputString = "0";
+        textInputstring = "0";
         set_label( placeHolderText );
     }
 
@@ -1241,19 +1241,19 @@ namespace pawgui
 
     float widget_input_number::get_held_number()
     {
-        heldNumber = stg_ex::string_to_float(textInputString, INT_MIN);
+        heldNumber = stg_ex::string_to_float(textInputstring, INT_MIN);
         return heldNumber;
     }
 
     std::string widget_input_number::get_plain_string()
     {
-        heldNumber = stg_ex::string_to_float(textInputString, INT_MIN);
+        heldNumber = stg_ex::string_to_float(textInputstring, INT_MIN);
         return stg_ex::float_to_string(heldNumber);
     }
 
     float widget_input_number::make_valid_number( float fallbackNumber )
     {
-        heldNumber = stg_ex::string_to_float(textInputString, INT_MIN);
+        heldNumber = stg_ex::string_to_float(textInputstring, INT_MIN);
         if( heldNumber== INT_MIN || heldNumber < minInputNumber || heldNumber > maxInputNumber)
         {
             heldNumber = fallbackNumber;
@@ -1267,11 +1267,11 @@ namespace pawgui
     {
         hasValidInput = true;
         widget_input_text::process_self(view_space,cam);
-        if( (int)textInputString.size() > 0)
+        if( (int)textInputstring.size() > 0)
         {
             if( onlyWholeNumbers)
             {
-                heldNumber = stg_ex::string_to_int(textInputString, INT_MIN);
+                heldNumber = stg_ex::string_to_int(textInputstring, INT_MIN);
                 if( heldNumber== INT_MIN || heldNumber < minInputNumber || heldNumber > maxInputNumber)
                 {
                     heldNumber = 0;
@@ -1284,7 +1284,7 @@ namespace pawgui
             }
             else
             {
-                heldNumber = stg_ex::string_to_float(textInputString, INT_MIN);
+                heldNumber = stg_ex::string_to_float(textInputstring, INT_MIN);
                 if( heldNumber == INT_MIN || heldNumber < minInputNumber || heldNumber > maxInputNumber )
                 {
                     heldNumber = 0;

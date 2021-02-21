@@ -3,10 +3,10 @@ pawgui_overlay.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -53,7 +53,7 @@ namespace pawgui
             float temporayMessageDisplayTimer;
             float temporayMessageDisplayStartTimer;
         public:
-            std::string toolTipString;
+            std::string toolTipstring;
             overlay_system();
             ~overlay_system();
             bool overhead_used();
@@ -62,7 +62,7 @@ namespace pawgui
             void update_tooltip(std::string newTip);
             void render_frozen_screenshot();
             void render_temporary_message();
-            void render_tooltip(int xPos = -1, int yPos = -1 );
+            void render_tooltip(int x_pos = -1, int y_pos = -1 );
             void take_frozen_screenshot();
             void update_temporary_message(std::string mTitle="", std::string mSubTitle="", std::string mText="", float messDuration = 3, bool topLeftMessage = true );
     };

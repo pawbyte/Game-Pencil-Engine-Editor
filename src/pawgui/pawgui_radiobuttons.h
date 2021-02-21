@@ -3,10 +3,10 @@ pawgui_radiobuttons.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -50,13 +50,13 @@ namespace pawgui
             int numCols;
             int rowsPerCol;
         protected:
-            std::vector <gpe::key_pair *> subOptions;
+            std::vector <gpe::key_pair *> sub_options;
         public:
             bool allowDuplicates;
             widget_radio_button_controller(std::string cName = "", bool alphabetize = false, int colNum=1);
             ~widget_radio_button_controller();
             std::string get_data();
-            void load_data(std::string dataString);
+            void load_data(std::string datastring);
             void add_opton(std::string newOption);
             void add_menu_option(std::string optionName, std::string optionSubStr= "",int optionValue = 0, bool selectOption = false);
             std::string get_menu_option(int atNumb);
@@ -66,7 +66,7 @@ namespace pawgui
             int get_selected_value();
 
             void organize_options();
-            void remove_data(std::string dataString);
+            void remove_data(std::string datastring);
             void remove_option(std::string optionToCut);
             void remove_option_id(int optionToCut);
             void set_selection( int newSelection);

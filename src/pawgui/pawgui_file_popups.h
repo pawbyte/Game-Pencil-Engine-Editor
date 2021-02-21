@@ -3,10 +3,10 @@ pawgui_file_popups.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -43,7 +43,7 @@ SOFTWARE.
 
 namespace pawgui
 {
-    std::string  get_filename_plain_from_popup( const std::string & prompt, std::string allowedFileTypes, std::string &previousDirectory, bool isSaving = false, bool isDirectorySearch = false);
+    std::string  get_filename_plain_from_popup( const std::string & prompt, std::string allowedFileTypes, std::string &previousDirectory, bool isSaving = false, bool file_is_dirSearch = false);
     std::string  get_directory_name_from_popup( const std::string & prompt, std::string &previousDirectory, bool isSaving = false);
     std::string  get_filename_open_from_popup( const std::string & prompt, std::string allowedFileTypes, std::string &previousDirectory );
     std::string  get_filename_save_from_popup( const std::string & prompt, std::string allowedFileTypes, std::string &previousDirectory );

@@ -3,10 +3,10 @@ pawgui_content_selector.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -46,7 +46,7 @@ namespace pawgui
         widget_type_id = 2;
         storedInt = -1;
         storeddfloat = -1;
-        storedString = "";
+        storedstring = "";
         storedColor = new gpe::color("customColor", 128,128, 128 );
 
         widget_box.x = 0;
@@ -68,17 +68,17 @@ namespace pawgui
 
     std::string widget_content_selector::get_data()
     {
-
+        return "";
     }
 
-    void widget_content_selector::load_data(std::string dataString)
+    void widget_content_selector::load_data(std::string datastring)
     {
 
     }
 
     std::string widget_content_selector::get_plain_string()
     {
-
+        return "";
     }
 
     void widget_content_selector::set_label(std::string newLabel)
@@ -91,7 +91,7 @@ namespace pawgui
 
     }
 
-    void widget_content_selector::set_string(std::string newString)
+    void widget_content_selector::set_string(std::string newstring)
     {
 
     }
@@ -135,7 +135,7 @@ namespace pawgui
         }
         if( isClicked)
         {
-            //get_color_from_popup(popUpString,storedColor);
+            //get_color_from_popup(popUpstring,storedColor);
             if( widget_content_selector_state == -1)
             {
                 widget_content_selector_state = 0;
@@ -201,9 +201,9 @@ namespace pawgui
             }
             else if(  selectorType== content_selector_type::cs_type_string )
             {
-                if( (int)storedString.size() > 0  )
+                if( (int)storedstring.size() > 0  )
                 {
-                    gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.w,widget_box.y+widget_box.h/2-cam->y,storedString,pawgui::theme_main->main_box_font_highlight_color,font_textinput,gpe::fa_right,gpe::fa_middle );
+                    gpe::gfs->render_text_resized( widget_box.x-cam->x+widget_box.w,widget_box.y+widget_box.h/2-cam->y,storedstring,pawgui::theme_main->main_box_font_highlight_color,font_textinput,gpe::fa_right,gpe::fa_middle );
                 }
                 else
                 {
@@ -217,17 +217,17 @@ namespace pawgui
         }
     }
 
-    void widget_content_selector::set_color_from_rgb( gpe::color *newColor)
+    void widget_content_selector::set_color_from_rgb( gpe::color *color_new)
     {
 
     }
 
-    void widget_content_selector::set_color_from_rgb(std::string newColorStr)
+    void widget_content_selector::set_color_from_rgb(std::string color_newStr)
     {
 
     }
 
-    void widget_content_selector::set_color_from_hex(std::string newColorStr)
+    void widget_content_selector::set_color_from_hex(std::string color_newStr)
     {
 
     }

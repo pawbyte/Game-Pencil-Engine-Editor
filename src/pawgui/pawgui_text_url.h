@@ -3,10 +3,10 @@ pawgui_text_url.h
 This file is part of:
 PAW GUI
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -44,11 +44,11 @@ namespace pawgui
             bool wasClicked;
             std::string webUrl;
             std::string webId;
-            widget_text_url(std::string name_param="", std::string description="", std::string urlIn="" );
+            widget_text_url(std::string name_param="", std::string description="", std::string url_string="" );
             ~widget_text_url();
             std::string get_data();
             std::string get_plain_string();
-            void load_data(std::string dataString);
+            void load_data(std::string datastring);
             void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             void set_name(std::string name_param);

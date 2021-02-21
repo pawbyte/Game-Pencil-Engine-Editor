@@ -3,10 +3,10 @@ pawgui_parsers.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -56,13 +56,13 @@ namespace pawgui
             syntax_line();
             ~syntax_line();
             std::string get_parsed_line(std::string sIn);
-            void render_tokens( gpe::font_base * fontIn,std::string sIn, int xPos, int yPos, int lineStartPos, int lineMaxPos, gpe::color * renderColor = NULL, bool isNumber = false );
+            void render_tokens( gpe::font_base * fontIn,std::string sIn, int x_pos, int y_pos, int lineStartPos, int lineMax_pos, gpe::color * render_color = NULL, bool isNumber = false );
             void reset_self();
     };
 
     //Tab Related Functions
-    bool has_early_tab(std::string strIn);
-    std::string untab_string(std::string strIn);
+    bool has_early_tab(std::string str_in);
+    std::string untab_string(std::string str_in);
     std::string generate_tabs(int tabCount);
     int get_tab_space_count();
 }

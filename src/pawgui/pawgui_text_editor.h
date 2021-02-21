@@ -3,10 +3,10 @@ pawgui_text_editor.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -132,7 +132,7 @@ namespace pawgui
             int maxLength;
             int maxLineCount;
             int lineCountBoxWidth;
-            int longestString;
+            int longeststring;
             int linesWithinView;
             float prevLinesWithinView;
             float lineStartXPos;
@@ -153,10 +153,10 @@ namespace pawgui
 
             int TEXTBOX_FONT_SIZE_WIDTH, TEXTBOX_FONT_SIZE_HEIGHT;
             gpe::font_base * editorFont;
-            std::string placeHolderString;
-            std::string textInputString;
+            std::string placeHolderstring;
+            std::string textInputstring;
             std::string lineToEdit;
-            std::vector <std::string> listOfStrings;
+            std::vector <std::string> listOfstrings;
             std::vector < widget_text_anchor *> anchorPositions;
             widget_scrollbar_xaxis * textXScroll;
             widget_scrollbar_yaxis * textYScroll;
@@ -176,7 +176,7 @@ namespace pawgui
             syntax_line * sQuoteLineText;
             syntax_line * symbolLineText;
         public:
-            bool showButtonBar;
+            bool show_buttonBar;
             int parseForErrorsTimerGoal;
             int parseForErrorsTimerPos;
             bool missingSymbolDetected;
@@ -190,7 +190,7 @@ namespace pawgui
             int highlightXPos, highlightYPos;
             //End of code highlights and suggestion related variables
 
-            widget_button_iconbar * textEditorButtonBar;
+            widget_button_iconbar * textEditor_buttonBar;
             bool showPlaceHolder;
             bool isTextLog;
             bool isCodeEditor;
@@ -269,7 +269,7 @@ namespace pawgui
             void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
 
 
-            int replace_all_found(std::string strToReplace, std::string newString);
+            int replace_all_found(std::string strToReplace, std::string newstring);
             void revise_edit(int editId = -1);
             void save_edit();
             void select_all();
@@ -278,8 +278,8 @@ namespace pawgui
             void scroll_to_cursor();
             void set_read_only();
             void set_writeable();
-            void set_string(std::string newString);
-            void set_placeholder(std::string newString);
+            void set_string(std::string newstring);
+            void set_placeholder(std::string newstring);
             void set_xcursor(int newPos);
             void set_ycursor(int newPos);
             void set_highlight_pos( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
@@ -295,9 +295,9 @@ namespace pawgui
         public:
             widget_text_editor_wrapped();
             ~widget_text_editor_wrapped();
-            void set_string( std::string strIn);
-            void set_width(int newWidth);
-            void set_height( int newHeight);
+            void set_string( std::string str_in);
+            void set_width(int new_width);
+            void set_height( int new_height);
             void set_max_width( int nMW);
             void set_max_height( int nMH);
             void update_paragraph( int foundMaxWidth = -1 );

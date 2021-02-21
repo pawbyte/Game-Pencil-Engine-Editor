@@ -3,10 +3,10 @@ pawgui_resource_dropdown.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -63,28 +63,28 @@ namespace pawgui
     {
         if( containerTree!=NULL)
         {
-            std::string dataString = widget_type+":"+dropdownName+"==|||==";
-            dataString+= containerTree->get_name()+",,,";
+            std::string datastring = widget_type+":"+dropdownName+"==|||==";
+            datastring+= containerTree->get_name()+",,,";
             if( selectedResource!=NULL)
             {
-                dataString+=stg_ex::int_to_string(selectedResource->get_global_id() )+",";
+                datastring+=stg_ex::int_to_string(selectedResource->get_global_id() )+",";
             }
             else
             {
-                dataString+="-1,";
+                datastring+="-1,";
             }
-            return dataString;
+            return datastring;
         }
         return "";
     }
 
-    void widget_drop_down_resource_menu::load_data(std::string dataString)
+    void widget_drop_down_resource_menu::load_data(std::string datastring)
     {
-        if( (int)dataString.size() > 0)
+        if( (int)datastring.size() > 0)
         {
             std::string projectResourceFolder = "";
             int projectselectedContainer = -1;
-            projectResourceFolder = stg_ex::split_first_string(dataString,",,,");
+            projectResourceFolder = stg_ex::split_first_string(datastring,",,,");
 
             if( containerTree!=NULL )
             {
@@ -92,7 +92,7 @@ namespace pawgui
                 if( foundResContainer!=NULL)
                 {
                     containerTree = foundResContainer;
-                    projectselectedContainer = stg_ex::split_first_int(dataString,',');
+                    projectselectedContainer = stg_ex::split_first_int(datastring,',');
                     set_selection( projectselectedContainer);
                 }
                 else

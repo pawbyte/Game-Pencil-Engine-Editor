@@ -3,10 +3,10 @@ pawgui_context.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -42,7 +42,7 @@ namespace pawgui
     extern int popup_font_size_width;
     extern int popup_font_size_height;
 
-    class popup_menu_option
+    class popup_menu_option: public widget_basic
     {
     private:
         bool isContext;
@@ -55,9 +55,10 @@ namespace pawgui
         int startYPos;
         int rowsInView;
         int maxRowsInView;
-        std::vector <popup_menu_option *> subOptions;
+        std::vector <popup_menu_option *> sub_options;
         bool isSelectable;
         int optionWidth;
+        int browsing_result;
     public:
         int menuDirection;
         float downDelay;
@@ -67,7 +68,6 @@ namespace pawgui
         bool isResourceOption;
         bool renderWhite;
         bool isFolderOption;
-        gpe::shape_rect element_box;
         bool isTopOfMenu;
         int optionWidthSpace;
         int subOptionWidthSpace;
@@ -82,13 +82,15 @@ namespace pawgui
         int kbShortCut1;
         int kbShortCut2;
         int kbShortCut3;
-        std::string shortcutString;
+        std::string shortcutstring;
         popup_menu_option(std::string name = "", int id = -1,bool selectable = true, bool seeShortCut = true, bool makeContext = false, int kbS1 = -1, int kbS2 = -1, int kbS3 = -1 );
         ~popup_menu_option();
         popup_menu_option * add_option( popup_menu_option * otherOption);
         popup_menu_option * add_menu_option( std::string name, int id = -1, gpe::texture_base * gTexture = NULL,int animationImgNumb = -1, gpe::animaton2d * ganimation=NULL, bool endsSection=false, bool selectable = true, bool isResource = false, int kbS1 = -1, int kbS2 = -1, int kbS3 = -1 );
         int activate_hovered();
         void clear_menu();
+        void close_menu();
+        int get_browsing_results();
         int get_width();
         popup_menu_option * get_menu_option(int atNumb);
         int get_menu_size();
@@ -101,15 +103,15 @@ namespace pawgui
         void reset_suboptions();
         void set_id(int new_id);
         void change_texture_data( gpe::animaton2d * new_animation,int new_id);
-        void set_position(int xPos = -1, int yPos = -1);
-        void set_width(int newWidth);
+        void set_position(int x_pos = -1, int y_pos = -1);
+        void set_width(int new_width);
         void set_texture( gpe::texture_base * newTexture);
         void open_menu();
         void prerender_self(  );
-        int process_menu_option();
+        void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect *cam = NULL );
         void resize_self();
         void update_selectability(bool selectable);
-        void render_self( gpe::shape_rect * cam = NULL);
+        void render_self(  gpe::shape_rect * view_space = NULL, gpe::shape_rect *cam = NULL);
     };
 
     extern popup_menu_option * main_context_menu;
@@ -117,7 +119,7 @@ namespace pawgui
     class widget_toolbar: public widget_basic
     {
     private:
-        gpe::color *textColor;
+        gpe::color *text_color;
         int barWidthTotal;
         bool toolBarIsOpen;
         std::vector <popup_menu_option *> barOptions;
@@ -141,11 +143,11 @@ namespace pawgui
         popup_menu_option * add_menu_option( std::string name, int id = -1);
         void open_toolbar();
         void prerender_self(  );
-        void process_toolbar();
-        void render_toolbar( gpe::shape_rect *renderCam = NULL );
+        void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect *cam = NULL);
+        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect *cam = NULL);
     };
 
-    void context_menu_open(int menuXPos=-1,int menuYPos=-1, int newWidth = 128);
+    void context_menu_open(int menuXPos=-1,int menuYPos=-1, int new_width = 128);
     void context_menu_close();
     int context_menu_process( gpe::shape_rect * camera = NULL, bool redrawScreen = true, bool autoResize = true);
 }

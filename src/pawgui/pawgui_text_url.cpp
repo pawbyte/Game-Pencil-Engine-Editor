@@ -3,10 +3,10 @@ pawgui_text_url.cpp
 This file is part of:
 PAW GUI
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,14 +35,14 @@ SOFTWARE.
 
 namespace pawgui
 {
-    widget_text_url::widget_text_url(std::string name_param, std::string description, std::string urlIn)
+    widget_text_url::widget_text_url(std::string name_param, std::string description, std::string url_string)
     {
         webId = "";
         widget_type = "texturl";
         widget_name = name_param;
         descriptionText = description;
         wasClicked = false;
-        webUrl = urlIn;
+        webUrl = url_string;
         if( gpe::font_default!=NULL)
         {
             int bWid = 0;
@@ -68,10 +68,10 @@ namespace pawgui
         return "\""+webUrl+"\"";
     }
 
-    void widget_text_url::load_data(std::string dataString)
+    void widget_text_url::load_data(std::string datastring)
     {
-        descriptionText = stg_ex::split_first_string(dataString,",,,");
-        webUrl = stg_ex::split_first_string(dataString,",,,");
+        descriptionText = stg_ex::split_first_string(datastring,",,,");
+        webUrl = stg_ex::split_first_string(datastring,",,,");
     }
 
     void widget_text_url::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
@@ -91,7 +91,7 @@ namespace pawgui
             wasClicked = true;
             if( (int)webUrl.size() > 3)
             {
-                gpe::external_open_url(webUrl);
+                gpe::main_file_url_manager->external_open_url(webUrl);
             }
         }
     }

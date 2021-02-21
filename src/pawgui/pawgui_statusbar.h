@@ -3,10 +3,10 @@ pawgui_status_bar.h
 This file is part of:
 PAW GUI
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -41,8 +41,8 @@ namespace pawgui
     class widget_statusbar: public widget_basic
     {
         private:
-            std::string codeEditorStatusBarString;
-            std::string insertModeString;
+            std::string codeEditorStatusBarstring;
+            std::string insertModestring;
         public:
             std::string statusBarLeftText;
             widget_statusbar();
@@ -50,7 +50,7 @@ namespace pawgui
             void process_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect *cam=NULL);
             void render_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect * cam = NULL);
             void reset_statusbar();
-            void set_codestring(std::string newCodeString);
+            void set_codestring(std::string newCodestring);
             void set_insertmode(std::string newInsertMode);
     };
     extern widget_statusbar * main_statusbar;

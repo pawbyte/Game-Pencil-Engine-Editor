@@ -3,10 +3,10 @@ pawgui_dropdown.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -73,18 +73,18 @@ namespace pawgui
 
     std::string widget_dropdown_menu::get_data()
     {
-        std::string dataString = widget_type+":"+dropdownName+"==|||==[menu]";
+        std::string datastring = widget_type+":"+dropdownName+"==|||==[menu]";
         gpe::key_pair * tPair = NULL;
-        for( int i = 0; i < (int)dropDownParentPair->subOptions.size(); i++ )
+        for( int i = 0; i < (int)dropDownParentPair->sub_options.size(); i++ )
         {
-            tPair = dropDownParentPair->subOptions[i];
+            tPair = dropDownParentPair->sub_options[i];
             if( tPair!=NULL)
             {
-                dataString+="[option]"+tPair->keyString+":"+tPair->keySubString+":"+ stg_ex::int_to_string(tPair->keyValue)+"[/option]";
+                datastring+="[option]"+tPair->key_string+":"+tPair->key_substring+":"+ stg_ex::int_to_string(tPair->key_value)+"[/option]";
             }
         }
-        dataString+="[/menu]"+stg_ex::int_to_string(selectedId)+","+ stg_ex::int_to_string(showJustOptions)+",";
-        return dataString;
+        datastring+="[/menu]"+stg_ex::int_to_string(selectedId)+","+ stg_ex::int_to_string(showJustOptions)+",";
+        return datastring;
     }
 
     bool widget_dropdown_menu::add_to_context_menu( popup_menu_option * cLevel, gpe::key_pair * cKey )
@@ -93,13 +93,13 @@ namespace pawgui
         {
             return true;
         }
-        popup_menu_option *  myLevel = cLevel->add_menu_option(cKey->keyString, cKey->keyId );
+        popup_menu_option *  myLevel = cLevel->add_menu_option(cKey->key_string, cKey->key_id );
 
         gpe::key_pair * tempKey = NULL;
-        int keyListSize = (int)cKey->subOptions.size();
+        int keyListSize = (int)cKey->sub_options.size();
         for( int i = 0; i < keyListSize; i++)
         {
-            tempKey = cKey->subOptions[i];
+            tempKey = cKey->sub_options[i];
             add_to_context_menu( myLevel, tempKey );
         }
         return true;
@@ -113,7 +113,7 @@ namespace pawgui
             gpe::key_pair * kp = dropDownParentPair->add_keypair( optionName, optionSubStr, optionValue );
             if( selectOption )
             {
-                set_id( kp->keyId );
+                set_id( kp->key_id );
             }
             return kp;
         }
@@ -148,31 +148,31 @@ namespace pawgui
         }
 
         //Checks if the string is the same as the current pair
-        if( pairIn->keyString == pairName)
+        if( pairIn->key_string == pairName)
         {
             //If we don't care about IDs ( less than 0), we have found our pair
             if( pairId < 0 )
             {
                 return pairIn;
             }
-            else if( pairIn->keyId == pairId )
+            else if( pairIn->key_id == pairId )
             {
                 //Otherwise our pairs must match the value
                 return pairIn;
             }
         }
-        else if( pairIn->keyId == pairId  && pairId >= 0 )
+        else if( pairIn->key_id == pairId  && pairId >= 0 )
         {
             //Otherwise our pairs must match the value
             return pairIn;
         }
         //If we haven't found anything, iterate through the pair's suboptions and nest this function
-        int pairListSize = (int)pairIn->subOptions.size();
+        int pairListSize = (int)pairIn->sub_options.size();
         gpe::key_pair *  tempPair = NULL;
         gpe::key_pair *  foundPair = NULL;
         for( int i = 0; i < pairListSize; i++)
         {
-            tempPair = pairIn->subOptions[i];
+            tempPair = pairIn->sub_options[i];
             foundPair = find_selected_pair( tempPair, pairName, pairId );
             if( foundPair !=NULL )
             {
@@ -182,7 +182,7 @@ namespace pawgui
         return NULL;
     }
 
-    gpe::key_pair *  widget_dropdown_menu::find_selected_pair_sub( gpe::key_pair *  pairIn, std::string pairSubString )
+    gpe::key_pair *  widget_dropdown_menu::find_selected_pair_sub( gpe::key_pair *  pairIn, std::string pairSubstring )
     {
         //Returns NULL if the pair is NULL;
         if( pairIn == NULL)
@@ -191,19 +191,19 @@ namespace pawgui
         }
 
         //Checks if the string is the same as the current pair
-        if( pairIn->keySubString == pairSubString )
+        if( pairIn->key_substring == pairSubstring )
         {
             //If we don't care about IDs ( less than 0), we have found our pair
             return pairIn;
         }
         //If we haven't found anything, iterate through the pair's suboptions and nest this function
-        int pairListSize = (int)pairIn->subOptions.size();
+        int pairListSize = (int)pairIn->sub_options.size();
         gpe::key_pair *  tempPair = NULL;
         gpe::key_pair *  foundPair = NULL;
         for( int i = 0; i < pairListSize; i++)
         {
-            tempPair = pairIn->subOptions[i];
-            foundPair = find_selected_pair_sub( tempPair, pairSubString );
+            tempPair = pairIn->sub_options[i];
+            foundPair = find_selected_pair_sub( tempPair, pairSubstring );
             if( foundPair !=NULL )
             {
                 return foundPair;
@@ -217,21 +217,21 @@ namespace pawgui
         gpe::key_pair * kp = NULL;
         if( selectedPair!=NULL  )
         {
-            return selectedPair->keyString;
+            return selectedPair->key_string;
         }
         return "";
     }
 
     int widget_dropdown_menu::get_menu_size()
     {
-        return (int)dropDownParentPair->subOptions.size();
+        return (int)dropDownParentPair->sub_options.size();
     }
 
     std::string widget_dropdown_menu::get_plain_string()
     {
         if( selectedPair!=NULL  )
         {
-            return "'"+selectedPair->keyString+"'";
+            return "'"+selectedPair->key_string+"'";
         }
         return "''";
     }
@@ -245,7 +245,7 @@ namespace pawgui
     {
         if( selectedPair !=NULL )
         {
-            return selectedPair->keyString;
+            return selectedPair->key_string;
         }
         return widget_name;
     }
@@ -256,7 +256,7 @@ namespace pawgui
         gpe::key_pair * kp = NULL;
         if( selectedPair !=NULL )
         {
-            return selectedPair->keySubString;
+            return selectedPair->key_substring;
         }
         return "";
     }
@@ -265,7 +265,7 @@ namespace pawgui
     {
         if( selectedPair !=NULL )
         {
-            return selectedPair->keyValue;
+            return selectedPair->key_value;
         }
         return -1;
     }
@@ -280,36 +280,36 @@ namespace pawgui
         return justActivated;
     }
 
-    void widget_dropdown_menu::load_data(std::string dataString)
+    void widget_dropdown_menu::load_data(std::string datastring)
     {
-        if( (int)dataString.size() > 0 )
+        if( (int)datastring.size() > 0 )
         {
             std::string optionTag = "[option]";
             int optionTagSize = (int)optionTag.size();
 
-            std::string allOptionsString = "";
+            std::string allOptionsstring = "";
             std::string newOptionData = "";
-            std::string newOptionString = "";
+            std::string newOptionstring = "";
             std::string newOptionName = "";
             std::string newOptionSubame = "";
             int newOptionValue = -1;
-            int beginOptionPos=dataString.find_first_of(optionTag);
+            int beginOptionPos=datastring.find_first_of(optionTag);
             if(beginOptionPos!=(int)std::string::npos)
             {
-                allOptionsString = stg_ex::split_first_string(dataString,"[/menu]");
+                allOptionsstring = stg_ex::split_first_string(datastring,"[/menu]");
 
-                newOptionData = stg_ex::split_first_string(allOptionsString,"[menu]");
-                while( (int)allOptionsString.size() > 0)
+                newOptionData = stg_ex::split_first_string(allOptionsstring,"[menu]");
+                while( (int)allOptionsstring.size() > 0)
                 {
-                    newOptionString = stg_ex::split_first_string(allOptionsString,"[/option]");
+                    newOptionstring = stg_ex::split_first_string(allOptionsstring,"[/option]");
 
-                    beginOptionPos=newOptionString.find_first_of(optionTag);
+                    beginOptionPos=newOptionstring.find_first_of(optionTag);
                     if(beginOptionPos!=(int)std::string::npos)
                     {
                         //if the beginOptionPos is present, then parse on through and carryon
-                        if( (int)newOptionString.size() > beginOptionPos+optionTagSize )
+                        if( (int)newOptionstring.size() > beginOptionPos+optionTagSize )
                         {
-                            newOptionData = stg_ex::get_substring(newOptionString, beginOptionPos+optionTagSize );
+                            newOptionData = stg_ex::get_substring(newOptionstring, beginOptionPos+optionTagSize );
 
                             newOptionName = stg_ex::split_first_string(newOptionData,":");
                             newOptionSubame = stg_ex::split_first_string(newOptionData,":");
@@ -325,8 +325,8 @@ namespace pawgui
                         }
                     }
                 }
-                set_id( stg_ex::split_first_int(dataString,',') );
-                showJustOptions = stg_ex::string_to_bool( stg_ex::split_first_string(dataString,",") );
+                set_id( stg_ex::split_first_int(datastring,',') );
+                showJustOptions = stg_ex::string_to_bool( stg_ex::split_first_string(datastring,",") );
             }
         }
     }
@@ -365,17 +365,17 @@ namespace pawgui
                     context_menu_open(view_space->x+widget_box.x-cam->x, view_space->y+widget_box.y+widget_box.h-cam->y);
                     main_context_menu->set_width(widget_box.w);
                     gpe::key_pair * kp = NULL;
-                    if( (int)dropDownParentPair->subOptions.size() > 0)
+                    if( (int)dropDownParentPair->sub_options.size() > 0)
                     {
                         if( showJustOptions ==false)
                         {
                             main_context_menu->add_menu_option(dropdownName,-1);
                         }
 
-                        int optionsSize = (int)dropDownParentPair->subOptions.size();
+                        int optionsSize = (int)dropDownParentPair->sub_options.size();
                         for( int i = 0; i < optionsSize; i++)
                         {
-                            kp = dropDownParentPair->subOptions[i];
+                            kp = dropDownParentPair->sub_options[i];
                             add_to_context_menu( main_context_menu, kp );
                         }
                         if( showJustOptions ==false)
@@ -419,33 +419,33 @@ namespace pawgui
             {
                 selectedId--;
             }
-            else if( gpe::input->check_kb_down(kb_down) && selectedId < (int)dropDownParentPair->subOptions.size()-1)
+            else if( gpe::input->check_kb_down(kb_down) && selectedId < (int)dropDownParentPair->sub_options.size()-1)
             {
                 selectedId++;
             }
         }
     }
 
-    void widget_dropdown_menu::remove_data(std::string dataString)
+    void widget_dropdown_menu::remove_data(std::string datastring)
     {
-        if( (int)dataString.size() > 0)
+        if( (int)datastring.size() > 0)
         {
             std::string optionTag = "[option]";
             int optionTagSize = (int)optionTag.size();
 
             std::string newOptionData = "";
-            std::string newOptionString = "";
+            std::string newOptionstring = "";
             std::string foundOptionName = "";
             int beginOptionPos = -1;
-            while( (int)dataString.size() > 0)
+            while( (int)datastring.size() > 0)
             {
-                newOptionString = stg_ex::split_first_string(dataString,"[/option]");
+                newOptionstring = stg_ex::split_first_string(datastring,"[/option]");
 
-                beginOptionPos=newOptionString.find_first_of(optionTag);
+                beginOptionPos=newOptionstring.find_first_of(optionTag);
                 if(beginOptionPos!=(int)std::string::npos)
                 {
                     //if the beginOptionPos is present, then parse on through and carryon
-                    foundOptionName = newOptionString.substr(beginOptionPos+optionTagSize,newOptionString.length());
+                    foundOptionName = newOptionstring.substr(beginOptionPos+optionTagSize,newOptionstring.length());
                     if( (int)foundOptionName.size() > 0)
                     {
                         remove_option(foundOptionName);
@@ -475,7 +475,7 @@ namespace pawgui
 
             if( selectedPair!=NULL )
             {
-                gpe::gfs->render_text_resized( widget_box.x+widget_box.w/2-cam->x,widget_box.y+widget_box.h/2-cam->y,selectedPair->keyString,pawgui::theme_main->input_font_color,font_popup,gpe::fa_center,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
+                gpe::gfs->render_text_resized( widget_box.x+widget_box.w/2-cam->x,widget_box.y+widget_box.h/2-cam->y,selectedPair->key_string,pawgui::theme_main->input_font_color,font_popup,gpe::fa_center,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
             }
             else
             {
@@ -516,9 +516,9 @@ namespace pawgui
             if( selectedPair!=NULL)
             {
                 selectedId = new_id;
-                selectedName = selectedPair->keyString;
-                selectedTag = selectedPair->keySubString;
-                selectedValue = selectedPair->keyValue;
+                selectedName = selectedPair->key_string;
+                selectedTag = selectedPair->key_substring;
+                selectedValue = selectedPair->key_value;
                 return;
             }
         }
@@ -535,10 +535,10 @@ namespace pawgui
     {
         gpe::key_pair *  tempPair = NULL;
         gpe::key_pair *  foundPair = NULL;
-        int pairListSize = (int)dropDownParentPair->subOptions.size();
+        int pairListSize = (int)dropDownParentPair->sub_options.size();
         for( int i = 0; i < pairListSize; i++)
         {
-            tempPair = dropDownParentPair->subOptions[i];
+            tempPair = dropDownParentPair->sub_options[i];
             foundPair = find_selected_pair( tempPair, newselectedOptionName, -1 );
             if( foundPair !=NULL )
             {
@@ -549,9 +549,9 @@ namespace pawgui
         if( foundPair != NULL )
         {
             selectedPair = foundPair;
-            selectedId = foundPair->keyValue;
-            selectedName = foundPair->keyString;
-            selectedTag = foundPair->keySubString;
+            selectedId = foundPair->key_value;
+            selectedName = foundPair->key_string;
+            selectedTag = foundPair->key_substring;
             return;
         }
 
@@ -567,10 +567,10 @@ namespace pawgui
     {
         gpe::key_pair *  tempPair = NULL;
         gpe::key_pair *  foundPair = NULL;
-        int pairListSize = (int)dropDownParentPair->subOptions.size();
+        int pairListSize = (int)dropDownParentPair->sub_options.size();
         for( int i = 0; i < pairListSize; i++)
         {
-            tempPair = dropDownParentPair->subOptions[i];
+            tempPair = dropDownParentPair->sub_options[i];
             foundPair = find_selected_pair_sub( tempPair, newselectedOptionName  );
             if( foundPair !=NULL )
             {
@@ -581,9 +581,9 @@ namespace pawgui
         if( foundPair != NULL )
         {
             selectedPair = foundPair;
-            selectedId = foundPair->keyValue;
-            selectedName = foundPair->keyString;
-            selectedTag = foundPair->keySubString;
+            selectedId = foundPair->key_value;
+            selectedName = foundPair->key_string;
+            selectedTag = foundPair->key_substring;
             return;
         }
 
@@ -600,14 +600,14 @@ namespace pawgui
         dropdownName = widget_name = new_name;
     }
 
-    void widget_dropdown_menu::set_option_value(float sValue )
+    void widget_dropdown_menu::set_option_value(float option_value )
     {
-        selectedPair = dropDownParentPair->find_option_value( sValue );
+        selectedPair = dropDownParentPair->find_option_value( option_value );
         if( selectedPair!=NULL)
         {
-            selectedId = selectedPair->keyId;
-            selectedName = selectedPair->keyString;
-            selectedTag = selectedPair->keySubString;
+            selectedId = selectedPair->key_id;
+            selectedName = selectedPair->key_string;
+            selectedTag = selectedPair->key_substring;
         }
         else
         {

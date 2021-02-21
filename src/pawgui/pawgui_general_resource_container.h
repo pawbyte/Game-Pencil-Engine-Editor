@@ -3,10 +3,10 @@ pawgui_general_resource_container.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,7 +39,7 @@ SOFTWARE.
 
 namespace pawgui
 {
-    const int resource_container_default_height = 14;
+    const int resource_container_default_height = 24;
     const int restype_regular = -1;
     const int restype_superfolder = 0;
     const int restype_projfolder = 1;
@@ -56,7 +56,7 @@ namespace pawgui
             gpe::texture_base * containerTexture;
             int animationFrameNumber;
             general_resource * heldResource;
-            std::vector <widget_resource_container *> subOptions;
+            std::vector <widget_resource_container *> sub_options;
             bool resouceNameChanged;
             bool subContentsModified;
             int strTexWidth, strTexHeight;
@@ -81,12 +81,12 @@ namespace pawgui
             std::string get_name();
             int get_resource_id();
             int get_resource_type();
-            widget_resource_container * find_resource_from_id(int resourceIdToFind, bool nestDown = true, bool includeSelf = true);
-            widget_resource_container * find_resource_from_name(std::string rNameToFind, bool nestDown = true);
-            widget_resource_container * find_resource_target(std::string rNameToFind, bool nestDown = true);
+            widget_resource_container * find_resource_from_id(int resourceIdToFind, bool nest_down = true, bool includeSelf = true);
+            widget_resource_container * find_resource_from_name(std::string rNameToFind, bool nest_down = true);
+            widget_resource_container * find_resource_target(std::string rNameToFind, bool nest_down = true);
             widget_resource_container * get_usable_resource();
             void grab_useable_resources(std::vector <widget_resource_container * > &rVector);
-            widget_resource_container * get_resource_at(int resourcePos, bool nestDown = false);
+            widget_resource_container * get_resource_at(int resourcePos, bool nest_down = false);
             std::string get_project_name();
             int get_resource_count();
             int get_resource_image_frame();
@@ -105,14 +105,14 @@ namespace pawgui
             void open_folder();
             void preprocess_container(std::string file_path = "", int backupId = -1);
             void prerender_self( );
-            int process_container(int xPos, int yPos, int selectedId = -1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, bool mouseInRange = false);
+            int process_container(int x_pos, int y_pos, int selectedId = -1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, bool mouseInRange = false);
             bool read_data_from_projectfile(std::ofstream * fileTarget);
             void remove_resource(widget_resource_container * otherContainer, bool deleteResource = true);
             //Render options
             void render_contained_object( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-            void render_option( int xPos, int yPos, int selectedIdNumber=-1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, bool renderSubOptions = true, bool renderAutomatically = false);
-            void render_image( int xPos, int yPos, int r_width = -1, int r_height = -1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, gpe::color * renderColor = NULL);
-            void render_image_scaled( int xPos, int yPos, float xScale = 1, float yScale = -1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, gpe::color * renderColor = NULL);
+            void render_option( int x_pos, int y_pos, int selectedIdNumber=-1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, bool renderSubOptions = true, bool renderAutomatically = false);
+            void render_image( int x_pos, int y_pos, int r_width = -1, int r_height = -1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, gpe::color * render_color = NULL);
+            void render_image_scaled( int x_pos, int y_pos, float x_scale = 1, float y_scale = -1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, gpe::color * render_color = NULL);
 
             void save_container(std::string file_path = "", int backupId = -1);
             int search_for_string(std::string needle);

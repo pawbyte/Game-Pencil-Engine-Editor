@@ -3,10 +3,10 @@ pawgui_base.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,10 +37,10 @@ namespace pawgui
 {
     widget_basic::widget_basic()
     {
-        renderPackageName = "";
-        hAlign = gpe::fa_left;
-        vAlign = gpe::fa_top;
-        dynamicId = -1;
+        r_packageName = "";
+        alignment_h = gpe::fa_left;
+        alignment_v = gpe::fa_top;
+        dynamic_id = -1;
         needsNewLine = false;
         isFullWidth = false;
         indentationLevel = 0;
@@ -152,14 +152,14 @@ namespace pawgui
         return "\""+widget_name+"\"";
     }
 
-    void widget_basic::load_data(std::string dataString)
+    void widget_basic::load_data(std::string datastring)
     {
-        dataString = dataString;
+        datastring = datastring;
     }
 
-    void widget_basic::remove_data(std::string dataString)
+    void widget_basic::remove_data(std::string datastring)
     {
-        dataString = dataString;
+        datastring = datastring;
     }
 
     int widget_basic::get_width()
@@ -214,15 +214,15 @@ namespace pawgui
         return isHovered;
     }
 
-    void widget_basic::move_pos(int newX, int newY)
+    void widget_basic::move_pos(int x_new, int y_new)
     {
-        if( newX!=0)
+        if( x_new!=0)
         {
-            widget_box.x += newX;
+            widget_box.x += x_new;
         }
-        if(newY!=0)
+        if(y_new!=0)
         {
-            widget_box.y += newY;
+            widget_box.y += y_new;
         }
     }
 
@@ -244,10 +244,10 @@ namespace pawgui
             needsNewLine = true;
         }
 
-        gpe::render_package * guiRenderPackage = gpe::rph->get_render_package_from_name( renderPackageName );
-        if( guiRenderPackage !=NULL && guiRenderPackage->packageWindow!=NULL )
+        gpe::render_package * guir_package = gpe::rph->get_render_package_from_name( r_packageName );
+        if( guir_package !=NULL && guir_package->packageWindow!=NULL )
         {
-            windowInView = guiRenderPackage->packageWindow->has_focus();
+            windowInView = guir_package->packageWindow->has_focus();
         }
 
         if( !windowInView )
@@ -354,15 +354,15 @@ namespace pawgui
         widget_name = new_name;
     }
 
-    void widget_basic::set_coords(int newX, int newY)
+    void widget_basic::set_coords(int x_new, int y_new)
     {
-        if( newX!=-1)
+        if( x_new!=-1)
         {
-            widget_box.x = newX;
+            widget_box.x = x_new;
         }
-        if(newY!=-1)
+        if(y_new!=-1)
         {
-            widget_box.y = newY;
+            widget_box.y = y_new;
         }
     }
 
@@ -395,14 +395,14 @@ namespace pawgui
         isRightClicked = clickedVal;
     }
 
-    void widget_basic::set_height(int newHeight)
+    void widget_basic::set_height(int new_height)
     {
-        widget_box.h = newHeight;
-        if(  newHeight < -1 )
+        widget_box.h = new_height;
+        if(  new_height < -1 )
         {
             widget_box.h = -1;
         }
-        widget_box.set_h( newHeight);
+        widget_box.set_h( new_height);
         /*if(widget_box.y+widget_box.h > gpe::screen_height)
         {
             widget_box.h = gpe::screen_height-widget_box.y;

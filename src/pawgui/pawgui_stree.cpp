@@ -3,10 +3,10 @@ pawgui_stree.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,7 +45,7 @@ namespace pawgui
         needsNewLine = true;
         iconTexture = NULL;
         selectedBranch = NULL;
-        parentBranch = NULL;
+        branch_parent = NULL;
         treeParent = NULL;
 
         selectedSubOption = -1;
@@ -53,10 +53,10 @@ namespace pawgui
         foundX2Pos = 0;
         previouslySoughtId = -1;
         mouseInRange = false;
-        isVisible = true;
+        widget_visible = true;
 
         widget_name = name = "unnamed_branch";
-        branchType = gpe::branch_type::DEFAULT;
+        branch_type_id = gpe::branch_type::DEFAULT;
         globalId = -1;
 
         barXPadding = 0;
@@ -92,12 +92,12 @@ namespace pawgui
         }
     }
 
-    void widget_branch::add_to_searched_list( widget_panel_list * tList, std::string needleString  )
+    void widget_branch::add_to_searched_list( widget_panel_list * tList, std::string needlestring  )
     {
         if( tList!=NULL )
         {
             bool addedSelf = false;
-            if( stg_ex::string_contains( stg_ex::string_lower( name ) , needleString) )
+            if( stg_ex::string_contains( stg_ex::string_lower( name ) , needlestring) )
             {
                 tList->add_indented_element( indentationLevel, this );
                 addedSelf = true;
@@ -120,7 +120,7 @@ namespace pawgui
                         {
                             current_branch->indentationLevel;
                         }
-                        current_branch->add_to_searched_list( tList, needleString );
+                        current_branch->add_to_searched_list( tList, needlestring );
                     }
                 }
             }
@@ -136,7 +136,7 @@ namespace pawgui
                 //should only be done by the tree...
                 treeParent = this;
             }
-            branch->parentBranch = this;
+            branch->branch_parent = this;
             branch->treeParent = treeParent;
             branch->branchLevel = branchLevel+1;
             if( changeId )
@@ -188,7 +188,7 @@ namespace pawgui
 
     gpe::branch_type widget_branch::get_type()
     {
-        return branchType;
+        return branch_type_id;
     }
 
     bool widget_branch::hovering_openclose( gpe::shape_rect * view_space, gpe::shape_rect * cam )
@@ -237,7 +237,7 @@ namespace pawgui
 
     bool widget_branch::is_visible()
     {
-        return isVisible;
+        return widget_visible;
     }
 
     int widget_branch::matches(widget_branch * otherBranch )
@@ -245,7 +245,7 @@ namespace pawgui
         if( otherBranch!=NULL)
         {
             //id and type check..
-            if( get_global_id()==otherBranch->get_global_id() && otherBranch->get_type() == branchType)
+            if( get_global_id()==otherBranch->get_global_id() && otherBranch->get_type() == branch_type_id)
             {
                 if( name.compare( otherBranch->get_name() )==0 )
                 {
@@ -259,10 +259,10 @@ namespace pawgui
     void widget_branch::open_and_view()
     {
         subMenuIsOpen = true;
-        if( parentBranch!=NULL && parentBranch->matches( this)==false )
+        if( branch_parent!=NULL && branch_parent->matches( this)==false )
         {
-            parentBranch->subMenuIsOpen = true;
-            parentBranch->open_and_view();
+            branch_parent->subMenuIsOpen = true;
+            branch_parent->open_and_view();
         }
     }
 
@@ -316,9 +316,9 @@ namespace pawgui
         return true;
     }
 
-    void widget_branch::remove_branch( std::string branchName )
+    void widget_branch::remove_branch( std::string branch_name )
     {
-        if( (int)branchName.size() > 0 )
+        if( (int)branch_name.size() > 0 )
         {
 
         }
@@ -484,12 +484,12 @@ namespace pawgui
     widget_tree::widget_tree( std::string menuName,  gpe::branch_type optionSuperType, int optionId  )
     {
         useMetaTop = true;
-        addButton = new widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/plus.png","Add Branch" );
+        add_button = new widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/plus.png","Add Branch" );
         searchField = new widget_input_text("","Search..." );
         needsNewLine = true;
         treeList = new widget_panel_list();
         widget_name = name = menuName;
-        branchType = optionSuperType;
+        branch_type_id = optionSuperType;
         globalId = optionId;
 
         hasScrollControl = false;
@@ -502,9 +502,9 @@ namespace pawgui
         barTitleHeight = 32;
         globalBranchCounter = 0;
 
-        justResized = false;
+        just_resized = false;
         showYScroll = false;
-        beingResized = false;
+        being_resized = false;
         treeResized = false;
         branchMoved = false;
 
@@ -533,7 +533,7 @@ namespace pawgui
     {
         if( useMetaTop )
         {
-            return addButton->is_clicked();
+            return add_button->is_clicked();
         }
         return false;
     }
@@ -560,23 +560,23 @@ namespace pawgui
         cam = gpe::camera_find(cam);
         widget_basic::process_self( view_space, cam );
         indentationLevel = 0;
-        //if( isVisible )
+        //if( widget_visible )
         {
             int sOpNumber = -1;
-            justResized = false;
+            just_resized = false;
 
             bool mouseInRange = false;
 
             if( widget_box.w > gpe::screen_width/2)
             {
                 widget_box.w = gpe::screen_width/2;
-                treeResized = justResized = true;
+                treeResized = just_resized = true;
             }
 
-            if( widget_box.w < 32 && isVisible)
+            if( widget_box.w < 32 && widget_visible)
             {
                 widget_box.w = 32;
-                treeResized = justResized = true;
+                treeResized = just_resized = true;
             }
             if( isHovered )
             {
@@ -603,15 +603,15 @@ namespace pawgui
 
                 if( useMetaTop )
                 {
-                    addButton->set_coords( widget_box.x, widget_box.y );
-                    searchField->set_coords( addButton->get_x2()+padding_default, widget_box.y );
+                    add_button->set_coords( widget_box.x, widget_box.y );
+                    searchField->set_coords( add_button->get_x2()+padding_default, widget_box.y );
                     searchField->set_width( widget_box.w - searchField->get_xpos()-padding_default );
-                    addButton->process_self( view_space, cam  );
+                    add_button->process_self( view_space, cam  );
                     searchField->process_self( view_space, cam  );
                 }
                 else
                 {
-                    addButton->set_clicked( false );
+                    add_button->set_clicked( false );
                     searchField->set_string( "");
                 }
 
@@ -624,20 +624,20 @@ namespace pawgui
                 treeList->barXMargin = 0;
                 treeList->barYMargin = 0;
 
-                std::string searchedString = searchField->get_string();
+                std::string searchedstring = searchField->get_string();
 
                 int i = 0;
                 int subElementsSize = (int)sub_elements.size();
-                if( (int)searchedString.size() > 0 && useMetaTop)
+                if( (int)searchedstring.size() > 0 && useMetaTop)
                 {
-                    searchedString= stg_ex::string_lower( searchedString );
+                    searchedstring= stg_ex::string_lower( searchedstring );
                     for( i=0; i< subElementsSize; i++)
                     {
                         current_branch = sub_elements[i];
                         if(current_branch!=NULL)
                         {
                             current_branch->indentationLevel = indentationLevel;
-                            current_branch->add_to_searched_list( treeList, searchedString );
+                            current_branch->add_to_searched_list( treeList, searchedstring );
                         }
                     }
                 }
@@ -668,7 +668,7 @@ namespace pawgui
         view_space = gpe::camera_find( view_space );
         cam = gpe::camera_find( cam );
 
-        if( isVisible )
+        if( widget_visible )
         {
 
             if( pawgui::theme_main->theme_texture_bg == NULL)
@@ -679,7 +679,7 @@ namespace pawgui
 
             if( useMetaTop )
             {
-                addButton->render_self( view_space, cam  );
+                add_button->render_self( view_space, cam  );
                 searchField->render_self( view_space, cam  );
             }
             else

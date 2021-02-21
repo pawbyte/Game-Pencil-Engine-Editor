@@ -3,10 +3,10 @@ pawgui_syntax_handler.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -58,9 +58,9 @@ namespace pawgui
     class syntax_compiler_term
     {
         private:
-            std::string termParametersString;
+            std::string termParametersstring;
         public:
-            std::string termString;
+            std::string termstring;
             std::vector < std::string > termParameters;
             std::string termFunctionReturnType;
             std::string termDescription;
@@ -106,16 +106,16 @@ namespace pawgui
             void erase_language_keyword(std::string nName);
             void erase_language_data_type(std::string nName);
 
-            std::string find_gpe_datatype(std::string strIn, int startPos = 0);
-            std::string find_gpe_function(std::string strIn, int startPos = 0);
-            std::string find_gpe_keyword(std::string strIn, int startPos = 0);
-            std::string find_gpe_variable(std::string strIn, int startPos = 0);
+            std::string find_gpe_datatype(std::string str_in, int startPos = 0);
+            std::string find_gpe_function(std::string str_in, int startPos = 0);
+            std::string find_gpe_keyword(std::string str_in, int startPos = 0);
+            std::string find_gpe_variable(std::string str_in, int startPos = 0);
 
-            bool is_reserved_word(std::string strIn);
-            bool is_compilable_word(std::string strIn);
+            bool is_reserved_word(std::string str_in);
+            bool is_compilable_word(std::string str_in);
 
             bool charIsSymbol( char  charIn);
-            int firstSymbolInString(std::string inString, int pos=0);
+            int firstSymbolInstring(std::string instring, int pos=0);
             syntax_compiler_term * find_matching_variable(std::string name_param);
             syntax_compiler_term * find_matching_function(std::string name_param);
     };
@@ -127,7 +127,7 @@ namespace pawgui
         public:
             std::vector <std::string> foundParameters;
             std::vector <std::string> defaultParameterLines;
-            std::string newParametersString;
+            std::string newParametersstring;
             std::vector <std::string> functionParameterErrors;
             bool parametersAreValid;
             std::vector <std::string> compilerErrors;
@@ -153,17 +153,17 @@ namespace pawgui
             ~syntax_highlighter();
 
             syntax_language * add_programming_language(std::string langName, std::string langShortName, int langId, bool useDefaultSymbols = true,bool  isCodingLanguage = true, bool  isDefaultCodeLanguage= false);
-            bool is_reserved_word(std::string strIn);
-            bool is_compilable_word(std::string strIn);
+            bool is_reserved_word(std::string str_in);
+            bool is_compilable_word(std::string str_in);
 
             bool charIsSymbol( char  charIn);
-            int firstSymbolInString(std::string inString, int pos=0);
-            std::string find_project_function(std::string strIn, int startPos = 0);
-            std::string find_project_keyword(std::string strIn, int startPos = 0);
-            std::string find_gpe_datatype(std::string strIn, int startPos = 0);
-            std::string find_gpe_function(std::string strIn, int startPos = 0);
-            std::string find_gpe_keyword(std::string strIn, int startPos = 0);
-            std::string find_gpe_variable(std::string strIn, int startPos = 0);
+            int firstSymbolInstring(std::string instring, int pos=0);
+            std::string find_project_function(std::string str_in, int startPos = 0);
+            std::string find_project_keyword(std::string str_in, int startPos = 0);
+            std::string find_gpe_datatype(std::string str_in, int startPos = 0);
+            std::string find_gpe_function(std::string str_in, int startPos = 0);
+            std::string find_gpe_keyword(std::string str_in, int startPos = 0);
+            std::string find_gpe_variable(std::string str_in, int startPos = 0);
             syntax_compiler_term * find_matching_variable(std::string name_param);
             syntax_compiler_term * find_matching_function(std::string name_param);
             int get_language_count();

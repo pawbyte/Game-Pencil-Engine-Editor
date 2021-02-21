@@ -3,10 +3,10 @@ pawgui_stree.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -43,11 +43,11 @@ namespace pawgui
     class widget_branch: public widget_basic
     {
         protected:
-            gpe::branch_type branchType;
+            gpe::branch_type branch_type_id;
             int barXPadding, barYPadding;
             bool subMenuIsOpen;
             int globalId;
-            bool isVisible;
+            bool widget_visible;
             int lastWidth;
             std::string name;
             int optionSuperType;
@@ -60,7 +60,7 @@ namespace pawgui
             bool isLocked;
             int selectedSubOption;
             widget_branch * selectedBranch;
-            widget_branch * parentBranch;
+            widget_branch * branch_parent;
             widget_branch * treeParent;
             int foundX2Pos;
             int previouslySoughtId;
@@ -68,7 +68,7 @@ namespace pawgui
             widget_branch();
             virtual ~widget_branch();
             void add_to_list( widget_panel_list * tList = NULL);
-            void add_to_searched_list( widget_panel_list * tList, std::string needleString );
+            void add_to_searched_list( widget_panel_list * tList, std::string needlestring );
             virtual void add_branch( widget_branch * branch, bool changeId = true  );
             virtual bool can_add_new_branch();
             widget_branch * get_branch_from_pos( int pos );
@@ -87,7 +87,7 @@ namespace pawgui
             void open_and_view();
             void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect *cam = NULL);
             bool remove_branch( int branchId );
-            void remove_branch(std::string branchName );
+            void remove_branch(std::string branch_name );
             void remove_branch( widget_branch * branch );
             void remove_all_branches();
             virtual void render_branch();
@@ -106,15 +106,15 @@ namespace pawgui
             int barTitleWidth;
             int barTitleHeight;
             int globalBranchCounter;
-            widget_button_icon * addButton;
+            widget_button_icon * add_button;
             widget_input_text * searchField;
             std::vector < widget_branch * > searchResultsElements;
         public:
             bool useMetaTop;
             widget_panel_list * treeList;
-            bool justResized;
+            bool just_resized;
             bool showYScroll;
-            bool beingResized;
+            bool being_resized;
             bool treeResized;
             bool branchMoved;
             gpe::texture_base * opTexture;

@@ -3,10 +3,10 @@ pawgui_popups.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,122 +39,6 @@ SOFTWARE.
 
 namespace pawgui
 {
-    loader_display * main_loader_display = NULL;
-
-    loader_display::loader_display()
-    {
-        item1Max = item1Value = 0;
-        item2Max = item2Value = 0;
-        displayMessageTitle = "";
-        displayMessageSubtitle = "";
-        displayMessageString = "";
-    }
-
-    loader_display::~loader_display()
-    {
-
-    }
-
-    void loader_display::increment_bar1()
-    {
-        item1Value++;
-        if( item1Value >= item1Max )
-        {
-            item1Value = item1Max;
-        }
-    }
-    void loader_display::increment_bar2()
-    {
-        item2Value++;
-        if( item2Value >= item2Max )
-        {
-            item2Value = item2Max;
-        }
-    }
-    void loader_display::increment_and_update( std::string subTitle, std::string message, int barNumber, bool renderUpdate )
-    {
-        if( barNumber == 2 )
-        {
-            increment_bar2();
-        }
-        else
-        {
-            //defaults to bar 1
-            increment_bar1();
-        }
-        update_submessages( subTitle, message, renderUpdate );
-    }
-
-    void loader_display::set_bar1( float max_value)
-    {
-        if( max_value> 0 )
-        {
-            item1Max = max_value;
-            item1Value = 0;
-        }
-        else
-        {
-            item1Max = item1Value  = 0;
-        }
-    }
-
-    void loader_display::set_bar2( float max_value)
-    {
-        if( max_value> 0 )
-        {
-            item2Max = max_value;
-            item2Value = 0;
-        }
-        else
-        {
-            item1Max = item2Value  = 0;
-        }
-    }
-
-    void loader_display::render_loader()
-    {
-        //if( gpe::input->has_new_input() )
-        {
-            //Update screen
-            gpe::game_runtime->end_loop( );
-            gpe::game_runtime->start_loop();
-            gpe::gcanvas->render_rectangle( 32,gpe::screen_height/2 - 48,gpe::screen_width-32,gpe::screen_height/2 + 48,pawgui::theme_main->popup_box_color,false);
-            gpe::gfs->render_text( gpe::screen_width/2,gpe::screen_height/2 - 32,displayMessageTitle,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_top);
-            gpe::gfs->render_text( gpe::screen_width/2,gpe::screen_height/2,displayMessageSubtitle,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_top);
-            gpe::gfs->render_text( gpe::screen_width/2,gpe::screen_height/2 + 32,displayMessageString,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_top);
-            gpe::gcanvas->render_rectangle( 32,gpe::screen_height/2 - 48,gpe::screen_width-32,gpe::screen_height/2 + 48,pawgui::theme_main->popup_box_border_color,true);
-
-            gpe::game_runtime->end_loop();
-            gpe::game_runtime->start_loop();
-        }
-    }
-
-
-
-    void loader_display::reset()
-    {
-        item1Max = item1Value = 0;
-        item2Max =  item2Value = 0;
-        displayMessageTitle = "";
-        displayMessageSubtitle = "";
-        displayMessageString = "";
-    }
-
-    void loader_display::update_messages(std::string title, std::string subTitle, std::string message, bool renderUpdate  )
-    {
-        displayMessageTitle = title;
-        update_submessages( subTitle, message, renderUpdate );
-    }
-
-    void loader_display::update_submessages(  std::string subTitle, std::string message, bool renderUpdate  )
-    {
-        displayMessageSubtitle = subTitle;
-        displayMessageString = message;
-        if( renderUpdate )
-        {
-            render_loader();
-        }
-    }
     void display_user_alert(std::string messageTitle, std::string messageContent, int messageType, gpe::shape_rect * cam)
     {
         gpe::game_runtime->end_loop();
@@ -185,7 +69,7 @@ namespace pawgui
 
         std::vector < std::string > messageSubTitles;
 
-        widget_button_label * okButton = new widget_button_label( "Okay","");
+        widget_button_label * ok_button = new widget_button_label( "Okay","");
         if( defaultFontWidth > 0 && defaultFontHeight > 0)
         {
             maxMessageWidth = (widget_box.w-64) / defaultFontWidth;
@@ -291,11 +175,11 @@ namespace pawgui
                         }
                     }
                 }
-                if( okButton!=NULL)
+                if( ok_button!=NULL)
                 {
-                    okButton->set_coords(widget_box.x+( widget_box.w-okButton->get_width() )/2,widget_box.y+widget_box.h-padding_default-okButton->get_height() );
-                    okButton->process_self( NULL, NULL);
-                    if( okButton->is_clicked() && !windowBeingDragged )
+                    ok_button->set_coords(widget_box.x+( widget_box.w-ok_button->get_width() )/2,widget_box.y+widget_box.h-padding_default-ok_button->get_height() );
+                    ok_button->process_self( NULL, NULL);
+                    if( ok_button->is_clicked() && !windowBeingDragged )
                     {
                         exitOperation = true;
                     }
@@ -323,9 +207,9 @@ namespace pawgui
                 {
                     gpe::gfs->render_text( widget_box.x+32,widget_box.y+padding_default+32+iSubMessage*(defaultFontHeight+padding_default),messageSubTitles.at(iSubMessage),pawgui::theme_main->popup_box_font_color,font_default_prompt,gpe::fa_left,gpe::fa_top);
                 }
-                if( okButton!=NULL)
+                if( ok_button!=NULL)
                 {
-                    okButton->render_self(  NULL, NULL);
+                    ok_button->render_self(  NULL, NULL);
                 }
                 if( gpe::point_within_rect(gpe::input->mouse_position_x,gpe::input->mouse_position_y,&widget_box) )
                 {
@@ -338,15 +222,15 @@ namespace pawgui
                 gpe::game_runtime->end_loop();
             }
         }
-        if( okButton!=NULL )
+        if( ok_button!=NULL )
         {
-            delete okButton;
-            okButton = NULL;
+            delete ok_button;
+            ok_button = NULL;
         }
         gpe::game_runtime->start_loop();
     }
 
-    int display_prompt_message(std::string messageTitle, std::string messageContent, bool showCancelButton )
+    int display_prompt_message(std::string messageTitle, std::string messageContent, bool showCancel_button )
     {
         gpe::game_runtime->end_loop();
         //resource_dragged = NULL;
@@ -361,14 +245,14 @@ namespace pawgui
         gpe::input->reset_all_input();
         bool exitOperation = false;
         int returnVal = display_query_cancel;
-        widget_button_label * yesButton = new widget_button_label( "Yes[ENTER]","");
-        yesButton->set_width(96);
+        widget_button_label * yes_button = new widget_button_label( "Yes[ENTER]","");
+        yes_button->set_width(96);
         widget_button_label * noButon = NULL;
-        widget_button_label * cancelButton = NULL;
-        if( showCancelButton)
+        widget_button_label * cancel_button = NULL;
+        if( showCancel_button)
         {
-            cancelButton = new widget_button_label( "Cancel[ESC]","");
-            cancelButton->set_width(96);
+            cancel_button = new widget_button_label( "Cancel[ESC]","");
+            cancel_button->set_width(96);
             noButon = new widget_button_label( "No[N]","");
             noButon->set_width(96);
         }
@@ -380,7 +264,7 @@ namespace pawgui
 
         bool boxIsMoving = false;
         bool boxWasResized = true;
-        bool boxBeingResized  = false;
+        bool boxbeing_resized  = false;
 
         if( font_default_prompt!=NULL)
         {
@@ -467,7 +351,7 @@ namespace pawgui
                         widget_box.x = gpe::input->mouse_position_x-widget_box.w/2;
                         widget_box.y = gpe::input->mouse_position_y;
                     }
-                    else if( boxBeingResized)
+                    else if( boxbeing_resized)
                     {
                         gpe::cursor_main_controller->cursor_change("sizenwse");
                         newBarX2Pos = gpe::input->mouse_position_x;
@@ -498,14 +382,14 @@ namespace pawgui
                     gpe::cursor_main_controller->cursor_change("sizenwse");
                     if( gpe::input->check_mouse_pressed( mb_left ) )
                     {
-                        boxBeingResized = true;
+                        boxbeing_resized = true;
                     }
                 }
 
                 if( gpe::input->check_mouse_released( mb_anybutton  ) )
                 {
                     boxIsMoving = false;
-                    boxBeingResized = false;
+                    boxbeing_resized = false;
                     gpe::cursor_main_controller->cursor_change("arrow");
                 }
                 if( widget_box.w < widget_boxMinWidth)
@@ -585,20 +469,20 @@ namespace pawgui
                     boxWasResized = false;
                 }
 
-                yesButton->set_coords( padding_default+64,widget_box.h-32);
-                noButon->set_coords(yesButton->get_xpos()+yesButton->get_width()+padding_default,yesButton->get_ypos() );
-                if( cancelButton!=NULL)
+                yes_button->set_coords( padding_default+64,widget_box.h-32);
+                noButon->set_coords(yes_button->get_xpos()+yes_button->get_width()+padding_default,yes_button->get_ypos() );
+                if( cancel_button!=NULL)
                 {
-                    cancelButton->set_coords( noButon->get_xpos()+noButon->get_width()+padding_default,noButon->get_ypos() );
-                    cancelButton->process_self(&widget_box);
+                    cancel_button->set_coords( noButon->get_xpos()+noButon->get_width()+padding_default,noButon->get_ypos() );
+                    cancel_button->process_self(&widget_box);
                 }
-                yesButton->process_self(&widget_box);
+                yes_button->process_self(&widget_box);
                 noButon->process_self(&widget_box) ;
 
 
                 if( gpe::input->check_kb_released(kb_esc) || gpe::window_controller_main->window_closed )
                 {
-                    if( cancelButton!=NULL)
+                    if( cancel_button!=NULL)
                     {
                         exitOperation = true;
                         returnVal = display_query_cancel;
@@ -619,12 +503,12 @@ namespace pawgui
                     exitOperation = true;
                     returnVal = display_query_no;
                 }
-                else if( cancelButton!=NULL &&  cancelButton->is_clicked() )
+                else if( cancel_button!=NULL &&  cancel_button->is_clicked() )
                 {
                     exitOperation = true;
                     returnVal = display_query_cancel;
                 }
-                else if( gpe::input->check_kb_released(kb_enter) || yesButton->is_clicked() )
+                else if( gpe::input->check_kb_released(kb_enter) || yes_button->is_clicked() )
                 {
                     exitOperation = true;
                     returnVal = display_query_yes;
@@ -649,11 +533,11 @@ namespace pawgui
                         gpe::gfs->render_text( 32,padding_default+32+iSubMessage*(defaultFontHeight+padding_default),messageSubTitles.at(iSubMessage),pawgui::theme_main->popup_box_font_color,font_default_prompt,gpe::fa_left,gpe::fa_top);
                     }
 
-                    yesButton->render_self( &widget_box );
+                    yes_button->render_self( &widget_box );
                     noButon->render_self( &widget_box );
-                    if( cancelButton!=NULL)
+                    if( cancel_button!=NULL)
                     {
-                        cancelButton->render_self( &widget_box );
+                        cancel_button->render_self( &widget_box );
                     }
                     gpe::gcanvas->render_rectangle( 1,1,widget_box.w-1,widget_box.h-1,pawgui::theme_main->popup_box_border_color,true);
                     gpe::gcanvas->render_rectangle( 0,0,widget_box.w,widget_box.h,pawgui::theme_main->popup_box_highlight_color,true);
@@ -668,20 +552,20 @@ namespace pawgui
         {
             font_default_prompt->clear_cache();
         }
-        if( yesButton!=NULL)
+        if( yes_button!=NULL)
         {
-            delete yesButton;
-            yesButton = NULL;
+            delete yes_button;
+            yes_button = NULL;
         }
         if( noButon!=NULL)
         {
             delete noButon;
             noButon = NULL;
         }
-        if( cancelButton!=NULL)
+        if( cancel_button!=NULL)
         {
-            delete cancelButton;
-            cancelButton = NULL;
+            delete cancel_button;
+            cancel_button = NULL;
         }
         gpe::input->reset_all_input();
         messageSubTitles.clear();
@@ -708,17 +592,17 @@ namespace pawgui
         }
         int titleWidth = TEXTBOX_FONT_SIZE_WIDTH * (int)messageTitle.size();
         int messageWidth = TEXTBOX_FONT_SIZE_WIDTH * (int)messageContent.size();
-        int biggestStringWidth = std::max(titleWidth, messageWidth);
+        int biggeststringWidth = std::max(titleWidth, messageWidth);
         std::string returnVal = startName;
-        widget_button_label * yesButton = new widget_button_label( "Okay","");
-        widget_button_label * cancelButton = new widget_button_label( "Cancel","");
-        widget_input_text * newStringBox = new widget_input_text(startName);
-        newStringBox->switch_inuse(true);
-        int buttonsWidth = yesButton->get_width()+cancelButton->get_width();
+        widget_button_label * yes_button = new widget_button_label( "Okay","");
+        widget_button_label * cancel_button = new widget_button_label( "Cancel","");
+        widget_input_text * newstringBox = new widget_input_text(startName);
+        newstringBox->switch_inuse(true);
+        int buttonsWidth = yes_button->get_width()+cancel_button->get_width();
         int promptBoxWidth = buttonsWidth;
-        if( promptBoxWidth < biggestStringWidth)
+        if( promptBoxWidth < biggeststringWidth)
         {
-            promptBoxWidth =biggestStringWidth;
+            promptBoxWidth =biggeststringWidth;
         }
         promptBoxWidth+=padding_default*3;
         gpe::shape_rect widget_box;
@@ -737,27 +621,27 @@ namespace pawgui
             widget_box.x = (gpe::screen_width-promptBoxWidth)/2-padding_default;
             widget_box.y = gpe::screen_height/2-64-padding_default;
 
-            newStringBox->set_coords( widget_box.x+padding_default,widget_box.y+64);
-            newStringBox->set_width(widget_box.w - 64);
+            newstringBox->set_coords( widget_box.x+padding_default,widget_box.y+64);
+            newstringBox->set_width(widget_box.w - 64);
 
-            yesButton->set_coords( widget_box.x+padding_default,newStringBox->get_ypos()+newStringBox->get_height() + padding_default);
-            cancelButton->set_coords( yesButton->get_xpos()+yesButton->get_width()+padding_default,yesButton->get_ypos() );
+            yes_button->set_coords( widget_box.x+padding_default,newstringBox->get_ypos()+newstringBox->get_height() + padding_default);
+            cancel_button->set_coords( yes_button->get_xpos()+yes_button->get_width()+padding_default,yes_button->get_ypos() );
 
-            newStringBox->process_self();
-            yesButton->process_self();
-            cancelButton->process_self();
+            newstringBox->process_self();
+            yes_button->process_self();
+            cancel_button->process_self();
 
-            if( gpe::input->check_kb_released(kb_esc) || cancelButton->is_clicked() )
+            if( gpe::input->check_kb_released(kb_esc) || cancel_button->is_clicked() )
             {
                 exitOperation = true;
                 returnVal = "";
             }
-            else if( gpe::input->check_kb_released(kb_enter) || yesButton->is_clicked() )
+            else if( gpe::input->check_kb_released(kb_enter) || yes_button->is_clicked() )
             {
                 exitOperation = true;
-                if( newStringBox!=NULL)
+                if( newstringBox!=NULL)
                 {
-                    returnVal = newStringBox->get_string();
+                    returnVal = newstringBox->get_string();
                 }
             }
 
@@ -771,26 +655,26 @@ namespace pawgui
 
             gpe::gfs->render_text( (gpe::screen_width-promptBoxWidth)/2+padding_default,gpe::screen_height/2-64,messageTitle,pawgui::theme_main->popup_box_highlight_font_color,font_default_prompt,gpe::fa_left,gpe::fa_center );
             gpe::gfs->render_text( (gpe::screen_width-promptBoxWidth)/2+padding_default,gpe::screen_height/2-32,messageContent,pawgui::theme_main->popup_box_font_color,font_default_prompt,gpe::fa_left,gpe::fa_top );
-            yesButton->render_self( );
-            cancelButton->render_self( );
-            newStringBox->render_self( );
+            yes_button->render_self( );
+            cancel_button->render_self( );
+            newstringBox->render_self( );
             gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->popup_box_border_color,true );
             gpe::game_runtime->end_loop();
         }
-        if( yesButton!=NULL)
+        if( yes_button!=NULL)
         {
-            delete yesButton;
-            yesButton = NULL;
+            delete yes_button;
+            yes_button = NULL;
         }
-        if( cancelButton!=NULL)
+        if( cancel_button!=NULL)
         {
-            delete cancelButton;
-            cancelButton = NULL;
+            delete cancel_button;
+            cancel_button = NULL;
         }
-        if( newStringBox!=NULL)
+        if( newstringBox!=NULL)
         {
-            delete newStringBox;
-            newStringBox = NULL;
+            delete newstringBox;
+            newstringBox = NULL;
         }
 
         gpe::input->reset_all_input();

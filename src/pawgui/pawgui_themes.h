@@ -3,10 +3,10 @@ pawgui_themes.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,7 +45,7 @@ namespace pawgui
     const int default_line_height_padded = 32;
     const int default_padding_title = 16;
     const int default_toolkey_shortcut_width = 64;
-    const int default_icon_width = 24;
+    const int default_icon_width = 32;
     const int default_thumbnal_size = 48;
     const int default_icon_width_padded = 32;
     const int default_icon_plusminus_size = 8;
@@ -108,6 +108,15 @@ namespace pawgui
             gpe::color * program_color;
             gpe::color * program_color_header;
 
+            gpe::color * panel_color;
+            gpe::color * panel_border_color;
+
+            gpe::color * tab_background_color;
+            gpe::color * tab_color;
+            gpe::color * tab_hover_color;
+            gpe::color * tab_selected_color;
+            gpe::color * tab_text_color;
+
             gpe::color * main_box_color;
             gpe::color * main_box_highlight_color;
             gpe::color * main_box_font_color;
@@ -136,7 +145,7 @@ namespace pawgui
             gpe::color * input_highlight_font_color;
             gpe::color * input_faded_font_color;
             gpe::color * input_selected_color;
-            //For ButtonBar and Iconed Buttons
+            //For _buttonBar and Iconed _buttons
             gpe::color * icon_box_color;
             gpe::color * icon_box_highlight_color;
             gpe::color * icon_box_selected_color;
@@ -146,7 +155,7 @@ namespace pawgui
             gpe::color * icon_font_color;
             gpe::color * icon_font_highlight_color;
             gpe::color * icon_font_selected_color;
-            //For Button and such...
+            //For _button and such...
             gpe::color * checkbox_color;
             gpe::color * button_box_color;
             gpe::color * button_box_highlight_color;

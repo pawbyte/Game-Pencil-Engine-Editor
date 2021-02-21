@@ -3,10 +3,10 @@ pawgui_color_picker.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -57,16 +57,16 @@ namespace pawgui
         fieldElementBox.w = widget_box.w-128;
         fieldElementBox.h = widget_box.h;
 
-        fontSizeH = 12;
-        fontSizeW = 12;
-        font_textinput->get_metrics("A",&fontSizeW,&fontSizeH);
-        if( fontSizeW<=0)
+        font_sizeH = 12;
+        font_sizeW = 12;
+        font_textinput->get_metrics("A",&font_sizeW,&font_sizeH);
+        if( font_sizeW<=0)
         {
-            fontSizeW = 12;
+            font_sizeW = 12;
         }
-        if( fontSizeH<=0)
+        if( font_sizeH<=0)
         {
-            fontSizeH = 12;
+            font_sizeH = 12;
         }
     }
 
@@ -84,9 +84,9 @@ namespace pawgui
         return widget_type+":"+widget_name+"==|||=="+get_rgb_string()+",,,";
     }
 
-    void gpe_widget_color_picker::load_data(std::string dataString)
+    void gpe_widget_color_picker::load_data(std::string datastring)
     {
-        std::string rgbColor = stg_ex::split_first_string(dataString,",,,");
+        std::string rgbColor = stg_ex::split_first_string(datastring,",,,");
         set_color_from_rgb(rgbColor);
     }
 
@@ -185,7 +185,7 @@ namespace pawgui
         }
     }
 
-    void gpe_widget_color_picker::set_string(std::string newString)
+    void gpe_widget_color_picker::set_string(std::string newstring)
     {
 
     }
@@ -271,16 +271,16 @@ namespace pawgui
         }
         if( isClicked)
         {
-            std::string popUpString = "";
+            std::string popUpstring = "";
             if( (int)inputLabel.size() > 0)
             {
-                popUpString = "Change "+inputLabel;
+                popUpstring = "Change "+inputLabel;
             }
             else
             {
-                popUpString = "Select a Color";
+                popUpstring = "Select a Color";
             }
-            get_color_from_popup(popUpString,storedColor);
+            get_color_from_popup(popUpstring,storedColor);
         }
     }
 
@@ -313,7 +313,7 @@ namespace pawgui
         }
     }
 
-    void gpe_widget_color_picker::set_color_from_rgb( gpe::color *newColor)
+    void gpe_widget_color_picker::set_color_from_rgb( gpe::color *color_new)
     {
         if( storedColor==NULL)
         {
@@ -321,18 +321,18 @@ namespace pawgui
         }
         if( storedColor!=NULL)
         {
-            if( newColor!=NULL)
+            if( color_new!=NULL)
             {
-                storedColor->change_rgba(newColor->get_r(),newColor->get_g(),newColor->get_b() );
+                storedColor->change_rgba(color_new->get_r(),color_new->get_g(),color_new->get_b() );
             }
         }
     }
 
-    void gpe_widget_color_picker::set_color_from_rgb(std::string newColorStr)
+    void gpe_widget_color_picker::set_color_from_rgb(std::string color_newStr)
     {
-        int r = stg_ex::split_first_int(newColorStr,',');
-        int g = stg_ex::split_first_int(newColorStr,',');
-        int b = stg_ex::string_to_int(newColorStr,0);
+        int r = stg_ex::split_first_int(color_newStr,',');
+        int g = stg_ex::split_first_int(color_newStr,',');
+        int b = stg_ex::string_to_int(color_newStr,0);
 
         if( r < 0 || r > 255)
         {
@@ -356,10 +356,10 @@ namespace pawgui
         }
     }
 
-    void gpe_widget_color_picker::set_color_from_hex(std::string newColorStr)
+    void gpe_widget_color_picker::set_color_from_hex(std::string color_newStr)
     {
         int r = 0, g = 0, b = 0;
-        gpe::color_system->hex_to_rgb( newColorStr,r, g, b );
+        gpe::color_system->hex_to_rgb( color_newStr,r, g, b );
         if( storedColor==NULL)
         {
             storedColor = new gpe::color( "custom",0,0,0 );
@@ -462,32 +462,32 @@ namespace pawgui
         //float colorShadeDifference = 0;
         float colorShadeDivision = 0;
         int selectedColorShade = colorShadeBox.h/2;
-        widget_input_number * newColorRValue = new widget_input_number("",true,0,255);
-        newColorRValue->set_label("Red");
-        widget_input_number * newColorGValue = new widget_input_number("",true,0,255);
-        newColorGValue->set_label("Green");
-        widget_input_number * newColorBValue = new widget_input_number("",true,0,255);
-        newColorBValue->set_label("Blue");
+        widget_input_number * color_newRValue = new widget_input_number("",true,0,255);
+        color_newRValue->set_label("Red");
+        widget_input_number * color_newGValue = new widget_input_number("",true,0,255);
+        color_newGValue->set_label("Green");
+        widget_input_number * color_newBValue = new widget_input_number("",true,0,255);
+        color_newBValue->set_label("Blue");
 
-        widget_input_number * newColorHValue = new widget_input_number("",true,0,240);
-        newColorHValue->set_label("Hue");
-        widget_input_number * newColorSValue = new widget_input_number("",true,0,240);
-        newColorSValue->set_label("Sat");
-        widget_input_number * newColorLValue = new widget_input_number("",true,0,240);
-        newColorLValue->set_label("Lum");
+        widget_input_number * color_newheight_valueue = new widget_input_number("",true,0,240);
+        color_newheight_valueue->set_label("Hue");
+        widget_input_number * color_newSValue = new widget_input_number("",true,0,240);
+        color_newSValue->set_label("Sat");
+        widget_input_number * color_newLValue = new widget_input_number("",true,0,240);
+        color_newLValue->set_label("Lum");
 
 
-        widget_input_text * newColorHexValue = new widget_input_text("#FFFFFF");
-        newColorHexValue->set_label("Hex: #");
+        widget_input_text * color_newHexValue = new widget_input_text("#FFFFFF");
+        color_newHexValue->set_label("Hex: #");
 
         alteredColor = new gpe::color("CurrentColor",currColor->get_r(),currColor->get_g(),currColor->get_b() );
-        newColorRValue->set_string( stg_ex::int_to_string( currColor->get_r() ) );
-        newColorGValue->set_string( stg_ex::int_to_string( currColor->get_g() ) );
-        newColorBValue->set_string( stg_ex::int_to_string( currColor->get_b() ) );
-        newColorHexValue->set_string( gpe::color_system->rgb_to_hex( currColor->get_r(),currColor->get_g(),currColor->get_b() ) ); //Convert RGB to Hex here
+        color_newRValue->set_string( stg_ex::int_to_string( currColor->get_r() ) );
+        color_newGValue->set_string( stg_ex::int_to_string( currColor->get_g() ) );
+        color_newBValue->set_string( stg_ex::int_to_string( currColor->get_b() ) );
+        color_newHexValue->set_string( gpe::color_system->rgb_to_hex( currColor->get_r(),currColor->get_g(),currColor->get_b() ) ); //Convert RGB to Hex here
 
-        widget_button_label * yesButton = new widget_button_label( "Okay","Confirm Color Change");
-        widget_button_label * cancelButton = new widget_button_label( "Cancel","Cancel Color Request");
+        widget_button_label * yes_button = new widget_button_label( "Okay","Confirm Color Change");
+        widget_button_label * cancel_button = new widget_button_label( "Cancel","Cancel Color Request");
 
         while(exitOperation==false)
         {
@@ -502,48 +502,48 @@ namespace pawgui
             colorShadeBox.y = widget_box.y+padding_default+32;
 
             //editor_gui_main->reset_gui_info();
-            yesButton->set_coords( widget_box.x+padding_default, widget_box.y+widget_box.h-32);
-            cancelButton->set_coords( yesButton->get_xpos()+yesButton->get_width()+padding_default,yesButton->get_ypos() );
+            yes_button->set_coords( widget_box.x+padding_default, widget_box.y+widget_box.h-32);
+            cancel_button->set_coords( yes_button->get_xpos()+yes_button->get_width()+padding_default,yes_button->get_ypos() );
 
-            newColorRValue->set_coords(colorShadeBox.x+colorShadeBox.w+padding_default,widget_box.y+padding_default+48);
-            newColorRValue->set_width(128);
+            color_newRValue->set_coords(colorShadeBox.x+colorShadeBox.w+padding_default,widget_box.y+padding_default+48);
+            color_newRValue->set_width(128);
 
-            newColorGValue->set_coords(colorShadeBox.x+colorShadeBox.w+padding_default,newColorRValue->get_ypos()+newColorRValue->get_height()+padding_default);
-            newColorGValue->set_width(128);
+            color_newGValue->set_coords(colorShadeBox.x+colorShadeBox.w+padding_default,color_newRValue->get_ypos()+color_newRValue->get_height()+padding_default);
+            color_newGValue->set_width(128);
 
-            newColorBValue->set_coords(colorShadeBox.x+colorShadeBox.w+padding_default,newColorGValue->get_ypos()+newColorGValue->get_height()+padding_default);
-            newColorBValue->set_width(128);
+            color_newBValue->set_coords(colorShadeBox.x+colorShadeBox.w+padding_default,color_newGValue->get_ypos()+color_newGValue->get_height()+padding_default);
+            color_newBValue->set_width(128);
 
-            newColorHexValue->set_coords(colorShadeBox.x+colorShadeBox.w+padding_default,newColorBValue->get_ypos()+newColorBValue->get_height()+padding_default);
-            newColorHexValue->set_width(128);
+            color_newHexValue->set_coords(colorShadeBox.x+colorShadeBox.w+padding_default,color_newBValue->get_ypos()+color_newBValue->get_height()+padding_default);
+            color_newHexValue->set_width(128);
 
-            yesButton->process_self();
-            cancelButton->process_self();
-            newColorRValue->process_self();
-            newColorGValue->process_self();
-            newColorBValue->process_self();
-            newColorHexValue->process_self();
-            if( newColorRValue->is_inuse() || newColorGValue->is_inuse() || newColorBValue->is_inuse() )
+            yes_button->process_self();
+            cancel_button->process_self();
+            color_newRValue->process_self();
+            color_newGValue->process_self();
+            color_newBValue->process_self();
+            color_newHexValue->process_self();
+            if( color_newRValue->is_inuse() || color_newGValue->is_inuse() || color_newBValue->is_inuse() )
             {
-                alteredColor->change_rgba(newColorRValue->get_held_number(),newColorGValue->get_held_number(),newColorBValue->get_held_number(),255 );
-                newColorHexValue->set_string( gpe::color_system->rgb_to_hex(alteredColor->get_r(),alteredColor->get_g(),alteredColor->get_b() ) ); //Convert RGB to Hex here
+                alteredColor->change_rgba(color_newRValue->get_held_number(),color_newGValue->get_held_number(),color_newBValue->get_held_number(),255 );
+                color_newHexValue->set_string( gpe::color_system->rgb_to_hex(alteredColor->get_r(),alteredColor->get_g(),alteredColor->get_b() ) ); //Convert RGB to Hex here
             }
-            else if( newColorHexValue->is_inuse() )
+            else if( color_newHexValue->is_inuse() )
             {
                 //convert hex to rgb is possibre
-                gpe::color_system->hex_to_rgb(newColorHexValue->get_string(),rV,gV,bV);
-                newColorRValue->set_number(rV);
-                newColorGValue->set_number(gV);
-                newColorBValue->set_number(bV);
-                alteredColor->change_rgba(newColorRValue->get_held_number(),newColorGValue->get_held_number(),newColorBValue->get_held_number(),255 );
-                //newColorHexValue->set_string( RGBtoHEX(currColor->get_r(),currColor->get_g(),currColor->get_b() ) ); //Convert RGB to Hex here
+                gpe::color_system->hex_to_rgb(color_newHexValue->get_string(),rV,gV,bV);
+                color_newRValue->set_number(rV);
+                color_newGValue->set_number(gV);
+                color_newBValue->set_number(bV);
+                alteredColor->change_rgba(color_newRValue->get_held_number(),color_newGValue->get_held_number(),color_newBValue->get_held_number(),255 );
+                //color_newHexValue->set_string( RGBtoHEX(currColor->get_r(),currColor->get_g(),currColor->get_b() ) ); //Convert RGB to Hex here
             }
-            if( gpe::input->check_kb_released(kb_esc) || cancelButton->is_clicked() || gpe::window_controller_main->is_resized() )
+            if( gpe::input->check_kb_released(kb_esc) || cancel_button->is_clicked() || gpe::window_controller_main->is_resized() )
             {
                 exitOperation = true;
                 operationCancelled = true;
             }
-            else if( gpe::input->check_kb_released(kb_enter) || yesButton->is_clicked() )
+            else if( gpe::input->check_kb_released(kb_enter) || yes_button->is_clicked() )
             {
                 exitOperation = true;
             }
@@ -555,12 +555,12 @@ namespace pawgui
 
                     colorShadeDivision = (float)selectedColorShade/(float)colorShadeBox.h;
 
-                    newColorRValue->set_number( gpe::color_system->merge_channel(alteredColor->get_r(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
-                    newColorGValue->set_number( gpe::color_system->merge_channel(alteredColor->get_g(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
-                    newColorBValue->set_number( gpe::color_system->merge_channel(alteredColor->get_b(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
+                    color_newRValue->set_number( gpe::color_system->merge_channel(alteredColor->get_r(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
+                    color_newGValue->set_number( gpe::color_system->merge_channel(alteredColor->get_g(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
+                    color_newBValue->set_number( gpe::color_system->merge_channel(alteredColor->get_b(),(float)( -colorShadeDivision+1.f)*255.f,(float) fabs( colorShadeDivision-0.5f)+0.5 ) );
 
-                    alteredColor->change_rgba(newColorRValue->get_held_number(),newColorGValue->get_held_number(),newColorBValue->get_held_number(),255 );
-                    newColorHexValue->set_string( gpe::color_system->rgb_to_hex(alteredColor->get_r(),alteredColor->get_g(),alteredColor->get_b() ) ); //Convert RGB to Hex here
+                    alteredColor->change_rgba(color_newRValue->get_held_number(),color_newGValue->get_held_number(),color_newBValue->get_held_number(),255 );
+                    color_newHexValue->set_string( gpe::color_system->rgb_to_hex(alteredColor->get_r(),alteredColor->get_g(),alteredColor->get_b() ) ); //Convert RGB to Hex here
 
                 }
             }
@@ -576,7 +576,7 @@ namespace pawgui
                 {
                     texture_color_picker_gradient->render_tex( widget_box.x+padding_default,widget_box.y+32+padding_default );
                 }
-                int preiewColorYPos = yesButton->get_ypos()-padding_default-64;
+                int preiewColorYPos = yes_button->get_ypos()-padding_default-64;
 
                 gpe::gcanvas->render_rect( &colorShadeBox,pawgui::theme_main->program_color,false);
                 gpe::gcanvas->render_rect( &colorShadeBox,pawgui::theme_main->main_border_color,true);
@@ -595,62 +595,62 @@ namespace pawgui
 
                 if( currColor!=NULL)
                 {
-                    preiewColorYPos = yesButton->get_ypos()-padding_default-40;
+                    preiewColorYPos = yes_button->get_ypos()-padding_default-40;
                     gpe::gfs->render_text( widget_box.x+padding_default,preiewColorYPos,"Older Color:",pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_left,gpe::fa_top);
                     gpe::gcanvas->render_rectangle( widget_box.x+128,preiewColorYPos,widget_box.x+256,preiewColorYPos+32,currColor,false);
 
-                    preiewColorYPos = yesButton->get_ypos()-padding_default-80;
+                    preiewColorYPos = yes_button->get_ypos()-padding_default-80;
                     gpe::gfs->render_text( widget_box.x+padding_default,preiewColorYPos,"New Color:",pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_left,gpe::fa_top);
                     gpe::gcanvas->render_rectangle( widget_box.x+128,preiewColorYPos,widget_box.x+256,preiewColorYPos+32,alteredColor,false);
                 }
                 else
                 {
-                    preiewColorYPos = yesButton->get_ypos()-padding_default-40;
+                    preiewColorYPos = yes_button->get_ypos()-padding_default-40;
                     gpe::gfs->render_text( widget_box.x+padding_default,preiewColorYPos,"New Color:",pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_left,gpe::fa_top);
                     gpe::gcanvas->render_rectangle( widget_box.x+128,preiewColorYPos,widget_box.x+256,preiewColorYPos+32,alteredColor,false);
                 }
                 gpe::gcanvas->render_rectangle( widget_box.x,widget_box.y,widget_box.x+widget_box.w,widget_box.y+32,pawgui::theme_main->popup_box_highlight_color,false);
                 gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->popup_box_border_color,true);
                 gpe::gfs->render_text( widget_box.x+widget_box.w/2,widget_box.y+padding_default,popUpCaption,pawgui::theme_main->popup_box_highlight_font_color,gpe::font_default,gpe::fa_center,gpe::fa_top);
-                yesButton->render_self( );
-                cancelButton->render_self( );
-                newColorRValue->render_self( );
-                newColorGValue->render_self( );
-                newColorBValue->render_self( );
-                newColorHexValue->render_self( );
+                yes_button->render_self( );
+                cancel_button->render_self( );
+                color_newRValue->render_self( );
+                color_newGValue->render_self( );
+                color_newBValue->render_self( );
+                color_newHexValue->render_self( );
             }
             gpe::game_runtime->end_loop();
         }
 
-        if( yesButton!=NULL)
+        if( yes_button!=NULL)
         {
-            delete yesButton;
-            yesButton = NULL;
+            delete yes_button;
+            yes_button = NULL;
         }
-        if( cancelButton!=NULL)
+        if( cancel_button!=NULL)
         {
-            delete cancelButton;
-            cancelButton = NULL;
+            delete cancel_button;
+            cancel_button = NULL;
         }
-        if( newColorRValue!=NULL)
+        if( color_newRValue!=NULL)
         {
-            delete newColorRValue;
-            newColorRValue = NULL;
+            delete color_newRValue;
+            color_newRValue = NULL;
         }
-        if( newColorGValue!=NULL)
+        if( color_newGValue!=NULL)
         {
-            delete newColorGValue;
-            newColorGValue = NULL;
+            delete color_newGValue;
+            color_newGValue = NULL;
         }
-        if( newColorBValue!=NULL)
+        if( color_newBValue!=NULL)
         {
-            delete newColorBValue;
-            newColorBValue = NULL;
+            delete color_newBValue;
+            color_newBValue = NULL;
         }
-        if( newColorHexValue!=NULL)
+        if( color_newHexValue!=NULL)
         {
-            delete newColorHexValue;
-            newColorHexValue = NULL;
+            delete color_newHexValue;
+            color_newHexValue = NULL;
         }
         if( colorShadeTempColor!=NULL)
         {

@@ -3,10 +3,10 @@ pawgui_general_resource.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -86,7 +86,7 @@ namespace pawgui
             virtual void set_global_rid(int newRId);
             virtual void set_name(std::string new_name);
             virtual void set_parent_project(std::string new_name);
-            virtual void update_box(int newX=-1, int newY=-1, int newW=-1, int newH=-1);
+            virtual void update_box(int x_new=-1, int y_new=-1, int newW=-1, int newH=-1);
             virtual void update_string(std::string new_name);
             virtual bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0 );
             virtual int search_for_string(std::string needle);

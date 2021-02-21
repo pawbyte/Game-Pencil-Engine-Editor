@@ -3,10 +3,10 @@ pawgui_tab_basic.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -77,7 +77,7 @@ namespace pawgui
 
     widget_tabbar::~widget_tabbar()
     {
-        subOptions.clear();
+        sub_options.clear();
     }
 
     void widget_tabbar::add_new_tab(std::string newOption, bool switchToNew )
@@ -87,16 +87,16 @@ namespace pawgui
             //automatically add  resource to when the tab bar is empty
             if( switchToNew)
             {
-                tabInUse = (int)subOptions.size();
+                tabInUse = (int)sub_options.size();
             }
-            subOptions.push_back(newOption);
+            sub_options.push_back(newOption);
             calculate_tabs();
         }
     }
 
     void widget_tabbar::calculate_tabs()
     {
-        int currentSize = (int)subOptions.size();
+        int currentSize = (int)sub_options.size();
         if( tabPos >= currentSize )
         {
             tabPos = currentSize -1;
@@ -128,9 +128,9 @@ namespace pawgui
     {
         if( (int)tabName.size() > 0)
         {
-            for( int i = 0; i < (int)subOptions.size(); i++)
+            for( int i = 0; i < (int)sub_options.size(); i++)
             {
-                if( tabName==subOptions[i] )
+                if( tabName == sub_options[i] )
                 {
                     return true;
                 }
@@ -141,7 +141,7 @@ namespace pawgui
 
     void widget_tabbar::open_tab(int tabId)
     {
-        if( tabId >=0 && tabId < (int)subOptions.size() )
+        if( tabId >=0 && tabId < (int)sub_options.size() )
         {
             tabInUse = tabId;
         }
@@ -155,9 +155,9 @@ namespace pawgui
     {
         if( (int)tabName.size() > 0)
         {
-            for( int i = 0; i < (int)subOptions.size(); i++)
+            for( int i = 0; i < (int)sub_options.size(); i++)
             {
-                if( tabName==subOptions[i] )
+                if( tabName==sub_options[i] )
                 {
                     tabInUse = i;
                     break;
@@ -168,11 +168,11 @@ namespace pawgui
 
     std::string widget_tabbar::get_selected_name()
     {
-        if( (int)subOptions.size() > 0 )
+        if( (int)sub_options.size() > 0 )
         {
-            if( tabInUse >=0 && tabInUse < (int)subOptions.size() )
+            if( tabInUse >=0 && tabInUse < (int)sub_options.size() )
             {
-                return subOptions[tabInUse];
+                return sub_options[tabInUse];
             }
         }
         return "";
@@ -183,9 +183,18 @@ namespace pawgui
         return tabInUse;
     }
 
+    std::string widget_tabbar::get_tab_at( int pos )
+    {
+        if( pos >= 0 && pos < (int)sub_options.size() )
+        {
+            return sub_options[ pos ];
+        }
+        return "";
+    }
+
     int widget_tabbar::get_tab_count()
     {
-        return (int)subOptions.size();
+        return (int)sub_options.size();
     }
 
     void widget_tabbar::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
@@ -211,21 +220,21 @@ namespace pawgui
             int cTabX2Pos = cTabXPos;
             int cTabYPos = widget_box.y+view_space->y-cam->y;
             int cTabY2Pos = widget_box.y+widget_box.h+view_space->y-cam->y;
-            int optionsSize = (int)subOptions.size();
+            int optionsSize = (int)sub_options.size();
             cTabX2Pos += optionsSize * tabSize;
             cTabXPos = cTabX2Pos - tabSize;
             for(int i = optionsSize-1; i >=0; i--)
             {
                 if(gpe::point_within(gpe::input->mouse_position_x,gpe::input->mouse_position_y,cTabXPos,cTabYPos,cTabX2Pos,cTabY2Pos) )
                 {
-                    main_overlay_system->update_tooltip( subOptions[i] );
+                    main_overlay_system->update_tooltip( sub_options[i] );
                     if( isClicked )
                     {
                         if( canCloseTabs )
                         {
                             if( gpe::point_between(gpe::input->mouse_position_x, gpe::input->mouse_position_y,cTabX2Pos-12,cTabYPos, cTabX2Pos,cTabY2Pos) )
                             {
-                                subOptions.erase( subOptions.begin()+i );
+                                sub_options.erase( sub_options.begin()+i );
                                 tabInUse = i -1;
                                 return;
                             }
@@ -255,7 +264,7 @@ namespace pawgui
                 {
                     tabInUse--;
                 }
-                else if( gpe::input->check_kb_released(kb_right) && tabInUse < (int)subOptions.size()-1 )
+                else if( gpe::input->check_kb_released(kb_right) && tabInUse < (int)sub_options.size()-1 )
                 {
                     tabInUse++;
                 }
@@ -265,7 +274,7 @@ namespace pawgui
 
     void widget_tabbar::remove_all_tabs( )
     {
-        subOptions.clear();
+        sub_options.clear();
         isClicked = false;
         tabIsRightClicked = false;
         tabPos = tabInUse = 0;
@@ -274,9 +283,9 @@ namespace pawgui
 
     bool widget_tabbar::remove_tab( int tabId )
     {
-        if( tabId >=0 && tabId < (int)subOptions.size() )
+        if( tabId >=0 && tabId < (int)sub_options.size() )
         {
-            subOptions.erase(subOptions.begin()+tabId );
+            sub_options.erase(sub_options.begin()+tabId );
             calculate_tabs();
             return true;
         }
@@ -287,11 +296,11 @@ namespace pawgui
     {
         bool tabRemoved = false;
         //Reverse iterate for safety
-        for( int i = (int)subOptions.size()-1; i >=0; i--)
+        for( int i = (int)sub_options.size()-1; i >=0; i--)
         {
-            if( subOptions.at(i) ==tabName )
+            if( sub_options.at(i) ==tabName )
             {
-                subOptions.erase(subOptions.begin()+i );
+                sub_options.erase(sub_options.begin()+i );
                 calculate_tabs();
                 tabRemoved = true;
             }
@@ -307,7 +316,7 @@ namespace pawgui
         cam = gpe::camera_find(cam);
         if(view_space!=NULL && cam!=NULL)
         {
-            if( (int)subOptions.size() >0 )
+            if( (int)sub_options.size() >0 )
             {
                 std::string tabOptionStr = "";
                 int tabFontWidth = 0;
@@ -320,10 +329,13 @@ namespace pawgui
                 int cTabX2Pos = widget_box.x-cam->x;
                 int cTabY1Pos = widget_box.y-cam->y;
                 int cTabY2Pos = widget_box.y-cam->y+widget_box.h;
-                for(int i=0; i< (int)subOptions.size(); i++)
+
+                gpe::gcanvas->render_roundrect_filled_color( cTabXPos, cTabY1Pos, cTabX2Pos, cTabY2Pos, pawgui::theme_main->tab_background_color, 255 );
+                gpe::gcanvas->render_rectangle( cTabXPos, (cTabY1Pos + cTabY2Pos) / 2, cTabX2Pos, cTabY2Pos, pawgui::theme_main->tab_background_color, false );
+                for(int i=0; i< (int)sub_options.size(); i++)
                 {
                     cTabX2Pos+=tabSize;
-                    tabOptionStr = subOptions[i];
+                    tabOptionStr = sub_options[i];
                     if( (int)tabOptionStr.size() > maxCharactersAllowed )
                     {
                         if( maxCharactersAllowed > 1 )
@@ -337,16 +349,17 @@ namespace pawgui
                     }
                     if( tabInUse==i)
                     {
-                        gpe::gcanvas->render_rectangle( cTabXPos,widget_box.y-cam->y,cTabX2Pos,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->program_color_header,false);
-                        gpe::gcanvas->render_rectangle( cTabXPos,widget_box.y-cam->y,cTabX2Pos,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->main_border_color,true);
-                        gpe::gfs->render_text( cTabXPos+tabSize/2,widget_box.y+widget_box.h/2-cam->y, tabOptionStr, pawgui::theme_main->popup_box_font_color,font_tab,gpe::fa_center,gpe::fa_middle);
+                        gpe::gcanvas->render_roundrect_filled_color( cTabXPos,widget_box.y-cam->y,cTabX2Pos,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->tab_selected_color,255);
+                        gpe::gcanvas->render_rectangle( cTabXPos,widget_box.y + widget_box.h / 2 - cam->y,cTabX2Pos,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->tab_selected_color, false, 255);
                     }
                     else
                     {
-                        gpe::gcanvas->render_rectangle( cTabXPos,widget_box.y-cam->y,cTabX2Pos,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->program_color,false);
-                        gpe::gcanvas->render_rectangle( cTabXPos,widget_box.y-cam->y,cTabX2Pos,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->main_border_color,true);
-                        gpe::gfs->render_text( cTabXPos+tabSize/2,widget_box.y+widget_box.h/2-cam->y, tabOptionStr, pawgui::theme_main->main_box_font_color,font_tab,gpe::fa_center,gpe::fa_middle);
+                        gpe::gcanvas->render_roundrect_filled_color( cTabXPos,widget_box.y-cam->y,cTabX2Pos,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->tab_color,255);
+                        gpe::gcanvas->render_rectangle( cTabXPos,widget_box.y + widget_box.h / 2 - cam->y,cTabX2Pos,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->tab_color,false);
+
                     }
+                    gpe::gfs->render_text( cTabXPos+tabSize/2,widget_box.y+widget_box.h/2-cam->y, tabOptionStr, pawgui::theme_main->tab_text_color,font_tab,gpe::fa_center,gpe::fa_middle);
+
                     if( canCloseTabs )
                     {
                         if( gpe::point_between(gpe::input->mouse_position_x, gpe::input->mouse_position_y,view_space->x+cTabX2Pos-32,view_space->y+cTabY1Pos, view_space->x+cTabX2Pos,view_space->y+cTabY2Pos) )
@@ -376,7 +389,7 @@ namespace pawgui
 
     void widget_tabbar::select_tab( int tabToSelect )
     {
-        if( tabToSelect >=0 && tabToSelect < (int)subOptions.size() )
+        if( tabToSelect >=0 && tabToSelect < (int)sub_options.size() )
         {
             tabInUse = tabToSelect;
         }

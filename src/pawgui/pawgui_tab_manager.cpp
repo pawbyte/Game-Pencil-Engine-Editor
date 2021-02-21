@@ -3,10 +3,10 @@ pawgui_tab_manager.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -43,9 +43,9 @@ namespace pawgui
     {
         isFullWidth = true;
         needsNewLine = true;
-        useDockButton = false;
+        useDock_button = false;
         isExpanded = false;
-        tabExpandButton = new widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/expand.png","Undock View",-1,18);
+        tabExpand_button = new widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/expand.png","Undock View",-1,18);
         selectedResource = NULL;
         widget_type = "tabmanager";
         widget_box.x = 16;
@@ -84,10 +84,10 @@ namespace pawgui
 
     widget_tab_resource_bar::~widget_tab_resource_bar()
     {
-        if( tabExpandButton!=NULL )
+        if( tabExpand_button!=NULL )
         {
-            delete tabExpandButton;
-            tabExpandButton = NULL;
+            delete tabExpand_button;
+            tabExpand_button = NULL;
         }
     }
 
@@ -95,15 +95,15 @@ namespace pawgui
     {
         if( newTabResource!=NULL)
         {
-            if( (int)subOptions.size() > 0 )
+            if( (int)sub_options.size() > 0 )
             {
                 int i = 0;
                 int foundTab = -1;
                 general_resource * cGResource = NULL;
                 //makes sure the tab is not already open
-                for( i = 0; i < (int)subOptions.size(); i +=1)
+                for( i = 0; i < (int)sub_options.size(); i +=1)
                 {
-                    cGResource = subOptions[i];
+                    cGResource = sub_options[i];
                     if( cGResource!=NULL)
                     {
                         if( cGResource->matches( newTabResource) )
@@ -117,21 +117,21 @@ namespace pawgui
                 //if tab is not already open, open it
                 if(foundTab==-1)
                 {
-                    subOptions.push_back(newTabResource);
+                    sub_options.push_back(newTabResource);
                     newTabResource->justOpenedThisFrame = true;
-                    tabInUse = (int)subOptions.size() - 1;
+                    tabInUse = (int)sub_options.size() - 1;
                 }
             }
             else
             {
                 //automatically add  resource to when the tab bar is empty
-                subOptions.push_back(newTabResource);
+                sub_options.push_back(newTabResource);
                 tabInUse = 0;
                 newTabResource->justOpenedThisFrame = true;
             }
-            if( tabInUse < (int)subOptions.size() )
+            if( tabInUse < (int)sub_options.size() )
             {
-                subOptions[tabInUse]->justOpenedThisFrame = true;
+                sub_options[tabInUse]->justOpenedThisFrame = true;
             }
             main_syntax_highlighter->clear_all();
         }
@@ -143,9 +143,9 @@ namespace pawgui
         gpe::error_log->report("Removing tab... ["+projectParentName+"]["+ stg_ex::int_to_string( resIdIn ) +"]");
         main_syntax_highlighter->clear_all();
         gpe::error_log->report("Highlighter cleared...");
-        for( int i = (int)subOptions.size()-1; i >=0; i--)
+        for( int i = (int)sub_options.size()-1; i >=0; i--)
         {
-            tRes = subOptions[i];
+            tRes = sub_options[i];
             if( tRes!=NULL)
             {
                 if( projectParentName==tRes->parentProjectName && tRes->get_global_rid()==resIdIn )
@@ -163,18 +163,18 @@ namespace pawgui
 
     void widget_tab_resource_bar::close_tab(int tabIdToClose)
     {
-        if( tabIdToClose>=0 && tabIdToClose < (int)subOptions.size() )
+        if( tabIdToClose>=0 && tabIdToClose < (int)sub_options.size() )
         {
-            subOptions.erase(subOptions.begin()+tabIdToClose);
+            sub_options.erase(sub_options.begin()+tabIdToClose);
             if( tabInUse>=tabIdToClose )
             {
                 move_to_tab( tabInUse - 1 );
             }
             tabToClose = -1;
             update_tabsizes();
-            if( tabInUse >=0 && tabInUse < (int)subOptions.size() )
+            if( tabInUse >=0 && tabInUse < (int)sub_options.size() )
             {
-                subOptions[tabInUse]->justOpenedThisFrame = true;
+                sub_options[tabInUse]->justOpenedThisFrame = true;
             }
             main_search_controller->close_finder();
             main_overlay_system->update_temporary_message("","","",0);
@@ -184,18 +184,18 @@ namespace pawgui
 
     void widget_tab_resource_bar::close_tabs_left(int tabIdToClose)
     {
-        if( tabIdToClose>0 && tabIdToClose < (int) subOptions.size() )
+        if( tabIdToClose>0 && tabIdToClose < (int) sub_options.size() )
         {
             for( int i = tabIdToClose-1; i >=0; i--)
             {
-                subOptions.erase(subOptions.begin()+i);
+                sub_options.erase(sub_options.begin()+i);
             }
             tabToClose = -1;
             tabInUse = 0;
             update_tabsizes();
-            if( tabInUse < (int)subOptions.size() )
+            if( tabInUse < (int)sub_options.size() )
             {
-                subOptions[tabInUse]->justOpenedThisFrame = true;
+                sub_options[tabInUse]->justOpenedThisFrame = true;
             }
             main_search_controller->close_finder();
             main_overlay_system->update_temporary_message("","","",0);
@@ -205,17 +205,17 @@ namespace pawgui
 
     void widget_tab_resource_bar::close_tabs_right(int tabIdToClose)
     {
-        if( tabIdToClose>=0 && tabIdToClose < (int) subOptions.size()-1 )
+        if( tabIdToClose>=0 && tabIdToClose < (int) sub_options.size()-1 )
         {
-            for( int i = (int) subOptions.size()-1; i >tabIdToClose; i--)
+            for( int i = (int) sub_options.size()-1; i >tabIdToClose; i--)
             {
-                subOptions.erase(subOptions.begin()+i);
+                sub_options.erase(sub_options.begin()+i);
             }
             tabToClose = -1;
             update_tabsizes();
-            if( tabInUse < (int)subOptions.size() )
+            if( tabInUse < (int)sub_options.size() )
             {
-                subOptions[tabInUse]->justOpenedThisFrame = true;
+                sub_options[tabInUse]->justOpenedThisFrame = true;
             }
             main_search_controller->close_finder();
             main_overlay_system->update_temporary_message("","","",0);
@@ -226,9 +226,9 @@ namespace pawgui
     void widget_tab_resource_bar::close_tabs_from_project( std::string projectDirNameIn)
     {
         general_resource * tRes = NULL;
-        for( int i = (int)subOptions.size()-1; i >=0; i--)
+        for( int i = (int)sub_options.size()-1; i >=0; i--)
         {
-            tRes = subOptions[i];
+            tRes = sub_options[i];
             if( tRes!=NULL)
             {
                 if( tRes->parentProjectName==projectDirNameIn)
@@ -252,7 +252,7 @@ namespace pawgui
         tabToClose = -1;
         tabXHover = -1;
         tabInUse= 0;
-        subOptions.clear();
+        sub_options.clear();
         update_tabsizes();
         main_search_controller->close_finder();
         main_overlay_system->update_temporary_message("","","",0);
@@ -265,7 +265,7 @@ namespace pawgui
         if( tabHeaderBox.w!=0)
         {
             //gets tab size for tabs, dependent on number of tiles
-            int subOpCount = (int)subOptions.size();
+            int subOpCount = (int)sub_options.size();
             tabSize = xxLargeTabSize;
             if( subOpCount > 0)
             {
@@ -339,9 +339,9 @@ namespace pawgui
 
     general_resource * widget_tab_resource_bar::get_selected_resource()
     {
-        if(tabInUse>=0 && tabInUse < (int)subOptions.size() )
+        if(tabInUse>=0 && tabInUse < (int)sub_options.size() )
         {
-            general_resource * cGenResource = subOptions.at(tabInUse);
+            general_resource * cGenResource = sub_options.at(tabInUse);
             return cGenResource;
         }
         return NULL;
@@ -356,11 +356,11 @@ namespace pawgui
         set_selected_gresource( NULL );
         update_tabsizes();
         general_resource * fResource = NULL;
-        if(useDockButton && tabExpandButton!=NULL)
+        if(useDock_button && tabExpand_button!=NULL)
         {
-            tabExpandButton->set_coords(widget_box.x+widget_box.w - tabExpandButton->get_width(), widget_box.y );
-            tabExpandButton->process_self();
-            if( tabExpandButton->is_clicked() )
+            tabExpand_button->set_coords(widget_box.x+widget_box.w - tabExpand_button->get_width(), widget_box.y );
+            tabExpand_button->process_self();
+            if( tabExpand_button->is_clicked() )
             {
                 toggle_full_width();
                 gpe::input->reset_all_input();
@@ -371,9 +371,9 @@ namespace pawgui
         {
             openContextMenu = false;
             int prevTabInUse = tabInUse;
-            if( prevTabInUse >=0 && prevTabInUse < (int)subOptions.size() )
+            if( prevTabInUse >=0 && prevTabInUse < (int)sub_options.size() )
             {
-                fResource = subOptions.at(prevTabInUse);
+                fResource = sub_options.at(prevTabInUse);
                 context_menu_open(gpe::input->mouse_position_x,gpe::input->mouse_position_y,256);
                 main_context_menu->add_menu_option("Close",0);
                 main_context_menu->add_menu_option("Close All Tabs",1);
@@ -401,27 +401,27 @@ namespace pawgui
                     close_tabs_right(prevTabInUse);
                     close_tabs_left(prevTabInUse);
                     tabInUse = 0;
-                    if( tabInUse < (int)subOptions.size() )
+                    if( tabInUse < (int)sub_options.size() )
                     {
-                        subOptions[tabInUse]->justOpenedThisFrame = true;
+                        sub_options[tabInUse]->justOpenedThisFrame = true;
                     }
                     break;
 
                 case 3:
                     close_tabs_left(prevTabInUse);
                     tabInUse = 0;
-                    if( tabInUse < (int)subOptions.size() )
+                    if( tabInUse < (int)sub_options.size() )
                     {
-                        subOptions[tabInUse]->justOpenedThisFrame = true;
+                        sub_options[tabInUse]->justOpenedThisFrame = true;
                     }
                     break;
 
                 case 4:
                     close_tabs_right(prevTabInUse);
                     tabInUse = prevTabInUse;
-                    if( tabInUse < (int)subOptions.size() )
+                    if( tabInUse < (int)sub_options.size() )
                     {
-                        subOptions[tabInUse]->justOpenedThisFrame = true;
+                        sub_options[tabInUse]->justOpenedThisFrame = true;
                     }
                     break;
 
@@ -452,9 +452,9 @@ namespace pawgui
             if(withinTabArea)
             {
                 int subPos = 0;
-                for(int i=tabPos; i< (int)subOptions.size() && i < tabsPerView+tabPos; i+=1)
+                for(int i=tabPos; i< (int)sub_options.size() && i < tabsPerView+tabPos; i+=1)
                 {
-                    fResource = subOptions[i];
+                    fResource = sub_options[i];
                     if( fResource!=NULL)
                     {
                         if (gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,tabHeaderBox.x+(subPos)*(tabSize+tabXPAdding)+tabSize-16,tabHeaderBox.y,tabHeaderBox.x+(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.y+tabHeaderBox.h) )
@@ -474,9 +474,9 @@ namespace pawgui
                             if(gpe::input->check_mouse_released( mb_left))
                             {
                                 tabInUse = i;
-                                if( tabInUse < (int)subOptions.size() )
+                                if( tabInUse < (int)sub_options.size() )
                                 {
-                                    subOptions[tabInUse]->justOpenedThisFrame = true;
+                                    sub_options[tabInUse]->justOpenedThisFrame = true;
                                 }
                                 gpe::input->reset_all_input();
                             }
@@ -524,19 +524,19 @@ namespace pawgui
                 move_to_tab(tabInUse+1);
             }
 
-            if( tabToClose>=0 && tabToClose < (int) subOptions.size() )
+            if( tabToClose>=0 && tabToClose < (int) sub_options.size() )
             {
                 close_tab(tabToClose);
                 tabToClose = -1;
             }
 
             //Proceses open tab...
-            //if(!editor_gui_main->mainResourceTree->beingResized )
+            //if(!editor_gui_main->mainResourceTree->being_resized )
             {
                 general_resource * cGenResource  = NULL;
-                if(tabInUse>=0 && tabInUse < (int)subOptions.size() )
+                if(tabInUse>=0 && tabInUse < (int)sub_options.size() )
                 {
-                    cGenResource = subOptions.at(tabInUse);
+                    cGenResource = sub_options.at(tabInUse);
                 }
                 if( cGenResource!=NULL)
                 {
@@ -550,12 +550,12 @@ namespace pawgui
     {
         view_space = gpe::camera_find( view_space );
         view_space = gpe::camera_find( cam);
-        if( pawgui::theme_main->theme_texture_bg==NULL )
+        //if( pawgui::theme_main->theme_texture_bg==NULL )
         {
-            gpe::gcanvas->render_rect(&tabHeaderBox,pawgui::theme_main->program_color,false);
-            gpe::gcanvas->render_rect(&tabHeaderBox,pawgui::theme_main->main_border_color,true);
+            gpe::gcanvas->render_roundrect_filled_color(tabHeaderBox.x, tabHeaderBox.y,tabHeaderBox.get_x2(), tabHeaderBox.get_y2(),  pawgui::theme_main->tab_background_color, 255);
+            gpe::gcanvas->render_rectangle(tabHeaderBox.x, tabHeaderBox.get_middle(),tabHeaderBox.get_x2(), tabHeaderBox.get_y2(),  pawgui::theme_main->tab_background_color, false, 255);
         }
-        if( (int)subOptions.size() >0 )
+        if( (int)sub_options.size() >0 )
         {
             int subPos = 0;
             general_resource * fResource = NULL;
@@ -567,16 +567,18 @@ namespace pawgui
             maxCharactersAllowed = tabSize/tabFontWidth -1;
 
             gpe::renderer_main->set_viewpoint(&tabHeaderBox);
-            for(int i=tabPos; i< (int)subOptions.size() && i < tabsPerView+tabPos; i+=1)
+            for(int i=tabPos; i< (int)sub_options.size() && i < tabsPerView+tabPos; i+=1)
             {
-                fResource = subOptions[i];
+                fResource = sub_options[i];
                 if( tabInUse==i)
                 {
-                    gpe::gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h,pawgui::theme_main->program_color_header,false);
+                    gpe::gcanvas->render_roundrect_filled_color( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h, pawgui::theme_main->tab_selected_color, 255);
+                    gpe::gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding),tabHeaderBox.h/2,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h,pawgui::theme_main->tab_selected_color,false);
                 }
                 else
                 {
-                    gpe::gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h,pawgui::theme_main->program_color,false);
+                    gpe::gcanvas->render_roundrect_filled_color( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h, pawgui::theme_main->tab_color, 255);
+                    gpe::gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding),tabHeaderBox.h/2,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h,pawgui::theme_main->tab_color, false);
                 }
                 if( fResource!=NULL)
                 {
@@ -602,11 +604,11 @@ namespace pawgui
 
                     if( tabInUse==i)
                     {
-                        gpe::gfs->render_text_resized(subPos*(tabSize+tabXPAdding)+padding_default,tabHeaderBox.h/2,tabOptionStr,pawgui::theme_main->popup_box_font_color, font_tab,gpe::fa_left,gpe::fa_middle,tabSize-tabXPAdding-16);
+                        gpe::gfs->render_text_resized(subPos*(tabSize+tabXPAdding)+padding_default,tabHeaderBox.h/2,tabOptionStr,pawgui::theme_main->tab_text_color, font_tab,gpe::fa_left,gpe::fa_middle,tabSize-tabXPAdding-16);
                     }
                     else
                     {
-                        gpe::gfs->render_text_resized(subPos*(tabSize+tabXPAdding)+padding_default,tabHeaderBox.h/2,tabOptionStr,pawgui::theme_main->main_box_font_color,font_tab,gpe::fa_left,gpe::fa_middle,tabSize-tabXPAdding-16);
+                        gpe::gfs->render_text_resized(subPos*(tabSize+tabXPAdding)+padding_default,tabHeaderBox.h/2,tabOptionStr,pawgui::theme_main->tab_text_color,font_tab,gpe::fa_left,gpe::fa_middle,tabSize-tabXPAdding-16);
                     }
                 }
 
@@ -627,15 +629,14 @@ namespace pawgui
 
             gpe::renderer_main->reset_viewpoint();
             //if( forceRedraw )
-                gpe::gcanvas->render_horizontal_line_color(widget_box.y,widget_box.x, widget_box.x+widget_box.w, gpe::c_black );
-            if( useDockButton )
+            if( useDock_button )
             {
-                tabExpandButton->render_self(NULL, NULL );
+                tabExpand_button->render_self(NULL, NULL );
             }
 
-            if(tabInUse>=0 && tabInUse < (int)subOptions.size() )
+            if(tabInUse>=0 && tabInUse < (int)sub_options.size() )
             {
-                general_resource * cGenResource = subOptions.at(tabInUse);
+                general_resource * cGenResource = sub_options.at(tabInUse);
                 if( cGenResource!=NULL)
                 {
                     gpe::renderer_main->set_viewpoint( &tabBox );
@@ -647,14 +648,14 @@ namespace pawgui
         else
         {
             gpe::renderer_main->reset_viewpoint();
-            gpe::renderer_main->set_viewpoint( view_space );
+            gpe::renderer_main->set_viewpoint( &tabBox );
 
             if( pawgui::theme_main->theme_texture_bg==NULL)
             {
-                gpe::gcanvas->render_rect(&tabBox,pawgui::theme_main->program_color,false);
+                //gpe::gcanvas->render_rectangle( 0, 0, tabBox.w, tabBox.h, pawgui::theme_main->program_color,false);
             }
-            gpe::gfs->render_text(view_space->w / 2, view_space->h / 2,"No Tabs currently open",pawgui::theme_main->popup_box_font_color, font_tab, gpe::fa_center, gpe::fa_middle );
-            gpe::gfs->render_text(view_space->w / 2, view_space->h / 2 + 32,"Press CTRL+O to open a project",pawgui::theme_main->popup_box_font_color, font_tab, gpe::fa_center, gpe::fa_middle );
+            gpe::gfs->render_text(tabBox.get_center(), tabBox.get_middle() - 16 ,"No Tabs currently open",pawgui::theme_main->popup_box_font_color, font_tab, gpe::fa_center, gpe::fa_middle );
+            gpe::gfs->render_text( tabBox.get_center(), tabBox.get_middle() + 16,"Press CTRL+O to open a project",pawgui::theme_main->popup_box_font_color, font_tab, gpe::fa_center, gpe::fa_middle );
         }
         //gpe::gcanvas->render_rect(&tabBox,pawgui::theme_main->text_box_outline_color,true);
         gpe::renderer_main->reset_viewpoint();
@@ -663,11 +664,11 @@ namespace pawgui
     bool widget_tab_resource_bar::requests_fullscreen()
     {
         return isExpanded;
-        if( tabInUse>=0 && tabInUse < (int)subOptions.size())
+        if( tabInUse>=0 && tabInUse < (int)sub_options.size())
         {
-            if( subOptions[tabInUse]!=NULL )
+            if( sub_options[tabInUse]!=NULL )
             {
-                return subOptions[tabInUse]->isFullScreenResource;
+                return sub_options[tabInUse]->isFullScreenResource;
             }
         }
         return false;
@@ -675,59 +676,59 @@ namespace pawgui
 
     int widget_tab_resource_bar::search_for_string(std::string needle)
     {
-        int foundStrings = 0;
+        int foundstrings = 0;
         general_resource * fOption  = NULL;
-        for( int i = (int)subOptions.size()-1; i >=0; i--)
+        for( int i = (int)sub_options.size()-1; i >=0; i--)
         {
-            fOption = subOptions[i];
+            fOption = sub_options[i];
             if( fOption!=NULL)
             {
-                foundStrings+=fOption->search_for_string(needle);
+                foundstrings+=fOption->search_for_string(needle);
             }
         }
 
-        return foundStrings;
+        return foundstrings;
     }
 
     int widget_tab_resource_bar::search_and_replace_string(std::string needle, std::string newStr )
     {
-        int foundStrings = 0;
+        int foundstrings = 0;
         general_resource * fOption  = NULL;
-        for( int i = (int)subOptions.size()-1; i >=0; i--)
+        for( int i = (int)sub_options.size()-1; i >=0; i--)
         {
-            fOption = subOptions[i];
+            fOption = sub_options[i];
             if( fOption!=NULL)
             {
-                foundStrings+=fOption->search_and_replace_string(needle, newStr);
+                foundstrings+=fOption->search_and_replace_string(needle, newStr);
             }
         }
-        return foundStrings;
+        return foundstrings;
     }
 
-    void widget_tab_resource_bar::set_coords(int newX, int newY)
+    void widget_tab_resource_bar::set_coords(int x_new, int y_new)
     {
-        if( newX!=-1)
+        if( x_new!=-1)
         {
-            widget_box.x = newX;
-            tabBox.x = newX;
-            tabHeaderBox.x = newX;
+            widget_box.x = x_new;
+            tabBox.x = x_new;
+            tabHeaderBox.x = x_new;
             tabBox.x = tabHeaderBox.x = widget_box.x;
-            tabHeaderBox.w = widget_box.w  - tabExpandButton->get_width();
+            tabHeaderBox.w = widget_box.w  - tabExpand_button->get_width();
             tabBox.w = widget_box.w;
         }
-        if(newY!=-1)
+        if(y_new!=-1)
         {
-            widget_box.y = newY;
-            tabHeaderBox.y = newY;
-            tabBox.y = newY+tabHeaderBox.h;
+            widget_box.y = y_new;
+            tabHeaderBox.y = y_new;
+            tabBox.y = y_new+tabHeaderBox.h;
             tabBox.h = widget_box.h-tabHeaderBox.h;
         }
     }
 
-    void widget_tab_resource_bar::set_height(int newHeight)
+    void widget_tab_resource_bar::set_height(int new_height)
     {
-        widget_box.h = newHeight;
-        tabBox.h = newHeight-tabHeaderBox.h;
+        widget_box.h = new_height;
+        tabBox.h = new_height-tabHeaderBox.h;
     }
 
     void widget_tab_resource_bar::set_selected_gresource(general_resource *newResource)
@@ -735,23 +736,23 @@ namespace pawgui
         selectedResource = newResource;
     }
 
-    void widget_tab_resource_bar::set_width(int newWidth)
+    void widget_tab_resource_bar::set_width(int new_width)
     {
-        tabBox.w = newWidth;
-        tabHeaderBox.w = newWidth - tabExpandButton->get_width()  - tabExpandButton->get_width();
-        widget_box.w = newWidth;
+        tabBox.w = new_width;
+        tabHeaderBox.w = new_width - tabExpand_button->get_width()  - tabExpand_button->get_width();
+        widget_box.w = new_width;
     }
 
     void widget_tab_resource_bar::move_to_tab(int newTabId)
     {
-        if( (int)subOptions.size() > 0)
+        if( (int)sub_options.size() > 0)
         {
             tabInUse= newTabId;
             if( newTabId<0)
             {
-                tabInUse = subOptions.size()-1;
+                tabInUse = sub_options.size()-1;
             }
-            if( tabInUse >=(int)subOptions.size() )
+            if( tabInUse >=(int)sub_options.size() )
             {
                 tabInUse = 0;
             }
@@ -771,13 +772,13 @@ namespace pawgui
         isExpanded = !isExpanded;
         if( isExpanded )
         {
-            tabExpandButton->change_texture( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/compress.png");
-            tabExpandButton->descriptionText = "Dock View";
+            tabExpand_button->change_texture( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/compress.png");
+            tabExpand_button->descriptionText = "Dock View";
         }
         else
         {
-            tabExpandButton->change_texture( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/expand.png");
-            tabExpandButton->descriptionText = "Undock View";
+            tabExpand_button->change_texture( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/expand.png");
+            tabExpand_button->descriptionText = "Undock View";
         }
     }
 }

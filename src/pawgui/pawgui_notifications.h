@@ -3,10 +3,10 @@ pawgui_notifications.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -63,13 +63,13 @@ namespace pawgui
             ~widget_notifcation_base();
             std::string get_data();
             std::string get_plain_string();
-            void load_data(std::string dataString);
+            void load_data(std::string datastring);
             void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             void refresh_notification();
             void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
 
             void set_name(std::string name_param);
-            void set_width(int newWidth);
+            void set_width(int new_width);
     };
 
     class widget_notfications_holder: public widget_basic
@@ -83,7 +83,7 @@ namespace pawgui
             bool remove_notification( std::string name );
             void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-            void set_width(int newWidth);
+            void set_width(int new_width);
     };
 }
 

@@ -3,10 +3,10 @@ pawgui_selectbox.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -58,7 +58,7 @@ namespace pawgui
     class widget_selectbox: public widget_basic
     {
         private:
-            std::vector <selectbox_option * > subOptions;
+            std::vector <selectbox_option * > sub_options;
             int intedPos;
             float pos;
             float startPos;
@@ -75,7 +75,7 @@ namespace pawgui
             widget_selectbox(std::string name = "");
             ~widget_selectbox();
             std::string get_data();
-            void load_data(std::string dataString);
+            void load_data(std::string datastring);
             void add_option(std::string newOptionName, float newOpValue = -1,gpe::texture_base * evRepIcon = NULL, gpe::animaton2d * evRepanimation=NULL, int subimageInIndex = 0, bool selectNew = false, bool useGuiColor = true);
             void correct_camera();
             void clear_list();

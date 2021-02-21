@@ -3,10 +3,10 @@ pawgui_resource_dropdown.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -46,7 +46,7 @@ namespace pawgui
             widget_resource_container * selectedResource;
             widget_resource_container * containerTree;
             int maxHeightToRender;
-            popup_menu_option * subOptions;
+            popup_menu_option * sub_options;
             std::string dropdownName;
             std::string displayedResult;
             gpe::animaton2d * selectedanimation;
@@ -60,7 +60,7 @@ namespace pawgui
             widget_drop_down_resource_menu(  std::string name, widget_resource_container * cTree = NULL,int id = -1,bool selectable = true);
             ~widget_drop_down_resource_menu();
             std::string get_data();
-            void load_data(std::string dataString);
+            void load_data(std::string datastring);
             std::string get_menu_option(int layerNumb, int atNumb);
             widget_resource_container * get_container_at(int layerNumb, int atNumb);
             widget_resource_container * get_selected_container();

@@ -3,10 +3,10 @@ pawgui_labels.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -34,7 +34,7 @@ SOFTWARE.
 #include "pawgui_labels.h"
 namespace pawgui
 {
-    widget_label_image::widget_label_image(std::string name_param, std::string file_name, std::string description, std::string urlIn)
+    widget_label_image::widget_label_image(std::string name_param, std::string file_name, std::string description, std::string url_string)
     {
         allowOverSize = true;
         resizeAspect = 1;
@@ -43,7 +43,7 @@ namespace pawgui
         descriptionText = description;
         wasClicked = false;
         isHoldingCustomTexture = false;
-        webUrl = urlIn;
+        webUrl = url_string;
         imgSrc = rsm_gui->texture_add_filename( file_name );
         if( imgSrc!=NULL )
         {
@@ -93,7 +93,7 @@ namespace pawgui
                 wasClicked = true;
                 if( (int)webUrl.size() > 3)
                 {
-                    gpe::external_open_url(webUrl);
+                    gpe::main_file_url_manager->external_open_url(webUrl);
                 }
             }
         }
@@ -131,6 +131,11 @@ namespace pawgui
         {
             widget_box.w = imgSrc->get_width();
             widget_box.h = imgSrc->get_height();
+        }
+        else
+        {
+            widget_box.w = 0;
+            widget_box.h = 0;
         }
     }
 
@@ -243,9 +248,9 @@ namespace pawgui
         return "\""+widget_name+"\"";
     }
 
-    void widget_label_text::load_data(std::string dataString)
+    void widget_label_text::load_data(std::string datastring)
     {
-        descriptionText = dataString;
+        descriptionText = datastring;
     }
 
     void widget_label_text::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
@@ -261,7 +266,7 @@ namespace pawgui
             wasClicked = true;
             if( (int)webUrl.size() > 3)
             {
-                gpe::external_open_url(webUrl);
+                gpe::main_file_url_manager->external_open_url(webUrl);
             }
         }
         */
@@ -338,9 +343,9 @@ namespace pawgui
         return "\""+widget_name+"\"";
     }
 
-    void widget_label_error::load_data(std::string dataString)
+    void widget_label_error::load_data(std::string datastring)
     {
-        descriptionText = dataString;
+        descriptionText = datastring;
     }
 
     void widget_label_error::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
@@ -356,7 +361,7 @@ namespace pawgui
             wasClicked = true;
             if( (int)webUrl.size() > 3)
             {
-                gpe::external_open_url(webUrl);
+                gpe::main_file_url_manager->external_open_url(webUrl);
             }
         }
         */
@@ -432,9 +437,9 @@ namespace pawgui
         return "\""+widget_name+"\"";
     }
 
-    void widget_label_rotated_90::load_data(std::string dataString)
+    void widget_label_rotated_90::load_data(std::string datastring)
     {
-        descriptionText = dataString;
+        descriptionText = datastring;
     }
 
     void widget_label_rotated_90::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
@@ -450,7 +455,7 @@ namespace pawgui
             wasClicked = true;
             if( (int)webUrl.size() > 3)
             {
-                gpe::external_open_url(webUrl);
+                gpe::main_file_url_manager->external_open_url(webUrl);
             }
         }
         */
@@ -547,14 +552,14 @@ namespace pawgui
         cam = gpe::camera_find(cam);
         if( view_space!=NULL && cam!=NULL )
         {
-            if( hAlign == gpe::fa_center)
+            if( alignment_h == gpe::fa_center)
             {
                 for( int i =0; i < (int)paragraphLines.size(); i++)
                 {
                     gpe::gfs->render_text( widget_box.x-cam->x + cam->w/2,widget_box.y-cam->y+(padding_default+defaultFontHeight)*i,paragraphLines[i],pawgui::theme_main->main_box_font_color,FONT_LABEL,gpe::fa_center,gpe::fa_top);
                 }
             }
-            else if( hAlign == gpe::fa_right)
+            else if( alignment_h == gpe::fa_right)
             {
                 for( int i =0; i < (int)paragraphLines.size(); i++)
                 {
@@ -581,20 +586,20 @@ namespace pawgui
 
     }
 
-    void widget_label_paragraph::set_width(int newWidth)
+    void widget_label_paragraph::set_width(int new_width)
     {
-        if( widget_box.w!=newWidth)
+        if( widget_box.w!=new_width)
         {
-            widget_box.w = newWidth;
+            widget_box.w = new_width;
             update_paragraph();
         }
     }
 
-    void widget_label_paragraph::set_height( int newHeight)
+    void widget_label_paragraph::set_height( int new_height)
     {
-        if( widget_box.h!=newHeight)
+        if( widget_box.h!=new_height)
         {
-            widget_box.h = newHeight;
+            widget_box.h = new_height;
             update_paragraph();
         }
     }
@@ -708,9 +713,9 @@ namespace pawgui
         return "\""+widget_name+"\"";
     }
 
-    void widget_label_title::load_data(std::string dataString)
+    void widget_label_title::load_data(std::string datastring)
     {
-        descriptionText = dataString;
+        descriptionText = datastring;
     }
 
     void widget_label_title::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
@@ -733,7 +738,7 @@ namespace pawgui
             wasClicked = true;
             if( (int)webUrl.size() > 3)
             {
-                gpe::external_open_url(webUrl);
+                gpe::main_file_url_manager->external_open_url(webUrl);
             }
         }
         */

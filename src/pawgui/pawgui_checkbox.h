@@ -3,10 +3,10 @@ pawgui_checkbox.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -50,7 +50,7 @@ namespace pawgui
             ~widget_checkbox();
 
             std::string get_data();
-            void load_data(std::string dataString);
+            void load_data(std::string datastring);
             void prerender_self( );
             void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
@@ -65,14 +65,14 @@ namespace pawgui
             int opWidth, opHeight;
             bool keepAlphabetized;
         protected:
-            std::vector < std::string > subOptions;
+            std::vector < std::string > sub_options;
             std::vector <bool > posIsChecked;
         public:
             bool allowDuplicates;
             widget_checkbox_list();
             ~widget_checkbox_list();
             std::string get_data();
-            void load_data(std::string dataString);
+            void load_data(std::string datastring);
             void add_opton(std::string newOption);
             void remove_opton(std::string optionToCut);
             void remove_opton_id(int optionToCut);

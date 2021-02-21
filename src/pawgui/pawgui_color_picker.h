@@ -3,10 +3,10 @@ pawgui_color_picker.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,7 +45,7 @@ namespace pawgui
     {
         protected:
             gpe::color * storedColor;
-            int fontSizeW, fontSizeH;
+            int font_sizeW, font_sizeH;
         public:
             gpe::shape_rect fieldElementBox;
             std::string inputLabel;
@@ -53,7 +53,7 @@ namespace pawgui
             gpe_widget_color_picker(std::string startName="",std::string description="", int r = 255, int g = 255, int b = 255 );
             ~gpe_widget_color_picker();
             std::string get_data();
-            void load_data(std::string dataString);
+            void load_data(std::string datastring);
             gpe::color * get_color();
             gpe::color * get_duplicate_color();
             std::string get_hex_string();
@@ -64,12 +64,12 @@ namespace pawgui
             int get_b();
             void set_label(std::string newLabel);
             void set_name(std::string new_name);
-            void set_string(std::string newString);
+            void set_string(std::string newstring);
             void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-            void set_color_from_rgb( gpe::color *newColor);
-            void set_color_from_rgb(std::string newColorStr);
-            void set_color_from_hex(std::string newColorStr);
+            void set_color_from_rgb( gpe::color *color_new);
+            void set_color_from_rgb(std::string color_newStr);
+            void set_color_from_hex(std::string color_newStr);
             void set_r(int r);
             void set_g(int g);
             void set_b(int b);

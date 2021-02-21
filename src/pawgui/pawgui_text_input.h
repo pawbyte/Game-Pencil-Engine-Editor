@@ -3,10 +3,10 @@ pawgui_text_input.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,14 +45,14 @@ namespace pawgui
     {
         protected:
             int prevwidget_boxW, prevwidget_boxH;
-            std::string textInputString;
-            std::string placeHolderString;
+            std::string textInputstring;
+            std::string placeHolderstring;
             int displayMode;
             int cursorPos;
             int prevCursorPos;
             int startXPos;
             int maxCharactersInView;
-            int fontSizeW, fontSizeH;
+            int font_sizeW, font_sizeH;
             int cursorTimer;
             bool showCursor;
             int maxLength;
@@ -65,8 +65,8 @@ namespace pawgui
             float rightArrowDelay;
             int inputFieldPos;
             bool hasValidInput;
-            int cursorHistoryPos;
-            std::vector< std::string> listOfPastStrings;
+            int cursorHistory_pos;
+            std::vector< std::string> listOfPaststrings;
             gpe::shape_rect fieldElementBox;
         public:
             bool inputSubmitted;
@@ -80,7 +80,7 @@ namespace pawgui
             widget_input_text(std::string startName="",std::string placeHolderText="");
             ~widget_input_text();
             std::string get_data();
-            void load_data(std::string dataString);
+            void load_data(std::string datastring);
             void copy_selection();
             void cut_selection();
             void delete_selection();
@@ -97,16 +97,16 @@ namespace pawgui
             void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
             void reset_selection(int resetDirection = 0);
             void select_all();
-            void set_height(int newHeight);
+            void set_height(int new_height);
             void set_hovered(bool hoverVal);
             void set_number( float numberIn);
             void set_max_width( int nMW);
             void set_max_height( int nMH);
-            void set_width(int newWidth);
+            void set_width(int new_width);
             void set_label(std::string newLabel);
             void set_name(std::string new_name);
-            void set_string(std::string newString);
-            void set_placeholder(std::string newString);
+            void set_string(std::string newstring);
+            void set_placeholder(std::string newstring);
             bool was_submitted();
     };
 

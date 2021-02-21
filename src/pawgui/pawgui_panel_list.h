@@ -3,10 +3,10 @@ pawgui_panel_list.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -56,17 +56,17 @@ namespace pawgui
         int rowSizingStyle;
         int outterWidth, outterHeight;
         int barXPadding, barYPadding;
-        std::vector < widget_basic * > subOptions;
+        std::vector < widget_basic * > sub_options;
         widget_content_row();
         ~widget_content_row();
         void add_gui_element(widget_basic *  newElement );
         void calculate_width();
         void clear_list();
         int get_sub_width();
-        void set_coords(int newX = -1, int newY = -1);
+        void set_coords(int x_new = -1, int y_new = -1);
         void set_full_width();
         void set_full_width( int maxRowWidth );
-        void set_horizontal_align(int hValue);
+        void set_horizontal_align(int height_valueue);
         void set_vertical_align(int vValue);
         void set_maxed_out_width();
         void set_maxed_out_height();
@@ -117,7 +117,7 @@ namespace pawgui
         void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void reset_self();
-        void set_horizontal_align(int hValue);
+        void set_horizontal_align(int height_valueue);
         void set_full_width();
         void set_maxed_out_width();
         void set_maxed_out_height();

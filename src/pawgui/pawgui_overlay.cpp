@@ -3,10 +3,10 @@ pawgui_overlay.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,7 +45,7 @@ namespace pawgui
         temporayMessageDisplayStartTimer = 0;
         tempTopLeftMessage = false;
         previousScreenshot = NULL;
-        toolTipString = "";
+        toolTipstring = "";
         toolTipTexture = NULL;
         toolTipX = 0;
         toolTipY = 0;
@@ -80,9 +80,9 @@ namespace pawgui
 
     void overlay_system::update_tooltip(std::string newTip)
     {
-        if( newTip!=toolTipString)
+        if( newTip!=toolTipstring)
         {
-            toolTipString = newTip;
+            toolTipstring = newTip;
             if( toolTipTexture==NULL)
             {
                 toolTipTexture = gpe::rph->get_new_texture();
@@ -150,17 +150,17 @@ namespace pawgui
         */
     }
 
-    void overlay_system::render_tooltip(int xPos, int yPos)
+    void overlay_system::render_tooltip(int x_pos, int y_pos)
     {
-        if( (int)toolTipString.size()>0)
+        if( (int)toolTipstring.size()>0)
         {
-            if( xPos < 0)
+            if( x_pos < 0)
             {
-                xPos = gpe::input->mouse_position_x;
+                x_pos = gpe::input->mouse_position_x;
             }
-            if( yPos < 0 || yPos > gpe::screen_height-padding_default-toolTipTexture->get_height() )
+            if( y_pos < 0 || y_pos > gpe::screen_height-padding_default-toolTipTexture->get_height() )
             {
-                yPos = gpe::input->mouse_position_y+32;
+                y_pos = gpe::input->mouse_position_y+32;
             }
 
             int TEXTBOX_FONT_SIZE_WIDTH = 12;
@@ -170,45 +170,45 @@ namespace pawgui
                 FONT_TOOLTIP->get_metrics("A",&TEXTBOX_FONT_SIZE_WIDTH,&TEXTBOX_FONT_SIZE_HEIGHT);
             }
 
-            int xPos2 = 0;
-            int yPos2 = yPos+TEXTBOX_FONT_SIZE_HEIGHT+padding_default/2;
+            int x_pos2 = 0;
+            int y_pos2 = y_pos+TEXTBOX_FONT_SIZE_HEIGHT+padding_default/2;
 
             int maxLength = ( gpe::screen_width - padding_default*4)/TEXTBOX_FONT_SIZE_WIDTH;
             int lineCountForTip = 1;
             std::vector< std::string > toolTipLines;
-            std::string tempToolTipString = toolTipString;
-            if( (int)tempToolTipString.size() >= maxLength)
+            std::string tempToolTipstring = toolTipstring;
+            if( (int)tempToolTipstring.size() >= maxLength)
             {
-                xPos = 0;
-                xPos2 = gpe::screen_width;
-                while ( (int)tempToolTipString.size() > 0 )
+                x_pos = 0;
+                x_pos2 = gpe::screen_width;
+                while ( (int)tempToolTipstring.size() > 0 )
                 {
-                    toolTipLines.push_back( stg_ex::get_substring(tempToolTipString,0,maxLength) );
-                    tempToolTipString = stg_ex::get_substring(tempToolTipString,maxLength);
+                    toolTipLines.push_back( stg_ex::get_substring(tempToolTipstring,0,maxLength) );
+                    tempToolTipstring = stg_ex::get_substring(tempToolTipstring,maxLength);
                 }
-                yPos2= yPos+TEXTBOX_FONT_SIZE_HEIGHT*( (int)toolTipLines.size() )+padding_default/2;
+                y_pos2= y_pos+TEXTBOX_FONT_SIZE_HEIGHT*( (int)toolTipLines.size() )+padding_default/2;
             }
             else
             {
-                toolTipLines.push_back(toolTipString);
-                if(xPos+TEXTBOX_FONT_SIZE_WIDTH*(int)toolTipString.size()+padding_default*2 > gpe::screen_width)
+                toolTipLines.push_back(toolTipstring);
+                if(x_pos+TEXTBOX_FONT_SIZE_WIDTH*(int)toolTipstring.size()+padding_default*2 > gpe::screen_width)
                 {
-                    xPos = gpe::screen_width-( TEXTBOX_FONT_SIZE_WIDTH*(int)toolTipString.size() )-padding_default*2;
-                    if( xPos < 0)
+                    x_pos = gpe::screen_width-( TEXTBOX_FONT_SIZE_WIDTH*(int)toolTipstring.size() )-padding_default*2;
+                    if( x_pos < 0)
                     {
-                        xPos = 0;
+                        x_pos = 0;
                     }
                 }
-                xPos2 = xPos+ TEXTBOX_FONT_SIZE_WIDTH*(int)toolTipString.size()+padding_default*2;
+                x_pos2 = x_pos+ TEXTBOX_FONT_SIZE_WIDTH*(int)toolTipstring.size()+padding_default*2;
             }
 
-            gpe::gcanvas->render_rectangle( xPos-padding_default/2,yPos-padding_default/2,xPos2,yPos2,pawgui::theme_main->popup_box_color,false);
+            gpe::gcanvas->render_rectangle( x_pos-padding_default/2,y_pos-padding_default/2,x_pos2,y_pos2,pawgui::theme_main->popup_box_color,false);
             for( int i = 0; i < (int)toolTipLines.size(); i++)
             {
-                gpe::gfs->render_text( xPos+padding_default,yPos+TEXTBOX_FONT_SIZE_HEIGHT*i, toolTipLines[i],pawgui::theme_main->popup_box_font_color,FONT_TOOLTIP,gpe::fa_left,gpe::fa_top);
+                gpe::gfs->render_text( x_pos+padding_default,y_pos+TEXTBOX_FONT_SIZE_HEIGHT*i, toolTipLines[i],pawgui::theme_main->popup_box_font_color,FONT_TOOLTIP,gpe::fa_left,gpe::fa_top);
             }
 
-            gpe::gcanvas->render_rectangle( xPos-padding_default/2,yPos-padding_default/2,xPos2,yPos2,pawgui::theme_main->popup_box_border_color,true);
+            gpe::gcanvas->render_rectangle( x_pos-padding_default/2,y_pos-padding_default/2,x_pos2,y_pos2,pawgui::theme_main->popup_box_border_color,true);
         }
         tipTipJustUpdated = false;
     }

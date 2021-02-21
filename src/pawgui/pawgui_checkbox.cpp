@@ -3,10 +3,10 @@ pawgui_checkbox.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -67,9 +67,9 @@ namespace pawgui
         return widget_type+":"+widget_name+"==|||=="+ stg_ex::int_to_string(isClicked);
     }
 
-    void widget_checkbox::load_data(std::string dataString)
+    void widget_checkbox::load_data(std::string datastring)
     {
-        isClicked = stg_ex::string_to_bool(dataString);
+        isClicked = stg_ex::string_to_bool(datastring);
     }
 
 

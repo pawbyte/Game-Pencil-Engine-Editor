@@ -3,10 +3,10 @@ pawgui_base.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PAWGUI contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PAWGUI contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -58,10 +58,10 @@ namespace pawgui
             int widget_type_id;
             int maxWidth, maxHeight;
             bool isFullWidth;
-            std::string renderPackageName;
+            std::string r_packageName;
         public:
-            int hAlign, vAlign;
-            int dynamicId;
+            int alignment_h, alignment_v;
+            int dynamic_id;
             bool needsNewLine;
             int indentationLevel;
             bool autoResizes;
@@ -90,20 +90,20 @@ namespace pawgui
             std::string get_element_type();
             virtual std::string get_data();
             virtual std::string get_plain_string();
-            virtual void load_data(std::string dataString);
-            virtual void remove_data(std::string dataString);
+            virtual void load_data(std::string datastring);
+            virtual void remove_data(std::string datastring);
             bool is_clicked();
             bool is_rightclicked();
             bool is_enabled();
-            virtual void move_pos(int newX = 0, int newY = 0);
+            virtual void move_pos(int x_new = 0, int y_new = 0);
             bool is_full_width();
             bool is_hovered();
             void set_clicked( bool clickedVal = true);
             void set_rightclicked( bool clickedVal = true);
-            virtual void set_height(int newHeight);
+            virtual void set_height(int new_height);
             void set_hovered(bool hoverVal);
-            virtual void set_width(int newWidth);
-            virtual void set_coords(int newX = -1, int newY = -1);
+            virtual void set_width(int new_width);
+            virtual void set_coords(int x_new = -1, int y_new = -1);
             virtual void prerender_self( );
             virtual void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect *cam = NULL);
             virtual void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);

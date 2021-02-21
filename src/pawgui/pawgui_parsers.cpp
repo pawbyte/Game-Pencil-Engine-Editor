@@ -3,10 +3,10 @@ pawgui_parsers.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -74,7 +74,7 @@ namespace pawgui
         parsed_text* tempParseContent = NULL;
         if( maxParseSize>0 && (int)foundParses.size()>0)
         {
-            std::string rString = "";
+            std::string rstring = "";
             for( int i = 0; i < (int)foundParses.size(); i++)
             {
                 tempParseContent = foundParses[i];
@@ -86,26 +86,26 @@ namespace pawgui
                     }
                     if( tempParseContent->textStart < tempParseContent->textEnd && tempParseContent->textEnd >0 && tempParseContent->textEnd <= maxParseSize && tempParseContent->textStart >= startParsingPos  && tempParseContent->textEnd > startParsingPos )
                     {
-                        rString+= stg_ex::string_repeat(" ",tempParseContent->textStart-startParsingPos)+sIn.substr(tempParseContent->textStart,tempParseContent->textEnd-tempParseContent->textStart);
+                        rstring+= stg_ex::string_repeat(" ",tempParseContent->textStart-startParsingPos)+sIn.substr(tempParseContent->textStart,tempParseContent->textEnd-tempParseContent->textStart);
                         startParsingPos = tempParseContent->textEnd;
                     }
                 }
             }
-            return rString;
+            return rstring;
         }
         return "";
     }
 
-    void syntax_line::render_tokens( gpe::font_base * fontIn, std::string sIn,int xPos, int yPos, int lineStartPos, int lineMaxPos, gpe::color * renderColor, bool isNumber)
+    void syntax_line::render_tokens( gpe::font_base * fontIn, std::string sIn,int x_pos, int y_pos, int lineStartPos, int lineMax_pos, gpe::color * render_color, bool isNumber)
     {
         int maxParseSize = (int)foundParses.size();
         if( maxParseSize > 0)
         {
-            std::string rString = "";
+            std::string rstring = "";
             parsed_text* tempParseContent = NULL;
-            if( renderColor==NULL)
+            if( render_color==NULL)
             {
-                renderColor = pawgui::theme_main->text_box_font_color;
+                render_color = pawgui::theme_main->text_box_font_color;
             }
             int fontWidth = fontIn->get_mono_width();
             for( int i = 0; i < maxParseSize; i++)
@@ -115,14 +115,14 @@ namespace pawgui
                 {
                     if( tempParseContent->textEnd >= lineStartPos )
                     {
-                        rString = stg_ex::get_substring(sIn,tempParseContent->textStart,tempParseContent->textEnd-tempParseContent->textStart );
+                        rstring = stg_ex::get_substring(sIn,tempParseContent->textStart,tempParseContent->textEnd-tempParseContent->textStart );
                         if( isNumber)
                         {
-                            gpe::gfs->render_text( xPos+fontWidth*(tempParseContent->textStart-lineStartPos),yPos, rString,renderColor,fontIn,gpe::fa_left,gpe::fa_top );
+                            gpe::gfs->render_text( x_pos+fontWidth*(tempParseContent->textStart-lineStartPos),y_pos, rstring,render_color,fontIn,gpe::fa_left,gpe::fa_top );
                         }
                         else
                         {
-                            gpe::gfs->render_text( xPos+fontWidth*(tempParseContent->textStart-lineStartPos),yPos, rString,renderColor,fontIn,gpe::fa_left,gpe::fa_top );
+                            gpe::gfs->render_text( x_pos+fontWidth*(tempParseContent->textStart-lineStartPos),y_pos, rstring,render_color,fontIn,gpe::fa_left,gpe::fa_top );
                         }
                     }
                 }
@@ -146,22 +146,22 @@ namespace pawgui
     }
 
 
-    bool has_early_tab(std::string strIn)
+    bool has_early_tab(std::string str_in)
     {
-        if( (int)strIn.size() > main_settings->tabSpaceCount && main_settings->tabSpaceCount > 0)
+        if( (int)str_in.size() > main_settings->tabSpaceCount && main_settings->tabSpaceCount > 0)
         {
             for( int ii= 0; ii < main_settings->tabSpaceCount; ii++ )
             {
-                if( strIn[ii]!=' ')
+                if( str_in[ii]!=' ')
                 {
                     return false;
                 }
             }
             return true;
         }
-        else if( strIn.size() >= 4 )
+        else if( str_in.size() >= 4 )
         {
-            if( strIn[0]==' ' && strIn[1]==' ' && strIn[2]==' ' && strIn[3]==' ')
+            if( str_in[0]==' ' && str_in[1]==' ' && str_in[2]==' ' && str_in[3]==' ')
             {
                 return true;
             }
@@ -169,20 +169,20 @@ namespace pawgui
         return false;
     }
 
-    std::string untab_string(std::string strIn)
+    std::string untab_string(std::string str_in)
     {
-        if( has_early_tab(strIn) )
+        if( has_early_tab(str_in) )
         {
             if( main_settings!=NULL && main_settings->tabSpaceCount > 0 )
             {
-                strIn = stg_ex::get_substring(strIn, main_settings->tabSpaceCount );
+                str_in = stg_ex::get_substring(str_in, main_settings->tabSpaceCount );
             }
             else
             {
-                strIn = stg_ex::get_substring(strIn,  4 );
+                str_in = stg_ex::get_substring(str_in,  4 );
             }
         }
-        return strIn;
+        return str_in;
     }
 
     std::string generate_tabs(int tabCount)

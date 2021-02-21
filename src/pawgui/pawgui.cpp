@@ -3,10 +3,10 @@ pawgui.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -57,7 +57,6 @@ namespace pawgui
 
         main_settings = new gui_settings();
         main_overlay_system = new overlay_system();
-        main_loader_display = new loader_display();
         main_search_controller = new search_controller();
         if( main_settings!=NULL && main_overlay_system!=NULL && main_search_controller!=NULL )
         {
@@ -87,11 +86,7 @@ namespace pawgui
             delete main_overlay_system;
             main_overlay_system = NULL;
         }
-        if( main_loader_display !=NULL)
-        {
-            delete main_loader_display;
-            main_loader_display = NULL;
-        }
+
 
         if( main_search_controller !=NULL)
         {

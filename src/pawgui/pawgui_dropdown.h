@@ -2,10 +2,10 @@
 pawgui_dropdown.h
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PAWGUI contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PAWGUI contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -63,15 +63,15 @@ namespace pawgui
             ~widget_dropdown_menu();
 
             std::string get_data();
-            void load_data(std::string dataString);
-            void remove_data(std::string dataString);
+            void load_data(std::string datastring);
+            void remove_data(std::string datastring);
             bool add_to_context_menu( popup_menu_option *  cLevel, gpe::key_pair * cKey );
             gpe::key_pair * add_menu_option(std::string optionName, std::string optionSubStr= "",float optionValue = 0, bool selectOption = false);
             void clear_dropdown();
             gpe::key_pair *  find_option_id(  int pairId );
             gpe::key_pair *  find_option_valie(  float pairValue );
             gpe::key_pair *  find_selected_pair( gpe::key_pair *  pairIn, std::string pairName, int pairId = -1);
-            gpe::key_pair *  find_selected_pair_sub( gpe::key_pair *  pairIn, std::string pairSubString );
+            gpe::key_pair *  find_selected_pair_sub( gpe::key_pair *  pairIn, std::string pairSubstring );
             std::string get_menu_option(int atNumb);
             int get_menu_size();
             std::string get_plain_string();
@@ -88,7 +88,7 @@ namespace pawgui
             void set_id(int new_id);
             void set_option_named( std::string newselectedOptionName );
             void set_option_subvalue( std::string newselectedOptionName );
-            void set_option_value(float sValue);
+            void set_option_value(float section_value);
             void show_just_options(bool justOptions);
             void process_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect *cam=NULL);
             void render_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect * cam = NULL);

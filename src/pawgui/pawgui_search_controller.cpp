@@ -3,10 +3,10 @@ pawgui_search_controller.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -43,18 +43,18 @@ namespace pawgui
         previousSearchMode = pawgui::search_mode::find_text;
         textSearchMode = pawgui::search_mode::find_text;
         showFindAllResults = false;
-        findTextStringBox = new widget_input_text("");
-        findTextStringBox->resubmissionAllowed = true;
-        findTextStringBox->set_width(128);
-        replaceTextStringBox = new widget_input_text("");
-        replaceTextStringBox->set_width(128);
-        goToLineStringBox = new widget_input_number("");
-        findButton = new widget_button_label( "Find","Find String");
-        goToButton = new widget_button_label( "Go To","Go To This Line in Text Area");
+        findTextstringBox = new widget_input_text("");
+        findTextstringBox->resubmissionAllowed = true;
+        findTextstringBox->set_width(128);
+        replaceTextstringBox = new widget_input_text("");
+        replaceTextstringBox->set_width(128);
+        goToLinestringBox = new widget_input_number("");
+        find_button = new widget_button_label( "Find","Find string");
+        goTo_button = new widget_button_label( "Go To","Go To This Line in Text Area");
 
-        findAllButton = new widget_button_label( "Find All","Find All Copies of String in Text Area");
-        replaceButton = new widget_button_label( "Replace","Replace Next String in Text Area");
-        replaceAllButton = new widget_button_label( "Replace All","Replace All Copries of Strings in Text Area");
+        findAll_button = new widget_button_label( "Find All","Find All Copies of string in Text Area");
+        replace_button = new widget_button_label( "Replace","Replace Next string in Text Area");
+        replaceAll_button = new widget_button_label( "Replace All","Replace All Copries of strings in Text Area");
 
         findMatchCase = new widget_checkbox("Match case","Search is case-sensitive", true);
         scopeLabel = new widget_label_text("Scope:     ","Scope of your search");
@@ -66,25 +66,25 @@ namespace pawgui
 
     search_controller::~search_controller()
     {
-        if( findTextStringBox!=NULL)
+        if( findTextstringBox!=NULL)
         {
-            delete findTextStringBox;
-            findTextStringBox = NULL;
+            delete findTextstringBox;
+            findTextstringBox = NULL;
         }
-        if( goToLineStringBox!=NULL)
+        if( goToLinestringBox!=NULL)
         {
-            delete findTextStringBox;
-            goToLineStringBox = NULL;
+            delete findTextstringBox;
+            goToLinestringBox = NULL;
         }
-        if( replaceTextStringBox!=NULL)
+        if( replaceTextstringBox!=NULL)
         {
-            delete replaceTextStringBox;
-            replaceTextStringBox = NULL;
+            delete replaceTextstringBox;
+            replaceTextstringBox = NULL;
         }
-        if( findButton!=NULL)
+        if( find_button!=NULL)
         {
-            delete findButton;
-            findButton = NULL;
+            delete find_button;
+            find_button = NULL;
         }
         if( scopeLabel!=NULL)
         {
@@ -97,25 +97,25 @@ namespace pawgui
             findScope = NULL;
         }
 
-        if( findAllButton!=NULL)
+        if( findAll_button!=NULL)
         {
-            delete findAllButton;
-            findAllButton = NULL;
+            delete findAll_button;
+            findAll_button = NULL;
         }
-        if( goToButton!=NULL)
+        if( goTo_button!=NULL)
         {
-            delete goToButton;
-            goToButton = NULL;
+            delete goTo_button;
+            goTo_button = NULL;
         }
-        if( replaceButton!=NULL)
+        if( replace_button!=NULL)
         {
-            delete replaceButton;
-            replaceButton = NULL;
+            delete replace_button;
+            replace_button = NULL;
         }
-        if( replaceAllButton!=NULL)
+        if( replaceAll_button!=NULL)
         {
-            delete replaceAllButton;
-            replaceAllButton = NULL;
+            delete replaceAll_button;
+            replaceAll_button = NULL;
         }
         if( findMatchCase!=NULL)
         {
@@ -138,24 +138,24 @@ namespace pawgui
         switch( textSearchMode)
         {
         case search_mode::find_text:
-            if( findTextStringBox->is_inuse() )
+            if( findTextstringBox->is_inuse() )
             {
                 return true;
             }
             break;
 
         case search_mode::goto_line:
-            if( goToLineStringBox->is_inuse() )
+            if( goToLinestringBox->is_inuse() )
             {
                 return true;
             }
             break;
         case search_mode::find_text_all:
-            if( findTextStringBox->is_inuse() )
+            if( findTextstringBox->is_inuse() )
             {
                 return true;
             }
-            if( replaceTextStringBox->is_inuse() )
+            if( replaceTextstringBox->is_inuse() )
             {
                 return true;
             }

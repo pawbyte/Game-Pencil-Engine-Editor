@@ -3,10 +3,10 @@ pawgui_notifications.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -107,7 +107,7 @@ namespace pawgui
         return "";
     }
 
-    void widget_notifcation_base::load_data(std::string dataString)
+    void widget_notifcation_base::load_data(std::string datastring)
     {
 
     }
@@ -167,7 +167,7 @@ namespace pawgui
                 {
                     if( notification_action == "url" || notification_action == "website")
                     {
-                        gpe::external_open_url( notification_parameter );
+                        gpe::main_file_url_manager->external_open_url( notification_parameter );
                     }
                 }
             }
@@ -249,13 +249,13 @@ namespace pawgui
 
     }
 
-    void widget_notifcation_base::set_width(int newWidth)
+    void widget_notifcation_base::set_width(int new_width)
     {
-        if( widget_box.w == newWidth )
+        if( widget_box.w == new_width )
         {
             return;
         }
-        widget_basic::set_width( newWidth );
+        widget_basic::set_width( new_width );
         refresh_notification();
     }
 
@@ -359,13 +359,13 @@ namespace pawgui
         }
     }
 
-    void widget_notfications_holder::set_width(int newWidth)
+    void widget_notfications_holder::set_width(int new_width)
     {
-        if( widget_box.w == newWidth )
+        if( widget_box.w == new_width )
         {
             return;
         }
-        widget_basic::set_width( newWidth );
+        widget_basic::set_width( new_width );
         widget_box.h = 0;
         widget_notifcation_base * temp_notification = NULL;
         int iMin = std::max( 0, (int)notifications.size() - notifications_in_view_max );

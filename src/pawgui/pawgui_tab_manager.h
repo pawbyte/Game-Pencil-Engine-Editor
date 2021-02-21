@@ -3,10 +3,10 @@ pawgui_tab_manager.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -46,11 +46,11 @@ namespace pawgui
             bool openContextMenu;
             gpe::shape_rect tabBox;
             gpe::shape_rect tabHeaderBox;
-            std::vector <general_resource *> subOptions;
-            widget_button_icon * tabExpandButton;
+            std::vector <general_resource *> sub_options;
+            widget_button_icon * tabExpand_button;
             bool isExpanded;
         public:
-            bool useDockButton;
+            bool useDock_button;
             general_resource * selectedResource;
             int barXPadding, barYPadding;
             int tabToClose;
@@ -84,10 +84,10 @@ namespace pawgui
             bool requests_fullscreen();
             int search_for_string(std::string needle);
             int search_and_replace_string(std::string needle, std::string newStr = "");
-            void set_coords(int newX, int newY);
-            void set_height(int newHeight);
+            void set_coords(int x_new, int y_new);
+            void set_height(int new_height);
             void set_selected_gresource(general_resource * newResource = NULL);
-            void set_width(int newWidth);
+            void set_width(int new_width);
             void update_tabsizes();
             void toggle_full_width();
     };

@@ -3,10 +3,10 @@ pawgui_text_editor.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -201,7 +201,7 @@ namespace pawgui
         undoableActionOccurred = false;
         currentPositionInHistory = 0;
         hasLineBreak = true;
-        showButtonBar = true;
+        show_buttonBar = true;
         isReadOnly = false;
         isCodeEditor = true;
         isTextLog= false;
@@ -224,7 +224,7 @@ namespace pawgui
         charactersWithinView = 16;
         linesWithinView = 4;
         lineStartYPos = 0;
-        textInputString = "";
+        textInputstring = "";
         lineToEdit = "";
 
         tabDelay = 0;
@@ -263,7 +263,7 @@ namespace pawgui
         textSpaceRect->w = 0;
         textSpaceRect->h = 0;
 
-        textEditorButtonBar = NULL;
+        textEditor_buttonBar = NULL;
         create_buttonbar();
 
         selectionCursorXPos = 0;
@@ -290,7 +290,7 @@ namespace pawgui
         sQuoteLineText = new syntax_line();
         symbolLineText = new syntax_line();
         clear_all_lines();
-        listOfStrings.push_back("");
+        listOfstrings.push_back("");
         widget_box.w = 640;
         widget_box.h = 480;
         if( saveFirstEdit)
@@ -317,10 +317,10 @@ namespace pawgui
             delete textYScroll;
             textYScroll= NULL;
         }
-        if( textEditorButtonBar!=NULL)
+        if( textEditor_buttonBar!=NULL)
         {
-            delete textEditorButtonBar;
-            textEditorButtonBar = NULL;
+            delete textEditor_buttonBar;
+            textEditor_buttonBar = NULL;
         }
         if( commentLineText!=NULL)
         {
@@ -410,11 +410,11 @@ namespace pawgui
             }
         }
         savedHistory.clear();
-        listOfStrings.clear();
-        if( textEditorButtonBar!=NULL)
+        listOfstrings.clear();
+        if( textEditor_buttonBar!=NULL)
         {
-            delete textEditorButtonBar;
-            textEditorButtonBar = NULL;
+            delete textEditor_buttonBar;
+            textEditor_buttonBar = NULL;
         }
     }
 
@@ -429,10 +429,10 @@ namespace pawgui
 
     void widget_text_editor::add_line( std::string newLine, bool scrollToBottom)
     {
-        listOfStrings.push_back( stg_ex::trim_right_inplace(newLine) );
+        listOfstrings.push_back( stg_ex::trim_right_inplace(newLine) );
         if( scrollToBottom)
         {
-            scroll_to_pos( (int)listOfStrings.size()-1, 0 );
+            scroll_to_pos( (int)listOfstrings.size()-1, 0 );
         }
     }
 
@@ -441,9 +441,9 @@ namespace pawgui
         /*
             if( cursorXPos > 0 && main_settings!=NULL && main_settings->autoFindMouseTabs )
             {
-                if( (int)listOfStrings.size() > cursorYPos )
+                if( (int)listOfstrings.size() > cursorYPos )
                 {
-                    std::string currStrToCheck = listOfStrings[cursorYPos];
+                    std::string currStrToCheck = listOfstrings[cursorYPos];
                     int currLineSize = (int)currStrToCheck.size();
                     if( currLineSize > cursorXPos )
                     {
@@ -529,7 +529,7 @@ namespace pawgui
 
     void widget_text_editor::clear_all_lines()
     {
-        listOfStrings.clear();
+        listOfstrings.clear();
         cursorXPos = 0;
         cursorYPos = 0;
         selectionCursorXPos = 0;
@@ -557,30 +557,30 @@ namespace pawgui
 
     void widget_text_editor::create_buttonbar()
     {
-        if( textEditorButtonBar!=NULL)
+        if( textEditor_buttonBar!=NULL)
         {
-            delete textEditorButtonBar;
-            textEditorButtonBar = NULL;
+            delete textEditor_buttonBar;
+            textEditor_buttonBar = NULL;
         }
-        textEditorButtonBar = new widget_button_iconbar( 16);
-        textEditorButtonBar->set_height(24);
-        textEditorButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png","Export Text",TEXTAREA_OPTION_EXPORT,false );
-        textEditorButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file.png","Import Text",TEXTAREA_OPTION_IMPORT,true );
-        textEditorButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/eraser.png","Clear Text ",TEXTAREA_OPTION_CLEAR );
-        textEditorButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/backward.png","Undo Action",TEXTAREA_OPTION_UNDO,false );
-        textEditorButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/forward.png","Redo Action",TEXTAREA_OPTION_REDO,true );
+        textEditor_buttonBar = new widget_button_iconbar( 16);
+        textEditor_buttonBar->set_height(32);
+        textEditor_buttonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png","Export Text",TEXTAREA_OPTION_EXPORT,false );
+        textEditor_buttonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file.png","Import Text",TEXTAREA_OPTION_IMPORT,true );
+        textEditor_buttonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/eraser.png","Clear Text ",TEXTAREA_OPTION_CLEAR );
+        textEditor_buttonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/backward.png","Undo Action",TEXTAREA_OPTION_UNDO,false );
+        textEditor_buttonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/forward.png","Redo Action",TEXTAREA_OPTION_REDO,true );
 
-        textEditorButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cut.png","Cut",TEXTAREA_OPTION_CUT,false );
-        textEditorButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/copy.png","Copy",TEXTAREA_OPTION_COPY,true );
-        textEditorButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/paste.png","Paste",TEXTAREA_OPTION_PASTE,true );
+        textEditor_buttonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cut.png","Cut",TEXTAREA_OPTION_CUT,false );
+        textEditor_buttonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/copy.png","Copy",TEXTAREA_OPTION_COPY,true );
+        textEditor_buttonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/paste.png","Paste",TEXTAREA_OPTION_PASTE,true );
 
-        //textEditorButtonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/info.png","Text Info (Not Available Yet)",TEXTAREA_OPTION_TEXTINFO,true );
-        textEditorButtonBar->limit_width(true);
+        //textEditor_buttonBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/info.png","Text Info (Not Available Yet)",TEXTAREA_OPTION_TEXTINFO,true );
+        textEditor_buttonBar->limit_width(true);
     }
 
     void widget_text_editor::copy_selection()
     {
-        if( selectionCursorYPos >=0 && selectionCursorYPos < (int)listOfStrings.size() && selectionEndCursorYPos >=0 && selectionEndCursorYPos < (int)listOfStrings.size() )
+        if( selectionCursorYPos >=0 && selectionCursorYPos < (int)listOfstrings.size() && selectionEndCursorYPos >=0 && selectionEndCursorYPos < (int)listOfstrings.size() )
         {
             int minHighlightXPos = 0, maxHighlightXPos = 0;
             std::string newClipBoardText = "";
@@ -603,22 +603,22 @@ namespace pawgui
                 }
                 if(minHighlightYPos!=maxHighlightYPos)
                 {
-                    tempStrToUse = listOfStrings.at(minHighlightYPos);
+                    tempStrToUse = listOfstrings.at(minHighlightYPos);
                     strToCopy = stg_ex::get_substring(tempStrToUse,minHighlightXPos,(int)std::string::npos);
                     if( maxHighlightYPos-minHighlightYPos > 1)
                     {
                         for( int i= minHighlightYPos+1; i <=maxHighlightYPos-1; i++ )
                         {
-                            tempStrToUse = listOfStrings[i];
+                            tempStrToUse = listOfstrings[i];
                             strToCopy += "\n"+tempStrToUse;
                         }
                     }
-                    tempStrToUse = listOfStrings.at(maxHighlightYPos);
+                    tempStrToUse = listOfstrings.at(maxHighlightYPos);
                     strToCopy += "\n"+stg_ex::get_substring(tempStrToUse,0,maxHighlightXPos);
                 }
                 else
                 {
-                    strToCopy = listOfStrings.at(selectionCursorYPos);
+                    strToCopy = listOfstrings.at(selectionCursorYPos);
                     minHighlightXPos = std::min(selectionCursorXPos, selectionEndCursorXPos);
                     maxHighlightXPos = std::max(selectionCursorXPos, selectionEndCursorXPos);
                     strToCopy = stg_ex::get_substring(strToCopy,minHighlightXPos,maxHighlightXPos-minHighlightXPos);
@@ -640,38 +640,38 @@ namespace pawgui
                 {
                     return false;
                 }
-                int strSize = (int)listOfStrings.size();
+                int strSize = (int)listOfstrings.size();
 
                 for( int i = 0; i < strSize-1; i++)
                 {
-                    if( (int)listOfStrings[i].size() > 0 )
+                    if( (int)listOfstrings[i].size() > 0 )
                     {
                         if( useNewLines)
                         {
-                            *fileTarget << nestedTabsStr+listOfStrings[i] << "\n";
+                            *fileTarget << nestedTabsStr+listOfstrings[i] << "\n";
                         }
                         else
                         {
-                            *fileTarget <<nestedTabsStr+listOfStrings[i] << " ";
+                            *fileTarget <<nestedTabsStr+listOfstrings[i] << " ";
                         }
                     }
                 }
-                if( (int)listOfStrings[strSize-1].size() > 0 )
+                if( (int)listOfstrings[strSize-1].size() > 0 )
                 {
                     if( useNewLines)
                     {
                         if( useLastNewLine)
                         {
-                            *fileTarget << nestedTabsStr+listOfStrings[strSize-1] << "\n";
+                            *fileTarget << nestedTabsStr+listOfstrings[strSize-1] << "\n";
                         }
                         else
                         {
-                            *fileTarget << nestedTabsStr+listOfStrings[strSize-1];
+                            *fileTarget << nestedTabsStr+listOfstrings[strSize-1];
                         }
                     }
                     else
                     {
-                        *fileTarget <<nestedTabsStr+listOfStrings[strSize-1] << " ";
+                        *fileTarget <<nestedTabsStr+listOfstrings[strSize-1] << " ";
                     }
                 }
                 return true;
@@ -684,17 +684,17 @@ namespace pawgui
     {
         if( other!=NULL)
         {
-            if( (int)listOfStrings.size() == (int)other->listOfStrings.size()  && (int)listOfStrings.size() > 0 )
+            if( (int)listOfstrings.size() == (int)other->listOfstrings.size()  && (int)listOfstrings.size() > 0 )
             {
-                std::string myString = "";
-                std::string otherString = "";
-                for( int i = (int)listOfStrings.size()-1; i>=0; i--)
+                std::string mystring = "";
+                std::string otherstring = "";
+                for( int i = (int)listOfstrings.size()-1; i>=0; i--)
                 {
-                    myString = listOfStrings[i];
-                    otherString = other->listOfStrings[i];
-                    if( (int)myString.size()==(int)otherString.size() )
+                    mystring = listOfstrings[i];
+                    otherstring = other->listOfstrings[i];
+                    if( (int)mystring.size()==(int)otherstring.size() )
                     {
-                        if( myString.compare(otherString)!=0 )
+                        if( mystring.compare(otherstring)!=0 )
                         {
                             return 0;
                         }
@@ -716,9 +716,9 @@ namespace pawgui
         if( has_content() )
         {
             std::string superLongClipboardStr = "";
-            for( int i = 0; i < (int)listOfStrings.size(); i++)
+            for( int i = 0; i < (int)listOfstrings.size(); i++)
             {
-                superLongClipboardStr+=listOfStrings[i]+"\n";
+                superLongClipboardStr+=listOfstrings[i]+"\n";
             }
             if( gpe::input->clipboard_set( superLongClipboardStr.c_str() )!=0 )
             {
@@ -746,9 +746,9 @@ namespace pawgui
             selectionEndCursorXPos= other->selectionEndCursorXPos;
             selectionEndCursorYPos = other->selectionEndCursorYPos;
 
-            for( int i = 0; i < (int)other->listOfStrings.size(); i++)
+            for( int i = 0; i < (int)other->listOfstrings.size(); i++)
             {
-                listOfStrings.push_back( other->listOfStrings[i] );
+                listOfstrings.push_back( other->listOfstrings[i] );
             }
         }
     }
@@ -771,7 +771,7 @@ namespace pawgui
     {
         if( !isReadOnly)
         {
-            if( selectionCursorYPos >=0 && selectionCursorYPos < (int)listOfStrings.size() && selectionEndCursorYPos >=0 && selectionEndCursorYPos < (int)listOfStrings.size() )
+            if( selectionCursorYPos >=0 && selectionCursorYPos < (int)listOfstrings.size() && selectionEndCursorYPos >=0 && selectionEndCursorYPos < (int)listOfstrings.size() )
             {
                 if( selectionCursorXPos!=selectionEndCursorXPos || selectionCursorYPos!=selectionEndCursorYPos)
                 {
@@ -797,74 +797,74 @@ namespace pawgui
 
                         if(minHighlightYPos!=maxHighlightYPos)
                         {
-                            tempStrToUse = listOfStrings.at(minHighlightYPos);
+                            tempStrToUse = listOfstrings.at(minHighlightYPos);
                             if( minHighlightXPos >= 0)
                             {
                                 strToCopy = stg_ex::get_substring(tempStrToUse,0,minHighlightXPos);
                             }
-                            tempStrToUse = listOfStrings.at(maxHighlightYPos);
+                            tempStrToUse = listOfstrings.at(maxHighlightYPos);
                             if( maxHighlightXPos <= (int)tempStrToUse.size() )
                             {
                                 strToCopy += stg_ex::get_substring(tempStrToUse,maxHighlightXPos);
                             }
                             for( int i=maxHighlightYPos; i >= minHighlightYPos; i-- )
                             {
-                                listOfStrings.erase(listOfStrings.begin()+i);
+                                listOfstrings.erase(listOfstrings.begin()+i);
                             }
                             if( (int)strToCopy.size() > 0)
                             {
                                 cursorXPos = selectionCursorXPos = selectionEndCursorXPos = minHighlightXPos;
                                 cursorYPos = selectionCursorYPos = selectionEndCursorYPos = minHighlightYPos;
-                                listOfStrings.insert(listOfStrings.begin()+minHighlightYPos,strToCopy);
+                                listOfstrings.insert(listOfstrings.begin()+minHighlightYPos,strToCopy);
                             }
-                            else if( (int)listOfStrings.size() > minHighlightYPos)
+                            else if( (int)listOfstrings.size() > minHighlightYPos)
                             {
-                                listOfStrings.insert(listOfStrings.begin()+minHighlightYPos,"");
+                                listOfstrings.insert(listOfstrings.begin()+minHighlightYPos,"");
                                 cursorXPos = selectionCursorXPos = selectionEndCursorXPos = 0;
                                 cursorYPos = selectionCursorYPos = selectionEndCursorYPos = minHighlightYPos;
                             }
                             else
                             {
-                                listOfStrings.push_back("");
+                                listOfstrings.push_back("");
                                 cursorXPos = selectionCursorXPos = selectionEndCursorXPos = 0;
-                                cursorYPos = selectionCursorYPos = selectionEndCursorYPos = (int)listOfStrings.size()-1;
+                                cursorYPos = selectionCursorYPos = selectionEndCursorYPos = (int)listOfstrings.size()-1;
                             }
                         }
                         else
                         {
                             minHighlightXPos = std::min(selectionCursorXPos, selectionEndCursorXPos);
                             maxHighlightXPos = std::max(selectionCursorXPos, selectionEndCursorXPos);
-                            tempStrToUse = listOfStrings.at(selectionCursorYPos);
+                            tempStrToUse = listOfstrings.at(selectionCursorYPos);
                             strToCopy = stg_ex::get_substring(tempStrToUse,0,minHighlightXPos);
                             strToCopy += stg_ex::get_substring(tempStrToUse,maxHighlightXPos);
-                            listOfStrings.erase(listOfStrings.begin()+minHighlightYPos);
+                            listOfstrings.erase(listOfstrings.begin()+minHighlightYPos);
                             if( strToCopy.size() > 0)
                             {
-                                listOfStrings.insert(listOfStrings.begin()+minHighlightYPos,strToCopy);
+                                listOfstrings.insert(listOfstrings.begin()+minHighlightYPos,strToCopy);
                                 cursorXPos = selectionCursorXPos = selectionEndCursorXPos = minHighlightXPos;
                                 cursorYPos = selectionCursorYPos = selectionEndCursorYPos = minHighlightYPos;
                             }
-                            else if( (int)listOfStrings.size() > minHighlightYPos)
+                            else if( (int)listOfstrings.size() > minHighlightYPos)
                             {
-                                listOfStrings.insert(listOfStrings.begin()+minHighlightYPos,"");
-                                tempStrToUse = listOfStrings.at(minHighlightYPos);
+                                listOfstrings.insert(listOfstrings.begin()+minHighlightYPos,"");
+                                tempStrToUse = listOfstrings.at(minHighlightYPos);
                                 cursorXPos = selectionCursorXPos = selectionEndCursorXPos = 0;
                                 cursorYPos = selectionCursorYPos = selectionEndCursorYPos = minHighlightYPos;
                             }
                             else
                             {
-                                listOfStrings.push_back("");
+                                listOfstrings.push_back("");
                                 cursorXPos = selectionCursorXPos = selectionEndCursorXPos = 0;
-                                cursorYPos = selectionCursorYPos = selectionEndCursorYPos = (int)listOfStrings.size()-1;
+                                cursorYPos = selectionCursorYPos = selectionEndCursorYPos = (int)listOfstrings.size()-1;
                             }
                         }
                         save_edit();
                     }
                 }
 
-                if( listOfStrings.size() <=0)
+                if( listOfstrings.size() <=0)
                 {
-                    listOfStrings.push_back("");
+                    listOfstrings.push_back("");
                     cursorXPos = selectionCursorXPos = selectionEndCursorXPos = 0;
                     cursorYPos = selectionCursorYPos = selectionEndCursorYPos = 0;
                     save_edit();
@@ -872,16 +872,16 @@ namespace pawgui
                 if( cursorXPos < 0)
                 {
                     cursorXPos = selectionCursorXPos = selectionEndCursorXPos = 0;
-                    cursorYPos = selectionCursorYPos = selectionEndCursorYPos = (int)listOfStrings.size()-1;
+                    cursorYPos = selectionCursorYPos = selectionEndCursorYPos = (int)listOfstrings.size()-1;
                 }
-                lineToEdit = listOfStrings[cursorYPos];
+                lineToEdit = listOfstrings[cursorYPos];
 
             }
             else
             {
                 cursorXPos = selectionCursorXPos = selectionEndCursorXPos = 0;
                 cursorYPos = selectionCursorYPos = selectionEndCursorYPos = 0;
-                lineToEdit = listOfStrings[cursorYPos];
+                lineToEdit = listOfstrings[cursorYPos];
             }
         }
     }
@@ -892,7 +892,7 @@ namespace pawgui
         {
             std::string prevClipboard = gpe::input->clipboard_string();
 
-            if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+            if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size() )
             {
                 //adds selection to below...
                 if( selectionCursorXPos!=selectionEndCursorXPos || selectionCursorYPos!=selectionEndCursorYPos)
@@ -925,8 +925,8 @@ namespace pawgui
                 }
                 else
                 {
-                    std::string cLineToCopy = listOfStrings[cursorYPos];
-                    listOfStrings.insert(listOfStrings.begin()+cursorYPos+1,cLineToCopy);
+                    std::string cLineToCopy = listOfstrings[cursorYPos];
+                    listOfstrings.insert(listOfstrings.begin()+cursorYPos+1,cLineToCopy);
                     save_edit();
                 }
             }
@@ -940,16 +940,16 @@ namespace pawgui
             std::ofstream myfile (new_file_name.c_str() );
             if (myfile.is_open())
             {
-                int strSize = (int)listOfStrings.size();
+                int strSize = (int)listOfstrings.size();
                 for( int i = 0; i < strSize; i++)
                 {
                     if( i !=strSize-1)
                     {
-                        myfile << listOfStrings[i] << "\n";
+                        myfile << listOfstrings[i] << "\n";
                     }
                     else
                     {
-                        myfile << listOfStrings[i];
+                        myfile << listOfstrings[i];
                     }
                 }
                 myfile.close();
@@ -1032,7 +1032,7 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( view_space!=NULL && cam!=NULL && (int)listOfStrings.size() > 0)
+        if( view_space!=NULL && cam!=NULL && (int)listOfstrings.size() > 0)
         {
             if( gpe::point_within_rect(gpe::input->mouse_position_x,gpe::input->mouse_position_y, textSpaceRect)  )
             {
@@ -1042,23 +1042,23 @@ namespace pawgui
                 {
                     *mYCursor = lineStartYPos;
                 }
-                if( *mYCursor >= (int)listOfStrings.size() )
+                if( *mYCursor >= (int)listOfstrings.size() )
                 {
-                    *mYCursor = (int)listOfStrings.size() - 1;
+                    *mYCursor = (int)listOfstrings.size() - 1;
                 }
 
                 if( *mYCursor < 0 )
                 {
                     *mYCursor = 0;
                 }
-                if( (int)listOfStrings.size()==0)
+                if( (int)listOfstrings.size()==0)
                 {
-                    listOfStrings.push_back("");
+                    listOfstrings.push_back("");
                 }
                 *mXCursor = (float)(gpe::input->mouse_position_x - textSpaceRect->x )/( TEXTBOX_FONT_SIZE_WIDTH * editorZoomLevel);
                 mXCursor+=  (int)lineStartXPos;
-                std::string newString = listOfStrings.at(*mYCursor);
-                int maxCursorSpace = (int)newString.size();
+                std::string newstring = listOfstrings.at(*mYCursor);
+                int maxCursorSpace = (int)newstring.size();
                 if( *mXCursor > maxCursorSpace )
                 {
                     *mXCursor = maxCursorSpace;
@@ -1077,9 +1077,9 @@ namespace pawgui
         symbolCursorYPos = -1;
         symbolEndCursorXPos = -1;
         symbolEndCursorYPos = -1;
-        if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+        if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size() )
         {
-            lineToEdit =listOfStrings[cursorYPos];
+            lineToEdit =listOfstrings[cursorYPos];
             int seekedCursorYPos = cursorYPos;
             if( (int)lineToEdit.size() > 0)
             {
@@ -1222,7 +1222,7 @@ namespace pawgui
 
                 if( foundBookedSymbol )
                 {
-                    std::string searchedStr = listOfStrings[seekedCursorYPos];
+                    std::string searchedStr = listOfstrings[seekedCursorYPos];
                     std::string tempStr;
                     int prevFoundXPos = 0;
                     if( searchForEndSymbol)
@@ -1230,9 +1230,9 @@ namespace pawgui
                         foundOtherMatches = 0;
                         foundSeekedMatches = 0;
                         prevFoundXPos = symbolCursorXPos+1;
-                        while( seekedCursorYPos < (int)listOfStrings.size() )
+                        while( seekedCursorYPos < (int)listOfstrings.size() )
                         {
-                            searchedStr = listOfStrings[seekedCursorYPos];
+                            searchedStr = listOfstrings[seekedCursorYPos];
 
                             if( prevFoundXPos!=(int)std::string::npos)
                             {
@@ -1305,10 +1305,10 @@ namespace pawgui
                         {
                             prevFoundXPos = symbolEndCursorXPos-1;
                         }
-                        else if( seekedCursorYPos > 0 && seekedCursorYPos <(int)listOfStrings.size() )
+                        else if( seekedCursorYPos > 0 && seekedCursorYPos <(int)listOfstrings.size() )
                         {
                             seekedCursorYPos -=1;
-                            searchedStr = listOfStrings[seekedCursorYPos];
+                            searchedStr = listOfstrings[seekedCursorYPos];
                             prevFoundXPos = (int)searchedStr.size()-1;
                         }
                         else
@@ -1320,7 +1320,7 @@ namespace pawgui
 
                         while( seekedCursorYPos >= 0 )
                         {
-                            searchedStr = listOfStrings[seekedCursorYPos];
+                            searchedStr = listOfstrings[seekedCursorYPos];
 
                             for( cSearchCursorXPos = prevFoundXPos; cSearchCursorXPos>=0; cSearchCursorXPos--)
                             {
@@ -1341,9 +1341,9 @@ namespace pawgui
                                 }
                             }
                             seekedCursorYPos--;
-                            if( seekedCursorYPos>=0 && seekedCursorYPos < (int)listOfStrings.size() )
+                            if( seekedCursorYPos>=0 && seekedCursorYPos < (int)listOfstrings.size() )
                             {
-                                searchedStr = listOfStrings[seekedCursorYPos];
+                                searchedStr = listOfstrings[seekedCursorYPos];
                                 prevFoundXPos = (int)searchedStr.size()-1;
                             }
                         }
@@ -1375,11 +1375,11 @@ namespace pawgui
                     searchCursorXPos = cursorXPos;
                     searchCursorYPos = cursorYPos;
                 }
-                if( searchCursorYPos <0 || searchCursorYPos >= (int)listOfStrings.size() )
+                if( searchCursorYPos <0 || searchCursorYPos >= (int)listOfstrings.size() )
                 {
                     searchCursorYPos = 0;
                 }
-                strToSearch = listOfStrings.at(searchCursorYPos);
+                strToSearch = listOfstrings.at(searchCursorYPos);
                 foundSubXPos= strToSearch.find(strTarget, searchCursorXPos);
                 if( (int)foundSubXPos!=(int)std::string::npos)
                 {
@@ -1393,9 +1393,9 @@ namespace pawgui
                 }
                 else
                 {
-                    for( int i = searchCursorYPos+1; i < (int)listOfStrings.size(); i++)
+                    for( int i = searchCursorYPos+1; i < (int)listOfstrings.size(); i++)
                     {
-                        strToSearch = listOfStrings[i];
+                        strToSearch = listOfstrings[i];
                         foundSubXPos= strToSearch.find(strTarget, 0);
                         if( (int)foundSubXPos!=(int)std::string::npos)
                         {
@@ -1415,8 +1415,8 @@ namespace pawgui
                 //search up
                 if( startAtFront==false)
                 {
-                    searchCursorYPos = listOfStrings.size()-1;
-                    searchCursorXPos = (listOfStrings.at(searchCursorYPos).size() );
+                    searchCursorYPos = listOfstrings.size()-1;
+                    searchCursorXPos = (listOfstrings.at(searchCursorYPos).size() );
                 }
                 else
                 {
@@ -1448,19 +1448,19 @@ namespace pawgui
             tCursorX = cursorXPos;
         }
 
-        if( tCursorY >=(int)listOfStrings.size() )
+        if( tCursorY >=(int)listOfstrings.size() )
         {
-            tCursorY = (int)listOfStrings.size() -1;
+            tCursorY = (int)listOfstrings.size() -1;
         }
 
 
-        if( !main_syntax_highlighter->codeBeingSuggested && tCursorY >=0 && tCursorY < (int)listOfStrings.size() && isCodeEditor)
+        if( !main_syntax_highlighter->codeBeingSuggested && tCursorY >=0 && tCursorY < (int)listOfstrings.size() && isCodeEditor)
         {
-            std::string currentStringInView = "";
+            std::string currentstringInView = "";
             tempCLineXStartPos = 0;
             tempCLineXEndPos = tCursorX;
             //int tempCLineYPos = tCursorY;
-            std::string cLineToParse = listOfStrings.at(tCursorY);
+            std::string cLineToParse = listOfstrings.at(tCursorY);
             syntax_compiler_term * tempTerm = NULL;
             highlightXPos = tCursorX;
             highlightYPos = tCursorY;
@@ -1521,12 +1521,12 @@ namespace pawgui
                     //makes sure the length is long enough to check for
                     if(tempCLineXEndPos - tempCLineXStartPos >= 2)
                     {
-                        currentStringInView = stg_ex::get_substring(cLineToParse, tempCLineXStartPos, tempCLineXEndPos-tempCLineXStartPos+1);
+                        currentstringInView = stg_ex::get_substring(cLineToParse, tempCLineXStartPos, tempCLineXEndPos-tempCLineXStartPos+1);
 
                         //Avoids rechecking if term is already being highlighted
                         if( main_syntax_highlighter->highlightedTerm!=NULL)
                         {
-                            if( main_syntax_highlighter->highlightedTerm->termString == currentStringInView)
+                            if( main_syntax_highlighter->highlightedTerm->termstring == currentstringInView)
                             {
                                 main_syntax_highlighter->documentationIsBeingShown = true;
                                 return;
@@ -1544,7 +1544,7 @@ namespace pawgui
                                 tempTerm = main_syntax_highlighter->activeProjectKeywords[i];
                                 if( tempTerm!=NULL)
                                 {
-                                    if( tempTerm->termString==currentStringInView)
+                                    if( tempTerm->termstring==currentstringInView)
                                     {
                                         main_syntax_highlighter->highlightedTerm = tempTerm;
                                         main_syntax_highlighter->documentationIsBeingShown = true;
@@ -1558,7 +1558,7 @@ namespace pawgui
                                 tempTerm = main_syntax_highlighter->activeProjectKeywords[i];
                                 if( tempTerm!=NULL)
                                 {
-                                    if( tempTerm->termString == currentStringInView)
+                                    if( tempTerm->termstring == currentstringInView)
                                     {
                                         main_syntax_highlighter->highlightedTerm = tempTerm;
                                         main_syntax_highlighter->documentationIsBeingShown = true;
@@ -1566,7 +1566,7 @@ namespace pawgui
                                     }
                                 }
                             }
-                            tempTerm = main_syntax_highlighter->find_matching_function( currentStringInView);
+                            tempTerm = main_syntax_highlighter->find_matching_function( currentstringInView);
                             if( tempTerm!=NULL)
                             {
                                 main_syntax_highlighter->highlightedTerm = tempTerm;
@@ -1574,7 +1574,7 @@ namespace pawgui
                                 return;
                             }
 
-                            tempTerm = main_syntax_highlighter->find_matching_variable( currentStringInView);
+                            tempTerm = main_syntax_highlighter->find_matching_variable( currentstringInView);
                             if( tempTerm!=NULL)
                             {
                                 main_syntax_highlighter->highlightedTerm = tempTerm;
@@ -1614,13 +1614,13 @@ namespace pawgui
 
         main_syntax_highlighter->clear_suggestions();
         int  i = 0;
-        if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+        if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size() )
         {
-            std::string currentStringInView = "";
+            std::string currentstringInView = "";
             tempCLineXStartPos = 0;
             tempCLineXEndPos = cursorXPos;
             //int tempCLineYPos = cursorYPos;
-            std::string cLineToParse = listOfStrings[cursorYPos];
+            std::string cLineToParse = listOfstrings[cursorYPos];
             syntax_compiler_term * tempTerm = NULL;
             if( cursorXPos >=0 && (int)cursorXPos <=(int)cLineToParse.size() && (int)cLineToParse.size() > 0)
             {
@@ -1659,7 +1659,7 @@ namespace pawgui
                     //makes sure the length is long enough to check for
                     if(tempCLineXEndPos - tempCLineXStartPos >= 2)
                     {
-                        currentStringInView = cLineToParse.substr( tempCLineXStartPos, tempCLineXEndPos-tempCLineXStartPos+1);
+                        currentstringInView = cLineToParse.substr( tempCLineXStartPos, tempCLineXEndPos-tempCLineXStartPos+1);
                         //css suggestions
                         if( codeEditorType==1)
                         {
@@ -1673,7 +1673,7 @@ namespace pawgui
                                 tempTerm = main_syntax_highlighter->activeProjectFunctions[i];
                                 if( tempTerm!=NULL)
                                 {
-                                    if( stg_ex::string_starts(tempTerm->termString,currentStringInView) )
+                                    if( stg_ex::string_starts(tempTerm->termstring,currentstringInView) )
                                     {
                                         main_syntax_highlighter->suggestedCompilerTerms.push_back(tempTerm);
                                     }
@@ -1685,7 +1685,7 @@ namespace pawgui
                                 tempTerm = main_syntax_highlighter->activeProjectKeywords[i];
                                 if( tempTerm!=NULL)
                                 {
-                                    if( stg_ex::string_starts(tempTerm->termString,currentStringInView) )
+                                    if( stg_ex::string_starts(tempTerm->termstring,currentstringInView) )
                                     {
                                         main_syntax_highlighter->suggestedCompilerTerms.push_back(tempTerm);
                                     }
@@ -1700,7 +1700,7 @@ namespace pawgui
                                     tempTerm = main_syntax_highlighter->defaultLanguage->languageConstants[i];
                                     if( tempTerm!=NULL)
                                     {
-                                        if( stg_ex::string_starts(tempTerm->termString,currentStringInView) )
+                                        if( stg_ex::string_starts(tempTerm->termstring,currentstringInView) )
                                         {
                                             main_syntax_highlighter->suggestedCompilerTerms.push_back(tempTerm);
                                         }
@@ -1712,7 +1712,7 @@ namespace pawgui
                                     tempTerm = main_syntax_highlighter->defaultLanguage->languageFunctions[i];
                                     if( tempTerm!=NULL)
                                     {
-                                        if( stg_ex::string_starts(tempTerm->termString,currentStringInView) )
+                                        if( stg_ex::string_starts(tempTerm->termstring,currentstringInView) )
                                         {
                                             main_syntax_highlighter->suggestedCompilerTerms.push_back(tempTerm);
                                         }
@@ -1724,7 +1724,7 @@ namespace pawgui
                                     tempTerm = main_syntax_highlighter->defaultLanguage->languageKeywords[i];
                                     if( tempTerm!=NULL)
                                     {
-                                        if( stg_ex::string_starts(tempTerm->termString,currentStringInView) )
+                                        if( stg_ex::string_starts(tempTerm->termstring,currentstringInView) )
                                         {
                                             main_syntax_highlighter->suggestedCompilerTerms.push_back(tempTerm);
                                         }
@@ -1736,7 +1736,7 @@ namespace pawgui
                                     tempTerm = main_syntax_highlighter->defaultLanguage->languageVariables[i];
                                     if( tempTerm!=NULL)
                                     {
-                                        if( stg_ex::string_starts(tempTerm->termString,currentStringInView) )
+                                        if( stg_ex::string_starts(tempTerm->termstring,currentstringInView) )
                                         {
                                             main_syntax_highlighter->suggestedCompilerTerms.push_back(tempTerm);
                                         }
@@ -1754,11 +1754,11 @@ namespace pawgui
                             {
                                 if( tempTerm->termType==cterm_function)
                                 {
-                                    tTerwindow_width = (int)tempTerm->termString.size()+(int)tempTerm->get_parameters().size()+(int)tempTerm->termFunctionReturnType.size()+3; // functionName(parameters)
+                                    tTerwindow_width = (int)tempTerm->termstring.size()+(int)tempTerm->get_parameters().size()+(int)tempTerm->termFunctionReturnType.size()+3; // functionName(parameters)
                                 }
                                 else
                                 {
-                                    tTerwindow_width = (int)tempTerm ->termString.size();
+                                    tTerwindow_width = (int)tempTerm ->termstring.size();
                                 }
                                 //User Global
                                 if( (int)tempTerm->termScope.size() > 0 && tempTerm->termScope!="User Global" )
@@ -1802,42 +1802,42 @@ namespace pawgui
 
     std::string widget_text_editor::get_string()
     {
-        std::string returnString = "";
-        for(int i=0; i < (int)listOfStrings.size(); i+=1)
+        std::string returnstring = "";
+        for(int i=0; i < (int)listOfstrings.size(); i+=1)
         {
-            returnString+=listOfStrings[i]+"\n";
+            returnstring+=listOfstrings[i]+"\n";
         }
-        return returnString;
+        return returnstring;
     }
 
     std::string widget_text_editor::get_string_spaces()
     {
-        std::string returnString = "";
-        int listSize = (int)listOfStrings.size();
+        std::string returnstring = "";
+        int listSize = (int)listOfstrings.size();
         for(int i=0; i < listSize; i+=1)
         {
             if( i ==listSize-1)
             {
-                returnString+=listOfStrings[i]+" ";
+                returnstring+=listOfstrings[i]+" ";
             }
             else
             {
-                returnString+=listOfStrings[i];
+                returnstring+=listOfstrings[i];
             }
         }
-        return returnString;
+        return returnstring;
     }
 
     int widget_text_editor::get_line_count()
     {
-        return (int)listOfStrings.size();
+        return (int)listOfstrings.size();
     }
 
     std::string widget_text_editor::get_line_string(int lineNumberIn)
     {
-        if( lineNumberIn >=0 && lineNumberIn < (int)listOfStrings.size() )
+        if( lineNumberIn >=0 && lineNumberIn < (int)listOfstrings.size() )
         {
-            return listOfStrings.at(lineNumberIn);
+            return listOfstrings.at(lineNumberIn);
         }
         return "";
     }
@@ -1847,9 +1847,9 @@ namespace pawgui
         if( selectionCursorXPos!=selectionEndCursorXPos || selectionCursorYPos!=selectionEndCursorYPos )
         {
             int yLineToCopy = std::min( selectionCursorYPos, selectionEndCursorYPos);
-            if( (int)listOfStrings.size() > yLineToCopy)
+            if( (int)listOfstrings.size() > yLineToCopy)
             {
-                int tempYlineLength = (int)listOfStrings[yLineToCopy].size();
+                int tempYlineLength = (int)listOfstrings[yLineToCopy].size();
                 int minXPosToCopy = 0, maxXPosToCopy = 0;
                 if(selectionCursorYPos==selectionEndCursorYPos)
                 {
@@ -1870,7 +1870,7 @@ namespace pawgui
                 }
                 if( tempYlineLength > minXPosToCopy && tempYlineLength >= maxXPosToCopy )
                 {
-                    return listOfStrings[yLineToCopy].substr(minXPosToCopy,maxXPosToCopy-minXPosToCopy);
+                    return listOfstrings[yLineToCopy].substr(minXPosToCopy,maxXPosToCopy-minXPosToCopy);
                 }
             }
         }
@@ -1879,7 +1879,7 @@ namespace pawgui
 
     std::vector <std::string> widget_text_editor::get_all_strings()
     {
-        return listOfStrings;
+        return listOfstrings;
     }
 
     int widget_text_editor::get_most_anchors_characters()
@@ -1903,11 +1903,11 @@ namespace pawgui
     int widget_text_editor::get_most_characters_used()
     {
         int maxCharsUsed = 0;
-        for( int i = 0; i < (int)listOfStrings.size(); i++)
+        for( int i = 0; i < (int)listOfstrings.size(); i++)
         {
-            if( (int)listOfStrings[i].size() > maxCharsUsed)
+            if( (int)listOfstrings[i].size() > maxCharsUsed)
             {
-                maxCharsUsed = (int)listOfStrings[i].size();
+                maxCharsUsed = (int)listOfstrings[i].size();
             }
         }
         return maxCharsUsed;
@@ -1924,7 +1924,7 @@ namespace pawgui
         showXScroll = false;
         showYScroll = false;
 
-        int listSize = (int)listOfStrings.size();
+        int listSize = (int)listOfstrings.size();
         if( linesWithinView <  listSize )
         {
             showYScroll = true;
@@ -1990,7 +1990,7 @@ namespace pawgui
                 if( textYScroll->has_moved() )
                 {
                     lineStartYPos =  round ( textYScroll->contextRect.y );
-                    //    lineStartYPos =  ceil( ( (float)listOfStrings.size() ) * ( (float)textYScroll->scrollYPos/(float)textYScroll->widget_box.h ) );
+                    //    lineStartYPos =  ceil( ( (float)listOfstrings.size() ) * ( (float)textYScroll->scrollYPos/(float)textYScroll->widget_box.h ) );
                 }
             }
             else
@@ -2012,13 +2012,13 @@ namespace pawgui
 
     bool widget_text_editor::has_content()
     {
-        if((int)listOfStrings.size() > 1)
+        if((int)listOfstrings.size() > 1)
         {
             return true;
         }
-        else if((int)listOfStrings.size()==1 )
+        else if((int)listOfstrings.size()==1 )
         {
-            std::string firstLine = listOfStrings[0];
+            std::string firstLine = listOfstrings[0];
             if( (int)firstLine.size() > 0)
             {
                 return true;
@@ -2057,11 +2057,11 @@ namespace pawgui
                         currLine = stg_ex::string_replace_all(currLine,"\t","   ");
                         if(!currLine.empty() )
                         {
-                            listOfStrings.push_back(currLine);
+                            listOfstrings.push_back(currLine);
                         }
                         else
                         {
-                            listOfStrings.push_back("");
+                            listOfstrings.push_back("");
                         }
                     }
                     newTxtFile.close();
@@ -2110,9 +2110,9 @@ namespace pawgui
         if( yToMove > 0)
         {
             lineStartYPos+=yToMove;
-            if( lineStartYPos > (int)listOfStrings.size()-linesWithinView )
+            if( lineStartYPos > (int)listOfstrings.size()-linesWithinView )
             {
-                lineStartYPos = (int)listOfStrings.size()-linesWithinView;
+                lineStartYPos = (int)listOfstrings.size()-linesWithinView;
             }
             find_documentation_description();
         }
@@ -2159,7 +2159,7 @@ namespace pawgui
 
     void widget_text_editor::open_text_file()
     {
-        gpe::external_open_program( textFileLocation );
+        gpe::main_file_url_manager->external_open_program( textFileLocation );
     }
 
     void widget_text_editor::paste_clipboard()
@@ -2172,9 +2172,9 @@ namespace pawgui
                 clipboardStr = stg_ex::string_replace_all(clipboardStr,"\r\n","\n");
                 clipboardStr = stg_ex::string_replace_all(clipboardStr,"\r","\n");
                 clipboardStr = stg_ex::string_replace_all(clipboardStr,"\t","    ");
-                if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size() )
                 {
-                    lineToEdit = listOfStrings[cursorYPos];
+                    lineToEdit = listOfstrings[cursorYPos];
                     if( cursorXPos >(int)lineToEdit.size() )
                     {
                         cursorXPos = (int)lineToEdit.size() - 1;
@@ -2186,55 +2186,55 @@ namespace pawgui
                     int newLinePos=clipboardStr.find_first_of("\n");
                     if(newLinePos!=(int)std::string::npos)
                     {
-                        std::string cbNLString = stg_ex::split_first_string(clipboardStr,'\n');
+                        std::string cbNLstring = stg_ex::split_first_string(clipboardStr,'\n');
                         if( (int)lineToEdit.size() >= cursorXPos)
                         {
-                            textInputString = stg_ex::get_substring(lineToEdit,0,cursorXPos);
+                            textInputstring = stg_ex::get_substring(lineToEdit,0,cursorXPos);
                         }
                         else
                         {
-                            textInputString= "";
+                            textInputstring= "";
                         }
-                        textInputString+=cbNLString;
+                        textInputstring+=cbNLstring;
                         std::string remainerOfStr="";
                         if( (int)lineToEdit.size() > cursorXPos )
                         {
                             remainerOfStr = stg_ex::get_substring(lineToEdit,cursorXPos);
                         }
-                        listOfStrings.erase(listOfStrings.begin()+cursorYPos);
-                        listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
+                        listOfstrings.erase(listOfstrings.begin()+cursorYPos);
+                        listOfstrings.insert(listOfstrings.begin()+cursorYPos,textInputstring);
                         cursorYPos+=1;
                         newLinePos=clipboardStr.find_first_of('\n');
                         while (newLinePos!=(int)std::string::npos)
                         {
-                            cbNLString = stg_ex::split_first_string(clipboardStr,'\n');
-                            listOfStrings.insert(listOfStrings.begin()+cursorYPos,cbNLString);
+                            cbNLstring = stg_ex::split_first_string(clipboardStr,'\n');
+                            listOfstrings.insert(listOfstrings.begin()+cursorYPos,cbNLstring);
                             newLinePos=clipboardStr.find_first_of("\n");
                             cursorYPos+=1;
                         }
-                        textInputString = clipboardStr;
-                        textInputString+=remainerOfStr;
-                        listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
+                        textInputstring = clipboardStr;
+                        textInputstring+=remainerOfStr;
+                        listOfstrings.insert(listOfstrings.begin()+cursorYPos,textInputstring);
                         cursorXPos=(int)clipboardStr.size();
                     }
                     else
                     {
                         if( (int)lineToEdit.size() >= cursorXPos)
                         {
-                            textInputString = stg_ex::get_substring(lineToEdit,0,cursorXPos);
+                            textInputstring = stg_ex::get_substring(lineToEdit,0,cursorXPos);
                         }
                         else
                         {
-                            textInputString = "";
+                            textInputstring = "";
                         }
-                        textInputString+=clipboardStr;
+                        textInputstring+=clipboardStr;
                         if( (int)lineToEdit.size() >= cursorXPos)
                         {
-                            textInputString+=stg_ex::get_substring(lineToEdit,cursorXPos);
+                            textInputstring+=stg_ex::get_substring(lineToEdit,cursorXPos);
                         }
                         cursorXPos+=(int)clipboardStr.size();
-                        listOfStrings.erase(listOfStrings.begin()+cursorYPos);
-                        listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
+                        listOfstrings.erase(listOfstrings.begin()+cursorYPos);
+                        listOfstrings.insert(listOfstrings.begin()+cursorYPos,textInputstring);
                     }
                     save_edit();
                 }
@@ -2257,15 +2257,15 @@ namespace pawgui
             misingSymbolSuggestedEndXPos = 0;
 
             int i = 0;
-            std::string currStringToRender = "";
+            std::string currstringToRender = "";
             std::string currentLineInView = "";
 
-            int tempSynStringSize = 0;
+            int tempSynstringSize = 0;
             int currPosToParse = 0, lineEnd = 0;
             bool isInBlockCommentMode = false;
             bool isInfloatQuoteMode = false;
             bool isInSingleQuoteMode = false;
-            int maxLine = (int)listOfStrings.size();
+            int maxLine = (int)listOfstrings.size();
             int endBlockCommentPos = 0;
             int endDQuoteCommentPos = 0;
             int endSQuoteCommentPos = 0;
@@ -2275,10 +2275,10 @@ namespace pawgui
             int openParenthesisCount = 0;
             for( i=0; i < maxLine; i++)
             {
-                currStringToRender = listOfStrings[i];
+                currstringToRender = listOfstrings[i];
                 currPosToParse = 0;
                 openParenthesisCount = 0;
-                lineEnd = (int)currStringToRender.size();
+                lineEnd = (int)currstringToRender.size();
 
                 endBlockCommentPos=(int)std::string::npos;
                 endDQuoteCommentPos=(int)std::string::npos;
@@ -2287,7 +2287,7 @@ namespace pawgui
                 {
                     if( isInBlockCommentMode)
                     {
-                        endBlockCommentPos = currStringToRender.find("*/");
+                        endBlockCommentPos = currstringToRender.find("*/");
                         if( endBlockCommentPos==(int)std::string::npos)
                         {
                             currPosToParse = lineEnd;
@@ -2300,7 +2300,7 @@ namespace pawgui
                     }
                     else if( isInfloatQuoteMode)
                     {
-                        endDQuoteCommentPos = currStringToRender.find('"',currPosToParse);
+                        endDQuoteCommentPos = currstringToRender.find('"',currPosToParse);
                         if( endDQuoteCommentPos==(int)std::string::npos)
                         {
                             currPosToParse = lineEnd;
@@ -2313,7 +2313,7 @@ namespace pawgui
                     }
                     else if( isInSingleQuoteMode)
                     {
-                        endSQuoteCommentPos = currStringToRender.find("'",currPosToParse);
+                        endSQuoteCommentPos = currstringToRender.find("'",currPosToParse);
                         if( endSQuoteCommentPos==(int)std::string::npos)
                         {
                             currPosToParse = lineEnd;
@@ -2326,47 +2326,47 @@ namespace pawgui
                     }
                     else
                     {
-                        while (currPosToParse < lineEnd && currStringToRender[currPosToParse]==' ')
+                        while (currPosToParse < lineEnd && currstringToRender[currPosToParse]==' ')
                         {
                             currPosToParse++;
                         }
                         if (currPosToParse < lineEnd)
                         {
-                            if (currPosToParse+1<lineEnd && currStringToRender[currPosToParse] == '/' && currPosToParse + 1 < lineEnd && currStringToRender[currPosToParse + 1] == '/' )
+                            if (currPosToParse+1<lineEnd && currstringToRender[currPosToParse] == '/' && currPosToParse + 1 < lineEnd && currstringToRender[currPosToParse + 1] == '/' )
                             {
                                 currPosToParse = lineEnd;
                             }
-                            else if (currPosToParse+1<lineEnd && currStringToRender[currPosToParse] == '/' && currStringToRender[currPosToParse + 1] == '*' )
+                            else if (currPosToParse+1<lineEnd && currstringToRender[currPosToParse] == '/' && currstringToRender[currPosToParse + 1] == '*' )
                             {
                                 isInBlockCommentMode = true;
                                 currPosToParse+=2;
                             }
-                            else if(currStringToRender[currPosToParse] == '"')
+                            else if(currstringToRender[currPosToParse] == '"')
                             {
                                 isInfloatQuoteMode = true;
                                 currPosToParse++;
                             }
-                            else if(currStringToRender[currPosToParse] == '\'')
+                            else if(currstringToRender[currPosToParse] == '\'')
                             {
                                 isInSingleQuoteMode = true;
                                 currPosToParse++;
                             }
-                            else if(currStringToRender[currPosToParse] == '(')
+                            else if(currstringToRender[currPosToParse] == '(')
                             {
                                 openParenthesisCount++;
                                 currPosToParse++;
                             }
-                            else if(currStringToRender[currPosToParse] == '[')
+                            else if(currstringToRender[currPosToParse] == '[')
                             {
                                 openBracesCount++;
                                 currPosToParse++;
                             }
-                            else if(currStringToRender[currPosToParse] == '{')
+                            else if(currstringToRender[currPosToParse] == '{')
                             {
                                 openBracketsCount++;
                                 currPosToParse++;
                             }
-                            else if(currStringToRender[currPosToParse] == ')')
+                            else if(currstringToRender[currPosToParse] == ')')
                             {
                                 if( isInfloatQuoteMode==false && isInSingleQuoteMode==false && isInBlockCommentMode==false)
                                 {
@@ -2382,7 +2382,7 @@ namespace pawgui
                                 }
                                 currPosToParse++;
                             }
-                            else if(currStringToRender[currPosToParse] == ']')
+                            else if(currstringToRender[currPosToParse] == ']')
                             {
                                 if( openBracesCount > 0)
                                 {
@@ -2395,7 +2395,7 @@ namespace pawgui
                                 }
                                 currPosToParse++;
                             }
-                            else if(currStringToRender[currPosToParse] == '}')
+                            else if(currstringToRender[currPosToParse] == '}')
                             {
                                 if( openBracketsCount > 0)
                                 {
@@ -2408,27 +2408,27 @@ namespace pawgui
                                 }
                                 currPosToParse++;
                             }
-                            else if (isdigit(currStringToRender[currPosToParse]) )
+                            else if (isdigit(currstringToRender[currPosToParse]) )
                             {
                                 currPosToParse++;
-                                while( (currPosToParse < lineEnd && isdigit( currStringToRender[currPosToParse] )  ) || currStringToRender[currPosToParse] ==' ')
+                                while( (currPosToParse < lineEnd && isdigit( currstringToRender[currPosToParse] )  ) || currstringToRender[currPosToParse] ==' ')
                                 {
                                     currPosToParse++;
                                 }
                             }
                             /*
-                            else if ( main_syntax_highlighter->charIsSymbol(currStringToRender[currPosToParse]) )
+                            else if ( main_syntax_highlighter->charIsSymbol(currstringToRender[currPosToParse]) )
                             {
                                 commentFoundInSymbols = false;
-                                while( ( commentFoundInSymbols==false && currPosToParse < lineEnd && main_syntax_highlighter->charIsSymbol(currStringToRender[currPosToParse] ) )|| currStringToRender[currPosToParse] ==' ')
+                                while( ( commentFoundInSymbols==false && currPosToParse < lineEnd && main_syntax_highlighter->charIsSymbol(currstringToRender[currPosToParse] ) )|| currstringToRender[currPosToParse] ==' ')
                                 {
                                     if( lineEnd > currPosToParse+1)
                                     {
-                                        if( currStringToRender[currPosToParse] == '/' && (currStringToRender[currPosToParse + 1] == '/' || currStringToRender[currPosToParse + 1] == '*' ) )
+                                        if( currstringToRender[currPosToParse] == '/' && (currstringToRender[currPosToParse + 1] == '/' || currstringToRender[currPosToParse + 1] == '*' ) )
                                         {
                                             commentFoundInSymbols = true;
                                         }
-                                        else if (currStringToRender[currPosToParse] == '*' && currStringToRender[currPosToParse + 1] == '/' )
+                                        else if (currstringToRender[currPosToParse] == '*' && currstringToRender[currPosToParse + 1] == '/' )
                                         {
                                             commentFoundInSymbols = true;
                                         }
@@ -2445,11 +2445,11 @@ namespace pawgui
                                 currPosToParse++;
                             }
                             */
-                            else if ( stg_ex::char_is_alpha(currStringToRender[currPosToParse],true,true) )
+                            else if ( stg_ex::char_is_alpha(currstringToRender[currPosToParse],true,true) )
                             {
                                 //color = pawgui::theme_main->text_box_font_color;
                                 currPosToParse++;
-                                while (currPosToParse < lineEnd && stg_ex::char_is_alnum(currStringToRender[currPosToParse],true,true) )
+                                while (currPosToParse < lineEnd && stg_ex::char_is_alnum(currstringToRender[currPosToParse],true,true) )
                                 {
                                     currPosToParse++;
                                 }
@@ -2515,9 +2515,9 @@ namespace pawgui
             hasScrollControl = true;
         }
 
-        if( (int)listOfStrings.size()==0)
+        if( (int)listOfstrings.size()==0)
         {
-            listOfStrings.push_back("");
+            listOfstrings.push_back("");
             reset_self();
         }
 
@@ -2525,17 +2525,17 @@ namespace pawgui
         bool mouseHoveringInTextArea = false;
         bool buttonBarClicked = false;
 
-        if( !isReadOnly && textEditorButtonBar!=NULL && showButtonBar )
+        if( !isReadOnly && textEditor_buttonBar!=NULL && show_buttonBar )
         {
-            textEditorButtonBar->set_coords(widget_box.x,widget_box.y);
+            textEditor_buttonBar->set_coords(widget_box.x,widget_box.y);
             //sets the buttonbar to the width of the text editor( minus width of yScroll width[16 ).
-            //textEditorButtonBar->set_width(widget_box.w);
-            textEditorButtonBar->set_height(24);
-            textEditorButtonBar->process_self(view_space,cam);
-            buttonBarClicked = textEditorButtonBar->is_clicked();
-            if( textEditorButtonBar->selectedOption>= 0 && textEditorButtonBar->selectedOption < TEXTAREA_OPTION_MAX_OPTIONS)
+            //textEditor_buttonBar->set_width(widget_box.w);
+            textEditor_buttonBar->set_height( 32 );
+            textEditor_buttonBar->process_self(view_space,cam);
+            buttonBarClicked = textEditor_buttonBar->is_clicked();
+            if( textEditor_buttonBar->selectedOption>= 0 && textEditor_buttonBar->selectedOption < TEXTAREA_OPTION_MAX_OPTIONS)
             {
-                if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_IMPORT)
+                if( textEditor_buttonBar->selectedOption==TEXTAREA_OPTION_IMPORT)
                 {
                     std::string importTextFileName = get_filename_open_from_popup("Import Text","",main_settings->fileOpenTextFileDir );
                     if( (int)importTextFileName.size() > 0)
@@ -2546,24 +2546,24 @@ namespace pawgui
                         }
                     }
                 }
-                else if(textEditorButtonBar->selectedOption ==TEXTAREA_OPTION_REDO)
+                else if(textEditor_buttonBar->selectedOption ==TEXTAREA_OPTION_REDO)
                 {
                     if( can_redo() )
                     {
                         redo_edit();
                     }
                 }
-                else if(textEditorButtonBar->selectedOption ==TEXTAREA_OPTION_UNDO)
+                else if(textEditor_buttonBar->selectedOption ==TEXTAREA_OPTION_UNDO)
                 {
                     if( can_undo() )
                     {
                         undo_edit();
                     }
                 }
-                else if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_EXPORT)
+                else if( textEditor_buttonBar->selectedOption==TEXTAREA_OPTION_EXPORT)
                 {
                     std::string exportTextFileName = get_filename_save_from_popup("Export Text","",main_settings->fileOpenFunctionDir);
-                    if( sff_ex::file_exists(exportTextFileName) )
+                    if( main_file_url_manager->file_exists(exportTextFileName) )
                     {
                         if( display_prompt_message("Warning!","File Exists already, do you wish to overwrite it?)")==display_query_yes )
                         {
@@ -2575,38 +2575,38 @@ namespace pawgui
                         export_text( exportTextFileName);
                     }
                 }
-                else if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_CLEAR)
+                else if( textEditor_buttonBar->selectedOption==TEXTAREA_OPTION_CLEAR)
                 {
                     if( display_prompt_message("Warning!","Are you sure you want to continue this operation?")==display_query_yes )
                     {
                         clear_all_lines();
-                        listOfStrings.push_back("");
+                        listOfstrings.push_back("");
                         save_edit();
                     }
                 }
-                else if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_COPY)
+                else if( textEditor_buttonBar->selectedOption==TEXTAREA_OPTION_COPY)
                 {
                     copy_selection();
                 }
-                else if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_CUT)
+                else if( textEditor_buttonBar->selectedOption==TEXTAREA_OPTION_CUT)
                 {
                     cut_selection();
                 }
-                else if( textEditorButtonBar->selectedOption==TEXTAREA_OPTION_PASTE)
+                else if( textEditor_buttonBar->selectedOption==TEXTAREA_OPTION_PASTE)
                 {
                     pasteCommandGiven = true;
                 }
             }
         }
-        else if( textEditorButtonBar!=NULL)
+        else if( textEditor_buttonBar!=NULL)
         {
-            textEditorButtonBar->set_coords(widget_box.x,widget_box.y);
+            textEditor_buttonBar->set_coords(widget_box.x,widget_box.y);
 
-            textEditorButtonBar->set_height(0);
+            textEditor_buttonBar->set_height(0);
         }
-        if( !buttonBarClicked && (int)listOfStrings.size() >0 )
+        if( !buttonBarClicked && (int)listOfstrings.size() >0 )
         {
-            textInputString = "";
+            textInputstring = "";
             cursorTimer+=gpe::time_keeper->get_delta_ticks();
 
             if( cursorTimer > main_settings->cursorBlinkTime )
@@ -2632,7 +2632,7 @@ namespace pawgui
                 hasScrollControl = true;
             }
 
-            if( isEnabled &&  isInUse && cam!=NULL && textEditorButtonBar!=NULL)
+            if( isEnabled &&  isInUse && cam!=NULL && textEditor_buttonBar!=NULL)
             {
                 if( gpe::point_within_rect(gpe::input->mouse_position_x,gpe::input->mouse_position_y, textSpaceRect)  )
                 {
@@ -2658,15 +2658,15 @@ namespace pawgui
                     if( gpe::input->check_mouse_button_clicked(0) && resource_dragged==NULL )
                     {
                         update_cursor_to_mouse(view_space, cam);
-                        if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                        if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size() )
                         {
-                            lineToEdit = listOfStrings[cursorYPos];
+                            lineToEdit = listOfstrings[cursorYPos];
 
                             selectionCursorXPos = selectionEndCursorXPos = cursorXPos;
                             selectionCursorYPos = selectionEndCursorYPos = cursorYPos;
                             if( (int)lineToEdit.size() == 0 )
                             {
-                                if( cursorYPos+1 < (int)listOfStrings.size() )
+                                if( cursorYPos+1 < (int)listOfstrings.size() )
                                 {
                                     cursorXPos = 0;
                                     cursorYPos++;
@@ -2770,7 +2770,7 @@ namespace pawgui
                                     cursorXPos = 0;
                                     lastfloatClickAction = 0;
                                 }
-                                else if( cursorYPos+1 < (int)listOfStrings.size() )
+                                else if( cursorYPos+1 < (int)listOfstrings.size() )
                                 {
                                     cursorXPos = 0;
                                     cursorYPos++;
@@ -2788,7 +2788,7 @@ namespace pawgui
                         //if( lastfloatClickAction==0)
                         {
                             update_cursor_to_mouse(view_space, cam);
-                            if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                            if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size() )
                             {
                                 selectionCursorXPos = selectionEndCursorXPos = cursorXPos;
                                 selectionCursorYPos = selectionEndCursorYPos = cursorYPos;
@@ -2801,7 +2801,7 @@ namespace pawgui
                         //if( lastfloatClickAction==0)
                         {
                             update_cursor_to_mouse(view_space, cam);
-                            if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                            if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size() )
                             {
                                 selectionEndCursorXPos = cursorXPos;
                                 selectionEndCursorYPos = cursorYPos;
@@ -2814,22 +2814,22 @@ namespace pawgui
                         context_menu_open(-1,-1,128);
                         if( !isReadOnly )
                         {
-                            main_context_menu->add_menu_option("Undo",0,rsm_gui->texture_add("backButtonIcon", gpe::app_directory_name+"resources/buttons/backward.png"),-1,NULL,true,!isReadOnly && can_undo());
-                            main_context_menu->add_menu_option("Redo",1,rsm_gui->texture_add("forwardButtonIcon", gpe::app_directory_name+"resources/buttons/forward.png"),-1,NULL,true,!isReadOnly && can_redo() );
-                            main_context_menu->add_menu_option("Cut",2,rsm_gui->texture_add("cutButtonIcon", gpe::app_directory_name+"resources/buttons/cut.png"),-1,NULL,false,!isReadOnly);
+                            main_context_menu->add_menu_option("Undo",0,rsm_gui->texture_add("back_buttonIcon", gpe::app_directory_name+"resources/buttons/backward.png"),-1,NULL,true,!isReadOnly && can_undo());
+                            main_context_menu->add_menu_option("Redo",1,rsm_gui->texture_add("forward_buttonIcon", gpe::app_directory_name+"resources/buttons/forward.png"),-1,NULL,true,!isReadOnly && can_redo() );
+                            main_context_menu->add_menu_option("Cut",2,rsm_gui->texture_add("cut_buttonIcon", gpe::app_directory_name+"resources/buttons/cut.png"),-1,NULL,false,!isReadOnly);
                         }
-                        main_context_menu->add_menu_option("Copy",3,rsm_gui->texture_add("copyButtonIcon", gpe::app_directory_name+"resources/buttons/copy.png"),-1,NULL,false,true);
+                        main_context_menu->add_menu_option("Copy",3,rsm_gui->texture_add("copy_buttonIcon", gpe::app_directory_name+"resources/buttons/copy.png"),-1,NULL,false,true);
                         if( !isReadOnly )
                         {
-                            main_context_menu->add_menu_option("Paste",4,rsm_gui->texture_add("pasteButtonIcon", gpe::app_directory_name+"resources/buttons/paste.png"),-1,NULL,false,!isReadOnly);
-                            main_context_menu->add_menu_option("Delete",5,rsm_gui->texture_add("removeButtonIcon", gpe::app_directory_name+"resources/buttons/remove.png"),-1,NULL,true,!isReadOnly);
+                            main_context_menu->add_menu_option("Paste",4,rsm_gui->texture_add("paste_buttonIcon", gpe::app_directory_name+"resources/buttons/paste.png"),-1,NULL,false,!isReadOnly);
+                            main_context_menu->add_menu_option("Delete",5,rsm_gui->texture_add("remove_buttonIcon", gpe::app_directory_name+"resources/buttons/remove.png"),-1,NULL,true,!isReadOnly);
                         }
-                        main_context_menu->add_menu_option("Select All",6,rsm_gui->texture_add("stickyButtonIcon", gpe::app_directory_name+"resources/buttons/sticky-note.png"),-1,NULL,true,true);
+                        main_context_menu->add_menu_option("Select All",6,rsm_gui->texture_add("sticky_buttonIcon", gpe::app_directory_name+"resources/buttons/sticky-note.png"),-1,NULL,true,true);
 
                         if( (int)textFileLocation.size() > 0 )
                         {
-                            main_context_menu->add_menu_option("Open File",7,rsm_gui->texture_add("stickyButtonIcon", gpe::app_directory_name+"resources/buttons/file-open.png"),-1,NULL,true,true);
-                            main_context_menu->add_menu_option("Refresh Text",8,rsm_gui->texture_add("stickyButtonIcon", gpe::app_directory_name+"resources/buttons/file-open.png"),-1,NULL,true,true);
+                            main_context_menu->add_menu_option("Open File",7,rsm_gui->texture_add("sticky_buttonIcon", gpe::app_directory_name+"resources/buttons/file-open.png"),-1,NULL,true,true);
+                            main_context_menu->add_menu_option("Refresh Text",8,rsm_gui->texture_add("sticky_buttonIcon", gpe::app_directory_name+"resources/buttons/file-open.png"),-1,NULL,true,true);
                         }
                         int menuSelection = context_menu_process();
 
@@ -2903,12 +2903,12 @@ namespace pawgui
                                 gpe::cursor_main_controller->cursor_change("ibeam");
 
                                 update_cursor_to_mouse(view_space, cam);
-                                if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                                if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size() )
                                 {
-                                    if( cursorXPos >=0 && cursorXPos <= (int)listOfStrings[cursorYPos].size() )
+                                    if( cursorXPos >=0 && cursorXPos <= (int)listOfstrings[cursorYPos].size() )
                                     {
 
-                                        listOfStrings[cursorYPos] = stg_ex::get_substring(listOfStrings[cursorYPos],0,cursorXPos)+resource_dragged->get_name()+stg_ex::get_substring(listOfStrings[cursorYPos],cursorXPos);
+                                        listOfstrings[cursorYPos] = stg_ex::get_substring(listOfstrings[cursorYPos],0,cursorXPos)+resource_dragged->get_name()+stg_ex::get_substring(listOfstrings[cursorYPos],cursorXPos);
                                         resource_dragged = NULL;
                                     }
                                 }
@@ -2933,7 +2933,7 @@ namespace pawgui
                     }
                     else if( gpe::input->mouse_position_x > textSpaceRect->x+ textSpaceRect->w )
                     {
-                        lineToEdit = listOfStrings[cursorYPos];
+                        lineToEdit = listOfstrings[cursorYPos];
                         if( cursorXPos > (int)lineToEdit.size()-1 )
                         {
                             cursorXPos+=1;
@@ -2951,7 +2951,7 @@ namespace pawgui
                     }
                     else if( gpe::input->mouse_position_y > textSpaceRect->y+textSpaceRect->h-4 )
                     {
-                        if( cursorYPos < (int)listOfStrings.size()-1 )
+                        if( cursorYPos < (int)listOfstrings.size()-1 )
                         {
                             cursorYPos+=1;
                         }
@@ -2959,7 +2959,7 @@ namespace pawgui
                     }
 
                     update_cursor_to_mouse(view_space, cam);
-                    if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                    if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size() )
                     {
                         selectionEndCursorXPos = cursorXPos;
                         selectionEndCursorYPos = cursorYPos;
@@ -3059,7 +3059,7 @@ namespace pawgui
                     }
                     else if( gpe::input->kb_button_released[kb_f] ||  gpe::input->kb_button_released[kb_h] )
                     {
-                        main_search_controller->findTextStringBox->set_string( get_short_hightlighted() );
+                        main_search_controller->findTextstringBox->set_string( get_short_hightlighted() );
                     }
                     else if( dKeyDelay >= (main_settings->textAreaDelayTime)  || ( !gpe::input->kb_button_pressed[kb_d] && gpe::input->kb_button_released[kb_d] ) )
                     {
@@ -3125,26 +3125,26 @@ namespace pawgui
                             if( cursorYPos > 0)
                             {
                                 cursorYPos--;
-                                cursorXPos = (int)listOfStrings[cursorYPos].size()-1;
+                                cursorXPos = (int)listOfstrings[cursorYPos].size()-1;
                                 if( cursorXPos < 0)
                                 {
                                     cursorXPos = 0;
                                 }
                             }
                         }
-                        else if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                        else if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size() )
                         {
-                            std::string currentLineToScroll = listOfStrings[cursorYPos];
+                            std::string currentLineToScroll = listOfstrings[cursorYPos];
                             if( cursorXPos >=(int)currentLineToScroll.size() )
                             {
                                 cursorXPos = (int)currentLineToScroll.size()-1;
                             }
                             if( cursorXPos < 0)
                             {
-                                if( cursorYPos >0 && cursorYPos < (int)listOfStrings.size() )
+                                if( cursorYPos >0 && cursorYPos < (int)listOfstrings.size() )
                                 {
                                     cursorYPos--;
-                                    cursorXPos = listOfStrings[cursorYPos].size()-1;
+                                    cursorXPos = listOfstrings[cursorYPos].size()-1;
                                 }
                             }
                             else if( cursorXPos < (int)currentLineToScroll.size() )
@@ -3188,12 +3188,12 @@ namespace pawgui
                                 selectionCursorYPos = cursorYPos;
                             }
                         }
-                        if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                        if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size() )
                         {
-                            std::string currentLineToScroll = listOfStrings[cursorYPos];
+                            std::string currentLineToScroll = listOfstrings[cursorYPos];
                             if( cursorXPos >=(int)currentLineToScroll.size() )
                             {
-                                if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size()-1 )
+                                if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size()-1 )
                                 {
                                     cursorYPos++;
                                     cursorXPos = 0;
@@ -3249,9 +3249,9 @@ namespace pawgui
                     {
                         if( main_syntax_highlighter->codeBeingSuggested )
                         {
-                            if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                            if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size() )
                             {
-                                std::string prevStr = listOfStrings[cursorYPos];
+                                std::string prevStr = listOfstrings[cursorYPos];
                                 if( main_syntax_highlighter->iSuggestionPos >= 0 && main_syntax_highlighter->iSuggestionPos < (int)main_syntax_highlighter->suggestedCompilerTerms.size() )
                                 {
                                     syntax_compiler_term * tempTerm = main_syntax_highlighter->suggestedCompilerTerms.at(main_syntax_highlighter->iSuggestionPos);
@@ -3259,15 +3259,15 @@ namespace pawgui
                                     {
                                         if( tempTerm->termType==cterm_function)
                                         {
-                                            prevStr = prevStr.substr(0,tempCLineXStartPos)+tempTerm->termString+"()"+prevStr.substr(tempCLineXEndPos+1);
-                                            cursorXPos = tempCLineXStartPos + (int)tempTerm->termString.size()+1;
+                                            prevStr = prevStr.substr(0,tempCLineXStartPos)+tempTerm->termstring+"()"+prevStr.substr(tempCLineXEndPos+1);
+                                            cursorXPos = tempCLineXStartPos + (int)tempTerm->termstring.size()+1;
                                         }
                                         else
                                         {
-                                            prevStr = prevStr.substr(0,tempCLineXStartPos)+tempTerm->termString+prevStr.substr(tempCLineXEndPos+1);
-                                            cursorXPos = tempCLineXStartPos + (int)tempTerm->termString.size();
+                                            prevStr = prevStr.substr(0,tempCLineXStartPos)+tempTerm->termstring+prevStr.substr(tempCLineXEndPos+1);
+                                            cursorXPos = tempCLineXStartPos + (int)tempTerm->termstring.size();
                                         }
-                                        listOfStrings[cursorYPos] = prevStr;
+                                        listOfstrings[cursorYPos] = prevStr;
                                     }
                                 }
                             }
@@ -3279,31 +3279,31 @@ namespace pawgui
                         {
                             log_editable_action();
                             delete_selection();
-                            lineToEdit = listOfStrings[cursorYPos];
+                            lineToEdit = listOfstrings[cursorYPos];
                             //go to next line
-                            std::string nextString = "";
+                            std::string nextstring = "";
                             if( (int)lineToEdit.size()> 0)
                             {
-                                nextString = stg_ex::get_substring(lineToEdit,cursorXPos);
+                                nextstring = stg_ex::get_substring(lineToEdit,cursorXPos);
                                 lineToEdit = stg_ex::get_substring(lineToEdit,0, cursorXPos);
                             }
                             else
                             {
                                 lineToEdit = "";
-                                nextString = "";
+                                nextstring = "";
                             }
                             cursorXPos = 0;
-                            if( (int)listOfStrings.size()>0 )
+                            if( (int)listOfstrings.size()>0 )
                             {
-                                listOfStrings.erase(listOfStrings.begin()+cursorYPos );
-                                listOfStrings.insert(listOfStrings.begin()+cursorYPos,lineToEdit);
+                                listOfstrings.erase(listOfstrings.begin()+cursorYPos );
+                                listOfstrings.insert(listOfstrings.begin()+cursorYPos,lineToEdit);
                                 int numbOfSpaces =  stg_ex::get_leading_space_count(lineToEdit);
                                 cursorXPos = 0;
                                 if( numbOfSpaces > 0)
                                 {
                                     for(int i= 0; i < numbOfSpaces; i++)
                                     {
-                                        nextString=" "+nextString;
+                                        nextstring=" "+nextstring;
                                     }
                                     cursorXPos = numbOfSpaces;
                                 }
@@ -3312,17 +3312,17 @@ namespace pawgui
                                     std::string lastChar = stg_ex::get_substring(lineToEdit, (int)lineToEdit.size()-1 );
                                     if( lastChar.compare("{" )==0)
                                     {
-                                        nextString=generate_tabs(1)+nextString;
+                                        nextstring=generate_tabs(1)+nextstring;
                                         cursorXPos+=get_tab_space_count();
                                     }
                                 }
-                                listOfStrings.insert(listOfStrings.begin()+cursorYPos+1,nextString);
+                                listOfstrings.insert(listOfstrings.begin()+cursorYPos+1,nextstring);
                                 gpe::input->reset_all_input();
                             }
                             else
                             {
-                                listOfStrings.push_back(lineToEdit);
-                                listOfStrings.push_back(nextString);
+                                listOfstrings.push_back(lineToEdit);
+                                listOfstrings.push_back(nextstring);
                             }
                             if( cursorXPos < 0)
                             {
@@ -3385,8 +3385,8 @@ namespace pawgui
                         {
                             cursorYPos-=1;
                             move_up();
-                            std::string prevString = listOfStrings[cursorYPos];
-                            cursorXPos = prevString.size();
+                            std::string prevstring = listOfstrings[cursorYPos];
+                            cursorXPos = prevstring.size();
                             if( cursorXPos < 0)
                             {
                                 cursorXPos = 0;
@@ -3404,7 +3404,7 @@ namespace pawgui
                     }
                     else if( rightDelay >= (main_settings->textAreaDelayTime)  )
                     {
-                        lineToEdit = listOfStrings[cursorYPos];
+                        lineToEdit = listOfstrings[cursorYPos];
                         if( gpe::input->kb_shift_pressed)
                         {
                             if( selectionCursorXPos==selectionEndCursorXPos && selectionCursorYPos==selectionEndCursorYPos )
@@ -3422,7 +3422,7 @@ namespace pawgui
                         if( cursorXPos > (int)lineToEdit.size() )
                         {
                             //go to next line if available
-                            if(cursorYPos < (int) listOfStrings.size()-1 )
+                            if(cursorYPos < (int) listOfstrings.size()-1 )
                             {
                                 cursorXPos = 0;
                                 cursorYPos+=1;
@@ -3489,7 +3489,7 @@ namespace pawgui
                                 {
                                     lineStartYPos = cursorYPos;
                                 }
-                                std::string prevLine = listOfStrings[cursorYPos];
+                                std::string prevLine = listOfstrings[cursorYPos];
                                 if( cursorXPos >= (int)prevLine.size() )
                                 {
                                     cursorXPos = (int)prevLine.size()-1;
@@ -3550,7 +3550,7 @@ namespace pawgui
                                 reset_selection(1);
                             }
                             //special shift action
-                            if( cursorYPos < (int)listOfStrings.size()-1 )
+                            if( cursorYPos < (int)listOfstrings.size()-1 )
                             {
                                 cursorYPos+=1;
                                 if( lineStartYPos>=cursorYPos+linesWithinView-1)
@@ -3561,7 +3561,7 @@ namespace pawgui
                                 {
                                     lineStartYPos = cursorYPos;
                                 }
-                                std::string nextLine = listOfStrings[cursorYPos];
+                                std::string nextLine = listOfstrings[cursorYPos];
                                 if( cursorXPos >= (int)nextLine.size() )
                                 {
                                     cursorXPos = (int)nextLine.size()-1;
@@ -3594,9 +3594,9 @@ namespace pawgui
                             {
                                 delete_selection();
                             }
-                            else if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                            else if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size() )
                             {
-                                lineToEdit = listOfStrings[cursorYPos];
+                                lineToEdit = listOfstrings[cursorYPos];
                                 int prevSize = (int)lineToEdit.size();
                                 if( prevSize>0)
                                 {
@@ -3611,53 +3611,53 @@ namespace pawgui
                                 }
                                 if( cursorXPos>0 && cursorXPos <= (int)lineToEdit.size() )
                                 {
-                                    textInputString = stg_ex::get_substring(lineToEdit,0,cursorXPos);
+                                    textInputstring = stg_ex::get_substring(lineToEdit,0,cursorXPos);
                                     std::string rightSide = stg_ex::get_substring(lineToEdit,cursorXPos);
                                     if( cursorXPos >= (int)lineToEdit.size() )
                                     {
-                                        textInputString = stg_ex::get_substring(lineToEdit,0);
+                                        textInputstring = stg_ex::get_substring(lineToEdit,0);
                                         rightSide = "";
                                     }
-                                    int trailingSpaces = stg_ex::get_trailing_space_count(textInputString);
+                                    int trailingSpaces = stg_ex::get_trailing_space_count(textInputstring);
                                     int tabsToCheckCount = get_tab_space_count();
                                     if( trailingSpaces >= tabsToCheckCount )
                                     {
                                         cursorXPos -= tabsToCheckCount;
-                                        textInputString = stg_ex::get_substring(textInputString,0,cursorXPos);
+                                        textInputstring = stg_ex::get_substring(textInputstring,0,cursorXPos);
                                     }
                                     else
                                     {
                                         cursorXPos -=1;
-                                        textInputString = stg_ex::get_substring(textInputString,0,cursorXPos);
+                                        textInputstring = stg_ex::get_substring(textInputstring,0,cursorXPos);
                                     }
 
-                                    textInputString+=rightSide;
-                                    listOfStrings.erase(listOfStrings.begin()+cursorYPos);
+                                    textInputstring+=rightSide;
+                                    listOfstrings.erase(listOfstrings.begin()+cursorYPos);
                                     if( cursorYPos>=0)
                                     {
-                                        listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
+                                        listOfstrings.insert(listOfstrings.begin()+cursorYPos,textInputstring);
                                     }
                                     else
                                     {
-                                        listOfStrings.push_back(textInputString);
+                                        listOfstrings.push_back(textInputstring);
                                     }
                                     log_editable_action();
                                 }
                                 else if( cursorYPos>=1)
                                 {
                                     log_editable_action();
-                                    textInputString = lineToEdit;
-                                    std::string prevString = listOfStrings.at(cursorYPos-1);
-                                    cursorXPos = prevString.size();
-                                    listOfStrings.erase(listOfStrings.begin()+cursorYPos);
+                                    textInputstring = lineToEdit;
+                                    std::string prevstring = listOfstrings.at(cursorYPos-1);
+                                    cursorXPos = prevstring.size();
+                                    listOfstrings.erase(listOfstrings.begin()+cursorYPos);
                                     cursorYPos -=1;
                                     if( cursorYPos < lineStartYPos && cursorYPos>=0)
                                     {
                                         lineStartYPos-=1;
                                     }
-                                    textInputString = listOfStrings[cursorYPos]+lineToEdit;
-                                    listOfStrings.erase(listOfStrings.begin()+cursorYPos);
-                                    listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
+                                    textInputstring = listOfstrings[cursorYPos]+lineToEdit;
+                                    listOfstrings.erase(listOfstrings.begin()+cursorYPos);
+                                    listOfstrings.insert(listOfstrings.begin()+cursorYPos,textInputstring);
                                     log_editable_action();
                                 }
                             }
@@ -3678,9 +3678,9 @@ namespace pawgui
                             {
                                 delete_selection();
                             }
-                            else if( cursorYPos >=0 && cursorYPos < (int)listOfStrings.size() )
+                            else if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size() )
                             {
-                                lineToEdit = listOfStrings[cursorYPos];
+                                lineToEdit = listOfstrings[cursorYPos];
                                 int prevSize = (int)lineToEdit.size();
                                 if( prevSize>0)
                                 {
@@ -3695,36 +3695,36 @@ namespace pawgui
                                 }
                                 if( cursorXPos>=0 && cursorXPos < (int)lineToEdit.size() )
                                 {
-                                    textInputString = stg_ex::get_substring(lineToEdit,0,cursorXPos);
+                                    textInputstring = stg_ex::get_substring(lineToEdit,0,cursorXPos);
                                     std::string rightSide = stg_ex::get_substring(lineToEdit,cursorXPos+1);
                                     if( cursorXPos >= (int)lineToEdit.size() )
                                     {
-                                        textInputString = stg_ex::get_substring(lineToEdit,0);
+                                        textInputstring = stg_ex::get_substring(lineToEdit,0);
                                         rightSide = "";
                                     }
 
-                                    textInputString+=rightSide;
-                                    listOfStrings.erase(listOfStrings.begin()+cursorYPos);
+                                    textInputstring+=rightSide;
+                                    listOfstrings.erase(listOfstrings.begin()+cursorYPos);
                                     if( cursorYPos>=0)
                                     {
-                                        listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
+                                        listOfstrings.insert(listOfstrings.begin()+cursorYPos,textInputstring);
                                     }
                                     else
                                     {
-                                        listOfStrings.push_back(textInputString);
+                                        listOfstrings.push_back(textInputstring);
                                     }
                                     log_editable_action();
                                 }
-                                else if( cursorYPos>=0 && cursorXPos>=(int)lineToEdit.size() && cursorYPos < (int)listOfStrings.size()-1 )
+                                else if( cursorYPos>=0 && cursorXPos>=(int)lineToEdit.size() && cursorYPos < (int)listOfstrings.size()-1 )
                                 {
                                     log_editable_action();
-                                    textInputString = lineToEdit;
-                                    std::string prevString = listOfStrings.at(cursorYPos+1);
+                                    textInputstring = lineToEdit;
+                                    std::string prevstring = listOfstrings.at(cursorYPos+1);
                                     cursorXPos = lineToEdit.size();
-                                    textInputString = lineToEdit+prevString;
-                                    listOfStrings.erase(listOfStrings.begin()+cursorYPos+1);
-                                    listOfStrings.erase(listOfStrings.begin()+cursorYPos);
-                                    listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
+                                    textInputstring = lineToEdit+prevstring;
+                                    listOfstrings.erase(listOfstrings.begin()+cursorYPos+1);
+                                    listOfstrings.erase(listOfstrings.begin()+cursorYPos);
+                                    listOfstrings.insert(listOfstrings.begin()+cursorYPos,textInputstring);
                                     log_editable_action();
                                 }
                             }
@@ -3762,11 +3762,11 @@ namespace pawgui
                                 {
                                     for( int iTabPos = tabStartYPos; iTabPos <= tabEndYPos; iTabPos++)
                                     {
-                                        strToUnTab = listOfStrings[iTabPos];
+                                        strToUnTab = listOfstrings[iTabPos];
                                         if( has_early_tab(strToUnTab) )
                                         {
                                             strToUnTab = untab_string(strToUnTab);
-                                            listOfStrings[iTabPos] = strToUnTab;
+                                            listOfstrings[iTabPos] = strToUnTab;
                                             if( iTabPos ==selectionCursorYPos && selectionCursorYPos==selectionEndCursorYPos )
                                             {
                                                 if( selectionCursorXPos>selectionEndCursorXPos)
@@ -3800,7 +3800,7 @@ namespace pawgui
                                 {
                                     for( int iTabPos = tabStartYPos; iTabPos <= tabEndYPos; iTabPos++)
                                     {
-                                        listOfStrings[iTabPos] = tabAddition+listOfStrings[iTabPos];
+                                        listOfstrings[iTabPos] = tabAddition+listOfstrings[iTabPos];
                                     }
                                     if( selectionCursorYPos==selectionEndCursorYPos)
                                     {
@@ -3828,13 +3828,13 @@ namespace pawgui
                                 else
                                 {
                                     delete_selection();
-                                    textInputString = stg_ex::get_substring(lineToEdit,0,cursorXPos);
-                                    textInputString+=tabAddition;
-                                    textInputString+=stg_ex::get_substring(lineToEdit,cursorXPos);
+                                    textInputstring = stg_ex::get_substring(lineToEdit,0,cursorXPos);
+                                    textInputstring+=tabAddition;
+                                    textInputstring+=stg_ex::get_substring(lineToEdit,cursorXPos);
                                     cursorXPos+=tabCharCount;
                                     gpe::input->inputted_keys = "";
-                                    listOfStrings.erase(listOfStrings.begin()+cursorYPos);
-                                    listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
+                                    listOfstrings.erase(listOfstrings.begin()+cursorYPos);
+                                    listOfstrings.insert(listOfstrings.begin()+cursorYPos,textInputstring);
                                     scroll_to_cursor();
                                 }
 
@@ -3853,32 +3853,32 @@ namespace pawgui
                         //Type input into textarea
                         delete_selection();
                         log_editable_action();
-                        textInputString = stg_ex::get_substring(lineToEdit,0,cursorXPos);
-                        std::string preInputString = stg_ex::string_replace_all(textInputString," ","");
-                        textInputString+=gpe::input->inputted_keys;
-                        listOfStrings.erase(listOfStrings.begin()+cursorYPos);
+                        textInputstring = stg_ex::get_substring(lineToEdit,0,cursorXPos);
+                        std::string preInputstring = stg_ex::string_replace_all(textInputstring," ","");
+                        textInputstring+=gpe::input->inputted_keys;
+                        listOfstrings.erase(listOfstrings.begin()+cursorYPos);
                         std::string restofLine = stg_ex::get_substring(lineToEdit,cursorXPos);
-                        if( gpe::input->inputted_keys=="{" && (int)restofLine.size()==0 && (int)preInputString.size()==0 )
+                        if( gpe::input->inputted_keys=="{" && (int)restofLine.size()==0 && (int)preInputstring.size()==0 )
                         {
                             int numbOfSpaces =  stg_ex::get_leading_space_count(lineToEdit);
                             cursorXPos = 0;
-                            std::string nextString = "";
+                            std::string nextstring = "";
                             if( numbOfSpaces > 0)
                             {
                                 for(int i= 0; i < numbOfSpaces; i++)
                                 {
-                                    nextString=" "+nextString;
+                                    nextstring=" "+nextstring;
                                 }
                                 cursorXPos = numbOfSpaces;
                             }
-                            std::string bracketString = nextString+"}";
-                            nextString="    "+nextString;
+                            std::string bracketstring = nextstring+"}";
+                            nextstring="    "+nextstring;
                             cursorXPos+=4;
 
-                            textInputString+=restofLine;
-                            listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
-                            listOfStrings.insert(listOfStrings.begin()+cursorYPos+1,nextString);
-                            listOfStrings.insert(listOfStrings.begin()+cursorYPos+2,bracketString);
+                            textInputstring+=restofLine;
+                            listOfstrings.insert(listOfstrings.begin()+cursorYPos,textInputstring);
+                            listOfstrings.insert(listOfstrings.begin()+cursorYPos+1,nextstring);
+                            listOfstrings.insert(listOfstrings.begin()+cursorYPos+2,bracketstring);
                             cursorYPos+=1;
                             scroll_to_pos(cursorYPos+1,cursorXPos);
                             gpe::input->inputted_keys = "";
@@ -3890,18 +3890,18 @@ namespace pawgui
                             cursorXPos+=(int)gpe::input->inputted_keys.size();
                             if( gpe::input->inputted_keys=="[" )
                             {
-                                textInputString+="]";
+                                textInputstring+="]";
                             }
                             else if( gpe::input->inputted_keys=="{" )
                             {
-                                textInputString+="}";
+                                textInputstring+="}";
                             }
                             else if( gpe::input->inputted_keys=="(" )
                             {
-                                textInputString+=")";
+                                textInputstring+=")";
                             }
-                            textInputString+=restofLine;
-                            listOfStrings.insert(listOfStrings.begin()+cursorYPos,textInputString);
+                            textInputstring+=restofLine;
+                            listOfstrings.insert(listOfstrings.begin()+cursorYPos,textInputstring);
 
                             gpe::input->inputted_keys = "";
                             if( isCodeEditor)
@@ -3979,11 +3979,11 @@ namespace pawgui
         main_settings->textAreaFindBox.x = widget_box.x+lineCountBoxWidth;
         //if( showXScroll && textXScroll!=NULL)
         {
-            //main_settings->textAreaFindBox.y = widget_box.y+textEditorButtonBar->get_height()+renderBox->h+textXScroll->widget_box.h;
+            //main_settings->textAreaFindBox.y = widget_box.y+textEditor_buttonBar->get_height()+renderBox->h+textXScroll->widget_box.h;
         }
         //else
         {
-            main_settings->textAreaFindBox.y = widget_box.y+textEditorButtonBar->get_height()+renderBox->h;
+            main_settings->textAreaFindBox.y = widget_box.y+textEditor_buttonBar->get_height()+renderBox->h;
         }
         main_settings->textAreaFindBox.w = widget_box.w-lineCountBoxWidth;
 
@@ -3992,41 +3992,39 @@ namespace pawgui
         {
         //find
         case search_mode::find_text:
-            if( main_search_controller->findTextStringBox->has_content() )
+            if( main_search_controller->findTextstringBox->has_content() )
             {
-                if( main_search_controller->findTextStringBox->was_submitted() || main_search_controller->findButton->is_clicked() )
+                if( main_search_controller->findTextstringBox->was_submitted() || main_search_controller->find_button->is_clicked() )
                 {
-                    if( find_string(main_search_controller->findTextStringBox->get_string(),main_search_controller->findMatchCase->is_clicked(),false)==false )
+                    if( find_string(main_search_controller->findTextstringBox->get_string(),main_search_controller->findMatchCase->is_clicked(),false)==false )
                     {
                         cursorXPos = 0;
                         cursorYPos = 0;
                         lineStartXPos = 0;
                         lineStartYPos = 0;
-                        if( find_string(main_search_controller->findTextStringBox->get_string(),true,main_search_controller->findMatchCase->is_clicked(),false)==false)
+                        if( find_string(main_search_controller->findTextstringBox->get_string(),true,main_search_controller->findMatchCase->is_clicked(),false)==false)
                         {
-                            main_overlay_system->update_temporary_message("Searched for","["+main_search_controller->findTextStringBox->get_string()+"]","Unable to Find String");
+                            main_overlay_system->update_temporary_message("Searched for","["+main_search_controller->findTextstringBox->get_string()+"]","Unable to Find string");
                         }
                     }
                     main_search_controller->showFindAllResults = false;
                 }
                 /*
-                else if( main_search_controller->findAllButton->is_clicked() )
+                else if( main_search_controller->findAll_button->is_clicked() )
                 {
-                    findAllResult = find_all_strings(main_search_controller->findTextStringBox->get_string(),main_search_controller->findMatchCase->is_clicked() );
+                    findAllResult = find_all_strings(main_search_controller->findTextstringBox->get_string(),main_search_controller->findMatchCase->is_clicked() );
                     displayMessageTitle = "Substring Search";
-                    displayMessageSubtitle = main_search_controller->findTextStringBox->get_string();
+                    displayMessageSubtitle = main_search_controller->findTextstringBox->get_string();
 
                     if( findAllResult > 0)
                     {
-                        main_loader_display->update_messages( "Replacing" , main_search_controller->findTextStringBox->get_string(), "Found "+ stg_ex::int_to_string(findAllResult)+" results" );
                         main_search_controller->showFindAllResults = true;
                     }
                     else
                     {
-                        main_loader_display->update_messages( "Replacing" , main_search_controller->findTextStringBox->get_string(), "No matches found");
                         main_search_controller->showFindAllResults = false;
                     }
-                    main_overlay_system->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessageString,5);
+                    main_overlay_system->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessagestring,5);
                 }
                 */
             }
@@ -4034,20 +4032,20 @@ namespace pawgui
 
         //goto line
         case search_mode::goto_line:
-            //main_search_controller->goToLineStringBox->set_string("1");
+            //main_search_controller->goToLinestringBox->set_string("1");
 
-            if( (int)listOfStrings.size() > 0)
+            if( (int)listOfstrings.size() > 0)
             {
-                main_search_controller->goToLineStringBox->descriptionText = "Go To Line: 1 - "+ stg_ex::int_to_string( get_line_count() ) ;
+                main_search_controller->goToLinestringBox->descriptionText = "Go To Line: 1 - "+ stg_ex::int_to_string( get_line_count() ) ;
             }
             else
             {
-                main_search_controller->goToLineStringBox->descriptionText = "Go To Line: ";
+                main_search_controller->goToLinestringBox->descriptionText = "Go To Line: ";
             }
 
-            if( ( main_search_controller->goToLineStringBox->was_submitted() || main_search_controller->goToButton->is_clicked() ) &&  main_search_controller->goToLineStringBox->is_valid() )
+            if( ( main_search_controller->goToLinestringBox->was_submitted() || main_search_controller->goTo_button->is_clicked() ) &&  main_search_controller->goToLinestringBox->is_valid() )
             {
-                scroll_to_pos(main_search_controller->goToLineStringBox->get_held_number()-1,0);
+                scroll_to_pos(main_search_controller->goToLinestringBox->get_held_number()-1,0);
             }
             break;
 
@@ -4055,73 +4053,62 @@ namespace pawgui
         case search_mode::replace_text:
             if( !isReadOnly)
             {
-                if( main_search_controller->findTextStringBox->has_content() )
+                if( main_search_controller->findTextstringBox->has_content() )
                 {
-                    if( main_search_controller->findTextStringBox->was_submitted() || main_search_controller->findButton->is_clicked() )
+                    if( main_search_controller->findTextstringBox->was_submitted() || main_search_controller->find_button->is_clicked() )
                     {
-                        if( find_string(main_search_controller->findTextStringBox->get_string(),true,main_search_controller->findMatchCase->is_clicked(),false)==false )
+                        if( find_string(main_search_controller->findTextstringBox->get_string(),true,main_search_controller->findMatchCase->is_clicked(),false)==false )
                         {
                             cursorXPos = 0;
                             cursorYPos = 0;
                             lineStartXPos = 0;
                             lineStartYPos = 0;
-                            if( find_string(main_search_controller->findTextStringBox->get_string(),true,main_search_controller->findMatchCase->is_clicked(),false)==false)
+                            if( find_string(main_search_controller->findTextstringBox->get_string(),true,main_search_controller->findMatchCase->is_clicked(),false)==false)
                             {
-                                main_overlay_system->update_temporary_message("Searched for","["+main_search_controller->findTextStringBox->get_string()+"]","Unable to Find String");
+                                main_overlay_system->update_temporary_message("Searched for","["+main_search_controller->findTextstringBox->get_string()+"]","Unable to Find string");
                             }
                         }
                         main_search_controller->showFindAllResults = false;
                     }
                     /*
-                    else if( main_search_controller->findAllButton->is_clicked() )
+                    else if( main_search_controller->findAll_button->is_clicked() )
                     {
-                        findAllResult = find_all_strings(main_search_controller->findTextStringBox->get_string(),main_search_controller->findMatchCase->is_clicked() );
+                        findAllResult = find_all_strings(main_search_controller->findTextstringBox->get_string(),main_search_controller->findMatchCase->is_clicked() );
                         displayMessageTitle = "Substring Search";
-                        displayMessageSubtitle = main_search_controller->findTextStringBox->get_string();
+                        displayMessageSubtitle = main_search_controller->findTextstringBox->get_string();
 
 
                         if( findAllResult > 0)
                         {
-                            main_loader_display->update_messages( "Replacing" , needle, stg_ex::int_to_string(replaceCount)+" times");
                             main_search_controller->showFindAllResults = true;
                         }
                         else
                         {
-                            main_loader_display->update_messages( "Replacing" , needle, "No matches found");
 
                             main_search_controller->showFindAllResults = false;
                         }
-                        main_overlay_system->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessageString,15);
+                        main_overlay_system->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessagestring,15);
                     }
                     */
-                    else if( main_search_controller->replaceTextStringBox->has_content() )
+                    else if( main_search_controller->replaceTextstringBox->has_content() )
                     {
-                        if( main_search_controller->replaceTextStringBox->was_submitted() || main_search_controller->replaceButton->is_clicked() )
+                        if( main_search_controller->replaceTextstringBox->was_submitted() || main_search_controller->replace_button->is_clicked() )
                         {
                             main_search_controller->showFindAllResults = false;
                         }
-                        else if( main_search_controller->replaceAllButton->is_clicked() )
+                        else if( main_search_controller->replaceAll_button->is_clicked() )
                         {
                             if( display_prompt_message("Warning!","All copies of the text will be replaced. Are you sure you want to continue this operation?")==display_query_yes )
                             {
-                                findAllResult = find_all_strings(main_search_controller->findTextStringBox->get_string(),true);
-                                if( main_loader_display != NULL )
-                                {
-                                    main_loader_display->update_messages( "Replacing Substring", main_search_controller->findTextStringBox->get_string(),"With ["+main_search_controller->replaceTextStringBox->get_string()+"]"  );
-                                }
+                                findAllResult = find_all_strings(main_search_controller->findTextstringBox->get_string(),true);
 
                                 if( findAllResult > 0)
                                 {
-                                    int replaceCount = replace_all_found( main_search_controller->findTextStringBox->get_string(), main_search_controller->replaceTextStringBox->get_string() ) ;
-                                    if( main_loader_display != NULL )
-                                    {
-                                        main_loader_display->update_messages( "Replaced Substring", main_search_controller->findTextStringBox->get_string(), stg_ex::int_to_string( replaceCount )+" times" );
-                                    }
+                                    int replaceCount = replace_all_found( main_search_controller->findTextstringBox->get_string(), main_search_controller->replaceTextstringBox->get_string() ) ;
                                     main_search_controller->showFindAllResults = true;
                                 }
                                 else
                                 {
-                                    main_loader_display->update_messages( "Replaced Substring", main_search_controller->findTextStringBox->get_string(), "No matches found" );
                                     main_search_controller->showFindAllResults = false;
                                 }
                             }
@@ -4184,7 +4171,7 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( view_space!=NULL && cam!=NULL && textEditorButtonBar!=NULL && has_content() )
+        if( view_space!=NULL && cam!=NULL && textEditor_buttonBar!=NULL && has_content() )
         {
             int mostCharactersOfText = get_most_characters_used();
             if( mostCharactersOfText > charactersWithinView && showYScroll )
@@ -4193,7 +4180,7 @@ namespace pawgui
             }
             int i = 0, j = 0;
             int parsedTokensCount = 0;
-            std::string currStringToRender = "";
+            std::string currstringToRender = "";
             std::string currentLineInView = "";
             //Processes the sythax to re-render each one
             std::string foundGPEDataType = "";
@@ -4202,8 +4189,8 @@ namespace pawgui
             std::string foundGPEKeyword = "";
             std::string foundGPEProjectFunction = "";
             std::string foundGPEProjectKeyword = "";
-            std::string foundSyntaxString = "";
-            int tempSynStringSize = 0;
+            std::string foundSyntaxstring = "";
+            int tempSynstringSize = 0;
             int currPosToParse = 0, lineEnd = 0;
             gpe::color *color = NULL;
             int textRenderXPos = 0, textRenderYPos = 0;
@@ -4212,7 +4199,7 @@ namespace pawgui
             bool isInSingleQuoteMode = false;
             int minLineToRender = std::max( (int)lineStartYPos-50,0);
             int intLineStart = (int)lineStartYPos;
-            int maxLineToRender = std::min( (int)lineStartYPos+(int)linesWithinView,(int)listOfStrings.size()-1);
+            int maxLineToRender = std::min( (int)lineStartYPos+(int)linesWithinView,(int)listOfstrings.size()-1);
             int endBlockCommentPos = 0;
             int endDQuoteCommentPos = 0;
             int endSQuoteCommentPos = 0;
@@ -4223,32 +4210,32 @@ namespace pawgui
             parsed_text * tempParseTextToAdd = new parsed_text(-1, -1);
 
             //Finds the previous mode of  the editor up to 20 lines to the current lineStartYPos
-            for( i=minLineToRender; i < intLineStart && i < (int)listOfStrings.size(); i++)
+            for( i=minLineToRender; i < intLineStart && i < (int)listOfstrings.size(); i++)
             {
-                currStringToRender = listOfStrings[i];
+                currstringToRender = listOfstrings[i];
                 currPosToParse = 0;
-                lineEnd = (int)currStringToRender.size();
+                lineEnd = (int)currstringToRender.size();
                 while (currPosToParse < lineEnd)
                 {
                     if( isInBlockCommentMode==false && isInfloatQuoteMode==false && isInSingleQuoteMode==false)
                     {
                         if (currPosToParse < lineEnd)
                         {
-                            if (currPosToParse+1<lineEnd && currStringToRender[currPosToParse] == '/' && currPosToParse + 1 < lineEnd && currStringToRender[currPosToParse + 1] == '/' )
+                            if (currPosToParse+1<lineEnd && currstringToRender[currPosToParse] == '/' && currPosToParse + 1 < lineEnd && currstringToRender[currPosToParse + 1] == '/' )
                             {
                                 currPosToParse = lineEnd;
                             }
-                            else if (currPosToParse+1<lineEnd && currStringToRender[currPosToParse] == '/' && currStringToRender[currPosToParse + 1] == '*' )
+                            else if (currPosToParse+1<lineEnd && currstringToRender[currPosToParse] == '/' && currstringToRender[currPosToParse + 1] == '*' )
                             {
                                 isInBlockCommentMode = true;
                                 currPosToParse+=2;
                             }
-                            else if(currStringToRender[currPosToParse] == '"')
+                            else if(currstringToRender[currPosToParse] == '"')
                             {
                                 isInfloatQuoteMode = true;
                                 currPosToParse++;
                             }
-                            else if(currStringToRender[currPosToParse] == '\'')
+                            else if(currstringToRender[currPosToParse] == '\'')
                             {
                                 isInSingleQuoteMode = true;
                                 currPosToParse++;
@@ -4262,7 +4249,7 @@ namespace pawgui
 
                     if( isInBlockCommentMode)
                     {
-                        endBlockCommentPos = currStringToRender.find("*/");
+                        endBlockCommentPos = currstringToRender.find("*/");
                         if( endBlockCommentPos==(int)std::string::npos)
                         {
                             currPosToParse = lineEnd;
@@ -4275,7 +4262,7 @@ namespace pawgui
                     }
                     else if( isInfloatQuoteMode)
                     {
-                        endDQuoteCommentPos = currStringToRender.find('"',currPosToParse);
+                        endDQuoteCommentPos = currstringToRender.find('"',currPosToParse);
                         if( endDQuoteCommentPos==(int)std::string::npos)
                         {
                             currPosToParse = lineEnd;
@@ -4288,7 +4275,7 @@ namespace pawgui
                     }
                     else if( isInSingleQuoteMode)
                     {
-                        endSQuoteCommentPos = currStringToRender.find("'",currPosToParse);
+                        endSQuoteCommentPos = currstringToRender.find("'",currPosToParse);
                         if( endSQuoteCommentPos==(int)std::string::npos)
                         {
                             currPosToParse = lineEnd;
@@ -4359,10 +4346,10 @@ namespace pawgui
                     projectKeywordLineText->reset_self();
                 }
 
-                currStringToRender = listOfStrings[i];
+                currstringToRender = listOfstrings[i];
                 currPosToParse = 0;
 
-                lineEnd = (int)currStringToRender.size();
+                lineEnd = (int)currstringToRender.size();
 
                 endBlockCommentPos=(int)std::string::npos;
                 endDQuoteCommentPos=(int)std::string::npos;
@@ -4383,47 +4370,47 @@ namespace pawgui
 
                 while (currPosToParse < lineEnd)
                 {
-                    while (currPosToParse < lineEnd && currStringToRender[currPosToParse]==' ')
+                    while (currPosToParse < lineEnd && currstringToRender[currPosToParse]==' ')
                     {
                         currPosToParse++;
                     }
                     if( isInBlockCommentMode==false && isInfloatQuoteMode==false && isInSingleQuoteMode==false)
                     {
                         /*
-                        while (currPosToParse < lineEnd && currStringToRender[currPosToParse]==' ')
+                        while (currPosToParse < lineEnd && currstringToRender[currPosToParse]==' ')
                         {
                             currPosToParse++;
                         }*/
                         if (currPosToParse < lineEnd)
                         {
-                            if (currPosToParse+1<lineEnd && currStringToRender[currPosToParse] == '/' && currPosToParse + 1 < lineEnd && currStringToRender[currPosToParse + 1] == '/' )
+                            if (currPosToParse+1<lineEnd && currstringToRender[currPosToParse] == '/' && currPosToParse + 1 < lineEnd && currstringToRender[currPosToParse + 1] == '/' )
                             {
                                 commentLineText->foundParses.push_back( new parsed_text(currPosToParse, lineEnd));
                                 currPosToParse = lineEnd;
                             }
-                            else if (currPosToParse+1<lineEnd && currStringToRender[currPosToParse] == '/' && currStringToRender[currPosToParse + 1] == '*' )
+                            else if (currPosToParse+1<lineEnd && currstringToRender[currPosToParse] == '/' && currstringToRender[currPosToParse + 1] == '*' )
                             {
                                 isInBlockCommentMode = true;
                                 mLineComment->textStart = currPosToParse;
                                 currPosToParse+=2;
                             }
-                            else if( currStringToRender[currPosToParse] == '"' )
+                            else if( currstringToRender[currPosToParse] == '"' )
                             {
                                 isInfloatQuoteMode = true;
                                 dqLineComment->textStart = currPosToParse;
                                 currPosToParse++;
                             }
-                            else if( currStringToRender[currPosToParse] == '\'' )
+                            else if( currstringToRender[currPosToParse] == '\'' )
                             {
                                 isInSingleQuoteMode = true;
                                 sqLineComment->textStart = currPosToParse;
                                 currPosToParse++;
                             }
-                            else if ( isdigit(currStringToRender[currPosToParse]) )
+                            else if ( isdigit(currstringToRender[currPosToParse]) )
                             {
                                 tempParseTextToAdd->textStart = currPosToParse;
                                 currPosToParse++;
-                                while( (currPosToParse < lineEnd && isdigit( currStringToRender[currPosToParse] )  ) || currStringToRender[currPosToParse] ==' ')
+                                while( (currPosToParse < lineEnd && isdigit( currstringToRender[currPosToParse] )  ) || currstringToRender[currPosToParse] ==' ')
                                 {
                                     currPosToParse++;
                                 }
@@ -4431,20 +4418,20 @@ namespace pawgui
                                 numberLineText->foundParses.push_back(tempParseTextToAdd);
                                 tempParseTextToAdd = new parsed_text(0, -1);
                             }
-                            else if( main_syntax_highlighter->charIsSymbol(currStringToRender[currPosToParse] ) )
+                            else if( main_syntax_highlighter->charIsSymbol(currstringToRender[currPosToParse] ) )
                             {
                                 tempParseTextToAdd->textStart = currPosToParse;
                                 currPosToParse++;
                                 commentFoundInSymbols = false;
-                                while( ( commentFoundInSymbols==false && currPosToParse < lineEnd && main_syntax_highlighter->charIsSymbol(currStringToRender[currPosToParse] ) )|| currStringToRender[currPosToParse] ==' ')
+                                while( ( commentFoundInSymbols==false && currPosToParse < lineEnd && main_syntax_highlighter->charIsSymbol(currstringToRender[currPosToParse] ) )|| currstringToRender[currPosToParse] ==' ')
                                 {
                                     if( lineEnd > currPosToParse+1)
                                     {
-                                        if( currStringToRender[currPosToParse] == '/' && (currStringToRender[currPosToParse + 1] == '/' || currStringToRender[currPosToParse + 1] == '*' ) )
+                                        if( currstringToRender[currPosToParse] == '/' && (currstringToRender[currPosToParse + 1] == '/' || currstringToRender[currPosToParse + 1] == '*' ) )
                                         {
                                             commentFoundInSymbols = true;
                                         }
-                                        else if (currStringToRender[currPosToParse] == '*' && currStringToRender[currPosToParse + 1] == '/' )
+                                        else if (currstringToRender[currPosToParse] == '*' && currstringToRender[currPosToParse + 1] == '/' )
                                         {
                                             commentFoundInSymbols = true;
                                         }
@@ -4466,8 +4453,8 @@ namespace pawgui
                             {
                                 if( main_syntax_highlighter!=NULL)
                                 {
-                                    foundGPEProjectFunction = main_syntax_highlighter->find_project_function(currStringToRender,currPosToParse);
-                                    foundGPEProjectKeyword = main_syntax_highlighter->find_project_keyword(currStringToRender,currPosToParse);
+                                    foundGPEProjectFunction = main_syntax_highlighter->find_project_function(currstringToRender,currPosToParse);
+                                    foundGPEProjectKeyword = main_syntax_highlighter->find_project_keyword(currstringToRender,currPosToParse);
                                 }
                                 if( (foundGPEProjectFunction )!="")
                                 {
@@ -4482,7 +4469,7 @@ namespace pawgui
                                         {
                                             currPosToParse++;
                                         }
-                                        foundGPEProjectFunction= main_syntax_highlighter->find_project_function(currStringToRender,currPosToParse);
+                                        foundGPEProjectFunction= main_syntax_highlighter->find_project_function(currstringToRender,currPosToParse);
                                     }
                                     tempParseTextToAdd->textEnd = currPosToParse;
                                     projectFunctionLineText->foundParses.push_back(tempParseTextToAdd);
@@ -4501,7 +4488,7 @@ namespace pawgui
                                         {
                                             currPosToParse++;
                                         }
-                                        foundGPEProjectKeyword= main_syntax_highlighter->find_project_keyword(currStringToRender,currPosToParse);
+                                        foundGPEProjectKeyword= main_syntax_highlighter->find_project_keyword(currstringToRender,currPosToParse);
                                     }
                                     tempParseTextToAdd->textEnd = currPosToParse;
                                     projectKeywordLineText->foundParses.push_back(tempParseTextToAdd);
@@ -4509,7 +4496,7 @@ namespace pawgui
                                 }
                                 else
                                 {
-                                    foundGPEDataType= main_syntax_highlighter->find_gpe_datatype(currStringToRender,currPosToParse);
+                                    foundGPEDataType= main_syntax_highlighter->find_gpe_datatype(currstringToRender,currPosToParse);
                                     if( (foundGPEDataType )!="")
                                     {
                                         tempParseTextToAdd->textStart = currPosToParse;
@@ -4523,7 +4510,7 @@ namespace pawgui
                                             {
                                                 currPosToParse++;
                                             }
-                                            foundGPEDataType= main_syntax_highlighter->find_gpe_datatype(currStringToRender,currPosToParse);
+                                            foundGPEDataType= main_syntax_highlighter->find_gpe_datatype(currstringToRender,currPosToParse);
                                         }
                                         tempParseTextToAdd->textEnd = currPosToParse;
                                         datatypeLineText->foundParses.push_back(tempParseTextToAdd);
@@ -4531,7 +4518,7 @@ namespace pawgui
                                     }
                                     else
                                     {
-                                        foundGPEFunction =main_syntax_highlighter->find_gpe_function(currStringToRender,currPosToParse);
+                                        foundGPEFunction =main_syntax_highlighter->find_gpe_function(currstringToRender,currPosToParse);
                                         if( (foundGPEFunction )!="")
                                         {
                                             tempParseTextToAdd->textStart = currPosToParse;
@@ -4545,7 +4532,7 @@ namespace pawgui
                                                 {
                                                     currPosToParse++;
                                                 }
-                                                foundGPEFunction= main_syntax_highlighter->find_gpe_function(currStringToRender,currPosToParse);
+                                                foundGPEFunction= main_syntax_highlighter->find_gpe_function(currstringToRender,currPosToParse);
                                             }
                                             tempParseTextToAdd->textEnd = currPosToParse;
                                             functionLineText->foundParses.push_back(tempParseTextToAdd);
@@ -4553,7 +4540,7 @@ namespace pawgui
                                         }
                                         else
                                         {
-                                            foundGPEVariable = main_syntax_highlighter->find_gpe_variable(currStringToRender,currPosToParse);
+                                            foundGPEVariable = main_syntax_highlighter->find_gpe_variable(currstringToRender,currPosToParse);
                                             if( (foundGPEVariable )!="")
                                             {
                                                 tempParseTextToAdd->textStart = currPosToParse;
@@ -4567,7 +4554,7 @@ namespace pawgui
                                                     {
                                                         currPosToParse++;
                                                     }
-                                                    foundGPEVariable = main_syntax_highlighter->find_gpe_variable(currStringToRender,currPosToParse);
+                                                    foundGPEVariable = main_syntax_highlighter->find_gpe_variable(currstringToRender,currPosToParse);
                                                 }
                                                 tempParseTextToAdd->textEnd = currPosToParse;
                                                 variableLineText->foundParses.push_back(tempParseTextToAdd);
@@ -4575,7 +4562,7 @@ namespace pawgui
                                             }
                                             else
                                             {
-                                                foundGPEKeyword = main_syntax_highlighter->find_gpe_keyword(currStringToRender,currPosToParse);
+                                                foundGPEKeyword = main_syntax_highlighter->find_gpe_keyword(currstringToRender,currPosToParse);
                                                 if( (foundGPEKeyword )!="")
                                                 {
                                                     tempParseTextToAdd->textStart = currPosToParse;
@@ -4589,18 +4576,18 @@ namespace pawgui
                                                         {
                                                             currPosToParse++;
                                                         }
-                                                        foundGPEKeyword = main_syntax_highlighter->find_gpe_keyword(currStringToRender,currPosToParse);
+                                                        foundGPEKeyword = main_syntax_highlighter->find_gpe_keyword(currstringToRender,currPosToParse);
                                                     }
                                                     tempParseTextToAdd->textEnd = currPosToParse;
                                                     keywordLineText->foundParses.push_back(tempParseTextToAdd);
                                                     tempParseTextToAdd = new parsed_text(-1, -1);
                                                 }
-                                                else if ( stg_ex::char_is_alpha(currStringToRender[currPosToParse],false,true) )
+                                                else if ( stg_ex::char_is_alpha(currstringToRender[currPosToParse],false,true) )
                                                 {
                                                     //color = pawgui::theme_main->text_box_font_color;
                                                     tempParseTextToAdd->textStart = currPosToParse;
                                                     currPosToParse++;
-                                                    while (currPosToParse < lineEnd && stg_ex::char_is_alnum(currStringToRender[currPosToParse],false,true) )
+                                                    while (currPosToParse < lineEnd && stg_ex::char_is_alnum(currstringToRender[currPosToParse],false,true) )
                                                     {
                                                         currPosToParse++;
                                                     }
@@ -4610,7 +4597,7 @@ namespace pawgui
                                                 }
                                                 else
                                                 {
-                                                    if(currStringToRender[currPosToParse]!=' ')
+                                                    if(currstringToRender[currPosToParse]!=' ')
                                                     {
                                                         //color = pawgui::theme_main->text_box_font_color;
                                                         //anything else is just regular text as well...
@@ -4630,7 +4617,7 @@ namespace pawgui
                     }
                     if( isInBlockCommentMode)
                     {
-                        endBlockCommentPos = currStringToRender.find("*/");
+                        endBlockCommentPos = currstringToRender.find("*/");
                         if( endBlockCommentPos==(int)std::string::npos)
                         {
                             currPosToParse = lineEnd;
@@ -4646,7 +4633,7 @@ namespace pawgui
                     }
                     else if( isInfloatQuoteMode)
                     {
-                        endDQuoteCommentPos = currStringToRender.find('"',currPosToParse);
+                        endDQuoteCommentPos = currstringToRender.find('"',currPosToParse);
                         if( endDQuoteCommentPos==(int)std::string::npos)
                         {
                             currPosToParse = lineEnd;
@@ -4662,7 +4649,7 @@ namespace pawgui
                     }
                     else if( isInSingleQuoteMode)
                     {
-                        endSQuoteCommentPos = currStringToRender.find("'",currPosToParse);
+                        endSQuoteCommentPos = currstringToRender.find("'",currPosToParse);
                         if( endSQuoteCommentPos==(int)std::string::npos)
                         {
                             currPosToParse = lineEnd;
@@ -4684,13 +4671,13 @@ namespace pawgui
                     textRenderYPos = renderBox->y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight);
 
                     color = pawgui::theme_main->text_box_font_color;
-                    normalLineText->render_tokens( font_textinput,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                    normalLineText->render_tokens( font_textinput,currstringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
                     color = pawgui::theme_main->text_box_font_number_color;
-                    numberLineText->render_tokens( font_textinput_number,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color,true );
+                    numberLineText->render_tokens( font_textinput_number,currstringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color,true );
 
                     color = pawgui::theme_main->text_box_font_symbols_color;
-                    symbolLineText->render_tokens( font_textinput_symbol,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                    symbolLineText->render_tokens( font_textinput_symbol,currstringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
                     //
                     if( colorblind_mode_on )
@@ -4701,7 +4688,7 @@ namespace pawgui
                     {
                         color = pawgui::theme_main->text_box_font_function_color;
                     }
-                    functionLineText->render_tokens( font_textinput_function,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                    functionLineText->render_tokens( font_textinput_function,currstringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
                     //
                     if( colorblind_mode_on)
@@ -4712,7 +4699,7 @@ namespace pawgui
                     {
                         color = pawgui::theme_main->text_box_font_keyword_color;
                     }
-                    keywordLineText->render_tokens( font_textinput_keyword,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                    keywordLineText->render_tokens( font_textinput_keyword,currstringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
                     if( colorblind_mode_on)
                     {
@@ -4722,7 +4709,7 @@ namespace pawgui
                     {
                         color = pawgui::theme_main->text_box_project_keyword_color;
                     }
-                    projectKeywordLineText->render_tokens( font_textinput,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                    projectKeywordLineText->render_tokens( font_textinput,currstringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
                     if( colorblind_mode_on)
                     {
@@ -4732,7 +4719,7 @@ namespace pawgui
                     {
                         color = pawgui::theme_main->text_box_project_function_color;
                     }
-                    projectFunctionLineText->render_tokens( font_textinput,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                    projectFunctionLineText->render_tokens( font_textinput,currstringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
 
 
@@ -4744,22 +4731,22 @@ namespace pawgui
                     {
                         color = pawgui::theme_main->text_box_font_variable_color;
                     }
-                    variableLineText->render_tokens( font_textinput,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                    variableLineText->render_tokens( font_textinput,currstringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
                     color = pawgui::theme_main->text_box_font_datatype_color;
-                    datatypeLineText->render_tokens( font_textinput,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                    datatypeLineText->render_tokens( font_textinput,currstringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
                     color = pawgui::theme_main->text_box_font_datatype_color;
-                    datatypeLineText->render_tokens( font_textinput,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                    datatypeLineText->render_tokens( font_textinput,currstringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
                     color = pawgui::theme_main->text_box_font_squote_color;
-                    sQuoteLineText->render_tokens( font_textinput_quote,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                    sQuoteLineText->render_tokens( font_textinput_quote,currstringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
                     color = pawgui::theme_main->text_box_font_dquote_color;
-                    dQuoteLineText->render_tokens( font_textinput_quote,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                    dQuoteLineText->render_tokens( font_textinput_quote,currstringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
 
                     color = pawgui::theme_main->text_box_font_comment_color;
-                    commentLineText->render_tokens( font_textinput_comment,currStringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
+                    commentLineText->render_tokens( font_textinput_comment,currstringToRender,textRenderXPos,textRenderYPos,lineStartXPos,lineStartXPos+charactersWithinView,color );
                 }
             }
 
@@ -4798,7 +4785,7 @@ namespace pawgui
                 gpe::gcanvas->render_rect(lineCountBox,pawgui::theme_main->text_box_outer_color,false);
                 int lineSize = (editorZoomLevel*defaultLineHeight);
                 int lineYPos = lineCountBox->y;
-                for(  int i=lineStartYPos; i <= lineStartYPos+linesWithinView && i < (int)listOfStrings.size(); i++)
+                for(  int i=lineStartYPos; i <= lineStartYPos+linesWithinView && i < (int)listOfstrings.size(); i++)
                 {
                     if( i == cursorYPos)
                     {
@@ -4818,25 +4805,25 @@ namespace pawgui
         cam = gpe::camera_find(cam);
         if( view_space!=NULL && cam!=NULL && has_content() )
         {
-            gpe::color * textColor = pawgui::theme_main->text_box_font_color;
+            gpe::color * text_color = pawgui::theme_main->text_box_font_color;
             int foundSpecialLogPos = 0;
             int subCopyStartPos = 0;
             std::string stringToRender = "";
-            for( int iLine=lineStartYPos; iLine <= lineStartYPos+linesWithinView && iLine < (int)listOfStrings.size(); iLine++)
+            for( int iLine=lineStartYPos; iLine <= lineStartYPos+linesWithinView && iLine < (int)listOfstrings.size(); iLine++)
             {
-                stringToRender = listOfStrings[ iLine ];
+                stringToRender = listOfstrings[ iLine ];
                 if( (int)stringToRender.size() > lineStartXPos )
                 {
                     subCopyStartPos = 0;
 
-                    textColor = pawgui::theme_main->text_box_font_color;
+                    text_color = pawgui::theme_main->text_box_font_color;
                     if( isTextLog)
                     {
-                        textColor = pawgui::theme_main->text_box_font_color;
+                        text_color = pawgui::theme_main->text_box_font_color;
                         foundSpecialLogPos = stringToRender.find("Error:");
                         if( foundSpecialLogPos!=(int)std::string::npos)
                         {
-                            textColor = pawgui::theme_main->text_box_font_color;
+                            text_color = pawgui::theme_main->text_box_font_color;
                             subCopyStartPos =7;
                         }
                         else
@@ -4844,7 +4831,7 @@ namespace pawgui
                             foundSpecialLogPos = stringToRender.find("Warning:");
                             if( foundSpecialLogPos!=(int)std::string::npos)
                             {
-                                textColor = pawgui::theme_main->text_box_font_keyword_color;
+                                text_color = pawgui::theme_main->text_box_font_keyword_color;
                                 subCopyStartPos =8;
                             }
                             else
@@ -4852,7 +4839,7 @@ namespace pawgui
                                 foundSpecialLogPos = stringToRender.find("Comment:");
                                 if( foundSpecialLogPos!=(int)std::string::npos)
                                 {
-                                    textColor = pawgui::theme_main->text_box_font_comment_color;
+                                    text_color = pawgui::theme_main->text_box_font_comment_color;
                                     subCopyStartPos =8;
                                 }
                             }
@@ -4861,7 +4848,7 @@ namespace pawgui
                     stringToRender = stg_ex::get_substring(stringToRender,lineStartXPos,charactersWithinView );
                     //gpe::error_log->report("Rendering ["+stringToRender+"]..." );
                     gpe::gfs->render_text( renderBox->x+2,renderBox->y+4+(iLine-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                                     stringToRender,textColor,font_textinput,gpe::fa_left,gpe::fa_top,255 );
+                                     stringToRender,text_color,font_textinput,gpe::fa_left,gpe::fa_top,255 );
                 }
             }
         }
@@ -4875,9 +4862,9 @@ namespace pawgui
         if( view_space!=NULL &&  cam!=NULL  )
         {
             int subCopyStartPos = 0;
-            if( (int)listOfStrings.size()==0)
+            if( (int)listOfstrings.size()==0)
             {
-                listOfStrings.push_back("");
+                listOfstrings.push_back("");
                 reset_self();
             }
 
@@ -4942,14 +4929,14 @@ namespace pawgui
 
                     if(minHighlightYPos !=maxHighlightYPos)
                     {
-                        if( (int)listOfStrings.size() > minHighlightYPos && minHighlightYPos>=lineStartYPos && minHighlightYPos < lineStartYPos+linesWithinView )
+                        if( (int)listOfstrings.size() > minHighlightYPos && minHighlightYPos>=lineStartYPos && minHighlightYPos < lineStartYPos+linesWithinView )
                         {
-                            if( (int)listOfStrings.at(minHighlightYPos).size() > lineStartXPos && ( minHighlightXPos <= lineStartXPos+charactersWithinView) )
+                            if( (int)listOfstrings.at(minHighlightYPos).size() > lineStartXPos && ( minHighlightXPos <= lineStartXPos+charactersWithinView) )
                             {
                                 gpe::gcanvas->render_rectangle(
                                     renderBox->x+2+std::max(0, calculatedMax)*TEXTBOX_FONT_SIZE_WIDTH,
                                     renderBox->y+(minHighlightYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                                    renderBox->x+2+( std::min(mostCharactersOfText,(int)listOfStrings.at(minHighlightYPos).size() )-lineStartXPos+1)*TEXTBOX_FONT_SIZE_WIDTH,
+                                    renderBox->x+2+( std::min(mostCharactersOfText,(int)listOfstrings.at(minHighlightYPos).size() )-lineStartXPos+1)*TEXTBOX_FONT_SIZE_WIDTH,
                                     renderBox->y+(minHighlightYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
                                     pawgui::theme_main->text_box_highlight_color,false);
                             }
@@ -4966,16 +4953,16 @@ namespace pawgui
 
                         if( maxHighlightYPos-minHighlightYPos > 1)
                         {
-                            for( i = minHighlightYPos+1; i <=maxHighlightYPos-1 && i < (int)listOfStrings.size() && i <= lineStartYPos+linesWithinView; i++ )
+                            for( i = minHighlightYPos+1; i <=maxHighlightYPos-1 && i < (int)listOfstrings.size() && i <= lineStartYPos+linesWithinView; i++ )
                             {
                                 if( i >=lineStartYPos  && minHighlightYPos < lineStartYPos+linesWithinView)
                                 {
-                                    if( (int)listOfStrings[i].size() > lineStartXPos )
+                                    if( (int)listOfstrings[i].size() > lineStartXPos )
                                     {
                                         gpe::gcanvas->render_rectangle(
                                             renderBox->x+2,
                                             renderBox->y+(i-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
-                                            renderBox->x+2+( std::min( mostCharactersOfText,(int)listOfStrings[i].size() )-lineStartXPos )*TEXTBOX_FONT_SIZE_WIDTH,
+                                            renderBox->x+2+( std::min( mostCharactersOfText,(int)listOfstrings[i].size() )-lineStartXPos )*TEXTBOX_FONT_SIZE_WIDTH,
                                             renderBox->y+(i-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),pawgui::theme_main->text_box_highlight_color,false);
                                     }
                                     else
@@ -4990,9 +4977,9 @@ namespace pawgui
                             }
                         }
 
-                        if( (int)listOfStrings.size() > maxHighlightYPos && maxHighlightYPos>=lineStartYPos  && maxHighlightYPos < lineStartYPos+linesWithinView )
+                        if( (int)listOfstrings.size() > maxHighlightYPos && maxHighlightYPos>=lineStartYPos  && maxHighlightYPos < lineStartYPos+linesWithinView )
                         {
-                            std::string lastStrToHighlight = listOfStrings.at(maxHighlightYPos);
+                            std::string lastStrToHighlight = listOfstrings.at(maxHighlightYPos);
                             if( (int)lastStrToHighlight.size() > lineStartXPos && maxHighlightXPos >= lineStartXPos )
                             {
                                 gpe::gcanvas->render_rectangle(
@@ -5030,7 +5017,7 @@ namespace pawgui
                     }
                 }
                 //Renders the texts
-                std::string currStringToRender = "";
+                std::string currstringToRender = "";
                 if( main_settings->showTextEditorSyntaxHightlight && isCodeEditor)
                 {
                     //Codes
@@ -5055,18 +5042,18 @@ namespace pawgui
                 }
 
                 //attempt to draw the cursor
-                if( cursorYPos < (int) listOfStrings.size() )
+                if( cursorYPos < (int) listOfstrings.size() )
                 {
-                    currentLineInView = listOfStrings[cursorYPos];
+                    currentLineInView = listOfstrings[cursorYPos];
                 }
             }
 
 
 
             gpe::gcanvas->render_rect( renderBox,pawgui::theme_main->text_box_outline_color,true);
-            if( !isReadOnly && textEditorButtonBar!=NULL && showButtonBar )
+            if( !isReadOnly && textEditor_buttonBar!=NULL && show_buttonBar )
             {
-                textEditorButtonBar->render_self( view_space,cam);
+                textEditor_buttonBar->render_self( view_space,cam);
             }
 
             //Renders the linebox seen on the left
@@ -5130,17 +5117,17 @@ namespace pawgui
                         if( cursorYPos+suggestedTextMaxInViewCount <= lineStartYPos+linesWithinView && suggestedTextMaxInViewCount < linesWithinView )
                         {
                             suggestionRenderYPos +=(cursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight);
-                            suggestionRenderYPos+=textEditorButtonBar->get_height();
+                            suggestionRenderYPos+=textEditor_buttonBar->get_height();
                         }
                         else if( suggestedTextMaxInViewCount >= (int)suggestedCompilerTerms.size() )
                         {
                             suggestionRenderYPos += (cursorYPos-lineStartYPos-suggestedTextMaxInViewCount)*(editorZoomLevel*defaultLineHeight);
-                            suggestionRenderYPos+=textEditorButtonBar->get_height();
+                            suggestionRenderYPos+=textEditor_buttonBar->get_height();
                         }
                         else
                         {
                             suggestionRenderYPos+=(cursorYPos-lineStartYPos-(int)suggestedCompilerTerms.size() )*(editorZoomLevel*defaultLineHeight);
-                            suggestionRenderYPos+=textEditorButtonBar->get_height();
+                            suggestionRenderYPos+=textEditor_buttonBar->get_height();
                         }
 
                         int iSuggestedEntry = 0;
@@ -5153,20 +5140,20 @@ namespace pawgui
                                 {
                                     if( (int)cTerm->termScope.size() > 0 && cTerm->termScope!="User Global" )
                                     {
-                                        fullPhraseToRender = cTerm->termFunctionReturnType+" "+cTerm->termScope+"."+cTerm->termString+"("+cTerm->get_parameters()+")";
+                                        fullPhraseToRender = cTerm->termFunctionReturnType+" "+cTerm->termScope+"."+cTerm->termstring+"("+cTerm->get_parameters()+")";
                                     }
                                     else
                                     {
-                                        fullPhraseToRender = cTerm->termFunctionReturnType+" "+cTerm->termString+"("+cTerm->get_parameters()+")";
+                                        fullPhraseToRender = cTerm->termFunctionReturnType+" "+cTerm->termstring+"("+cTerm->get_parameters()+")";
                                     }
                                 }
                                 else if( (int)cTerm->termScope.size() > 0 && cTerm->termScope!="User Global" )
                                 {
-                                    fullPhraseToRender = cTerm->termScope+"."+cTerm->termString;
+                                    fullPhraseToRender = cTerm->termScope+"."+cTerm->termstring;
                                 }
                                 else
                                 {
-                                    fullPhraseToRender = cTerm->termString;
+                                    fullPhraseToRender = cTerm->termstring;
                                 }
                                 if( iSuggestedEntry==iSuggestionPos)
                                 {
@@ -5197,7 +5184,7 @@ namespace pawgui
     }
 
 
-    int widget_text_editor::replace_all_found(std::string strToReplace, std::string newString)
+    int widget_text_editor::replace_all_found(std::string strToReplace, std::string newstring)
     {
         widget_text_anchor * cAnchor = NULL;
         std::string tempLine = "";
@@ -5209,13 +5196,13 @@ namespace pawgui
             cAnchor = anchorPositions.at( iReplace);
             if( cAnchor!=NULL)
             {
-                if( (int)listOfStrings.size() > cAnchor->lineNumber )
+                if( (int)listOfstrings.size() > cAnchor->lineNumber )
                 {
-                    tempLine = listOfStrings.at( cAnchor->lineNumber);
+                    tempLine = listOfstrings.at( cAnchor->lineNumber);
                     if( (int)tempLine.size() >= cAnchor->characterNumber+(int)strToReplace.size() )
                     {
-                        changedLine = tempLine.substr(0,cAnchor->characterNumber)+newString+tempLine.substr(cAnchor->characterNumber+(int)strToReplace.size() );
-                        listOfStrings[cAnchor->lineNumber] = changedLine;
+                        changedLine = tempLine.substr(0,cAnchor->characterNumber)+newstring+tempLine.substr(cAnchor->characterNumber+(int)strToReplace.size() );
+                        listOfstrings[cAnchor->lineNumber] = changedLine;
                         copiesDeleted++;
                     }
                 }
@@ -5275,22 +5262,22 @@ namespace pawgui
         selectionCursorYPos = 0;
         selectionEndCursorXPos = 0;
         selectionEndCursorYPos = 0;
-        if( listOfStrings.size() <=0)
+        if( listOfstrings.size() <=0)
         {
-            listOfStrings.push_back("");
+            listOfstrings.push_back("");
             cursorXPos = 0;
             cursorYPos = 0;
         }
-        if( cursorYPos >= (int)listOfStrings.size() )
+        if( cursorYPos >= (int)listOfstrings.size() )
         {
 
-            cursorYPos= (int)listOfStrings.size() - 1;
-            lineToEdit = listOfStrings[cursorYPos];
+            cursorYPos= (int)listOfstrings.size() - 1;
+            lineToEdit = listOfstrings[cursorYPos];
             cursorXPos = (int)lineToEdit.size();
         }
-        else if( cursorXPos > (int)listOfStrings[cursorYPos].size() )
+        else if( cursorXPos > (int)listOfstrings[cursorYPos].size() )
         {
-            cursorXPos = (int)listOfStrings[cursorYPos].size();
+            cursorXPos = (int)listOfstrings[cursorYPos].size();
         }
         showCursor = true;
         cursorTimer = 0;
@@ -5425,10 +5412,10 @@ namespace pawgui
         selectionCursorYPos = 0;
         selectionEndCursorXPos = 0;
         selectionEndCursorYPos = 0;
-        int listSize = (int)listOfStrings.size() ;
+        int listSize = (int)listOfstrings.size() ;
         if( listSize > 0)
         {
-            std::string tempStr = listOfStrings.back();
+            std::string tempStr = listOfstrings.back();
             selectionEndCursorYPos = listSize - 1;
             if( (int)tempStr.size() > 0)
             {
@@ -5445,9 +5432,9 @@ namespace pawgui
         {
             showYScroll = true;
             lineStartYPos = lineNumberIn;
-            if( lineStartYPos+linesWithinView >= (int)listOfStrings.size() )
+            if( lineStartYPos+linesWithinView >= (int)listOfstrings.size() )
             {
-                lineStartYPos =  (int)listOfStrings.size() - linesWithinView;
+                lineStartYPos =  (int)listOfstrings.size() - linesWithinView;
             }
             if( lineStartYPos < 0)
             {
@@ -5485,7 +5472,7 @@ namespace pawgui
 
     void widget_text_editor::scroll_to_cursor()
     {
-        if( cursorYPos >= lineStartYPos && cursorYPos <= lineStartYPos+linesWithinView && cursorYPos < (int)listOfStrings.size() )
+        if( cursorYPos >= lineStartYPos && cursorYPos <= lineStartYPos+linesWithinView && cursorYPos < (int)listOfstrings.size() )
         {
             if( cursorXPos < lineStartXPos || cursorXPos > lineStartXPos+charactersWithinView)
             {
@@ -5517,21 +5504,21 @@ namespace pawgui
     void widget_text_editor::set_read_only()
     {
         isReadOnly = true;
-        textEditorButtonBar->set_height(0);
+        textEditor_buttonBar->set_height(0);
     }
 
     void widget_text_editor::set_writeable()
     {
         isReadOnly = true;
-        textEditorButtonBar->set_height( 24 );
+        textEditor_buttonBar->set_height( 32 );
     }
 
-    void widget_text_editor::set_string(std::string newString)
+    void widget_text_editor::set_string(std::string newstring)
     {
 
     }
 
-    void widget_text_editor::set_placeholder(std::string newString)
+    void widget_text_editor::set_placeholder(std::string newstring)
     {
 
     }
@@ -5539,7 +5526,7 @@ namespace pawgui
     void widget_text_editor::set_xcursor(int newPos)
     {
         cursorXPos = newPos;
-        std::string cLine = listOfStrings[cursorYPos];
+        std::string cLine = listOfstrings[cursorYPos];
         if( cursorXPos < 0 || cursorXPos < (int)cLine.size() )
         {
             cursorXPos = 0;
@@ -5550,10 +5537,10 @@ namespace pawgui
 
     void widget_text_editor::set_ycursor(int newPos)
     {
-        if( newPos >=0 && newPos < (int)listOfStrings.size() )
+        if( newPos >=0 && newPos < (int)listOfstrings.size() )
         {
             cursorYPos = newPos;
-            std::string cLine = listOfStrings.at(newPos);
+            std::string cLine = listOfstrings.at(newPos);
             if( cursorXPos < 0 || cursorXPos < (int)cLine.size() )
             {
                 cursorXPos = 0;
@@ -5582,17 +5569,17 @@ namespace pawgui
                     if( cursorYPos+main_syntax_highlighter->suggestedTextMaxInViewCount <= lineStartYPos+linesWithinView && main_syntax_highlighter->suggestedTextMaxInViewCount < linesWithinView )
                     {
                         suggestionRenderYPos +=(cursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight);
-                        suggestionRenderYPos+=textEditorButtonBar->get_height();
+                        suggestionRenderYPos+=textEditor_buttonBar->get_height();
                     }
                     else if( main_syntax_highlighter->suggestedTextMaxInViewCount >= (int)main_syntax_highlighter->suggestedCompilerTerms.size() )
                     {
                         suggestionRenderYPos += (cursorYPos-lineStartYPos-main_syntax_highlighter->suggestedTextMaxInViewCount)*(editorZoomLevel*defaultLineHeight);
-                        suggestionRenderYPos+=textEditorButtonBar->get_height();
+                        suggestionRenderYPos+=textEditor_buttonBar->get_height();
                     }
                     else
                     {
                         suggestionRenderYPos+=(cursorYPos-lineStartYPos-(int)main_syntax_highlighter->suggestedCompilerTerms.size() )*(editorZoomLevel*defaultLineHeight);
-                        suggestionRenderYPos+=textEditorButtonBar->get_height();
+                        suggestionRenderYPos+=textEditor_buttonBar->get_height();
                     }
                 }
                 main_syntax_highlighter->highlightedTermXPos = renderBox->x+view_space->x;
@@ -5648,26 +5635,26 @@ namespace pawgui
             lineCountBox->h = 0;
         }
 
-        if( textEditorButtonBar!=NULL)
+        if( textEditor_buttonBar!=NULL)
         {
-            textEditorButtonBar->set_coords(widget_box.x,widget_box.y);
+            textEditor_buttonBar->set_coords(widget_box.x,widget_box.y);
             //sets the buttonbar to the width of the text editor( minus width of yScroll width[16 ).
-            textEditorButtonBar->set_width(widget_box.w);
+            textEditor_buttonBar->set_width(widget_box.w);
             if( !isReadOnly)
             {
-                textEditorButtonBar->set_height(24);
-                textEditorButtonBar->enable_self();
+                textEditor_buttonBar->set_height( 32 );
+                textEditor_buttonBar->enable_self();
             }
             else
             {
-                textEditorButtonBar->set_height(0);
-                textEditorButtonBar->disable_self();
+                textEditor_buttonBar->set_height(0);
+                textEditor_buttonBar->disable_self();
             }
 
             renderBox->x = widget_box.x+lineCountBoxWidth -cam->x;
-            renderBox->y = widget_box.y+ textEditorButtonBar->get_height() -cam->y;
-            lineCountBox->y = widget_box.y + textEditorButtonBar->get_height() - cam->y;
-            lineCountBox->h = renderBox->h = widget_box.h - textEditorButtonBar->get_height();
+            renderBox->y = widget_box.y+ textEditor_buttonBar->get_height() -cam->y;
+            lineCountBox->y = widget_box.y + textEditor_buttonBar->get_height() - cam->y;
+            lineCountBox->h = renderBox->h = widget_box.h - textEditor_buttonBar->get_height();
         }
         else
         {
@@ -5724,7 +5711,7 @@ namespace pawgui
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
         find_mouse_cursor(&cursorXPos, &cursorYPos, view_space, cam);
-        lineToEdit = listOfStrings[cursorYPos];
+        lineToEdit = listOfstrings[cursorYPos];
         showCursor = true;
         cursorTimer = 0;
         adjust_fortabs();
@@ -5737,33 +5724,33 @@ namespace pawgui
             std::string nestedTabsStr = generate_tabs( leftTabAmount  );
             if( fileTarget->is_open() )
             {
-                int strSize = (int)listOfStrings.size();
+                int strSize = (int)listOfstrings.size();
 
                 for( int i = 0; i < strSize-1; i++)
                 {
                     if( useNewLines)
                     {
-                        *fileTarget << nestedTabsStr+listOfStrings[i] << "\n";
+                        *fileTarget << nestedTabsStr+listOfstrings[i] << "\n";
                     }
                     else
                     {
-                        *fileTarget <<nestedTabsStr+listOfStrings[i] << " ";
+                        *fileTarget <<nestedTabsStr+listOfstrings[i] << " ";
                     }
                 }
                 if( useNewLines)
                 {
                     if( useLastNewLine)
                     {
-                        *fileTarget << nestedTabsStr+listOfStrings[strSize-1] << "\n";
+                        *fileTarget << nestedTabsStr+listOfstrings[strSize-1] << "\n";
                     }
                     else
                     {
-                        *fileTarget << nestedTabsStr+listOfStrings[strSize-1];
+                        *fileTarget << nestedTabsStr+listOfstrings[strSize-1];
                     }
                 }
                 else
                 {
-                    *fileTarget <<nestedTabsStr+listOfStrings[strSize-1] << " ";
+                    *fileTarget <<nestedTabsStr+listOfstrings[strSize-1] << " ";
                 }
                 return true;
             }
@@ -5778,11 +5765,11 @@ namespace pawgui
             std::string nestedTabsStr = generate_tabs( leftTabAmount  );
             if( fileTarget->is_open() )
             {
-                int strSize = (int)listOfStrings.size();
+                int strSize = (int)listOfstrings.size();
                 std::string currentLineToExport = "";
                 for( int i = 0; i < strSize-1; i++)
                 {
-                    currentLineToExport= listOfStrings[i];
+                    currentLineToExport= listOfstrings[i];
                     if( (int)currentLineToExport.size() > 0)
                     {
                         if( useNewLines)
@@ -5799,16 +5786,16 @@ namespace pawgui
                 {
                     if( useLastNewLine)
                     {
-                        *fileTarget << nestedTabsStr+listOfStrings[strSize-1] << "\n";
+                        *fileTarget << nestedTabsStr+listOfstrings[strSize-1] << "\n";
                     }
                     else
                     {
-                        *fileTarget << nestedTabsStr+listOfStrings[strSize-1];
+                        *fileTarget << nestedTabsStr+listOfstrings[strSize-1];
                     }
                 }
                 else
                 {
-                    *fileTarget <<nestedTabsStr+listOfStrings[strSize-1] << " ";
+                    *fileTarget <<nestedTabsStr+listOfstrings[strSize-1] << " ";
                 }
                 return true;
             }
@@ -5831,29 +5818,29 @@ namespace pawgui
 
     }
 
-    void widget_text_editor_wrapped::set_string( std::string strIn)
+    void widget_text_editor_wrapped::set_string( std::string str_in)
     {
-        if( paragraphText!=strIn)
+        if( paragraphText!=str_in)
         {
-            paragraphText = strIn;
+            paragraphText = str_in;
             update_paragraph();
         }
     }
 
-    void widget_text_editor_wrapped::set_width(int newWidth)
+    void widget_text_editor_wrapped::set_width(int new_width)
     {
-        if( widget_box.w!=newWidth)
+        if( widget_box.w!=new_width)
         {
-            widget_box.w = newWidth;
+            widget_box.w = new_width;
             update_paragraph();
         }
     }
 
-    void widget_text_editor_wrapped::set_height( int newHeight)
+    void widget_text_editor_wrapped::set_height( int new_height)
     {
-        if( widget_box.h!=newHeight)
+        if( widget_box.h!=new_height)
         {
-            widget_box.h = newHeight;
+            widget_box.h = new_height;
             update_paragraph();
         }
     }

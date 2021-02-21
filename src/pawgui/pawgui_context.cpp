@@ -3,10 +3,10 @@ pawgui_context.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -44,6 +44,7 @@ namespace pawgui
 
     popup_menu_option::popup_menu_option(std::string name, int id, bool selectable, bool seeShortCut, bool makeContext, int kbS1, int kbS2, int kbS3 )
     {
+        browsing_result = -1;
         menuDirection = gpe::fa_right;
         upDelay = 0;
         downDelay = 0;
@@ -52,16 +53,16 @@ namespace pawgui
         kbShortCut1 = kbS1;
         kbShortCut2 = kbS2;
         kbShortCut3 = kbS3;
-        shortcutString = "";
+        shortcutstring = "";
         if( kbShortCut1 >=0 && kbShortCut1 < gpe::input->kb_button_count )
         {
-            shortcutString = gpe::input->kb_binding_name[kbShortCut1];
+            shortcutstring = gpe::input->kb_binding_name[kbShortCut1];
             if( kbShortCut2 >=0 && kbShortCut2 < gpe::input->kb_button_count )
             {
-                shortcutString += "+"+gpe::input->kb_binding_name[kbShortCut2];
+                shortcutstring += "+"+gpe::input->kb_binding_name[kbShortCut2];
                 if( kbShortCut3 >=0 && kbShortCut3 < gpe::input->kb_button_count )
                 {
-                    shortcutString += "+"+gpe::input->kb_binding_name[kbShortCut3];
+                    shortcutstring += "+"+gpe::input->kb_binding_name[kbShortCut3];
                 }
             }
         }
@@ -83,15 +84,16 @@ namespace pawgui
             textW = 0;
             textH = 0;
             gpe::font_default->get_metrics(widget_name,&textW, &textH);
-            optionWidth = textW;
-            optionWidthSpace = textW;
+            optionWidth = textW + default_toolkey_padding;
+            set_width( optionWidth );
+            optionWidthSpace = textW + default_toolkey_padding;
             subOptionWidthSpace = optionWidthSpace;
         }
-        if( (int)shortcutString.size()>0 )
+        if( (int)shortcutstring.size()>0 )
         {
             textW = 0;
             textH = 0;
-            gpe::font_default->get_metrics(shortcutString,&textW, &textH);
+            gpe::font_default->get_metrics(shortcutstring,&textW, &textH);
             optionWidth += textW;
             optionWidthSpace += textW;
             subOptionWidthSpace += optionWidthSpace;
@@ -104,14 +106,12 @@ namespace pawgui
         opanimation = NULL;
         opTexture = NULL;
         animationFrameNumber = 0;
-        element_box.x = 0;
-        element_box.y = 0;
-        element_box.w = 0;
-        element_box.h = context_menu_height_default;
+        widget_box.w = optionWidth;
+        widget_box.h = context_menu_height_default;
         isSelectable = selectable;
         showShortCuts = seeShortCut;
         subMenuStartPos= 0;
-        maxOptionsToView = gpe::screen_height/element_box.h;
+        maxOptionsToView = gpe::screen_height/context_menu_height_default;
         selfDistanceToBottom = 0;
         isFolderOption = false;
     }
@@ -119,28 +119,28 @@ namespace pawgui
     popup_menu_option::~popup_menu_option()
     {
         popup_menu_option * tOption = NULL;
-        for (int i = 0; i < (int)subOptions.size(); i++)
+        for (int i = 0; i < (int)sub_options.size(); i++)
         {
-            tOption = subOptions[i];
+            tOption = sub_options[i];
             if( tOption!=NULL)
             {
                 delete tOption;
                 tOption = NULL;
             }
         }
-        subOptions.clear();
+        sub_options.clear();
     }
 
     int popup_menu_option::activate_hovered()
     {
         popup_menu_option * gOption = NULL;
-        if( hoverOption >=0 && hoverOption < (int)subOptions.size() )
+        if( hoverOption >=0 && hoverOption < (int)sub_options.size() )
         {
-            gOption = subOptions[hoverOption];
+            gOption = sub_options[hoverOption];
         }
-        else if( selectedOption >=0 && selectedOption < (int)subOptions.size() )
+        else if( selectedOption >=0 && selectedOption < (int)sub_options.size() )
         {
-            gOption = subOptions[selectedOption];
+            gOption = sub_options[selectedOption];
         }
         //if its possible to open up the suboption do it/return mkay
         if( gOption!=NULL )
@@ -169,22 +169,27 @@ namespace pawgui
     void popup_menu_option::clear_menu()
     {
         popup_menu_option * tOption = NULL;
-        for (int i = 0; i < (int)subOptions.size(); i++)
+        for (int i = 0; i < (int)sub_options.size(); i++)
         {
-            tOption = subOptions[i];
+            tOption = sub_options[i];
             if( tOption!=NULL)
             {
                 delete tOption;
                 tOption = NULL;
             }
         }
-        subOptions.clear();
+        sub_options.clear();
         hoverOption = -1;
         selectedOption = -1;
         subMenuIsOpen = false;
         subMenuStartPos = 0;
         maxOptionsToView = 0;
         selfDistanceToBottom = 0;
+    }
+
+    void popup_menu_option::close_menu()
+    {
+        subMenuIsOpen = false;
     }
 
     std::string popup_menu_option::get_name()
@@ -194,16 +199,21 @@ namespace pawgui
 
     int popup_menu_option::get_menu_size()
     {
-        return (int)subOptions.size();
+        return (int)sub_options.size();
     }
 
     popup_menu_option * popup_menu_option::get_menu_option(int atNumb)
     {
-        if( atNumb>=0 && atNumb<(int)subOptions.size())
+        if( atNumb>=0 && atNumb<(int)sub_options.size())
         {
-            return subOptions[atNumb];
+            return sub_options[atNumb];
         }
         return NULL;
+    }
+
+    int popup_menu_option::get_browsing_results()
+    {
+        return browsing_result;
     }
 
     int popup_menu_option::get_width()
@@ -219,13 +229,13 @@ namespace pawgui
     bool popup_menu_option::push_left()
     {
         popup_menu_option * gOption = NULL;
-        if( selectedOption >=0 && selectedOption < (int)subOptions.size() )
+        if( selectedOption >=0 && selectedOption < (int)sub_options.size() )
         {
-            gOption = subOptions[selectedOption];
+            gOption = sub_options[selectedOption];
         }
-        else if( hoverOption >=0 && hoverOption < (int)subOptions.size() )
+        else if( hoverOption >=0 && hoverOption < (int)sub_options.size() )
         {
-            gOption = subOptions[hoverOption];
+            gOption = sub_options[hoverOption];
         }
         else
         {
@@ -268,7 +278,7 @@ namespace pawgui
 
     bool popup_menu_option::push_right()
     {
-        if( subMenuIsOpen==false && (int)subOptions.size() > 0 )
+        if( subMenuIsOpen==false && (int)sub_options.size() > 0 )
         {
             reset_suboptions();
             subMenuIsOpen = true;
@@ -279,22 +289,22 @@ namespace pawgui
         {
             popup_menu_option * gOption = NULL;
             int tempCursorPos = 0;
-            if( selectedOption >=0 && selectedOption < (int)subOptions.size() )
+            if( selectedOption >=0 && selectedOption < (int)sub_options.size() )
             {
                 tempCursorPos = selectedOption;
-                gOption = subOptions[selectedOption];
+                gOption = sub_options[selectedOption];
                 hoverOption = -1;
             }
-            else if( hoverOption >=0 && hoverOption < (int)subOptions.size() )
+            else if( hoverOption >=0 && hoverOption < (int)sub_options.size() )
             {
                 tempCursorPos = hoverOption;
-                gOption = subOptions[hoverOption];
+                gOption = sub_options[hoverOption];
                 selectedOption = -1;
             }
-            else if( (int)subOptions.size() > 0)
+            else if( (int)sub_options.size() > 0)
             {
                 selectedOption = hoverOption = 0;
-                gOption = subOptions[0];
+                gOption = sub_options[0];
                 selectedOption = -1;
             }
             if( gOption!=NULL )
@@ -316,22 +326,22 @@ namespace pawgui
         {
             return false;
         }
-        if( (int)subOptions.size() > 0 )
+        if( (int)sub_options.size() > 0 )
         {
             popup_menu_option * fOption = NULL;
             int currentCursorPos = 0;
-            if( selectedOption >=0 && selectedOption < (int)subOptions.size() )
+            if( selectedOption >=0 && selectedOption < (int)sub_options.size() )
             {
                 currentCursorPos = hoverOption = selectedOption;
-                fOption = subOptions[currentCursorPos];
+                fOption = sub_options[currentCursorPos];
 
             }
-            else if( hoverOption >=0 && hoverOption < (int)subOptions.size() )
+            else if( hoverOption >=0 && hoverOption < (int)sub_options.size() )
             {
                 currentCursorPos = hoverOption;
-                fOption = subOptions[currentCursorPos];
+                fOption = sub_options[currentCursorPos];
             }
-            else if( (int)subOptions.size() > 0 )
+            else if( (int)sub_options.size() > 0 )
             {
                 if( subMenuIsOpen == false && isContext==false )
                 {
@@ -343,7 +353,7 @@ namespace pawgui
                     subMenuIsOpen = true;
                 }
                 currentCursorPos = hoverOption = selectedOption = 0;
-                fOption = subOptions[currentCursorPos];
+                fOption = sub_options[currentCursorPos];
             }
             /*else
             {
@@ -371,7 +381,7 @@ namespace pawgui
                     currentCursorPos--;
                     if( currentCursorPos < 0)
                     {
-                        currentCursorPos = (int)subOptions.size()-1;
+                        currentCursorPos = (int)sub_options.size()-1;
                     }
                     if( currentCursorPos < 0)
                     {
@@ -392,21 +402,21 @@ namespace pawgui
         {
             return false;
         }
-        if( (int)subOptions.size() > 0 )
+        if( (int)sub_options.size() > 0 )
         {
             popup_menu_option * fOption = NULL;
             int currentCursorPos = 0;
-            if( selectedOption>=0 && selectedOption < (int)subOptions.size() )
+            if( selectedOption>=0 && selectedOption < (int)sub_options.size() )
             {
                 currentCursorPos = hoverOption =  selectedOption;
-                fOption = subOptions[currentCursorPos];
+                fOption = sub_options[currentCursorPos];
             }
-            else if( hoverOption>=0 && hoverOption < (int)subOptions.size() )
+            else if( hoverOption>=0 && hoverOption < (int)sub_options.size() )
             {
                 currentCursorPos = selectedOption =  hoverOption;
-                fOption = subOptions[currentCursorPos];
+                fOption = sub_options[currentCursorPos];
             }
-            else if( (int)subOptions.size() > 0 )
+            else if( (int)sub_options.size() > 0 )
             {
                 if( subMenuIsOpen == false)
                 {
@@ -414,7 +424,7 @@ namespace pawgui
                     subMenuIsOpen = true;
                 }
                 currentCursorPos = selectedOption =  hoverOption = 0;
-                fOption = subOptions[currentCursorPos];
+                fOption = sub_options[currentCursorPos];
             }
             /*else
             {
@@ -442,7 +452,7 @@ namespace pawgui
                 if( moveDownward)
                 {
                     currentCursorPos++;
-                    if( currentCursorPos >= (int)subOptions.size() )
+                    if( currentCursorPos >= (int)sub_options.size() )
                     {
                         currentCursorPos = 0;
                     }
@@ -464,28 +474,28 @@ namespace pawgui
     {
         if( otherOption !=NULL)
         {
-            otherOption->element_box.h = context_menu_height_default;
+            otherOption->set_height( context_menu_height_default );
             maxOptionsToView = gpe::screen_height/context_menu_height_default;
-            selfDistanceToBottom = (gpe::screen_height-element_box.y-element_box.h)/context_menu_height_default;
+            selfDistanceToBottom = (gpe::screen_height-widget_box.y-widget_box.h)/context_menu_height_default;
 
             otherOption->menuDirection = menuDirection;
-            int menuCountSize = (int)subOptions.size();
+            int menuCountSize = (int)sub_options.size();
             if(isContext)
             {
                 if( menuCountSize > selfDistanceToBottom)
                 {
-                    otherOption->set_position(element_box.x,element_box.y+(menuCountSize-selfDistanceToBottom)*context_menu_height_default);
+                    otherOption->set_position(widget_box.x,widget_box.y+(menuCountSize-selfDistanceToBottom)*context_menu_height_default);
                 }
                 else
                 {
-                    otherOption->set_position(element_box.x,element_box.y+menuCountSize*context_menu_height_default );
+                    otherOption->set_position(widget_box.x,widget_box.y+menuCountSize*context_menu_height_default );
                 }
                 //otherOption->barColor = pawgui::theme_main->popup_box_color;
                 //otherOption->set_width(subOptionWidthSpace);
             }
             else if( isTopOfMenu)
             {
-                otherOption->set_position(element_box.x,element_box.y+element_box.h+ menuCountSize*context_menu_height_default );
+                otherOption->set_position(widget_box.x,widget_box.y+widget_box.h+ menuCountSize*context_menu_height_default );
                 //otherOption->barColor = pawgui::theme_main->popup_box_color;
                 //otherOption->set_width(subOptionWidthSpace);
             }
@@ -494,24 +504,24 @@ namespace pawgui
                 int menuXPosition;
                 if( menuDirection == gpe::fa_right)
                 {
-                    menuXPosition = element_box.x+element_box.w;
+                    menuXPosition = widget_box.x+widget_box.w;
                 }
                 else
                 {
-                    menuXPosition = element_box.x - subOptionWidthSpace;
+                    menuXPosition = widget_box.x - subOptionWidthSpace;
                 }
                 if( menuCountSize > selfDistanceToBottom)
                 {
-                    otherOption->set_position( menuXPosition,element_box.y+(menuCountSize-selfDistanceToBottom)*context_menu_height_default );
+                    otherOption->set_position( menuXPosition,widget_box.y+(menuCountSize-selfDistanceToBottom)*context_menu_height_default );
                 }
                 else
                 {
-                    otherOption->set_position(menuXPosition,element_box.y+menuCountSize*context_menu_height_default );
+                    otherOption->set_position(menuXPosition,widget_box.y+menuCountSize*context_menu_height_default );
                 }
                 //otherOption->barColor = barColor;
                 otherOption->set_width(subOptionWidthSpace);
             }
-            subOptions.push_back(otherOption);
+            sub_options.push_back(otherOption);
 
             //resizes submenu in the event that the new option is wider
             if( otherOption->get_width()>=widestOptionSpace )
@@ -530,9 +540,9 @@ namespace pawgui
                     optionWidthSpace = subOptionWidthSpace;
                 }
                 popup_menu_option * tempFOption = NULL;
-                for( int i=0; i< (int)subOptions.size(); i++ )
+                for( int i=0; i< (int)sub_options.size(); i++ )
                 {
-                    tempFOption = subOptions[i];
+                    tempFOption = sub_options[i];
                     //if( isTopOfMenu)
                     {
                         tempFOption->set_width(optionWidthSpace);
@@ -557,7 +567,7 @@ namespace pawgui
         int i = 0;
         if( id<0 )
         {
-            //newOp->set_id( (int)subOptions.size() *-1);
+            //newOp->set_id( (int)sub_options.size() *-1);
             newOp->set_id(  -1 );
         }
         newOp->change_texture_data(ganimation, animationImgNumb);
@@ -569,22 +579,26 @@ namespace pawgui
     void popup_menu_option::prerender_self(  )
     {
         /*popup_menu_option * tempOption = NULL;
-        for( int i = 0; i < (int)subOptions.size(); i++)
+        for( int i = 0; i < (int)sub_options.size(); i++)
         {
-            tempOption = subOptions[i];
+            tempOption = sub_options[i];
             tempOption->prerender_self( );
         }*/
     }
 
-    int popup_menu_option::process_menu_option()
+    void popup_menu_option::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam  )
     {
+        view_space = gpe::camera_find(view_space);
+        cam = gpe::camera_find(cam);
         int barAction = -1;
-        int returnAction = -1; //Negative values are out of range
+        browsing_result = -1; //Negative values are out of range
         //defaults to negative 1 if nothing is selected
         //Returns if window resized, other mouse buttons or esc is pressed.
-        if( gpe::input->check_mouse_released(1) || gpe::input->check_mouse_released(2) || gpe::window_controller_main->is_resized()  || gpe::input->kb_button_released[kb_esc] )
+        widget_basic::process_self(view_space,cam);
+
+        if( gpe::input->check_mouse_released(1) || gpe::input->check_mouse_released(2) || gpe::window_controller_main->is_resized()  || gpe::input->kb_button_released[kb_esc]  )
         {
-            returnAction = -2;
+            browsing_result = -2;
         }
         else
         {
@@ -635,12 +649,12 @@ namespace pawgui
                     leftDelay = -1;
                     rightDelay = -1;
                 }
-                int subPosX = element_box.x;
-                int subPosY = element_box.y;
+                int subPosX = widget_box.x;
+                int subPosY = widget_box.y;
                 maxOptionsToView = gpe::screen_height/context_menu_height_default;
-                selfDistanceToBottom = (gpe::screen_height-element_box.y-element_box.h)/context_menu_height_default;
+                selfDistanceToBottom = (gpe::screen_height-widget_box.y-widget_box.h)/context_menu_height_default;
                 popup_menu_option * fOption = NULL;
-                int menuCountSize = (int)subOptions.size() ;
+                int menuCountSize = (int)sub_options.size() ;
                 int extraRenderSpace = 0;
                 int subOptionsCurrWidth = optionWidthSpace;
                 if( isTopOfMenu==false && isContext==false)
@@ -651,7 +665,7 @@ namespace pawgui
 
                 if( menuCountSize > maxOptionsToView)
                 {
-                    if( gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,element_box.x+extraRenderSpace,0,element_box.x+extraRenderSpace+subOptionsCurrWidth, gpe::screen_height) )
+                    if( gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,widget_box.x+extraRenderSpace,0,widget_box.x+extraRenderSpace+subOptionsCurrWidth, gpe::screen_height) )
                     {
                         if( gpe::input->mouse_scrolling_up )
                         {
@@ -663,9 +677,9 @@ namespace pawgui
                             subMenuStartPos+=maxOptionsToView/8;
                         }
                     }
-                    if( subMenuStartPos+maxOptionsToView > (int)subOptions.size() )
+                    if( subMenuStartPos+maxOptionsToView > (int)sub_options.size() )
                     {
-                        subMenuStartPos = (int)subOptions.size()-maxOptionsToView;
+                        subMenuStartPos = (int)sub_options.size()-maxOptionsToView;
                     }
                     if( subMenuStartPos < 0)
                     {
@@ -678,21 +692,21 @@ namespace pawgui
                 if( isContext)
                 {
                     int currentCursorPos = 0;
-                    if( selectedOption>=0 && selectedOption < (int)subOptions.size() )
+                    if( selectedOption>=0 && selectedOption < (int)sub_options.size() )
                     {
-                        fOption = subOptions[selectedOption];
+                        fOption = sub_options[selectedOption];
                         currentCursorPos = selectedOption;
                     }
-                    else if( hoverOption>=0 && hoverOption < (int)subOptions.size() )
+                    else if( hoverOption>=0 && hoverOption < (int)sub_options.size() )
                     {
-                        fOption = subOptions[hoverOption];
+                        fOption = sub_options[hoverOption];
                         currentCursorPos = hoverOption;
                     }
-                    /*else if( (int)subOptions.size() > 0 && subOptions[0]!=NULL )
+                    /*else if( (int)sub_options.size() > 0 && sub_options[0]!=NULL )
                     {
                         currentCursorPos = hoverOption = 0;
                         selectedOption = -1;
-                        fOption = subOptions[hoverOption];
+                        fOption = sub_options[hoverOption];
                     }*/
 
                     if( leftDelay >= (main_settings->normalInputDelayTime)  || ( !gpe::input->kb_button_pressed[kb_left] && gpe::input->kb_button_released[kb_left] ) )
@@ -736,7 +750,7 @@ namespace pawgui
                     }
                     else if( gpe::input->kb_button_released[kb_enter] || gpe::input->kb_button_released[kb_space] && subMenuIsOpen  )
                     {
-                        returnAction = activate_hovered();
+                        browsing_result  = activate_hovered();
                         hoverOption = -1;
                         selectedOption = -1;
                         reset_suboptions();
@@ -760,21 +774,21 @@ namespace pawgui
                     {
                         if( barAction<0)
                         {
-                            fOption = subOptions[i];
+                            fOption = sub_options[i];
                             fOption->menuDirection = menuDirection;
                             if( isTopOfMenu==false || isContext)
                             {
                                 if( isContext)
                                 {
-                                    fOption->set_width(element_box.w);
-                                    subPosX = element_box.x;
+                                    fOption->set_width(widget_box.w);
+                                    subPosX = widget_box.x;
                                 }
                                 else
                                 {
                                     if( menuDirection == gpe::fa_right)
                                     {
-                                        subPosX = element_box.x+element_box.w;
-                                        if( element_box.x+element_box.w+subOptionWidthSpace > gpe::screen_width )
+                                        subPosX = widget_box.x+widget_box.w;
+                                        if( widget_box.x+widget_box.w+subOptionWidthSpace > gpe::screen_width )
                                         {
                                             /*
                                             BE RIGHT BACK
@@ -785,8 +799,8 @@ namespace pawgui
                                     }
                                     else
                                     {
-                                        subPosX = element_box.x - subOptionWidthSpace;
-                                        if( element_box.x - subOptionWidthSpace < 0 )
+                                        subPosX = widget_box.x - subOptionWidthSpace;
+                                        if( widget_box.x - subOptionWidthSpace < 0 )
                                         {
                                             subPosY = 0;
                                         }
@@ -813,22 +827,23 @@ namespace pawgui
                             }
                             else if( isTopOfMenu)
                             {
-                                fOption->set_position(element_box.x+extraRenderSpace,subPosY+element_box.h+i*context_menu_height_default);
+                                fOption->set_position(widget_box.x+extraRenderSpace,subPosY+widget_box.h+i*context_menu_height_default);
                             }
 
-                            barAction = fOption->process_menu_option();
+                            fOption->process_self( view_space, cam );
+                            barAction = fOption->get_browsing_results();
                             if( gpe::input->mouse_movement_received )
                             {
-                                if( gpe::point_between_rect(gpe::input->mouse_position_x, gpe::input->mouse_position_y,&fOption->element_box) )
+                                if( fOption->is_hovered() )
                                 {
                                     reset_suboptions();
                                     hoverOption = i;
                                     fOption->subMenuIsOpen = true;
                                 }
                             }
-                            if(barAction!=-1)
+                            if(barAction >= 0)
                             {
-                                returnAction = barAction;
+                                browsing_result  = barAction;
                             }
                         }
                     }
@@ -843,75 +858,75 @@ namespace pawgui
                 rightDelay = -1;
             }
 
-            if(  isTopOfMenu==false && gpe::point_between_rect(gpe::input->mouse_position_x, gpe::input->mouse_position_y,&element_box ) )
+            if(  isTopOfMenu==false && isHovered )
             {
-                if( (int)subOptions.size()>0)
+                if( (int)sub_options.size()>0)
                 {
                     if( gpe::input->mouse_movement_received )
                     {
                         reset_suboptions();
                         subMenuIsOpen = true;
                         popup_menu_option * fOptionOpened = NULL;
-                        for( int iN = 0; iN < (int)subOptions.size(); iN++)
+                        for( int iN = 0; iN < (int)sub_options.size(); iN++)
                         {
-                            fOptionOpened = subOptions.at(iN);
+                            fOptionOpened = sub_options.at(iN);
                             if( fOptionOpened!=NULL)
                             {
                                 fOptionOpened->menuDirection = menuDirection;
                                 if( menuDirection == gpe::fa_right)
                                 {
-                                    fOptionOpened->set_position( element_box.x+element_box.w, fOptionOpened->element_box.y );
+                                    fOptionOpened->set_position( widget_box.x+widget_box.w, fOptionOpened->get_ypos());
                                 }
                                 else
                                 {
-                                    fOptionOpened->set_position( element_box.x - subOptionWidthSpace, fOptionOpened->element_box.y );
+                                    fOptionOpened->set_position( widget_box.x - subOptionWidthSpace, fOptionOpened->get_ypos() );
                                 }
                             }
                         }
                     }
                 }
-                else if( gpe::input->check_mouse_released( mb_left)|| gpe::input->kb_button_released[kb_enter] )
+                else if( isClicked || gpe::input->kb_button_released[kb_enter] )
                 {
                     //actual action happened...
                     if(isSelectable)
                     {
-                        returnAction = opId; //select, execute and exit
+                        browsing_result = opId; //select, execute and exit
                         update_popup_info(widget_name,opId, isContext);
                     }
                     else
                     {
-                        returnAction = -3; //unselectable
+                        browsing_result = -3; //unselectable
                     }
                 }
             }
             //Closed menu and then returns -1
-            if( returnAction==1)
+            if( browsing_result < 0 )
             {
-                hoverOption = -1;
-                selectedOption = -1;
-                subMenuIsOpen = false;
-                reset_suboptions();
+                //hoverOption = -1;
+                //selectedOption = -1;
+                //subMenuIsOpen = false;
+                //reset_suboptions();
             }
         }
-        return returnAction;
     }
 
     void popup_menu_option::open_menu()
     {
         reset_suboptions();
         subMenuIsOpen = true;
-        if( (int)subOptions.size() > 0 )
+        if( (int)sub_options.size() > 0 )
         {
             hoverOption = selectedOption = 0;
         }
-        set_position( element_box.x, element_box.y );
+        set_position( widget_box.x, widget_box.y );
     }
+
     void popup_menu_option::reset_suboptions()
     {
         popup_menu_option * gOption = NULL;
-        for(int j=0; j<(int)subOptions.size(); j++)
+        for(int j=0; j<(int)sub_options.size(); j++)
         {
-            gOption = subOptions[j];
+            gOption = sub_options[j];
             gOption->selectedOption = -1;
             gOption->hoverOption = -1;
             gOption->subMenuIsOpen = false;
@@ -930,60 +945,60 @@ namespace pawgui
     }
     //Slim Shady back in this mofo!!!
 
-    void popup_menu_option::set_position(int xPos, int yPos)
+    void popup_menu_option::set_position(int x_pos, int y_pos)
     {
-        element_box.x = xPos;
-        element_box.y = yPos;
+        widget_box.x = x_pos;
+        widget_box.y = y_pos;
 
         if( menuDirection == gpe::fa_right && !isContext )
         {
-            if( element_box.x+element_box.w > gpe::screen_width && element_box.w < gpe::screen_width / 2)
+            if( widget_box.x+widget_box.w > gpe::screen_width && widget_box.w < gpe::screen_width / 2)
             {
                 //wrap to top/left side of screen thru recurssion
-                //gpe::error_log->report("Moving ["+widget_name+"]["+ stg_ex::int_to_string( gpe::screen_width - element_box.w - element_box.x - element_box.w )+"] to top left of screen.." );
-                element_box.x = 0;
-                element_box.y = 0;
+                //gpe::error_log->report("Moving ["+widget_name+"]["+ stg_ex::int_to_string( gpe::screen_width - widget_box.w - widget_box.x - widget_box.w )+"] to top left of screen.." );
+                widget_box.x = 0;
+                widget_box.y = 0;
             }
 
         }
         //BE RIGHT BACK
-        else if( element_box.x - 32 < 0 && !isContext )
+        else if( widget_box.x - 32 < 0 && !isContext )
         {
             //wrap to top/right side of screen thru recurssion
-            element_box.x =  gpe::screen_width-element_box.w;
-            element_box.y = 0;
+            widget_box.x =  gpe::screen_width-widget_box.w;
+            widget_box.y = 0;
             //gpe::error_log->report("Moving ["+widget_name+"]["+ stg_ex::int_to_string( menuDirection )+"] to top right of screen.." );
         }
 
         popup_menu_option* cOption = NULL;
-        int subBoxTotal = (int)subOptions.size();
+        int subBoxTotal = (int)sub_options.size();
         for( int i=0; i< subBoxTotal; i++)
         {
-            cOption = subOptions[i];
+            cOption = sub_options[i];
             if(cOption!=NULL)
             {
                 cOption->menuDirection = menuDirection;
-                cOption->element_box.w = subOptionWidthSpace;
+                cOption->set_width( subOptionWidthSpace );
                 if( menuDirection == gpe::fa_right)
                 {
-                    if( element_box.x+ element_box.w  > gpe::screen_width )
+                    if( widget_box.x+ widget_box.w  > gpe::screen_width )
                     {
                         cOption->set_position( 0,i*context_menu_height_default);
 
                     }
                     else
                     {
-                        cOption->set_position(element_box.x+element_box.w,context_menu_height_default);
+                        cOption->set_position(widget_box.x+widget_box.w,context_menu_height_default);
                     }
                 }
-                else if( element_box.x - subOptionWidthSpace <= 0 )
+                else if( widget_box.x - subOptionWidthSpace <= 0 )
                 {
                     //wrap to top/right side of screen
                     cOption->set_position( gpe::screen_width-subOptionWidthSpace,i*context_menu_height_default);
                 }
                 else
                 {
-                    cOption->set_position(element_box.x-subOptionWidthSpace,i*context_menu_height_default);
+                    cOption->set_position(widget_box.x+subOptionWidthSpace,i*context_menu_height_default);
                 }
             }
         }
@@ -994,26 +1009,26 @@ namespace pawgui
         opTexture = newTexture;
     }
 
-    void popup_menu_option::set_width(int newWidth)
+    void popup_menu_option::set_width(int new_width)
     {
-        element_box.w = newWidth;
+        widget_box.w = new_width;
         if(!isTopOfMenu)
         {
             popup_menu_option * cOption = NULL;
-            int subBoxTotal = (int)subOptions.size();
+            int subBoxTotal = (int)sub_options.size();
             for( int i=0; i< subBoxTotal; i++)
             {
-                cOption = subOptions[i];
+                cOption = sub_options[i];
                 if(cOption!=NULL)
                 {
-                    //cOption->set_width(newWidth);
+                    //cOption->set_width(new_width);
                 }
             }
         }
-        set_position( element_box.x, element_box.y );
+        set_position( widget_box.x, widget_box.y );
     }
 
-    void popup_menu_option::render_self( gpe::shape_rect *cam)
+    void popup_menu_option::render_self(  gpe::shape_rect * view_space, gpe::shape_rect *cam )
     {
         //if( forceRedraw )
         {
@@ -1021,18 +1036,27 @@ namespace pawgui
             //Renders the line if this is the end of a section
             if(sectionBottom )
             {
-                gpe::gcanvas->render_line_color( element_box.x,element_box.y+element_box.h,element_box.x+element_box.w,element_box.y+element_box.h, gpe::c_dkgray);
+                gpe::gcanvas->render_line_color( widget_box.x,widget_box.y+widget_box.h,widget_box.x+widget_box.w,widget_box.y+widget_box.h, gpe::c_dkgray);
             }
 
+            if( !isTopOfMenu )
+            {
+                gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->popup_box_color, false);
 
-            if( (int)subOptions.size()>0)
+                if( isHovered || subMenuIsOpen)
+                {
+                    gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->popup_box_highlight_color, false);
+                }
+            }
+
+            if( (int)sub_options.size()>0)
             {
                 if( subMenuIsOpen)
                 {
                     popup_menu_option * fOption = NULL;
-                    int menuCountSize = (int)subOptions.size();
-                    int subRenderYPos = element_box.y;
-                    int subRenderHeight = (int)subOptions.size()*context_menu_height_default;
+                    int menuCountSize = (int)sub_options.size();
+                    int subRenderYPos = widget_box.y;
+                    int subRenderHeight = (int)sub_options.size()*context_menu_height_default;
                     if( menuCountSize > selfDistanceToBottom)
                     {
                         if( menuCountSize > maxOptionsToView)
@@ -1046,11 +1070,12 @@ namespace pawgui
                             //offset box, no scroller needed
                             if( isTopOfMenu && isContext==false)
                             {
-                                subRenderYPos = element_box.y+element_box.h;
+                                subRenderYPos = widget_box.y+widget_box.h;
                             }
                             else
                             {
-                                subRenderYPos = element_box.y- ( abs(menuCountSize-selfDistanceToBottom) *context_menu_height_default);
+                                subRenderYPos = widget_box.y+widget_box.h;
+                                //subRenderYPos = widget_box.y- ( abs(menuCountSize-selfDistanceToBottom) *context_menu_height_default);
                             }
                         }
                     }
@@ -1058,11 +1083,11 @@ namespace pawgui
                     {
                         if( isTopOfMenu && isContext==false )
                         {
-                            subRenderYPos = element_box.y+element_box.h;
+                            subRenderYPos = widget_box.y+widget_box.h;
                         }
                         else if( isContext)
                         {
-                            subRenderYPos = element_box.y;
+                            subRenderYPos = widget_box.y;
                         }
                     }
 
@@ -1070,51 +1095,53 @@ namespace pawgui
                     {
                         if( isContext)
                         {
-                            gpe::gcanvas->render_rectangle( element_box.x,subRenderYPos,element_box.x+element_box.w,subRenderYPos+subRenderHeight,pawgui::theme_main->popup_box_color, false);
+                            gpe::gcanvas->render_rectangle( widget_box.x,subRenderYPos,widget_box.get_x2(),subRenderYPos+subRenderHeight,pawgui::theme_main->popup_box_color, false);
                         }
                         else
                         {
-                            gpe::gcanvas->render_rectangle( element_box.x,subRenderYPos,element_box.x+optionWidthSpace,subRenderYPos+subRenderHeight,pawgui::theme_main->popup_box_color, false);
+                            gpe::gcanvas->render_rectangle( widget_box.x,subRenderYPos,widget_box.get_x2(),subRenderYPos+subRenderHeight,pawgui::theme_main->popup_box_color, false);
                         }
 
-                        for( i=subMenuStartPos; i<(int)subOptions.size() && i < subMenuStartPos+maxOptionsToView; i++)
+                        for( i=subMenuStartPos; i<(int)sub_options.size() && i < subMenuStartPos+maxOptionsToView; i++)
                         {
-                            fOption = subOptions[i];
+                            fOption = sub_options[i];
                             if( fOption!=NULL)
                             {
-                                if( hoverOption == i && hoverOption>=0)
+                                if( hoverOption == i  && hoverOption>=0)
                                 {
-                                    gpe::gcanvas->render_rect( &fOption->element_box,pawgui::theme_main->popup_box_highlight_color, false);
+                                    gpe::gcanvas->render_rect( &fOption->widget_box,pawgui::theme_main->popup_box_highlight_color, false);
+                                }
+                                else
+                                {
+                                    gpe::gcanvas->render_rect( &fOption->widget_box,pawgui::theme_main->popup_box_color, false);
                                 }
                                 fOption->render_self( cam );
                             }
                         }
                         if( isContext)
                         {
-                            gpe::gcanvas->render_rectangle( element_box.x,subRenderYPos,element_box.x+element_box.w,subRenderYPos+subRenderHeight,pawgui::theme_main->popup_box_border_color, true);
+                            gpe::gcanvas->render_rectangle( widget_box.x,subRenderYPos,widget_box.x+widget_box.w,subRenderYPos+subRenderHeight,pawgui::theme_main->popup_box_border_color, true);
                         }
                         else
                         {
-                            gpe::gcanvas->render_rectangle( element_box.x,subRenderYPos,element_box.x+subOptionWidthSpace,subRenderYPos+subRenderHeight,pawgui::theme_main->main_border_color, true);
+                            gpe::gcanvas->render_rectangle( widget_box.x,subRenderYPos,widget_box.x+subOptionWidthSpace,subRenderYPos+subRenderHeight,pawgui::theme_main->main_border_color, true);
                         }
                     }
                     else
                     {
-                        for( i=subMenuStartPos; i<(int)subOptions.size() && i < subMenuStartPos+maxOptionsToView; i++)
+                        for( i=subMenuStartPos; i<(int)sub_options.size() && i < subMenuStartPos+maxOptionsToView; i++)
                         {
-                            fOption = subOptions[i];
+                            fOption = sub_options[i];
                             if( hoverOption == i  && hoverOption>=0)
                             {
-                                gpe::gcanvas->render_rect( &fOption->element_box,pawgui::theme_main->popup_box_highlight_color, false);
+                                gpe::gcanvas->render_rect( &fOption->widget_box,pawgui::theme_main->popup_box_highlight_color, false);
                             }
                             else
                             {
-                                gpe::gcanvas->render_rect( &fOption->element_box,pawgui::theme_main->popup_box_color, false);
-
+                                gpe::gcanvas->render_rect( &fOption->widget_box,pawgui::theme_main->popup_box_color, false);
                             }
                             fOption->render_self( cam );
                         }
-                        gpe::gcanvas->render_rectangle( element_box.x,element_box.y,element_box.x+element_box.w,element_box.y+element_box.h,pawgui::theme_main->popup_box_color, false);
                     }
                 }
 
@@ -1122,64 +1149,64 @@ namespace pawgui
                 {
                     if( menuDirection == gpe::fa_right)
                     {
-                        gpe::gfs->render_text( element_box.x+element_box.w-padding_default,element_box.y+element_box.h/2,">",pawgui::theme_main->popup_box_font_color,font_toolbar,gpe::fa_right,gpe::fa_middle);
+                        gpe::gfs->render_text( widget_box.x+widget_box.w-padding_default,widget_box.y+widget_box.h/2,">",pawgui::theme_main->popup_box_font_color,font_toolbar,gpe::fa_right,gpe::fa_middle);
                     }
                     else
                     {
-                        gpe::gfs->render_text( element_box.x+element_box.w-padding_default,element_box.y+element_box.h/2,"<",pawgui::theme_main->popup_box_font_color,font_toolbar,gpe::fa_right,gpe::fa_middle);
+                        gpe::gfs->render_text( widget_box.get_x2()-padding_default,widget_box.y+widget_box.h/2,"<",pawgui::theme_main->popup_box_font_color,font_toolbar,gpe::fa_right,gpe::fa_middle);
                     }
                 }
             }
 
             if( isTopOfMenu )
             {
-                gpe::gfs->render_text( element_box.x+4,element_box.y,widget_name,pawgui::theme_main->main_box_font_color,font_toolbar,gpe::fa_left,gpe::fa_top);
+                gpe::gfs->render_text( widget_box.get_center(),widget_box.get_middle(),widget_name,pawgui::theme_main->main_box_font_color,font_toolbar,gpe::fa_left,gpe::fa_middle);
             }
             else
             {
                 if( subMenuIsOpen  )
                 {
-                    gpe::gcanvas->render_rectangle( element_box.x,element_box.y,element_box.x+element_box.w,element_box.y+element_box.h,pawgui::theme_main->popup_box_highlight_color, false);
-                    gpe::gfs->render_text( element_box.x+default_icon_width_padded,element_box.y+context_menu_height_default/2,widget_name,pawgui::theme_main->popup_box_highlight_font_color,font_toolbar,gpe::fa_left,gpe::fa_middle);
+                    gpe::gcanvas->render_rectangle( widget_box.x,widget_box.y,widget_box.x+widget_box.w,widget_box.y+widget_box.h,pawgui::theme_main->popup_box_highlight_color, false);
+                    gpe::gfs->render_text( widget_box.x+default_icon_width_padded,widget_box.y+context_menu_height_default/2,widget_name,pawgui::theme_main->popup_box_highlight_font_color,font_toolbar,gpe::fa_left,gpe::fa_middle);
                 }
                 /*else if( )
                 {
-                    render_text( element_box.x+default_icon_width_padded,element_box.y+context_menu_height_default/2,widget_name,pawgui::theme_main->popup_box_highlight_font_color,font_toolbar,gpe::fa_left,gpe::fa_middle);
+                    render_text( widget_box.x+default_icon_width_padded,widget_box.y+context_menu_height_default/2,widget_name,pawgui::theme_main->popup_box_highlight_font_color,font_toolbar,gpe::fa_left,gpe::fa_middle);
 
                 }*/
                 else
                 {
-                    gpe::gfs->render_text( element_box.x+default_icon_width_padded,element_box.y+context_menu_height_default/2,widget_name,pawgui::theme_main->popup_box_font_color,font_toolbar,gpe::fa_left,gpe::fa_middle);
-                    //opTexture->render_tex( element_box.x+default_icon_width_padded, element_box.y+16-(opTexture->get_height()/2),NULL);
+                    gpe::gfs->render_text( widget_box.x+default_icon_width_padded,widget_box.y+context_menu_height_default/2,widget_name,pawgui::theme_main->popup_box_font_color,font_toolbar,gpe::fa_left,gpe::fa_middle);
+                    //opTexture->render_tex( widget_box.x+default_icon_width_padded, widget_box.y+16-(opTexture->get_height()/2),NULL);
                 }
                 if ( opanimation!=NULL && opanimation->has_texture() )
                 {
-                    gpe::gcanvas->render_animation_resized( opanimation,animationFrameNumber,element_box.x+padding_default,element_box.y+element_box.h/4,element_box.h/2,element_box.h/2);
+                    gpe::gcanvas->render_animation_resized( opanimation,animationFrameNumber,widget_box.x+padding_default,widget_box.y+widget_box.h/4,widget_box.h/2,widget_box.h/2);
                 }
                 else if( opTexture!=NULL)
                 {
                     if( isFolderOption)
                     {
-                        opTexture->render_tex_resized( element_box.x+padding_default,element_box.y+element_box.h/4,element_box.h/2,element_box.h/2,NULL,pawgui::theme_main->folder_color );
+                        opTexture->render_tex_resized( widget_box.x+padding_default,widget_box.y+widget_box.h/4,widget_box.h/2,widget_box.h/2,NULL,pawgui::theme_main->folder_color );
                     }
                     else if( isResourceOption || renderWhite )
                     {
-                        opTexture->render_tex_resized(element_box.x+padding_default,element_box.y+element_box.h/4,element_box.h/2,element_box.h/2,NULL, gpe::c_white );
+                        opTexture->render_tex_resized(widget_box.x+padding_default,widget_box.y+widget_box.h/4,widget_box.h/2,widget_box.h/2,NULL, gpe::c_white );
                     }
                     else
                     {
-                        opTexture->render_tex_resized(element_box.x+padding_default,element_box.y+element_box.h/4,element_box.h/2,element_box.h/2,NULL,pawgui::theme_main->popup_box_font_color  );
+                        opTexture->render_tex_resized(widget_box.x+padding_default,widget_box.y+widget_box.h/4,widget_box.h/2,widget_box.h/2,NULL,pawgui::theme_main->popup_box_font_color  );
                     }
                 }
-                if( (int)shortcutString.size()>0 )
+                if( (int)shortcutstring.size()>0 )
                 {
-                    gpe::gfs->render_text( element_box.x+element_box.w-padding_default,element_box.y+element_box.h/2,shortcutString,pawgui::theme_main->popup_box_font_color,font_toolbar,gpe::fa_right,gpe::fa_middle);
+                    gpe::gfs->render_text( widget_box.x+widget_box.w-padding_default,widget_box.y+widget_box.h/2,shortcutstring,pawgui::theme_main->popup_box_font_color,font_toolbar,gpe::fa_right,gpe::fa_middle);
                 }
             }
 
             if( (int)widget_name.size() == 0 )
             {
-                gpe::gfs->render_text( element_box.x+default_icon_width_padded,element_box.y+element_box.h/2,"NULL",pawgui::theme_main->popup_box_font_color,font_toolbar,gpe::fa_left,gpe::fa_middle);
+                gpe::gfs->render_text( widget_box.get_center(),widget_box.y+widget_box.h/2,"NULL",pawgui::theme_main->popup_box_font_color,font_toolbar,gpe::fa_center,gpe::fa_middle);
             }
         }
     }
@@ -1201,7 +1228,7 @@ namespace pawgui
     widget_toolbar::widget_toolbar()
     {
         widget_type = "toolbar";
-        widget_name = "untitled";
+        widget_name = "";
         widget_box.x = 0;
         widget_box.y = 0;
         widget_box.w = gpe::screen_width;
@@ -1257,9 +1284,9 @@ namespace pawgui
         }
         newOp->menuDirection = gpe::fa_right;
         newOp->set_position( widget_box.x + barWidthTotal,widget_box.y);
-        newOp->element_box.h = widget_box.h;
+        newOp->set_width( widget_box.h );
         barOptions.push_back(newOp);
-        barWidthTotal+=newOp->get_width()+default_toolkey_padding;
+        barWidthTotal+=newOp->get_width();
         return newOp;
     }
 
@@ -1277,8 +1304,8 @@ namespace pawgui
                 gOption = barOptions[j];
                 gOption->menuDirection = gpe::fa_right;
                 gOption->set_position(widget_box.x + barWidthTotal,widget_box.y);
-                gOption->element_box.h = widget_box.h;
-                barWidthTotal+=gOption->get_width()+default_toolkey_padding;
+                gOption->set_height( widget_box.h );
+                barWidthTotal+=gOption->get_width();
             }
         }
     }
@@ -1291,6 +1318,7 @@ namespace pawgui
     void widget_toolbar::reset_options()
     {
         popup_menu_option * gOption = NULL;
+        int x_current = widget_box.x;
         for(int j=0; j<(int)barOptions.size(); j++)
         {
             gOption = barOptions[j];
@@ -1298,6 +1326,8 @@ namespace pawgui
             gOption->hoverOption = -1;
             gOption->selectedOption = -1;
             gOption->reset_suboptions();
+            gOption->set_position(x_current, widget_box.y );
+            x_current += gOption->get_width();
         }
     }
 
@@ -1321,8 +1351,17 @@ namespace pawgui
         }
     }
 
-    void widget_toolbar::process_toolbar()
+    void widget_toolbar::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
+        view_space = gpe::camera_find(view_space);
+        cam = gpe::camera_find(cam);
+        if(view_space==NULL || cam==NULL)
+        {
+            return;
+        }
+
+        widget_basic::process_self(view_space,cam);
+
         justClosed = false;
         openRequested = false;
         int i;
@@ -1331,8 +1370,9 @@ namespace pawgui
         int barAction = -1;
 
         update_popup_info(); //resets the popup option to process
-        if( gpe::input->window_input_received == true)
+        if( gpe::window_controller_main->is_resized() )
         {
+            gpe::error_log->report("Unable to process toolbar, window is resized....");
             hoverOption = -1;
             selectedOption = -1;
             reset_options();
@@ -1542,7 +1582,7 @@ namespace pawgui
                 for(i=0; i<(int)barOptions.size(); i++)
                 {
                     fOption = barOptions[i];
-                    if( gpe::point_between(gpe::input->mouse_position_x, gpe::input->mouse_position_y,drawXPos,widget_box.y,drawXPos+fOption->get_width()+default_toolkey_padding,widget_box.y+widget_box.h) )
+                    if( gpe::point_between(gpe::input->mouse_position_x, gpe::input->mouse_position_y,drawXPos,widget_box.y,drawXPos+fOption->get_width(),widget_box.y+widget_box.h) )
                     {
                         if( gpe::input->mouse_movement_received || hoverOption < 0 )
                         {
@@ -1572,14 +1612,14 @@ namespace pawgui
                         }
                     }
 
-                    barAction = fOption->process_menu_option();
-                    if(barAction!=-1)
+                    fOption->process_self( view_space, cam );
+                    barAction = fOption->get_browsing_results();
+                    if(barAction >= 0 )
                     {
                         actionHappened = barAction;
                     }
-                    drawXPos+=fOption->get_width()+default_toolkey_padding;
+                    drawXPos+=fOption->get_width();
                 }
-
                 if( gpe::input->check_mouse_released( mb_left))
                 {
                     //resets the toolbar if the user clicks on the far right side of it.
@@ -1591,10 +1631,11 @@ namespace pawgui
             }
         }
 
-        if( gpe::input->check_mouse_released(1) || gpe::input->check_kb_released(kb_esc) )
+        if( gpe::input->check_mouse_released(mb_middle) ||gpe::input->check_mouse_released(mb_right) || gpe::input->check_kb_released(kb_esc) )
         {
             close_toolbar();
         }
+
 
         if((int)action_message_text.size() > 0 )
         {
@@ -1603,16 +1644,17 @@ namespace pawgui
         }
     }
 
-    void widget_toolbar::render_toolbar( gpe::shape_rect *renderCam)
+    void widget_toolbar::render_self( gpe::shape_rect * view_space, gpe::shape_rect  * cam )
     {
         if( toolBarIsOpen)
         {
             main_overlay_system->render_frozen_screenshot();
         }
-        //gpe::gcanvas->render_rect(&widget_box,pawgui::theme_main->program_color_header,false);
+
+        gpe::gcanvas->render_rect(&widget_box,pawgui::theme_main->popup_box_color,false);
         if( barOptions.size()==0)
         {
-            gpe::gfs->render_text( widget_box.x+4,widget_box.y+8,"(Toolbar)",pawgui::theme_main->main_box_font_color,NULL,gpe::fa_left,gpe::fa_top);
+            gpe::gfs->render_text( widget_box.get_center(),widget_box.get_middle(),"(Toolbar)",pawgui::theme_main->main_box_font_color,NULL,gpe::fa_center,gpe::fa_middle);
         }
         else
         {
@@ -1622,17 +1664,17 @@ namespace pawgui
             for(int i=0; i<(int)barOptions.size(); i++)
             {
                 fOption = barOptions[i];
-                if(fOption->subMenuIsOpen || hoverOption==i)
+                if( hoverOption == i  || fOption->is_hovered() )
                 {
-                    gpe::gcanvas->render_rectangle( drawXPos,widget_box.y,drawXPos+fOption->get_width()+default_toolkey_padding,y2,pawgui::theme_main->popup_box_highlight_color, false);
+                    gpe::gcanvas->render_rectangle( drawXPos,widget_box.y,drawXPos+fOption->get_width(),y2,pawgui::theme_main->popup_box_highlight_color, false);
                 }
                 fOption->render_self(NULL);
-                drawXPos+=fOption->get_width()+default_toolkey_padding;
+                drawXPos+=fOption->get_width();
             }
         }
     }
 
-    void context_menu_open(int menuXPos,int menuYPos, int newWidth )
+    void context_menu_open(int menuXPos,int menuYPos, int new_width )
     {
         if( menuXPos<0)
         {
@@ -1646,9 +1688,9 @@ namespace pawgui
         {
             main_context_menu->clear_menu();
             main_context_menu->subMenuIsOpen = true;
-            if( newWidth > 0)
+            if( new_width > 0)
             {
-                main_context_menu->set_width(newWidth);
+                main_context_menu->set_width(new_width);
             }
             else
             {
@@ -1673,6 +1715,8 @@ namespace pawgui
                 //main_overlay_system->render_frozen_screenshot();
             }
         }
+        main_context_menu->close_menu();
+
     }
 
     int context_menu_process( gpe::shape_rect * cam, bool redrawScreen, bool autoResize )
@@ -1703,22 +1747,12 @@ namespace pawgui
         Checks if we should move the menu direction based on x position
         Also if the x is too far to the right it right aligns it to the edge of the screen.
         */
-        if( main_context_menu->element_box.x + main_context_menu->element_box.w +32 >= gpe::screen_width )
-        {
-            main_context_menu->element_box.x = gpe::screen_width - main_context_menu->element_box.w - 32;
-            main_context_menu->menuDirection = gpe::fa_left;
-            main_context_menu->set_position( main_context_menu->element_box.x, main_context_menu->element_box.y );
-        }
-        else if( main_context_menu->element_box.x + main_context_menu->element_box.w +32 +main_context_menu->subOptionWidthSpace+32 >= gpe::screen_width )
+        if( main_context_menu->get_xpos() +32 >= gpe::screen_width )
         {
             main_context_menu->menuDirection = gpe::fa_left;
-            main_context_menu->set_position( main_context_menu->element_box.x, main_context_menu->element_box.y );
+            main_context_menu->set_position( gpe::screen_width - main_context_menu->get_width() - 32, main_context_menu->get_ypos() );
         }
-        else
-        {
-            main_context_menu->menuDirection = gpe::fa_right;
-            main_context_menu->set_position( main_context_menu->element_box.x, main_context_menu->element_box.y );
-        }
+
 
         while(exitOperation==false)
         {
@@ -1738,7 +1772,8 @@ namespace pawgui
                 {
                     if( main_context_menu->is_open() )
                     {
-                        returnValue = main_context_menu->process_menu_option();
+                        main_context_menu->process_self( NULL, cam );
+                        returnValue = main_context_menu->get_browsing_results();
                         if( gpe::input->check_mouse_released(kb_anykey)  )
                         {
                             //gpe::error_log->report("Releasing due to mouse input...");

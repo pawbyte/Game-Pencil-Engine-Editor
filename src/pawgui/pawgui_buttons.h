@@ -3,10 +3,10 @@ pawgui_buttons.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PAWGUI contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PAWGUI contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -50,24 +50,24 @@ namespace pawgui
     public:
         bool isTabbed;
         bool usesTabs;
-        widget_button_icon(std::string buttonImgFile="",std::string name="", int id = -1, int buttonSize = 24, bool lastInCol = false);
+        widget_button_icon(std::string buttonImgFile="",std::string name="", int id = -1, int buttonSize = 32, bool lastInCol = false);
         ~widget_button_icon();
         void change_texture( std::string file_name );
         std::string get_data();
-        void load_data(std::string dataString);
+        void load_data(std::string datastring);
         bool ends_section();
         int get_id();
         void set_id(int new_id);
         void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-        void set_website(std::string urlIn);
+        void set_website(std::string url_string);
     };
 
     class widget_button_iconbar: public widget_basic
     {
     private:
         std::vector < widget_button_icon * > barOptions;
-        int newButtonXPos;
+        int new_buttonXPos;
         bool isTabBar;
         int tabPosition;
         bool widthIsLimited;
@@ -80,16 +80,16 @@ namespace pawgui
         widget_button_iconbar( int buttonSize = 24, bool useTabs = false);
         ~widget_button_iconbar();
         std::string get_data();
-        void load_data(std::string dataString);
+        void load_data(std::string datastring);
         int get_tab_pos();
         int get_tab_id();
         void limit_width(bool isLimited = false);
         void set_width(int newWid);
         widget_button_icon * add_option( std::string buttonImgFile,std::string name, int id = -1, bool endsSection = false);
-        void process_self( gpe::shape_rect * view_space =NULL, gpe::shape_rect *renderCam = NULL);
+        void process_self( gpe::shape_rect * view_space =NULL, gpe::shape_rect *render_camera = NULL);
         void recalculate_width();
         void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-        void set_coords(int newX = -1, int newY = -1);
+        void set_coords(int x_new = -1, int y_new = -1);
         void set_height(int newXH);
         void set_selection(int newSelection);
     };
@@ -102,7 +102,7 @@ namespace pawgui
         widget_button_label( std::string name, std::string description,int id = -1);
         ~widget_button_label();
         void prerender_self( );
-        void process_self( gpe::shape_rect * view_space =NULL, gpe::shape_rect *renderCam = NULL);
+        void process_self( gpe::shape_rect * view_space =NULL, gpe::shape_rect *render_camera = NULL);
         void set_id(int new_id);
         void set_name(std::string new_name);
         void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
@@ -125,9 +125,9 @@ namespace pawgui
         ~widget_button_push();
         void set_id(int new_id);
         void set_name(std::string new_name);
-        void set_website(std::string urlIn);
+        void set_website(std::string url_string);
         void prerender_self( );
-        void process_self( gpe::shape_rect * view_space =NULL, gpe::shape_rect *renderCam = NULL);
+        void process_self( gpe::shape_rect * view_space =NULL, gpe::shape_rect *render_camera = NULL);
         void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     };
 
@@ -155,9 +155,9 @@ namespace pawgui
         int get_id();
         void set_id(int new_id);
         void set_name(std::string new_name);
-        void set_website(std::string urlIn);
+        void set_website(std::string url_string);
         void prerender_self( );
-        void process_self( gpe::shape_rect * view_space =NULL, gpe::shape_rect *renderCam = NULL);
+        void process_self( gpe::shape_rect * view_space =NULL, gpe::shape_rect *render_camera = NULL);
         void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     };
 }

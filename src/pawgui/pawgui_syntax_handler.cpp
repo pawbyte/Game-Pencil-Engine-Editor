@@ -3,10 +3,10 @@ pawgui_syntax_handler.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,33 +39,33 @@ namespace pawgui
 
     syntax_compiler_term::syntax_compiler_term()
     {
-        termString = "";
+        termstring = "";
         //termParameters = "";
         termDescription = "";
         termFunctionReturnType = "";
         termType = -1;
-        termParametersString = "";
+        termParametersstring = "";
         termScope = "";
     }
 
     syntax_compiler_term::syntax_compiler_term(std::string tName,std::string tParameters, std::string tFunctionReturnType, std::string tDescription,int tType, std::string tScope)
     {
         termScope = tScope;
-        termString = tName;
+        termstring = tName;
         //termParameters = tParameters;
         termDescription = tDescription;
         termType = tType;
         termFunctionReturnType = tFunctionReturnType;
-        termParametersString = tParameters;
+        termParametersstring = tParameters;
         if( (int)tParameters.size() > 0 )
         {
             int commaPos = tParameters.find_first_of(",");
-            std::string valString = "";
+            std::string valstring = "";
             while( commaPos!=(int)std::string::npos )
             {
                 commaPos=tParameters.find_first_of(",");
-                valString = stg_ex::split_first_string(tParameters,',');
-                termParameters.push_back(valString);
+                valstring = stg_ex::split_first_string(tParameters,',');
+                termParameters.push_back(valstring);
             }
             termParameters.push_back( tParameters );
         }
@@ -78,7 +78,7 @@ namespace pawgui
 
     std::string syntax_compiler_term::get_parameters()
     {
-        return termParametersString;
+        return termParametersstring;
     }
 
     syntax_language::syntax_language(std::string langName, std::string langShortName, int langId, bool projectCodeLanguage, bool useDefaultSymbols)
@@ -136,7 +136,7 @@ namespace pawgui
             tTerm = languageVariables[i];
             if( tTerm!=NULL)
             {
-                if( tTerm->termString==nName)
+                if( tTerm->termstring==nName)
                 {
                     return false;
                 }
@@ -155,7 +155,7 @@ namespace pawgui
             tTerm = languageConstants[i];
             if( tTerm!=NULL)
             {
-                if( tTerm->termString==nName)
+                if( tTerm->termstring==nName)
                 {
                     return false;
                 }
@@ -174,7 +174,7 @@ namespace pawgui
             tTerm = languageFunctions[i];
             if( tTerm!=NULL)
             {
-                if( tTerm->termString==nName)
+                if( tTerm->termstring==nName)
                 {
                     return false;
                 }
@@ -197,7 +197,7 @@ namespace pawgui
             tTerm = languageClasses[i];
             if( tTerm!=NULL)
             {
-                if( tTerm->termString==nName)
+                if( tTerm->termstring==nName)
                 {
                     return false;
                 }
@@ -216,7 +216,7 @@ namespace pawgui
             tTerm = languageKeywords[i];
             if( tTerm!=NULL)
             {
-                if( tTerm->termString==nName)
+                if( tTerm->termstring==nName)
                 {
                     return false;
                 }
@@ -240,14 +240,14 @@ namespace pawgui
     }
 
 
-    int syntax_language::firstSymbolInString(std::string inString, int pos)
+    int syntax_language::firstSymbolInstring(std::string instring, int pos)
     {
         int returnVal = -1;
 
         int maxLoop = symbolLibrary.size();
         for(int i=0; i<maxLoop; i+=1)
         {
-            int symPos = inString.find(symbolLibrary[i],pos);
+            int symPos = instring.find(symbolLibrary[i],pos);
             if(symPos!=-1)
             {
                 if(returnVal==-1)
@@ -264,7 +264,7 @@ namespace pawgui
         return returnVal;
     }
 
-    bool syntax_language::is_compilable_word(std::string strIn)
+    bool syntax_language::is_compilable_word(std::string str_in)
     {
         int i = 0;
         syntax_compiler_term * tTerm = NULL;
@@ -273,7 +273,7 @@ namespace pawgui
             tTerm = languageKeywords[i];
             if( tTerm!=NULL)
             {
-                if( tTerm->termString==strIn)
+                if( tTerm->termstring==str_in)
                 {
                     return false;
                 }
@@ -285,7 +285,7 @@ namespace pawgui
             tTerm = languageVariables[i];
             if( tTerm!=NULL)
             {
-                if( tTerm->termString==strIn)
+                if( tTerm->termstring==str_in)
                 {
                     return false;
                 }
@@ -297,7 +297,7 @@ namespace pawgui
             tTerm = languageClasses[i];
             if( tTerm!=NULL)
             {
-                if( tTerm->termString==strIn)
+                if( tTerm->termstring==str_in)
                 {
                     return false;
                 }
@@ -309,7 +309,7 @@ namespace pawgui
             tTerm = languageDataTypes[i];
             if( tTerm!=NULL)
             {
-                if( tTerm->termString==strIn)
+                if( tTerm->termstring==str_in)
                 {
                     return false;
                 }
@@ -326,7 +326,7 @@ namespace pawgui
             tTerm = languageDataTypes[i];
             if( tTerm!=NULL)
             {
-                if( tTerm->termString==nName)
+                if( tTerm->termstring==nName)
                 {
                     return false;
                 }
@@ -352,7 +352,7 @@ namespace pawgui
                 tTerm= languageDataTypes[i];
                 if( tTerm!=NULL)
                 {
-                    strToSearch = tTerm->termString;
+                    strToSearch = tTerm->termstring;
                     tempStrSize = strToSearch.size();
                     if(strSize >=  startPos+tempStrSize && tempStrSize>0)
                     {
@@ -400,7 +400,7 @@ namespace pawgui
                 tTerm= languageFunctions[i];
                 if( tTerm!=NULL)
                 {
-                    strToSearch = tTerm->termString;
+                    strToSearch = tTerm->termstring;
                     tempStrSize = strToSearch.size();
                     if(strSize >=  startPos+tempStrSize && tempStrSize>0)
                     {
@@ -448,7 +448,7 @@ namespace pawgui
                 tTerm= languageKeywords[i];
                 if( tTerm!=NULL)
                 {
-                    strToSearch = tTerm->termString;
+                    strToSearch = tTerm->termstring;
 
                     tempStrSize = strToSearch.size();
                     if(strSize >=  startPos+tempStrSize && tempStrSize>0)
@@ -497,7 +497,7 @@ namespace pawgui
                 tTerm= languageVariables[i];
                 if( tTerm!=NULL)
                 {
-                    strToSearch = tTerm->termString;
+                    strToSearch = tTerm->termstring;
 
                     tempStrSize = strToSearch.size();
                     if(strSize >=  startPos+tempStrSize && tempStrSize>0)
@@ -539,7 +539,7 @@ namespace pawgui
             tTerm= languageVariables[i];
             if( tTerm!=NULL)
             {
-                if( tTerm->termString == name_param )
+                if( tTerm->termstring == name_param )
                 {
                     return tTerm;
                 }
@@ -557,7 +557,7 @@ namespace pawgui
             tTerm= languageFunctions[i];
             if( tTerm!=NULL)
             {
-                if( tTerm->termString == name_param )
+                if( tTerm->termstring == name_param )
                 {
                     return tTerm;
                 }
@@ -567,7 +567,7 @@ namespace pawgui
     }
     syntax_highlighter::syntax_highlighter()
     {
-        newParametersString = "";
+        newParametersstring = "";
         parametersAreValid = false;
 
         syntax_language * JSLang = defaultLanguage = add_programming_language("JavaScript","JS",pawgui::program_language_js, true,true,true );
@@ -577,11 +577,11 @@ namespace pawgui
 
         //JS classes
         JSLang->add_language_class("activeObject");
-        JSLang->add_language_class("GPE_String");
+        JSLang->add_language_class("GPE_string");
         JSLang->add_language_class("SuperVector");
         JSLang->add_language_class("window");
         JSLang->add_language_class("GPE_JSFile");
-        JSLang->add_language_class("GPE_FileReader");
+        JSLang->add_language_class("file_objectReader");
         JSLang->add_language_class("GPE_gamepad");
         JSLang->add_language_class("GPE_InputManager");
         JSLang->add_language_class("GPE_LogoDisplay");
@@ -617,7 +617,7 @@ namespace pawgui
         //math / collision functions
         JSLang->add_language_function("abs","Returns 0 or a positive number","x","float","gpe");
         JSLang->add_language_function("add_object","Returns a new object on the same layer as the current object","objectType, x, y","gameObject","GameObject");
-        JSLang->add_language_function("add_new_object","Returns a new object","objectType, x, y, objectLayerId","gameObject","gpe");
+        JSLang->add_language_function("add_new_object","Returns a new object","objectType, x, y, object_layer_id","gameObject","gpe");
         JSLang->add_language_function("bound_number","Bounds x between min and max","minN, maxN","float","gpe");
         JSLang->add_language_function("camera_on","Returns true or false if the camera is on or -1 if the camera is invalid","camId","int","gpe");
         JSLang->add_language_function("center_camera","Centers camera at (x,y)","(camId, x,y","void","gpe");
@@ -637,10 +637,10 @@ namespace pawgui
         JSLang->add_language_function("gamepad_check_button_pressed","Checks if the gamepad's button_id was pressed","gamepad_id, button_id","int","input");
         JSLang->add_language_function("gamepad_check_button_released","Checks if the gamepad's button_id was released","gamepad_id, button_id","int","input");
 
-        JSLang->add_language_function("check_kb_down","Checks if the keyboard button is down","keyId","bool","input");
-        JSLang->add_language_function("check_kb_pressed","Checks if the keyboard button was pressed","keyId","bool","input");
-        JSLang->add_language_function("check_kb_released","Checks if the keyboard button was released","keyId","bool","input");
-        JSLang->add_language_function("check_keyboard","Checks if the keyboard button is down","keyId","bool","input");
+        JSLang->add_language_function("check_kb_down","Checks if the keyboard button is down","key_id","bool","input");
+        JSLang->add_language_function("check_kb_pressed","Checks if the keyboard button was pressed","key_id","bool","input");
+        JSLang->add_language_function("check_kb_released","Checks if the keyboard button was released","key_id","bool","input");
+        JSLang->add_language_function("check_keyboard","Checks if the keyboard button is down","key_id","bool","input");
 
         JSLang->add_language_function("check_mouse_down","Checks if the mouse button is down","button_id","bool","input");
         JSLang->add_language_function("check_mouse_pressed","Checks if the mouse button is down","button_id","bool","input");
@@ -658,9 +658,9 @@ namespace pawgui
         JSLang->add_language_function("erase_data","Erases data pack","dataIdentifier, dataTitle","void","gpe");
         JSLang->add_language_function("exit_video_view_mode","Ends current video playing","","void","gpe");
 
-        JSLang->add_language_function("find_tile","Checks for the tileset of tile at (x,y)","layerToCheck, xPos, yPosk","int","gpe");
+        JSLang->add_language_function("find_tile","Checks for the tileset of tile at (x,y)","layerToCheck, x_pos, y_posk","int","gpe");
         JSLang->add_language_function("find_tile_in_box","Checks if tile is located in box","layerToCheck, x1,  y1,  x2, y2, layerIdToCheck","int","gpe");
-        JSLang->add_language_function("find_matching_tile","Checks if tile with MATCHING tileset exists at (x,y)","layerToCheck,  xPos,  yPos,  tileTypeToSearchFor","bool","gpe");
+        JSLang->add_language_function("find_matching_tile","Checks if tile with MATCHING tileset exists at (x,y)","layerToCheck,  x_pos,  y_pos,  tileTypeToSearchFor","bool","gpe");
         JSLang->add_language_function("find_matching_tile_in_box","Checks if tile with MATCHING tileset exist in box","layerToCheck,  x1,  y1,  x2, y2,  tileTypeToSearchFor","bool","gpe");
 
         JSLang->add_language_function("find_furthest_object","Finds the furthest object away from (x,y)","theObjectType, xIn, yIn, avoidObjId, layerIdToCheck","GameObject","gpe");
@@ -676,7 +676,7 @@ namespace pawgui
         JSLang->add_language_function("get_camera_screen_y","Get the height of the camera on screen","cameraId","int","gpe");
         JSLang->add_language_function("get_current_camera","Gets the id of the current camera being shown","","int","gpe");
         JSLang->add_language_function("get_current_camera_info","Get an object containing information of the camera","","CameraData","gpe");
-        JSLang->add_language_function("get_background","Gets the background texture id","bgId","int","gpe");
+        JSLang->add_language_function("get_background","Gets the background texture id","bg_id","int","gpe");
         JSLang->add_language_function("get_direction","Returns the direction from (x1,y1) and (x2,y2)","x1, y1, x2, y2","int","gpe");
         JSLang->add_language_function("get_distance","Returns the distance between (x1,y1) and (x2,y2)","x1, y1, x2, y2","int","gpe");
         JSLang->add_language_function("get_mouse_position_x","Gets the global mouse x-position","","float","gpe");
@@ -686,16 +686,16 @@ namespace pawgui
         JSLang->add_language_function("setup_camera","Moves camera to (x,y) with sizing (w,h)","camId, x,y, w, h","void","gpe");
         JSLang->add_language_function("split_screen","Splits the scren up to 8 cameras","screenTotal, verticallySplit, useBlanks","bool","gpe");
 
-        JSLang->add_language_function("font_is_monospaced","Checks if the font assigned to fontId is monospaced. Returns a blank string if out of bounds.","fontId","String","gpe");
-        JSLang->add_language_function("get_font_family","Get the FamilyName of the font assigned to fontId. Returns a blank string if out of bounds.","fontId","String","gpe");
-        JSLang->add_language_function("get_font_height","Get the estimated height of the font assigned to fontId. Returns a blank string if out of bounds.","fontId,words","String","gpe");
-        JSLang->add_language_function("get_font_size","Get the size(pt) of the font assigned to fontId. Returns a blank string if out of bounds.","fontId","String","gpe");
-        JSLang->add_language_function("get_font_width","Get the estimated width of the font assigned to fontId. Returns a blank string if out of bounds.","fontId,words","String","gpe");
+        JSLang->add_language_function("font_is_monospaced","Checks if the font assigned to fontId is monospaced. Returns a blank string if out of bounds.","fontId","string","gpe");
+        JSLang->add_language_function("get_font_family","Get the FamilyName of the font assigned to fontId. Returns a blank string if out of bounds.","fontId","string","gpe");
+        JSLang->add_language_function("get_font_height","Get the estimated height of the font assigned to fontId. Returns a blank string if out of bounds.","fontId,words","string","gpe");
+        JSLang->add_language_function("get_font_size","Get the size(pt) of the font assigned to fontId. Returns a blank string if out of bounds.","fontId","string","gpe");
+        JSLang->add_language_function("get_font_width","Get the estimated width of the font assigned to fontId. Returns a blank string if out of bounds.","fontId,words","string","gpe");
 
-        JSLang->add_language_function("get_animation_width","Get the width of the animation assigned to animId. Returns 0 if out of bounds.","animId","int","gpe");
-        JSLang->add_language_function("get_animation_height","Get the height of the animation assigned to animId. Returns 0 if out of bounds","animId","int","gpe");
-        JSLang->add_language_function("get_animation_length","Get the length of the animation assigned to animId. Returns 0 if out of bounds","animId","int","gpe");
-        JSLang->add_language_function("get_animation_object","Gets the actual animation object attached to animId. Returns is_null if out of bounds","animId","Gameanimation","gpe");
+        JSLang->add_language_function("get_animation_width","Get the width of the animation assigned to animation_id. Returns 0 if out of bounds.","animation_id","int","gpe");
+        JSLang->add_language_function("get_animation_height","Get the height of the animation assigned to animation_id. Returns 0 if out of bounds","animation_id","int","gpe");
+        JSLang->add_language_function("get_animation_length","Get the length of the animation assigned to animation_id. Returns 0 if out of bounds","animation_id","int","gpe");
+        JSLang->add_language_function("get_animation_object","Gets the actual animation object attached to animation_id. Returns is_null if out of bounds","animation_id","Gameanimation","gpe");
 
         JSLang->add_language_function("get_texture_width","Get the width of the texture assigned to textureId. Returns 0 if out of bounds.","textureId","int","gpe");
         JSLang->add_language_function("get_texture_height","Get the height of the texture assigned to textureId. Returns 0 if out of bounds","textureId","int","gpe");
@@ -768,7 +768,7 @@ namespace pawgui
         JSLang->add_language_function("loop_audio","Loops audio whose id is audioId","audioId","void","gpe");
         JSLang->add_language_function("pause_audio","Pauses audio whose id is audioId","audioId","void","gpe");
         JSLang->add_language_function("play_audio","Play audio whose id is audioId","audioId","void","gpe");
-        JSLang->add_language_function("position_collides","Returns true or false if objectOne collides at (x,y)","objOne,  xIn,  yIn,  otherObjectType, layerId ","bool","gpe");
+        JSLang->add_language_function("position_collides","Returns true or false if objectOne collides at (x,y)","objOne,  xIn,  yIn,  otherObjectType, layer_id ","bool","gpe");
         JSLang->add_language_function("stop_all_audio","Stops all audio","","void","gpe");
         JSLang->add_language_function("stop_audio_group","Stops all audio whose groupId is groupName","groupName","void","gpe");
         JSLang->add_language_function("stop_audio","Stops audio whose id is audioId","audioId","void","gpe");
@@ -782,19 +782,19 @@ namespace pawgui
 
         //rendering functions
         JSLang->add_language_function("render_circle","Renders a circle","x, y, radius, circleColor, isOutline, oulineWidth, renderImmediately","void","gpe");
-        JSLang->add_language_function("gpe::gcanvas->render_line","Renders a line","x1, y1, x2, y2, lineColor, lineWidth, renderImmediately","void","gpe");
+        JSLang->add_language_function("gpe::gcanvas->render_line","Renders a line","x1, y1, x2, y2, lineColor, line_width, renderImmediately","void","gpe");
         JSLang->add_language_function("render_rectangle","Renders a rectangle","x1, y1, x2, y2,rectColor, outline,rectLineWidth,renderImmediately","void","gpe");
         JSLang->add_language_function("render_self","Renders this object onto scene","","void","gpe");
-        JSLang->add_language_function("render_animation_rotated","Renders a rotated animation","animIdIn, frameNumb, xOn, yOn, rotationAngle,scaleX, scaleY","void","gpe");
+        JSLang->add_language_function("render_animation_rotated","Renders a rotated animation","animation_idIn, frameNumb, xOn, yOn, rotationAngle,scaleX, scaleY","void","gpe");
 
-        JSLang->add_language_function("render_animation","Renders a animation","animIdIn, frameNumb, xOn, yOn, scaleX, scaleY","void","gpe");
+        JSLang->add_language_function("render_animation","Renders a animation","animation_idIn, frameNumb, xOn, yOn, scaleX, scaleY","void","gpe");
         JSLang->add_language_function("render_square","Renders a square","xOn, yOn, squareSize,squareColor, outline,squareLineWidth,renderImmediately","void","gpe");
-        JSLang->add_language_function("render_text","Renders text","fontIdIn, xOn, yOn, textToRender, fontRenderColor, fontHalign, fontValign","void","gpe");
+        JSLang->add_language_function("render_text","Renders text","fontIdIn, xOn, yOn, text_to_render, fontRenderColor, fontHalign, fontValign","void","gpe");
         JSLang->add_language_function("render_texture_rotated","Renders a rotated texture","texureIdIn, xDraw, yDraw, width, height, angle","void","gpe");
         JSLang->add_language_function("render_texture_scaled","Renders a scaled texture","texureIdIn, xDraw, yDraw, width, height","void","gpe");
         JSLang->add_language_function("render_texture","Renders a texture","texureIdIn,  xDraw, yDraw","void","gpe");
         JSLang->add_language_function("render_triangle","Renders a triangle","x1, y1, x2, y2, x3, y3, triangleColor, outline, outlineSize, renderImmediately","void","gpe");
-        JSLang->add_language_function("render_wrapped_text","Renders a wrapped text","fontIdIn, xOn, yOn, textToRender,fontRenderColor, maxWidth, lineHeight","void","gpe");
+        JSLang->add_language_function("render_wrapped_text","Renders a wrapped text","fontIdIn, xOn, yOn, text_to_render,fontRenderColor, maxWidth, lineHeight","void","gpe");
         JSLang->add_language_function("scene_enter_previous","Goes to the previous scene","","void","gpe");
         JSLang->add_language_function("scene_enter_named","Goes to the scene named sceneId","sceneId","void","gpe");
         JSLang->add_language_function("scene_enter_next","Goes to the next scene","","void","gpe");
@@ -1157,7 +1157,7 @@ namespace pawgui
         JSLang->add_language_variable("direction","An objects direction in radians", "GameObject" );
         JSLang->add_language_variable("speed","An objects speed in pixels", "GameObject" );
         JSLang->add_language_variable("imageSpeed","An object's imageSpeed per game frame", "GameObject" );
-        JSLang->add_language_variable("isVisible","A boolean if the object is visible", "GameObject" );
+        JSLang->add_language_variable("is_visible","A boolean if the object is visible", "GameObject" );
         JSLang->add_language_variable("animationFrame","The current frame of the object's current animation", "GameObject" );
         JSLang->add_language_variable("xPast","The object's x-coordinate from last frame", "GameObject" );
         JSLang->add_language_variable("yPast","The object's y-coordinate from last frame", "GameObject" );
@@ -1315,18 +1315,18 @@ namespace pawgui
         return newLangauge;
     }
 
-    bool syntax_highlighter::is_reserved_word(std::string strIn)
+    bool syntax_highlighter::is_reserved_word(std::string str_in)
     {
         return true;
     }
 
-    bool syntax_highlighter::is_compilable_word(std::string strIn)
+    bool syntax_highlighter::is_compilable_word(std::string str_in)
     {
         syntax_compiler_term * tTerm = NULL;
         int i = 0;
         if( defaultLanguage!=NULL )
         {
-            return defaultLanguage->is_compilable_word(strIn);
+            return defaultLanguage->is_compilable_word(str_in);
         }
         return true;
     }
@@ -1341,12 +1341,12 @@ namespace pawgui
         return false;
     }
 
-    int syntax_highlighter::firstSymbolInString(std::string inString, int pos)
+    int syntax_highlighter::firstSymbolInstring(std::string instring, int pos)
     {
         int returnVal = -1;
         if( defaultLanguage!=NULL )
         {
-            return defaultLanguage->firstSymbolInString(inString, pos);
+            return defaultLanguage->firstSymbolInstring(instring, pos);
 
         }
         return returnVal;
@@ -1368,7 +1368,7 @@ namespace pawgui
                 tTerm= activeProjectFunctions[i];
                 if( tTerm!=NULL)
                 {
-                    strToSearch = tTerm->termString;
+                    strToSearch = tTerm->termstring;
 
                     tempStrSize = strToSearch.size();
                     if(strSize >=  startPos+tempStrSize && tempStrSize>0)
@@ -1413,7 +1413,7 @@ namespace pawgui
                 tTerm= activeProjectKeywords[i];
                 if( tTerm!=NULL)
                 {
-                    strToSearch = tTerm->termString;
+                    strToSearch = tTerm->termstring;
 
                     tempStrSize = strToSearch.size();
                     if(strSize >=  startPos+tempStrSize && tempStrSize>0)
@@ -1591,7 +1591,7 @@ namespace pawgui
         foundParameters.clear();
         defaultParameterLines.clear();
         functionParameterErrors.clear();
-        newParametersString = "";
+        newParametersstring = "";
         parametersAreValid = true;
         std::string paramToCompile = "";
         int paramStrSize = (int)paramToProcess.size();
@@ -1668,11 +1668,11 @@ namespace pawgui
                                     {
                                         if( i==0)
                                         {
-                                            newParametersString = parameterKey+newParametersString;
+                                            newParametersstring = parameterKey+newParametersstring;
                                         }
                                         else
                                         {
-                                            newParametersString = ","+parameterKey+newParametersString;
+                                            newParametersstring = ","+parameterKey+newParametersstring;
                                         }
                                         newParameterLine = "if("+parameterKey+"==undefined) "+parameterKey+" = "+parameterValue+";\n";
                                         defaultParameterLines.insert(defaultParameterLines.begin()+0,newParameterLine);
@@ -1716,7 +1716,7 @@ namespace pawgui
                     {
                         if( is_compilable_word(paramToCompile) )
                         {
-                            newParametersString = parameterKey+","+paramToCompile;
+                            newParametersstring = parameterKey+","+paramToCompile;
                             lastParamThatHAsDefaultValue = i;
                         }
                         else
@@ -1730,14 +1730,14 @@ namespace pawgui
             }
             else
             {
-                newParametersString = "";
+                newParametersstring = "";
             }
         }
         if( !parametersAreValid)
         {
             foundParameters.clear();
             defaultParameterLines.clear();
-            newParametersString = "";
+            newParametersstring = "";
         }
         return parametersAreValid;
     }
@@ -1747,7 +1747,7 @@ namespace pawgui
         compilerErrors.clear();
         compilerWarnings.clear();
         defaultParameterLines.clear();
-        newParametersString = "";
+        newParametersstring = "";
         parametersAreValid = true;
     }
 
@@ -1789,19 +1789,19 @@ namespace pawgui
             }
             if( highlightedTerm->termType==cterm_function)
             {
-                fullPhraseToRender = highlightedTerm->termFunctionReturnType+" "+highlightedTerm->termString+"("+highlightedTerm->get_parameters()+")";
+                fullPhraseToRender = highlightedTerm->termFunctionReturnType+" "+highlightedTerm->termstring+"("+highlightedTerm->get_parameters()+")";
             }
             else
             {
-                fullPhraseToRender = highlightedTerm->termString;
+                fullPhraseToRender = highlightedTerm->termstring;
             }
 
             int highlightedTermWidthh  = 0, highlightedTermHeight =0;
-            int widestStringSize = std::max( (int)fullPhraseToRender.size(), (int)highlightedTerm->termDescription.size() );
-            widestStringSize = std::max( (int)fullTermScope.size(), widestStringSize);
+            int wideststringSize = std::max( (int)fullPhraseToRender.size(), (int)highlightedTerm->termDescription.size() );
+            wideststringSize = std::max( (int)fullTermScope.size(), wideststringSize);
 
             font_textinput->get_metrics("A",&highlightedTermWidthh, &highlightedTermHeight);
-            highlightedTermWidthh*=widestStringSize;
+            highlightedTermWidthh*=wideststringSize;
 
             if( highlightedTermXPos+32+highlightedTermWidthh > gpe::screen_width)
             {
@@ -1848,20 +1848,20 @@ namespace pawgui
                     {
                         if( (int)cTerm->termScope.size() > 0 && cTerm->termScope!="User Global" )
                         {
-                            fullPhraseToRender = cTerm->termFunctionReturnType+" "+cTerm->termScope+"."+cTerm->termString+"("+cTerm->get_parameters()+")";
+                            fullPhraseToRender = cTerm->termFunctionReturnType+" "+cTerm->termScope+"."+cTerm->termstring+"("+cTerm->get_parameters()+")";
                         }
                         else
                         {
-                            fullPhraseToRender = cTerm->termFunctionReturnType+" "+cTerm->termString+"("+cTerm->get_parameters()+")";
+                            fullPhraseToRender = cTerm->termFunctionReturnType+" "+cTerm->termstring+"("+cTerm->get_parameters()+")";
                         }
                     }
                     else if( (int)cTerm->termScope.size() > 0 && cTerm->termScope!="User Global" )
                     {
-                        fullPhraseToRender = cTerm->termScope+"."+cTerm->termString;
+                        fullPhraseToRender = cTerm->termScope+"."+cTerm->termstring;
                     }
                     else
                     {
-                        fullPhraseToRender = cTerm->termString;
+                        fullPhraseToRender = cTerm->termstring;
                     }
                     if( iSuggestedEntry==iSuggestionPos)
                     {
