@@ -39,8 +39,9 @@ namespace misc {
       std::uintmax_t szsource = 0;
 
       bool directory_copy_retained(std::string dname, std::string newname);
+
       std::string string_replace_all(std::string str, std::string sstr, std::string nstr);
-      std::vector<std::string> split_string(const std::string &str, char delimiter);.
+      std::vector<std::string> string_split(const std::string &str, char delimiter);.
 
     public:
 
