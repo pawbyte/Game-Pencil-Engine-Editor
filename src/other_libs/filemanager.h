@@ -77,7 +77,7 @@ namespace tkg {
       bool directory_rename(std::string oldname, std::string newname);
       bool directory_copy(std::string dname, std::string newname);
       std::uintmax_t directory_size(std::string dname);
-      std::vector<std::string> directory_contents(std::string dname, std::string pattern);
+      std::vector<std::string> directory_contents(std::string dname, std::string pattern, bool incdirs);
 
   }; // class filemanager
 

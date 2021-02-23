@@ -67,7 +67,7 @@ namespace tkg {
         fs::copy(path1, path2, fs::copy_options::recursive, ec);
         result = (ec.value() == 0);
       } else if (path1.u8string() == path3.u8string()) {
-        vector<string> itemvec = directory_contents(dname, "*.*");
+        vector<string> itemvec = directory_contents(dname, "*.*", true);
         if (!directory_exists(newname)) {
           directory_create(newname);
           for (const string &item : itemvec) {
@@ -393,9 +393,8 @@ namespace tkg {
     return directory_copy_retained(dname, newname);
   }
 
-  vector<string> filemanager::directory_contents(string dname, string pattern) {
-    std::error_code ec; 
-    vector<string> itemvec, result;
+  vector<string> filemanager::directory_contents(string dname, string pattern, bool incdirs) {
+    std::error_code ec; vector<string> itemvec, result;
     if (pattern.empty()) pattern = "*.*";
     if (!directory_exists(dname)) return result;
     dname = filename_remove_slash(dname, true);
@@ -407,7 +406,7 @@ namespace tkg {
         fs::path file_path = fs::u8path(filename_canonical(dir_ite->path().u8string()));
         if (!fs::is_directory(dir_ite->status(ec)) && ec.value() == 0) {
           itemvec.push_back(file_path.u8string());
-        } else if (ec.value() == 0) {
+        } else if (ec.value() == 0 && incdirs == true) {
           itemvec.push_back(filename_add_slash(file_path.u8string()));
         }
       }
