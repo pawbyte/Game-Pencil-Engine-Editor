@@ -110,7 +110,7 @@ namespace tkg {
     vector<wchar_t> buf(wchar_count);
     return wstring { buf.data(), (size_t)MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, buf.data(), (int)wchar_count) };
     #else
-    fs::path path = fs::u8path(str);
+    const fs::path path = fs::u8path(str);
     return path.wstring();
     #endif
   }
@@ -121,7 +121,7 @@ namespace tkg {
     vector<char> buf(nbytes);
     return string { buf.data(), (size_t)WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.length(), buf.data(), nbytes, NULL, NULL) };
     #else
-    fs::path path = wstr;
+    const fs::path path = wstr;
     return path.u8string();
     #endif
   }
@@ -394,7 +394,8 @@ namespace tkg {
   }
 
   vector<string> filemanager::directory_contents(string dname, string pattern) {
-    std::error_code ec; string list; vector<string> result;
+    std::error_code ec; vector<string> result;
+    if (pattern.empty()) pattern = "*.*";
     if (!directory_exists(dname)) return result;
     dname = filename_remove_slash(dname, true);
     const fs::path path = fs::u8path(dname);
@@ -404,21 +405,18 @@ namespace tkg {
         if (ec.value() != 0) { break; }
         fs::path file_path = fs::u8path(filename_canonical(dir_ite->path().u8string()));
         if (!fs::is_directory(dir_ite->status(ec)) && ec.value() == 0) {
-          list += file_path.u8string() + "\n";
+          itemvec.pop_back(file_path.u8string());
         } else if (ec.value() == 0) {
-          list += filename_add_slash(file_path.u8string()) + "\n";
+          itemvec.pop_back(filename_add_slash(file_path.u8string()));
         }
       }
     }
-    if (pattern.empty()) pattern = "*.*";
-    if (!list.empty()) list.pop_back();
     pattern = string_replace_all(pattern, " ", "");
     pattern = string_replace_all(pattern, "*", "");
-    vector<string> itemvec = string_split(list, "\n");
-    vector<string> extVec = string_split(pattern, ";");
+    vector<string> extvec = string_split(pattern, ";");
     std::set<string> filtered_items;
-    for (const string &item : itemvec) {
-      for (const string &ext : extVec) {
+    for (string item : itemvec) {
+      for (string ext : extvec) {
         if (ext == "." || ext == filename_ext(item) || directory_exists(item)) {
           filtered_items.insert(item);
           break;
