@@ -57,9 +57,9 @@ namespace misc {
     const fs::path path1 = fs::u8path(dname);
     const fs::path path2 = fs::u8path(newname);
     const fs::path path3 = fs::u8path(path2.u8string().substr(0, path1.u8string().length()));
-    if (stdfilesystem::retained_string.empty() && stdfilesystem::retained_length == 0) {
-      stdfilesystem::retained_length = path1.u8string().length();
-      stdfilesystem::retained_string = path2.u8string().substr(stdfilesystem::retained_length);
+    if (retained_string.empty() && retained_length == 0) {
+      retained_length = path1.u8string().length();
+      retained_string = path2.u8string().substr(retained_length);
     }
     if (directory_exists(dname)) {
       if ((filename_name(path1.u8string()) != filename_name(path2.u8string()) &&
@@ -73,7 +73,7 @@ namespace misc {
           directory_create(newname);
           for (const string &item : itemVec) {
             if (directory_exists(filename_remove_slash(item)) &&
-              filename_remove_slash(item).substr(stdfilesystem::retained_length) != stdfilesystem::retained_string) {
+              filename_remove_slash(item).substr(retained_length) != retained_string) {
               directory_copy_retained(filename_remove_slash(item), filename_add_slash(path2.u8string()) +
               filename_name(filename_remove_slash(item)));
             } else if (file_exists(item)) {
@@ -425,11 +425,11 @@ namespace misc {
     if (!directory_exists(dname)) return false;
     dname = filename_remove_slash(dname, true);
     newname = filename_remove_slash(newname, true);
-    stdfilesystem::retained_string = "";
-    stdfilesystem::retained_length = 0;
+    retained_string = "";
+    retained_length = 0;
     // check size to determine success instead of error code.
     // comment the line below out if you want break on error.
-    stdfilesystem::szsource = directory_size(dname);
+    szsource = directory_size(dname);
     return directory_copy_retained(dname, newname);
   }
 
