@@ -224,6 +224,17 @@ namespace misc {
     return false;
   }
 
+  string stdfilesystem::environment_expand_variables(string str) {
+    if (str.find("${") == string::npos) return str;
+    string pre = str.substr(0, str.find("${"));
+    string post = str.substr(str.find("${") + 2);
+    if (post.find('}') == string::npos) return str;
+    string variable = post.substr(0, post.find('}'));
+    post = post.substr(post.find('}') + 1);
+    string value = environment_get_variable(variable);
+    return environment_expand_variables(pre + value + post);
+  }
+
   // make filename canonical -- absolute...
   string stdfilesystem::filename_canonical(string fname) {
     string result = "";
