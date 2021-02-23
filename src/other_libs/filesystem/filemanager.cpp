@@ -31,7 +31,7 @@
 #include <cwchar>
 #include <cstddef>
 
-#include "../filesystem.h"
+#include "../filemanager.h"
 
 #if defined(_WIN32)
 #include <windows.h>
@@ -48,10 +48,9 @@ using std::uintmax_t;
 using std::vector;
 using std::stringstream;
 
-namespace misc {
+namespace tkg {
 
-  // this disallows folder from endlessly recursive copying inside itself...
-  bool stdfilesystem::directory_copy_retained(string dname, string newname) {
+  bool filemanager::directory_copy_retained(string dname, string newname) {
     std::error_code ec;
     bool result = false;
     const fs::path path1 = fs::u8path(dname);
@@ -68,32 +67,26 @@ namespace misc {
         fs::copy(path1, path2, fs::copy_options::recursive, ec);
         result = (ec.value() == 0);
       } else if (path1.u8string() == path3.u8string()) {
-        vector<string> itemVec = string_split(directory_contents_helper(dname, "*.*", true), '\n');
+        vector<string> itemvec = directory_contents(dname, "*.*");
         if (!directory_exists(newname)) {
           directory_create(newname);
-          for (const string &item : itemVec) {
+          for (const string &item : itemvec) {
             if (directory_exists(filename_remove_slash(item)) &&
               filename_remove_slash(item).substr(retained_length) != retained_string) {
               directory_copy_retained(filename_remove_slash(item), filename_add_slash(path2.u8string()) +
               filename_name(filename_remove_slash(item)));
             } else if (file_exists(item)) {
               fs::copy(item, filename_add_slash(path2.u8string()) + filename_name(item), ec);
-              // ignore and skip errored copies and copy what is left.
-              // uncomment the line below to break if one copy failed.
-              // if (ec.value() == 0) { result = true; } else { return false; }
             }
           }
-          // check size to determine success instead of error code.
-          // comment the line below out if you want break on error.
-          result = (directory_exists(newname) && szSrc == directory_size(newname));
+          result = (directory_exists(newname) && szsource == directory_size(newname));
         }
       }
     }
     return result;
   }
 
-  // replace all occurances of substring within string with string...
-  string stdfilesystem::string_replace_all(string str, string sstr, string nstr) {
+  string filemanager::string_replace_all(string str, string sstr, string nstr) {
     size_t pos = 0;
     while ((pos = str.find(sstr, pos)) != string::npos) {
       str.replace(pos, sstr.length(), nstr);
@@ -102,18 +95,16 @@ namespace misc {
     return str;
   }
 
-  // splits string by delimiter character and convert to vector...
-  vector<string> stdfilesystem::string_split(const string &str, char delimiter) {
+  vector<string> filemanager::string_split(string str, string delim) {
     vector<string> vec;
     stringstream sstr(str);
     string tmp;
-    while (std::getline(sstr, tmp, delimiter))
+    while (std::getline(sstr, tmp, delim[0]))
       vec.push_back(tmp);
     return vec;
   }
 
-  // narrow 2 wide convert...
-  wstring stdfilesystem::widen(string str) {
+  wstring filemanager::widen(string str) {
     #if defined(_WIN32)
     size_t wchar_count = str.size() + 1;
     vector<wchar_t> buf(wchar_count);
@@ -124,8 +115,7 @@ namespace misc {
     #endif
   }
 
-  // wide to narrow str conv...
-  string stdfilesystem::narrow(wstring wstr) {
+  string filemanager::narrow(wstring wstr) {
     #if defined(_WIN32)
     int nbytes = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.length(), NULL, 0, NULL, NULL);
     vector<char> buf(nbytes);
@@ -136,26 +126,20 @@ namespace misc {
     #endif
   }
 
-  // gets the working directory...
-  string stdfilesystem::get_working_directory() {
+  string filemanager::get_working_directory() {
     std::error_code ec;
     string result = filename_add_slash(fs::current_path(ec).u8string());
     return (ec.value() == 0) ? result : "";
   }
 
-  // set new working directory using path...
-  bool stdfilesystem::set_working_directory(string dname) {
+  bool filemanager::set_working_directory(string dname) {
     std::error_code ec;
     const fs::path path = fs::u8path(dname);
     fs::current_path(path, ec);
-    if (ec.value() == 0) {
-      working_directory = get_working_directory();
-    }
     return (ec.value() == 0);
   }
 
-  // get executable abs fname...
-  string stdfilesystem::get_executable_path() {
+  string filemanager::get_executable_path() {
     string path;
     #if defined(_WIN32)
     wchar_t buffer[MAX_PATH];
@@ -173,7 +157,6 @@ namespace misc {
     free(buffer);
     #elif defined(__FreeBSD__)
     size_t length;
-    // CTL_KERN::KERN_PROC::KERN_PROC_PATHNAME(-1)
     int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
     if (sysctl(mib, 4, NULL, &length, NULL, 0) == 0) {
       path.resize(length, '\0');
@@ -186,15 +169,13 @@ namespace misc {
     return path;
   }
 
-  // get temporary directory...
-  string stdfilesystem::get_temp_directory() {
+  string filemanager::get_temp_directory() {
     std::error_code ec;
     string result = filename_add_slash(fs::temp_directory_path(ec).u8string());
     return (ec.value() == 0) ? result : "";
   }
 
-  // get environment variable value from name...
-  string stdfilesystem::environment_get_variable(string name) {
+  string filemanager::environment_get_variable(string name) {
     #if defined(_WIN32)
     string value;
     wchar_t buffer[32767];
@@ -210,8 +191,7 @@ namespace misc {
     return "";
   }
 
-  // sets an environment variable with the name and value...
-  bool stdfilesystem::environment_set_variable(string name, string value) {
+  bool filemanager::environment_set_variable(string name, string value) {
     #if defined(_WIN32)
     wstring u8name = widen(name);
     wstring u8value = widen(value);
@@ -224,8 +204,7 @@ namespace misc {
     return false;
   }
 
-  // expand all environment variables found within a string...
-  string stdfilesystem::environment_expand_variables(string str) {
+  string filemanager::environment_expand_variables(string str) {
     if (str.find("${") == string::npos) return str;
     string pre = str.substr(0, str.find("${"));
     string post = str.substr(str.find("${") + 2);
@@ -236,8 +215,7 @@ namespace misc {
     return environment_expand_variables(pre + value + post);
   }
 
-  // make filename canonical -- absolute...
-  string stdfilesystem::filename_canonical(string fname) {
+  string filemanager::filename_canonical(string fname) {
     string result = "";
     if (directory_exists(fname)) {
       result = filename_add_slash(fname, true);
@@ -247,8 +225,7 @@ namespace misc {
     return result;
   }
 
-  // make filename weakly canonical -- absolute...
-  string stdfilesystem::filename_weakly_canonical(string fname) {
+  string filemanager::filename_weakly_canonical(string fname) {
     std::error_code ec;
     const fs::path path = fs::u8path(fname);
     string result = fs::weakly_canonical(path, ec).u8string();
@@ -261,42 +238,38 @@ namespace misc {
     return (ec.value() == 0) ? result : "";
   }
 
-  // remove trailing slash and make weakly canonical when specified...
-  string stdfilesystem::filename_remove_slash(string dname, bool canonical = false) {
-    if (canonical) dname = enigma_user::filename_weakly_canonical(dname);
+  string filemanager::filename_remove_slash(string dname, bool canonical) {
+    if (canonical) dname = filename_weakly_canonical(dname);
     #ifdef _WIN32
-    while (dname.back() == '\\' || dname.back() == '/') dname.pop_back();
+    while (!dname.empty() && (dname.back() == '\\' || dname.back() == '/')) dname.pop_back();
     #else
-    while (dname.back() == '/') dname.pop_back();
+    while (!dname.empty() && dname.back() == '/') dname.pop_back();
     #endif
     return dname;
   }
 
-  // add trailing slash and make weakly canonical when specified...
-  string stdfilesystem::filename_add_slash(string dname, bool canonical = false) {
+  string filemanager::filename_add_slash(string dname, bool canonical) {
     #ifdef _WIN32
     filename_remove_slash(dname, canonical);
     dname += "\\";
     #else
-    if (canonical) dname = enigma_user::filename_weakly_canonical(dname);
+    if (canonical) dname = filename_weakly_canonical(dname);
     if (dname.back() != '/') dname += "/";
     #endif
     return dname;
   }
 
-  string stdfilesystem::filename_path(string fname) {
+  string filemanager::filename_path(string fname) {
     size_t fpos = fname.find_last_of("/\\");
     return fname.substr(0,fpos + 1);
   }
 
-  //  remove path -- keep file spec...
-  string stdfilesystem::filename_name(string fname) {
+  string filemanager::filename_name(string fname) {
     size_t fpos = fname.find_last_of("/\\");
     return fname.substr(fpos + 1);
   }
 
-  // remove path -- keep extension...
-  string stdfilesystem::filename_ext(string fname) {
+  string filemanager::filename_ext(string fname) {
     fname = filename_name(fname);
     size_t fpos = fname.find_last_of(".");
     if (fpos == string::npos)
@@ -304,8 +277,7 @@ namespace misc {
     return fname.substr(fpos);
   }
 
-  // get filesize in bytes for filename...
-  uintmax_t stdfilesystem::file_size(string fname) {
+  uintmax_t filemanager::file_size(string fname) {
     std::error_code ec;
     if (!file_exists(fname)) return 0;
     const fs::path path = fs::u8path(fname);
@@ -313,24 +285,21 @@ namespace misc {
     return (ec.value() == 0) ? result : 0;
   }
 
-  // returns filename existence...
-  bool stdfilesystem::file_exists(string fname) {
+  bool filemanager::file_exists(string fname) {
     std::error_code ec;
     const fs::path path = fs::u8path(fname);
     return (fs::exists(path, ec) && ec.value() == 0 &&
       (!fs::is_directory(path, ec)) && ec.value() == 0);
   }
 
-  // deletes a certain filename...
-  bool stdfilesystem::file_delete(string fname) {
+  bool filemanager::file_delete(string fname) {
     std::error_code ec;
     if (!file_exists(fname)) return false;
     const fs::path path = fs::u8path(fname);
     return (fs::remove(path, ec) && ec.value() == 0);
   }
 
-  // rename file, makes folders for dst if needed...
-  bool stdfilesystem::file_rename(string oldname, string newname) {
+  bool filemanager::file_rename(string oldname, string newname) {
     std::error_code ec;
     if (!file_exists(oldname)) return false;
     if (!directory_exists(filename_path(newname)))
@@ -341,8 +310,7 @@ namespace misc {
     return (ec.value() == 0);
   }
 
-  // copy file, new folders for dst if needed...
-  bool stdfilesystem::file_copy(string fname, string newname) {
+  bool filemanager::file_copy(string fname, string newname) {
     std::error_code ec;
     if (!file_exists(fname)) return false;
     if (!directory_exists(filename_path(newname)))
@@ -353,8 +321,7 @@ namespace misc {
     return (ec.value() == 0);
   }
 
-  // gets the entire directory size in bytes...
-  uintmax_t stdfilesystem::directory_size(string dname) {
+  uintmax_t filemanager::directory_size(string dname) {
     uintmax_t result = 0;
     if (!directory_exists(dname)) return 0;
     const fs::path path = fs::u8path(filename_remove_slash(dname, true));
@@ -372,8 +339,7 @@ namespace misc {
     return result;
   }
 
-  // checks whether directory exists...
-  bool stdfilesystem::directory_exists(string dname) {
+  bool filemanager::directory_exists(string dname) {
     std::error_code ec;
     dname = filename_remove_slash(dname, false);
     const fs::path path = fs::u8path(dname);
@@ -381,16 +347,14 @@ namespace misc {
       fs::is_directory(path, ec) && ec.value() == 0);
   }
 
-  // creates directories recursively...
-  bool stdfilesystem::directory_create(string dname) {
+  bool filemanager::directory_create(string dname) {
     std::error_code ec;
     dname = filename_remove_slash(dname, true);
     const fs::path path = fs::u8path(dname);
     return (fs::create_directories(path, ec) && ec.value() == 0);
   }
 
-  // destroys directories recursively...
-  bool stdfilesystem::directory_destroy(string dname) {
+  bool filemanager::directory_destroy(string dname) {
     std::error_code ec;
     if (!directory_exists(dname)) return false;
     dname = filename_remove_slash(dname, true);
@@ -398,8 +362,7 @@ namespace misc {
     return (fs::remove(path, ec) && ec.value() == 0);
   }
 
-  // rename directory, new folders when needed for dst,,,
-  bool stdfilesystem::directory_rename(string oldname, string newname) {
+  bool filemanager::directory_rename(string oldname, string newname) {
     std::error_code ec;
     if (!directory_exists(oldname)) return false;
     if (!directory_exists(newname)) directory_create(newname);
@@ -420,24 +383,19 @@ namespace misc {
     return result;
   }
 
-  // copy directory, new folders if needed for dst...
-  bool stdfilesystem::directory_copy(string dname, string newname) {
+  bool filemanager::directory_copy(string dname, string newname) {
     if (!directory_exists(dname)) return false;
     dname = filename_remove_slash(dname, true);
     newname = filename_remove_slash(newname, true);
     retained_string = "";
     retained_length = 0;
-    // check size to determine success instead of error code.
-    // comment the line below out if you want break on error.
     szsource = directory_size(dname);
     return directory_copy_retained(dname, newname);
   }
 
-  // get directory contents from the file filter pattern...
-  vector stdfilesystem::directory_contents(string dname, string pattern) {
-    std::error_code ec;
-    string result = "";
-    if (!directory_exists(dname)) return "";
+  vector<string> filemanager::directory_contents(string dname, string pattern) {
+    std::error_code ec; string list; vector<string> result;
+    if (!directory_exists(dname)) return result;
     dname = filename_remove_slash(dname, true);
     const fs::path path = fs::u8path(dname);
     if (directory_exists(dname)) {
@@ -446,34 +404,33 @@ namespace misc {
         if (ec.value() != 0) { break; }
         fs::path file_path = fs::u8path(filename_canonical(dir_ite->path().u8string()));
         if (!fs::is_directory(dir_ite->status(ec)) && ec.value() == 0) {
-          result += file_path.u8string() + "\n";
+          list += file_path.u8string() + "\n";
         } else if (ec.value() == 0) {
-          result += filename_add_slash(file_path.u8string()) + "\n";
+          list += filename_add_slash(file_path.u8string()) + "\n";
         }
       }
     }
     if (pattern.empty()) pattern = "*.*";
-    if (result.back() == '\n') result.pop_back();
+    if (!list.empty()) list.pop_back();
     pattern = string_replace_all(pattern, " ", "");
     pattern = string_replace_all(pattern, "*", "");
-    vector<string> itemVec = string_split(result, '\n');
-    vector<string> extVec = string_split(pattern, ';');
-    std::set<string> filteredItems;
-    for (const string &item : itemVec) {
+    vector<string> itemvec = string_split(list, "\n");
+    vector<string> extVec = string_split(pattern, ";");
+    std::set<string> filtered_items;
+    for (const string &item : itemvec) {
       for (const string &ext : extVec) {
         if (ext == "." || ext == filename_ext(item) || directory_exists(item)) {
-          filteredItems.insert(item);
+          filtered_items.insert(item);
           break;
         }
       }
     }
-    vector result;
-    if (filteredItems.empty()) return result;
-    for (const string &filteredName : filteredItems) {
-      result.push_back(filteredName);
+    if (filtered_items.empty()) return result;
+    for (string filtered_name : filtered_items) {
+      result.push_back(filtered_name);
     }
     result.pop_back();
     return result;
   }
 
-} // namespace misc
+} // namespace tkg
