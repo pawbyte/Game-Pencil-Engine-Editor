@@ -117,7 +117,7 @@ namespace misc {
     #if defined(_WIN32)
     size_t wchar_count = str.size() + 1;
     vector<wchar_t> buf(wchar_count);
-    return wstring{ buf.data(), (size_t)MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, buf.data(), (int)wchar_count) };
+    return wstring { buf.data(), (size_t)MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, buf.data(), (int)wchar_count) };
     #else
     fs::path path = fs::u8path(str);
     return path.wstring();
@@ -129,7 +129,7 @@ namespace misc {
     #if defined(_WIN32)
     int nbytes = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.length(), NULL, 0, NULL, NULL);
     vector<char> buf(nbytes);
-    return string{ buf.data(), (size_t)WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.length(), buf.data(), nbytes, NULL, NULL) };
+    return string { buf.data(), (size_t)WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.length(), buf.data(), nbytes, NULL, NULL) };
     #else
     fs::path path = wstr;
     return path.u8string();
