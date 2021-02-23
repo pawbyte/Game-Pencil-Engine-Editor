@@ -394,7 +394,8 @@ namespace tkg {
   }
 
   vector<string> filemanager::directory_contents(string dname, string pattern, bool incdirs) {
-    std::error_code ec; vector<string> itemvec, result;
+    std::error_code ec;
+    vector<string> itemvec, result;
     if (pattern.empty()) pattern = "*.*";
     if (!directory_exists(dname)) return result;
     dname = filename_remove_slash(dname, true);
