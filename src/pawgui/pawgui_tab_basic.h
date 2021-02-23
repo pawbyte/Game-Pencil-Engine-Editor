@@ -71,11 +71,11 @@ namespace pawgui
             int get_selected_tab();
             std::string get_tab_at( int pos );
             int get_tab_count();
-            void process_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect *cam = NULL);
+            void process_self( gpe::shape_rect * view_space=nullptr, gpe::shape_rect *cam = nullptr);
             void remove_all_tabs( );
             bool remove_tab( int tabId );
             bool remove_tab( std::string tabName );
-            void render_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect * cam = NULL);
+            void render_self( gpe::shape_rect * view_space=nullptr, gpe::shape_rect * cam = nullptr);
             void select_tab( int tabToSelect );
             void toggle_tab( std::string tabName );
     };

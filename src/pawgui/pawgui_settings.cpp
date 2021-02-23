@@ -33,7 +33,7 @@ SOFTWARE.
 
 namespace pawgui
 {
-    gui_settings * main_settings = NULL;
+    gui_settings * main_settings = nullptr;
 
     gui_settings::gui_settings()
     {

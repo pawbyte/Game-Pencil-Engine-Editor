@@ -35,7 +35,7 @@ SOFTWARE.
 
 namespace pawgui
 {
-    gpe::animaton2d  * main_scrollbar_arrow = NULL;
+    gpe::animaton2d  * main_scrollbar_arrow = nullptr;
 
     widget_scrollbar_xaxis::widget_scrollbar_xaxis()
     {
@@ -209,7 +209,7 @@ namespace pawgui
         cam = gpe::camera_find(cam);
         view_space = gpe::camera_find(view_space);
 
-        if( cam!=NULL && view_space!=NULL)
+        if( cam!=nullptr && view_space!=nullptr)
         {
             gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->scroll_box_color,false);
             gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->scroll_box_border_color,true);
@@ -332,7 +332,7 @@ namespace pawgui
         cam = gpe::camera_find(cam);
         view_space = gpe::camera_find(view_space);
         bool doWork = true;
-        if( view_space!=NULL && cam!=NULL )
+        if( view_space!=nullptr && cam!=nullptr )
         {
             doWork = calculate_sizing();
             hasMoved = false;
@@ -424,7 +424,7 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( view_space!=NULL && cam!=NULL )
+        if( view_space!=nullptr && cam!=nullptr )
         {
             gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->scroll_box_color,false);
             gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->scroll_box_border_color,true);

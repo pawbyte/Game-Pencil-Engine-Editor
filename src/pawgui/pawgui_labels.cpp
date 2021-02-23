@@ -45,7 +45,7 @@ namespace pawgui
         isHoldingCustomTexture = false;
         webUrl = url_string;
         imgSrc = rsm_gui->texture_add_filename( file_name );
-        if( imgSrc!=NULL )
+        if( imgSrc!=nullptr )
         {
             widget_box.w = imgSrc->get_width();
             widget_box.h = imgSrc->get_height();
@@ -54,7 +54,7 @@ namespace pawgui
         {
             widget_box.w = 32;
             widget_box.h = 32;
-            imgSrc = NULL;
+            imgSrc = nullptr;
         }
     }
 
@@ -66,7 +66,7 @@ namespace pawgui
     void widget_label_image::load_label_image(std::string new_file_name)
     {
         imgSrc = rsm_gui->texture_add_filename( new_file_name );
-        if( imgSrc!=NULL )
+        if( imgSrc!=nullptr )
         {
             widget_box.w = imgSrc->get_width();
             widget_box.h = imgSrc->get_height();
@@ -78,7 +78,7 @@ namespace pawgui
         view_space = gpe::camera_find( view_space );
         cam = gpe::camera_find( cam );
         widget_basic::process_self(view_space,cam);
-        if( view_space!=NULL && cam!=NULL )
+        if( view_space!=nullptr && cam!=nullptr )
         {
             if( isHovered && (int)webUrl.size() > 3)
             {
@@ -103,11 +103,11 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( cam!=NULL )
+        if( cam!=nullptr )
         {
-            if( imgSrc!=NULL )
+            if( imgSrc!=nullptr )
             {
-                imgSrc->render_tex_resized( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.w,widget_box.h,NULL );
+                imgSrc->render_tex_resized( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.w,widget_box.h,nullptr );
             }
             else
             {
@@ -127,7 +127,7 @@ namespace pawgui
     void widget_label_image::change_texture( gpe::texture_base * imgIn )
     {
         imgSrc = imgIn;
-        if( imgSrc!=NULL )
+        if( imgSrc!=nullptr )
         {
             widget_box.w = imgSrc->get_width();
             widget_box.h = imgSrc->get_height();
@@ -145,8 +145,7 @@ namespace pawgui
         {
             if( newW > 0)
             {
-                float newH = 0;
-                if( imgSrc!=NULL && imgSrc->get_width() > 0)
+                if( imgSrc!=nullptr && imgSrc->get_width() > 0)
                 {
                     if( !allowOverSize && !isFullWidth )
                     {
@@ -157,13 +156,13 @@ namespace pawgui
                     }
 
                     widget_box.w = newW*resizeAspect;
-                    if( imgSrc!=NULL && imgSrc->get_width()!=0 )
+                    if( imgSrc!=nullptr && imgSrc->get_width()!=0 )
                     {
                         widget_box.h =  ( widget_box.w ) *  ( (float) imgSrc->get_height() / (float)imgSrc->get_width() );
                     }
                 }
             }
-            else if( imgSrc!=NULL && imgSrc->get_width() > 0)
+            else if( imgSrc!=nullptr && imgSrc->get_width() > 0)
             {
                 widget_box.w = imgSrc->get_width() ;
                 widget_box.h = imgSrc->get_height() ;
@@ -180,7 +179,7 @@ namespace pawgui
     {
         if( newH > 0)
         {
-            if( imgSrc!=NULL && !allowOverSize)
+            if( imgSrc!=nullptr && !allowOverSize)
             {
                 if( newH > imgSrc->get_height() )
                 {
@@ -188,7 +187,7 @@ namespace pawgui
                 }
             }
             widget_box.h = newH*resizeAspect;
-            if( imgSrc!=NULL )
+            if( imgSrc!=nullptr )
             {
                 widget_box.w = resizeAspect * ceil( (float)newH * (float)imgSrc->get_width()/(float)imgSrc->get_height() );
             }
@@ -221,7 +220,7 @@ namespace pawgui
         widget_type_id = 7;
         widget_name = name_param;
         descriptionText = description;
-        if( FONT_LABEL!=NULL)
+        if( FONT_LABEL!=nullptr)
         {
             int bWid = 0;
             int bHgt = 0;
@@ -283,7 +282,7 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( (int)widget_name.size() > 0 && view_space!=NULL && cam!=NULL )
+        if( (int)widget_name.size() > 0 && view_space!=nullptr && cam!=nullptr )
         {
             gpe::gfs->render_text( widget_box.x-cam->x,widget_box.y-cam->y,widget_name,pawgui::theme_main->main_box_font_color,FONT_LABEL,gpe::fa_left,gpe::fa_top);
 
@@ -296,7 +295,7 @@ namespace pawgui
 
     void widget_label_text::set_name(std::string name_param)
     {
-        if( FONT_LABEL!=NULL)
+        if( FONT_LABEL!=nullptr)
         {
             int bWid = 0;
             int bHgt = 0;
@@ -316,7 +315,7 @@ namespace pawgui
         widget_type_id = 7;
         widget_name = name_param;
         descriptionText = description;
-        if( FONT_LABEL!=NULL)
+        if( FONT_LABEL!=nullptr)
         {
             int bWid = 0;
             int bHgt = 0;
@@ -378,7 +377,7 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( (int)widget_name.size() > 0 && view_space!=NULL && cam!=NULL )
+        if( (int)widget_name.size() > 0 && view_space!=nullptr && cam!=nullptr )
         {
             gpe::gfs->render_text( widget_box.x-cam->x,widget_box.y-cam->y,widget_name,pawgui::theme_main->input_error_font_color,FONT_LABEL,gpe::fa_left,gpe::fa_top);
 
@@ -391,7 +390,7 @@ namespace pawgui
 
     void widget_label_error::set_name(std::string name_param)
     {
-        if( FONT_LABEL!=NULL)
+        if( FONT_LABEL!=nullptr)
         {
             int bWid = 0;
             int bHgt = 0;
@@ -410,7 +409,7 @@ namespace pawgui
         widget_type_id = 7;
         widget_name = name_param;
         descriptionText = description;
-        if( FONT_LABEL!=NULL)
+        if( FONT_LABEL!=nullptr)
         {
             int bWid = 0;
             int bHgt = 0;
@@ -472,7 +471,7 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( (int)widget_name.size() > 0 && view_space!=NULL && cam!=NULL )
+        if( (int)widget_name.size() > 0 && view_space!=nullptr && cam!=nullptr )
         {
             gpe::gfs->render_text_rotated( widget_box.x-cam->x,widget_box.y-cam->y+widget_box.h,widget_name,pawgui::theme_main->main_box_font_color,FONT_LABEL,90);
 
@@ -485,7 +484,7 @@ namespace pawgui
 
     void widget_label_rotated_90::set_name(std::string name_param)
     {
-        if( FONT_LABEL!=NULL)
+        if( FONT_LABEL!=nullptr)
         {
             int bWid = 0;
             int bHgt = 0;
@@ -511,7 +510,7 @@ namespace pawgui
     widget_label_paragraph::~widget_label_paragraph()
     {
         paragraphLines.clear();
-        if( FONT_LABEL!=NULL )
+        if( FONT_LABEL!=nullptr )
         {
             FONT_LABEL->clear_cache();
         }
@@ -536,7 +535,7 @@ namespace pawgui
 
     void widget_label_paragraph::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
-        if( view_space!=NULL )
+        if( view_space!=nullptr )
         {
             //if( view_space->w - widget_box.x !=widget_box.w || paragraphWidth == 0 )
             {
@@ -550,7 +549,7 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( view_space!=NULL && cam!=NULL )
+        if( view_space!=nullptr && cam!=nullptr )
         {
             if( alignment_h == gpe::fa_center)
             {
@@ -634,7 +633,7 @@ namespace pawgui
                 defaultFontWidth = 0;
                 defaultFontHeight = 0;
                 int iSubMessage = 0;
-                if( FONT_LABEL!=NULL)
+                if( FONT_LABEL!=nullptr)
                 {
                     FONT_LABEL->get_metrics("A",&defaultFontWidth, &defaultFontHeight);
                     FONT_LABEL->clear_cache();
@@ -686,7 +685,7 @@ namespace pawgui
         needsNewLine = true;
         widget_name = name_param;
         descriptionText = description;
-        if( FONT_LABEL_TITLE!=NULL)
+        if( FONT_LABEL_TITLE!=nullptr)
         {
             int bWid = 0;
             int bHgt = 0;
@@ -748,7 +747,7 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( (int)widget_name.size() > 0 && view_space!=NULL && cam!=NULL )
+        if( (int)widget_name.size() > 0 && view_space!=nullptr && cam!=nullptr )
         {
             gpe::gfs->render_text( widget_box.x-cam->x,widget_box.y+widget_box.h/2-cam->y,widget_name,pawgui::theme_main->main_box_font_color,FONT_LABEL_TITLE,gpe::fa_left,gpe::fa_middle);
 
@@ -762,7 +761,7 @@ namespace pawgui
     void widget_label_title::set_name(std::string name_param)
     {
         widget_type = "labeltexturl";
-        if( FONT_LABEL_TITLE!=NULL && name_param!=widget_name)
+        if( FONT_LABEL_TITLE!=nullptr && name_param!=widget_name)
         {
             int bWid = 0;
             int bHgt = 0;

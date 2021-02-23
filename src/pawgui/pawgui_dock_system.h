@@ -71,11 +71,11 @@ namespace pawgui
         int get_tab_count();
         std::string get_tab_name( int pos );
         bool has_content();
-        void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
+        void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr );
         bool save_panel_data_to_file(std::ofstream * fileTarget);
         void setup_panel( bool addSpacing = true, bool clearList = true );
         bool remove_container( std::string name );
-        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
+        void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr );
         void reset_panel();
     };
 
@@ -145,10 +145,10 @@ namespace pawgui
         bool handle_resizing();
         void hide_dock();
         bool load_dock_setings( std::string filename );
-        void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
+        void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr );
         void remove_panel( std::string name );
         void remove_default_panel( std::string name );
-        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
+        void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr );
         void reset_dock();
         bool resize_dock( int new_col, int new_row );
 

@@ -90,8 +90,8 @@ namespace pawgui
             void set_option_subvalue( std::string newselectedOptionName );
             void set_option_value(float section_value);
             void show_just_options(bool justOptions);
-            void process_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect *cam=NULL);
-            void render_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space=nullptr, gpe::shape_rect *cam=nullptr);
+            void render_self( gpe::shape_rect * view_space=nullptr, gpe::shape_rect * cam = nullptr);
             void set_name(std::string new_name);
     };
 }

@@ -228,7 +228,6 @@ namespace pawgui
 
     void widget_basic::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
     {
-        bool wasHovered = isHovered;
         windowInView = false;
         isClicked = false;
         isPressed = false;
@@ -245,7 +244,7 @@ namespace pawgui
         }
 
         gpe::render_package * guir_package = gpe::rph->get_render_package_from_name( r_packageName );
-        if( guir_package !=NULL && guir_package->packageWindow!=NULL )
+        if( guir_package !=nullptr && guir_package->packageWindow!=nullptr )
         {
             windowInView = guir_package->packageWindow->has_focus();
         }
@@ -257,14 +256,14 @@ namespace pawgui
 
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if(view_space!=NULL && cam!=NULL)
+        if(view_space!=nullptr && cam!=nullptr)
         {
             if( gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,view_space->x,view_space->y,view_space->x+view_space->w,view_space->y+view_space->h) )
             {
                 if ( gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,widget_box.x+view_space->x-cam->x,widget_box.y+view_space->y-cam->y,widget_box.x+widget_box.w+view_space->x-cam->x,widget_box.y+widget_box.h+view_space->y-cam->y) )
                 {
                     isHovered = true;
-                    if( main_overlay_system!=NULL)
+                    if( main_overlay_system!=nullptr)
                     {
                         if( (int)descriptionText.size()>0 )
                         {

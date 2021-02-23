@@ -43,10 +43,10 @@ namespace pawgui
         rightClickedId = -1;
         isLocked = false;
         needsNewLine = true;
-        iconTexture = NULL;
-        selectedBranch = NULL;
-        branch_parent = NULL;
-        treeParent = NULL;
+        iconTexture = nullptr;
+        selectedBranch = nullptr;
+        branch_parent = nullptr;
+        treeParent = nullptr;
 
         selectedSubOption = -1;
         lastWidth = 0;
@@ -72,17 +72,17 @@ namespace pawgui
 
     void widget_branch::add_to_list( widget_panel_list * tList )
     {
-        if( tList!=NULL )
+        if( tList!=nullptr )
         {
             tList->add_indented_element( indentationLevel, this );
             if( subMenuIsOpen )
             {
                 int subSize = (int)sub_elements.size();
-                widget_branch * current_branch = NULL;
+                widget_branch * current_branch = nullptr;
                 for( int i = 0; i < subSize; i++ )
                 {
                     current_branch= sub_elements.at( i );
-                    if( current_branch!=NULL )
+                    if( current_branch!=nullptr )
                     {
                         current_branch->indentationLevel = indentationLevel+1;
                         current_branch->add_to_list( tList );
@@ -94,7 +94,7 @@ namespace pawgui
 
     void widget_branch::add_to_searched_list( widget_panel_list * tList, std::string needlestring  )
     {
-        if( tList!=NULL )
+        if( tList!=nullptr )
         {
             bool addedSelf = false;
             if( stg_ex::string_contains( stg_ex::string_lower( name ) , needlestring) )
@@ -106,19 +106,15 @@ namespace pawgui
 
             if( subSize > 0  )
             {
-                widget_branch * current_branch = NULL;
+                widget_branch * current_branch = nullptr;
                 for( int i = 0; i < subSize; i++ )
                 {
                     current_branch= sub_elements.at( i );
-                    if( current_branch!=NULL )
+                    if( current_branch!=nullptr )
                     {
                         if( addedSelf )
                         {
                             current_branch->indentationLevel = indentationLevel+1;
-                        }
-                        else
-                        {
-                            current_branch->indentationLevel;
                         }
                         current_branch->add_to_searched_list( tList, needlestring );
                     }
@@ -129,9 +125,9 @@ namespace pawgui
 
     void widget_branch::add_branch( widget_branch * branch, bool changeId)
     {
-        if( branch!=NULL )
+        if( branch!=nullptr )
         {
-            if( treeParent == NULL )
+            if( treeParent == nullptr )
             {
                 //should only be done by the tree...
                 treeParent = this;
@@ -165,7 +161,7 @@ namespace pawgui
         {
             return sub_elements[0];
         }
-        return NULL;
+        return nullptr;
     }
 
     widget_branch * widget_branch::get_last_branch()
@@ -174,7 +170,7 @@ namespace pawgui
         {
             return sub_elements[ (int)sub_elements.size() - 1];
         }
-        return NULL;
+        return nullptr;
     }
     std::string widget_branch::get_name()
     {
@@ -209,20 +205,20 @@ namespace pawgui
 
     int widget_branch::increment_count()
     {
-        if( treeParent!=NULL )
+        if( treeParent!=nullptr )
         {
             return treeParent->increment_count();
         }
         else
         {
-            gpe::error_log->report("Tree parent is NULL..." );
+            gpe::error_log->report("Tree parent is nullptr..." );
         }
         return -1;
     }
 
     void widget_branch::insert_branch( widget_branch * branch, int pos)
     {
-        if( branch!=NULL && can_add_new_branch() )
+        if( branch!=nullptr && can_add_new_branch() )
         {
             if( pos > 0 && pos < (int)sub_elements.size() )
             {
@@ -242,7 +238,7 @@ namespace pawgui
 
     int widget_branch::matches(widget_branch * otherBranch )
     {
-        if( otherBranch!=NULL)
+        if( otherBranch!=nullptr)
         {
             //id and type check..
             if( get_global_id()==otherBranch->get_global_id() && otherBranch->get_type() == branch_type_id)
@@ -259,7 +255,7 @@ namespace pawgui
     void widget_branch::open_and_view()
     {
         subMenuIsOpen = true;
-        if( branch_parent!=NULL && branch_parent->matches( this)==false )
+        if( branch_parent!=nullptr && branch_parent->matches( this)==false )
         {
             branch_parent->subMenuIsOpen = true;
             branch_parent->open_and_view();
@@ -285,7 +281,7 @@ namespace pawgui
                 {
                     subMenuIsOpen = !subMenuIsOpen;
                 }
-                if( treeParent!=NULL )
+                if( treeParent!=nullptr )
                 {
                     treeParent->selectedSubOption = globalId;
                     treeParent->selectedBranch = this;
@@ -297,7 +293,7 @@ namespace pawgui
                 {
                     subMenuIsOpen = !subMenuIsOpen;
                 }
-                if( treeParent!=NULL )
+                if( treeParent!=nullptr )
                 {
                     treeParent->rightClickedId = globalId;
                     treeParent->selectedSubOption = globalId;
@@ -326,27 +322,27 @@ namespace pawgui
 
     void widget_branch::remove_branch( widget_branch * branch )
     {
-        if( branch!=NULL )
+        if( branch!=nullptr )
         {
-            if( treeParent!=NULL && treeParent->selectedBranch!=NULL )
+            if( treeParent!=nullptr && treeParent->selectedBranch!=nullptr )
             {
                 if( branch->matches( treeParent->selectedBranch ) )
                 {
-                    treeParent->selectedBranch = NULL;
+                    treeParent->selectedBranch = nullptr;
                     treeParent->selectedSubOption = -1;
 
                 }
             }
-            widget_branch * foundBranch = NULL;
+            widget_branch * foundBranch = nullptr;
             for( int i = (int)sub_elements.size()-1; i >=0; i-- )
             {
                 foundBranch = sub_elements.at(  i );
-                if( foundBranch!=NULL &&  branch->matches( branch ) )
+                if( foundBranch!=nullptr &&  branch->matches( branch ) )
                 {
                     //gpe::error_log->report( "Deleting :" + foundBranch->get_name() );
                     //foundBranch->remove_all_branches();
                     delete foundBranch;
-                    foundBranch = NULL;
+                    foundBranch = nullptr;
                     break;
                 }
             }
@@ -355,25 +351,25 @@ namespace pawgui
 
     void widget_branch::remove_all_branches()
     {
-        widget_branch * foundBranch = NULL;
+        widget_branch * foundBranch = nullptr;
         for( int i = (int)sub_elements.size()-1; i >=0; i-- )
         {
             foundBranch = sub_elements.at(  i );
-            if( foundBranch!=NULL )
+            if( foundBranch!=nullptr )
             {
                 //gpe::error_log->report( "Deleting :" + foundBranch->get_name() );
                 //foundBranch->remove_all_branches();
-                if( treeParent!=NULL && treeParent->selectedBranch!=NULL )
+                if( treeParent!=nullptr && treeParent->selectedBranch!=nullptr )
                 {
                     if( foundBranch->matches( treeParent->selectedBranch ) )
                     {
-                        treeParent->selectedBranch = NULL;
+                        treeParent->selectedBranch = nullptr;
                         treeParent->selectedSubOption = -1;
 
                     }
                 }
                 delete foundBranch;
-                foundBranch = NULL;
+                foundBranch = nullptr;
             }
         }
         sub_elements.clear();
@@ -382,11 +378,11 @@ namespace pawgui
     void widget_branch::render_branch( )
     {
         int subElCount  = (int)sub_elements.size();
-        widget_branch * current_branch = NULL;
+        widget_branch * current_branch = nullptr;
         for(  int myItr = 0; myItr < subElCount; myItr++ )
         {
             current_branch = sub_elements[myItr];
-            if( current_branch!=NULL)
+            if( current_branch!=nullptr)
             {
                 current_branch->render_branch();
             }
@@ -398,7 +394,7 @@ namespace pawgui
         bool selfIsInView = false;
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( cam!=NULL && view_space!=NULL)
+        if( cam!=nullptr && view_space!=nullptr)
         {
             int rendY = widget_box.y;
             if( rendY>=cam->y && rendY <=cam->y+cam->h )
@@ -412,7 +408,7 @@ namespace pawgui
 
             if( selfIsInView )
             {
-                if(treeParent!=NULL && treeParent->get_selected_id()==globalId && globalId > 0  )
+                if(treeParent!=nullptr && treeParent->get_selected_id()==globalId && globalId > 0  )
                 {
                     gpe::gcanvas->render_rectangle( 0,widget_box.y-cam->y,
                                            cam->w-cam->x,widget_box.y+16-cam->y,pawgui::theme_main->button_box_highlight_color,false,255 );
@@ -426,13 +422,12 @@ namespace pawgui
                     {
                         gpe::gfs->render_text( widget_box.x-cam->x, widget_box.y-cam->y,"-",pawgui::theme_main->main_box_font_color,FONT_STREE_BRANCH,gpe::fa_left,gpe::fa_top);
                     }
-                    widget_branch * foundBranch = NULL;
 
                     /*
                     for( int i=0; i< (int)sub_elements.size();i++ )
                     {
                         foundBranch = sub_elements[i];
-                        if(foundBranch!=NULL)
+                        if(foundBranch!=nullptr)
                         {
                             foundBranch->previouslySoughtId = selectedSubOption;
                             foundBranch->render_self( view_space,cam);
@@ -455,9 +450,9 @@ namespace pawgui
 
             if( selfIsInView )
             {
-                if( iconTexture!=NULL )
+                if( iconTexture!=nullptr )
                 {
-                    iconTexture->render_tex_resized(widget_box.x+default_icon_plusminus_size-cam->x,widget_box.y-cam->y, SPECIAL_BRANCH_HEIGHT,SPECIAL_BRANCH_HEIGHT,NULL,  pawgui::theme_main->main_box_font_color );
+                    iconTexture->render_tex_resized(widget_box.x+default_icon_plusminus_size-cam->x,widget_box.y-cam->y, SPECIAL_BRANCH_HEIGHT,SPECIAL_BRANCH_HEIGHT,nullptr,  pawgui::theme_main->main_box_font_color );
                 }
                 gpe::gfs->render_text( widget_box.x+SPECIAL_BRANCH_HEIGHT+default_icon_plusminus_size-cam->x,widget_box.y-cam->y+SPECIAL_BRANCH_HEIGHT/2, name,pawgui::theme_main->main_box_font_color,FONT_STREE_BRANCH,gpe::fa_left,gpe::fa_center);
             }
@@ -495,7 +490,7 @@ namespace pawgui
         hasScrollControl = false;
         hasArrowkeyControl = false;
 
-        opTexture = NULL;
+        opTexture = nullptr;
         maxSuperFolderCount = 32;
         seekedX2Pos = 0;
         barTitleWidth = 0;
@@ -521,10 +516,10 @@ namespace pawgui
 
     widget_tree::~widget_tree( )
     {
-        if( treeList!=NULL)
+        if( treeList!=nullptr)
         {
             delete treeList;
-            treeList = NULL;
+            treeList = nullptr;
         }
 
         remove_all_branches();
@@ -562,7 +557,6 @@ namespace pawgui
         indentationLevel = 0;
         //if( widget_visible )
         {
-            int sOpNumber = -1;
             just_resized = false;
 
             bool mouseInRange = false;
@@ -599,7 +593,7 @@ namespace pawgui
             //if( mouseInRange || menuResized || resourcebarMoved)
             {
 
-                widget_branch * current_branch = NULL;
+                widget_branch * current_branch = nullptr;
 
                 if( useMetaTop )
                 {
@@ -634,7 +628,7 @@ namespace pawgui
                     for( i=0; i< subElementsSize; i++)
                     {
                         current_branch = sub_elements[i];
-                        if(current_branch!=NULL)
+                        if(current_branch!=nullptr)
                         {
                             current_branch->indentationLevel = indentationLevel;
                             current_branch->add_to_searched_list( treeList, searchedstring );
@@ -646,7 +640,7 @@ namespace pawgui
                     for( i=0; i< subElementsSize; i++)
                     {
                         current_branch = sub_elements[i];
-                        if(current_branch!=NULL)
+                        if(current_branch!=nullptr)
                         {
                             current_branch->indentationLevel = indentationLevel;
                             current_branch->add_to_list( treeList );
@@ -671,7 +665,7 @@ namespace pawgui
         if( widget_visible )
         {
 
-            if( pawgui::theme_main->theme_texture_bg == NULL)
+            if( pawgui::theme_main->theme_texture_bg == nullptr)
             {
                 //gpe::gcanvas->render_rectangle( 0,0,widget_box.w,widget_box.h,pawgui::theme_main->program_color,false);
             }
@@ -699,7 +693,7 @@ namespace pawgui
                                        widget_box.x+widget_box.w -cam->x, widget_box.y+widget_box.h-cam->y,pawgui::theme_main->text_box_outline_color,true);
             }
 
-            if( treeList!=NULL )
+            if( treeList!=nullptr )
             {
                 ///current_branch->selectedSubOption = selectedSubOption;
                 treeList->render_self(view_space, cam);
@@ -714,13 +708,13 @@ namespace pawgui
 
     bool widget_tree::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn  )
     {
-        if( fileTarget!=NULL && fileTarget->is_open() )
+        if( fileTarget!=nullptr && fileTarget->is_open() )
         {
-            widget_branch * current_branch = NULL;
+            widget_branch * current_branch = nullptr;
             for( int i = 0; i < (int)sub_elements.size(); i++)
             {
                 current_branch = sub_elements[i];
-                if( current_branch!=NULL )
+                if( current_branch!=nullptr )
                 {
                     current_branch->save_branch_data( fileTarget, 0 );
                 }
@@ -731,14 +725,14 @@ namespace pawgui
 
     void widget_tree::select_branch(widget_branch * branch )
     {
-        if( branch!=NULL)
+        if( branch!=nullptr)
         {
             selectedBranch = branch;
             selectedSubOption = branch->get_global_id();
         }
         else
         {
-            selectedBranch = NULL;
+            selectedBranch = nullptr;
             selectedSubOption = -1;
         }
     }

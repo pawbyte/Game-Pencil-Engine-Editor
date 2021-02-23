@@ -35,7 +35,7 @@ SOFTWARE.
 
 namespace pawgui
 {
-    syntax_highlighter * main_syntax_highlighter = NULL;
+    syntax_highlighter * main_syntax_highlighter = nullptr;
 
     syntax_compiler_term::syntax_compiler_term()
     {
@@ -130,11 +130,11 @@ namespace pawgui
 
     bool syntax_language::add_language_variable(std::string nName, std::string nDescription,std::string  nScopre)
     {
-        syntax_compiler_term * tTerm = NULL;
+        syntax_compiler_term * tTerm = nullptr;
         for( int i = (int)languageVariables.size()-1; i>=0; i--)
         {
             tTerm = languageVariables[i];
-            if( tTerm!=NULL)
+            if( tTerm!=nullptr)
             {
                 if( tTerm->termstring==nName)
                 {
@@ -149,11 +149,11 @@ namespace pawgui
 
     bool syntax_language::add_language_constant(std::string nName, std::string nDescription,std::string  nParameters)
     {
-        syntax_compiler_term * tTerm = NULL;
+        syntax_compiler_term * tTerm = nullptr;
         for( int i = (int)languageConstants.size()-1; i>=0; i--)
         {
             tTerm = languageConstants[i];
-            if( tTerm!=NULL)
+            if( tTerm!=nullptr)
             {
                 if( tTerm->termstring==nName)
                 {
@@ -168,11 +168,11 @@ namespace pawgui
 
     bool syntax_language::add_language_function(std::string nName, std::string nDescription,std::string  nParameters, std::string tFunctionReturnType, std::string nScope)
     {
-        syntax_compiler_term * tTerm = NULL;
+        syntax_compiler_term * tTerm = nullptr;
         for( int i = (int)languageFunctions.size()-1; i>=0; i--)
         {
             tTerm = languageFunctions[i];
-            if( tTerm!=NULL)
+            if( tTerm!=nullptr)
             {
                 if( tTerm->termstring==nName)
                 {
@@ -191,11 +191,11 @@ namespace pawgui
 
     bool syntax_language::add_language_class(std::string nName, std::string nDescription,std::string  nParameters)
     {
-        syntax_compiler_term * tTerm = NULL;
+        syntax_compiler_term * tTerm = nullptr;
         for( int i = (int)languageClasses.size()-1; i>=0; i--)
         {
             tTerm = languageClasses[i];
-            if( tTerm!=NULL)
+            if( tTerm!=nullptr)
             {
                 if( tTerm->termstring==nName)
                 {
@@ -210,11 +210,11 @@ namespace pawgui
 
     bool syntax_language::add_language_keyword(std::string nName, std::string nDescription,std::string  nScope)
     {
-        syntax_compiler_term * tTerm = NULL;
+        syntax_compiler_term * tTerm = nullptr;
         for( int i = (int)languageKeywords.size()-1; i>=0; i--)
         {
             tTerm = languageKeywords[i];
-            if( tTerm!=NULL)
+            if( tTerm!=nullptr)
             {
                 if( tTerm->termstring==nName)
                 {
@@ -267,11 +267,11 @@ namespace pawgui
     bool syntax_language::is_compilable_word(std::string str_in)
     {
         int i = 0;
-        syntax_compiler_term * tTerm = NULL;
+        syntax_compiler_term * tTerm = nullptr;
         for( i = (int)languageKeywords.size()-1; i>=0; i--)
         {
             tTerm = languageKeywords[i];
-            if( tTerm!=NULL)
+            if( tTerm!=nullptr)
             {
                 if( tTerm->termstring==str_in)
                 {
@@ -283,7 +283,7 @@ namespace pawgui
         for( i = (int)languageVariables.size()-1; i>=0; i--)
         {
             tTerm = languageVariables[i];
-            if( tTerm!=NULL)
+            if( tTerm!=nullptr)
             {
                 if( tTerm->termstring==str_in)
                 {
@@ -295,7 +295,7 @@ namespace pawgui
         for( i = (int)languageClasses.size()-1; i>=0; i--)
         {
             tTerm = languageClasses[i];
-            if( tTerm!=NULL)
+            if( tTerm!=nullptr)
             {
                 if( tTerm->termstring==str_in)
                 {
@@ -307,7 +307,7 @@ namespace pawgui
         for( i = (int)languageDataTypes.size()-1; i>=0; i--)
         {
             tTerm = languageDataTypes[i];
-            if( tTerm!=NULL)
+            if( tTerm!=nullptr)
             {
                 if( tTerm->termstring==str_in)
                 {
@@ -320,11 +320,11 @@ namespace pawgui
 
     bool syntax_language::add_language_data_type(std::string nName, std::string nDescription,std::string  nParameters)
     {
-        syntax_compiler_term * tTerm = NULL;
+        syntax_compiler_term * tTerm = nullptr;
         for( int i = (int)languageDataTypes.size()-1; i>=0; i--)
         {
             tTerm = languageDataTypes[i];
-            if( tTerm!=NULL)
+            if( tTerm!=nullptr)
             {
                 if( tTerm->termstring==nName)
                 {
@@ -339,7 +339,7 @@ namespace pawgui
 
     std::string syntax_language::find_gpe_datatype(std::string strBeingChecked, int startPos)
     {
-        syntax_compiler_term * tTerm = NULL;
+        syntax_compiler_term * tTerm = nullptr;
         int strSize = (int)strBeingChecked.size();
         if( strSize>0 && strSize > startPos)
         {
@@ -350,7 +350,7 @@ namespace pawgui
             for( int i = (int)languageDataTypes.size()-1; i>0; i--)
             {
                 tTerm= languageDataTypes[i];
-                if( tTerm!=NULL)
+                if( tTerm!=nullptr)
                 {
                     strToSearch = tTerm->termstring;
                     tempStrSize = strToSearch.size();
@@ -387,7 +387,7 @@ namespace pawgui
 
     std::string syntax_language::find_gpe_function(std::string strBeingChecked, int startPos)
     {
-        syntax_compiler_term * tTerm = NULL;
+        syntax_compiler_term * tTerm = nullptr;
         int strSize = (int)strBeingChecked.size();
         if( strSize>0 && strSize > startPos)
         {
@@ -398,7 +398,7 @@ namespace pawgui
             for( int i = (int)languageFunctions.size()-1; i>=0; i--)
             {
                 tTerm= languageFunctions[i];
-                if( tTerm!=NULL)
+                if( tTerm!=nullptr)
                 {
                     strToSearch = tTerm->termstring;
                     tempStrSize = strToSearch.size();
@@ -435,7 +435,7 @@ namespace pawgui
 
     std::string syntax_language::find_gpe_keyword(std::string strBeingChecked, int startPos)
     {
-        syntax_compiler_term * tTerm = NULL;
+        syntax_compiler_term * tTerm = nullptr;
         int strSize = (int)strBeingChecked.size();
         if( strSize>0 && strSize > startPos)
         {
@@ -446,7 +446,7 @@ namespace pawgui
             for( int i = (int)languageKeywords.size()-1; i>=0; i--)
             {
                 tTerm= languageKeywords[i];
-                if( tTerm!=NULL)
+                if( tTerm!=nullptr)
                 {
                     strToSearch = tTerm->termstring;
 
@@ -484,7 +484,7 @@ namespace pawgui
 
     std::string syntax_language::find_gpe_variable(std::string strBeingChecked, int startPos)
     {
-        syntax_compiler_term * tTerm = NULL;
+        syntax_compiler_term * tTerm = nullptr;
         int strSize = (int)strBeingChecked.size();
         if( strSize>0 && strSize > startPos)
         {
@@ -495,7 +495,7 @@ namespace pawgui
             for( int i = (int)languageVariables.size()-1; i>=0; i--)
             {
                 tTerm= languageVariables[i];
-                if( tTerm!=NULL)
+                if( tTerm!=nullptr)
                 {
                     strToSearch = tTerm->termstring;
 
@@ -533,11 +533,11 @@ namespace pawgui
 
     syntax_compiler_term * syntax_language::find_matching_variable(std::string name_param)
     {
-        syntax_compiler_term * tTerm = NULL;
+        syntax_compiler_term * tTerm = nullptr;
         for( int i = (int)languageVariables.size()-1; i>=0; i--)
         {
             tTerm= languageVariables[i];
-            if( tTerm!=NULL)
+            if( tTerm!=nullptr)
             {
                 if( tTerm->termstring == name_param )
                 {
@@ -545,17 +545,17 @@ namespace pawgui
                 }
             }
         }
-        return NULL;
+        return nullptr;
 
     }
 
     syntax_compiler_term * syntax_language::find_matching_function(std::string name_param)
     {
-        syntax_compiler_term * tTerm = NULL;
+        syntax_compiler_term * tTerm = nullptr;
         for( int i = (int)languageFunctions.size()-1; i>=0; i--)
         {
             tTerm= languageFunctions[i];
-            if( tTerm!=NULL)
+            if( tTerm!=nullptr)
             {
                 if( tTerm->termstring == name_param )
                 {
@@ -563,7 +563,7 @@ namespace pawgui
                 }
             }
         }
-        return NULL;
+        return nullptr;
     }
     syntax_highlighter::syntax_highlighter()
     {
@@ -884,12 +884,12 @@ namespace pawgui
         JSLang->add_language_constant("GPE_SETTINGS_ENTRY_LEVEL_LOCATION");
         JSLang->add_language_constant("pi");
         JSLang->add_language_constant("PI");
-        JSLang->add_language_constant("isNULL");
+        JSLang->add_language_constant("isnullptr");
         JSLang->add_language_constant("is_null");
         JSLang->add_language_constant("is_null");
         JSLang->add_language_constant("NaN");
-        JSLang->add_language_constant("NULL");
-        JSLang->add_language_constant("NULL");
+        JSLang->add_language_constant("nullptr");
+        JSLang->add_language_constant("nullptr");
         JSLang->add_language_constant("true");
         JSLang->add_language_constant("TRUE");
         //JS Keyboard (kb_ ) constants
@@ -1289,7 +1289,7 @@ namespace pawgui
 
         //For code highlights and suggested text
 
-        highlightedTerm = NULL;
+        highlightedTerm = nullptr;
         suggestedCompilerTerms.clear();
         highlightedTermXPos = 0;
         highlightedTermYPos = 0;
@@ -1304,7 +1304,7 @@ namespace pawgui
 
     syntax_highlighter::~syntax_highlighter()
     {
-        highlightedTerm = NULL;
+        highlightedTerm = nullptr;
         suggestedCompilerTerms.clear();
     }
 
@@ -1322,9 +1322,7 @@ namespace pawgui
 
     bool syntax_highlighter::is_compilable_word(std::string str_in)
     {
-        syntax_compiler_term * tTerm = NULL;
-        int i = 0;
-        if( defaultLanguage!=NULL )
+        if( defaultLanguage!=nullptr )
         {
             return defaultLanguage->is_compilable_word(str_in);
         }
@@ -1334,7 +1332,7 @@ namespace pawgui
 
     bool syntax_highlighter::charIsSymbol(char  charIn)
     {
-        if( defaultLanguage!=NULL )
+        if( defaultLanguage!=nullptr )
         {
             return defaultLanguage->charIsSymbol(charIn);
         }
@@ -1344,7 +1342,7 @@ namespace pawgui
     int syntax_highlighter::firstSymbolInstring(std::string instring, int pos)
     {
         int returnVal = -1;
-        if( defaultLanguage!=NULL )
+        if( defaultLanguage!=nullptr )
         {
             return defaultLanguage->firstSymbolInstring(instring, pos);
 
@@ -1354,7 +1352,7 @@ namespace pawgui
 
     std::string syntax_highlighter::find_project_function(std::string strBeingChecked, int startPos)
     {
-        syntax_compiler_term * tTerm = NULL;
+        syntax_compiler_term * tTerm = nullptr;
         int strSize = (int)strBeingChecked.size();
         if( strSize>0 && strSize > startPos)
         {
@@ -1366,7 +1364,7 @@ namespace pawgui
             for( int i = (int)activeProjectFunctions.size()-1; i>=0; i--)
             {
                 tTerm= activeProjectFunctions[i];
-                if( tTerm!=NULL)
+                if( tTerm!=nullptr)
                 {
                     strToSearch = tTerm->termstring;
 
@@ -1400,7 +1398,7 @@ namespace pawgui
 
     std::string syntax_highlighter::find_project_keyword(std::string strBeingChecked, int startPos)
     {
-        syntax_compiler_term * tTerm = NULL;
+        syntax_compiler_term * tTerm = nullptr;
         int strSize = (int)strBeingChecked.size();
         if( strSize>0 && strSize > startPos)
         {
@@ -1411,7 +1409,7 @@ namespace pawgui
             for( int i = (int)activeProjectKeywords.size()-1; i>=0; i--)
             {
                 tTerm= activeProjectKeywords[i];
-                if( tTerm!=NULL)
+                if( tTerm!=nullptr)
                 {
                     strToSearch = tTerm->termstring;
 
@@ -1445,7 +1443,7 @@ namespace pawgui
 
     std::string syntax_highlighter::find_gpe_datatype(std::string strBeingChecked, int startPos)
     {
-        if( defaultLanguage!=NULL )
+        if( defaultLanguage!=nullptr )
         {
             return defaultLanguage->find_gpe_datatype( strBeingChecked, startPos);
         }
@@ -1455,7 +1453,7 @@ namespace pawgui
 
     std::string syntax_highlighter::find_gpe_function(std::string strBeingChecked, int startPos)
     {
-        if( defaultLanguage!=NULL )
+        if( defaultLanguage!=nullptr )
         {
             return defaultLanguage->find_gpe_function( strBeingChecked, startPos);
         }
@@ -1465,7 +1463,7 @@ namespace pawgui
 
     std::string syntax_highlighter::find_gpe_keyword(std::string strBeingChecked, int startPos)
     {
-        if( defaultLanguage!=NULL )
+        if( defaultLanguage!=nullptr )
         {
             return defaultLanguage->find_gpe_keyword( strBeingChecked, startPos);
         }
@@ -1475,7 +1473,7 @@ namespace pawgui
 
     std::string syntax_highlighter::find_gpe_variable(std::string strBeingChecked, int startPos)
     {
-        if( defaultLanguage!=NULL )
+        if( defaultLanguage!=nullptr )
         {
             return defaultLanguage->find_gpe_variable( strBeingChecked, startPos);
         }
@@ -1484,20 +1482,20 @@ namespace pawgui
 
     syntax_compiler_term * syntax_highlighter::find_matching_variable(std::string name_param)
     {
-        if( defaultLanguage!=NULL )
+        if( defaultLanguage!=nullptr )
         {
             return defaultLanguage->find_matching_variable( name_param );
         }
-        return NULL;
+        return nullptr;
     }
 
     syntax_compiler_term * syntax_highlighter::find_matching_function(std::string name_param)
     {
-        if( defaultLanguage!=NULL )
+        if( defaultLanguage!=nullptr )
         {
             return defaultLanguage->find_matching_function( name_param );
         }
-        return NULL;
+        return nullptr;
     }
 
     int syntax_highlighter::get_language_count()
@@ -1507,11 +1505,11 @@ namespace pawgui
 
     int syntax_highlighter::get_language_id_from_name( std::string name_param)
     {
-        syntax_language * cLang = NULL;
+        syntax_language * cLang = nullptr;
         for( int i = 0; i < (int)editorLanguages.size(); i++)
         {
             cLang = editorLanguages[i];
-            if( cLang !=NULL )
+            if( cLang !=nullptr )
             {
                 if( cLang->languageName == name_param || cLang->languageShortName == name_param )
                 {
@@ -1528,20 +1526,20 @@ namespace pawgui
         {
             return editorLanguages[langPosition];
         }
-        return NULL;
+        return nullptr;
     }
 
     syntax_language * syntax_highlighter::get_language_object_from_id( int langId )
     {
         if( langId < 0)
         {
-            return NULL;
+            return nullptr;
         }
-        syntax_language * cLang = NULL;
+        syntax_language * cLang = nullptr;
         for( int i = 0; i < (int)editorLanguages.size(); i++)
         {
             cLang = editorLanguages[i];
-            if( cLang !=NULL )
+            if( cLang !=nullptr )
             {
                 if( cLang->languageId == langId )
                 {
@@ -1549,16 +1547,16 @@ namespace pawgui
                 }
             }
         }
-        return NULL;
+        return nullptr;
     }
 
     std::string syntax_highlighter::get_language_name_from_id( int langId )
     {
-        syntax_language * cLang = NULL;
+        syntax_language * cLang = nullptr;
         for( int i = 0; i < (int)editorLanguages.size(); i++)
         {
             cLang = editorLanguages[i];
-            if( cLang !=NULL )
+            if( cLang !=nullptr )
             {
                 if( cLang->languageId == langId )
                 {
@@ -1571,11 +1569,11 @@ namespace pawgui
 
     std::string syntax_highlighter::get_language_shortname_from_id( int langId)
     {
-        syntax_language * cLang = NULL;
+        syntax_language * cLang = nullptr;
         for( int i = 0; i < (int)editorLanguages.size(); i++)
         {
             cLang = editorLanguages[i];
-            if( cLang !=NULL )
+            if( cLang !=nullptr )
             {
                 if( cLang->languageId == langId )
                 {
@@ -1759,7 +1757,7 @@ namespace pawgui
 
     void syntax_highlighter::clear_highlights()
     {
-        highlightedTerm = NULL;
+        highlightedTerm = nullptr;
         highlightedTermXPos = 0;
         highlightedTermYPos = 0;
         documentationIsBeingShown = false;
@@ -1777,9 +1775,9 @@ namespace pawgui
 
     void syntax_highlighter::render_code_highlights( )
     {
-        if( highlightedTerm!=NULL)
+        if( highlightedTerm!=nullptr)
         {
-            gpe::renderer_main->set_viewpoint( NULL);
+            gpe::renderer_main->set_viewpoint( nullptr);
             gpe::renderer_main->reset_viewpoint( );
             std::string fullPhraseToRender;
             std::string fullTermScope = highlightedTerm->termScope;
@@ -1835,14 +1833,14 @@ namespace pawgui
         {
             //gpe::renderer_main->reset_viewpoint();
             int iRendSuggestion = 0;
-            syntax_compiler_term * cTerm = NULL;
+            syntax_compiler_term * cTerm = nullptr;
             std::string fullPhraseToRender = "";
             maxSuggestedTextWidth = gpe::screen_width - highlightedTermXPos;
             int currentYRenderPos = highlightedTermYPos;
             for( int iSuggestedEntry = iSuggestedStartPos; iSuggestedEntry < (int)suggestedCompilerTerms.size() && iSuggestedEntry <  iSuggestedStartPos+suggestedTextMaxInViewCount; iSuggestedEntry++ )
             {
                 cTerm = suggestedCompilerTerms[iSuggestedEntry];
-                if( cTerm!=NULL)
+                if( cTerm!=nullptr)
                 {
                     if( cTerm->termType==cterm_function)
                     {

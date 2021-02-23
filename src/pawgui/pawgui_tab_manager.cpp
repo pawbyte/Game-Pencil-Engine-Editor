@@ -37,7 +37,7 @@ SOFTWARE.
 
 namespace pawgui
 {
-    widget_tab_resource_bar * main_tab_resource_bar = NULL;
+    widget_tab_resource_bar * main_tab_resource_bar = nullptr;
 
     widget_tab_resource_bar::widget_tab_resource_bar()
     {
@@ -46,7 +46,7 @@ namespace pawgui
         useDock_button = false;
         isExpanded = false;
         tabExpand_button = new widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/expand.png","Undock View",-1,18);
-        selectedResource = NULL;
+        selectedResource = nullptr;
         widget_type = "tabmanager";
         widget_box.x = 16;
         widget_box.y = 16;
@@ -84,27 +84,27 @@ namespace pawgui
 
     widget_tab_resource_bar::~widget_tab_resource_bar()
     {
-        if( tabExpand_button!=NULL )
+        if( tabExpand_button!=nullptr )
         {
             delete tabExpand_button;
-            tabExpand_button = NULL;
+            tabExpand_button = nullptr;
         }
     }
 
     void widget_tab_resource_bar::add_new_tab(general_resource * newTabResource)
     {
-        if( newTabResource!=NULL)
+        if( newTabResource!=nullptr)
         {
             if( (int)sub_options.size() > 0 )
             {
                 int i = 0;
                 int foundTab = -1;
-                general_resource * cGResource = NULL;
+                general_resource * cGResource = nullptr;
                 //makes sure the tab is not already open
                 for( i = 0; i < (int)sub_options.size(); i +=1)
                 {
                     cGResource = sub_options[i];
-                    if( cGResource!=NULL)
+                    if( cGResource!=nullptr)
                     {
                         if( cGResource->matches( newTabResource) )
                         {
@@ -139,14 +139,14 @@ namespace pawgui
 
     void widget_tab_resource_bar::close_resource_tab( std::string projectParentName, int resIdIn)
     {
-        general_resource * tRes = NULL;
+        general_resource * tRes = nullptr;
         gpe::error_log->report("Removing tab... ["+projectParentName+"]["+ stg_ex::int_to_string( resIdIn ) +"]");
         main_syntax_highlighter->clear_all();
         gpe::error_log->report("Highlighter cleared...");
         for( int i = (int)sub_options.size()-1; i >=0; i--)
         {
             tRes = sub_options[i];
-            if( tRes!=NULL)
+            if( tRes!=nullptr)
             {
                 if( projectParentName==tRes->parentProjectName && tRes->get_global_rid()==resIdIn )
                 {
@@ -225,11 +225,11 @@ namespace pawgui
 
     void widget_tab_resource_bar::close_tabs_from_project( std::string projectDirNameIn)
     {
-        general_resource * tRes = NULL;
+        general_resource * tRes = nullptr;
         for( int i = (int)sub_options.size()-1; i >=0; i--)
         {
             tRes = sub_options[i];
-            if( tRes!=NULL)
+            if( tRes!=nullptr)
             {
                 if( tRes->parentProjectName==projectDirNameIn)
                 {
@@ -243,7 +243,7 @@ namespace pawgui
         }
         main_search_controller->close_finder();
         main_overlay_system->update_temporary_message("","","",0);
-        main_syntax_highlighter->highlightedTerm = NULL;
+        main_syntax_highlighter->highlightedTerm = nullptr;
     }
 
     void widget_tab_resource_bar::close_all_tabs()
@@ -256,7 +256,7 @@ namespace pawgui
         update_tabsizes();
         main_search_controller->close_finder();
         main_overlay_system->update_temporary_message("","","",0);
-        main_syntax_highlighter->highlightedTerm = NULL;
+        main_syntax_highlighter->highlightedTerm = nullptr;
 
     }
 
@@ -344,7 +344,7 @@ namespace pawgui
             general_resource * cGenResource = sub_options.at(tabInUse);
             return cGenResource;
         }
-        return NULL;
+        return nullptr;
     }
 
     void widget_tab_resource_bar::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam )
@@ -353,10 +353,10 @@ namespace pawgui
         cam = gpe::camera_find( cam );
         widget_basic::process_self( view_space, cam );
         add_new_tab( selectedResource );
-        set_selected_gresource( NULL );
+        set_selected_gresource( nullptr );
         update_tabsizes();
-        general_resource * fResource = NULL;
-        if(useDock_button && tabExpand_button!=NULL)
+        general_resource * fResource = nullptr;
+        if(useDock_button && tabExpand_button!=nullptr)
         {
             tabExpand_button->set_coords(widget_box.x+widget_box.w - tabExpand_button->get_width(), widget_box.y );
             tabExpand_button->process_self();
@@ -392,9 +392,9 @@ namespace pawgui
                 case 1:
                     close_all_tabs();
                     gpe::input->reset_all_input();
-                    if( main_syntax_highlighter!=NULL)
+                    if( main_syntax_highlighter!=nullptr)
                     {
-                        main_syntax_highlighter->highlightedTerm = NULL;
+                        main_syntax_highlighter->highlightedTerm = nullptr;
                     }
                     break;
                 case 2:
@@ -426,7 +426,7 @@ namespace pawgui
                     break;
 
                 case 5:
-                    if( fResource!=NULL)
+                    if( fResource!=nullptr)
                     {
                         fResource->save_resource();
                     }
@@ -455,7 +455,7 @@ namespace pawgui
                 for(int i=tabPos; i< (int)sub_options.size() && i < tabsPerView+tabPos; i+=1)
                 {
                     fResource = sub_options[i];
-                    if( fResource!=NULL)
+                    if( fResource!=nullptr)
                     {
                         if (gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,tabHeaderBox.x+(subPos)*(tabSize+tabXPAdding)+tabSize-16,tabHeaderBox.y,tabHeaderBox.x+(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.y+tabHeaderBox.h) )
                         {
@@ -533,12 +533,12 @@ namespace pawgui
             //Proceses open tab...
             //if(!editor_gui_main->mainResourceTree->being_resized )
             {
-                general_resource * cGenResource  = NULL;
+                general_resource * cGenResource  = nullptr;
                 if(tabInUse>=0 && tabInUse < (int)sub_options.size() )
                 {
                     cGenResource = sub_options.at(tabInUse);
                 }
-                if( cGenResource!=NULL)
+                if( cGenResource!=nullptr)
                 {
                     cGenResource->process_resource(&tabBox );
                 }
@@ -550,7 +550,7 @@ namespace pawgui
     {
         view_space = gpe::camera_find( view_space );
         view_space = gpe::camera_find( cam);
-        //if( pawgui::theme_main->theme_texture_bg==NULL )
+        //if( pawgui::theme_main->theme_texture_bg==nullptr )
         {
             gpe::gcanvas->render_roundrect_filled_color(tabHeaderBox.x, tabHeaderBox.y,tabHeaderBox.get_x2(), tabHeaderBox.get_y2(),  pawgui::theme_main->tab_background_color, 255);
             gpe::gcanvas->render_rectangle(tabHeaderBox.x, tabHeaderBox.get_middle(),tabHeaderBox.get_x2(), tabHeaderBox.get_y2(),  pawgui::theme_main->tab_background_color, false, 255);
@@ -558,7 +558,7 @@ namespace pawgui
         if( (int)sub_options.size() >0 )
         {
             int subPos = 0;
-            general_resource * fResource = NULL;
+            general_resource * fResource = nullptr;
             std::string tabOptionStr = "";
             int tabFontWidth = 0;
             int tabFontHeight = 0;
@@ -580,7 +580,7 @@ namespace pawgui
                     gpe::gcanvas->render_roundrect_filled_color( subPos*(tabSize+tabXPAdding),0,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h, pawgui::theme_main->tab_color, 255);
                     gpe::gcanvas->render_rectangle( subPos*(tabSize+tabXPAdding),tabHeaderBox.h/2,(subPos)*(tabSize+tabXPAdding)+tabSize,tabHeaderBox.h,pawgui::theme_main->tab_color, false);
                 }
-                if( fResource!=NULL)
+                if( fResource!=nullptr)
                 {
                     if( fResource->is_modified() )
                     {
@@ -631,16 +631,16 @@ namespace pawgui
             //if( forceRedraw )
             if( useDock_button )
             {
-                tabExpand_button->render_self(NULL, NULL );
+                tabExpand_button->render_self(nullptr, nullptr );
             }
 
             if(tabInUse>=0 && tabInUse < (int)sub_options.size() )
             {
                 general_resource * cGenResource = sub_options.at(tabInUse);
-                if( cGenResource!=NULL)
+                if( cGenResource!=nullptr)
                 {
                     gpe::renderer_main->set_viewpoint( &tabBox );
-                    cGenResource->render_resource(&tabBox, NULL);
+                    cGenResource->render_resource(&tabBox, nullptr);
                     gpe::renderer_main->reset_viewpoint();
                 }
             }
@@ -650,7 +650,7 @@ namespace pawgui
             gpe::renderer_main->reset_viewpoint();
             gpe::renderer_main->set_viewpoint( &tabBox );
 
-            if( pawgui::theme_main->theme_texture_bg==NULL)
+            if( pawgui::theme_main->theme_texture_bg==nullptr)
             {
                 //gpe::gcanvas->render_rectangle( 0, 0, tabBox.w, tabBox.h, pawgui::theme_main->program_color,false);
             }
@@ -666,7 +666,7 @@ namespace pawgui
         return isExpanded;
         if( tabInUse>=0 && tabInUse < (int)sub_options.size())
         {
-            if( sub_options[tabInUse]!=NULL )
+            if( sub_options[tabInUse]!=nullptr )
             {
                 return sub_options[tabInUse]->isFullScreenResource;
             }
@@ -677,11 +677,11 @@ namespace pawgui
     int widget_tab_resource_bar::search_for_string(std::string needle)
     {
         int foundstrings = 0;
-        general_resource * fOption  = NULL;
+        general_resource * fOption  = nullptr;
         for( int i = (int)sub_options.size()-1; i >=0; i--)
         {
             fOption = sub_options[i];
-            if( fOption!=NULL)
+            if( fOption!=nullptr)
             {
                 foundstrings+=fOption->search_for_string(needle);
             }
@@ -693,11 +693,11 @@ namespace pawgui
     int widget_tab_resource_bar::search_and_replace_string(std::string needle, std::string newStr )
     {
         int foundstrings = 0;
-        general_resource * fOption  = NULL;
+        general_resource * fOption  = nullptr;
         for( int i = (int)sub_options.size()-1; i >=0; i--)
         {
             fOption = sub_options[i];
-            if( fOption!=NULL)
+            if( fOption!=nullptr)
             {
                 foundstrings+=fOption->search_and_replace_string(needle, newStr);
             }
@@ -764,7 +764,7 @@ namespace pawgui
         }
         main_search_controller->close_finder();
         main_overlay_system->update_temporary_message("","","",0);
-        main_syntax_highlighter->highlightedTerm = NULL;
+        main_syntax_highlighter->highlightedTerm = nullptr;
     }
 
     void widget_tab_resource_bar::toggle_full_width()

@@ -76,7 +76,7 @@ namespace pawgui
             ~widget_selectbox();
             std::string get_data();
             void load_data(std::string datastring);
-            void add_option(std::string newOptionName, float newOpValue = -1,gpe::texture_base * evRepIcon = NULL, gpe::animaton2d * evRepanimation=NULL, int subimageInIndex = 0, bool selectNew = false, bool useGuiColor = true);
+            void add_option(std::string newOptionName, float newOpValue = -1,gpe::texture_base * evRepIcon = nullptr, gpe::animaton2d * evRepanimation=nullptr, int subimageInIndex = 0, bool selectNew = false, bool useGuiColor = true);
             void correct_camera();
             void clear_list();
             int get_option_id(std::string optionName );
@@ -86,15 +86,15 @@ namespace pawgui
             int get_size();
             selectbox_option * get_option(int optionId);
             std::string get_option_name(int optionId);
-            void insert_option(int optionId, std::string new_name, gpe::texture_base * evRepIcon = NULL, gpe::animaton2d * evRepanimation=NULL, int subimageInIndex = 0,bool selectNew = false);
+            void insert_option(int optionId, std::string new_name, gpe::texture_base * evRepIcon = nullptr, gpe::animaton2d * evRepanimation=nullptr, int subimageInIndex = 0,bool selectNew = false);
             void limit_height(int newH);
             void alter_content( int optionId, bool sectionHasContent);
             void alter_content_from_value( float valueId, bool sectionHasContent);
             bool move_down_space();
             bool move_up_space();
             void prerender_self( );
-            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+            void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
             void rename_option(int optionId, std::string new_name);
             void remove_option(int optionId);
             void set_option_height( int newOptionHeight);

@@ -67,19 +67,17 @@ namespace pawgui
     void widget_content_row::calculate_width()
     {
         calculatedRowWidth = (barXPadding)*2 + indentationLevel*padding_default;
-        widget_basic * tempOption = NULL;
+        widget_basic * tempOption = nullptr;
         int optionsSize = (int)sub_options.size();
-        bool breakHappened = false;
         for( int i = 0; i < optionsSize; i++ )
         {
             tempOption = sub_options[i];
-            if( tempOption !=NULL )
+            if( tempOption !=nullptr )
             {
                 if( tempOption->requires_newline() || tempOption->is_full_width())
                 {
                     calculatedRowWidth = outterWidth;
                     //gpe::error_log->report("Calculated outer width:"+ stg_ex::int_to_string(outterWidth) );
-                    breakHappened = true;
                     break;
                 }
                 else
@@ -99,14 +97,14 @@ namespace pawgui
     void widget_content_row::clear_list()
     {
         /*
-        widget_basic * tempItem = NULL;
+        widget_basic * tempItem = nullptr;
         for( int i = 0; (int)sub_options.size(); i++)
         {
             tempItem = sub_options[i];
-            if( tempItem!=NULL )
+            if( tempItem!=nullptr )
             {
                 delete tempItem;
-                tempItem = NULL;
+                tempItem = nullptr;
             }
         }*/
         sub_options.clear();
@@ -125,7 +123,7 @@ namespace pawgui
         widget_box.w = 0;
         widget_box.h = 0;
         //For now we just gonna assume is all gpe::fa_left until its time to fix it
-        widget_basic * cContainer = NULL;
+        widget_basic * cContainer = nullptr;
         int indentWidth = indentationLevel*barXPadding;
         int tempX = x_new + indentWidth;
         int tempY = y_new;//+barYPadding;
@@ -137,8 +135,6 @@ namespace pawgui
             return;
         }
 
-        int maxHeight = 0;
-
         //Does horizontal align calculations
         bool keepCalculatingWidth = true;
 
@@ -149,7 +145,7 @@ namespace pawgui
             for( i=0; i<optionsSize; i++)
             {
                 cContainer = sub_options[i];
-                if(cContainer!=NULL)
+                if(cContainer!=nullptr)
                 {
                     if( cContainer->autoResizes )
                     {
@@ -171,7 +167,7 @@ namespace pawgui
                     {
                         cContainer->set_width( outterWidth );
                     }
-                    if(cContainer!=NULL)
+                    if(cContainer!=nullptr)
                     {
                         remainderWidth+= cContainer->get_width() + barXPadding *2;
                     }
@@ -210,7 +206,7 @@ namespace pawgui
                 for( i=0; i < optionsSize -1; i++)
                 {
                     cContainer = sub_options[i];
-                    if(cContainer!=NULL)
+                    if(cContainer!=nullptr)
                     {
                         remainderWidth+= cContainer->get_width()  + barXPadding*2;
                     }
@@ -251,7 +247,7 @@ namespace pawgui
                     {
                         cContainer->set_width( outterWidth );
                     }
-                    if(cContainer!=NULL && !cContainer->autoResizes )
+                    if(cContainer!=nullptr && !cContainer->autoResizes )
                     {
                         remainderWidth+= cContainer->get_width() + barXPadding *2;
                     }
@@ -289,7 +285,7 @@ namespace pawgui
             for( i=0; i<optionsSize; i++)
             {
                 cContainer = sub_options[i];
-                if(cContainer!=NULL)
+                if(cContainer!=nullptr)
                 {
                     if( cContainer->is_full_width() )
                     {
@@ -320,7 +316,7 @@ namespace pawgui
             for( i=0; i<optionsSize; i++)
             {
                 cContainer = sub_options[i];
-                if(cContainer!=NULL)
+                if(cContainer!=nullptr)
                 {
                     if( cContainer->is_full_width() && cContainer->autoResizes )
                     {
@@ -337,7 +333,7 @@ namespace pawgui
         if( optionsSize == 1)
         {
             cContainer = sub_options[0];
-            if( cContainer!=NULL )
+            if( cContainer!=nullptr )
             {
                 if( cContainer->is_full_width() == false )
                 {
@@ -367,7 +363,7 @@ namespace pawgui
             for( i = 0; i < optionsSize; i++)
             {
                 cContainer = sub_options[i];
-                if( cContainer!=NULL )
+                if( cContainer!=nullptr )
                 {
                     cHeight = cContainer->get_height();
                     if(cContainer->autoResizes)
@@ -394,7 +390,7 @@ namespace pawgui
             for( i = 0; i < optionsSize; i++)
             {
                 cContainer = sub_options[i];
-                if( cContainer!=NULL )
+                if( cContainer!=nullptr )
                 {
                     cHeight = cContainer->get_height();
                     if(cContainer->autoResizes)
@@ -421,7 +417,7 @@ namespace pawgui
             for( i = 0; i < optionsSize; i++)
             {
                 cContainer = sub_options[i];
-                if( cContainer!=NULL )
+                if( cContainer!=nullptr )
                 {
                     cContainer->set_coords(tempX, tempY );
                     if( cContainer->autoResizes )
@@ -473,7 +469,7 @@ namespace pawgui
     {
         panelAlignType = panel_align_default;
         usingFullSizeElement = false;
-        selectedElement = NULL;
+        selectedElement = nullptr;
         needsNewLine = true;
         inDebugMode = false;
         selectedId = -1;
@@ -508,24 +504,24 @@ namespace pawgui
 
     widget_panel_list::~widget_panel_list()
     {
-        if( xScroll!=NULL)
+        if( xScroll!=nullptr)
         {
             delete xScroll;
-            xScroll = NULL;
+            xScroll = nullptr;
         }
-        if( yScroll!=NULL)
+        if( yScroll!=nullptr)
         {
             delete yScroll;
-            yScroll = NULL;
+            yScroll = nullptr;
         }
         clear_list();
     }
 
     void widget_panel_list::add_gui_element(widget_basic *  newElement, bool isNLElement)
     {
-        if( newElement!=NULL )
+        if( newElement!=nullptr )
         {
-            widget_content_row *  currentRow = NULL;
+            widget_content_row *  currentRow = nullptr;
             if( newElement->requires_newline() || newElement->is_full_width() )
             {
                 newRowRequested = true;
@@ -554,7 +550,7 @@ namespace pawgui
                 currentRow = subRows[ rowSize -1 ];
             }
 
-            if( currentRow !=NULL )
+            if( currentRow !=nullptr )
             {
                 currentRow->add_gui_element( newElement );
             }
@@ -574,9 +570,9 @@ namespace pawgui
 
     void widget_panel_list::add_gui_auto(widget_basic *  newElement )
     {
-        if( newElement!=NULL)
+        if( newElement!=nullptr)
         {
-            widget_content_row *  currentRow = NULL;
+            widget_content_row *  currentRow = nullptr;
             newElement->hasLineBreak = false;
             int rowSize = (int)subRows.size();
 
@@ -601,7 +597,7 @@ namespace pawgui
             {
                 //Finds last row
                 currentRow = subRows[ rowSize -1 ];
-                if( currentRow !=NULL )
+                if( currentRow !=nullptr )
                 {
                     //Checks if a new element can fit inside of same row
                     if( currentRow->get_sub_width()+ newElement->get_width() > widget_box.w-32 )
@@ -627,7 +623,7 @@ namespace pawgui
                 }
                 else
                 {
-                    //gpe::error_log->report("Current row = NULL...");
+                    //gpe::error_log->report("Current row = nullptr...");
                 }
             }
 
@@ -641,7 +637,7 @@ namespace pawgui
 
     void widget_panel_list::add_gui_element_fullsize( widget_basic * newElement )
     {
-        if( newElement !=NULL )
+        if( newElement !=nullptr )
         {
             clear_list();
             newElement->set_coords( widget_box.y, widget_box.y );
@@ -659,7 +655,7 @@ namespace pawgui
 
     void widget_panel_list::add_indented_element( int level, widget_basic * newElement)
     {
-        if( newElement!=NULL )
+        if( newElement!=nullptr )
         {
             widget_content_row * newRow = new widget_content_row();
             newRow->indentationLevel = level;
@@ -680,19 +676,19 @@ namespace pawgui
     void widget_panel_list::clear_list()
     {
         usingFullSizeElement = false;
-        selectedElement = NULL;
+        selectedElement = nullptr;
         allElements.clear();
         cameraBox.w = menuBox.w = entireBox.w = widget_box.w;
         cameraBox.h = menuBox.h = entireBox.h = widget_box.h;
 
-        widget_content_row * tempRow = NULL;
+        widget_content_row * tempRow = nullptr;
         for( int i = (int)subRows.size()-1; i>=0; i--)
         {
             tempRow = subRows[i];
-            if( tempRow!=NULL )
+            if( tempRow!=nullptr )
             {
                 delete tempRow;
-                tempRow = NULL;
+                tempRow = nullptr;
             }
         }
         subRows.clear();
@@ -777,7 +773,7 @@ namespace pawgui
 
     void widget_panel_list::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
-        selectedElement = NULL;
+        selectedElement = nullptr;
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
         if( inDebugMode)
@@ -792,14 +788,12 @@ namespace pawgui
         yScroll->set_height( widget_box.h );
 
         //Handles row / option in view
-        widget_content_row * cRow = NULL;
-        widget_basic * cContainer = NULL;
-        widget_basic * containerInControl = NULL;
+        widget_content_row * cRow = nullptr;
+        widget_basic * cContainer = nullptr;
+        widget_basic * containerInControl = nullptr;
         int lastselectedId = -1;
-        int i = 0, j = 0;
-        int pastRowChange = 0;
+        int i = 0;
         int current_row_count = (int)subRows.size();
-        int rowOptionsCount = 0;
         bool directionChangeRequested = false;
 
         if( inDebugMode)
@@ -808,7 +802,7 @@ namespace pawgui
         }
         if( isClicked )
         {
-            //if( resource_dragged==NULL)
+            //if( resource_dragged==nullptr)
             {
                 isInUse = true;
                 hasScrollControl = true;
@@ -962,7 +956,6 @@ namespace pawgui
         int y2Pos = y_pos;
         int rowWidth = 0;
         int maxRowWidth = 0;
-        int totalMaxRowWidth = 0;
         int rowHeight = 0;
 
         x_pos = barXMargin+barXPadding;
@@ -970,7 +963,7 @@ namespace pawgui
         for( i=0; i < current_row_count; i++)
         {
             cRow = subRows[i];
-            if( cRow!=NULL )
+            if( cRow!=nullptr )
             {
                 cRow->rowSizingStyle = panelAlignType;
                 cRow->barXPadding = barXPadding;
@@ -1028,7 +1021,7 @@ namespace pawgui
             for( i =(int)allElements.size()-1; i >=0 ; i-- )
             {
                 cContainer = allElements[i];
-                if( cContainer!=NULL )
+                if( cContainer!=nullptr )
                 {
                     cContainer->dynamic_id = i;
                     if( cContainer->hasScrollControl )
@@ -1061,7 +1054,7 @@ namespace pawgui
 
             //locks on one gui item until it is taken out of focus...
             lastselectedId = selectedId;
-            if( containerInControl!=NULL )
+            if( containerInControl!=nullptr )
             {
                 if( inDebugMode)
                 {
@@ -1072,7 +1065,7 @@ namespace pawgui
                 /*!containerInControl->hasScrollControl==false  !containerInControl->hasArrowkeyControl  */
                 if(  !containerInControl->is_inuse() )
                 {
-                    containerInControl = NULL;
+                    containerInControl = nullptr;
                     selectedId = -1;
                 }
                 if( inDebugMode)
@@ -1090,7 +1083,7 @@ namespace pawgui
             for( i =(int)allElements.size()-1; i >=0 ; i-- )
             {
                 cContainer = allElements[i];
-                if( cContainer!=NULL )
+                if( cContainer!=nullptr )
                 {
                     cContainer->dynamic_id = i;
                     if( lastselectedId != cContainer->dynamic_id )
@@ -1129,7 +1122,7 @@ namespace pawgui
                 }
             }
 
-            if( containerInControl!=NULL )
+            if( containerInControl!=nullptr )
             {
                 if( inDebugMode)
                 {
@@ -1137,9 +1130,9 @@ namespace pawgui
                     gpe::error_log->report("Trying to process "+cContainer->get_element_type() +"..." );
                 }
 
-                if( containerInControl!=NULL && containerInControl->is_inuse() == false )
+                if( containerInControl!=nullptr && containerInControl->is_inuse() == false )
                 {
-                    containerInControl = NULL;
+                    containerInControl = nullptr;
                     //selectedId++;
                     /*
                     if( inDebugMode)
@@ -1249,7 +1242,7 @@ namespace pawgui
         for( int iTemp = 0; iTemp < (int)allElements.size(); iTemp++ )
         {
             cContainer = allElements.at(iTemp);
-            if(cContainer!=NULL)
+            if(cContainer!=nullptr)
             {
                 if( selectedId  == cContainer->dynamic_id )
                 {
@@ -1289,7 +1282,7 @@ namespace pawgui
         gpe::update_rectangle(&yScroll->fullRect, 0, 0, entireBox.w,entireBox.h);
         gpe::update_rectangle(&yScroll->contextRect, cameraBox.x, cameraBox.y, cameraBox.w,cameraBox.h);
 
-        if( hasScrollControl && subElementsHasArrowControl==false &&  xScroll!=NULL && yScroll!=NULL)
+        if( hasScrollControl && subElementsHasArrowControl==false &&  xScroll!=nullptr && yScroll!=nullptr)
         {
             if( entireBox.w >=widget_box.w  && hideXScroll!=true )
             {
@@ -1363,7 +1356,7 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( view_space!=NULL && cam!=NULL )
+        if( view_space!=nullptr && cam!=nullptr )
         {
             /*
             menuBox.x = view_space->x+ widget_box.x;
@@ -1374,12 +1367,12 @@ namespace pawgui
             gpe::renderer_main->reset_viewpoint();
             gpe::renderer_main->set_viewpoint( view_space );
 
-            widget_basic * cResource = NULL;
+            widget_basic * cResource = nullptr;
 
             if( usingFullSizeElement && (int)allElements.size() == 1 )
             {
                 cResource = allElements[0];
-                if( cResource!=NULL )
+                if( cResource!=nullptr )
                 {
                     cResource->set_coords( 0,0 );
                     cResource->set_width( widget_box.w);
@@ -1390,17 +1383,17 @@ namespace pawgui
             }
 
             gpe::renderer_main->set_viewpoint( &menuBox);
-            widget_content_row * cRow = NULL;
+            widget_content_row * cRow = nullptr;
             int i = 0,j = 0;
             for( i=0; i<(int)subRows.size(); i++)
             {
                 cRow = subRows[i];
-                if(cRow!=NULL)
+                if(cRow!=nullptr)
                 {
                     for( j =0; j < (int)cRow->sub_options.size(); j++ )
                     {
                         cResource = cRow->sub_options[j];
-                        if(cResource!=NULL)
+                        if(cResource!=nullptr)
                         {
                             cResource->render_self( &menuBox,&cameraBox);
                         }
@@ -1412,14 +1405,14 @@ namespace pawgui
             gpe::renderer_main->set_viewpoint( view_space);
             /*menuBox.w-=16;
             menuBox.h-=16;*/
-            if( xScroll!=NULL&& hideXScroll!=true )
+            if( xScroll!=nullptr&& hideXScroll!=true )
             {
                 //if( entireBox.w >widget_box.w)
                 {
                     xScroll->render_self( view_space,cam);
                 }
             }
-            if( yScroll!=NULL&& hideYScroll!=true )
+            if( yScroll!=nullptr&& hideYScroll!=true )
             {
                 if( entireBox.h >widget_box.h )
                 {
@@ -1445,20 +1438,20 @@ namespace pawgui
     void widget_panel_list::set_horizontal_align(int height_valueue)
     {
         alignment_h = height_valueue;
-        widget_content_row * tguiRow = NULL;
+        widget_content_row * tguiRow = nullptr;
         for( int i = (int)subRows.size()-1; i>=0; i--)
         {
             tguiRow = subRows[i];
-            if( tguiRow!=NULL )
+            if( tguiRow!=nullptr )
             {
                 tguiRow->alignment_h = height_valueue;
             }
         }
-        widget_basic * cElement = NULL;
+        widget_basic * cElement = nullptr;
         for( int i = (int)allElements.size()-1; i>=0; i--)
         {
             cElement = allElements[i];
-            if( cElement!=NULL )
+            if( cElement!=nullptr )
             {
                 cElement->alignment_h = height_valueue;
             }
@@ -1467,12 +1460,12 @@ namespace pawgui
 
     void widget_panel_list::set_full_width()
     {
-        widget_content_row * tguiRow = NULL;
+        widget_content_row * tguiRow = nullptr;
         int maxWidth = widget_box.w-(barXMargin+barXPadding)*3;
         for( int i = (int)subRows.size()-1; i>=0; i--)
         {
             tguiRow = subRows[i];
-            if( tguiRow!=NULL )
+            if( tguiRow!=nullptr )
             {
                 tguiRow->set_width(maxWidth);
             }
@@ -1481,13 +1474,13 @@ namespace pawgui
 
     void widget_panel_list::set_maxed_out_width()
     {
-        widget_content_row * tguiRow = NULL;
+        widget_content_row * tguiRow = nullptr;
         int i = 0;
         int maxWidth = 0;
         for( i = (int)subRows.size()-1; i>=0; i--)
         {
             tguiRow = subRows[i];
-            if( tguiRow!=NULL )
+            if( tguiRow!=nullptr )
             {
                 if( tguiRow->get_width() > maxWidth)
                 {
@@ -1499,7 +1492,7 @@ namespace pawgui
         for( i = (int)subRows.size()-1; i>=0; i--)
         {
             tguiRow = subRows[i];
-            if( tguiRow!=NULL )
+            if( tguiRow!=nullptr )
             {
                 tguiRow->set_width(maxWidth);
             }
@@ -1508,13 +1501,13 @@ namespace pawgui
 
     void widget_panel_list::set_maxed_out_height()
     {
-        widget_content_row * tguiRow = NULL;
+        widget_content_row * tguiRow = nullptr;
         int i = 0;
         int maxHeight = 0;
         for( i = (int)subRows.size()-1; i>=0; i--)
         {
             tguiRow = subRows[i];
-            if( tguiRow!=NULL )
+            if( tguiRow!=nullptr )
             {
                 if( tguiRow->get_height() > maxHeight)
                 {
@@ -1526,7 +1519,7 @@ namespace pawgui
         for( i = (int)subRows.size()-1; i>=0; i--)
         {
             tguiRow = subRows[i];
-            if( tguiRow!=NULL )
+            if( tguiRow!=nullptr )
             {
                 tguiRow->set_height(maxHeight);
             }

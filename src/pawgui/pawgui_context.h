@@ -86,7 +86,7 @@ namespace pawgui
         popup_menu_option(std::string name = "", int id = -1,bool selectable = true, bool seeShortCut = true, bool makeContext = false, int kbS1 = -1, int kbS2 = -1, int kbS3 = -1 );
         ~popup_menu_option();
         popup_menu_option * add_option( popup_menu_option * otherOption);
-        popup_menu_option * add_menu_option( std::string name, int id = -1, gpe::texture_base * gTexture = NULL,int animationImgNumb = -1, gpe::animaton2d * ganimation=NULL, bool endsSection=false, bool selectable = true, bool isResource = false, int kbS1 = -1, int kbS2 = -1, int kbS3 = -1 );
+        popup_menu_option * add_menu_option( std::string name, int id = -1, gpe::texture_base * gTexture = nullptr,int animationImgNumb = -1, gpe::animaton2d * ganimation=nullptr, bool endsSection=false, bool selectable = true, bool isResource = false, int kbS1 = -1, int kbS2 = -1, int kbS3 = -1 );
         int activate_hovered();
         void clear_menu();
         void close_menu();
@@ -108,10 +108,10 @@ namespace pawgui
         void set_texture( gpe::texture_base * newTexture);
         void open_menu();
         void prerender_self(  );
-        void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect *cam = NULL );
+        void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect *cam = nullptr );
         void resize_self();
         void update_selectability(bool selectable);
-        void render_self(  gpe::shape_rect * view_space = NULL, gpe::shape_rect *cam = NULL);
+        void render_self(  gpe::shape_rect * view_space = nullptr, gpe::shape_rect *cam = nullptr);
     };
 
     extern popup_menu_option * main_context_menu;
@@ -143,13 +143,13 @@ namespace pawgui
         popup_menu_option * add_menu_option( std::string name, int id = -1);
         void open_toolbar();
         void prerender_self(  );
-        void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect *cam = NULL);
-        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect *cam = NULL);
+        void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect *cam = nullptr);
+        void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect *cam = nullptr);
     };
 
     void context_menu_open(int menuXPos=-1,int menuYPos=-1, int new_width = 128);
     void context_menu_close();
-    int context_menu_process( gpe::shape_rect * camera = NULL, bool redrawScreen = true, bool autoResize = true);
+    int context_menu_process( gpe::shape_rect * camera = nullptr, bool redrawScreen = true, bool autoResize = true);
 }
 
 #endif //PAWGUI_CONTEXT_H

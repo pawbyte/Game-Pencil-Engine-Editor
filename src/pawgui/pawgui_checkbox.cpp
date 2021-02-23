@@ -48,7 +48,7 @@ namespace pawgui
         widget_box.h = clickBoxH = 24;
         labelBoxW = 0;
         labelBoxH = 0;
-        if( (int)widget_name.size()>0 && gpe::font_default!=NULL )
+        if( (int)widget_name.size()>0 && gpe::font_default!=nullptr )
         {
             gpe::font_default->get_metrics(widget_name,&labelBoxW, &labelBoxH);
             widget_box.w+= labelBoxW;
@@ -86,7 +86,7 @@ namespace pawgui
         isHovered = false;
 
         bool past_clicked = isClicked;
-        if(view_space!=NULL && cam!=NULL)
+        if(view_space!=nullptr && cam!=nullptr)
         {
             widget_basic::process_self( view_space, cam);
             if( windowInView == false )
@@ -116,7 +116,7 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( cam!=NULL)
+        if( cam!=nullptr)
         {
             if( isInUse )
             {
@@ -133,9 +133,9 @@ namespace pawgui
                 gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.x+clickBoxW-cam->x,widget_box.y+clickBoxH-cam->y,pawgui::theme_main->main_border_color,false);
                 gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.x+clickBoxW-cam->x,widget_box.y+clickBoxH-cam->y,pawgui::theme_main->main_box_font_color,true);
             }
-            if( isClicked && checkmark_texture!=NULL )
+            if( isClicked && checkmark_texture!=nullptr )
             {
-                checkmark_texture->render_tex_resized( widget_box.x-cam->x,widget_box.y-cam->y,clickBoxW,clickBoxH,NULL, pawgui::theme_main->checkbox_color );
+                checkmark_texture->render_tex_resized( widget_box.x-cam->x,widget_box.y-cam->y,clickBoxW,clickBoxH,nullptr, pawgui::theme_main->checkbox_color );
             }
             gpe::gfs->render_text( widget_box.x+clickBoxW+padding_default-cam->x,widget_box.y+widget_box.h/2-cam->y,widget_name,pawgui::theme_main->main_box_font_color,FONT_LABEL,gpe::fa_left,gpe::fa_middle,255);
         }

@@ -71,7 +71,7 @@ namespace pawgui
             //widget_resource_container(std::string projFolderName, int  rezPropValue = -1);
             widget_resource_container(std::string projFolderName = "", std::string new_name =  "", int rType = -1, int rId = -1,bool folder = true, int globalIdVal = -1,int  rezPropValue = -1);
             virtual ~widget_resource_container();
-            void add_resource_container( widget_resource_container * newResource, bool changeGlobalId = false, widget_resource_container * referenceObject = NULL );
+            void add_resource_container( widget_resource_container * newResource, bool changeGlobalId = false, widget_resource_container * referenceObject = nullptr );
             widget_resource_container * add_resource_folder( std::string resourceTypeName, int gResId = -1, int rezPropValue = -1);
             widget_resource_container * add_newtype_folder( int rType,std::string resourceTypeName, int gResId = -1,int rezPropValue = -1);
             void delete_resource(widget_resource_container * otherContainer);
@@ -105,14 +105,14 @@ namespace pawgui
             void open_folder();
             void preprocess_container(std::string file_path = "", int backupId = -1);
             void prerender_self( );
-            int process_container(int x_pos, int y_pos, int selectedId = -1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, bool mouseInRange = false);
+            int process_container(int x_pos, int y_pos, int selectedId = -1, gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr, bool mouseInRange = false);
             bool read_data_from_projectfile(std::ofstream * fileTarget);
             void remove_resource(widget_resource_container * otherContainer, bool deleteResource = true);
             //Render options
-            void render_contained_object( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-            void render_option( int x_pos, int y_pos, int selectedIdNumber=-1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, bool renderSubOptions = true, bool renderAutomatically = false);
-            void render_image( int x_pos, int y_pos, int r_width = -1, int r_height = -1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, gpe::color * render_color = NULL);
-            void render_image_scaled( int x_pos, int y_pos, float x_scale = 1, float y_scale = -1, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, gpe::color * render_color = NULL);
+            void render_contained_object( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+            void render_option( int x_pos, int y_pos, int selectedIdNumber=-1, gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr, bool renderSubOptions = true, bool renderAutomatically = false);
+            void render_image( int x_pos, int y_pos, int r_width = -1, int r_height = -1, gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr, gpe::color * render_color = nullptr);
+            void render_image_scaled( int x_pos, int y_pos, float x_scale = 1, float y_scale = -1, gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr, gpe::color * render_color = nullptr);
 
             void save_container(std::string file_path = "", int backupId = -1);
             int search_for_string(std::string needle);

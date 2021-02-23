@@ -78,12 +78,12 @@ namespace pawgui
 
     gpe::animaton2d * general_resource::get_resource_animation()
     {
-        return NULL;
+        return nullptr;
     }
 
     gpe::texture_base * general_resource::get_resource_texture()
     {
-        return NULL;
+        return nullptr;
     }
 
     void general_resource::integrate_into_syntax()
@@ -119,7 +119,7 @@ namespace pawgui
 
     bool general_resource::matches(general_resource * otherContainer)
     {
-        if( otherContainer!=NULL)
+        if( otherContainer!=nullptr)
         {
             if( globalResouceIdNumber==otherContainer->globalResouceIdNumber)
             {
@@ -237,7 +237,7 @@ namespace pawgui
 
     bool general_resource::write_header_on_file(std::ofstream * fileTarget)
     {
-        if( fileTarget!=NULL && fileTarget->is_open() )
+        if( fileTarget!=nullptr && fileTarget->is_open() )
         {
             *fileTarget << "#    --------------------------------------------------  # \n";
             *fileTarget << "#     \n";

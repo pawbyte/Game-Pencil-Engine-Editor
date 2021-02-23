@@ -34,7 +34,7 @@ SOFTWARE.
 
 namespace pawgui
 {
-    overlay_system * main_overlay_system = NULL;
+    overlay_system * main_overlay_system = nullptr;
 
     overlay_system::overlay_system()
     {
@@ -44,9 +44,9 @@ namespace pawgui
         temporayMessageDisplayTimer = 0;
         temporayMessageDisplayStartTimer = 0;
         tempTopLeftMessage = false;
-        previousScreenshot = NULL;
+        previousScreenshot = nullptr;
         toolTipstring = "";
-        toolTipTexture = NULL;
+        toolTipTexture = nullptr;
         toolTipX = 0;
         toolTipY = 0;
     }
@@ -67,14 +67,14 @@ namespace pawgui
 
     void overlay_system::take_frozen_screenshot()
     {
-        if( previousScreenshot==NULL)
+        if( previousScreenshot==nullptr)
         {
             previousScreenshot = gpe::rph->get_new_texture();
         }
-        if( previousScreenshot!=NULL && gpe::renderer_main!=NULL)
+        if( previousScreenshot!=nullptr && gpe::renderer_main!=nullptr)
         {
-            gpe::renderer_main->save_screenshot(  gpe::get_user_settings_folder() +"frozen_screenshot.png");
-            previousScreenshot->load_new_texture( gpe::renderer_main, gpe::get_user_settings_folder() +"frozen_screenshot.png");
+            gpe::renderer_main->save_screenshot(  gpe::main_file_url_manager->get_user_settings_folder() +"frozen_screenshot.png");
+            previousScreenshot->load_new_texture( gpe::renderer_main, gpe::main_file_url_manager->get_user_settings_folder() +"frozen_screenshot.png");
         }
     }
 
@@ -83,11 +83,11 @@ namespace pawgui
         if( newTip!=toolTipstring)
         {
             toolTipstring = newTip;
-            if( toolTipTexture==NULL)
+            if( toolTipTexture==nullptr)
             {
                 toolTipTexture = gpe::rph->get_new_texture();
             }
-            if( toolTipTexture!=NULL)
+            if( toolTipTexture!=nullptr)
             {
                 //toolTipTexture->loadFromRenderedText(gpe::renderer_main,newTip,pawgui::theme_main->popup_box_font_color,gpe::font_default);
             }
@@ -116,7 +116,7 @@ namespace pawgui
 
     void overlay_system::render_frozen_screenshot()
     {
-        if( gpe::renderer_main!=NULL &&  previousScreenshot!=NULL)
+        if( gpe::renderer_main!=nullptr &&  previousScreenshot!=nullptr)
         {
             previousScreenshot->render_tex_resized(0,0, gpe::screen_width, gpe::screen_height);
         }
@@ -165,7 +165,7 @@ namespace pawgui
 
             int TEXTBOX_FONT_SIZE_WIDTH = 12;
             int TEXTBOX_FONT_SIZE_HEIGHT = 12;
-            if( FONT_TOOLTIP!=NULL)
+            if( FONT_TOOLTIP!=nullptr)
             {
                 FONT_TOOLTIP->get_metrics("A",&TEXTBOX_FONT_SIZE_WIDTH,&TEXTBOX_FONT_SIZE_HEIGHT);
             }
@@ -174,7 +174,6 @@ namespace pawgui
             int y_pos2 = y_pos+TEXTBOX_FONT_SIZE_HEIGHT+padding_default/2;
 
             int maxLength = ( gpe::screen_width - padding_default*4)/TEXTBOX_FONT_SIZE_WIDTH;
-            int lineCountForTip = 1;
             std::vector< std::string > toolTipLines;
             std::string tempToolTipstring = toolTipstring;
             if( (int)tempToolTipstring.size() >= maxLength)

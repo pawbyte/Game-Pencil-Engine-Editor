@@ -49,8 +49,8 @@ namespace pawgui
             std::string get_data();
             std::string get_plain_string();
             void load_data(std::string datastring);
-            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+            void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
             void set_name(std::string name_param);
     };
 }

@@ -35,39 +35,39 @@ SOFTWARE.
 
 namespace pawgui
 {
-    //Define GUI Themes to NULL
-    gui_theme * theme_main = NULL;
-    gui_theme * theme_default = NULL;
+    //Define GUI Themes to nullptr
+    gui_theme * theme_main = nullptr;
+    gui_theme * theme_default = nullptr;
 
-    //Define GUI fonts to NULL
-    gpe::font_base * font_buttons = NULL;
+    //Define GUI fonts to nullptr
+    gpe::font_base * font_buttons = nullptr;
     //
-    gpe::font_base * font_popup = NULL;
-    gpe::font_base * font_toolbar = NULL;
-    gpe::font_base * font_resourcebar = NULL;
-    gpe::font_base * font_textinput = NULL;
-    gpe::font_base * font_textinput_comment = NULL;
-    gpe::font_base * font_textinput_keyword = NULL;
-    gpe::font_base * font_textinput_function = NULL;
-    gpe::font_base * font_textinput_number = NULL;
-    gpe::font_base * font_textinput_quote = NULL;
-    gpe::font_base * font_textinput_symbol = NULL;
-    gpe::font_base * font_textinput_project_function = NULL;
-    gpe::font_base * FONT_TEXTinput_project_keyword = NULL;
-    gpe::font_base * font_tab = NULL;
+    gpe::font_base * font_popup = nullptr;
+    gpe::font_base * font_toolbar = nullptr;
+    gpe::font_base * font_resourcebar = nullptr;
+    gpe::font_base * font_textinput = nullptr;
+    gpe::font_base * font_textinput_comment = nullptr;
+    gpe::font_base * font_textinput_keyword = nullptr;
+    gpe::font_base * font_textinput_function = nullptr;
+    gpe::font_base * font_textinput_number = nullptr;
+    gpe::font_base * font_textinput_quote = nullptr;
+    gpe::font_base * font_textinput_symbol = nullptr;
+    gpe::font_base * font_textinput_project_function = nullptr;
+    gpe::font_base * FONT_TEXTinput_project_keyword = nullptr;
+    gpe::font_base * font_tab = nullptr;
 
-    gpe::font_base * font_term_name = NULL;
-    gpe::font_base * font_term_description = NULL;
-    gpe::font_base * font_term_scope = NULL;
-    gpe::font_base * FONT_TOOLTIP = NULL;
+    gpe::font_base * font_term_name = nullptr;
+    gpe::font_base * font_term_description = nullptr;
+    gpe::font_base * font_term_scope = nullptr;
+    gpe::font_base * FONT_TOOLTIP = nullptr;
 
-    gpe::font_base * font_default_prompt = NULL;
-    gpe::font_base * FONT_LABEL = NULL;
-    gpe::font_base * FONT_LABEL_ANCHOR = NULL;
-    gpe::font_base * FONT_STATUSBAR = NULL;
-    gpe::font_base * FONT_HEADER = NULL;
-    gpe::font_base * FONT_LABEL_TITLE = NULL;
-    gpe::font_base * FONT_STREE_BRANCH = NULL;
+    gpe::font_base * font_default_prompt = nullptr;
+    gpe::font_base * FONT_LABEL = nullptr;
+    gpe::font_base * FONT_LABEL_ANCHOR = nullptr;
+    gpe::font_base * FONT_STATUSBAR = nullptr;
+    gpe::font_base * FONT_HEADER = nullptr;
+    gpe::font_base * FONT_LABEL_TITLE = nullptr;
+    gpe::font_base * FONT_STREE_BRANCH = nullptr;
 
 
     gui_theme::gui_theme(std::string name, bool isCustomTheme)
@@ -85,9 +85,9 @@ namespace pawgui
 
         //Background info
         theme_bg_location = "";
-        theme_texture_bg = NULL;
+        theme_texture_bg = nullptr;
         //animations
-        main_menu_animation = NULL;
+        main_menu_animation = nullptr;
 
         //for bg and standard colors
 
@@ -227,14 +227,14 @@ namespace pawgui
 
     gui_theme::~gui_theme()
     {
-        gpe::color * color_temp = NULL;
+        gpe::color * color_temp = nullptr;
         for(int i = (int)theme_colors.size()-1; i >=0; i-- )
         {
             color_temp = theme_colors[i];
-            if( color_temp!=NULL )
+            if( color_temp!=nullptr )
             {
                 delete color_temp;
-                color_temp = NULL;
+                color_temp = nullptr;
             }
         }
         theme_colors.clear();
@@ -249,8 +249,8 @@ namespace pawgui
 
     gpe::color * gui_theme::add_color(std::string name, gpe::color * saved_color )
     {
-        gpe::color * fColor = NULL;
-        if( saved_color!=NULL )
+        gpe::color * fColor = nullptr;
+        if( saved_color!=nullptr )
         {
             fColor = new gpe::color( name, saved_color->get_r(), saved_color->get_g(), saved_color->get_b() );
         }
@@ -265,7 +265,7 @@ namespace pawgui
     bool gui_theme::change_color(std::string name,uint8_t r, uint8_t g, uint8_t b)
     {
         gpe::color * fColor = find_color( name);
-        if( fColor!=NULL )
+        if( fColor!=nullptr )
         {
             fColor->change_rgba(r,g,b);
             return true;
@@ -287,7 +287,7 @@ namespace pawgui
                 }
             }
         }
-        return NULL;
+        return nullptr;
     }
 
     gpe::color * gui_theme::get_color(int pos)
@@ -296,7 +296,7 @@ namespace pawgui
         {
             return theme_colors[pos];
         }
-        return NULL;
+        return nullptr;
     }
 
     int gui_theme::get_color_count()
@@ -314,12 +314,12 @@ namespace pawgui
         if( (int)bg_textureLocation.size() == 0 )
         {
             theme_bg_location = "";
-            theme_texture_bg = NULL;
+            theme_texture_bg = nullptr;
             return false;
         }
         theme_bg_location = stg_ex::get_local_from_global_file( bg_textureLocation );
         theme_texture_bg = rsm_gui->texture_add_filename( bg_textureLocation );
-        if( theme_texture_bg == NULL)
+        if( theme_texture_bg == nullptr)
         {
             return false;
         }
@@ -335,7 +335,7 @@ namespace pawgui
     {
         //If the level file could be loaded
         std::string themeGlobalLocation = "";
-        if( main_file_url_manager->file_exists(themeLocationIn) )
+        if( gpe::main_file_url_manager->file_exists(themeLocationIn) )
         {
             themeGlobalLocation = themeLocationIn;
         }
@@ -362,7 +362,7 @@ namespace pawgui
                 std::string currLine="";
                 std::string currLineToBeProcessed;
                 //float foundFileVersion = 0;
-                gpe::color * foundColor = NULL;
+                gpe::color * foundColor = nullptr;
                 int rFound = 0, gFound = 0, bFound = 0;
                 while ( templateFileIn.good() )
                 {
@@ -401,7 +401,7 @@ namespace pawgui
                                 else
                                 {
                                     foundColor = find_color( key_string );
-                                    if( foundColor !=NULL )
+                                    if( foundColor !=nullptr )
                                     {
                                         hashPos = valstring.find_first_of("#");
                                         if(hashPos!=(int)std::string::npos)
@@ -438,10 +438,10 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if(cam!=NULL && view_space!=NULL )
+        if(cam!=nullptr && view_space!=nullptr )
         {
             gpe::gcanvas->render_rectangle( cam->x, cam->y,cam->w,cam->h,pawgui::theme_main->program_color,false);
-            if( theme_texture_bg!=NULL )
+            if( theme_texture_bg!=nullptr )
             {
                 theme_texture_bg->render_tex_resized( cam->x, cam->y, cam->w,cam->h );
                 return true;
@@ -452,7 +452,7 @@ namespace pawgui
 
     bool gui_theme::save_theme()
     {
-        save_theme_as( theme_local_location );
+        return save_theme_as( theme_local_location );
     }
 
     bool gui_theme::save_theme_as(std::string themeLocationOut)
@@ -463,7 +463,7 @@ namespace pawgui
         {
             themeLocationOut = theme_name+".gpf";
         }
-        if( main_file_url_manager->file_exists(themeLocationOut) )
+        if( gpe::main_file_url_manager->file_exists(themeLocationOut) )
         {
             themeGlobalLocation = themeLocationOut;
         }
@@ -475,7 +475,7 @@ namespace pawgui
         {
             themeGlobalLocation  = gpe::app_directory_name+"themes/"+ stg_ex::get_local_from_global_file( themeLocationOut );
         }
-        if( !main_file_url_manager->file_exists(themeGlobalLocation) )
+        if( !gpe::main_file_url_manager->file_exists(themeGlobalLocation) )
         {
             gpe::error_log->report("Theme File ["+themeGlobalLocation+"] not found...");
             return false;
@@ -487,11 +487,11 @@ namespace pawgui
             if (templateFileOut.is_open())
             {
                 templateFileOut << "Background="+stg_ex::get_local_from_global_file( theme_bg_location )+"\n";
-                gpe::color * color_temp = NULL;
+                gpe::color * color_temp = nullptr;
                 for(int i = 0; i < (int)theme_colors.size(); i++ )
                 {
                     color_temp = theme_colors[i];
-                    if( color_temp!=NULL )
+                    if( color_temp!=nullptr )
                     {
                         templateFileOut << color_temp->get_name()+"="+ stg_ex::int_to_string( color_temp->get_r() )+","+ stg_ex::int_to_string( color_temp->get_g() )+","+ stg_ex::int_to_string( color_temp->get_b() ) << "\n";
                     }
@@ -500,6 +500,7 @@ namespace pawgui
             theme_local_location = themeGlobalLocation;
         }
         templateFileOut.close();
+        return true;
     }
 
     bool load_default_fonts( std::string mono_font_location, int font_min_size )
@@ -512,17 +513,17 @@ namespace pawgui
         std::string textEditorFontLocation = gpe::app_directory_name+"resources/fonts/dejavu_sans_mono/DejaVuSansMono.ttf";
         bool font_is_monospaced = true;
 
-        if( main_file_url_manager->file_exists("C:/Windows/Fonts/Arial.ttf") )
+        if( gpe::main_file_url_manager->file_exists("C:/Windows/Fonts/Arial.ttf") )
         {
             mainGuiFontLocation = "C:/Windows/Fonts/Arial.ttf";
             font_is_monospaced = false;
         }
-        else if( main_file_url_manager->file_exists("C:/Windows/Fonts/Carlito.ttf") )
+        else if( gpe::main_file_url_manager->file_exists("C:/Windows/Fonts/Carlito.ttf") )
         {
             mainGuiFontLocation = "C:/Windows/Fonts/Carlito.ttf";
             font_is_monospaced = false;
         }
-        else if( main_file_url_manager->file_exists("C:/Windows/Fonts/Candara.ttf") )
+        else if( gpe::main_file_url_manager->file_exists("C:/Windows/Fonts/Candara.ttf") )
         {
             mainGuiFontLocation = "C:/Windows/Fonts/Candara.ttf";
             font_is_monospaced = false;
@@ -563,20 +564,20 @@ namespace pawgui
         FONT_LABEL_TITLE = gpe::gfs->open_font( mainGuiFontLocation, font_min_size,font_is_monospaced, "FONT_LABEL_TITLE");
         FONT_STATUSBAR = gpe::gfs->open_font( textEditorFontLocation, font_min_size,true, "FONT_STATUSBAR" );
 
-        if(gpe::font_default==NULL )
+        if(gpe::font_default==nullptr )
         {
             gpe::error_log->report("Unable to load default font");
             return false;
         }
 
-        if(font_toolbar==NULL)
+        if(font_toolbar==nullptr)
         {
             gpe::error_log->report("Unable to load TOOLLBAR font");
             return false;
 
         }
 
-        if(font_textinput==NULL)
+        if(font_textinput==nullptr)
         {
             gpe::error_log->report("Unable to load INPUT-FIELD font");
             return false;
@@ -588,74 +589,74 @@ namespace pawgui
     {
         //Close the fonts that was used
         //
-        if( font_popup!=NULL)
+        if( font_popup!=nullptr)
         {
             gpe::gfs->close_font( font_popup );
-            font_popup = NULL;
+            font_popup = nullptr;
         }
 
-        if( font_toolbar!=NULL)
+        if( font_toolbar!=nullptr)
         {
             gpe::gfs->close_font( font_toolbar );
-            font_toolbar = NULL;
+            font_toolbar = nullptr;
         }
-        if( font_resourcebar!=NULL)
+        if( font_resourcebar!=nullptr)
         {
             gpe::gfs->close_font( font_resourcebar );
-            font_resourcebar = NULL;
+            font_resourcebar = nullptr;
         }
         //
-        if( font_textinput!=NULL)
+        if( font_textinput!=nullptr)
         {
             gpe::gfs->close_font(font_textinput);
-            font_textinput = NULL;
+            font_textinput = nullptr;
         }
 
-        if( font_term_name!=NULL)
+        if( font_term_name!=nullptr)
         {
             gpe::gfs->close_font(font_term_name);
-            font_term_name = NULL;
+            font_term_name = nullptr;
         }
 
-        if( font_term_description!=NULL)
+        if( font_term_description!=nullptr)
         {
             gpe::gfs->close_font(font_term_description);
-            font_term_description = NULL;
+            font_term_description = nullptr;
         }
 
-        if( font_term_scope!=NULL)
+        if( font_term_scope!=nullptr)
         {
             gpe::gfs->close_font(font_term_scope);
-            font_term_scope = NULL;
+            font_term_scope = nullptr;
         }
-        if( font_default_prompt!=NULL)
+        if( font_default_prompt!=nullptr)
         {
             gpe::gfs->close_font(font_default_prompt);
-            font_default_prompt = NULL;
+            font_default_prompt = nullptr;
         }
 
         //
-        if( FONT_HEADER!=NULL)
+        if( FONT_HEADER!=nullptr)
         {
             gpe::gfs->close_font( FONT_HEADER );
-            FONT_HEADER = NULL;
+            FONT_HEADER = nullptr;
         }
 
-        if( FONT_LABEL!=NULL)
+        if( FONT_LABEL!=nullptr)
         {
             gpe::gfs->close_font( FONT_LABEL );
-            FONT_LABEL = NULL;
+            FONT_LABEL = nullptr;
         }
-        if( FONT_LABEL_ANCHOR!=NULL)
+        if( FONT_LABEL_ANCHOR!=nullptr)
         {
             gpe::gfs->close_font( FONT_LABEL_ANCHOR );
-            FONT_LABEL_ANCHOR = NULL;
+            FONT_LABEL_ANCHOR = nullptr;
         }
 
-        if( FONT_LABEL_TITLE!=NULL)
+        if( FONT_LABEL_TITLE!=nullptr)
         {
             gpe::gfs->close_font( FONT_LABEL_TITLE );
-            FONT_LABEL_TITLE = NULL;
+            FONT_LABEL_TITLE = nullptr;
         }
     }
 }

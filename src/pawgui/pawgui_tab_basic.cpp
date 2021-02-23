@@ -52,7 +52,7 @@ namespace pawgui
         barYPadding = 4;
         fontTextWidth = 12;
         fontTextHeight = 12;
-        if( font_tab!=NULL)
+        if( font_tab!=nullptr)
         {
             font_tab->get_metrics("A",&fontTextWidth,&fontTextHeight);
         }
@@ -203,7 +203,7 @@ namespace pawgui
         cam = gpe::camera_find(cam);
         tabIsRightClicked = false;
         //widget_box.w = view_space->w - widget_box.x;
-        if( widget_box.w!=0 && view_space!=NULL && cam!=NULL)
+        if( widget_box.w!=0 && view_space!=nullptr && cam!=nullptr)
         {
             widget_basic::process_self(view_space, cam);
             calculate_tabs();
@@ -314,7 +314,7 @@ namespace pawgui
         //gpe::gcanvas->render_rect(&widget_box,barOutlineColor,true);
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if(view_space!=NULL && cam!=NULL)
+        if(view_space!=nullptr && cam!=nullptr)
         {
             if( (int)sub_options.size() >0 )
             {

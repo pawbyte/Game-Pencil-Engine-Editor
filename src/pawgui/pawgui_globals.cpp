@@ -36,10 +36,10 @@ SOFTWARE.
 namespace pawgui
 {
     bool colorblind_mode_on = false;
-    gpe::asset_manager * rsm_gui = NULL;
+    gpe::asset_manager * rsm_gui = nullptr;
 
-    gpe::texture_base * checkmark_texture = NULL;
-    gpe::texture_base  * dropdown_arrow_texture = NULL;
-    gpe::texture_base  * eyedropper_texture = NULL;
+    gpe::texture_base * checkmark_texture = nullptr;
+    gpe::texture_base  * dropdown_arrow_texture = nullptr;
+    gpe::texture_base  * eyedropper_texture = nullptr;
 
 }

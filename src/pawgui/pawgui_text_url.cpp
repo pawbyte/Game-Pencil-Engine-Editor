@@ -43,7 +43,7 @@ namespace pawgui
         descriptionText = description;
         wasClicked = false;
         webUrl = url_string;
-        if( gpe::font_default!=NULL)
+        if( gpe::font_default!=nullptr)
         {
             int bWid = 0;
             int bHgt = 0;
@@ -124,7 +124,7 @@ namespace pawgui
 
     void widget_text_url::set_name(std::string name_param)
     {
-        if( gpe::font_default!=NULL)
+        if( gpe::font_default!=nullptr)
         {
             int bWid = 0;
             int bHgt = 0;

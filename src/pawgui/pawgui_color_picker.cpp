@@ -38,7 +38,7 @@ SOFTWARE.
 
 namespace pawgui
 {
-    gpe::texture_base * texture_color_picker_gradient = NULL;
+    gpe::texture_base * texture_color_picker_gradient = nullptr;
 
     gpe_widget_color_picker::gpe_widget_color_picker( std::string name,std::string description, int r, int g, int b )
     {
@@ -72,10 +72,10 @@ namespace pawgui
 
     gpe_widget_color_picker::~gpe_widget_color_picker()
     {
-        if( storedColor!=NULL)
+        if( storedColor!=nullptr)
         {
             delete storedColor;
-            storedColor = NULL;
+            storedColor = nullptr;
         }
     }
 
@@ -92,25 +92,25 @@ namespace pawgui
 
     gpe::color * gpe_widget_color_picker::get_color()
     {
-        if( storedColor!=NULL)
+        if( storedColor!=nullptr)
         {
             return storedColor;
         }
-        return NULL;
+        return nullptr;
     }
 
     gpe::color * gpe_widget_color_picker::get_duplicate_color()
     {
-        if( storedColor!=NULL)
+        if( storedColor!=nullptr)
         {
             return storedColor->duplicate_color();
         }
-        return NULL;
+        return nullptr;
     }
 
     std::string gpe_widget_color_picker::get_hex_string()
     {
-        if( storedColor!=NULL)
+        if( storedColor!=nullptr)
         {
             return gpe::color_system->rgb_to_hex(storedColor->get_r(),storedColor->get_g(),storedColor->get_b() );
         }
@@ -119,7 +119,7 @@ namespace pawgui
 
     std::string gpe_widget_color_picker::get_rgb_string()
     {
-        if( storedColor!=NULL)
+        if( storedColor!=nullptr)
         {
             return stg_ex::int_to_string(storedColor->get_r() )+","+stg_ex::int_to_string(storedColor->get_g() )+","+ stg_ex::int_to_string(storedColor->get_b() );
         }
@@ -134,7 +134,7 @@ namespace pawgui
 
     int gpe_widget_color_picker::get_r()
     {
-        if( storedColor!=NULL)
+        if( storedColor!=nullptr)
         {
             return storedColor->get_r();
         }
@@ -143,7 +143,7 @@ namespace pawgui
 
     int gpe_widget_color_picker::get_g()
     {
-        if( storedColor!=NULL)
+        if( storedColor!=nullptr)
         {
             return storedColor->get_g();
         }
@@ -152,7 +152,7 @@ namespace pawgui
 
     int gpe_widget_color_picker::get_b()
     {
-        if( storedColor!=NULL)
+        if( storedColor!=nullptr)
         {
             return storedColor->get_b();
         }
@@ -232,7 +232,7 @@ namespace pawgui
             clickedOutside = false;
             view_space = gpe::camera_find(view_space);
             cam = gpe::camera_find(cam);
-            if(view_space!=NULL && cam!=NULL)
+            if(view_space!=nullptr && cam!=nullptr)
             {
                 if( gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,view_space->x,view_space->y,view_space->x+view_space->w,view_space->y+view_space->h) )
                 {
@@ -288,7 +288,7 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( isEnabled && cam!=NULL)
+        if( isEnabled && cam!=nullptr)
         {
             if( isInUse)
             {
@@ -315,13 +315,13 @@ namespace pawgui
 
     void gpe_widget_color_picker::set_color_from_rgb( gpe::color *color_new)
     {
-        if( storedColor==NULL)
+        if( storedColor==nullptr)
         {
             storedColor = new gpe::color("custom",0,0,0);
         }
-        if( storedColor!=NULL)
+        if( storedColor!=nullptr)
         {
-            if( color_new!=NULL)
+            if( color_new!=nullptr)
             {
                 storedColor->change_rgba(color_new->get_r(),color_new->get_g(),color_new->get_b() );
             }
@@ -346,11 +346,11 @@ namespace pawgui
         {
             b = 0;
         }
-        if( storedColor==NULL)
+        if( storedColor==nullptr)
         {
             storedColor = new gpe::color( "custom",0,0,0 );
         }
-        if( storedColor!=NULL)
+        if( storedColor!=nullptr)
         {
             storedColor->change_rgba(r,g,b);
         }
@@ -360,11 +360,11 @@ namespace pawgui
     {
         int r = 0, g = 0, b = 0;
         gpe::color_system->hex_to_rgb( color_newStr,r, g, b );
-        if( storedColor==NULL)
+        if( storedColor==nullptr)
         {
             storedColor = new gpe::color( "custom",0,0,0 );
         }
-        if( storedColor!=NULL)
+        if( storedColor!=nullptr)
         {
             storedColor->change_rgba(r,g,b);
         }
@@ -376,7 +376,7 @@ namespace pawgui
         {
             r = 0;
         }
-        if( storedColor!=NULL)
+        if( storedColor!=nullptr)
         {
             storedColor->change_r(r);
         }
@@ -388,7 +388,7 @@ namespace pawgui
         {
             g = 0;
         }
-        if( storedColor!=NULL)
+        if( storedColor!=nullptr)
         {
             storedColor->change_g(g);
         }
@@ -400,7 +400,7 @@ namespace pawgui
         {
             b = 0;
         }
-        if( storedColor!=NULL)
+        if( storedColor!=nullptr)
         {
             storedColor->change_b(b);
         }
@@ -422,7 +422,7 @@ namespace pawgui
         {
             b = 0;
         }
-        if( storedColor!=NULL)
+        if( storedColor!=nullptr)
         {
             storedColor->change_rgba(r,g,b,255);
         }
@@ -430,12 +430,12 @@ namespace pawgui
 
     bool get_color_from_popup(std::string popUpCaption, gpe::color * currColor)
     {
-        if( currColor == NULL)
+        if( currColor == nullptr)
         {
             return false;
         }
         gpe::game_runtime->end_loop();
-        //resource_dragged = NULL;
+        //resource_dragged = nullptr;
         if( (int)popUpCaption.size() ==0)
         {
             popUpCaption = "Select a Color";
@@ -452,12 +452,9 @@ namespace pawgui
         bool exitOperation = false;
         bool operationCancelled = false;
         gpe::input->reset_all_input();
-        gpe::color * alteredColor = NULL, *colorShadeTempColor = NULL;
+        gpe::color * alteredColor = nullptr, *colorShadeTempColor = nullptr;
         colorShadeTempColor = new gpe::color( "custom",0,0,0 );
         int rV = 0,  gV = 0,  bV = 0;
-        uint8_t rU8 = 0, gU8 = 0, bU8 = 0, uU8 = 0;
-        uint64_t foundPixelColor = 0;
-        int foundColorPickerX = 0, foundColorPickerY = 0;
         int colorPickerShaderI = 0;
         //float colorShadeDifference = 0;
         float colorShadeDivision = 0;
@@ -572,7 +569,7 @@ namespace pawgui
                 //Update screen
                 gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->popup_box_color,false);
                 gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->popup_box_border_color,true);
-                if( texture_color_picker_gradient!=NULL)
+                if( texture_color_picker_gradient!=nullptr)
                 {
                     texture_color_picker_gradient->render_tex( widget_box.x+padding_default,widget_box.y+32+padding_default );
                 }
@@ -593,7 +590,7 @@ namespace pawgui
                 gpe::gcanvas->render_horizontal_line_color( colorShadeBox.y+selectedColorShade,colorShadeBox.x-4,colorShadeBox.x+colorShadeBox.w+4,pawgui::theme_main->main_border_color );
 
 
-                if( currColor!=NULL)
+                if( currColor!=nullptr)
                 {
                     preiewColorYPos = yes_button->get_ypos()-padding_default-40;
                     gpe::gfs->render_text( widget_box.x+padding_default,preiewColorYPos,"Older Color:",pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_left,gpe::fa_top);
@@ -622,59 +619,59 @@ namespace pawgui
             gpe::game_runtime->end_loop();
         }
 
-        if( yes_button!=NULL)
+        if( yes_button!=nullptr)
         {
             delete yes_button;
-            yes_button = NULL;
+            yes_button = nullptr;
         }
-        if( cancel_button!=NULL)
+        if( cancel_button!=nullptr)
         {
             delete cancel_button;
-            cancel_button = NULL;
+            cancel_button = nullptr;
         }
-        if( color_newRValue!=NULL)
+        if( color_newRValue!=nullptr)
         {
             delete color_newRValue;
-            color_newRValue = NULL;
+            color_newRValue = nullptr;
         }
-        if( color_newGValue!=NULL)
+        if( color_newGValue!=nullptr)
         {
             delete color_newGValue;
-            color_newGValue = NULL;
+            color_newGValue = nullptr;
         }
-        if( color_newBValue!=NULL)
+        if( color_newBValue!=nullptr)
         {
             delete color_newBValue;
-            color_newBValue = NULL;
+            color_newBValue = nullptr;
         }
-        if( color_newHexValue!=NULL)
+        if( color_newHexValue!=nullptr)
         {
             delete color_newHexValue;
-            color_newHexValue = NULL;
+            color_newHexValue = nullptr;
         }
-        if( colorShadeTempColor!=NULL)
+        if( colorShadeTempColor!=nullptr)
         {
             delete colorShadeTempColor;
-            colorShadeTempColor = NULL;
+            colorShadeTempColor = nullptr;
         }
 
         if( !operationCancelled)
         {
-            if( alteredColor!=NULL)
+            if( alteredColor!=nullptr)
             {
                 currColor->change_rgba( alteredColor->get_r(),alteredColor->get_g(),alteredColor->get_b() , 255 );
                 delete alteredColor;
-                alteredColor = NULL;
+                alteredColor = nullptr;
                 gpe::input->reset_all_input();
                 gpe::game_runtime->start_loop();
                 return true;
             }
         }
 
-        if( alteredColor!=NULL)
+        if( alteredColor!=nullptr)
         {
             delete alteredColor;
-            alteredColor = NULL;
+            alteredColor = nullptr;
         }
         gpe::input->reset_all_input();
         gpe::game_runtime->start_loop();

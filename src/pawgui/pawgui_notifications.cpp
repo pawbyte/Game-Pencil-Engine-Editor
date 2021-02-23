@@ -51,7 +51,7 @@ namespace pawgui
 
         box_action = new gpe::shape_rect(0,0, 16,16 );
         box_close_x = new gpe::shape_rect(0,0, 16,16 );
-        if( pawgui::font_textinput != NULL )
+        if( pawgui::font_textinput != nullptr )
         {
             text_wid = pawgui::font_textinput->get_mono_width();
             text_height = pawgui::font_textinput->get_mono_height();
@@ -72,28 +72,28 @@ namespace pawgui
     widget_notifcation_base::~widget_notifcation_base()
     {
         text_vector.clear();
-        if( notification_bg_color !=NULL )
+        if( notification_bg_color !=nullptr )
         {
             delete notification_bg_color;
-            notification_bg_color = NULL;
+            notification_bg_color = nullptr;
         }
 
-        if( notification_bg_hover_color !=NULL )
+        if( notification_bg_hover_color !=nullptr )
         {
             delete notification_bg_hover_color;
-            notification_bg_hover_color = NULL;
+            notification_bg_hover_color = nullptr;
         }
 
-        if( notification_font_color !=NULL )
+        if( notification_font_color !=nullptr )
         {
             delete notification_font_color;
-            notification_font_color = NULL;
+            notification_font_color = nullptr;
         }
 
-        if( notification_font_hover_color !=NULL )
+        if( notification_font_hover_color !=nullptr )
         {
             delete notification_font_hover_color;
-            notification_font_hover_color = NULL;
+            notification_font_hover_color = nullptr;
         }
     }
 
@@ -122,7 +122,7 @@ namespace pawgui
         widget_basic::process_self( view_space, cam );
         remove_requested = false;
 
-        if( pawgui::font_textinput != NULL )
+        if( pawgui::font_textinput != nullptr )
         {
             text_wid = pawgui::font_textinput->get_mono_width();
             text_height = pawgui::font_textinput->get_mono_height();
@@ -179,7 +179,7 @@ namespace pawgui
         widget_box.h = 0;
         max_text_width = widget_box.w - 32 - padding_default*2;
         text_vector.clear();
-        if( pawgui::font_textinput == NULL )
+        if( pawgui::font_textinput == nullptr )
         {
             text_wid = 16;
             text_height = 16;
@@ -211,7 +211,7 @@ namespace pawgui
         }
 
 
-        if( pawgui::font_textinput == NULL )
+        if( pawgui::font_textinput == nullptr )
         {
             return;
         }
@@ -266,14 +266,14 @@ namespace pawgui
 
     widget_notfications_holder::~widget_notfications_holder()
     {
-        widget_notifcation_base * temp_notification = NULL;
+        widget_notifcation_base * temp_notification = nullptr;
         for( int i = (int)notifications.size() -1; i>= 0; i-- )
         {
             temp_notification = notifications[i];
-            if( temp_notification != NULL )
+            if( temp_notification != nullptr )
             {
                 delete temp_notification;
-                temp_notification = NULL;
+                temp_notification = nullptr;
             }
         }
         notifications.clear();
@@ -288,28 +288,30 @@ namespace pawgui
 
     bool widget_notfications_holder::remove_notification( std::string name )
     {
-        widget_notifcation_base * temp_notification = NULL;
-        int notification_being_removed = -1;
+        widget_notifcation_base * temp_notification = nullptr;
+        bool notification_being_removed = false;
         for( int i = (int)notifications.size() -1; i>= 0; i-- )
         {
             temp_notification = notifications[i];
-            if( temp_notification != NULL )
+            if( temp_notification != nullptr )
             {
                 if( temp_notification->get_name() == name )
                 {
                     delete temp_notification;
-                    temp_notification = NULL;
+                    temp_notification = nullptr;
                     notifications.erase( notifications.begin() + i );
+                    notification_being_removed = true;
                 }
             }
         }
+        return notification_being_removed;
     }
 
     void widget_notfications_holder::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        widget_notifcation_base * temp_notification = NULL;
+        widget_notifcation_base * temp_notification = nullptr;
         int iMin = std::max( 0, (int)notifications.size() - notifications_in_view_max );
         int temp_y_pos = get_ypos();
         int notification_being_removed = -1;
@@ -318,7 +320,7 @@ namespace pawgui
         for( int i = (int)notifications.size() -1; i>=iMin; i-- )
         {
             temp_notification = notifications[i];
-            if( temp_notification != NULL )
+            if( temp_notification != nullptr )
             {
                 temp_notification->set_width( get_width() );
                 temp_notification->set_coords( get_xpos(), temp_y_pos );
@@ -335,11 +337,11 @@ namespace pawgui
         if( notification_being_removed >=0 && notification_being_removed < (int)notifications.size() )
         {
             temp_notification = notifications[ notification_being_removed];
-            if( temp_notification !=NULL )
+            if( temp_notification !=nullptr )
             {
                 widget_box.h -= temp_notification->get_height();
                 delete temp_notification;
-                temp_notification = NULL;
+                temp_notification = nullptr;
             }
             notifications.erase( notifications.begin() + notification_being_removed );
         }
@@ -347,12 +349,12 @@ namespace pawgui
 
     void widget_notfications_holder::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
     {
-        widget_notifcation_base * temp_notification = NULL;
+        widget_notifcation_base * temp_notification = nullptr;
         int iMin = std::max( 0, (int)notifications.size() - notifications_in_view_max );
         for( int i = (int)notifications.size() -1; i>=iMin; i-- )
         {
             temp_notification = notifications[i];
-            if( temp_notification != NULL )
+            if( temp_notification != nullptr )
             {
                 temp_notification->render_self( view_space, cam );
             }
@@ -367,14 +369,13 @@ namespace pawgui
         }
         widget_basic::set_width( new_width );
         widget_box.h = 0;
-        widget_notifcation_base * temp_notification = NULL;
+        widget_notifcation_base * temp_notification = nullptr;
         int iMin = std::max( 0, (int)notifications.size() - notifications_in_view_max );
-        int temp_y_pos = get_ypos();
-        int notification_being_removed = -1;
+
         for( int i = (int)notifications.size() -1; i>=0; i-- )
         {
             temp_notification = notifications[i];
-            if( temp_notification != NULL )
+            if( temp_notification != nullptr )
             {
                 temp_notification->set_width( get_width() );
                 if( i >= iMin )

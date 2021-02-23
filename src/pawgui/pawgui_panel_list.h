@@ -114,8 +114,8 @@ namespace pawgui
         void scroll_right(int xToMove );
         void scroll_down(int yToMove );
         void scroll_up(int yToMove );
-        void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+        void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+        void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
         void reset_self();
         void set_horizontal_align(int height_valueue);
         void set_full_width();

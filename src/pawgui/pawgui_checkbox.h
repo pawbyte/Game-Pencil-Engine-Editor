@@ -52,8 +52,8 @@ namespace pawgui
             std::string get_data();
             void load_data(std::string datastring);
             void prerender_self( );
-            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+            void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
             void set_checked( bool newCheckState );
             void set_checkbox_size(int nBoxSize, bool resizewidget_box = true);
     };
@@ -76,8 +76,8 @@ namespace pawgui
             void add_opton(std::string newOption);
             void remove_opton(std::string optionToCut);
             void remove_opton_id(int optionToCut);
-            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+            void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     };
 }
 #endif //PAWGUI_CHCKBOX_H

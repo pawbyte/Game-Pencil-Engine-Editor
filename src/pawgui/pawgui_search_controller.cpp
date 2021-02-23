@@ -35,7 +35,7 @@ SOFTWARE.
 
 namespace pawgui
 {
-    search_controller * main_search_controller = NULL;
+    search_controller * main_search_controller = nullptr;
 
 
     search_controller::search_controller()
@@ -66,61 +66,61 @@ namespace pawgui
 
     search_controller::~search_controller()
     {
-        if( findTextstringBox!=NULL)
+        if( findTextstringBox!=nullptr)
         {
             delete findTextstringBox;
-            findTextstringBox = NULL;
+            findTextstringBox = nullptr;
         }
-        if( goToLinestringBox!=NULL)
+        if( goToLinestringBox!=nullptr)
         {
             delete findTextstringBox;
-            goToLinestringBox = NULL;
+            goToLinestringBox = nullptr;
         }
-        if( replaceTextstringBox!=NULL)
+        if( replaceTextstringBox!=nullptr)
         {
             delete replaceTextstringBox;
-            replaceTextstringBox = NULL;
+            replaceTextstringBox = nullptr;
         }
-        if( find_button!=NULL)
+        if( find_button!=nullptr)
         {
             delete find_button;
-            find_button = NULL;
+            find_button = nullptr;
         }
-        if( scopeLabel!=NULL)
+        if( scopeLabel!=nullptr)
         {
             delete scopeLabel;
-            scopeLabel = NULL;
+            scopeLabel = nullptr;
         }
-        if( findScope!=NULL)
+        if( findScope!=nullptr)
         {
             delete findScope;
-            findScope = NULL;
+            findScope = nullptr;
         }
 
-        if( findAll_button!=NULL)
+        if( findAll_button!=nullptr)
         {
             delete findAll_button;
-            findAll_button = NULL;
+            findAll_button = nullptr;
         }
-        if( goTo_button!=NULL)
+        if( goTo_button!=nullptr)
         {
             delete goTo_button;
-            goTo_button = NULL;
+            goTo_button = nullptr;
         }
-        if( replace_button!=NULL)
+        if( replace_button!=nullptr)
         {
             delete replace_button;
-            replace_button = NULL;
+            replace_button = nullptr;
         }
-        if( replaceAll_button!=NULL)
+        if( replaceAll_button!=nullptr)
         {
             delete replaceAll_button;
-            replaceAll_button = NULL;
+            replaceAll_button = nullptr;
         }
-        if( findMatchCase!=NULL)
+        if( findMatchCase!=nullptr)
         {
             delete findMatchCase;
-            findMatchCase = NULL;
+            findMatchCase = nullptr;
         }
     }
 

@@ -51,8 +51,8 @@ namespace pawgui
 
     std::string get_filename_plain_from_popup( const std::string & prompt, std::string allowedFileTypes, std::string &previousDirectory,bool isSaving, bool file_is_dirSearch )
     {
-        //resource_dragged = NULL;
-        gpe::file_object * currentFile = NULL;
+        //resource_dragged = nullptr;
+        gpe::file_object * currentFile = nullptr;
         gpe::file_directory_class * currentDirectory = new gpe::file_directory_class();
 
         gpe::cursor_main_controller->cursor_change("arrow");
@@ -72,28 +72,28 @@ namespace pawgui
         char* homeDir;
         std::string iDirLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         homeDir = getenv("%UserProfile%");
-        if( homeDir!=NULL)
+        if( homeDir!=nullptr)
         {
             userHomePath = currentDirectoryInView = homeDir;
         }
         else
         {
             homeDir = getenv("home");
-            if( homeDir!=NULL)
+            if( homeDir!=nullptr)
             {
                 userHomePath = currentDirectoryInView = homeDir;
             }
             else
             {
                 homeDir = getenv("HOME");
-                if( homeDir!=NULL)
+                if( homeDir!=nullptr)
                 {
                     userHomePath = currentDirectoryInView = homeDir;
                 }
                 else
                 {
                     homeDir = getenv("homepath");
-                    if( homeDir!=NULL)
+                    if( homeDir!=nullptr)
                     {
                         userHomePath = currentDirectoryInView = homeDir;
                     }
@@ -107,7 +107,7 @@ namespace pawgui
 
         for( int iLetter = 0; iLetter < (int)iDirLetters.size(); iLetter++)
         {
-            if( main_file_url_manager->folder_exists(iDirLetters.substr(iLetter,1)+":"+userHomePath) )
+            if( gpe::main_file_url_manager->folder_exists(iDirLetters.substr(iLetter,1)+":"+userHomePath) )
             {
                 userHomePath = iDirLetters.substr(iLetter,1)+":"+userHomePath;
                 break;
@@ -119,11 +119,11 @@ namespace pawgui
         }
         userHomePath = stg_ex::string_replace_all(userHomePath,"\\","/");
         currentDirectoryInView = userHomePath;
-        if( main_file_url_manager->folder_exists(previousDirectory) )
+        if( gpe::main_file_url_manager->folder_exists(previousDirectory) )
         {
             currentDirectoryInView = previousDirectory.c_str();
         }
-        if( (int)currentDirectoryInView.size()>0 && currentDirectory!=NULL)
+        if( (int)currentDirectoryInView.size()>0 && currentDirectory!=nullptr)
         {
             main_overlay_system->take_frozen_screenshot( );
             int font_sizeH = 12;
@@ -133,7 +133,7 @@ namespace pawgui
             {
                 font_sizeW = 12;
             }
-            gpe::texture_base * previewedImageTexture = NULL;
+            gpe::texture_base * previewedImageTexture = nullptr;
             widget_panel_list * shortCutGList = new widget_panel_list();
 
             std::string shorterCurrentDirectoryInView = currentDirectoryInView;
@@ -150,7 +150,7 @@ namespace pawgui
             int iDirectory = 0;
             bool enterMyComputerMode = false;
             bool exitOperation = false;
-            if( currentDirectory->open_directory_sorted(currentDirectoryInView )==-1)
+            if( currentDirectory->open_directory_sorted(currentDirectoryInView )== false)
             {
                 exitOperation = true;
             }
@@ -159,11 +159,11 @@ namespace pawgui
 
             int DRIVER_FONT_SIZE_WIDTH = 24;
             int DRIVER_FONT_SIZE_HEIGHT = 24;
-            if( font_textinput!=NULL)
+            if( font_textinput!=nullptr)
             {
                 font_textinput->get_metrics("A",&TEXTBOX_FONT_SIZE_WIDTH,&TEXTBOX_FONT_SIZE_HEIGHT);
             }
-            if( font_textinput!=NULL)
+            if( font_textinput!=nullptr)
             {
                 font_textinput->get_metrics("A",&DRIVER_FONT_SIZE_WIDTH,&DRIVER_FONT_SIZE_HEIGHT);
             }
@@ -185,7 +185,7 @@ namespace pawgui
             }
             fileFilterTypes.clear();
 
-            widget_button_label * yes_button = NULL;
+            widget_button_label * yes_button = nullptr;
             if( isSaving)
             {
                 yes_button= new widget_button_label( "Save","");
@@ -194,10 +194,6 @@ namespace pawgui
             {
                 yes_button = new widget_button_label( "Open","");
             }
-
-            gpe::animaton2d * mainFilesanimation = NULL;
-            gpe::animaton2d * mainMenuanimation = NULL;
-
 
             widget_button_iconbar * fileBrowserModeBar = new widget_button_iconbar( 32,true);
             fileBrowserModeBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/table.png","Thumbnailed View",1,false);
@@ -232,7 +228,6 @@ namespace pawgui
             int iDirectoryXPos = 0;
             int fileselectedNumber = -1;
             int fileHoverNumber = -1;
-            int fileSubImageToDraw = 0;
             int colTextWidth = 128;
             int fileRowHeight = 128;
             int colTextCharacters = colTextWidth/font_sizeW;
@@ -284,48 +279,12 @@ namespace pawgui
             gpe::error_log->report("Attempting to open file selection menu...");
             //The lovely file selector loop
             nextDirectoryToView = currentDirectoryInView;
-    #ifdef _WIN32
-    #include "windows.h"
-    //#undef _WIN32_LEAN_AND_MEAN
 
-            if( !file_is_dirSearch)
-            {
-                const int BUf_size = 1024;
-                char buffer[BUf_size] = {0};
-                OPENFILENAME ofns = {0};
-                ofns.hInstance = NULL;
-                ofns.hwndOwner = NULL;
-                ofns.lStructSize = sizeof( ofns );
-                ofns.lpstrFile = buffer;
-                ofns.nMaxFile = BUf_size;
-                ofns.lpstrInitialDir  = currentDirectoryInView.c_str();
-                ofns.lpstrTitle = prompt.c_str();
-                ofns.lpstrFilter =  osFileFilterstring.c_str();
+            /*
+                CODEBLOCK REMOVED AS IT INCLUDED windows.h
+            */
 
-                ofns.nFilterIndex = 1;
-                ofns.Flags =  OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
-                bool emptyFileReturned = false;
-                if( isSaving)
-                {
-                    if ( !GetSaveFileName( & ofns ) )
-                    {
-                        emptyFileReturned = true;
-                    }
-                }
-                else if ( !GetOpenFileName( & ofns ) )
-                {
-                    emptyFileReturned = true;
-                }
-                returnFile = buffer;
-                if( emptyFileReturned)
-                {
-                    returnFile = "";
-                }
-                exitOperation = true;
-            }
-    #endif
-
-            gpe::texture_base * currentFIleTexture = NULL;
+            gpe::texture_base * currentFIleTexture = nullptr;
             gpe::texture_base * textRepFolder = rsm_gui->texture_add("folderOpen", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/folder-open.png");
             gpe::texture_base * textRepHarddrive = rsm_gui->texture_add("harddriveIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/hdd-o.png");
             gpe::texture_base * textRepAudio = rsm_gui->texture_add("audioIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file-audio-o.png");
@@ -339,7 +298,7 @@ namespace pawgui
             gpe::texture_base * textRepText = rsm_gui->texture_add("fileBrowserTxtIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file-text-o.png");
             gpe::texture_base * textRepVideo = rsm_gui->texture_add("fileBrowserVideoIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file-video-o.png");
             gpe::texture_base * textRepZip = rsm_gui->texture_add("fileBrowserZipIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file-zip-o.png");
-            gpe::color * fileIconColor = NULL;
+            gpe::color * fileIconColor = nullptr;
             while(exitOperation==false)
             {
                 gpe::cursor_main_controller->cursor_change("arrow");
@@ -353,14 +312,14 @@ namespace pawgui
                 }
 
                 ///
-                if( (int)nextDirectoryToView.size() > 0 && main_file_url_manager->folder_exists(nextDirectoryToView) )
+                if( (int)nextDirectoryToView.size() > 0 && gpe::main_file_url_manager->folder_exists(nextDirectoryToView) )
                 {
                     gpe::error_log->report("Attempting to open ["+nextDirectoryToView+"] directory...");
-                    if( main_file_url_manager->folder_exists(nextDirectoryToView)==false)
+                    if( gpe::main_file_url_manager->folder_exists(nextDirectoryToView)==false)
                     {
                         nextDirectoryToView+="\\";
                     }
-                    if( main_file_url_manager->folder_exists(nextDirectoryToView) )
+                    if( gpe::main_file_url_manager->folder_exists(nextDirectoryToView) )
                     {
                         gpe::error_log->report("Opening... ["+nextDirectoryToView+"] directory...");
 
@@ -384,13 +343,13 @@ namespace pawgui
                         fileDirYScroll->fullRect.w = fileDirYScroll->contextRect.w = 0;
                         fileDirYScroll->fullRect.h = fileDirYScroll->contextRect.h = 16;
                         fileDirYScroll->process_self();
-                        //previewedImageTexture->change_texture(NULL);
+                        //previewedImageTexture->change_texture(nullptr);
 
                         gpe::parse_file_types(fileTypeDropDown->get_selected_name(),fileFilterTypes);
                         //Processes files to view
                         filesAndDirectoryPassedFilterCount = 0;
 
-                        if( currentDirectory->open_directory_sorted( currentDirectoryInView ) ==-1)
+                        if( currentDirectory->open_directory_sorted( currentDirectoryInView ) )
                         {
                             exitOperation = true;
                         }
@@ -402,7 +361,7 @@ namespace pawgui
                             for(iFile = 0; iFile < currentDirectory->get_count(); iFile++)
                             {
                                 currentFile = currentDirectory->get_file(iFile);
-                                if( currentFile!=NULL)
+                                if( currentFile!=nullptr)
                                 {
                                     fileToClick = currentFile->get_name();
                                     if( currentFile->is_directory() )
@@ -561,7 +520,7 @@ namespace pawgui
                 yes_button->set_coords(  widget_box.x+widget_box.w-buttonsWidth,widget_box.h-48);
                 cancel_button->set_coords( widget_box.x+yes_button->get_x2()+padding_default,widget_box.h-48);
 
-                if( shortCutGList!=NULL)
+                if( shortCutGList!=nullptr)
                 {
                     shortCutGList->clear_list();
                     shortCutGList->barXMargin = padding_default;
@@ -576,7 +535,7 @@ namespace pawgui
                     Commmented out temporarily in 1.13
                     //if( gpe::system_found_os== gpe::system_os_linux)
                     {
-                        if( main_editor_settings!=NULL)
+                        if( main_editor_settings!=nullptr)
                         {
                             shortCutGList->add_gui_element(main_editor_settings->showHiddenFilesInBrowser,true);
                         }
@@ -617,7 +576,7 @@ namespace pawgui
                 {
                     if( directoryViewBox->get_string() !=currentDirectoryInView )
                     {
-                        if( main_file_url_manager->folder_exists(directoryViewBox->get_string() ) )
+                        if( gpe::main_file_url_manager->folder_exists(directoryViewBox->get_string() ) )
                         {
                             nextDirectoryToView  = directoryViewBox->get_string();
                         }
@@ -652,13 +611,13 @@ namespace pawgui
                 if( desktop_button->is_clicked() )
                 {
                     nextDirectoryToView = userHomePath+"/Desktop";
-                    if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                    if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                     {
                         nextDirectoryToView = userHomePath+"/desktop";
-                        if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                        if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                         {
                             nextDirectoryToView = userHomePath+"/MyDesktop";
-                            if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                            if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                             {
                                 nextDirectoryToView = userHomePath+"/My Desktop";
                             }
@@ -673,13 +632,13 @@ namespace pawgui
                 if( downloads_button->is_clicked() )
                 {
                     nextDirectoryToView = userHomePath+"/Downloads";
-                    if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                    if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                     {
                         nextDirectoryToView = userHomePath+"/downloads";
-                        if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                        if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                         {
                             nextDirectoryToView = userHomePath+"/MyDownloads";
-                            if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                            if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                             {
                                 nextDirectoryToView = userHomePath+"/My Downloads";
                             }
@@ -694,13 +653,13 @@ namespace pawgui
                 if( pictures_button->is_clicked() )
                 {
                     nextDirectoryToView = userHomePath+"/Pictures";
-                    if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                    if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                     {
                         nextDirectoryToView = userHomePath+"/pictures";
-                        if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                        if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                         {
                             nextDirectoryToView = userHomePath+"/MyPictures";
-                            if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                            if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                             {
                                 nextDirectoryToView = userHomePath+"/My Pictures";
                             }
@@ -715,13 +674,13 @@ namespace pawgui
                 if( music_button->is_clicked() )
                 {
                     nextDirectoryToView = userHomePath+"/Music";
-                    if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                    if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                     {
                         nextDirectoryToView = userHomePath+"/music";
-                        if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                        if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                         {
                             nextDirectoryToView = userHomePath+"/MyMusic";
-                            if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                            if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                             {
                                 nextDirectoryToView = userHomePath+"/My Music";
                             }
@@ -736,13 +695,13 @@ namespace pawgui
                 if( video_buttons->is_clicked() )
                 {
                     nextDirectoryToView = userHomePath+"/Videos";
-                    if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                    if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                     {
                         nextDirectoryToView = userHomePath+"/videos";
-                        if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                        if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                         {
                             nextDirectoryToView = userHomePath+"/MyVideos";
-                            if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                            if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                             {
                                 nextDirectoryToView = userHomePath+"/My Videos";
                             }
@@ -763,31 +722,16 @@ namespace pawgui
                 {
                     mountedDriversList.clear();
                     nextDirectoryToView = "/proc/mounts";
-                    if( main_file_url_manager->file_exists( nextDirectoryToView) && gpe::system_found_os==gpe::system_os_linux )
+                    if( gpe::main_file_url_manager->file_exists( nextDirectoryToView) && gpe::system_found_os==gpe::system_os_linux )
                     {
                         enterMyComputerMode = true;
                     }
                     else if( gpe::system_found_os == gpe::system_os_windows)
                     {
                         enterMyComputerMode = true;
-    #ifdef _WIN32
-
-                        DWORD dwSize = MAX_PATH;
-                        char szLogicalDrives[MAX_PATH] = {0};
-                        DWORD dwResult = GetLogicalDriveStrings(dwSize,szLogicalDrives);
-
-                        if (dwResult > 0 && dwResult <= MAX_PATH)
-                        {
-                            char* szSingleDrive = szLogicalDrives;
-                            while(*szSingleDrive)
-                            {
-                                mountedDriversList.push_back(szSingleDrive);
-
-                                // get the next drive
-                                szSingleDrive += strlen(szSingleDrive) + 1;
-                            }
-                        }
-    #endif
+                        /*
+                        Codeblock removed as it included windows.h dependencies #part2
+                        */
                     }
                     nextDirectoryToView = "";
                     directoryViewBox->set_string("My Computer");
@@ -796,13 +740,13 @@ namespace pawgui
                 if( documents_button->is_clicked() )
                 {
                     nextDirectoryToView = userHomePath+"/Documents";
-                    if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                    if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                     {
                         nextDirectoryToView = userHomePath+"/documents";
-                        if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                        if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                         {
                             nextDirectoryToView = userHomePath+"/MyDocuments";
-                            if( main_file_url_manager->folder_exists( nextDirectoryToView)==false)
+                            if( gpe::main_file_url_manager->folder_exists( nextDirectoryToView)==false)
                             {
                                 nextDirectoryToView = userHomePath+"/My Documents";
                             }
@@ -832,12 +776,12 @@ namespace pawgui
                 }
                 else if( gpe::input->check_kb_released(kb_enter) || yes_button->is_clicked() )
                 {
-                    if( newstringBox!=NULL)
+                    if( newstringBox!=nullptr)
                     {
                         soughtReturnFilename = currentDirectoryInView+"/"+newstringBox->get_string();
                         if( file_is_dirSearch )
                         {
-                            if( main_file_url_manager->folder_exists(soughtReturnFilename) )
+                            if( gpe::main_file_url_manager->folder_exists(soughtReturnFilename) )
                             {
                                 exitOperation = true;
                                 returnFile = soughtReturnFilename;
@@ -845,7 +789,7 @@ namespace pawgui
                             else
                             {
                                 soughtReturnFilename = currentDirectoryInView;
-                                if( main_file_url_manager->folder_exists(soughtReturnFilename) )
+                                if( gpe::main_file_url_manager->folder_exists(soughtReturnFilename) )
                                 {
                                     exitOperation = true;
                                     returnFile = soughtReturnFilename;
@@ -854,7 +798,7 @@ namespace pawgui
                         }
                         else if( isSaving && (int)newstringBox->get_string().size()>0 )
                         {
-                            if( main_file_url_manager->file_exists(soughtReturnFilename) )
+                            if( gpe::main_file_url_manager->file_exists(soughtReturnFilename) )
                             {
                                 if( display_prompt_message("File already exists","Do you wish to overwrite this file?")==display_query_yes )
                                 {
@@ -868,7 +812,7 @@ namespace pawgui
                                 returnFile = soughtReturnFilename;
                             }
                         }
-                        else if( main_file_url_manager->file_exists(soughtReturnFilename) )
+                        else if( gpe::main_file_url_manager->file_exists(soughtReturnFilename) )
                         {
                             exitOperation = true;
                             returnFile = soughtReturnFilename;
@@ -1055,9 +999,9 @@ namespace pawgui
                             {
                                 gpe::gcanvas->render_rect( &currFileRect,pawgui::theme_main->main_border_color,false);
                             }
-                            if( textRepHarddrive!=NULL )
+                            if( textRepHarddrive!=nullptr )
                             {
-                                textRepHarddrive->render_tex_resized( currFileRect.x,currFileRect.y,default_thumbnal_size,default_thumbnal_size,NULL, pawgui::theme_main->folder_color );
+                                textRepHarddrive->render_tex_resized( currFileRect.x,currFileRect.y,default_thumbnal_size,default_thumbnal_size,nullptr, pawgui::theme_main->folder_color );
                             }
                             gpe::gfs->render_text( currFileRect.x+default_thumbnal_size+padding_default,currFileRect.y+default_thumbnal_size/2,mountedDriversList[iDirectory],pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_left,gpe::fa_middle);
 
@@ -1070,7 +1014,7 @@ namespace pawgui
                         for(iFile = iFileXPos; filesProcessedCount < maxContentInView && iFile < currentDirectory->get_count(); iFile++)
                         {
                             currentFile = currentDirectory->get_file(iFile);
-                            if( currentFile!=NULL)
+                            if( currentFile!=nullptr)
                             {
                                 fileToClick = currentFile->get_name();
                                 if( currentFile->is_directory() )
@@ -1107,7 +1051,7 @@ namespace pawgui
                                                 {
                                                     if( isSaving)
                                                     {
-                                                        if( main_file_url_manager->file_exists(soughtReturnFilename) )
+                                                        if( gpe::main_file_url_manager->file_exists(soughtReturnFilename) )
                                                         {
                                                             if( display_prompt_message("File already exists","Do you wish to overwrite this file?")==display_query_yes )
                                                             {
@@ -1123,7 +1067,7 @@ namespace pawgui
                                                     }
                                                     else
                                                     {
-                                                        if( main_file_url_manager->file_exists(soughtReturnFilename) )
+                                                        if( gpe::main_file_url_manager->file_exists(soughtReturnFilename) )
                                                         {
                                                             exitOperation = true;
                                                             returnFile = soughtReturnFilename;
@@ -1142,7 +1086,7 @@ namespace pawgui
                                             {
                                                 newstringBox->set_string(fileToClick);
                                                 previewedImageTexture = rsm_gui->texture_add_filename( currentDirectoryInView+"/"+fileToClick );
-                                                if( previewedImageTexture!=NULL )
+                                                if( previewedImageTexture!=nullptr )
                                                 {
                                                     if( fileMatchesFilter)
                                                     {
@@ -1150,18 +1094,18 @@ namespace pawgui
                                                         {
                                                             if( previewedImageTexture->get_width() < 1 || previewedImageTexture->get_height() < 1 || previewedImageTexture->get_width() > 4096 || previewedImageTexture->get_height() > 4096)
                                                             {
-                                                                    //previewedImageTexture->change_texture(NULL);
+                                                                    //previewedImageTexture->change_texture(nullptr);
                                                             }
                                                         }
                                                         else
                                                         {
-                                                            //previewedImageTexture->change_texture(NULL);
+                                                            //previewedImageTexture->change_texture(nullptr);
                                                         }
                                                     }
                                                 }
-                                                else if(previewedImageTexture!=NULL)
+                                                else if(previewedImageTexture!=nullptr)
                                                 {
-                                                    //previewedImageTexture->change_texture(NULL);
+                                                    //previewedImageTexture->change_texture(nullptr);
                                                 }
                                             }
                                             else if( file_is_dirSearch)
@@ -1184,10 +1128,9 @@ namespace pawgui
                                     {
                                         gpe::gcanvas->render_rect( &currFileRect,pawgui::theme_main->button_box_highlight_color,false);
                                     }
-                                    currentFIleTexture = NULL;
+                                    currentFIleTexture = nullptr;
                                     if( currentFile->is_directory() )
                                     {
-                                        fileSubImageToDraw = 1;
                                         //mainFilesanimation
                                         if( fileselectedNumber ==iFile)
                                         {
@@ -1204,8 +1147,6 @@ namespace pawgui
                                         fileToClick = currentFile->get_name();
                                         currentFileExt =currentFile->get_type();
                                         fileMatchesFilter = gpe::file_passes_filter(currentFileExt,fileFilterTypes);
-
-                                        fileSubImageToDraw = 0;
 
                                         if( currentFileExt=="txt")
                                         {
@@ -1279,14 +1220,14 @@ namespace pawgui
                                     //Renders Thumbnails
                                     if( fileBrowserModeBar->get_tab_pos()==0 )
                                     {
-                                        if( currentFile->thumbnail_texture!=NULL )
+                                        if( currentFile->thumbnail_texture!=nullptr )
                                         {
                                             currentFile->thumbnail_texture->render_tex_resized(
                                                                     currFileRect.x+(currFileRect.w-default_thumbnal_size)/2,currFileRect.y,default_thumbnal_size,default_thumbnal_size);
                                         }
-                                        else if( currentFIleTexture!=NULL)
+                                        else if( currentFIleTexture!=nullptr)
                                         {
-                                            currentFIleTexture->render_tex_resized( currFileRect.x+(currFileRect.w-default_thumbnal_size)/2,currFileRect.y,default_thumbnal_size,default_thumbnal_size,NULL, fileIconColor );
+                                            currentFIleTexture->render_tex_resized( currFileRect.x+(currFileRect.w-default_thumbnal_size)/2,currFileRect.y,default_thumbnal_size,default_thumbnal_size,nullptr, fileIconColor );
                                         }
                                         gpe::gfs->render_text( currFileRect.x+currFileRect.w/2,currFileRect.y+default_thumbnal_size,fileRenderName[0],pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_center,gpe::fa_top);
                                         gpe::gfs->render_text( currFileRect.x+currFileRect.w/2,currFileRect.y+default_thumbnal_size+TEXTBOX_FONT_SIZE_HEIGHT,fileRenderName[1],pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_center,gpe::fa_top);
@@ -1295,11 +1236,11 @@ namespace pawgui
                                     else
                                     {
                                         //Renders listed icon
-                                        if( currentFIleTexture!=NULL)
+                                        if( currentFIleTexture!=nullptr)
                                         {
                                             currentFIleTexture->render_tex_resized(
                                                                     currFileRect.x,currFileRect.y+(currFileRect.h-default_icon_width)/2,
-                                                                    default_icon_width,default_icon_width,NULL, fileIconColor );
+                                                                    default_icon_width,default_icon_width,nullptr, fileIconColor );
                                         }
                                         gpe::gfs->render_text( currFileRect.x+default_icon_width,currFileRect.y+currFileRect.h/2,fileRenderName[0],pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_left,gpe::fa_middle );
                                     }
@@ -1336,15 +1277,15 @@ namespace pawgui
 
                     yes_button->render_self( );
                     cancel_button->render_self( );
-                    directoryViewBox->render_self( NULL, NULL);
-                    fileBrowserModeBar->render_self( NULL, NULL);
-                    newstringBox->render_self( NULL, NULL);
+                    directoryViewBox->render_self( nullptr, nullptr);
+                    fileBrowserModeBar->render_self( nullptr, nullptr);
+                    newstringBox->render_self( nullptr, nullptr);
                     if( !file_is_dirSearch)
                     {
-                        fileTypeDropDown->render_self( NULL, NULL);
+                        fileTypeDropDown->render_self( nullptr, nullptr);
                     }
 
-                    if( previewedImageTexture!=NULL && enterMyComputerMode==false && filePreviewBox.w!=0 && filePreviewBox.h!=0)
+                    if( previewedImageTexture!=nullptr && enterMyComputerMode==false && filePreviewBox.w!=0 && filePreviewBox.h!=0)
                     {
                         if( filePreviewBox.w > previewedImageTexture->get_width()&& filePreviewBox.h> previewedImageTexture->get_height() )
                         {
@@ -1370,111 +1311,111 @@ namespace pawgui
 
             //Delete buttons and such
             //tinydir_close(&dir);
-            if( currentDirectory!=NULL)
+            if( currentDirectory!=nullptr)
             {
                 delete currentDirectory;
-                currentDirectory = NULL;
+                currentDirectory = nullptr;
             }
 
-            if( refresh_button!=NULL)
+            if( refresh_button!=nullptr)
             {
                 delete refresh_button;
-                refresh_button = NULL;
+                refresh_button = nullptr;
             }
-            if( appDirectory_button!=NULL)
+            if( appDirectory_button!=nullptr)
             {
                 delete appDirectory_button;
-                appDirectory_button = NULL;
+                appDirectory_button = nullptr;
             }
-            if( examplesDirectory_button!=NULL)
+            if( examplesDirectory_button!=nullptr)
             {
                 delete examplesDirectory_button;
-                examplesDirectory_button = NULL;
+                examplesDirectory_button = nullptr;
             }
-            /*if( tutorialsDirectory_button!=NULL)
+            /*if( tutorialsDirectory_button!=nullptr)
             {
                 delete tutorialsDirectory_button;
-                tutorialsDirectory_button = NULL;
+                tutorialsDirectory_button = nullptr;
             }*/
-            if( back_button!=NULL)
+            if( back_button!=nullptr)
             {
                 delete back_button;
-                back_button = NULL;
+                back_button = nullptr;
             }
-            if( desktop_button!=NULL)
+            if( desktop_button!=nullptr)
             {
                 delete desktop_button;
-                desktop_button = NULL;
+                desktop_button = nullptr;
             }
-            if( documents_button!=NULL)
+            if( documents_button!=nullptr)
             {
                 delete documents_button;
-                documents_button = NULL;
+                documents_button = nullptr;
             }
-            if( downloads_button!=NULL)
+            if( downloads_button!=nullptr)
             {
                 delete downloads_button;
-                downloads_button = NULL;
+                downloads_button = nullptr;
             }
-            if( pictures_button!=NULL)
+            if( pictures_button!=nullptr)
             {
                 delete pictures_button;
-                pictures_button = NULL;
+                pictures_button = nullptr;
             }
-            if( music_button!=NULL)
+            if( music_button!=nullptr)
             {
                 delete music_button;
-                music_button = NULL;
+                music_button = nullptr;
             }
-            if( home_button!=NULL)
+            if( home_button!=nullptr)
             {
                 delete home_button;
-                home_button = NULL;
+                home_button = nullptr;
             }
-            if( mycomputer_button!=NULL)
+            if( mycomputer_button!=nullptr)
             {
                 delete mycomputer_button;
-                mycomputer_button = NULL;
+                mycomputer_button = nullptr;
             }
-            if( yes_button!=NULL)
+            if( yes_button!=nullptr)
             {
                 delete yes_button;
-                yes_button = NULL;
+                yes_button = nullptr;
             }
-            if( cancel_button!=NULL)
+            if( cancel_button!=nullptr)
             {
                 delete cancel_button;
-                cancel_button = NULL;
+                cancel_button = nullptr;
             }
-            if( newstringBox!=NULL)
+            if( newstringBox!=nullptr)
             {
                 delete newstringBox;
-                newstringBox = NULL;
+                newstringBox = nullptr;
             }
-            if( fileTypeDropDown!=NULL)
+            if( fileTypeDropDown!=nullptr)
             {
                 delete fileTypeDropDown;
-                fileTypeDropDown = NULL;
+                fileTypeDropDown = nullptr;
             }
-            if( directoryViewBox!=NULL)
+            if( directoryViewBox!=nullptr)
             {
                 delete directoryViewBox;
-                directoryViewBox = NULL;
+                directoryViewBox = nullptr;
             }
-            if( fileBrowserModeBar!=NULL)
+            if( fileBrowserModeBar!=nullptr)
             {
                 delete fileBrowserModeBar;
-                fileBrowserModeBar = NULL;
+                fileBrowserModeBar = nullptr;
             }
-            if( fileDirYScroll!=NULL)
+            if( fileDirYScroll!=nullptr)
             {
                 delete fileDirYScroll;
-                fileDirYScroll = NULL;
+                fileDirYScroll = nullptr;
             }
-            if( shortCutGList!=NULL)
+            if( shortCutGList!=nullptr)
             {
                 delete shortCutGList;
-                shortCutGList = NULL;
+                shortCutGList = nullptr;
             }
             gpe::input->reset_all_input();
             previousDirectory = currentDirectoryInView;

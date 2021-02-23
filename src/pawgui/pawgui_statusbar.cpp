@@ -34,7 +34,7 @@ SOFTWARE.
 
 namespace pawgui
 {
-    widget_statusbar * main_statusbar = NULL;
+    widget_statusbar * main_statusbar = nullptr;
 
     widget_statusbar::widget_statusbar()
     {
@@ -57,7 +57,7 @@ namespace pawgui
 
     void widget_statusbar::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
-        if( isEnabled&& widget_box.h >0 && FONT_STATUSBAR!=NULL)
+        if( isEnabled&& widget_box.h >0 && FONT_STATUSBAR!=nullptr)
         {
             gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->program_color,false);
             int statusBarstringWidth = 0, statusBarstringHeight = 0;
@@ -65,7 +65,7 @@ namespace pawgui
             if( (int)statusBarLeftText.size() > 0)
             {
                 std::string  projectNameToRender = statusBarLeftText;
-                if( main_file_url_manager->file_exists( statusBarLeftText) )
+                if( gpe::main_file_url_manager->file_exists( statusBarLeftText) )
                 {
                     if( main_settings && main_settings->useShortProjectNames )
                     {

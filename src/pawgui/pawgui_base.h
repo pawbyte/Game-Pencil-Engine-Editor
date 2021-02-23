@@ -105,8 +105,8 @@ namespace pawgui
             virtual void set_width(int new_width);
             virtual void set_coords(int x_new = -1, int y_new = -1);
             virtual void prerender_self( );
-            virtual void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect *cam = NULL);
-            virtual void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            virtual void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect *cam = nullptr);
+            virtual void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
             bool requires_newline();
             void scale_height(float scaleH);
             void scale_width(float scaleW);

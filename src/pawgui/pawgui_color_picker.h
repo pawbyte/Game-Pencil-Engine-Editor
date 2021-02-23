@@ -65,8 +65,8 @@ namespace pawgui
             void set_label(std::string newLabel);
             void set_name(std::string new_name);
             void set_string(std::string newstring);
-            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+            void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
             void set_color_from_rgb( gpe::color *color_new);
             void set_color_from_rgb(std::string color_newStr);
             void set_color_from_hex(std::string color_newStr);
@@ -76,7 +76,7 @@ namespace pawgui
             void set_rgb(int r, int g, int b);
     };
 
-    bool get_color_from_popup(std::string popUpCaption = "", gpe::color * currColor = NULL);
+    bool get_color_from_popup(std::string popUpCaption = "", gpe::color * currColor = nullptr);
 }
 
 #endif //PAWGUI_COLOR_PICKER_H

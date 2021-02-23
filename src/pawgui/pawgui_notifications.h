@@ -64,9 +64,9 @@ namespace pawgui
             std::string get_data();
             std::string get_plain_string();
             void load_data(std::string datastring);
-            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
             void refresh_notification();
-            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
 
             void set_name(std::string name_param);
             void set_width(int new_width);
@@ -81,8 +81,8 @@ namespace pawgui
             ~widget_notfications_holder();
             widget_notifcation_base * add_notification_simple( std::string name, std::string description);
             bool remove_notification( std::string name );
-            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+            void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
             void set_width(int new_width);
     };
 }

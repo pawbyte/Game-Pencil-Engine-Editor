@@ -34,7 +34,7 @@ SOFTWARE.
 
 namespace pawgui
 {
-    widget_content_selector * main_content_selector = NULL;
+    widget_content_selector * main_content_selector = nullptr;
     int widget_content_selector_state = -1;
 
     widget_content_selector::widget_content_selector(std::string name,std::string description)
@@ -145,7 +145,7 @@ namespace pawgui
             else
             {
                 widget_content_selector_state = -1;
-                main_content_selector = NULL;
+                main_content_selector = nullptr;
                 gpe::cursor_main_controller->cursor_change( "arrow");
             }
             isClicked = false;
@@ -160,7 +160,7 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( isEnabled && cam!=NULL)
+        if( isEnabled && cam!=nullptr)
         {
             if( isInUse)
             {
@@ -180,9 +180,9 @@ namespace pawgui
                 }
             }
 
-            if( eyedropper_texture!=NULL)
+            if( eyedropper_texture!=nullptr)
             {
-                eyedropper_texture->render_tex_resized( widget_box.x-cam->x + widget_box.h/4, widget_box.y-cam->y + widget_box.h/4, widget_box.h/2, widget_box.h/2,  NULL, pawgui::theme_main->main_box_font_color );
+                eyedropper_texture->render_tex_resized( widget_box.x-cam->x + widget_box.h/4, widget_box.y-cam->y + widget_box.h/4, widget_box.h/2, widget_box.h/2,  nullptr, pawgui::theme_main->main_box_font_color );
             }
             if( selectorType == content_selector_type::cs_type_int )
             {

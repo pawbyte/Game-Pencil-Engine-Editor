@@ -36,7 +36,7 @@ namespace pawgui
 {
     widget_dock_panel::widget_dock_panel()
     {
-        specialPanelElement = NULL;
+        specialPanelElement = nullptr;
         panelBar = new pawgui::widget_tabbar(true);
         panelRect = new gpe::shape_rect();
         widget_box.w = 0;
@@ -52,34 +52,34 @@ namespace pawgui
 
     widget_dock_panel::~widget_dock_panel()
     {
-        if( panelBar!=NULL )
+        if( panelBar!=nullptr )
         {
             delete panelBar;
-            panelBar = NULL;
+            panelBar = nullptr;
         }
 
-        if( dock_settings_button!=NULL )
+        if( dock_settings_button!=nullptr )
         {
             delete dock_settings_button;
-            dock_settings_button = NULL;
+            dock_settings_button = nullptr;
         }
 
-        if( panelRect!=NULL )
+        if( panelRect!=nullptr )
         {
             delete panelRect;
-            panelRect = NULL;
+            panelRect = nullptr;
         }
 
-        if( containerRect!=NULL )
+        if( containerRect!=nullptr )
         {
             delete containerRect;
-            containerRect = NULL;
+            containerRect = nullptr;
         }
 
-        if( panelGuiList!=NULL )
+        if( panelGuiList!=nullptr )
         {
             delete panelGuiList;
-            panelGuiList = NULL;
+            panelGuiList = nullptr;
         }
     }
 
@@ -95,7 +95,7 @@ namespace pawgui
 
     void widget_dock_panel::add_gui_element(pawgui::widget_basic * element, bool isNLElement)
     {
-        if( panelGuiList!=NULL )
+        if( panelGuiList!=nullptr )
         {
             panelGuiList->add_gui_element( element, isNLElement);
         }
@@ -103,7 +103,7 @@ namespace pawgui
 
     void widget_dock_panel::add_gui_auto(pawgui::widget_basic * element)
     {
-        if( panelGuiList!=NULL )
+        if( panelGuiList!=nullptr )
         {
             panelGuiList->add_gui_auto( element );
         }
@@ -111,7 +111,7 @@ namespace pawgui
 
     void widget_dock_panel::add_gui_element_fullsize(pawgui::widget_basic * element )
     {
-        if( panelGuiList!=NULL && element!=NULL)
+        if( panelGuiList!=nullptr && element!=nullptr)
         {
             panelGuiList->add_gui_element_fullsize( element);
         }
@@ -119,17 +119,17 @@ namespace pawgui
 
     void widget_dock_panel::clear_panel()
     {
-        if( panelGuiList!=NULL )
+        if( panelGuiList!=nullptr )
         {
             panelGuiList->clear_list();
         }
-        specialPanelElement = NULL;
+        specialPanelElement = nullptr;
         wasProcessed = false;
     }
 
     bool widget_dock_panel::container_in_view( std::string name )
     {
-        if( panelBar!=NULL )
+        if( panelBar!=nullptr )
         {
             if( panelBar->get_selected_name() == name )
             {
@@ -141,7 +141,7 @@ namespace pawgui
 
     bool widget_dock_panel::contains_tab( std::string name )
     {
-        if( panelBar!=NULL )
+        if( panelBar!=nullptr )
         {
             if( panelBar->contains_tab( name ) )
             {
@@ -158,7 +158,7 @@ namespace pawgui
 
     std::string widget_dock_panel::get_selected_container()
     {
-        if( panelBar!=NULL )
+        if( panelBar!=nullptr )
         {
             return panelBar->get_selected_name();
         }
@@ -167,7 +167,7 @@ namespace pawgui
 
     int widget_dock_panel::get_tab_count()
     {
-        if( panelBar!=NULL )
+        if( panelBar!=nullptr )
         {
             return panelBar->get_tab_count();
         }
@@ -176,7 +176,7 @@ namespace pawgui
 
     std::string widget_dock_panel::get_tab_name( int pos )
     {
-        if( panelBar==NULL || pos < 0 )
+        if( panelBar==nullptr || pos < 0 )
         {
             return "";
         }
@@ -190,11 +190,11 @@ namespace pawgui
 
     bool widget_dock_panel::has_content()
     {
-        if( specialPanelElement !=NULL )
+        if( specialPanelElement !=nullptr )
         {
             return true;
         }
-        else if( panelBar!=NULL)
+        else if( panelBar!=nullptr)
         {
             return ( panelBar->get_tab_count() > 0 );
         }
@@ -205,7 +205,7 @@ namespace pawgui
     {
         view_space = gpe::camera_find( view_space );
         cam = gpe::camera_find( cam );
-        if( panelBar!=NULL)
+        if( panelBar!=nullptr)
         {
             panelRect->x = widget_box.x +4;
             panelRect->y = widget_box.y + panelBar->get_height() +4;
@@ -216,7 +216,7 @@ namespace pawgui
 
             if( wasProcessed == false )
             {
-                if( specialPanelElement!=NULL )
+                if( specialPanelElement!=nullptr )
                 {
                     specialPanelElement->set_coords( widget_box.x + 4, widget_box.y +4 );
                     specialPanelElement->set_width( widget_box.w -4);
@@ -227,7 +227,7 @@ namespace pawgui
                 {
                     //For normal tabs
                     //Processes the gui element list
-                    if( panelGuiList!=NULL )
+                    if( panelGuiList!=nullptr )
                     {
                         panelGuiList->set_coords( 4, 4 );
                         panelGuiList->set_width( panelRect->w  -4);
@@ -239,11 +239,11 @@ namespace pawgui
                         panelGuiList->process_self( panelRect, cam  );
                     }
 
-                    if( panelBar!=NULL )
+                    if( panelBar!=nullptr )
                     {
                         panelBar->process_self( view_space, cam);
                     }
-                    if( dock_settings_button!=NULL )
+                    if( dock_settings_button!=nullptr )
                     {
                         dock_settings_button->process_self( view_space, cam);
                     }
@@ -257,7 +257,7 @@ namespace pawgui
     {
         if( (int)name.size() > 0 )
         {
-            if( panelBar!=NULL )
+            if( panelBar!=nullptr )
             {
                 if( panelBar->get_selected_name()==name )
                 {
@@ -285,9 +285,9 @@ namespace pawgui
         gpe::gcanvas->render_roundrect_filled_color(widget_box.x+4, widget_box.y+4, widget_box.get_x2()-4, widget_box.get_y2()-4, pawgui::theme_main->panel_color, 255 );
         //gpe::gcanvas->render_rectangle(panelRect->x, panelRect->y, panelRect->x + panelRect->w, panelRect->y + 4, pawgui::theme_main->panel_border_color, false, 255 );
 
-        if( specialPanelElement!=NULL )
+        if( specialPanelElement!=nullptr )
         {
-            specialPanelElement->render_self( NULL,NULL );
+            specialPanelElement->render_self( nullptr,nullptr );
         }
         else
         {
@@ -297,19 +297,19 @@ namespace pawgui
             //gpe::gcanvas->render_roundrect_filled_color(4, 4, panelRect->w-4, panelRect->h-4, pawgui::theme_main->panel_color, 255 );
             //gpe::gcanvas->render_rectangle(0, 0, panelRect->w-4, 4, pawgui::theme_main->panel_border_color, false, 255 );
 
-            if( panelGuiList!=NULL )
+            if( panelGuiList!=nullptr )
             {
                 panelGuiList->render_self( panelRect, cam );
             }
             gpe::renderer_main->reset_viewpoint();
 
-            if( panelBar!=NULL  )
+            if( panelBar!=nullptr  )
             {
-                panelBar->render_self( NULL, NULL );
+                panelBar->render_self( nullptr, nullptr );
             }
-            if( dock_settings_button!=NULL )
+            if( dock_settings_button!=nullptr )
             {
-                dock_settings_button->render_self( NULL, NULL );
+                dock_settings_button->render_self( nullptr, nullptr );
             }
 
         }
@@ -317,13 +317,13 @@ namespace pawgui
 
     void widget_dock_panel::reset_panel()
     {
-        specialPanelElement = NULL;
-        if( panelGuiList!=NULL )
+        specialPanelElement = nullptr;
+        if( panelGuiList!=nullptr )
         {
             panelGuiList->reset_self();
         }
 
-        if( panelBar!=NULL )
+        if( panelBar!=nullptr )
         {
             panelBar->remove_all_tabs();
         }
@@ -331,10 +331,12 @@ namespace pawgui
 
     bool widget_dock_panel::save_panel_data_to_file(std::ofstream * fileTarget)
     {
-        if( fileTarget!=NULL && fileTarget->is_open() )
+        if( fileTarget!=nullptr && fileTarget->is_open() )
         {
             *fileTarget << "#    Created automatically via the Game Pencil Engine Editor \n";
+            return true;
         }
+        return false;
     }
 
     void widget_dock_panel::setup_panel(  bool addSpacing, bool clearList  )
@@ -344,13 +346,13 @@ namespace pawgui
         panelRect->w = widget_box.w -4;
         panelRect->h = widget_box.h - panelBar->get_height() -4;
 
-        if( specialPanelElement!=NULL )
+        if( specialPanelElement!=nullptr )
         {
             specialPanelElement->set_coords(widget_box.x +4, widget_box.y +4);
             specialPanelElement->set_width( widget_box.w -4 );
             specialPanelElement->set_height( widget_box.h-4 );
         }
-        else if( panelGuiList!=NULL )
+        else if( panelGuiList!=nullptr )
         {
             panelGuiList->set_horizontal_align( gpe::fa_left );
             panelGuiList->set_coords( panelRect->x, panelRect->y );
@@ -369,12 +371,12 @@ namespace pawgui
             }
         }
 
-        if( panelBar!=NULL)
+        if( panelBar!=nullptr)
         {
             panelBar->set_width( widget_box.w - dock_settings_button->get_height() - pawgui::padding_default );
             panelBar->set_coords( widget_box.x +4 , widget_box.y +4);
 
-            if( dock_settings_button!=NULL )
+            if( dock_settings_button!=nullptr )
             {
                 if( wasProcessed==false )
                 {
@@ -385,7 +387,7 @@ namespace pawgui
                 dock_settings_button->set_height(  panelBar->get_height() );
             }
         }
-        else if( dock_settings_button!=NULL )
+        else if( dock_settings_button!=nullptr )
         {
             if( wasProcessed==false )
             {
@@ -410,7 +412,7 @@ namespace pawgui
         int x_panel_numb = 0;
         int y_panel_numb = 0;
         int iPanel = 0;
-        widget_dock_panel * temp_panel = NULL;
+        widget_dock_panel * temp_panel = nullptr;
 
         for( x_panel_numb = 0; x_panel_numb < panel_x_count; x_panel_numb++ )
         {
@@ -453,17 +455,17 @@ namespace pawgui
     {
         clear_defaults();
 
-        widget_dock_panel * temp_panel = NULL;
+        widget_dock_panel * temp_panel = nullptr;
 
         for( int i =(int)panels.size() -1;  i >=0; i--)
         {
             temp_panel = panels[i];
-            if(temp_panel != NULL )
+            if(temp_panel != nullptr )
             {
                 delete temp_panel;
-                temp_panel = NULL;
+                temp_panel = nullptr;
             }
-            panels[i] = NULL;
+            panels[i] = nullptr;
         }
         panels.clear();
         panels_default_names.clear();
@@ -488,12 +490,12 @@ namespace pawgui
         if( panelId >=0 && panelId < panel_max_count && (int)name.size() > 0 )
         {
             //Removes container from all other panels
-            widget_dock_panel *  currentPanel = NULL;
-            widget_dock_panel *  otherPanel = NULL;
+            widget_dock_panel *  currentPanel = nullptr;
+            widget_dock_panel *  otherPanel = nullptr;
             for( int iPanel = 0; iPanel < panel_max_count; iPanel++ )
             {
                 currentPanel = panels[iPanel];
-                if( currentPanel!=NULL )
+                if( currentPanel!=nullptr )
                 {
                     currentPanel->remove_container( name );
                 }
@@ -513,7 +515,7 @@ namespace pawgui
             {
                otherPanel = panels[ panelId - panel_x_count];
             }
-            if( currentPanel == NULL || otherPanel == NULL )
+            if( currentPanel == nullptr || otherPanel == nullptr )
             {
                 return;
             }
@@ -560,11 +562,11 @@ namespace pawgui
 
     void widget_dock::clear_all_panels()
     {
-        widget_dock_panel * temp_panel = NULL;
+        widget_dock_panel * temp_panel = nullptr;
         for( int i = 0; i < panel_max_count; i++)
         {
             temp_panel = panels[i];
-            if( temp_panel!=NULL)
+            if( temp_panel!=nullptr)
             {
                 temp_panel->clear_panel();
             }
@@ -573,14 +575,14 @@ namespace pawgui
 
     void widget_dock::clear_defaults()
     {
-        gpe::key_pair * tempPair = NULL;
+        gpe::key_pair * tempPair = nullptr;
         for( int i = (int)default_panels.size()-1; i >=0; i--)
         {
             tempPair = default_panels[i];
-            if( tempPair !=NULL)
+            if( tempPair !=nullptr)
             {
                 delete tempPair;
-                tempPair = NULL;
+                tempPair = nullptr;
             }
         }
         default_panels.clear();
@@ -593,11 +595,11 @@ namespace pawgui
             return false;
         }
 
-        widget_dock_panel * temp_panel = NULL;
+        widget_dock_panel * temp_panel = nullptr;
         for(  int iRow = 0; iRow < panel_y_count;  iRow++)
         {
             temp_panel = panels[ col_numb * panel_y_count + iRow ];
-            if( temp_panel!=NULL && temp_panel->has_content() )
+            if( temp_panel!=nullptr && temp_panel->has_content() )
             {
                 return true;
             }
@@ -607,11 +609,11 @@ namespace pawgui
 
     bool widget_dock::container_in_view( std::string name )
     {
-        widget_dock_panel *  tPanel = NULL;
+        widget_dock_panel *  tPanel = nullptr;
         for( int iPanel = 0; iPanel < panel_max_count; iPanel++ )
         {
             tPanel = panels[iPanel];
-            if( tPanel!=NULL && tPanel->container_in_view(name) )
+            if( tPanel!=nullptr && tPanel->container_in_view(name) )
             {
                 return true;
             }
@@ -621,30 +623,30 @@ namespace pawgui
 
     widget_dock_panel * widget_dock::contains_panel( std::string name )
     {
-        widget_dock_panel *  tPanel = NULL;
+        widget_dock_panel *  tPanel = nullptr;
         for( int iPanel = 0; iPanel < panel_max_count; iPanel++ )
         {
             tPanel = panels[iPanel];
-            if( tPanel!=NULL && tPanel->contains_tab(name) )
+            if( tPanel!=nullptr && tPanel->contains_tab(name) )
             {
                 return tPanel;
             }
         }
-        return NULL;
+        return nullptr;
     }
 
     widget_dock_panel * widget_dock::find_panel( std::string name )
     {
-        widget_dock_panel *  tPanel = NULL;
+        widget_dock_panel *  tPanel = nullptr;
         for( int iPanel = 0; iPanel < panel_max_count; iPanel++ )
         {
             tPanel = panels[iPanel];
-            if( tPanel!=NULL && tPanel->container_in_view(name) )
+            if( tPanel!=nullptr && tPanel->container_in_view(name) )
             {
                 return tPanel;
             }
         }
-        return NULL;
+        return nullptr;
     }
 
     int widget_dock::get_column(int panelId)
@@ -701,7 +703,7 @@ namespace pawgui
         {
             return panels[ panel_id ];
         }
-        return NULL;
+        return nullptr;
     }
 
     int widget_dock::get_panel_count()
@@ -722,9 +724,9 @@ namespace pawgui
     bool widget_dock::handle_resizing()
     {
 
-        bool panel_above_found = false, panel_below_found = false;
-        widget_dock_panel * temp_panel = NULL;
-        widget_dock_panel * temp_panel_other = NULL;
+        bool panel_below_found = false;
+        widget_dock_panel * temp_panel = nullptr;
+        widget_dock_panel * temp_panel_other = nullptr;
         int x_panel_numb = 0, y_panel_numb = 0, y_panel_numb_other = 0;
 
         //Starts off checking if the user wishes to end resize
@@ -756,8 +758,6 @@ namespace pawgui
                         //Last check to make sure we are not out of bounds, we only resize from column 1 and to the right tho...
                         if( column_being_resized_id > 0 && column_being_resized_id < panel_x_count )
                         {
-                            widget_dock_panel * temp_panel = NULL;
-                            widget_dock_panel * foundBPanel = NULL;
                             int currentpanel_x = 0;
                             int lastPanelWidth = 0;
                             int lastLeftPanel = -1;
@@ -851,7 +851,7 @@ namespace pawgui
                                     {
                                         other_panel_id = column_being_resized_id * panel_y_count + y_panel_numb;
                                         temp_panel = panels[other_panel_id ];
-                                        if( temp_panel!=NULL && temp_panel->has_content() )
+                                        if( temp_panel!=nullptr && temp_panel->has_content() )
                                         {
                                             if( y_panel_numb < row_being_resized_id )
                                             {
@@ -964,7 +964,7 @@ namespace pawgui
                                 horizontal_resize = being_resized = true;
                                 vertical_resize = false;
                                 hori_resize_start_x = gpe::input->mouse_position_x;
-                                if( pawgui::main_overlay_system!=NULL )
+                                if( pawgui::main_overlay_system!=nullptr )
                                 {
                                     pawgui::main_overlay_system->take_frozen_screenshot();
                                 }
@@ -978,7 +978,7 @@ namespace pawgui
                     for( y_panel_numb = 0; y_panel_numb < panel_y_count; y_panel_numb++)
                     {
                         temp_panel = panels[x_panel_numb * panel_y_count + y_panel_numb];
-                        if( temp_panel!=NULL && temp_panel->has_content() )
+                        if( temp_panel!=nullptr && temp_panel->has_content() )
                         {
                             //Checks to see if user is attempting to resize panels vertically
                             //NS resize
@@ -987,7 +987,7 @@ namespace pawgui
                                 for( y_panel_numb_other = y_panel_numb +1; y_panel_numb_other < panel_y_count; y_panel_numb_other++)
                                 {
                                     temp_panel_other = panels[x_panel_numb * panel_y_count + y_panel_numb_other];
-                                    if( temp_panel_other!=NULL && temp_panel_other->has_content() )
+                                    if( temp_panel_other!=nullptr && temp_panel_other->has_content() )
                                     {
                                         panel_below_found = true;
                                     }
@@ -1005,7 +1005,7 @@ namespace pawgui
                                         vertical_resize = being_resized = true;
                                         horizontal_resize = false;
                                         hori_resize_start_x = 0;
-                                        if( pawgui::main_overlay_system!=NULL )
+                                        if( pawgui::main_overlay_system!=nullptr )
                                         {
                                             pawgui::main_overlay_system->take_frozen_screenshot();
                                         }
@@ -1032,7 +1032,7 @@ namespace pawgui
     {
         for( int i = 0; i < panel_max_count; i++ )
         {
-            if( panels[i] !=NULL )
+            if( panels[i] !=nullptr )
             {
                 panels[i]->clear_panel();
             }
@@ -1184,15 +1184,14 @@ namespace pawgui
         setup_dock( false );
         if( panel_primary_id >= 0 && panel_primary_id < panel_max_count )
         {
-            if( panels[panel_primary_id]!=NULL)
+            if( panels[panel_primary_id]!=nullptr)
             {
                 panels[panel_primary_id]->process_self( view_space, cam );
             }
         }
 
         //Process all of the remaining panels
-        widget_dock_panel *  tPanel = NULL;
-        widget_dock_panel *  bPanel = NULL;
+        widget_dock_panel *  tPanel = nullptr;
         int tPanel_buttonHitID = -1;
         int iPanel = 0;
         for( iPanel = 0; iPanel < panel_max_count; iPanel++ )
@@ -1200,10 +1199,10 @@ namespace pawgui
             if( iPanel != panel_primary_id )
             {
                 tPanel = panels[iPanel];
-                if( tPanel!=NULL )
+                if( tPanel!=nullptr )
                 {
                     tPanel->process_self(  view_space, cam );
-                    if( tPanel->dock_settings_button!=NULL && tPanel->dock_settings_button->is_clicked() )
+                    if( tPanel->dock_settings_button!=nullptr && tPanel->dock_settings_button->is_clicked() )
                     {
                         tPanel_buttonHitID = iPanel;
                         tPanel->dock_settings_button->set_clicked( false );
@@ -1222,12 +1221,12 @@ namespace pawgui
                 //Prevents us from adding to main editor/log or the same panel
                 if( iPanel != tPanel_buttonHitID && iPanel != panel_primary_id )
                 {
-                    pawgui::main_context_menu->add_menu_option("Move to "+panels_default_names[iPanel], iPanel,NULL,-1,NULL,true,true);
+                    pawgui::main_context_menu->add_menu_option("Move to "+panels_default_names[iPanel], iPanel,nullptr,-1,nullptr,true,true);
                 }
             }
 
             int closePanelId = 128;
-            pawgui::main_context_menu->add_menu_option("Close Content", closePanelId,NULL,-1,NULL,true,true);
+            pawgui::main_context_menu->add_menu_option("Close Content", closePanelId,nullptr,-1,nullptr,true,true);
             //tPanel->dock_settings_button->set_clicked( false );
             int menuSelection = pawgui::context_menu_process();
             if( menuSelection >= 0 && menuSelection < panel_max_count )
@@ -1252,16 +1251,16 @@ namespace pawgui
 
     void widget_dock::remove_default_panel( std::string name )
     {
-        gpe::key_pair * tempPair = NULL;
+        gpe::key_pair * tempPair = nullptr;
         for( int i = (int)default_panels.size()-1; i >=0; i--)
         {
             tempPair = default_panels[i];
-            if( tempPair !=NULL)
+            if( tempPair !=nullptr)
             {
                 if( tempPair->key_string == name || tempPair->key_substring == name )
                 {
                     delete tempPair;
-                    tempPair = NULL;
+                    tempPair = nullptr;
                     default_panels.erase( default_panels.begin()+i );
                 }
             }
@@ -1270,11 +1269,11 @@ namespace pawgui
 
     void widget_dock::remove_panel( std::string name )
     {
-        widget_dock_panel *  tPanel = NULL;
+        widget_dock_panel *  tPanel = nullptr;
         for( int iPanel = 0; iPanel < panel_max_count; iPanel++ )
         {
             tPanel = panels[iPanel];
-            if( tPanel!=NULL )
+            if( tPanel!=nullptr )
             {
                 tPanel->remove_container( name );
             }
@@ -1312,11 +1311,11 @@ namespace pawgui
         else
         {
             gpe::renderer_main->reset_viewpoint();
-            widget_dock_panel *  tPanel = NULL;
+            widget_dock_panel *  tPanel = nullptr;
             for( int iPanel = 0; iPanel < panel_max_count; iPanel++ )
             {
                 tPanel = panels[iPanel];
-                if( tPanel!=NULL && tPanel->has_content() )
+                if( tPanel!=nullptr && tPanel->has_content() )
                 {
                     tPanel->render_self( view_space, cam);
                 }
@@ -1343,11 +1342,11 @@ namespace pawgui
             panel_height_percentages[iPanels] = 100.f/ (float)panel_y_count;
         }
 
-        widget_dock_panel *  tPanel = NULL;
+        widget_dock_panel *  tPanel = nullptr;
         for( int iPanel = 0; iPanel < panel_max_count; iPanel++ )
         {
             tPanel = panels[iPanel];
-            if( tPanel!=NULL )
+            if( tPanel!=nullptr )
             {
                 tPanel->reset_panel();
             }
@@ -1357,12 +1356,12 @@ namespace pawgui
         for( int iDefaultPane = 0; iDefaultPane < (int)default_panels.size(); iDefaultPane++)
         {
             tempPair = default_panels.at(iDefaultPane);
-            if( tempPair !=NULL)
+            if( tempPair !=nullptr)
             {
                 add_to_panel( tempPair->key_string, tempPair->key_value, true );
             }
             /*delete tempPair;
-            tempPair = NULL; */
+            tempPair = nullptr; */
         }
     }
 
@@ -1407,14 +1406,14 @@ namespace pawgui
                 int i = 0;
 
 
-                widget_dock_panel * tPanel = NULL;
+                widget_dock_panel * tPanel = nullptr;
                 int jTab =0, jTabMax = 0;
                 std::string jTabName = "";
                 std::string selectedTabName = "";
                 for( i = 0; i < panel_max_count; i++ )
                 {
                     tPanel = panels[ i ];
-                    if( tPanel !=NULL && tPanel->has_content() )
+                    if( tPanel !=nullptr && tPanel->has_content() )
                     {
                         jTabMax = tPanel->get_tab_count();
                         selectedTabName = tPanel->get_selected_container();
@@ -1450,6 +1449,7 @@ namespace pawgui
                 newSaveDataFile.close();
             }
         }
+        return true;
     }
 
     bool widget_dock::set_primary_panel( int primaryXId, int primaryYId )
@@ -1483,13 +1483,13 @@ namespace pawgui
             //return;
         }
         //panels[ panel_primary_id ]->specialPanelElement = pawgui::main_tab_resource_bar;
-        //panels[ DOCK_BOTTOM_MIDDLE ]->specialPanelElement = NULL;
+        //panels[ DOCK_BOTTOM_MIDDLE ]->specialPanelElement = nullptr;
 
         dock_width_minus_column_padding = widget_box.w;
         dock_height_minus_column_padding = widget_box.h;
         current_column_count = 0;
         //checks the column max widths
-        widget_dock_panel * temp_panel = NULL;
+        widget_dock_panel * temp_panel = nullptr;
         bool col_found = false;
         float calculated_percentages = 0.f, percentage_difference = 0.f;
         int i_col = 0, j_row = 0;
@@ -1500,7 +1500,6 @@ namespace pawgui
 
         int shortest_panel_id = 0, tallest_panel_id = 0;
         float shortest_panel_height = 100, tallest_panel_height = 0;
-        int current_column_row_count = 0;
         for(  i_col = 0; i_col < panel_x_count; i_col++)
         {
             if( column_is_open( i_col) )
@@ -1561,12 +1560,12 @@ namespace pawgui
             {
                 current_panel_id = i_col * panel_y_count + j_row ;
                 temp_panel = panels[ current_panel_id ];
-                if( temp_panel != NULL )
+                if( temp_panel != nullptr )
                 {
                     if( clear_panels_on_setup )
                     {
                         temp_panel->clear_panel();
-                        if( temp_panel->dock_settings_button!=NULL )
+                        if( temp_panel->dock_settings_button!=nullptr )
                         {
                             temp_panel->dock_settings_button->set_clicked( false );
                         }
@@ -1585,7 +1584,6 @@ namespace pawgui
             if( col_found )
             {
                 first_row_round = -1;
-                current_column_row_count = 0;
                 calculated_percentages = 0;
                 shortest_panel_id = -1;
                 tallest_panel_id = -1;
@@ -1597,7 +1595,7 @@ namespace pawgui
                 {
                     current_panel_id = i_col * panel_y_count + j_row;
                     temp_panel = panels[ current_panel_id ];
-                    if( temp_panel != NULL && temp_panel->has_content() )
+                    if( temp_panel != nullptr && temp_panel->has_content() )
                     {
                         if( first_row_round < 0 )
                         {
@@ -1650,7 +1648,7 @@ namespace pawgui
                     {
                         current_panel_id = j_row + i_col*panel_y_count;
                         temp_panel = panels[ current_panel_id ];
-                        if( temp_panel!=NULL && temp_panel->has_content() )
+                        if( temp_panel!=nullptr && temp_panel->has_content() )
                         {
                             temp_panel->set_height( panel_height_percentages[current_panel_id]  / 100.f * dock_height_minus_column_padding );
                         }
@@ -1660,12 +1658,10 @@ namespace pawgui
         }
 
         //Horizontally Resizing panels;
-        bool panelBeingHovered = false;
 
         //Let's set the position of the  panels
         int panel_x = 0;
         int panelY = 0;
-        int cPanel = 0;
 
         //Places the panels on the docks
         for( i_col = 0; i_col < panel_x_count ; i_col++)
@@ -1675,7 +1671,7 @@ namespace pawgui
             {
                 current_panel_id = j_row + i_col*panel_y_count;
                 temp_panel = panels[ current_panel_id ];
-                if( temp_panel!=NULL && temp_panel->has_content() )
+                if( temp_panel!=nullptr && temp_panel->has_content() )
                 {
                     temp_panel->set_coords(panel_x, widget_box.y + panelY );
                     temp_panel->set_width( panel_column_width[ i_col ] );
@@ -1695,11 +1691,11 @@ namespace pawgui
     void widget_dock::toggle_default_pane( std::string name )
     {
         gpe::error_log->report("Trying to toggle ["+name+"] pane...");
-        gpe::key_pair * tempPair = NULL;
+        gpe::key_pair * tempPair = nullptr;
         for( int i = 0; i < (int)default_panels.size(); i++)
         {
             tempPair = default_panels[i];
-            if( tempPair !=NULL)
+            if( tempPair !=nullptr)
             {
                 if( tempPair->key_string == name || tempPair->key_substring == name )
                 {
@@ -1716,7 +1712,7 @@ namespace pawgui
         {
             return;
         }
-        if( find_panel( name) != NULL )
+        if( find_panel( name) != nullptr )
         {
             gpe::error_log->report("Panel already found, so removing...");
             remove_panel( name );

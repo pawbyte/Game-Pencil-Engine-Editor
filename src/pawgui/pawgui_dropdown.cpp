@@ -46,7 +46,7 @@ namespace pawgui
         dropdownName = widget_name = name;
         opId = -1;
         selectedId = -1;
-        selectedPair = NULL;
+        selectedPair = nullptr;
         selectedValue = -1;
         isSelectable = true;
         showJustOptions = justOptions;
@@ -64,21 +64,21 @@ namespace pawgui
     widget_dropdown_menu::~widget_dropdown_menu()
     {
         clear_dropdown();
-        if( dropDownParentPair!=NULL )
+        if( dropDownParentPair!=nullptr )
         {
             delete dropDownParentPair;
-            dropDownParentPair = NULL;
+            dropDownParentPair = nullptr;
         }
     }
 
     std::string widget_dropdown_menu::get_data()
     {
         std::string datastring = widget_type+":"+dropdownName+"==|||==[menu]";
-        gpe::key_pair * tPair = NULL;
+        gpe::key_pair * tPair = nullptr;
         for( int i = 0; i < (int)dropDownParentPair->sub_options.size(); i++ )
         {
             tPair = dropDownParentPair->sub_options[i];
-            if( tPair!=NULL)
+            if( tPair!=nullptr)
             {
                 datastring+="[option]"+tPair->key_string+":"+tPair->key_substring+":"+ stg_ex::int_to_string(tPair->key_value)+"[/option]";
             }
@@ -89,13 +89,13 @@ namespace pawgui
 
     bool widget_dropdown_menu::add_to_context_menu( popup_menu_option * cLevel, gpe::key_pair * cKey )
     {
-        if( cKey == NULL || cLevel == NULL)
+        if( cKey == nullptr || cLevel == nullptr)
         {
             return true;
         }
         popup_menu_option *  myLevel = cLevel->add_menu_option(cKey->key_string, cKey->key_id );
 
-        gpe::key_pair * tempKey = NULL;
+        gpe::key_pair * tempKey = nullptr;
         int keyListSize = (int)cKey->sub_options.size();
         for( int i = 0; i < keyListSize; i++)
         {
@@ -117,13 +117,13 @@ namespace pawgui
             }
             return kp;
         }
-        return NULL; //if everything breaks return nothing
+        return nullptr; //if everything breaks return nothing
     }
 
     void widget_dropdown_menu::clear_dropdown()
     {
         selectedId = -1;
-        selectedPair = NULL;
+        selectedPair = nullptr;
         selectedName = "";
         selectedTag = "";
         dropDownParentPair->remove_all();
@@ -141,10 +141,10 @@ namespace pawgui
 
     gpe::key_pair *  widget_dropdown_menu::find_selected_pair( gpe::key_pair *  pairIn, std::string pairName, int pairId )
     {
-        //Returns NULL if the pair is NULL;
-        if( pairIn == NULL)
+        //Returns nullptr if the pair is nullptr;
+        if( pairIn == nullptr)
         {
-            return NULL;
+            return nullptr;
         }
 
         //Checks if the string is the same as the current pair
@@ -168,26 +168,26 @@ namespace pawgui
         }
         //If we haven't found anything, iterate through the pair's suboptions and nest this function
         int pairListSize = (int)pairIn->sub_options.size();
-        gpe::key_pair *  tempPair = NULL;
-        gpe::key_pair *  foundPair = NULL;
+        gpe::key_pair *  tempPair = nullptr;
+        gpe::key_pair *  foundPair = nullptr;
         for( int i = 0; i < pairListSize; i++)
         {
             tempPair = pairIn->sub_options[i];
             foundPair = find_selected_pair( tempPair, pairName, pairId );
-            if( foundPair !=NULL )
+            if( foundPair !=nullptr )
             {
                 return foundPair;
             }
         }
-        return NULL;
+        return nullptr;
     }
 
     gpe::key_pair *  widget_dropdown_menu::find_selected_pair_sub( gpe::key_pair *  pairIn, std::string pairSubstring )
     {
-        //Returns NULL if the pair is NULL;
-        if( pairIn == NULL)
+        //Returns nullptr if the pair is nullptr;
+        if( pairIn == nullptr)
         {
-            return NULL;
+            return nullptr;
         }
 
         //Checks if the string is the same as the current pair
@@ -198,24 +198,23 @@ namespace pawgui
         }
         //If we haven't found anything, iterate through the pair's suboptions and nest this function
         int pairListSize = (int)pairIn->sub_options.size();
-        gpe::key_pair *  tempPair = NULL;
-        gpe::key_pair *  foundPair = NULL;
+        gpe::key_pair *  tempPair = nullptr;
+        gpe::key_pair *  foundPair = nullptr;
         for( int i = 0; i < pairListSize; i++)
         {
             tempPair = pairIn->sub_options[i];
             foundPair = find_selected_pair_sub( tempPair, pairSubstring );
-            if( foundPair !=NULL )
+            if( foundPair !=nullptr )
             {
                 return foundPair;
             }
         }
-        return NULL;
+        return nullptr;
     }
 
     std::string widget_dropdown_menu::get_menu_option(int atNumb)
     {
-        gpe::key_pair * kp = NULL;
-        if( selectedPair!=NULL  )
+        if( selectedPair!=nullptr  )
         {
             return selectedPair->key_string;
         }
@@ -229,7 +228,7 @@ namespace pawgui
 
     std::string widget_dropdown_menu::get_plain_string()
     {
-        if( selectedPair!=NULL  )
+        if( selectedPair!=nullptr  )
         {
             return "'"+selectedPair->key_string+"'";
         }
@@ -243,7 +242,7 @@ namespace pawgui
 
     std::string widget_dropdown_menu::get_selected_name()
     {
-        if( selectedPair !=NULL )
+        if( selectedPair !=nullptr )
         {
             return selectedPair->key_string;
         }
@@ -253,8 +252,7 @@ namespace pawgui
 
     std::string widget_dropdown_menu::get_selected_tag()
     {
-        gpe::key_pair * kp = NULL;
-        if( selectedPair !=NULL )
+        if( selectedPair !=nullptr )
         {
             return selectedPair->key_substring;
         }
@@ -263,7 +261,7 @@ namespace pawgui
 
     float widget_dropdown_menu::get_selected_value()
     {
-        if( selectedPair !=NULL )
+        if( selectedPair !=nullptr )
         {
             return selectedPair->key_value;
         }
@@ -272,7 +270,7 @@ namespace pawgui
 
     std::string widget_dropdown_menu::get_tag_from( std::string tagName, int tagId )
     {
-
+        return "";
     }
 
     bool widget_dropdown_menu::just_activated()
@@ -355,16 +353,16 @@ namespace pawgui
             isClicked = true;
         }
 
-        if( isClicked && cam!=NULL && view_space!=NULL)
+        if( isClicked && cam!=nullptr && view_space!=nullptr)
         {
-            if( main_context_menu!=NULL)
+            if( main_context_menu!=nullptr)
             {
                 if( main_context_menu->subMenuIsOpen == false)
                 {
                     isOpen = true;
                     context_menu_open(view_space->x+widget_box.x-cam->x, view_space->y+widget_box.y+widget_box.h-cam->y);
                     main_context_menu->set_width(widget_box.w);
-                    gpe::key_pair * kp = NULL;
+                    gpe::key_pair * kp = nullptr;
                     if( (int)dropDownParentPair->sub_options.size() > 0)
                     {
                         if( showJustOptions ==false)
@@ -457,7 +455,6 @@ namespace pawgui
 
     void widget_dropdown_menu::remove_option(std::string optionToRemove)
     {
-        gpe::key_pair * tOption = NULL;
         if( selectedName == optionToRemove )
         {
             set_id( -1 );
@@ -469,11 +466,11 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( cam!=NULL && view_space!=NULL)
+        if( cam!=nullptr && view_space!=nullptr)
         {
             gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->input_color,false);
 
-            if( selectedPair!=NULL )
+            if( selectedPair!=nullptr )
             {
                 gpe::gfs->render_text_resized( widget_box.x+widget_box.w/2-cam->x,widget_box.y+widget_box.h/2-cam->y,selectedPair->key_string,pawgui::theme_main->input_font_color,font_popup,gpe::fa_center,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
             }
@@ -494,9 +491,9 @@ namespace pawgui
             {
                 gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->input_outline_color,true);
             }
-            if( dropdown_arrow_texture!=NULL)
+            if( dropdown_arrow_texture!=nullptr)
             {
-                dropdown_arrow_texture->render_tex_resized( widget_box.x+widget_box.w-widget_box.h-cam->x,widget_box.y - cam->y,widget_box.h,widget_box.h, NULL, pawgui::theme_main->input_font_color );
+                dropdown_arrow_texture->render_tex_resized( widget_box.x+widget_box.w-widget_box.h-cam->x,widget_box.y - cam->y,widget_box.h,widget_box.h, nullptr, pawgui::theme_main->input_font_color );
             }
         }
     }
@@ -513,7 +510,7 @@ namespace pawgui
         if( new_id >= 0 )
         {
             selectedPair = dropDownParentPair->find_option_id( new_id );
-            if( selectedPair!=NULL)
+            if( selectedPair!=nullptr)
             {
                 selectedId = new_id;
                 selectedName = selectedPair->key_string;
@@ -523,7 +520,7 @@ namespace pawgui
             }
         }
         //If no pair was found we return to default mode
-        selectedPair = NULL;
+        selectedPair = nullptr;
         selectedId = -1;
         selectedName = "";
         selectedTag = "";
@@ -533,20 +530,20 @@ namespace pawgui
 
     void widget_dropdown_menu::set_option_named(std::string newselectedOptionName )
     {
-        gpe::key_pair *  tempPair = NULL;
-        gpe::key_pair *  foundPair = NULL;
+        gpe::key_pair *  tempPair = nullptr;
+        gpe::key_pair *  foundPair = nullptr;
         int pairListSize = (int)dropDownParentPair->sub_options.size();
         for( int i = 0; i < pairListSize; i++)
         {
             tempPair = dropDownParentPair->sub_options[i];
             foundPair = find_selected_pair( tempPair, newselectedOptionName, -1 );
-            if( foundPair !=NULL )
+            if( foundPair !=nullptr )
             {
                 break;
             }
         }
 
-        if( foundPair != NULL )
+        if( foundPair != nullptr )
         {
             selectedPair = foundPair;
             selectedId = foundPair->key_value;
@@ -556,7 +553,7 @@ namespace pawgui
         }
 
         //If no pair was found we return to default mode
-        selectedPair = NULL;
+        selectedPair = nullptr;
         selectedId = -1;
         selectedName = "";
         selectedTag = "";
@@ -565,20 +562,20 @@ namespace pawgui
 
     void widget_dropdown_menu::set_option_subvalue(std::string newselectedOptionName )
     {
-        gpe::key_pair *  tempPair = NULL;
-        gpe::key_pair *  foundPair = NULL;
+        gpe::key_pair *  tempPair = nullptr;
+        gpe::key_pair *  foundPair = nullptr;
         int pairListSize = (int)dropDownParentPair->sub_options.size();
         for( int i = 0; i < pairListSize; i++)
         {
             tempPair = dropDownParentPair->sub_options[i];
             foundPair = find_selected_pair_sub( tempPair, newselectedOptionName  );
-            if( foundPair !=NULL )
+            if( foundPair !=nullptr )
             {
                 break;
             }
         }
 
-        if( foundPair != NULL )
+        if( foundPair != nullptr )
         {
             selectedPair = foundPair;
             selectedId = foundPair->key_value;
@@ -588,7 +585,7 @@ namespace pawgui
         }
 
         //If no pair was found we return to default mode
-        selectedPair = NULL;
+        selectedPair = nullptr;
         selectedId = -1;
         selectedName = "";
         selectedTag = "";
@@ -603,7 +600,7 @@ namespace pawgui
     void widget_dropdown_menu::set_option_value(float option_value )
     {
         selectedPair = dropDownParentPair->find_option_value( option_value );
-        if( selectedPair!=NULL)
+        if( selectedPair!=nullptr)
         {
             selectedId = selectedPair->key_id;
             selectedName = selectedPair->key_string;
@@ -611,7 +608,7 @@ namespace pawgui
         }
         else
         {
-            selectedPair = NULL;
+            selectedPair = nullptr;
             selectedId = -1;
             selectedName = "";
             selectedTag = "";

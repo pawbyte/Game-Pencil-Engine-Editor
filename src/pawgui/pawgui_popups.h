@@ -42,7 +42,7 @@ namespace pawgui
     const int display_query_yes = 1;
     const int display_query_cancel = 2;
 
-    void display_user_alert(std::string messageTitle, std::string messageContent, int messageType = 0, gpe::shape_rect * camera = NULL );
+    void display_user_alert(std::string messageTitle, std::string messageContent, int messageType = 0, gpe::shape_rect * camera = nullptr );
     int display_prompt_message(std::string messageTitle, std::string messageContent, bool showCancel_button = false );
     std::string get_string_from_popup(std::string messageTitle, std::string messageContent, std::string startName = "");
 }

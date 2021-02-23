@@ -69,14 +69,14 @@ namespace pawgui
 
     widget_radio_button_controller::~widget_radio_button_controller()
     {
-        gpe::key_pair * kp = NULL;
+        gpe::key_pair * kp = nullptr;
         for( int i = sub_options.size()-1; i >=0; i--)
         {
             kp = sub_options[i];
-            if( kp!=NULL )
+            if( kp!=nullptr )
             {
                 delete kp;
-                kp = NULL;
+                kp = nullptr;
             }
         }
         sub_options.clear();
@@ -86,11 +86,11 @@ namespace pawgui
     std::string widget_radio_button_controller::get_data()
     {
         std::string datastring = widget_type+":"+widget_name+"==|||==[menu]";
-        gpe::key_pair * tPair = NULL;
+        gpe::key_pair * tPair = nullptr;
         for( int i = 0; i < (int)sub_options.size(); i++ )
         {
             tPair = sub_options[i];
-            if( tPair!=NULL)
+            if( tPair!=nullptr)
             {
                 datastring+="[option]"+tPair->key_string+":"+tPair->key_substring+":"+ stg_ex::int_to_string(tPair->key_value)+"[/option]";
             }
@@ -192,7 +192,7 @@ namespace pawgui
                 widget_box.w = textW+padding_default*2;
                 //newTex->loadFromRenderedText(gpe::renderer_main,newOption,pawgui::theme_main->main_box_font_color,gpe::font_default);
             }
-            gpe::key_pair * kp = NULL;
+            gpe::key_pair * kp = nullptr;
             gpe::key_pair * newOptionPair = new gpe::key_pair(-1,newOption,newOption);
             if(keepAlphabetized)
             {
@@ -202,7 +202,7 @@ namespace pawgui
                     for(int i=0; i< (int)sub_options.size() && !isInserted; i++)
                     {
                         kp = sub_options[i];
-                        if( kp!=NULL)
+                        if( kp!=nullptr)
                         {
                             fstring = kp->key_string;
                             if( fstring > newOption && !isInserted )
@@ -235,11 +235,11 @@ namespace pawgui
                 //newTex->loadFromRenderedText(gpe::renderer_main,optionName,pawgui::theme_main->main_box_font_color,gpe::font_default);
             }
             bool optionExists = false;
-            gpe::key_pair * tOption = NULL;
+            gpe::key_pair * tOption = nullptr;
             for( int i = 0; i < (int)sub_options.size(); i++)
             {
                 tOption = sub_options[i];
-                if( tOption!=NULL )
+                if( tOption!=nullptr )
                 {
                     if( tOption->key_string==optionName)
                     {
@@ -264,11 +264,11 @@ namespace pawgui
 
     std::string widget_radio_button_controller::get_menu_option(int atNumb)
     {
-        gpe::key_pair * kp = NULL;
+        gpe::key_pair * kp = nullptr;
         if( atNumb >=0 && atNumb < (int)sub_options.size() )
         {
             kp = sub_options.at(atNumb);
-            if( kp!=NULL)
+            if( kp!=nullptr)
             {
                 return kp->key_string;
             }
@@ -278,11 +278,11 @@ namespace pawgui
 
     std::string widget_radio_button_controller::get_plain_string()
     {
-        gpe::key_pair * kp = NULL;
+        gpe::key_pair * kp = nullptr;
         if( selectedId >=0 && selectedId < (int)sub_options.size() )
         {
             kp = sub_options[selectedId];
-            if( kp!=NULL)
+            if( kp!=nullptr)
             {
                 return "'"+kp->key_string+"'";
             }
@@ -297,7 +297,7 @@ namespace pawgui
 
     std::string widget_radio_button_controller::get_selected_tag()
     {
-        gpe::key_pair * kp = NULL;
+        gpe::key_pair * kp = nullptr;
         if( selectedId >=0 && selectedId < (int)sub_options.size() )
         {
             kp = sub_options[selectedId];
@@ -308,7 +308,7 @@ namespace pawgui
 
     int widget_radio_button_controller::get_selected_value()
     {
-        gpe::key_pair * kp = NULL;
+        gpe::key_pair * kp = nullptr;
         if( selectedId >=0 && selectedId < (int)sub_options.size() )
         {
             kp = sub_options[selectedId];
@@ -335,13 +335,13 @@ namespace pawgui
         }
 
         std::string opStr = "";
-        gpe::key_pair * tPair = NULL;
+        gpe::key_pair * tPair = nullptr;
         if( numCols<=1)
         {
             for(int i =0; i < (int)sub_options.size(); i++)
             {
                 tPair = sub_options[i];
-                if( tPair!=NULL)
+                if( tPair!=nullptr)
                 {
                     opStr = tPair->key_string;
                     if( (int)opStr.size() > 0)
@@ -366,16 +366,16 @@ namespace pawgui
         if( (int)sub_options.size()>0 )
         {
             int removePos = -1;
-            gpe::key_pair * kp = NULL;
+            gpe::key_pair * kp = nullptr;
             for(int i=(int)sub_options.size()-1; i>=0 && removePos < 0; i--)
             {
                 kp = sub_options[i];
-                if( kp!=NULL)
+                if( kp!=nullptr)
                 {
                     if(  kp->key_string == optionToCut)
                     {
                         delete kp;
-                        kp = NULL;
+                        kp = nullptr;
                         sub_options.erase(sub_options.begin()+i);
                         if( i==selectedId)
                         {
@@ -400,10 +400,10 @@ namespace pawgui
             if(optionToCut >=0 && optionToCut < (int)sub_options.size() )
             {
                 gpe::key_pair * kp = sub_options.at( optionToCut );
-                if( kp!=NULL)
+                if( kp!=nullptr)
                 {
                     delete kp;
-                    kp = NULL;
+                    kp = nullptr;
                 }
                 sub_options.erase(sub_options.begin()+optionToCut);
                 if( optionToCut==selectedId)
@@ -429,11 +429,11 @@ namespace pawgui
 
     bool widget_radio_button_controller::set_from_tag(std::string newselectedTag)
     {
-        gpe::key_pair * tempPair = NULL;
+        gpe::key_pair * tempPair = nullptr;
         for( int i = (int)(sub_options.size())-1; i >=0; i--)
         {
             tempPair = sub_options[i];
-            if( tempPair!=NULL)
+            if( tempPair!=nullptr)
             {
                 if( tempPair->key_substring == newselectedTag)
                 {
@@ -447,11 +447,11 @@ namespace pawgui
 
     void widget_radio_button_controller::set_value(int valueToSelect)
     {
-        gpe::key_pair * tempPair = NULL;
+        gpe::key_pair * tempPair = nullptr;
         for( int i = (int)sub_options.size()-1; i>=0; i--)
         {
             tempPair = sub_options[i];
-            if( tempPair!=NULL)
+            if( tempPair!=nullptr)
             {
                 if( tempPair->key_value==valueToSelect)
                 {
@@ -472,7 +472,7 @@ namespace pawgui
         cam = gpe::camera_find(cam);
         view_space = gpe::camera_find(view_space);
         hoveredOption = -1;
-        if( cam!=NULL && view_space!=NULL)
+        if( cam!=nullptr && view_space!=nullptr)
         {
             int buttonXPos = widget_box.x+view_space->x+16-cam->x;
             int buttonYPos = widget_box.y+view_space->y+32-cam->y;
@@ -539,7 +539,7 @@ namespace pawgui
         {
             view_space = gpe::camera_find(view_space);
             cam = gpe::camera_find(cam);
-            if( view_space!=NULL && cam!=NULL)
+            if( view_space!=nullptr && cam!=nullptr)
             {
                 int buttonXPos = widget_box.x-cam->x;
                 int buttonYPos = widget_box.y-cam->y;
@@ -564,7 +564,7 @@ namespace pawgui
                     buttonYPos += 32;
                     int renderedInCol = 0;
 
-                    gpe::key_pair * kp = NULL;
+                    gpe::key_pair * kp = nullptr;
                     for(int i = 0; i  < (int)sub_options.size(); i++)
                     {
                         if( i == hoveredOption )
@@ -578,7 +578,7 @@ namespace pawgui
                             gpe::gcanvas->render_circle_filled_color( buttonXPos+16,buttonYPos+8,4, pawgui::theme_main->button_box_selected_color, 255 );
                         }
                         kp = sub_options[i];
-                        if( kp!=NULL)
+                        if( kp!=nullptr)
                         {
                             gpe::gfs->render_text(  buttonXPos+32,buttonYPos,kp->key_string,pawgui::theme_main->main_box_font_color,gpe::font_default,gpe::fa_left,gpe::fa_top,255);
                         }

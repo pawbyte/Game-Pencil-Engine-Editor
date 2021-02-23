@@ -42,7 +42,7 @@ namespace pawgui
     void display_user_alert(std::string messageTitle, std::string messageContent, int messageType, gpe::shape_rect * cam)
     {
         gpe::game_runtime->end_loop();
-        //resource_dragged = NULL;
+        //resource_dragged = nullptr;
         gpe::cursor_main_controller->cursor_change("arrow");
         //editor_gui_main->reset_gui_info();
         main_overlay_system->update_tooltip("");
@@ -62,7 +62,7 @@ namespace pawgui
         int defaultFontWidth = 0;
         int defaultFontHeight = 0;
         int iSubMessage = 0;
-        if( font_default_prompt!=NULL)
+        if( font_default_prompt!=nullptr)
         {
             font_default_prompt->get_metrics("A",&defaultFontWidth, &defaultFontHeight);
         }
@@ -175,10 +175,10 @@ namespace pawgui
                         }
                     }
                 }
-                if( ok_button!=NULL)
+                if( ok_button!=nullptr)
                 {
                     ok_button->set_coords(widget_box.x+( widget_box.w-ok_button->get_width() )/2,widget_box.y+widget_box.h-padding_default-ok_button->get_height() );
-                    ok_button->process_self( NULL, NULL);
+                    ok_button->process_self( nullptr, nullptr);
                     if( ok_button->is_clicked() && !windowBeingDragged )
                     {
                         exitOperation = true;
@@ -207,9 +207,9 @@ namespace pawgui
                 {
                     gpe::gfs->render_text( widget_box.x+32,widget_box.y+padding_default+32+iSubMessage*(defaultFontHeight+padding_default),messageSubTitles.at(iSubMessage),pawgui::theme_main->popup_box_font_color,font_default_prompt,gpe::fa_left,gpe::fa_top);
                 }
-                if( ok_button!=NULL)
+                if( ok_button!=nullptr)
                 {
-                    ok_button->render_self(  NULL, NULL);
+                    ok_button->render_self(  nullptr, nullptr);
                 }
                 if( gpe::point_within_rect(gpe::input->mouse_position_x,gpe::input->mouse_position_y,&widget_box) )
                 {
@@ -222,10 +222,10 @@ namespace pawgui
                 gpe::game_runtime->end_loop();
             }
         }
-        if( ok_button!=NULL )
+        if( ok_button!=nullptr )
         {
             delete ok_button;
-            ok_button = NULL;
+            ok_button = nullptr;
         }
         gpe::game_runtime->start_loop();
     }
@@ -233,7 +233,7 @@ namespace pawgui
     int display_prompt_message(std::string messageTitle, std::string messageContent, bool showCancel_button )
     {
         gpe::game_runtime->end_loop();
-        //resource_dragged = NULL;
+        //resource_dragged = nullptr;
         int maxMessageWidth = 0;
         int maxMessageHeight = 0;
         int defaultFontWidth = 12;
@@ -247,8 +247,8 @@ namespace pawgui
         int returnVal = display_query_cancel;
         widget_button_label * yes_button = new widget_button_label( "Yes[ENTER]","");
         yes_button->set_width(96);
-        widget_button_label * noButon = NULL;
-        widget_button_label * cancel_button = NULL;
+        widget_button_label * noButon = nullptr;
+        widget_button_label * cancel_button = nullptr;
         if( showCancel_button)
         {
             cancel_button = new widget_button_label( "Cancel[ESC]","");
@@ -266,7 +266,7 @@ namespace pawgui
         bool boxWasResized = true;
         bool boxbeing_resized  = false;
 
-        if( font_default_prompt!=NULL)
+        if( font_default_prompt!=nullptr)
         {
             font_default_prompt->get_metrics("A",&defaultFontWidth, &defaultFontHeight);
         }
@@ -471,7 +471,7 @@ namespace pawgui
 
                 yes_button->set_coords( padding_default+64,widget_box.h-32);
                 noButon->set_coords(yes_button->get_xpos()+yes_button->get_width()+padding_default,yes_button->get_ypos() );
-                if( cancel_button!=NULL)
+                if( cancel_button!=nullptr)
                 {
                     cancel_button->set_coords( noButon->get_xpos()+noButon->get_width()+padding_default,noButon->get_ypos() );
                     cancel_button->process_self(&widget_box);
@@ -482,7 +482,7 @@ namespace pawgui
 
                 if( gpe::input->check_kb_released(kb_esc) || gpe::window_controller_main->window_closed )
                 {
-                    if( cancel_button!=NULL)
+                    if( cancel_button!=nullptr)
                     {
                         exitOperation = true;
                         returnVal = display_query_cancel;
@@ -503,7 +503,7 @@ namespace pawgui
                     exitOperation = true;
                     returnVal = display_query_no;
                 }
-                else if( cancel_button!=NULL &&  cancel_button->is_clicked() )
+                else if( cancel_button!=nullptr &&  cancel_button->is_clicked() )
                 {
                     exitOperation = true;
                     returnVal = display_query_cancel;
@@ -535,7 +535,7 @@ namespace pawgui
 
                     yes_button->render_self( &widget_box );
                     noButon->render_self( &widget_box );
-                    if( cancel_button!=NULL)
+                    if( cancel_button!=nullptr)
                     {
                         cancel_button->render_self( &widget_box );
                     }
@@ -548,24 +548,24 @@ namespace pawgui
         }
 
         gpe::renderer_main->reset_viewpoint();
-        if( font_default_prompt!=NULL)
+        if( font_default_prompt!=nullptr)
         {
             font_default_prompt->clear_cache();
         }
-        if( yes_button!=NULL)
+        if( yes_button!=nullptr)
         {
             delete yes_button;
-            yes_button = NULL;
+            yes_button = nullptr;
         }
-        if( noButon!=NULL)
+        if( noButon!=nullptr)
         {
             delete noButon;
-            noButon = NULL;
+            noButon = nullptr;
         }
-        if( cancel_button!=NULL)
+        if( cancel_button!=nullptr)
         {
             delete cancel_button;
-            cancel_button = NULL;
+            cancel_button = nullptr;
         }
         gpe::input->reset_all_input();
         messageSubTitles.clear();
@@ -577,16 +577,15 @@ namespace pawgui
     std::string get_string_from_popup(std::string messageTitle, std::string messageContent, std::string startName)
     {
         gpe::game_runtime->end_loop();
-        //resource_dragged = NULL;
+        //resource_dragged = nullptr;
         main_overlay_system->update_tooltip("");
         gpe::cursor_main_controller->cursor_change("arrow");
         main_overlay_system->take_frozen_screenshot( );
         gpe::input->reset_all_input();
         bool exitOperation = false;
-        int frame = 0;
         int TEXTBOX_FONT_SIZE_WIDTH = 12;
         int TEXTBOX_FONT_SIZE_HEIGHT = 12;
-        if( font_default_prompt!=NULL)
+        if( font_default_prompt!=nullptr)
         {
             font_default_prompt->get_metrics("A",&TEXTBOX_FONT_SIZE_WIDTH,&TEXTBOX_FONT_SIZE_HEIGHT);
         }
@@ -639,7 +638,7 @@ namespace pawgui
             else if( gpe::input->check_kb_released(kb_enter) || yes_button->is_clicked() )
             {
                 exitOperation = true;
-                if( newstringBox!=NULL)
+                if( newstringBox!=nullptr)
                 {
                     returnVal = newstringBox->get_string();
                 }
@@ -661,20 +660,20 @@ namespace pawgui
             gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->popup_box_border_color,true );
             gpe::game_runtime->end_loop();
         }
-        if( yes_button!=NULL)
+        if( yes_button!=nullptr)
         {
             delete yes_button;
-            yes_button = NULL;
+            yes_button = nullptr;
         }
-        if( cancel_button!=NULL)
+        if( cancel_button!=nullptr)
         {
             delete cancel_button;
-            cancel_button = NULL;
+            cancel_button = nullptr;
         }
-        if( newstringBox!=NULL)
+        if( newstringBox!=nullptr)
         {
             delete newstringBox;
-            newstringBox = NULL;
+            newstringBox = nullptr;
         }
 
         gpe::input->reset_all_input();

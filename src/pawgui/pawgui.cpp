@@ -43,7 +43,7 @@ namespace pawgui
             gpe::error_log->report("IDE properly added all PawGUI Fonts... \n");
             popup_font_size_width = font_min_size;
             popup_font_size_height = font_min_size;
-            if( font_popup!=NULL)
+            if( font_popup!=nullptr)
             {
                 font_popup->get_metrics("A",&popup_font_size_width,&popup_font_size_height);
             }
@@ -58,7 +58,7 @@ namespace pawgui
         main_settings = new gui_settings();
         main_overlay_system = new overlay_system();
         main_search_controller = new search_controller();
-        if( main_settings!=NULL && main_overlay_system!=NULL && main_search_controller!=NULL )
+        if( main_settings!=nullptr && main_overlay_system!=nullptr && main_search_controller!=nullptr )
         {
             main_context_menu = new popup_menu_option("  ",-1,false,false,true);
             main_context_menu->isTopOfMenu = true;
@@ -79,36 +79,36 @@ namespace pawgui
     bool quit_gui()
     {
         gpe::error_log->report("Deleting PAWGUI ....");
-        texture_color_picker_gradient = NULL;
+        texture_color_picker_gradient = nullptr;
 
-        if( main_overlay_system !=NULL)
+        if( main_overlay_system !=nullptr)
         {
             delete main_overlay_system;
-            main_overlay_system = NULL;
+            main_overlay_system = nullptr;
         }
 
 
-        if( main_search_controller !=NULL)
+        if( main_search_controller !=nullptr)
         {
             delete main_search_controller;
-            main_search_controller = NULL;
+            main_search_controller = nullptr;
         }
-        if( main_settings !=NULL)
+        if( main_settings !=nullptr)
         {
             delete main_settings;
-            main_settings = NULL;
+            main_settings = nullptr;
         }
 
         gpe::error_log->report("Deleting mini-code-highlighter....");
-        if( main_syntax_highlighter!=NULL)
+        if( main_syntax_highlighter!=nullptr)
         {
             delete main_syntax_highlighter;
-            main_syntax_highlighter = NULL;
+            main_syntax_highlighter = nullptr;
         }
-        if( rsm_gui!=NULL )
+        if( rsm_gui!=nullptr )
         {
             delete rsm_gui;
-            rsm_gui = NULL;
+            rsm_gui = nullptr;
         }
         return true;
     }

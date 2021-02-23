@@ -56,7 +56,7 @@ namespace pawgui
             syntax_line();
             ~syntax_line();
             std::string get_parsed_line(std::string sIn);
-            void render_tokens( gpe::font_base * fontIn,std::string sIn, int x_pos, int y_pos, int lineStartPos, int lineMax_pos, gpe::color * render_color = NULL, bool isNumber = false );
+            void render_tokens( gpe::font_base * fontIn,std::string sIn, int x_pos, int y_pos, int lineStartPos, int lineMax_pos, gpe::color * render_color = nullptr, bool isNumber = false );
             void reset_self();
     };
 

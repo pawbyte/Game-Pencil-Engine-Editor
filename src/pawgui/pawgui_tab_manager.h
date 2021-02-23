@@ -79,14 +79,14 @@ namespace pawgui
             void close_tabs_from_project( std::string projectDirNameIn);
             void close_all_tabs();
             void move_to_tab(int newTabId);
-            void process_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect *cam=NULL);
-            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space=nullptr, gpe::shape_rect *cam=nullptr);
+            void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
             bool requests_fullscreen();
             int search_for_string(std::string needle);
             int search_and_replace_string(std::string needle, std::string newStr = "");
             void set_coords(int x_new, int y_new);
             void set_height(int new_height);
-            void set_selected_gresource(general_resource * newResource = NULL);
+            void set_selected_gresource(general_resource * newResource = nullptr);
             void set_width(int new_width);
             void update_tabsizes();
             void toggle_full_width();

@@ -181,7 +181,7 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( cam!=NULL && view_space!=NULL )
+        if( cam!=nullptr && view_space!=nullptr )
         {
             gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y+4,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y-4,pawgui::theme_main->scroll_box_color,false);
             gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y+4,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y-4,pawgui::theme_main->scroll_box_border_color,true);

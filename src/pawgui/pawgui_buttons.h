@@ -58,8 +58,8 @@ namespace pawgui
         bool ends_section();
         int get_id();
         void set_id(int new_id);
-        void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+        void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+        void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
         void set_website(std::string url_string);
     };
 
@@ -86,9 +86,9 @@ namespace pawgui
         void limit_width(bool isLimited = false);
         void set_width(int newWid);
         widget_button_icon * add_option( std::string buttonImgFile,std::string name, int id = -1, bool endsSection = false);
-        void process_self( gpe::shape_rect * view_space =NULL, gpe::shape_rect *render_camera = NULL);
+        void process_self( gpe::shape_rect * view_space =nullptr, gpe::shape_rect *render_camera = nullptr);
         void recalculate_width();
-        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+        void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
         void set_coords(int x_new = -1, int y_new = -1);
         void set_height(int newXH);
         void set_selection(int newSelection);
@@ -102,10 +102,10 @@ namespace pawgui
         widget_button_label( std::string name, std::string description,int id = -1);
         ~widget_button_label();
         void prerender_self( );
-        void process_self( gpe::shape_rect * view_space =NULL, gpe::shape_rect *render_camera = NULL);
+        void process_self( gpe::shape_rect * view_space =nullptr, gpe::shape_rect *render_camera = nullptr);
         void set_id(int new_id);
         void set_name(std::string new_name);
-        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+        void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     };
 
     class widget_button_push: public widget_basic
@@ -127,8 +127,8 @@ namespace pawgui
         void set_name(std::string new_name);
         void set_website(std::string url_string);
         void prerender_self( );
-        void process_self( gpe::shape_rect * view_space =NULL, gpe::shape_rect *render_camera = NULL);
-        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+        void process_self( gpe::shape_rect * view_space =nullptr, gpe::shape_rect *render_camera = nullptr);
+        void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     };
 
     class widget_button_card_vertical: public widget_basic
@@ -157,8 +157,8 @@ namespace pawgui
         void set_name(std::string new_name);
         void set_website(std::string url_string);
         void prerender_self( );
-        void process_self( gpe::shape_rect * view_space =NULL, gpe::shape_rect *render_camera = NULL);
-        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+        void process_self( gpe::shape_rect * view_space =nullptr, gpe::shape_rect *render_camera = nullptr);
+        void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     };
 }
 

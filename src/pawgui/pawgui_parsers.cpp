@@ -58,10 +58,10 @@ namespace pawgui
     {
         for( int i = (int)foundParses.size()-1; i >=0; i--)
         {
-            if( foundParses[i]!=NULL)
+            if( foundParses[i]!=nullptr)
             {
                 delete foundParses[i];
-                foundParses[i] = NULL;
+                foundParses[i] = nullptr;
             }
         }
         foundParses.clear();
@@ -71,14 +71,14 @@ namespace pawgui
     {
         int startParsingPos = 0;
         int maxParseSize = (int)sIn.size();
-        parsed_text* tempParseContent = NULL;
+        parsed_text* tempParseContent = nullptr;
         if( maxParseSize>0 && (int)foundParses.size()>0)
         {
             std::string rstring = "";
             for( int i = 0; i < (int)foundParses.size(); i++)
             {
                 tempParseContent = foundParses[i];
-                if( tempParseContent!=NULL)
+                if( tempParseContent!=nullptr)
                 {
                     if( tempParseContent->textStart < 0 || tempParseContent->textStart > maxParseSize )
                     {
@@ -102,8 +102,8 @@ namespace pawgui
         if( maxParseSize > 0)
         {
             std::string rstring = "";
-            parsed_text* tempParseContent = NULL;
-            if( render_color==NULL)
+            parsed_text* tempParseContent = nullptr;
+            if( render_color==nullptr)
             {
                 render_color = pawgui::theme_main->text_box_font_color;
             }
@@ -111,7 +111,7 @@ namespace pawgui
             for( int i = 0; i < maxParseSize; i++)
             {
                 tempParseContent = foundParses[i];
-                if( tempParseContent!=NULL)
+                if( tempParseContent!=nullptr)
                 {
                     if( tempParseContent->textEnd >= lineStartPos )
                     {
@@ -134,10 +134,10 @@ namespace pawgui
     {
         for( int i = (int)foundParses.size()-1; i >=0; i--)
         {
-            if( foundParses[i]!=NULL)
+            if( foundParses[i]!=nullptr)
             {
                 delete foundParses[i];
-                foundParses[i] = NULL;
+                foundParses[i] = nullptr;
             }
         }
         foundParses.clear();
@@ -173,7 +173,7 @@ namespace pawgui
     {
         if( has_early_tab(str_in) )
         {
-            if( main_settings!=NULL && main_settings->tabSpaceCount > 0 )
+            if( main_settings!=nullptr && main_settings->tabSpaceCount > 0 )
             {
                 str_in = stg_ex::get_substring(str_in, main_settings->tabSpaceCount );
             }
@@ -189,7 +189,7 @@ namespace pawgui
     {
         if( tabCount > 0)
         {
-            if( main_settings!=NULL && main_settings->tabSpaceCount > 0 )
+            if( main_settings!=nullptr && main_settings->tabSpaceCount > 0 )
             {
                 return stg_ex::string_repeat(" ", tabCount * main_settings->tabSpaceCount );
             }
@@ -204,7 +204,7 @@ namespace pawgui
 
     int get_tab_space_count()
     {
-        if( main_settings!=NULL && main_settings->tabSpaceCount > 0)
+        if( main_settings!=nullptr && main_settings->tabSpaceCount > 0)
         {
             return main_settings->tabSpaceCount;
         }

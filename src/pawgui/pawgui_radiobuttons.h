@@ -73,8 +73,8 @@ namespace pawgui
             bool set_from_tag(std::string newselectedTag);
             void set_value( int valueToSelect);
             void prerender_self( );
-            void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-            void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+            void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+            void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     };
 }
 
