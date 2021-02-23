@@ -224,6 +224,7 @@ namespace misc {
     return false;
   }
 
+  // expand all environment variables found within a string...
   string stdfilesystem::environment_expand_variables(string str) {
     if (str.find("${") == string::npos) return str;
     string pre = str.substr(0, str.find("${"));
