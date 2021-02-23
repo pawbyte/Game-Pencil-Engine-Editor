@@ -55,6 +55,7 @@ namespace misc {
 
       std::string environment_get_variable(std::string name);
       bool environment_set_variable(std::string name, std::string value);
+      std::string environment_expand_variables(std::string str);
 
       std::string filename_canonical(std::string fname);
       std::string filename_weakly_canonical(std::string fname);
