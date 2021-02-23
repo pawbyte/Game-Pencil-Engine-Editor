@@ -45,8 +45,8 @@ namespace misc {
 
     public:
 
-      std::wstring stdfilesystem::widen(std::string str);
-      std::string stdfilesystem::narrow(std::wstring wstr);
+      std::wstring widen(std::string str);
+      std::string narrow(std::wstring wstr);
 
       std::string get_working_directory();
       bool set_working_directory(std::string dname);
