@@ -34,45 +34,45 @@ SOFTWARE.
 #include "gpe_render_package.h"
 namespace gpe
 {
-    render_package * gpepm = NULL;
+    render_package * gpepm = nullptr;
 
     render_package::render_package( int pId, std::string pName )
     {
         packageId = pId;
         packageName = pName;
-        packageTexture = NULL;
-        packageRenderer = NULL;
-        packageWindow = NULL;
+        packageTexture = nullptr;
+        packageRenderer = nullptr;
+        packageWindow = nullptr;
     }
 
     render_package::~render_package()
     {
-        if( packageTexture !=NULL)
+        if( packageTexture !=nullptr)
         {
             delete packageTexture;
-            packageTexture = NULL;
+            packageTexture = nullptr;
         }
 
-        if( packageRenderer !=NULL)
+        if( packageRenderer !=nullptr)
         {
             delete packageRenderer;
-            packageRenderer = NULL;
+            packageRenderer = nullptr;
         }
 
-        if( packageWindow !=NULL)
+        if( packageWindow !=nullptr)
         {
             delete packageWindow;
-            packageWindow = NULL;
+            packageWindow = nullptr;
         }
     }
 
     texture_base * render_package::create_texture()
     {
-        if( packageTexture!=NULL)
+        if( packageTexture!=nullptr)
         {
             return packageTexture->create_new();
         }
-        return NULL;
+        return nullptr;
     }
 
     int render_package::get_package_id()

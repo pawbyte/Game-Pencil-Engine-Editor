@@ -126,16 +126,16 @@ namespace gpe
 
             //Font Rendering [ BEGIN ]
             //Auto-translates
-            bool render_bitmap_text( int x_pos, int y_pos, std::string text_to_render, color * text_color,font_base * text_font=NULL, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
-            void render_fps( font_base * text_font,color * color = NULL , int x_pos = 0, int y_pos = 0, int alignment_h = gpe::fa_right, int alignment_v = gpe::fa_top );
-            bool render_text( int x_pos, int y_pos, std::string text_to_render, color * text_color,font_base * text_font=NULL, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
-            bool render_text_boxed( int x_pos, int y_pos, std::string text_to_render, color * text_color,color * boxColor, font_base * text_font=NULL, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
-            bool render_text_resized( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font=NULL, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_width = -1, int render_height = -1, int render_alpha = 255);
+            bool render_bitmap_text( int x_pos, int y_pos, std::string text_to_render, color * text_color,font_base * text_font=nullptr, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
+            void render_fps( font_base * text_font,color * color = nullptr , int x_pos = 0, int y_pos = 0, int alignment_h = gpe::fa_right, int alignment_v = gpe::fa_top );
+            bool render_text( int x_pos, int y_pos, std::string text_to_render, color * text_color,font_base * text_font=nullptr, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
+            bool render_text_boxed( int x_pos, int y_pos, std::string text_to_render, color * text_color,color * boxColor, font_base * text_font=nullptr, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
+            bool render_text_resized( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font=nullptr, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_width = -1, int render_height = -1, int render_alpha = 255);
             bool render_text_rotated( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font, float textAngle = 0, int render_alpha  = 255);
-            bool render_text_scaled( int x_pos, int y_pos, std::string text_to_render, color * text_color, float scaleValue, font_base * text_font=NULL,  int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
-            bool render_text_special( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font=NULL, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, float render_angle = 0, float render_scale = 1.f, int render_alpha = 255);
+            bool render_text_scaled( int x_pos, int y_pos, std::string text_to_render, color * text_color, float scaleValue, font_base * text_font=nullptr,  int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
+            bool render_text_special( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font=nullptr, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, float render_angle = 0, float render_scale = 1.f, int render_alpha = 255);
             //Doesnt translate ( useful for textfields and code/text editors)
-            bool render_only_text( int x_pos, int y_pos, std::string text_to_render, color * text_color,font_base * text_font=NULL, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
+            bool render_only_text( int x_pos, int y_pos, std::string text_to_render, color * text_color,font_base * text_font=nullptr, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
             //Font Rendering [ END ]
     };
 

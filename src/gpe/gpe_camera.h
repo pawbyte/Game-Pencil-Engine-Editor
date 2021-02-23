@@ -81,7 +81,7 @@ namespace gpe
 
     void camera_reset();
     void update_rectangle( shape_rect * rect_in, float nx, float ny, float nw, float nh);
-    shape_rect * camera_find( shape_rect * rect_in = NULL );
+    shape_rect * camera_find( shape_rect * rect_in = nullptr );
 
 }
 #endif //gpe_camera_h

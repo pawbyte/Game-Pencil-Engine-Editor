@@ -34,7 +34,6 @@ SOFTWARE.
 #ifndef gpe_input_base_h
 #define gpe_input_base_h
 
-#include <ctime>
 #include <string>
 #include <vector>
 #include "gpe_error_logger.h"
@@ -48,14 +47,16 @@ const int kb_anykey = -2;
 
 const int kb_backspace = 8;
 const int kb_tab = 9;
-const int kb_enter = 13;
-const int kb_pause = 19;
-const int kb_caps = 20;
 
+const int kb_enter = 13;
 
 const int kb_shift = 16;
 const int kb_ctrl = 17;
 const int kb_alt = 18;
+const int kb_pause = 19;
+const int kb_caps = 20;
+const int kb_print_screen = 21;
+
 
 /*
 var gp_fslash = 191;
@@ -94,7 +95,7 @@ const int kb_9 = 57;
 
 const int kb_a = 65;
 const int kb_b = 66;
-const int kb_c = 6;
+const int kb_c = 67;
 const int kb_d = 68;
 const int kb_e = 69;
 const int kb_f = 70;

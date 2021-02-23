@@ -68,7 +68,7 @@ SOFTWARE.
 namespace gpe
 {
     int collision_controller_counter = 0;
-    collision_controller_base * main_collision_controller = NULL;
+    collision_controller_base * main_collision_controller = nullptr;
 
     collision_controller_base::collision_controller_base()
     {
@@ -114,7 +114,7 @@ namespace gpe
 
     int collision_controller_base::compare( collision_controller_base * other )
     {
-        if( other == NULL )
+        if( other == nullptr )
         {
             return -1;
         }
@@ -144,7 +144,7 @@ namespace gpe
 
     bool collision_controller_base::init_system( int scene_width, int scene_height )
     {
-
+        return false;
     }
 
     void collision_controller_base::remove_object( game_object * g_obj )

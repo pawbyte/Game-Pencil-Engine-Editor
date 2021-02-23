@@ -67,6 +67,7 @@ namespace gpe
             int render_blend_mode;
             std::string r_name;
             std::string r_type;
+            shape_rect * render_sub_rectangle;
         public:
             bool resized;
             renderer_base();
@@ -113,7 +114,7 @@ namespace gpe
 
             virtual bool screen_was_cleared();
             virtual void set_render_blend_mode( int blend_mode_new );
-            virtual void set_viewpoint( gpe::shape_rect * newViewPoint = NULL);
+            virtual void set_viewpoint( gpe::shape_rect * newViewPoint = nullptr);
             virtual void update_renderer( bool windowIsMinimized );
     };
     extern renderer_base * renderer_main;

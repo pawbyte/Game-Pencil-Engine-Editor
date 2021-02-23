@@ -37,8 +37,8 @@ SOFTWARE.
 
 namespace gpe
 {
-    font_base * font_default = NULL;
-    font_system_controller * gfs = NULL;
+    font_base * font_default = nullptr;
+    font_system_controller * gfs = nullptr;
 
     font_pair_base::font_pair_base()
     {
@@ -99,17 +99,17 @@ namespace gpe
 
     font_base * font_base::create_new(std::string file_loc, int f_size, bool make_monospaced, const std::string f_nickname, int id_number )
     {
-        return NULL;
+        return new font_base();
     }
 
         font_pair_base * font_base::find_character_texture( const std::string id_number )
     {
-        return NULL;
+        return nullptr;
     }
 
     font_pair_base * font_base::find_texture( const std::string text_to_render)
     {
-        return NULL;
+        return nullptr;
     }
 
     int font_base::get_cache_count()
@@ -232,19 +232,24 @@ namespace gpe
     {
         newid_numberer = 0;
         fontTotalCount = 0;
-        lastFontUsed = NULL;
+        lastFontUsed = nullptr;
+        font_template = new font_base();
     }
 
     font_system_controller::~font_system_controller()
     {
-
+        if( font_template!=nullptr )
+        {
+            delete font_template;
+            font_template = nullptr;
+        }
     }
 
     font_base *  font_system_controller::copy_font( font_base * parent_font, std::string font_nickname , int dynamic_id )
     {
-        if( parent_font == NULL )
+        if( parent_font == nullptr )
         {
-            return NULL;
+            return nullptr;
         }
         if( dynamic_id < 0)
         {
@@ -264,7 +269,7 @@ namespace gpe
         {
             dynamic_id = newid_numberer;
         }
-        if( font_template != NULL )
+        if( font_template != nullptr )
         {
             font_base *  returnVal = font_template->create_new( fontLocation.c_str(),font_size, make_monospaced, f_nickname,dynamic_id );
             loadedFonts.push_back(returnVal);
@@ -272,18 +277,18 @@ namespace gpe
             fontTotalCount++;
             return returnVal;
         }
-        return NULL;
+        return nullptr;
     }
 
     void font_system_controller::close_font(font_base * fontIn)
     {
-        if( fontIn!=NULL)
+        if( fontIn!=nullptr)
         {
-            font_base * cFont = NULL;
+            font_base * cFont = nullptr;
             for( int i = (int)loadedFonts.size()-1; i >=0; i--)
             {
                 cFont = loadedFonts[i];
-                if( cFont!=NULL)
+                if( cFont!=nullptr)
                 {
                     if( cFont->get_font_id()==fontIn->get_font_id() )
                     {
@@ -294,18 +299,18 @@ namespace gpe
             }
             fontIn->clear_cache();
             delete fontIn;
-            fontIn = NULL;
+            fontIn = nullptr;
         }
     }
 
     void font_system_controller::clear_font_cache()
     {
         gpe::error_log->report("Clearing Font Cache...");
-        font_base * cFont = NULL;
+        font_base * cFont = nullptr;
         for( int i = (int)loadedFonts.size()-1; i >=0; i--)
         {
             cFont = loadedFonts[i];
-            if( cFont!=NULL)
+            if( cFont!=nullptr)
             {
                 cFont->clear_cache();
             }
@@ -315,7 +320,7 @@ namespace gpe
 
     int font_system_controller::get_font_cache_size(bool recordCache)
     {
-        font_base * cFont = NULL;
+        font_base * cFont = nullptr;
         int cacheCount = 0;
         int i = 0;
         int foundCache = 0;
@@ -325,7 +330,7 @@ namespace gpe
             for( i = (int)loadedFonts.size()-1; i >=0; i--)
             {
                 cFont = loadedFonts[i];
-                if( cFont!=NULL)
+                if( cFont!=nullptr)
                 {
                     foundCache =cFont->get_cache_count();
                     cacheCount+=foundCache;
@@ -339,7 +344,7 @@ namespace gpe
             for( i = (int)loadedFonts.size()-1; i >=0; i--)
             {
                 cFont = loadedFonts[i];
-                if( cFont!=NULL)
+                if( cFont!=nullptr)
                 {
                     cacheCount+=cFont->get_cache_count();
                 }
@@ -356,11 +361,11 @@ namespace gpe
 
     bool font_system_controller::render_bitmap_text( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font, int alignment_h, int alignment_v, int render_alpha)
     {
-        if( text_font==NULL)
+        if( text_font==nullptr)
         {
             text_font = lastFontUsed;
         }
-        if( text_font!=NULL)
+        if( text_font!=nullptr)
         {
             text_font->render_bitmapped_text( x_pos,y_pos,text_to_render,text_color,alignment_h,alignment_v,render_alpha);
             return true;
@@ -376,7 +381,7 @@ namespace gpe
     {
         //if( fps_show_counter )
         {
-            if( color == NULL )
+            if( color == nullptr )
             {
                 color = c_lime;
             }
@@ -400,13 +405,13 @@ namespace gpe
 
     bool font_system_controller::render_only_text( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font, int alignment_h, int alignment_v, int render_alpha)
     {
-        if( text_font==NULL)
+        if( text_font==nullptr)
         {
             text_font = lastFontUsed;
         }
         if( (int)text_to_render.size() > 0)
         {
-            if( text_font!=NULL)
+            if( text_font!=nullptr)
             {
                 text_font->render_text( x_pos,y_pos,text_to_render,text_color,alignment_h,alignment_v,render_alpha);
                 return true;
@@ -417,11 +422,11 @@ namespace gpe
 
     bool font_system_controller::render_text( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font, int alignment_h, int alignment_v, int render_alpha)
     {
-        if( text_font==NULL)
+        if( text_font==nullptr)
         {
             text_font = lastFontUsed;
         }
-        if( (int)text_to_render.size() > 0 && text_font!=NULL )
+        if( (int)text_to_render.size() > 0 && text_font!=nullptr )
         {
             //error_log->report("Rendering Text["+ text_to_render+"]");
             text_font->render_text( x_pos,y_pos,text_to_render,text_color,alignment_h,alignment_v,render_alpha);
@@ -439,11 +444,11 @@ namespace gpe
 
     bool font_system_controller::render_text_boxed( int x_pos, int y_pos, std::string text_to_render, color * text_color,color * boxColor, font_base * text_font, int alignment_h,int alignment_v, int render_alpha)
     {
-        if( text_font==NULL)
+        if( text_font==nullptr)
         {
             text_font = lastFontUsed;
         }
-        if( text_font!=NULL)
+        if( text_font!=nullptr)
         {
             text_font->render_text_boxed( x_pos,y_pos,text_to_render,text_color,boxColor,alignment_h,alignment_v,render_alpha);
             return true;
@@ -453,16 +458,16 @@ namespace gpe
 
     bool font_system_controller::render_text_resized( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font, int alignment_h, int alignment_v, int render_width, int render_height, int render_alpha )
     {
-        if( text_font==NULL)
+        if( text_font==nullptr)
         {
             text_font = lastFontUsed;
         }
-        if( text_font!=NULL)
+        if( text_font!=nullptr)
         {
             text_font->render_text_resized( x_pos,y_pos,text_to_render,text_color,alignment_h,alignment_v,render_width,render_height,render_alpha);
             return true;
         }
-        else if( text_font!=NULL )
+        else if( text_font!=nullptr )
         {
             std::cout << "Unable to render EXT text (" << text_to_render << ").\n";
         }
@@ -471,11 +476,11 @@ namespace gpe
 
     bool font_system_controller::render_text_rotated( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font, float textAngle, int render_alpha )
     {
-        if( text_font==NULL)
+        if( text_font==nullptr)
         {
             text_font = lastFontUsed;
         }
-        if( text_font!=NULL)
+        if( text_font!=nullptr)
         {
             text_font->render_text_rotated( x_pos,y_pos,text_to_render,text_color,textAngle,render_alpha);
             return true;
@@ -485,7 +490,7 @@ namespace gpe
 
     bool font_system_controller::render_text_scaled( int x_pos, int y_pos, std::string text_to_render,color * text_color, float scaleValue, font_base * text_font, int alignment_h,int alignment_v, int render_alpha )
     {
-        if( text_font!=NULL)
+        if( text_font!=nullptr)
         {
             text_font->render_text_scaled( x_pos, y_pos, text_to_render, text_color, scaleValue, alignment_h, alignment_v, render_alpha );
         }
@@ -494,7 +499,7 @@ namespace gpe
 
     bool font_system_controller::render_text_special( int x_pos, int y_pos, std::string text_to_render, color * text_color, font_base * text_font, int alignment_h,int alignment_v, float render_angle, float render_scale, int render_alpha )
     {
-        if( text_font!=NULL)
+        if( text_font!=nullptr)
         {
             return text_font->render_text_special( x_pos, y_pos, text_to_render, text_color, alignment_h, alignment_v, render_angle, render_scale, render_alpha );
         }
@@ -505,12 +510,12 @@ namespace gpe
     bool init_font_system()
     {
         //If we already started the font system do nothing.
-        if( gfs!=NULL )
+        if( gfs!=nullptr )
         {
             return true;
         }
 
-        if( gfs==NULL )
+        if( gfs==nullptr )
         {
             gfs = new font_system_controller();
         }
@@ -519,10 +524,10 @@ namespace gpe
 
     void quit_font_system()
     {
-        if( gfs!=NULL )
+        if( gfs!=nullptr )
         {
             delete gfs;
-            gfs = NULL;
+            gfs = nullptr;
         }
         gpe::error_log->report("font_System Quit...");
     }

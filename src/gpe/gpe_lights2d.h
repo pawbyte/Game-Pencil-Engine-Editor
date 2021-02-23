@@ -52,8 +52,8 @@ namespace gpe
             bool light_is_active, light_active_on_start;
             light_basic_2d();
             virtual ~light_basic_2d();
-            virtual void render_light( float scale = 1, gpe::shape_rect * cam = NULL);
-            virtual void render_light_at( float x, float y, float scale = 1, gpe::shape_rect * cam = NULL);
+            virtual void render_light( float scale = 1, gpe::shape_rect * cam = nullptr);
+            virtual void render_light_at( float x, float y, float scale = 1, gpe::shape_rect * cam = nullptr);
             void setup_light( int x, int y, int intensity, bool activeNow, bool activeOnLoad );
     };
 
@@ -69,8 +69,8 @@ namespace gpe
             light_direction2d();
             ~light_direction2d();
             float get_direction();
-            void render_light( float scale = 1, gpe::shape_rect * cam = NULL);
-            void render_light_at( float x, float y, float scale = 1, gpe::shape_rect * cam = NULL);
+            void render_light( float scale = 1, gpe::shape_rect * cam = nullptr);
+            void render_light_at( float x, float y, float scale = 1, gpe::shape_rect * cam = nullptr);
             void set_direction( float newDir );
     };
 
@@ -90,8 +90,8 @@ namespace gpe
             ~light_point2d();
             void disable_flicker();
             void enable_flicker();
-            void render_light( float scale = 1, gpe::shape_rect * cam = NULL);
-            void render_light_at( float x, float y, float scale = 1, gpe::shape_rect * cam = NULL);
+            void render_light( float scale = 1, gpe::shape_rect * cam = nullptr);
+            void render_light_at( float x, float y, float scale = 1, gpe::shape_rect * cam = nullptr);
             void setup_flicker( int fTime, int fRange );
             void update_light( int delta );
     };

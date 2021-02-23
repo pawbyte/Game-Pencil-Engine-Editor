@@ -147,7 +147,7 @@ namespace gpe
 
     bool point_within_rect(int point_x, int point_y, gpe::shape_rect * rect_in)
     {
-        if( rect_in!=NULL)
+        if( rect_in!=nullptr)
         {
             int pxmin, pxmax, pymin, pymax;
             pxmin=rect_in->x;
@@ -168,7 +168,7 @@ namespace gpe
 
     bool point_between_rect(int point_x, int point_y, gpe::shape_rect * rect_in)
     {
-        if( rect_in!=NULL)
+        if( rect_in!=nullptr)
         {
             int pxmin, pxmax, pymin, pymax;
             pxmin=rect_in->x;

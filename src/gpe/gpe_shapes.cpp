@@ -73,7 +73,7 @@ namespace gpe
 
     void shape_rect::copy_rect( shape_rect * otherRect )
     {
-        if( otherRect!=NULL)
+        if( otherRect!=nullptr)
         {
             x = otherRect->x;
             y = otherRect->y;
@@ -124,7 +124,7 @@ namespace gpe
 
     void shape_rect::limit_space_to_rect( int * limitedX, int * limitedY )
     {
-        if( limitedX!=NULL && limitedY!=NULL)
+        if( limitedX!=nullptr && limitedY!=nullptr)
         {
             if( *limitedX < x)
             {
@@ -235,7 +235,7 @@ namespace gpe
 
     void update_rectangle( gpe::shape_rect * rect_in, float nx, float ny, float nw, float nh)
     {
-        if( rect_in!=NULL)
+        if( rect_in!=nullptr)
         {
             rect_in->update_shape( nx, ny, nw, nh);
         }

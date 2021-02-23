@@ -78,16 +78,16 @@ namespace gpe
             virtual void prerender_rectangle( renderer_base * renderer, int w, int h, color * color_new, int id = -1, bool transparent = true, bool useLinearScaling = true , bool isOutline = false);
 
             //
-            virtual void render_align(  int x, int y, int alignment_h, int alignment_v, shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255  );
-            virtual void render_align_resized(  int x, int y,int new_width, int new_height, int alignment_h, int alignment_v, shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
-            virtual void render_tex(  int x, int y, shape_rect* clip = NULL, int alpha = 255  );
-            virtual void render_tex_colored(  int x, int y, color * render_color, int alpha = 255, shape_rect* clip = NULL  );
-            virtual void render_tex_resized(  int x, int y,float new_width, float new_height, shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
-            virtual void render_tex_scaled(  int x, int y,float x_scale, float y_scale, shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
-            virtual void render_tex_rotated(  int x, int y, float render_angle,  color * render_color = NULL, shape_rect* clip = NULL , int alpha = 255 );
-            virtual void render_tex_rotated_at_point(  int x, int y, float render_angle, int point_x, int point_y, color * render_color = NULL, shape_rect* clip = NULL , int alpha = 255 );
-            virtual void render_tex_special(  int x, int y, float render_angle, int new_width = -1, int new_height = -1, color * render_color = NULL, shape_rect* clip = NULL , int alpha = 255 );
-            virtual void render_tex_special_at_point(  int x, int y, float render_angle, int point_x, int point_y,int new_width = -1, int new_height = -1, color * render_color = NULL, shape_rect* clip = NULL , int alpha = 255 );
+            virtual void render_align(  int x, int y, int alignment_h, int alignment_v, shape_rect* clip = nullptr, color * render_color = nullptr, int alpha = 255  );
+            virtual void render_align_resized(  int x, int y,int new_width, int new_height, int alignment_h, int alignment_v, shape_rect* clip = nullptr, color * render_color = nullptr, int alpha = 255 );
+            virtual void render_tex(  int x, int y, shape_rect* clip = nullptr, int alpha = 255  );
+            virtual void render_tex_colored(  int x, int y, color * render_color, int alpha = 255, shape_rect* clip = nullptr  );
+            virtual void render_tex_resized(  int x, int y,float new_width, float new_height, shape_rect* clip = nullptr, color * render_color = nullptr, int alpha = 255 );
+            virtual void render_tex_scaled(  int x, int y,float x_scale, float y_scale, shape_rect* clip = nullptr, color * render_color = nullptr, int alpha = 255 );
+            virtual void render_tex_rotated(  int x, int y, float render_angle,  color * render_color = nullptr, shape_rect* clip = nullptr , int alpha = 255 );
+            virtual void render_tex_rotated_at_point(  int x, int y, float render_angle, int point_x, int point_y, color * render_color = nullptr, shape_rect* clip = nullptr , int alpha = 255 );
+            virtual void render_tex_special(  int x, int y, float render_angle, int new_width = -1, int new_height = -1, color * render_color = nullptr, shape_rect* clip = nullptr , int alpha = 255 );
+            virtual void render_tex_special_at_point(  int x, int y, float render_angle, int point_x, int point_y,int new_width = -1, int new_height = -1, color * render_color = nullptr, shape_rect* clip = nullptr , int alpha = 255 );
 
             virtual void set_alpha( int alpha);
             virtual void set_blend_mode( int blend_mode_new);

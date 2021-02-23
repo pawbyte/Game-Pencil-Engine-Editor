@@ -48,7 +48,7 @@ namespace gpe
 
     void branch::add_branch( branch * new_branch )
     {
-        if( new_branch == NULL )
+        if( new_branch == nullptr )
         {
             return;
         }
@@ -56,12 +56,12 @@ namespace gpe
 
     branch * branch::find_branch_by_name( std::string branch_name , bool nest_down )
     {
-        return NULL;
+        return nullptr;
     }
 
     branch * branch::find_typed_branch_by_name( int branch_type, std::string branch_name , bool nest_down )
     {
-        return NULL;
+        return nullptr;
     }
 
     float branch::get_angle()
@@ -112,7 +112,7 @@ namespace gpe
 
     std::string branch::get_type_string()
     {
-
+        return "";
     }
 
     float branch::get_xpivot()
@@ -142,21 +142,21 @@ namespace gpe
 
     bool branch::remove_branch_by_name( std::string branch_name , bool nest_down )
     {
-
+        return false;
     }
 
     bool branch::remove_typed_branch_by_name( int branch_type_id, std::string branch_name , bool nest_down )
     {
-
+        return false;
     }
 
     void branch::render()
     {
-        branch * current_branch = NULL;
+        branch * current_branch = nullptr;
         for( int branch_itr = 0; branch_itr < (int)sub_elements.size(); branch_itr++ )
         {
             current_branch = sub_elements[branch_itr];
-            if( current_branch != NULL )
+            if( current_branch != nullptr )
             {
                 current_branch->render();
             }
@@ -166,11 +166,11 @@ namespace gpe
 
     void branch::reset_branch()
     {
-        branch * current_branch = NULL;
+        branch * current_branch = nullptr;
         for( int branch_itr = 0; branch_itr < (int)sub_elements.size(); branch_itr++ )
         {
             current_branch = sub_elements[ branch_itr ];
-            if( current_branch != NULL )
+            if( current_branch != nullptr )
             {
                 current_branch->reset_branch();
             }
@@ -257,11 +257,11 @@ namespace gpe
 
     void branch::update()
     {
-        branch * current_branch = NULL;
+        branch * current_branch = nullptr;
         for( int branch_itr = 0; branch_itr < (int)sub_elements.size(); branch_itr++ )
         {
             current_branch = sub_elements[ branch_itr ];
-            if( current_branch != NULL)
+            if( current_branch != nullptr)
             {
                 current_branch->update();
             }

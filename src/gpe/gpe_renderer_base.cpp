@@ -32,12 +32,14 @@ SOFTWARE.
 */
 
 #include "gpe_renderer_base.h"
+#include <iostream>
 
 namespace gpe
 {
-    renderer_base * renderer_main = NULL;
+    renderer_base * renderer_main = nullptr;
     renderer_base::renderer_base()
     {
+        render_sub_rectangle = new shape_rect(0,0,0,0 );
         previously_scaled = false;
         renderer_scaling = false;
         use_integer_scaling = false;
@@ -49,6 +51,7 @@ namespace gpe
 
     renderer_base::renderer_base(int rId, int widthStart, int heightStart )
     {
+        render_sub_rectangle = new shape_rect(0,0,0,0 );
         render_id = rId;
         r_width = widthStart;
         r_height = heightStart;
@@ -156,7 +159,7 @@ namespace gpe
 
     bool renderer_base::render_circle_color( int x, int y, int rad, uint8_t r, uint8_t g, uint8_t b, uint8_t a )
     {
-
+        return false;
     }
 
     void renderer_base::reset_input()
@@ -207,6 +210,6 @@ namespace gpe
 
     void renderer_base::update_renderer( bool windowIsMinimized )
     {
-
+        std::cout << "Render base class rendered another frame...." << ").\n";
     }
 }

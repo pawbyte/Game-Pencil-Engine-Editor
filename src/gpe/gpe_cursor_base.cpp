@@ -35,7 +35,7 @@ SOFTWARE.
 
 namespace gpe
 {
-    cursor_controller_base * cursor_main_controller = NULL;
+    cursor_controller_base * cursor_main_controller = nullptr;
     int cursor_controller_counter = 0;
 
     cursor_controller_base::cursor_controller_base()
@@ -112,7 +112,7 @@ namespace gpe
 
     int cursor_controller_base::equals( cursor_controller_base * other )
     {
-        if( other !=NULL )
+        if( other !=nullptr )
         {
             if( other->get_id() == cursor_controller_id )
             {

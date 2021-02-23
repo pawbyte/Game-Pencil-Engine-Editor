@@ -52,10 +52,10 @@ namespace gpe
 
     layer_game_tile::~layer_game_tile()
     {
-        if( tileBox!=NULL)
+        if( tileBox!=nullptr)
         {
             delete tileBox;
-            tileBox = NULL;
+            tileBox = nullptr;
         }
     }
 
@@ -72,19 +72,19 @@ namespace gpe
     void layer_game_tile::render_self ( gpe::shape_rect * cam )
     {
     /*
-        //ensures that the Tilesheet for the tile isn't NULL
+        //ensures that the Tilesheet for the tile isn't nullptr
         if(tset >=0 && tset < (int)rsm->rTilesheets.size() )
         {
             tilesheet * gameTilesheet = rsm->rTilesheets[tset];
             //console.log( tset)
-            if( gameTilesheet!=NULL )
+            if( gameTilesheet!=nullptr )
             {
                 //checks to see if tile is in the camera region
                 //if(gpe.check_collision_with_rect(xCoord,yCoord-tileBox.get_height()-cam.get_y(),tileBox.get_width(),tileBox.get_height(),cam) == true )
                 //{
-                if( gameTilesheet->tsImage!=NULL )
+                if( gameTilesheet->tsImage!=nullptr )
                 {
-                    if( cam!=NULL)
+                    if( cam!=nullptr)
                     {
                         gameTilesheet->tsImage->render_tex( xCoord - cam->x,yCoord - cam->y,tileBox);
                     }
@@ -120,14 +120,14 @@ namespace gpe
 
     void layer_tile_map::clear_tiles()
     {
-        layer_game_tile *  tempTile = NULL;
+        layer_game_tile *  tempTile = nullptr;
         for( int i = (int)layerTiles.size()-1; i >=0; i-- )
         {
             tempTile = layerTiles[i];
-            if( tempTile!=NULL)
+            if( tempTile!=nullptr)
             {
                 delete tempTile;
-                tempTile = NULL;
+                tempTile = nullptr;
             }
         }
         layerTiles.clear();
@@ -157,9 +157,9 @@ namespace gpe
         x_pos = std::max(0, std::min(gridWidth - 1, (x_pos / tileWidth)|0 ) );
         y_pos = std::max(0, std::min(gridHeight - 1,(y_pos / tileHeight)|0 ) );
 
-        layer_game_tile * foundTile = NULL;
+        layer_game_tile * foundTile = nullptr;
         foundTile = get_tile_at(x_pos, y_pos);
-        if(foundTile!= NULL )
+        if(foundTile!= nullptr )
         {
             return foundTile->tset;
         }
@@ -178,7 +178,7 @@ namespace gpe
         int t=0;
         int r=0;
         int b=0;
-        layer_game_tile * foundTile = NULL;
+        layer_game_tile * foundTile = nullptr;
         // find rectangle to check (limited to field size):
         l = std::max(0, std::min(gridWidth - 1, (x1 / tileWidth)|0 ) );
         t = std::max(0, std::min(gridHeight - 1,(y1 / tileHeight)|0 ) );
@@ -190,7 +190,7 @@ namespace gpe
             for (i = l; i <= r; i += 1)
             {
                 foundTile = get_tile_at(i, j);
-                if(foundTile!= NULL )
+                if(foundTile!= nullptr )
                 {
                     return foundTile->tset;
                 }
@@ -206,12 +206,12 @@ namespace gpe
         {
             return false;
         }
-        layer_game_tile * foundTile = NULL;
+        layer_game_tile * foundTile = nullptr;
         // find rectangle to check (limited to field size):
         x_pos = std::max(0, std::min(gridWidth - 1, (x_pos / tileWidth)|0 ) );
         y_pos = std::max(0, std::min(gridHeight - 1,(y_pos / tileHeight)|0 ) );
         foundTile = get_tile_at(x_pos, y_pos);
-        if( foundTile!= NULL && foundTile->tset == tileTypeToSearchFor )
+        if( foundTile!= nullptr && foundTile->tset == tileTypeToSearchFor )
         {
             return true;
         }
@@ -228,7 +228,7 @@ namespace gpe
         int t = std::max(0, std::min(gridHeight - 1,(y1 / tileHeight)|0 ) );
         int r = std::max(0, std::min(gridWidth - 1, (x2 / tileWidth)|0 ) );
         int b = std::max(0, std::min(gridHeight - 1, (y2 / tileHeight)|0  ) );
-        layer_game_tile * foundTile = NULL;
+        layer_game_tile * foundTile = nullptr;
         int i=0;
         int j=0;
         // find rectangle to check (limited to field size):
@@ -237,7 +237,7 @@ namespace gpe
             for (i = l; i <= r; i += 1)
             {
                 foundTile = get_tile_at(i, j);
-                if(foundTile!= NULL && foundTile->tset == tileTypeToSearchFor )
+                if(foundTile!= nullptr && foundTile->tset == tileTypeToSearchFor )
                 {
                     return true;
                 }
@@ -256,6 +256,6 @@ namespace gpe
         int seekedTile = xIn+ yIn*tileAmountX;
         if(  seekedTile>=0 && seekedTile < (int)layerTiles.size() )
             return layerTiles[seekedTile];
-        return NULL;
+        return nullptr;
     }
 }

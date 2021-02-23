@@ -54,7 +54,6 @@ SOFTWARE.
 #include "../other_libs/semath.h"
 #include "../other_libs/stg_ex.h"
 
-#include <ctime>
 #include <stdlib.h>
 
 namespace gpe

@@ -34,51 +34,51 @@ SOFTWARE.
 
 namespace gpe
 {
-    color_master * color_system = NULL;
+    color_master * color_system = nullptr;
 
-    color * c_aqua = NULL;
-    color * c_black = NULL;
-    color * c_alblack = NULL;
-    color * c_blgray = NULL;
-    color * c_brown = NULL;
-    color * c_blue = NULL;
-    color * c_dkgray = NULL;
-    color * c_fuchsia = NULL;
-    color * c_gold = NULL;
-    color * c_gray = NULL;
-    color * c_green = NULL;
-    color * c_jetblack = NULL;
-    color * c_lime = NULL;
-    color * c_ltblue = NULL;
-    color * c_ltgray = NULL;
-    color * c_ltgreen = NULL;
-    color * c_ltlime = NULL;
-    color * c_ltorange = NULL;
-    color * c_ltpink = NULL;
-    color * c_ltpurple = NULL;
-    color * c_ltred = NULL;
-    color * c_maroon = NULL;
-    color * c_navy = NULL;
-    color * c_olive = NULL;
-    color * c_orange = NULL;
-    color * c_orangered = NULL;
-    color * c_purple = NULL;
-    color * c_red = NULL;
-    color * c_silver = NULL;
-    color * c_teal = NULL;
-    color * c_violet = NULL;
-    color * c_white = NULL;
-    color * c_yellow = NULL;
+    color * c_aqua = nullptr;
+    color * c_black = nullptr;
+    color * c_alblack = nullptr;
+    color * c_blgray = nullptr;
+    color * c_brown = nullptr;
+    color * c_blue = nullptr;
+    color * c_dkgray = nullptr;
+    color * c_fuchsia = nullptr;
+    color * c_gold = nullptr;
+    color * c_gray = nullptr;
+    color * c_green = nullptr;
+    color * c_jetblack = nullptr;
+    color * c_lime = nullptr;
+    color * c_ltblue = nullptr;
+    color * c_ltgray = nullptr;
+    color * c_ltgreen = nullptr;
+    color * c_ltlime = nullptr;
+    color * c_ltorange = nullptr;
+    color * c_ltpink = nullptr;
+    color * c_ltpurple = nullptr;
+    color * c_ltred = nullptr;
+    color * c_maroon = nullptr;
+    color * c_navy = nullptr;
+    color * c_olive = nullptr;
+    color * c_orange = nullptr;
+    color * c_orangered = nullptr;
+    color * c_purple = nullptr;
+    color * c_red = nullptr;
+    color * c_silver = nullptr;
+    color * c_teal = nullptr;
+    color * c_violet = nullptr;
+    color * c_white = nullptr;
+    color * c_yellow = nullptr;
 
-    color * color_hud = NULL;
-    color * color_hud_highlight = NULL;
+    color * color_hud = nullptr;
+    color * color_hud_highlight = nullptr;
 
     void init_colors()
     {
-        if( color_system!=NULL)
+        if( color_system!=nullptr)
         {
             delete color_system;
-            color_system= NULL;
+            color_system= nullptr;
         }
         c_aqua = new color(   "aqua", 000,255,255);
         c_black =new color(  "black", 0,0,0);
@@ -176,7 +176,7 @@ namespace gpe
     {
         for(int i=0; i<(int)color_directory_list.size(); i++)
         {
-            if(color_directory_list[i]!=NULL)
+            if(color_directory_list[i]!=nullptr)
             {
                 if(color_directory_list[i]->get_name()==string_in_search)
                 {
@@ -192,7 +192,7 @@ namespace gpe
     {
         for(unsigned i=0; i<(unsigned)color_directory_list.size(); i++)
         {
-            if(color_directory_list[i]!=NULL)
+            if(color_directory_list[i]!=nullptr)
             {
                 if(color_directory_list[i]->get_name()==string_in_search)
                 {
@@ -295,7 +295,7 @@ namespace gpe
                 }
                 else
                 {
-                    color  * result = NULL;
+                    color  * result = nullptr;
 
                     result->change_r( merge_channel(clOne.get_r(), clTwo.get_r(), amount) );
                     result->change_g( merge_channel(clOne.get_g(), clTwo.get_g(), amount) );

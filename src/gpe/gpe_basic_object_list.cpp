@@ -47,7 +47,7 @@ namespace gpe
 
     void game_object_list::add_object( game_object * object_in)
     {
-        if( object_in!=NULL)
+        if( object_in!=nullptr)
         {
             internal_list.push_back(object_in);
         }
@@ -55,9 +55,9 @@ namespace gpe
 
     void game_object_list::remove_held_object( game_object * object_in)
     {
-        if( object_in!=NULL )
+        if( object_in!=nullptr )
         {
-            game_object * foundHeldObject = NULL;
+            game_object * foundHeldObject = nullptr;
             for( int ii = (int)internal_list.size()-1;  ii>=0; ii--)
             {
                 foundHeldObject = internal_list[ii];

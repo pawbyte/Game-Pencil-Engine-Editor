@@ -35,7 +35,7 @@ SOFTWARE.
 
 namespace gpe
 {
-    engine_settings * settings = NULL;
+    engine_settings * settings = nullptr;
 
     engine_settings::engine_settings( std::string app_publisher, std::string appTitle )
     {
@@ -77,10 +77,10 @@ namespace gpe
 
     engine_settings::~engine_settings()
     {
-        if( settingsLeadPair !=NULL )
+        if( settingsLeadPair !=nullptr )
         {
             delete settingsLeadPair;
-            settingsLeadPair = NULL;
+            settingsLeadPair = nullptr;
         }
     }
 
@@ -88,7 +88,7 @@ namespace gpe
     {
         gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
-        if( fPair != NULL )
+        if( fPair != nullptr )
         {
             return fPair->key_value;
         }
@@ -99,7 +99,7 @@ namespace gpe
     {
         gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
-        if( fPair != NULL )
+        if( fPair != nullptr )
         {
             return fPair->key_value;
         }
@@ -110,7 +110,7 @@ namespace gpe
     {
         gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
-        if( fPair != NULL )
+        if( fPair != nullptr )
         {
             return fPair->key_substring;
         }
@@ -122,7 +122,7 @@ namespace gpe
     {
         gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
-        if( fPair != NULL )
+        if( fPair != nullptr )
         {
             fPair->key_substring = stg_ex::float_to_string( s_val );
             fPair->key_value = s_val;
@@ -138,7 +138,7 @@ namespace gpe
     {
         gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
-        if( fPair != NULL )
+        if( fPair != nullptr )
         {
             fPair->key_substring = stg_ex::int_to_string( s_val );
             fPair->key_value = s_val;
@@ -154,7 +154,7 @@ namespace gpe
     {
         gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
-        if( fPair != NULL )
+        if( fPair != nullptr )
         {
             fPair->key_substring = s_val;
             fPair->key_value = stg_ex::string_to_float( s_val, 0 );
@@ -168,14 +168,16 @@ namespace gpe
     //Creates the settings object and error logger
     bool init_settings(int argc, char* args[], std::string app_publisher, std::string app_name, std::string error_log_location  )
     {
-        if( error_log == NULL )
+        if( error_log == nullptr )
         {
             error_log = new error_log_system( error_log_location );
         }
 
-        if( settings != NULL )
+        if( settings != nullptr )
         {
-            return false;
+            //return false;
+            delete settings;
+            settings = nullptr;
         }
         settings = new engine_settings( app_publisher, app_name );
         return true;
@@ -183,10 +185,10 @@ namespace gpe
 
     void quit_settings()
     {
-        if( settings!=NULL )
+        if( settings!=nullptr )
         {
             delete settings;
-            settings = NULL;
+            settings = nullptr;
         }
     }
 }

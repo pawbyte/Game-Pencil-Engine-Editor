@@ -41,8 +41,8 @@ namespace gpe
         error_occurred = false;
         state_name = "gpe_default_state_name";
         bg_color = new color("bg_color",0,0,0,255 );
-        bg_texture = NULL;
-        if( rph!=NULL )
+        bg_texture = nullptr;
+        if( rph!=nullptr )
         {
             bg_texture = rph->get_new_texture();
         }
@@ -70,20 +70,20 @@ namespace gpe
 
     void program_state::render()
     {
-        if( gcanvas!= NULL )
+        if( gcanvas!= nullptr )
         {
             gcanvas->render_rectangle( 0, 0, gpe::screen_width, gpe::screen_height, bg_color, false, 255 );
         }
 
-        if( bg_texture!= NULL )
+        if( bg_texture!= nullptr )
         {
-            bg_texture->render_tex_resized( 0, 0, gpe::screen_width, gpe::screen_height, NULL );
+            bg_texture->render_tex_resized( 0, 0, gpe::screen_width, gpe::screen_height, nullptr );
         }
     }
 
     void program_state::set_background_color( uint8_t r , uint8_t g, uint8_t b, uint8_t a )
     {
-        if( bg_color != NULL )
+        if( bg_color != nullptr )
         {
             bg_color->change_rgba(r, g, b, a );
             return;
@@ -94,13 +94,13 @@ namespace gpe
 
     void program_state::set_background_image( std::string bg_file )
     {
-        if( bg_texture = NULL )
+        if( bg_texture != nullptr )
         {
             bg_texture->load_new_texture( renderer_main, bg_file );
             return;
         }
 
-        if( rph!=NULL )
+        if( rph!=nullptr )
         {
             bg_texture = rph->get_new_texture();
             bg_texture->load_new_texture( renderer_main, bg_file );

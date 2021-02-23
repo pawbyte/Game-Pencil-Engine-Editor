@@ -45,16 +45,16 @@ namespace gpe
     spatial_partition::~spatial_partition()
     {
         empty_list();
-        if( boxArea!=NULL)
+        if( boxArea!=nullptr)
         {
             delete boxArea;
-            boxArea = NULL;
+            boxArea = nullptr;
         }
     }
 
     void spatial_partition::add_object(game_object * newObject)
     {
-        if( newObject!=NULL )
+        if( newObject!=nullptr )
         {
             objectsArray.push_back( newObject );
         }
@@ -62,20 +62,20 @@ namespace gpe
 
     void spatial_partition::check_collisions()
     {
-        game_object * foundHeldObject = NULL;
-        game_object * secondHeldObject = NULL;
+        game_object * foundHeldObject = nullptr;
+        game_object * secondHeldObject = nullptr;
         int ii = 0, jj = 0, objectsCount = (int)objectsArray.size();
         std::string tempColPairStr = "";
         std::string otherColPairStr = "";
         for( ii = 0;  ii < objectsCount; ii++)
         {
             foundHeldObject = objectsArray[ii];
-            if( foundHeldObject!=NULL )
+            if( foundHeldObject!=nullptr )
             {
                 for( jj = ii +1;  jj < objectsCount; jj++ )
                 {
                     secondHeldObject  = objectsArray[jj];
-                    if( secondHeldObject != NULL)
+                    if( secondHeldObject != nullptr)
                     {
                         //Check the two objects
                         tempColPairStr = stg_ex::int_to_string( foundHeldObject->get_id() ) + "-" + stg_ex::int_to_string( secondHeldObject->get_id() );
@@ -101,12 +101,12 @@ namespace gpe
 
     void spatial_partition::check_collisions_with_other( spatial_partition * other)
     {
-        if( other == NULL )
+        if( other == nullptr )
         {
             return;
         }
-        game_object * foundHeldObject = NULL;
-        game_object * secondHeldObject = NULL;
+        game_object * foundHeldObject = nullptr;
+        game_object * secondHeldObject = nullptr;
         int ii = 0, jj = 0, objectsCount = (int)objectsArray.size();
         int otherObjectsCount = (int)other->objectsArray.size();
         std::string tempColPairStr = "";
@@ -114,12 +114,12 @@ namespace gpe
         for( ii = 0;  ii < objectsCount; ii++)
         {
             foundHeldObject = objectsArray[ii];
-            if( foundHeldObject!=NULL )
+            if( foundHeldObject!=nullptr )
             {
                 for( jj = 0;  jj < otherObjectsCount; jj++ )
                 {
                     secondHeldObject  = other->objectsArray[jj];
-                    if( secondHeldObject != NULL)
+                    if( secondHeldObject != nullptr)
                     {
                         //Check the two objects
                         tempColPairStr = stg_ex::int_to_string( foundHeldObject->get_id() ) + "-" + stg_ex::int_to_string( secondHeldObject->get_id() );
@@ -155,21 +155,21 @@ namespace gpe
         {
             return objectsArray[pos];
         }
-        return NULL;
+        return nullptr;
     }
 
     void spatial_partition::remove_held_object(game_object * object_in)
     {
-        if( object_in==NULL )
+        if( object_in==nullptr )
         {
             return;
         }
-        game_object * foundHeldObject = NULL;
+        game_object * foundHeldObject = nullptr;
         int ii = 0, objectsCount = (int)objectsArray.size();
         for( ii = objectsCount-1;  ii>=0; ii--)
         {
             foundHeldObject = objectsArray[ii];
-            if( foundHeldObject!=NULL && foundHeldObject->get_id()==object_in->get_id() )
+            if( foundHeldObject!=nullptr && foundHeldObject->get_id()==object_in->get_id() )
             {
                 objectsArray.erase( objectsArray.begin()+ii);
                 objectsHeld-=1;

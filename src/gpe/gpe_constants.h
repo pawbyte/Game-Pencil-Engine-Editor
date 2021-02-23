@@ -37,11 +37,17 @@ namespace gpe
 {
     enum class render_system
     {
-        render_sys_raylib = 3,
-        render_sys_opengl = 3,
+        render_sys_sdl1 = 0,
+        render_sys_sdl2 = 1,
+        render_sys_opengl = 2,
         render_sys_directx = 3,
-        render_sys_vulkan = 3,
-        render_sys_other = 4,
+        render_sys_vulkan = 4,
+        render_sys_metal = 5,
+        render_sys_raylib = 6,
+        render_sys_sfml = 7,
+        render_sys_irrlicht = 8,
+        render_sys_nanovg = 9,
+        render_sys_other = 10,
     };
 
     enum class render_mode
@@ -51,7 +57,7 @@ namespace gpe
         rmode_25d = 2,
         rmode_3d = 2,
         rmode_4d = 4,
-        rmode_other = 6,
+        rmode_other = 5,
     };
 
     //Game Pencil Runtime
@@ -60,7 +66,7 @@ namespace gpe
     const float version_number_update = 1;
     const float version_number_total = version_number_major + version_number_minor/10.f + version_number_update/100.f;
 
-    const int is_null = -1;
+    const int is_null = 0;
 
     const int fa_left = 0;
     const int fa_center = 1;

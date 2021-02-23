@@ -148,7 +148,7 @@ namespace gpe
 
     void color::copy_color( color * other_color )
     {
-        if( other_color == NULL )
+        if( other_color == nullptr )
         {
             return;
         }

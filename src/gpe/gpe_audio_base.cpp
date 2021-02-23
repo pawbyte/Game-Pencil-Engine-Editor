@@ -38,8 +38,8 @@ namespace gpe
     bool sound_is_working = false;
     float sound_global_volume = 100.f;
 
-    music_base * sound_music_object = NULL;
-    sound_base * standard_sound_object = NULL;
+    music_base * sound_music_object = nullptr;
+    sound_base * standard_sound_object = nullptr;
 
     bool sound_is_format_supported[ sound_format_max ];
     std::string sound_type_names[ sound_format_max ];
@@ -72,7 +72,7 @@ namespace gpe
 
     sound_base * sound_base::create_new( std::string s_name, std::string s_file, int group_id_number, int s_id  )
     {
-        return NULL;
+        return nullptr;
     }
 
     int sound_base::get_id()
@@ -163,12 +163,12 @@ namespace gpe
 
     sound_base * music_base::create_new( std::string s_name, std::string s_file, int group_id_number, int s_id  )
     {
-        return NULL;
+        return nullptr;
     }
 
     music_base * music_base::create_new_music( std::string s_name, std::string s_file, int group_id_number, int s_id  )
     {
-        return NULL;
+        return nullptr;
     }
 
     bool music_base::is_playing()

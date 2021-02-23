@@ -35,11 +35,11 @@ SOFTWARE.
 
 namespace gpe
 {
-    artist_base * gcanvas  = NULL;
+    artist_base * gcanvas  = nullptr;
 
     artist_base::artist_base()
     {
-        artist_renderer = NULL;
+        artist_renderer = nullptr;
 
         defaultLineWidth = 1;
         temp_clip_rect = new shape_rect();
@@ -48,7 +48,7 @@ namespace gpe
         color_temp = c_white->duplicate_color();
         alpha_current = 255;
 
-        lightingOverlayTexture = NULL;
+        lightingOverlayTexture = nullptr;
     }
 
     artist_base::artist_base( renderer_base * aRenderer )
@@ -62,39 +62,39 @@ namespace gpe
         color_temp = c_white->duplicate_color();
         alpha_current = 255;
 
-        lightingOverlayTexture = NULL;
+        lightingOverlayTexture = nullptr;
     }
 
     artist_base::~artist_base()
     {
-        if( temp_clip_rect!=NULL )
+        if( temp_clip_rect!=nullptr )
         {
             delete temp_clip_rect;
-            temp_clip_rect = NULL;
+            temp_clip_rect = nullptr;
         }
 
-        if( color_current!=NULL )
+        if( color_current!=nullptr )
         {
             delete color_current;
-            color_current = NULL;
+            color_current = nullptr;
         }
 
-        if( color_temp!=NULL )
+        if( color_temp!=nullptr )
         {
             delete color_temp;
-            color_temp = NULL;
+            color_temp = nullptr;
         }
 
-        if( lightingOverlayTexture!=NULL )
+        if( lightingOverlayTexture!=nullptr )
         {
             delete lightingOverlayTexture;
-            lightingOverlayTexture = NULL;
+            lightingOverlayTexture = nullptr;
         }
     }
 
     int artist_base::animation_get_number(animaton2d* animationIn)
     {
-        if(animationIn!=NULL)
+        if(animationIn!=nullptr)
         {
             return animationIn->get_frame_count();
         }
@@ -112,7 +112,7 @@ namespace gpe
     void artist_base::render_animation_named( std::string resource_name,  int sub_image_to_draw, int x_pos, int y_pos, shape_rect *cam)
     {
         animaton2d* animationToDraw = rsm->get_animation( resource_name );
-        if(animationToDraw!=NULL)
+        if(animationToDraw!=nullptr)
         {
             animationToDraw->render(sub_image_to_draw,x_pos,y_pos, cam );
         }
@@ -121,7 +121,7 @@ namespace gpe
     void artist_base::render_animation_named_resized( std::string resource_name,  int sub_image_to_draw, int x_pos, int y_pos, int new_width, int new_height, shape_rect * cam)
     {
         animaton2d * animationToDraw = rsm->get_animation( resource_name );
-        if(animationToDraw!=NULL)
+        if(animationToDraw!=nullptr)
         {
             animationToDraw->render_resized(sub_image_to_draw,x_pos,y_pos,new_width, new_height, cam );
         }
@@ -130,7 +130,7 @@ namespace gpe
     void artist_base::render_animation_named_special( std::string resource_name, int sub_image_to_draw, int x_pos, int y_pos,  int new_width, int new_height,float new_angle,color * render_color, int alpha, shape_rect * cam)
     {
         animaton2d * animationToDraw = rsm->get_animation( resource_name );
-        if(animationToDraw!=NULL)
+        if(animationToDraw!=nullptr)
         {
             animationToDraw->render_special(sub_image_to_draw,x_pos,y_pos, new_width, new_height, new_angle,render_color,alpha, cam );
         }
@@ -139,7 +139,7 @@ namespace gpe
     void artist_base::render_animation_named_rotated( std::string resource_name,  int sub_image_to_draw, int x_pos, int y_pos, float new_angle,int new_width, int new_height,  shape_rect *cam)
     {
         animaton2d * animationToDraw = rsm->get_animation( resource_name );
-        if(animationToDraw!=NULL)
+        if(animationToDraw!=nullptr)
         {
             animationToDraw->render_rotated( sub_image_to_draw, x_pos, y_pos, new_angle, new_width, new_height, cam );
         }
@@ -147,7 +147,7 @@ namespace gpe
 
     void artist_base::render_animation(animaton2d* animationToDraw, int sub_image_to_draw, int x_pos, int y_pos, shape_rect *cam)
     {
-        if(animationToDraw!=NULL)
+        if(animationToDraw!=nullptr)
         {
             animationToDraw->render(sub_image_to_draw,x_pos,y_pos, cam );
         }
@@ -156,7 +156,7 @@ namespace gpe
 
     void artist_base::render_animation_resized(animaton2d* animationToDraw, int sub_image_to_draw, int x_pos, int y_pos, int new_width, int new_height, shape_rect * cam)
     {
-        if(animationToDraw!=NULL)
+        if(animationToDraw!=nullptr)
         {
             animationToDraw->render_resized(sub_image_to_draw,x_pos,y_pos,new_width, new_height, cam );
         }
@@ -164,7 +164,7 @@ namespace gpe
 
     void artist_base::render_animation_special(animaton2d* animationToDraw, int sub_image_to_draw, int x_pos, int y_pos,  int new_width, int new_height,float new_angle,color * render_color, int alpha, shape_rect * cam)
     {
-        if(animationToDraw!=NULL)
+        if(animationToDraw!=nullptr)
         {
             animationToDraw->render_special(sub_image_to_draw,x_pos,y_pos, new_width, new_height, new_angle,render_color, alpha, cam );
         }
@@ -172,11 +172,11 @@ namespace gpe
 
     void artist_base::render_animation_rotated(animaton2d* animationToDraw, int sub_image_to_draw, int x_pos, int y_pos, float new_angle, int new_width, int new_height, shape_rect *cam)
     {
-        if( cam==NULL)
+        if( cam==nullptr)
         {
             cam = camera_default;
         }
-        if(animationToDraw!=NULL)
+        if(animationToDraw!=nullptr)
         {
             animationToDraw->render_rotated( sub_image_to_draw, x_pos, y_pos, new_angle, new_width, new_height, cam );
         }

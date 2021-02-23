@@ -69,7 +69,7 @@ namespace gpe
         public:
             sound_base();
             sound_base( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
-            ~sound_base();
+            virtual ~sound_base();
             virtual sound_base * create_new( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
             std::string get_error();
             std::string get_file_name();
@@ -96,7 +96,7 @@ namespace gpe
         public:
             music_base();
             music_base( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
-            ~music_base();
+            virtual ~music_base();
             virtual sound_base * create_new( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
             virtual music_base * create_new_music( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1);
             virtual bool is_playing();

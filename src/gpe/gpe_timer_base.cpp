@@ -41,7 +41,7 @@ namespace gpe
     float delta_current = 0;
     int time_keeper_count = 0;
 
-    time_keeper_base * time_keeper = NULL;
+    time_keeper_base * time_keeper = nullptr;
     //The frames per second cap timer
     time_keeper_base::time_keeper_base()
     {
@@ -155,7 +155,7 @@ namespace gpe
 
     int time_keeper_base::equals( time_keeper_base * other )
     {
-        if( other == NULL )
+        if( other == nullptr )
         {
             return -1;
         }

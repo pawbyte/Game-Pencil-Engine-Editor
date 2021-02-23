@@ -52,11 +52,11 @@ namespace gpe
     //adds a new game animation with one row
     animaton2d* asset_manager::animation_add(std::string resource_name, std::string resource_file_name,int imgnumb,bool transparent,int xorig,int yorig, bool add_mirror)
     {
-        return NULL;
+        return nullptr;
         gpe::error_log->report("Attempting to add animation["+resource_name+"+,"+resource_file_name+"]" );
 
         animaton2d * newAnimation = get_animation(resource_name);
-        if(newAnimation!=NULL)
+        if(newAnimation!=nullptr)
             return newAnimation;
         //makes sure the xorig and yorig is not negative
         if(( xorig>=0)&&(yorig>=0) )
@@ -73,7 +73,7 @@ namespace gpe
             std::stringstream outstring;
             outstring << "Unable to load animation from file location: (" << resource_file_name << ") due to negative dimensions given";
             error_log->report( outstring.str());
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -81,7 +81,7 @@ namespace gpe
     {
         gpe::error_log->report("Attempting to add animation_collision["+resource_name+"+,"+resource_file_name+"]" );
         animaton2d * new_animation = get_animation(resource_file_name);
-        if(new_animation!=NULL)
+        if(new_animation!=nullptr)
             return new_animation;
         //makes sure the xorig and yorig is not negative
         if(( xorig>=0)&&(yorig>=0) )
@@ -99,7 +99,7 @@ namespace gpe
             std::stringstream outstring;
             outstring << "Unable to load animation from file location: (" << resource_file_name << ") due to negative dimensions given";
             error_log->report( outstring.str());
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -107,7 +107,7 @@ namespace gpe
     {
         gpe::error_log->report("Attempting to add animation_sheet["+resource_name+"+,"+resource_file_name+"]" );
         animaton2d * newAnimation = get_animation(resource_file_name);
-        if(newAnimation!=NULL)
+        if(newAnimation!=nullptr)
             return newAnimation;
         if(( height>0)&&(width>0) )
         {
@@ -121,7 +121,7 @@ namespace gpe
             std::stringstream outstring;
             outstring << "Unable to load animation from file location: (" << resource_file_name << " due to negative dimensions given)";
             error_log->report( outstring.str());
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -129,7 +129,7 @@ namespace gpe
     {
         gpe::error_log->report("Attempting to add animation_sheet_Ext["+resource_name+"+,"+resource_file_name+"]" );
         animaton2d * newAnimation = get_animation(resource_file_name);
-        if(newAnimation!=NULL)
+        if(newAnimation!=nullptr)
             return newAnimation;
         if(( height!=0)&&(width!=0) )
         {
@@ -143,18 +143,18 @@ namespace gpe
             std::stringstream outstring;
             outstring << "Unable to load animation from file location: (" << resource_file_name << " due to negative dimensions given)";
             error_log->report( outstring.str());
-            return NULL;
+            return nullptr;
         }
     }
 
     music_base * music_add( std::string s_name, std::string s_file,int group_id_number =-1 )
     {
-        return NULL;
+        return nullptr;
     }
 
     sound_base * sound_add(int s_id, std::string s_name, std::string s_file,int group_id_number =-1 )
     {
-        return NULL;
+        return nullptr;
     }
 
     texture_base * asset_manager::texture_add(std::string resource_name, std::string texture_file_name)
@@ -162,10 +162,10 @@ namespace gpe
         if( (int)resource_name.size() == 0)
         {
             gpe::error_log->report("Error: Attempting to add Texture with ["+texture_file_name+"] with a blank name" );
-            return NULL;
+            return nullptr;
         }
         texture_base * newTexture = get_texture(resource_name);
-        if( newTexture!=NULL )
+        if( newTexture!=nullptr )
         {
             return newTexture;
         }
@@ -175,7 +175,7 @@ namespace gpe
             error_log->report("Loading "+texture_file_name+" texture image.");
             //loads in the animation's texture
             newTexture = rr_package->create_texture();
-            if( newTexture!=NULL)
+            if( newTexture!=nullptr)
             {
                 newTexture->load_new_texture( rr_package->packageRenderer,texture_file_name, -1,true );
                 if(newTexture->get_width() > 0)
@@ -188,11 +188,11 @@ namespace gpe
                 else
                 {
                     delete newTexture;
-                    newTexture = NULL;
+                    newTexture = nullptr;
                 }
             }
         }
-        return NULL;
+        return nullptr;
     }
 
     texture_base * asset_manager::texture_add_filename( std::string texture_file_name)
@@ -205,7 +205,7 @@ namespace gpe
         auto pairExists = atlas_animations.find( resource_name );
         if (pairExists == atlas_animations.end() )
         {
-            return NULL;
+            return nullptr;
         }
         return atlas_animations[resource_name];
     }
@@ -271,7 +271,7 @@ namespace gpe
         auto pairExists = atlas_music.find( resource_name );
         if (pairExists == atlas_music.end() )
         {
-            return NULL;
+            return nullptr;
         }
         return atlas_music[resource_name];
     }
@@ -281,7 +281,7 @@ namespace gpe
         auto pairExists = atlas_sounds.find( resource_name );
         if (pairExists == atlas_sounds.end() )
         {
-            return NULL;
+            return nullptr;
         }
         return atlas_sounds[resource_name];
     }
@@ -291,7 +291,7 @@ namespace gpe
         auto pairExists = atlas_textures.find( resource_name );
         if (pairExists == atlas_textures.end() )
         {
-            return NULL;
+            return nullptr;
         }
         return atlas_textures[resource_name];
     }
@@ -314,18 +314,18 @@ namespace gpe
     void asset_manager::remove_texture( std::string resource_name )
     {
         /*
-        if( tex!=NULL )
+        if( tex!=nullptr )
         {
             texture_base * tTex;
             for( int i= (int)atlas_textures.size()-1; i>=0; i-- )
             {
                 tTex = atlas_textures[i];
-                if ( tTex!= NULL)
+                if ( tTex!= nullptr)
                 {
                     if( tTex->get_name()==tex->get_name() || tTex->get_filename()==tex->get_filename() )
                     {
                         delete tTex;
-                        tTex = NULL;
+                        tTex = nullptr;
                         atlas_textures.erase( atlas_textures.begin()+i );
                     }
                 }
@@ -344,70 +344,70 @@ namespace gpe
     void asset_manager::clean_up()
     {
         std::map< std::string, animaton2d *>::iterator itAnim;
-        animaton2d * temp_anim = NULL;
+        animaton2d * temp_anim = nullptr;
         for( itAnim = atlas_animations.begin(); itAnim != atlas_animations.end(); ++itAnim )
         {
             temp_anim = itAnim->second;
 
-            if( temp_anim !=NULL)
+            if( temp_anim !=nullptr)
             {
                 delete temp_anim;
-                temp_anim =NULL;
+                temp_anim =nullptr;
             }
         }
         atlas_animations.clear();
 
         std::map< std::string, music_base *>::iterator it_music;
-        music_base * temp_music = NULL;
+        music_base * temp_music = nullptr;
         for( it_music = atlas_music.begin(); it_music != atlas_music.end(); ++it_music )
         {
             temp_music = it_music->second;
 
-            if( temp_music !=NULL)
+            if( temp_music !=nullptr)
             {
                 delete temp_music;
-                temp_music =NULL;
+                temp_music =nullptr;
             }
         }
         atlas_music.clear();
 
         std::map<std::string, sound_base *>::iterator it_sounds;
-        sound_base * temp_sound = NULL;
+        sound_base * temp_sound = nullptr;
         for( it_sounds = atlas_sounds.begin(); it_sounds != atlas_sounds.end();  ++it_sounds )
         {
             temp_sound = it_sounds->second;
-            if( temp_sound !=NULL)
+            if( temp_sound !=nullptr)
             {
                 delete temp_sound;
-                temp_sound = NULL;
+                temp_sound = nullptr;
             }
         }
         atlas_sounds.clear();
 
         std::map< std::string, texture_base *>::iterator it_textures;
-        texture_base * temp_texture = NULL;
+        texture_base * temp_texture = nullptr;
         for( it_textures = atlas_textures.begin(); it_textures != atlas_textures.end(); ++it_textures )
         {
             temp_texture = it_textures->second;
 
-            if( temp_texture !=NULL)
+            if( temp_texture !=nullptr)
             {
                 delete temp_texture;
-                temp_texture =NULL;
+                temp_texture =nullptr;
             }
         }
         atlas_textures.clear();
 
         std::map< std::string, tilesheet *>::iterator it_tilesheets;
-        tilesheet * temp_tilesheet = NULL;
+        tilesheet * temp_tilesheet = nullptr;
         for( it_tilesheets = atlas_tilesheets.begin(); it_tilesheets != atlas_tilesheets.end(); ++it_tilesheets )
         {
             temp_tilesheet = it_tilesheets->second;
 
-            if( temp_tilesheet !=NULL)
+            if( temp_tilesheet !=nullptr)
             {
                 delete temp_tilesheet;
-                temp_tilesheet = NULL;
+                temp_tilesheet = nullptr;
             }
         }
         atlas_tilesheets.clear();

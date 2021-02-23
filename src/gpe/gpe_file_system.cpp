@@ -37,16 +37,16 @@ SOFTWARE.
 
 namespace gpe
 {
-    file_and_url_manager * main_file_url_manager = NULL;
+    file_and_url_manager * main_file_url_manager = nullptr;
 
     std::string generate_filters(const std::vector<filetype_filter *> filters)
     {
         std::string result ="";
-        filetype_filter * tempFilter = NULL;
+        filetype_filter * tempFilter = nullptr;
         for(int i = 0; i < (int)filters.size(); i++)
         {
             tempFilter = filters[i];
-            if( tempFilter!=NULL)
+            if( tempFilter!=nullptr)
             {
                 result += tempFilter->desc;
                 result += '\0';
@@ -62,7 +62,7 @@ namespace gpe
         fileTypeVector.clear();
         std::string returnFileFilterstring = "All types(*.*)\0*.*\0";
         std::vector<filetype_filter *> filters;
-        filetype_filter * tempNewFilter = NULL;
+        filetype_filter * tempNewFilter = nullptr;
         if( (int)allowedFileTypes.size() > 0)
         {
             if( allowedFileTypes=="All types(*.*)" ||  allowedFileTypes=="All Files" || allowedFileTypes=="None" ||  allowedFileTypes=="All Files*")
@@ -151,10 +151,10 @@ namespace gpe
         for( int iDelete = (int)filters.size()-1; iDelete>=0; iDelete--)
         {
             tempNewFilter = filters.at(iDelete);
-            if( tempNewFilter!=NULL)
+            if( tempNewFilter!=nullptr)
             {
                 delete tempNewFilter;
-                tempNewFilter = NULL;
+                tempNewFilter = nullptr;
             }
         }
         filters.clear();
@@ -216,7 +216,7 @@ namespace gpe
             file_name = "";
             fileType = "";
         }
-        thumbnail_texture = NULL;
+        thumbnail_texture = nullptr;
         file_size_info = 0;
         date_creation_info = "";
         date_modified_info = "";
@@ -224,10 +224,10 @@ namespace gpe
 
     file_object::~file_object()
     {
-        if( thumbnail_texture!=NULL)
+        if( thumbnail_texture!=nullptr)
         {
             delete thumbnail_texture;
-            thumbnail_texture = NULL;
+            thumbnail_texture = nullptr;
         }
     }
 
@@ -266,14 +266,14 @@ namespace gpe
 
     void file_directory_class::close_directory()
     {
-        file_object * tFile = NULL;
+        file_object * tFile = nullptr;
         for( int i = (int)files_list.size()-1; i>=0; i--)
         {
             tFile = files_list[i];
-            if( tFile!=NULL)
+            if( tFile!=nullptr)
             {
                 delete tFile;
-                tFile = NULL;
+                tFile = nullptr;
             }
         }
         files_list.clear();
@@ -284,14 +284,14 @@ namespace gpe
 
     void file_directory_class::filter_directory(bool only_folders, std::vector <std::string> &file_types_to_use)
     {
-        file_object * tempFile = NULL;
+        file_object * tempFile = nullptr;
         file_position = 0;
         file_count = 0;
         sub_directory_count = 0;
         for( int i = (int)files_list.size() - 1; i >=0; i--)
         {
             tempFile = files_list[i];
-            if( tempFile!=NULL)
+            if( tempFile!=nullptr)
             {
                 if( only_folders)
                 {
@@ -311,7 +311,7 @@ namespace gpe
                 else
                 {
                     delete tempFile;
-                    tempFile = NULL;
+                    tempFile = nullptr;
                     files_list.erase(files_list.begin()+i);
                 }
             }
@@ -331,7 +331,7 @@ namespace gpe
             DIR *dir;
             struct dirent *ent;
             dir = opendir( directory_string.c_str() );
-            if( dir==NULL)
+            if( dir==nullptr)
             {
                 foundErrorMessage = strerror(errno);
 
@@ -343,14 +343,14 @@ namespace gpe
             }
             else
             {
-                file_object * newFile = NULL;
-                file_object * tFile = NULL;
+                file_object * newFile = nullptr;
+                file_object * tFile = nullptr;
                 int i = 0;
                 int j = 0;
                 bool foundNewPosition = false;
                 bool newFileIsDirectory = false;
                 std::string new_file_name = "";
-                while ( (ent = readdir(dir)) != NULL )
+                while ( (ent = readdir(dir)) != nullptr )
                 {
                     std::string entry( ent->d_name );
                     //std::string lcEntry( std::strToLower(entry) );
@@ -369,10 +369,10 @@ namespace gpe
                         if(new_file_name!=".." && new_file_name!=".")
                         {
                             newFileIsDirectory = main_file_url_manager->folder_exists(directory_string+"/"+ent->d_name);
-                            //if( ( main_editor_settings!=NULL && main_editor_settings->showHiddenFilesInBrowser->is_clicked() ) || system_found_os!=GPE_IDE_LINUX || (system_found_os==GPE_IDE_LINUX && new_file_name.find_first_of(".",0)!=0) )
+                            //if( ( main_editor_settings!=nullptr && main_editor_settings->showHiddenFilesInBrowser->is_clicked() ) || system_found_os!=GPE_IDE_LINUX || (system_found_os==GPE_IDE_LINUX && new_file_name.find_first_of(".",0)!=0) )
                             {
                                 newFile = new file_object(new_file_name, newFileIsDirectory);
-                                if( newFile!=NULL)
+                                if( newFile!=nullptr)
                                 {
                                     newFile->file_directory_location = directory_string;
                                     foundNewPosition = false;
@@ -380,7 +380,7 @@ namespace gpe
                                     for( j = (int)files_list.size()-1; j >=0 && foundNewPosition==false; j--)
                                     {
                                         tFile = files_list[j];
-                                        if( tFile!=NULL)
+                                        if( tFile!=nullptr)
                                         {
                                             if( tFile->get_name() >= new_file_name )
                                             {
@@ -423,7 +423,7 @@ namespace gpe
         {
             return files_list.at(position);
         }
-        return NULL;
+        return nullptr;
     }
 
     int file_directory_class::get_count()
@@ -448,7 +448,7 @@ namespace gpe
             file_position++;
             return get_file(file_position);
         }
-        return NULL;
+        return nullptr;
     }
 
     bool file_directory_class::has_next_file()
@@ -487,6 +487,21 @@ namespace gpe
     void file_and_url_manager::external_open_url(std::string url_string)
     {
 
+    }
+
+    void  file_and_url_manager::file_ammend_string(std::string file_name, std::string str_in )
+    {
+
+    }
+
+    bool file_and_url_manager::file_copy(std::string source_file_name, std::string destination_file_name, bool overwrite_existing )
+    {
+        return true;
+    }
+
+    bool file_and_url_manager::file_exists(std::string new_file_name)
+    {
+        return true;
     }
 
     int file_and_url_manager::file_get_size_bytes(const std::string &file_name)

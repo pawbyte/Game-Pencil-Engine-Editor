@@ -32,20 +32,17 @@ SOFTWARE.
 */
 
 #include "gpe.h"
+#include "stdlib.h"
 
 namespace gpe
 {
     bool init_core_engine( int argc, char* args[] , std::string error_log_location )
     {
-        if( error_log == NULL )
+        if( error_log == nullptr )
         {
             error_log = new error_log_system( error_log_location );
         }
 
-        if( settings == NULL )
-        {
-            return false;
-        }
 
         if( argc > 0)
         {
@@ -55,8 +52,15 @@ namespace gpe
         }
         args_processed = argc;
 
+
+        if( settings == nullptr )
+        {
+            settings = new engine_settings(app_file_name, app_file_name );
+            //return false;
+        }
+
         //begins making random numbers...
-        srand( time(NULL) );
+        //srand( time(nullptr) );
 
         for(int rI = 0; rI < resource_type_max; rI++)
         {
@@ -123,6 +127,10 @@ namespace gpe
         sound_type_names[ sound_format_wav ] = "wav";
 
         //Sets the folder used in all  get_user_settings_folder() calls based on the 2 paramers above
+        if( main_file_url_manager == nullptr )
+        {
+            main_file_url_manager = new file_and_url_manager();
+        }
         main_file_url_manager->seek_settings_folder();
 
         //General Debug Info
@@ -157,7 +165,7 @@ namespace gpe
         if( init_font_system() == false)
         {
             error_log->report("-- Error initializing fonts.");
-            return false;
+            //return false;
         }
 
         rsm = new asset_manager(rph->get_default_render_package(), "gcm-rsm");
@@ -166,6 +174,12 @@ namespace gpe
         cursor_main_controller->cursor_change( cursor_main_controller->cursor_system_name( cursor_default_type::wait ) );
 
         window_controller_main = new window_controller_base();
+        render_package * default_render_package = rph->add_render_package( "default" );
+
+        default_render_package->packageRenderer = renderer_main;
+        default_render_package->packageTexture = new texture_base();
+        default_render_package->packageWindow = window_controller_main;
+
         game_runtime = new runtime_master();
         game_runtime->loading_data = true;
         return true;
@@ -187,34 +201,34 @@ namespace gpe
     {
         //Deletes in the order of dependencies from top/down
         error_log->report("Deleting resource manager....");
-        if( rsm!=NULL)
+        if( rsm!=nullptr)
         {
             rsm->clean_up();
             delete rsm;
-            rsm = NULL;
+            rsm = nullptr;
         }
         error_log->report("Deleting game_runtime....");
-        if( game_runtime!=NULL)
+        if( game_runtime!=nullptr)
         {
             delete game_runtime;
-            game_runtime = NULL;
+            game_runtime = nullptr;
         }
 
         error_log->report("Deleting input object...");
-        if( input!=NULL)
+        if( input!=nullptr)
         {
             delete input;
-            input = NULL;
+            input = nullptr;
         }
         return true;
     }
 
     bool quit_core_engine()
     {
-        if( error_log!=NULL )
+        if( error_log!=nullptr )
         {
             delete error_log;
-            error_log = NULL;
+            error_log = nullptr;
         }
         return true;
     }
