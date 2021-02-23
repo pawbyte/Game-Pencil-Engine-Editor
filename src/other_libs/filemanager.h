@@ -28,9 +28,9 @@
 #include <vector>
 #include <cstddef>
 
-namespace misc {
+namespace tkg {
 
-  class stdfilesystem {
+  class filemanager {
 
     private:
 
@@ -41,7 +41,7 @@ namespace misc {
       bool directory_copy_retained(std::string dname, std::string newname);
 
       std::string string_replace_all(std::string str, std::string sstr, std::string nstr);
-      std::vector<std::string> string_split(const std::string &str, char delimiter);.
+      std::vector<std::string> string_split(std::string str, std::string delim);
 
     public:
 
@@ -77,8 +77,8 @@ namespace misc {
       bool directory_rename(std::string oldname, std::string newname);
       bool directory_copy(std::string dname, std::string newname);
       std::uintmax_t directory_size(std::string dname);
-      std::vector directory_contents(std::string dname, std::string pattern);
+      std::vector<std::string> directory_contents(std::string dname, std::string pattern);
 
-  }; // class stdfilesystem
+  }; // class filemanager
 
-} // namespace misc
+} // namespace tkg
