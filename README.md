@@ -8,6 +8,7 @@ The Game Pencil Engine Version 1.4.1 and beyond!
 ![](https://raw.githubusercontent.com/pawbyte/Game-Pencil-Engine/master/screenshots/ss2.png)
 ![](https://raw.githubusercontent.com/pawbyte/Game-Pencil-Engine/master/screenshots/ss1.png)
 
+![Discord](https://img.shields.io/discord/799620485947064321?logo=discord&style=for-the-badge)
 
 *New files added to github, but does not currently compile to C++, pending a few changes*
 
@@ -42,6 +43,7 @@ If you would like to see our documentation to this project, go [here](http://doc
 
 Discord Chat
 ======
+![Discord](https://img.shields.io/discord/799620485947064321?logo=discord&style=for-the-badge)
 Come and  [join our discord server](https://discord.gg/dCrCwrQutP)!  Here, you can engage in chats about game pencil, get help and even voice chat the developers and users!
 
 Forums
