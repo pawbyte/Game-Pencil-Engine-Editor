@@ -8,6 +8,10 @@ The Game Pencil Engine Version 1.4.1 and beyond!
 ![](https://raw.githubusercontent.com/pawbyte/Game-Pencil-Engine/master/screenshots/ss2.png)
 ![](https://raw.githubusercontent.com/pawbyte/Game-Pencil-Engine/master/screenshots/ss1.png)
 
+![GitHub](https://img.shields.io/github/license/pawbyte/Game-Pencil-Engine?style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/pawbyte/Game-Pencil-Engine?style=for-the-badge)
+
+
 ![Discord](https://img.shields.io/discord/799620485947064321?logo=discord&style=for-the-badge)
 
 *New files added to github, but does not currently compile to C++, pending a few changes*
