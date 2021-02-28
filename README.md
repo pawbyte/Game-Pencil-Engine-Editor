@@ -48,6 +48,7 @@ If you would like to see our documentation to this project, go [here](http://doc
 Discord Chat
 ======
 ![Discord](https://img.shields.io/discord/799620485947064321?logo=discord&style=for-the-badge)
+
 Come and  [join our discord server](https://discord.gg/dCrCwrQutP)!  Here, you can engage in chats about game pencil, get help and even voice chat the developers and users!
 
 Forums
