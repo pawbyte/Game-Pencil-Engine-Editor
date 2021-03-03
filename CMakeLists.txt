@@ -49,5 +49,18 @@ add_executable(gpe-editor ${dlgmodule_SRC} ${gpe_main_SRC} ${gpe_editor_SRC} ${o
 # Populate project-specific includes
 target_include_directories(gpe-editor PRIVATE src/gpe)
 
-# Link SDL2
-target_link_libraries(gpe-editor ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES} ${SDL2MIXER_LIBRARIES} ${X11_LIBRARIES})
+# Link libraries
+
+if (WIN32)
+  target_link_libraries(gpe-editor ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES} ${SDL2MIXER_LIBRARIES})
+  message(STATUS "Using libraries for Windows")
+endif (WIN32)
+if (UNIX)
+  target_link_libraries(gpe-editor ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES} ${SDL2MIXER_LIBRARIES} ${X11_LIBRARIES} ${LIBPROCPS_LIBRARIES})
+  message(STATUS "Using libraries for Unix-based systems")
+endif (UNIX)
+if (APPLE)
+  target_link_libraries(gpe-editor ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES} ${SDL2MIXER_LIBRARIES})
+  message(STATUS "Using libraries for MacOS systems")
+endif (APPLE)
+
