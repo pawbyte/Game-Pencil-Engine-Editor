@@ -3,10 +3,10 @@ game_entity_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -78,9 +78,9 @@ gameEntityResource::gameEntityResource(pawgui::widget_resource_container * pFold
     animationIndex = -1;
     animInEditor = NULL;
 
-    if(saveResourceButton!=NULL)
+    if(saveResource_button!=NULL)
     {
-        saveResourceButton->disable_self();
+        saveResource_button->disable_self();
     }
 
 
@@ -98,8 +98,8 @@ gameEntityResource::gameEntityResource(pawgui::widget_resource_container * pFold
     if( projectParentFolder!=NULL )
     {
         animationField = new pawgui::widget_drop_down_resource_menu( "Default Animation",projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_animation]) );
-        loadResourceButton->set_width(animationField->get_width() );
-        confirmResourceButton->set_width(animationField->get_width() );
+        loadResource_button->set_width(animationField->get_width() );
+        confirmResource_button->set_width(animationField->get_width() );
         parentObjectField = new pawgui::widget_drop_down_resource_menu( "Parent Entity",projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_object] ) );
     }
     else
@@ -112,15 +112,15 @@ gameEntityResource::gameEntityResource(pawgui::widget_resource_container * pFold
     customComponentsGuiList->panelAlignType = pawgui::panel_align_left;
     componentsMainGuiLabel = new pawgui::widget_label_text ("Custom Components","Custom components, useful for scene editor");
     componentsGuiLabel = new pawgui::widget_label_text ("Custom Components","Custom components, useful for scene editor");
-    inheritParentComponentButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/users.png","Inherit Components","Inherit components from parent object class");
-    resetComponentsButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/trash.png","Reset Components","Clears all components form this object class");
+    inheritParentComponent_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/users.png","Inherit Components","Inherit components from parent object class");
+    resetComponents_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/trash.png","Reset Components","Clears all components form this object class");
     addNewComponentDropDown = new pawgui::widget_dropdown_menu( "Add Component",false);
     setup_object_components ( addNewComponentDropDown );
     addNewComponentDropDown->set_width(224);
 
-    removeComponentButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/minus.png","Remove Component");
-    editCompnentButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/edit.png","Edit Component");
-    componentSettingsButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/trash.png","Component Settings");
+    removeComponent_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/minus.png","Remove Component");
+    editCompnent_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/edit.png","Edit Component");
+    component_settings_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/trash.png","Component Settings");
 
     checkBoxIsVisible = new pawgui::widget_checkbox("Visible","The actor is rendered on screen", true);
     checkBoxNeedsCamera = new pawgui::widget_checkbox("Needs Camera","Entity will only perform logic if in view of any camera [Highly recommended for most objects]", true);
@@ -218,35 +218,35 @@ gameEntityResource::~gameEntityResource()
         delete customComponentsGuiList;
         customComponentsGuiList = NULL;
     }
-    if( inheritParentComponentButton!=NULL)
+    if( inheritParentComponent_button!=NULL)
     {
-        delete inheritParentComponentButton;
-        inheritParentComponentButton = NULL;
+        delete inheritParentComponent_button;
+        inheritParentComponent_button = NULL;
     }
-    if( resetComponentsButton!=NULL)
+    if( resetComponents_button!=NULL)
     {
-        delete resetComponentsButton;
-        resetComponentsButton = NULL;
+        delete resetComponents_button;
+        resetComponents_button = NULL;
     }
     if( addNewComponentDropDown!=NULL)
     {
         delete addNewComponentDropDown;
         addNewComponentDropDown = NULL;
     }
-    if( removeComponentButton!=NULL)
+    if( removeComponent_button!=NULL)
     {
-        delete removeComponentButton;
-        removeComponentButton = NULL;
+        delete removeComponent_button;
+        removeComponent_button = NULL;
     }
-    if( editCompnentButton!=NULL)
+    if( editCompnent_button!=NULL)
     {
-        delete editCompnentButton;
-        editCompnentButton = NULL;
+        delete editCompnent_button;
+        editCompnent_button = NULL;
     }
-    if( componentSettingsButton!=NULL)
+    if( component_settings_button!=NULL)
     {
-        delete componentSettingsButton;
-        componentSettingsButton = NULL;
+        delete component_settings_button;
+        component_settings_button = NULL;
     }
 }
 
@@ -289,25 +289,23 @@ bool gameEntityResource::build_intohtml5_file(std::ofstream * fileTarget, int le
     bool buildSuccessful = true;
     if( fileTarget!=NULL && fileTarget->is_open() )
     {
-        int iFunc = 0;
-        int paramLine = 0;
         int iErrorLine = 0;
         std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
         std::string nestedTabsStrObjFunc = pawgui::generate_tabs( leftTabAmount +1 );
 
         //*fileTarget << nestedTabsStr << "var " << get_name() << " = " << exportBuildGlobalId << ";\n";
-        *fileTarget << nestedTabsStr << "GPE._obj_" << get_name() << " =  (function (xPosIn, yPosIn,objectLayerId) \n";
+        *fileTarget << nestedTabsStr << "GPE._obj_" << get_name() << " =  (function (x_pos_in, y_pos_in,object_layer_id) \n";
         *fileTarget << nestedTabsStr << "{ \n";
-        *fileTarget << nestedTabsStrObjFunc << "function _obj_" << get_name() <<" (xPosIn, yPosIn,objectLayerId) \n";
+        *fileTarget << nestedTabsStrObjFunc << "function obj_" << get_name() <<" (x_pos_in, y_pos_in,object_layer_id) \n";
         *fileTarget << nestedTabsStrObjFunc << "{ \n";
         pawgui::widget_resource_container * parentRes = parentObjectField->get_selected_container();
         if( parentRes!=NULL)
         {
-            *fileTarget << nestedTabsStrObjFunc << "    GPE._obj_" << parentRes->get_name() <<".call(this,xPosIn, yPosIn,objectLayerId); \n";
+            *fileTarget << nestedTabsStrObjFunc << "    GPE._obj_" << parentRes->get_name() <<".call(this,x_pos_in, y_pos_in,object_layer_id); \n";
         }
         else
         {
-            *fileTarget << nestedTabsStrObjFunc << "    GPE.game_object.call(this,xPosIn, yPosIn,objectLayerId); \n";
+            *fileTarget << nestedTabsStrObjFunc << "    GPE.game_object.call(this,x_pos_in, y_pos_in,object_layer_id); \n";
         }
         *fileTarget << nestedTabsStrObjFunc << "    this.gpeObjectType ="<< exportBuildGlobalId << "; \n";
         pawgui::widget_resource_container * animationRes = animationField->get_selected_container();
@@ -322,11 +320,11 @@ bool gameEntityResource::build_intohtml5_file(std::ofstream * fileTarget, int le
 
         if( checkBoxIsVisible!=NULL)
         {
-            *fileTarget << nestedTabsStrObjFunc << "    this.isVisible = " << checkBoxIsVisible->is_clicked() << ";\n";
+            *fileTarget << nestedTabsStrObjFunc << "    this.is_visible = " << checkBoxIsVisible->is_clicked() << ";\n";
         }
         else
         {
-            *fileTarget << nestedTabsStrObjFunc << "    this.isVisible = false;\n";
+            *fileTarget << nestedTabsStrObjFunc << "    this.is_visible = false;\n";
         }
         //
         if( checkBoxIsContinuous!=NULL)
@@ -358,13 +356,13 @@ bool gameEntityResource::build_intohtml5_file(std::ofstream * fileTarget, int le
         //returns object and gives it its prototype(parent object)
         if( parentRes!=NULL)
         {
-            *fileTarget << nestedTabsStrObjFunc << "_obj_" << get_name() << ".prototype = new GPE._obj_" << parentRes->get_name() <<"(xPosIn, yPosIn); \n";
+            *fileTarget << nestedTabsStrObjFunc << "_obj_" << get_name() << ".prototype = new GPE._obj_" << parentRes->get_name() <<"(x_pos_in, y_pos_in); \n";
         }
         else
         {
-            *fileTarget << nestedTabsStrObjFunc << "_obj_" << get_name() << ".prototype = new GPE.game_object(xPosIn, yPosIn); \n";
+            *fileTarget << nestedTabsStrObjFunc << "_obj_" << get_name() << ".prototype = new GPE.game_object(x_pos_in, y_pos_in); \n";
         }
-        *fileTarget << nestedTabsStrObjFunc << "return _obj_" << get_name() <<"; \n";
+        *fileTarget << nestedTabsStrObjFunc << "return obj_" << get_name() <<"; \n";
         *fileTarget << nestedTabsStr << "}());\n\n";
     }
     return buildSuccessful;
@@ -449,7 +447,7 @@ void gameEntityResource::manage_components( gpe::shape_rect * view_space, gpe::s
         customComponentsGuiList->add_gui_element(renameBox,true);
         customComponentsGuiList->add_gui_element(animationField,true);
         customComponentsGuiList->add_gui_element(parentObjectField,true);
-        //customComponentsGuiList->add_gui_element(loadResourceButton,true);
+        //customComponentsGuiList->add_gui_element(loadResource_button,true);
         customComponentsGuiList->add_gui_element(checkBoxNeedsCamera,true);
         customComponentsGuiList->add_gui_element(checkBoxIsMoveable,true);
         customComponentsGuiList->add_gui_element(checkBoxIsVisible,true);
@@ -457,8 +455,8 @@ void gameEntityResource::manage_components( gpe::shape_rect * view_space, gpe::s
         //End of New Code
 
         customComponentsGuiList->add_gui_element(componentsMainGuiLabel,true);
-        customComponentsGuiList->add_gui_element(resetComponentsButton,true);
-        customComponentsGuiList->add_gui_element(inheritParentComponentButton,true);
+        customComponentsGuiList->add_gui_element(resetComponents_button,true);
+        customComponentsGuiList->add_gui_element(inheritParentComponent_button,true);
         customComponentsGuiList->add_gui_element(addNewComponentDropDown,true);
 
         customComponentsGuiList->add_gui_element(componentsGuiLabel,true);
@@ -543,27 +541,27 @@ void gameEntityResource::manage_components( gpe::shape_rect * view_space, gpe::s
                         {
                             if( tempCustomComponent->get_type()=="dropdown" || tempCustomComponent->get_type()=="selectbox")
                             {
-                                std::string extraDataString = "[menu]";
+                                std::string extraDatastring = "[menu]";
                                 std::string newMenuOptionName = pawgui::get_string_from_popup("Enter an option name.","option name:","");
                                 while( newMenuOptionName.size() > 0 && (  stg_ex::is_alnum(newMenuOptionName,true,true) ) )
                                 {
-                                    extraDataString+="[option]"+newMenuOptionName+":"+newMenuOptionName+":-1[/option]";
+                                    extraDatastring+="[option]"+newMenuOptionName+":"+newMenuOptionName+":-1[/option]";
                                     newMenuOptionName = pawgui::get_string_from_popup("Enter an option name.","option name:","");
                                 }
-                                extraDataString+="[/menu]0,0";
-                                tempCustomComponent->load_data(extraDataString);
+                                extraDatastring+="[/menu]0,0";
+                                tempCustomComponent->load_data(extraDatastring);
                             }
                         }
                         else if( menuSelection==3)
                         {
                             if( tempCustomComponent->get_type()=="dropdown" || tempCustomComponent->get_type()=="selectbox")
                             {
-                                std::string extraDataString = "";
+                                std::string extraDatastring = "";
                                 std::string newMenuOptionName = pawgui::get_string_from_popup("Enter option to remove.","option name:","");
                                 if( newMenuOptionName.size() > 0 && (  stg_ex::is_alnum(newMenuOptionName,true,true) ) )
                                 {
-                                    extraDataString+="[option]"+newMenuOptionName+"[/option]";
-                                    tempCustomComponent->remove_data(extraDataString);
+                                    extraDatastring+="[option]"+newMenuOptionName+"[/option]";
+                                    tempCustomComponent->remove_data(extraDatastring);
                                 }
                             }
                         }
@@ -624,11 +622,11 @@ void gameEntityResource::prerender_self(  )
 
 void gameEntityResource::load_resource(std::string file_path)
 {
-    if( resourcePostProcessed == false  || sff_ex::file_exists(file_path) )
+    if( resourcePostProcessed == false  || gpe::main_file_url_manager->file_exists(file_path) )
     {
-        if( pawgui::main_loader_display != NULL )
+        if( main_gpe_splash_page != NULL )
         {
-            pawgui::main_loader_display->update_submessages( "Processing Game Object", resource_name );
+            main_gpe_splash_page->update_submessages( "Processing Game Object", resource_name );
         }
 
         std::string otherColContainerName = "";
@@ -637,19 +635,20 @@ void gameEntityResource::load_resource(std::string file_path)
         std::string headerFileName ="";
         std::string sourceFileName ="";
 
-        std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/source/";
-        if( sff_ex::file_exists(file_path) )
+        std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/entities/";
+        std::string soughtCodeDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/source/";
+        if( gpe::main_file_url_manager->file_exists(file_path) )
         {
             newameObjFilename = file_path;
             soughtDir = stg_ex::get_path_from_file(newameObjFilename);
         }
         else
         {
-            newameObjFilename = soughtDir + "entity_" + resource_name+".gpf";
+            newameObjFilename = soughtDir + resource_name+".gpf";
         }
 
-        headerFileName = soughtDir + "entity_" + resource_name+".h";
-        sourceFileName = soughtDir + "entity_" + resource_name+".src";
+        headerFileName = soughtCodeDir + "entity_" + resource_name+".h";
+        sourceFileName = soughtCodeDir + "entity_" + resource_name+".src";
 
         if( current_project !=NULL)
         {
@@ -678,11 +677,11 @@ void gameEntityResource::load_resource(std::string file_path)
                 int colonSeperaterPos = 0;
                 std::string firstChar="";
                 std::string section="";
-                std::string keyString="";
-                std::string valString="";
-                std::string subValString="";
-                std::string foundReturnTypeString="";
-                std::string foundParametersString ="";
+                std::string key_string="";
+                std::string valstring="";
+                std::string subValstring="";
+                std::string foundReturnTypestring="";
+                std::string foundParametersstring ="";
                 std::string currLine="";
                 std::string currLineToBeProcessed;
 
@@ -716,11 +715,11 @@ void gameEntityResource::load_resource(std::string file_path)
                                 if(equalPos!=(int)std::string::npos)
                                 {
                                     //if the equalPos is present, then parse on through and carryon
-                                    keyString = currLineToBeProcessed.substr(0,equalPos);
-                                    valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                                    if( keyString=="Version")
+                                    key_string = currLineToBeProcessed.substr(0,equalPos);
+                                    valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                    if( key_string=="Version")
                                     {
-                                        foundFileVersion = stg_ex::string_to_float(valString);
+                                        foundFileVersion = stg_ex::string_to_float(valstring);
                                     }
                                 }
                             }
@@ -735,11 +734,11 @@ void gameEntityResource::load_resource(std::string file_path)
                             if(equalPos!=(int)std::string::npos)
                             {
                                 //if the equalPos is present, then parse on through and carryon
-                                keyString = currLineToBeProcessed.substr(0,equalPos);
-                                valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                key_string = currLineToBeProcessed.substr(0,equalPos);
+                                valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
                                 //Seeks for new textArea to edit based on older format
-                                if( stg_ex::string_starts( keyString, "[[[") )
+                                if( stg_ex::string_starts( key_string, "[[[") )
                                 {
                                     if( inCodeSection )
                                     {
@@ -747,110 +746,110 @@ void gameEntityResource::load_resource(std::string file_path)
                                         textAreaToLoad->add_line("");
                                     }
 
-                                    if( keyString=="[[[Function")
+                                    if( key_string=="[[[Function")
                                     {
-                                        valString = stg_ex::split_first_string(valString,']');
+                                        valstring = stg_ex::split_first_string(valstring,']');
                                         if( textAreaToLoad!=NULL)
                                         {
-                                            textAreaToLoad->add_line(nestedFunctionStr + "this."+valString + " = function()" );
+                                            textAreaToLoad->add_line(nestedFunctionStr + "this."+valstring + " = function()" );
                                             textAreaToLoad->add_line(nestedFunctionStr + "{");
                                         }
                                         inCodeSection = true;
                                     }
-                                    else if( keyString=="[[[TimedFunction")
+                                    else if( key_string=="[[[TimedFunction")
                                     {
-                                        colonSeperaterPos=valString.find_first_of(":");
+                                        colonSeperaterPos=valstring.find_first_of(":");
                                         if(colonSeperaterPos!=(int)std::string::npos)
                                         {
-                                            subValString = valString.substr(colonSeperaterPos+1);
-                                            subValString = stg_ex::split_first_string(subValString,']');
-                                            valString = valString.substr(0,colonSeperaterPos);
+                                            subValstring = valstring.substr(colonSeperaterPos+1);
+                                            subValstring = stg_ex::split_first_string(subValstring,']');
+                                            valstring = valstring.substr(0,colonSeperaterPos);
                                         }
                                         else
                                         {
-                                            valString = stg_ex::split_first_string(valString,']');
+                                            valstring = stg_ex::split_first_string(valstring,']');
                                         }
                                         if( textAreaToLoad!=NULL)
                                         {
-                                            textAreaToLoad->add_line(nestedFunctionStr + "this."+valString  + " = function()" );
+                                            textAreaToLoad->add_line(nestedFunctionStr + "this."+valstring  + " = function()" );
                                             textAreaToLoad->add_line(nestedFunctionStr + "{");
                                         }
                                         inCodeSection = true;
                                     }
-                                    else if( keyString=="[[[CollisionFunction" || keyString=="[[[CollideFunction")
+                                    else if( key_string=="[[[CollisionFunction" || key_string=="[[[CollideFunction")
                                     {
-                                        valString = stg_ex::split_first_string(valString,']');
+                                        valstring = stg_ex::split_first_string(valstring,']');
                                         if( textAreaToLoad!=NULL)
                                         {
-                                            textAreaToLoad->add_line(nestedFunctionStr + "this.collide_with_"+valString  + " = function()" );
+                                            textAreaToLoad->add_line(nestedFunctionStr + "this.collide_with_"+valstring  + " = function()" );
                                             textAreaToLoad->add_line(nestedFunctionStr + "{");
                                         }
                                         inCodeSection = true;
                                     }
-                                    else if( keyString=="[[[SpecialFunction")
+                                    else if( key_string=="[[[SpecialFunction")
                                     {
-                                        valString = stg_ex::split_first_string(valString,']');
+                                        valstring = stg_ex::split_first_string(valstring,']');
                                         if( textAreaToLoad!=NULL)
                                         {
-                                            textAreaToLoad->add_line(nestedFunctionStr + "this."+valString  + " = function()" );
+                                            textAreaToLoad->add_line(nestedFunctionStr + "this."+valstring  + " = function()" );
                                             textAreaToLoad->add_line(nestedFunctionStr + "{");
                                         }
                                         inCodeSection = true;
                                     }
-                                    else if( keyString=="[[[CustomFunction")
+                                    else if( key_string=="[[[CustomFunction")
                                     {
                                         //option 5
-                                        subValString = stg_ex::split_first_string(valString,',');
+                                        subValstring = stg_ex::split_first_string(valstring,',');
 
-                                        foundReturnTypeString = stg_ex::split_first_string(valString,',');
+                                        foundReturnTypestring = stg_ex::split_first_string(valstring,',');
 
-                                        foundParametersString = stg_ex::split_first_string(valString,']');
+                                        foundParametersstring = stg_ex::split_first_string(valstring,']');
 
-                                        textAreaToLoad->add_line(nestedFunctionStr + "this."+subValString  + " = function( "+ foundParametersString +")" );
+                                        textAreaToLoad->add_line(nestedFunctionStr + "this."+subValstring  + " = function( "+ foundParametersstring +")" );
 
                                         textAreaToLoad->add_line(nestedFunctionStr + "{");
                                         inCodeSection = true;
                                     }
                                 }
                                 //loads the rest of the file if all text areas are closed at this poin
-                                else if( keyString=="ResourceName")
+                                else if( key_string=="ResourceName")
                                 {
-                                        renameBox->set_string(valString);
+                                        renameBox->set_string(valstring);
                                 }
-                                else if( keyString=="animId" || keyString=="Animation" || keyString=="animationId" )
+                                else if( key_string=="animation_id" || key_string=="Animation" || key_string=="animationId" )
                                 {
                                     animationIndex = -1;
                                     if( animationField!=NULL)
                                     {
-                                        animationField->set_selected_target(valString);
+                                        animationField->set_selected_target(valstring);
                                         animationIndex = animationField->get_selected_id();
                                     }
                                 }
-                                else if( keyString=="ParentGameObjectId")
+                                else if( key_string=="ParentGameObjectId")
                                 {
-                                    parentObjectField->set_selected_target( valString );
+                                    parentObjectField->set_selected_target( valstring );
                                     parentObjectId = parentObjectField->get_selected_id();
 
                                 }
-                                else if( keyString=="IsContinuous")
+                                else if( key_string=="IsContinuous")
                                 {
-                                    checkBoxIsContinuous->set_checked( stg_ex::string_to_bool(valString) );
+                                    checkBoxIsContinuous->set_checked( stg_ex::string_to_bool(valstring) );
                                 }
-                                else if( keyString=="IsMoveable")
+                                else if( key_string=="IsMoveable")
                                 {
-                                    checkBoxIsMoveable->set_checked( stg_ex::string_to_bool(valString) );
+                                    checkBoxIsMoveable->set_checked( stg_ex::string_to_bool(valstring) );
                                 }
-                                else if( keyString=="IsVisible")
+                                else if( key_string=="IsVisible")
                                 {
-                                    checkBoxIsVisible->set_checked( stg_ex::string_to_bool(valString) );
+                                    checkBoxIsVisible->set_checked( stg_ex::string_to_bool(valstring) );
                                 }
-                                else if( keyString=="NeedsCamera")
+                                else if( key_string=="NeedsCamera")
                                 {
-                                    checkBoxNeedsCamera->set_checked( stg_ex::string_to_bool(valString) );
+                                    checkBoxNeedsCamera->set_checked( stg_ex::string_to_bool(valstring) );
                                 }
-                                else if( keyString=="CustomComponent")
+                                else if( key_string=="CustomComponent")
                                 {
-                                    add_component(valString);
+                                    add_component(valstring);
                                 }
                                 else if( inCodeSection && textAreaToLoad!=NULL )
                                 {
@@ -916,23 +915,22 @@ void gameEntityResource::process_self( gpe::shape_rect * view_space, gpe::shape_
     }
     selectedMode = objModeSelector->get_selected_value();
 
-    int functionI = 0;
     pawgui::widget_text_editor *  fTextArea = NULL;
 
-    if( panel_main_area!=NULL )
+    if( panel_main_editor!=NULL )
     {
-        panel_main_area->add_gui_element(resource_nameLabel,true);
-        panel_main_area->add_gui_element(objModeSelector,true);
-        panel_main_area->add_gui_element(confirmResourceButton,false);
+        panel_main_editor->add_gui_element(resource_nameLabel,true);
+        panel_main_editor->add_gui_element(objModeSelector,true);
+        panel_main_editor->add_gui_element(confirmResource_button,false);
         //gpe::error_log->report("Attempting to process with code section found "+ stg_ex::int_to_string(codeSection) );
-        panel_main_area->process_self(NULL, NULL);
+        panel_main_editor->process_self(NULL, NULL);
     }
     else
     {
-        confirmResourceButton->set_clicked( false );
+        confirmResource_button->set_clicked( false );
     }
 
-    if( confirmResourceButton->is_clicked() || ( gpe::input->check_kb_down(kb_ctrl) && gpe::input->check_kb_released(kb_s) ) )
+    if( confirmResource_button->is_clicked() || ( gpe::input->check_kb_down(kb_ctrl) && gpe::input->check_kb_released(kb_s) ) )
     {
         save_resource();
     }
@@ -941,9 +939,9 @@ void gameEntityResource::process_self( gpe::shape_rect * view_space, gpe::shape_
     if( selectedMode == OBJ_MODE_COMPONENTS )
     {
         manage_components(view_space, cam);
-        if( loadResourceButton!=NULL)
+        if( loadResource_button!=NULL)
         {
-            if( loadResourceButton->is_clicked() )
+            if( loadResource_button->is_clicked() )
             {
 
             }
@@ -971,9 +969,9 @@ void gameEntityResource::process_self( gpe::shape_rect * view_space, gpe::shape_
         }
 
 
-        if( inheritParentComponentButton!=NULL && parentObjectField!=NULL)
+        if( inheritParentComponent_button!=NULL && parentObjectField!=NULL)
         {
-            if( inheritParentComponentButton->is_clicked() )
+            if( inheritParentComponent_button->is_clicked() )
             {
                 pawgui::widget_resource_container * objectParent = parentObjectField->get_selected_container();
                 std::string inheritedComponentData = "";
@@ -1061,7 +1059,7 @@ void gameEntityResource::process_self( gpe::shape_rect * view_space, gpe::shape_
                         {
                             std::string newComponentData = newComponentType+":"+newComponentName+"==|||==";
 
-                            std::string extraDataString = "_blank";
+                            std::string extraDatastring = "_blank";
                             if( newComponentType=="texturl")
                             {
                                 std::string newurlLink = pawgui::get_string_from_popup("Please enter a URL for this new component","Example: http://www.pawbyte.com","");
@@ -1076,18 +1074,18 @@ void gameEntityResource::process_self( gpe::shape_rect * view_space, gpe::shape_
                                         newurlLink = "http://"+newurlLink;
                                     }
                                 }
-                                extraDataString = newUrlDescription+",,,"+newurlLink+",,,";
+                                extraDatastring = newUrlDescription+",,,"+newurlLink+",,,";
                             }
                             else if( newComponentType=="dropdown" || newComponentType=="radio")
                             {
-                                extraDataString = "[menu]";
+                                extraDatastring = "[menu]";
                                 std::string newMenuOptionName = pawgui::get_string_from_popup("Enter an option name.","option name:","");
                                 while( (int)newMenuOptionName.size() > 0 && (  stg_ex::is_alnum(newMenuOptionName,true,true) ) )
                                 {
-                                    extraDataString+="[option]"+newMenuOptionName+":"+newMenuOptionName+":-1[/option]";
+                                    extraDatastring+="[option]"+newMenuOptionName+":"+newMenuOptionName+":-1[/option]";
                                     newMenuOptionName = pawgui::get_string_from_popup("Enter an option name.","option name:","");
                                 }
-                                extraDataString+="[/menu]0,0";
+                                extraDatastring+="[/menu]0,0";
                             }
                             else
                             {
@@ -1096,10 +1094,10 @@ void gameEntityResource::process_self( gpe::shape_rect * view_space, gpe::shape_
                                 {
                                     std::string newDropDownType = stg_ex::get_substring(newComponentType,0,dropdownResPos);
                                     newComponentData = "resourcedropdown:"+newComponentName+"==|||==";
-                                    extraDataString = newDropDownType+",,,-1,";
+                                    extraDatastring = newDropDownType+",,,-1,";
                                 }
                             }
-                            newComponentData = newComponentData+extraDataString;
+                            newComponentData = newComponentData+extraDatastring;
                             pawgui::widget_basic * newComponentField = add_gui_component(newComponentData);
 
                             if( newComponentField!=NULL)
@@ -1126,7 +1124,7 @@ void gameEntityResource::process_self( gpe::shape_rect * view_space, gpe::shape_
             }
         }
 
-        if( resetComponentsButton!=NULL && resetComponentsButton->is_clicked() && (int)customComponentRealList.size() > 0)
+        if( resetComponents_button!=NULL && resetComponents_button->is_clicked() && (int)customComponentRealList.size() > 0)
         {
             if( pawgui::display_prompt_message("Are you sure you want to delete all component elements?","There is no undo!")==pawgui::display_query_yes)
             {
@@ -1207,16 +1205,16 @@ void gameEntityResource::render_self( gpe::shape_rect * view_space, gpe::shape_r
 
 void gameEntityResource::save_resource(std::string file_path, int backupId)
 {
-    if( pawgui::main_loader_display != NULL )
+    if( main_gpe_splash_page != NULL )
     {
-        pawgui::main_loader_display->update_submessages( "Saving Game Object", resource_name );
+        main_gpe_splash_page->update_submessages( "Saving Game Object", resource_name );
     }
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string headerFileName ="";
     std::string sourceFileName ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( sff_ex::path_exists(soughtDir) )
+    if( gpe::main_file_url_manager->path_exists(soughtDir) )
     {
         newFileOut = file_path;
         headerFileName = soughtDir+resource_name+".h";
@@ -1252,8 +1250,6 @@ void gameEntityResource::save_resource(std::string file_path, int backupId)
         load_resource();
     }
     int i = 0;
-    pawgui::widget_resource_container * objsParentContainer = projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_object] );
-    pawgui::widget_resource_container * tOtherContainer = NULL;
     std::string otherColContainerName = "";
     animationIndex = -1;
     if( animationField!=NULL)
@@ -1271,7 +1267,7 @@ void gameEntityResource::save_resource(std::string file_path, int backupId)
             write_header_on_file(&newGameObjFile);
             if( animationField!=NULL)
             {
-                newGameObjFile << "animId=" << animationField->get_selected_name() << "\n";
+                newGameObjFile << "animation_id=" << animationField->get_selected_name() << "\n";
             }
             if( parentObjectField!=NULL)
             {
@@ -1331,35 +1327,33 @@ void gameEntityResource::save_resource(std::string file_path, int backupId)
 
 int gameEntityResource::search_for_string(std::string needle)
 {
-    int foundStrings = 0;
+    int foundstrings = 0;
     main_editor_log->log_general_comment("Searching ["+resource_name+"] object..");
 
 
     if( pawgui::main_anchor_controller!=NULL  )
     {
-        int i = 0;
         pawgui::main_anchor_controller->searchResultProjectName = parentProjectName;
         pawgui::main_anchor_controller->searchResultResourceId = globalResouceIdNumber;
         pawgui::main_anchor_controller->searchResultResourceName = resource_name;
         if( headerCodeArea!=NULL && headerCodeArea->has_content() )
         {
-            foundStrings+=headerCodeArea->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true, "header" );
+            foundstrings+=headerCodeArea->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true, "header" );
         }
 
         if( sourceCodeArea!=NULL && sourceCodeArea->has_content() )
         {
-            foundStrings += sourceCodeArea->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true, "source" );
+            foundstrings += sourceCodeArea->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true, "source" );
         }
     }
-    return foundStrings;
+    return foundstrings;
 }
 
 int gameEntityResource::search_and_replace_string(std::string needle, std::string newStr )
 {
-    int foundStrings = 0;
+    int foundstrings = 0;
     int tempFoundCount = 0;
     main_editor_log->log_general_comment("Searching ["+resource_name+"] object..");
-    int i = 0;
 
     if( pawgui::main_anchor_controller!=NULL )
     {
@@ -1372,8 +1366,8 @@ int gameEntityResource::search_and_replace_string(std::string needle, std::strin
             tempFoundCount =headerCodeArea->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),false,"header" );
             if( tempFoundCount > 0)
             {
-                foundStrings+=tempFoundCount;
-                //displayMessageString = "Replaced "+ stg_ex::int_to_string( headerCodeArea->replace_all_found(needle, newStr ) )+" copies.";                        }
+                foundstrings+=tempFoundCount;
+                //displayMessagestring = "Replaced "+ stg_ex::int_to_string( headerCodeArea->replace_all_found(needle, newStr ) )+" copies.";                        }
             }
         }
 
@@ -1382,16 +1376,16 @@ int gameEntityResource::search_and_replace_string(std::string needle, std::strin
             tempFoundCount = sourceCodeArea->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),false, "source" );
             if( tempFoundCount > 0)
             {
-                foundStrings+=tempFoundCount;
-                //displayMessageString = "Replaced "+ stg_ex::int_to_string( headerCodeArea->replace_all_found(needle, newStr ) )+" copies.";                        }
+                foundstrings+=tempFoundCount;
+                //displayMessagestring = "Replaced "+ stg_ex::int_to_string( headerCodeArea->replace_all_found(needle, newStr ) )+" copies.";                        }
             }
         }
     }
-    return foundStrings;
+    return foundstrings;
 }
 
 
-void gameEntityResource::update_box(int newX, int newY, int newW, int newH)
+void gameEntityResource::update_box(int x_new, int y_new, int newW, int newH)
 {
 
 }
@@ -1424,14 +1418,14 @@ void setup_object_components( pawgui::widget_dropdown_menu * componentMenu)
     componentMenu->add_menu_option("Drop-Down","dropdown",3,false);
     componentMenu->add_menu_option("Input-Text","inputtext",4,false);
     componentMenu->add_menu_option("Input-Number","inputnumber",5,false);
-    componentMenu->add_menu_option("Radio Button","radio",6,false);
+    componentMenu->add_menu_option("Radio _button","radio",6,false);
     componentMenu->add_menu_option("Text Label","labeltext",7,false);
     componentMenu->add_menu_option("Text URL","texturl",8,false);
 
     gpe::key_pair *  contentSelectorKey = componentMenu->add_menu_option("Content Selector","contentselector",9,false);
     contentSelectorKey->add_keypair("Content Selector-Id","contentselector-int",10);
     contentSelectorKey->add_keypair("Content Selector-float","contentselector-float",11);
-    contentSelectorKey->add_keypair("Content Selector-String","contentselector-string",12);
+    contentSelectorKey->add_keypair("Content Selector-string","contentselector-string",12);
     contentSelectorKey->add_keypair("Content Selector-Color","contentselector-color",13);
 
     componentMenu->add_menu_option("Texture","Textures-resourcedropdown",50,false);

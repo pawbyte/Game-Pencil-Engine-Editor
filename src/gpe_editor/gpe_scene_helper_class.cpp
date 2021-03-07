@@ -3,10 +3,10 @@ gpe_scene_helper_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -134,8 +134,8 @@ GPE_SceneEditorHelper::GPE_SceneEditorHelper()
     topList = new pawgui::widget_panel_list();
     middleList = new pawgui::widget_panel_list();
     bottomList = new pawgui::widget_panel_list();
-    confirmButton = new pawgui::widget_button_label("Create","Creates new element");
-    cancelButton = new pawgui::widget_button_label("Cancel","Cancels Operation");
+    confirm_button = new pawgui::widget_button_label("Create","Creates new element");
+    cancel_button = new pawgui::widget_button_label("Cancel","Cancels Operation");
     currentLabel = new pawgui::widget_label_text ( "","" );
     descriptionLabel = new pawgui::widget_label_paragraph( "","","" );
     nameField = new pawgui::widget_input_text("","Name...");
@@ -240,7 +240,7 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
         //pawgui::main_overlay_system->render_frozen_screenshot( );
         int selectedOptionId = (int)gpe::branch_type::BASIC_SCENE_ELEMENT;
         std::string selectedOptionStr = "";
-        pawgui::widget_button_card_vertical * selectedButton = NULL;
+        pawgui::widget_button_card_vertical * selected_button = NULL;
         while(exitOperation==false)
         {
             gpe::cursor_main_controller->cursor_change( gpe::cursor_main_controller->cursor_system_name( gpe::cursor_default_type::arrow) );
@@ -286,15 +286,15 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
             }
 
             middleList->process_self( NULL, NULL );
-            if( middleList->selectedElement !=NULL && middleList->selectedElement->get_element_type()=="verticalButton" )
+            if( middleList->selectedElement !=NULL && middleList->selectedElement->get_element_type()=="vertical_button" )
             {
                 selectedOptionStr = middleList->selectedElement->descriptionText;
                 if( descriptionText!= selectedOptionStr)
                 {
                     descriptionText = selectedOptionStr;
                     descriptionLabel->update_text( descriptionText );
-                    selectedButton = (pawgui::widget_button_card_vertical * ) middleList->selectedElement;
-                    selectedOptionId = selectedButton->get_id();
+                    selected_button = (pawgui::widget_button_card_vertical * ) middleList->selectedElement;
+                    selectedOptionId = selected_button->get_id();
                 }
             }
 
@@ -317,17 +317,17 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
             {
                 bottomList->add_gui_element(nameField, true );
             }
-            bottomList->add_gui_auto(confirmButton );
-            bottomList->add_gui_auto(cancelButton );
+            bottomList->add_gui_auto(confirm_button );
+            bottomList->add_gui_auto(cancel_button );
             bottomList->process_self( NULL, NULL );
 
-            if( gpe::input->check_kb_released(kb_esc) || cancelButton->is_clicked() || gpe::window_controller_main->is_resized()  )
+            if( gpe::input->check_kb_released(kb_esc) || cancel_button->is_clicked() || gpe::window_controller_main->is_resized()  )
             {
                 exitOperation = true;
                 selectedOptionId = (int)gpe::branch_type::BASIC_SCENE_ELEMENT;
                 chosenName = "";
             }
-            else if( confirmButton->is_clicked() )
+            else if( confirm_button->is_clicked() )
             {
                 exitOperation = true;
                 chosenName = nameField->get_string();
@@ -370,7 +370,7 @@ void GPE_SceneEditorHelper::reset_meta()
 {
     boxIsMoving = false;
     boxWasResized = false;
-    boxBeingResized = false;
+    boxbeing_resized = false;
     bottomList->reset_self();
     middleList->reset_self();
     topList->reset_self();

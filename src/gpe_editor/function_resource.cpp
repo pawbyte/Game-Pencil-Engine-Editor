@@ -3,10 +3,10 @@ functionResource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,23 +37,28 @@ functionResource::functionResource(pawgui::widget_resource_container * pFolder)
 {
     projectParentFolder = pFolder;
 
-    /*cancelResourceButton->disable_self();
-    confirmResourceButton->disable_self();
-    loadResourceButton->disable_self();
-    saveResourceButton->disable_self();
-    */
-    //textEditorButtonBar->set_width(256);
+    codeCategoryTabs = new pawgui::widget_tabbar();
+    codeCategoryTabs->set_coords(16,16);
+    codeCategoryTabs->add_new_tab("Header",false);
+    codeCategoryTabs->add_new_tab("Source",true);
+
     functionReturnType = new pawgui::widget_input_text("void","");
     parametersField = new pawgui::widget_input_text("","parameter1, parameter2, etc");
     parametersField->set_label("Function Parameters");
-    functionCode = new pawgui::widget_text_editor(false);
+    functionCodeHeader = new pawgui::widget_text_editor(false);
+    functionCodeHeader->set_placeholder("Header Code...");
+
+    functionCodeSource = new pawgui::widget_text_editor(false);
+    functionCodeSource->set_placeholder("Header Code...");
+
+
     renameBox->set_coords(pawgui::padding_default,-1 );
-    saveButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png","Save Changes",-1,24);
-    saveButton->set_height(parametersField->get_height() );
-    saveButton->set_width(parametersField->get_height() );
+    save_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png","Save Changes",-1,24);
+    save_button->set_height(parametersField->get_height() );
+    save_button->set_width(parametersField->get_height() );
     functionEditorList = new pawgui::widget_panel_list();
-    //loadResourceButton->disable_self();
-    //saveResourceButton->disable_self();
+    //loadResource_button->disable_self();
+    //saveResource_button->disable_self();
 }
 
 functionResource::~functionResource()
@@ -64,10 +69,15 @@ functionResource::~functionResource()
         functionEditorList = NULL;
     }
 
-    if(functionCode!=NULL)
+    if(functionCodeHeader!=NULL)
     {
-        delete functionCode;
-        functionCode = NULL;
+        delete functionCodeHeader;
+        functionCodeHeader = NULL;
+    }
+    if(functionCodeSource!=NULL)
+    {
+        delete functionCodeSource;
+        functionCodeSource = NULL;
     }
 
     if(functionReturnType!=NULL)
@@ -87,10 +97,10 @@ functionResource::~functionResource()
         delete renameBox;
         renameBox = NULL;
     }
-    if( saveButton!=NULL)
+    if( save_button!=NULL)
     {
-        delete saveButton;
-        saveButton = NULL;
+        delete save_button;
+        save_button = NULL;
     }
 
 }
@@ -128,9 +138,9 @@ void functionResource::integrate_into_syntax()
             }
         }
         std::string functionDescription = "User defined function...";
-        if( functionCode!=NULL)
+        if( functionCodeSource!=NULL)
         {
-            std::string firstLineOfCode = functionCode->get_line_string(0);
+            std::string firstLineOfCode = functionCodeSource->get_line_string(0);
             if( (int)firstLineOfCode.size() > 2)
             {
                 if( firstLineOfCode[0]=='/' && (firstLineOfCode.at(1)=='/' || firstLineOfCode.at(1)=='*' ) )
@@ -158,25 +168,25 @@ bool functionResource::is_build_ready()
 
 void functionResource::open_code( int lineNumb, int colNumb,std::string codeTitle)
 {
-    if( functionCode!=NULL && functionCode->has_content() )
+    if( functionCodeSource!=NULL && functionCodeSource->has_content() )
     {
-        functionCode->scroll_to_pos(lineNumb, colNumb);
+        functionCodeSource->scroll_to_pos(lineNumb, colNumb);
     }
 }
 
 void functionResource::load_resource(std::string file_path)
 {
-    if( resourcePostProcessed ==false  || sff_ex::file_exists(file_path) )
+    if( resourcePostProcessed ==false  || gpe::main_file_url_manager->file_exists(file_path) )
     {
-        if( pawgui::main_loader_display != NULL )
+        if( main_gpe_splash_page != NULL )
         {
-            pawgui::main_loader_display->update_submessages( "Processing Function", resource_name );
+            main_gpe_splash_page->update_submessages( "Processing Function", resource_name );
         }
 
         bool usingAltSaveSource = false;
         std::string newFileIn ="";
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/source/";
-        if( sff_ex::file_exists(file_path) )
+        if( gpe::main_file_url_manager->file_exists(file_path) )
         {
             newFileIn = file_path;
             soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -199,11 +209,11 @@ void functionResource::load_resource(std::string file_path)
             }
         }
 
-        if( functionCode!=NULL)
+        if( functionCodeSource!=NULL)
         {
-            functionCode->import_text(functionCodeLoadLocation);
-            functionCode->activate_self();
-            functionCode->init_save_history();
+            functionCodeSource->import_text(functionCodeLoadLocation);
+            functionCodeSource->activate_self();
+            functionCodeSource->init_save_history();
         }
 
         std::string otherColContainerName = "";
@@ -220,9 +230,9 @@ void functionResource::load_resource(std::string file_path)
                 int equalPos = 0;
                 std::string firstChar="";
                 std::string section="";
-                std::string keyString="";
-                std::string valString="";
-                std::string subValString="";
+                std::string key_string="";
+                std::string valstring="";
+                std::string subValstring="";
                 std::string currLine="";
                 std::string currLineToBeProcessed;
                 float foundFileVersion = 0;
@@ -247,11 +257,11 @@ void functionResource::load_resource(std::string file_path)
                                 if(equalPos!=(int)std::string::npos)
                                 {
                                     //if the equalPos is present, then parse on through and carryon
-                                    keyString = currLineToBeProcessed.substr(0,equalPos);
-                                    valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                                    if( keyString=="Version")
+                                    key_string = currLineToBeProcessed.substr(0,equalPos);
+                                    valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                    if( key_string=="Version")
                                     {
-                                        foundFileVersion = stg_ex::string_to_float(valString);
+                                        foundFileVersion = stg_ex::string_to_float(valstring);
                                     }
                                 }
                             }
@@ -266,26 +276,26 @@ void functionResource::load_resource(std::string file_path)
                             if(equalPos!=(int)std::string::npos)
                             {
                                 //if the equalPos is present, then parse on through and carryon
-                                keyString = currLineToBeProcessed.substr(0,equalPos);
-                                valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                                if( keyString=="ResourceName")
+                                key_string = currLineToBeProcessed.substr(0,equalPos);
+                                valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                if( key_string=="ResourceName")
                                 {
-                                    renameBox->set_string(valString);
+                                    renameBox->set_string(valstring);
                                 }
-                                else if( keyString=="Parameters")
+                                else if( key_string=="Parameters")
                                 {
-                                    parametersField->set_string(valString);
+                                    parametersField->set_string(valstring);
                                 }
-                                if( keyString=="ReturnType")
+                                if( key_string=="ReturnType")
                                 {
-                                    functionReturnType->set_string(valString);
+                                    functionReturnType->set_string(valstring);
                                 }
-                                else if( keyString=="Cursor")
+                                else if( key_string=="Cursor")
                                 {
-                                    fCursorY = stg_ex::split_first_int(valString,',');
-                                    fCursorX = stg_ex::string_to_int(valString,0);
-                                    functionCode->set_ycursor(fCursorY);
-                                    functionCode->set_xcursor(fCursorX);
+                                    fCursorY = stg_ex::split_first_int(valstring,',');
+                                    fCursorX = stg_ex::string_to_int(valstring,0);
+                                    functionCodeSource->set_ycursor(fCursorY);
+                                    functionCodeSource->set_xcursor(fCursorX);
                                 }
                             }
                         }
@@ -309,34 +319,34 @@ void functionResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && view_space!=NULL && saveButton!=NULL && functionEditorList!=NULL && parametersField!=NULL && functionCode!=NULL )
+    if(cam!=NULL && view_space!=NULL && save_button!=NULL && functionEditorList!=NULL && parametersField!=NULL && functionCodeSource!=NULL )
     {
         functionEditorList->set_coords( 0,0 );
         functionEditorList->set_width(view_space->w );
         functionEditorList->set_height(view_space->h);
         functionEditorList->clear_list();
-        if( panel_main_area!=NULL )
+        if( panel_main_editor!=NULL )
         {
             functionEditorList->barXMargin = functionEditorList->barYMargin = 0;
             functionEditorList->barXPadding = functionEditorList->barYPadding = 0;
-            functionCode->set_width(view_space->w );
-            functionCode->set_height(view_space->h );
+            functionCodeSource->set_width(view_space->w );
+            functionCodeSource->set_height(view_space->h );
 
             //Process function parameter elements in the Editor Panel
-            panel_main_area->clear_panel();
-            panel_main_area->add_gui_element(renameBox,true);
-            panel_main_area->add_gui_element(parametersField,true);
-            panel_main_area->add_gui_element(confirmResourceButton,true);
-            panel_main_area->add_gui_element(cancelResourceButton,true);
-            panel_main_area->process_self();
+            panel_main_editor->clear_panel();
+            panel_main_editor->add_gui_element(renameBox,true);
+            panel_main_editor->add_gui_element(parametersField,true);
+            panel_main_editor->add_gui_element(confirmResource_button,true);
+            panel_main_editor->add_gui_element(cancelResource_button,true);
+            panel_main_editor->process_self();
 
-            functionEditorList->add_gui_element_fullsize( functionCode );
+            functionEditorList->add_gui_element_fullsize( functionCodeSource );
             functionEditorList->process_self( view_space,cam );
-            if( confirmResourceButton->is_clicked() )
+            if( confirmResource_button->is_clicked() )
             {
                 save_resource();
             }
-            else if( cancelResourceButton->is_clicked() )
+            else if( cancelResource_button->is_clicked() )
             {
                 if( pawgui::display_prompt_message("Are you sure you will like to reverse code changes?","This will load in data from save-file!", true )== pawgui::display_query_yes )
                 {
@@ -350,14 +360,14 @@ void functionResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
             functionEditorList->barXMargin = functionEditorList->barYMargin = pawgui::padding_default;
             functionEditorList->barXPadding = functionEditorList->barYPadding = pawgui::padding_default;
             functionEditorList->set_coords( 0,0 );
-            functionCode->set_width(view_space->w-pawgui::padding_default*4 );
-            functionCode->set_height(view_space->h - pawgui::padding_default*4 - 32 );
-            functionEditorList->add_gui_element(saveButton,false);
+            functionCodeSource->set_width(view_space->w-pawgui::padding_default*4 );
+            functionCodeSource->set_height(view_space->h - pawgui::padding_default*4 - 32 );
+            functionEditorList->add_gui_element(save_button,false);
             functionEditorList->add_gui_element(renameBox,false);
             functionEditorList->add_gui_element(parametersField,true);
-            functionEditorList->add_gui_element(functionCode,true);
+            functionEditorList->add_gui_element(functionCodeSource,true);
             functionEditorList->process_self( view_space,cam );
-            if( saveButton->is_clicked() )
+            if( save_button->is_clicked() )
             {
                 save_resource();
             }
@@ -379,15 +389,15 @@ void functionResource::render_self( gpe::shape_rect * view_space, gpe::shape_rec
 
 void functionResource::save_resource(std::string file_path, int backupId)
 {
-    if( pawgui::main_loader_display != NULL )
+    if( main_gpe_splash_page != NULL )
     {
-        pawgui::main_loader_display->update_submessages( "Processing Function", resource_name );
+        main_gpe_splash_page->update_submessages( "Processing Function", resource_name );
     }
-    sff_ex::append_to_file(file_path,"blank");
+    gpe::main_file_url_manager->file_ammend_string(file_path,"blank");
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( sff_ex::path_exists(soughtDir) )
+    if( gpe::main_file_url_manager->path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
@@ -406,31 +416,31 @@ void functionResource::save_resource(std::string file_path, int backupId)
         {
             write_header_on_file(&newSaveDataFile);
 
-            if( functionCode!=NULL)
+            if( functionCodeSource!=NULL)
             {
-                //    *fileTarget << functionCode->get_xcursor() << "," << functionCode->get_ycursor() << ",";
+                //    *fileTarget << functionCodeSource->get_xcursor() << "," << functionCodeSource->get_ycursor() << ",";
                 std::string  functionCodeSaveLocation = soughtDir+resource_name+".cps";
                 if( usingAltSaveSource)
                 {
-                    if( sff_ex::file_exists(functionCodeSaveLocation) )
+                    if( gpe::main_file_url_manager->file_exists(functionCodeSaveLocation) )
                     {
                         /*
                         if( pawgui::display_prompt_message("[WARNING]Function File Already exists?","Are you sure you will like to overwrite your ["+resource_name+".cps] Function file? This action is irreversible!")==pawgui::display_query_yes)
                         {
-                            functionCode->export_text(functionCodeSaveLocation );
+                            functionCodeSource->export_text(functionCodeSaveLocation );
                         }
                         */
                     }
                     else
                     {
-                        functionCode->export_text(functionCodeSaveLocation );
+                        functionCodeSource->export_text(functionCodeSaveLocation );
                     }
                 }
                 else
                 {
-                    functionCode->export_text(functionCodeSaveLocation );
+                    functionCodeSource->export_text(functionCodeSaveLocation );
                 }
-                newSaveDataFile << "Cursor=" << functionCode->get_ycursor() << "," << functionCode->get_xcursor() << "\n";
+                newSaveDataFile << "Cursor=" << functionCodeSource->get_ycursor() << "," << functionCodeSource->get_xcursor() << "\n";
             }
             else
             {
@@ -466,50 +476,50 @@ void functionResource::save_resource(std::string file_path, int backupId)
 
 int functionResource::search_for_string(std::string needle)
 {
-    int foundStrings = 0;
+    int foundstrings = 0;
     main_editor_log->log_general_comment("Searching ["+resource_name+"] function..");
-    if( functionCode!=NULL && pawgui::main_anchor_controller!=NULL && functionCode->has_content() )
+    if( functionCodeSource!=NULL && pawgui::main_anchor_controller!=NULL && functionCodeSource->has_content() )
     {
         pawgui::main_anchor_controller->searchResultProjectName = parentProjectName;
         pawgui::main_anchor_controller->searchResultResourceId = globalResouceIdNumber;
         pawgui::main_anchor_controller->searchResultResourceName = resource_name;
-        foundStrings=functionCode->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true, "function");
+        foundstrings=functionCodeSource->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true, "function");
     }
-    return foundStrings;
+    return foundstrings;
 }
 
 int functionResource::search_and_replace_string(std::string needle, std::string newStr )
 {
-    int foundStrings = 0;
-    if( functionCode!=NULL && pawgui::main_search_controller!=NULL && functionCode->has_content() )
+    int foundstrings = 0;
+    if( functionCodeSource!=NULL && pawgui::main_search_controller!=NULL && functionCodeSource->has_content() )
     {
-        foundStrings=functionCode->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked() );
-        if( pawgui::main_loader_display != NULL )
+        foundstrings=functionCodeSource->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked() );
+        if( main_gpe_splash_page != NULL )
         {
-            pawgui::main_loader_display->update_messages( "Replacing Substring", needle, "with ["+newStr+"]" );
+            main_gpe_splash_page->update_messages( "Replacing Substring", needle, "with ["+newStr+"]" );
         }
 
-        if( foundStrings > 0)
+        if( foundstrings > 0)
         {
-            int replaceCount =  functionCode->replace_all_found(needle, newStr );
-            pawgui::main_loader_display->update_messages( "Replaced Substring", needle, stg_ex::int_to_string(replaceCount) +" times" );
+            int replaceCount =  functionCodeSource->replace_all_found(needle, newStr );
+            main_gpe_splash_page->update_messages( "Replaced Substring", needle, stg_ex::int_to_string(replaceCount) +" times" );
             pawgui::main_search_controller->showFindAllResults = true;
         }
         else
         {
-            pawgui::main_loader_display->update_messages( "Replacing Substring", needle, "No matches found");
+            main_gpe_splash_page->update_messages( "Replacing Substring", needle, "No matches found");
             pawgui::main_search_controller->showFindAllResults = false;
         }
-        //pawgui::main_overlay_system->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessageString,1);
+        //pawgui::main_overlay_system->update_temporary_message(displayMessageTitle,displayMessageSubtitle,displayMessagestring,1);
     }
-    return foundStrings;
+    return foundstrings;
 }
 
 bool functionResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn)
 {
-    if( pawgui::main_loader_display != NULL )
+    if( main_gpe_splash_page != NULL )
     {
-        pawgui::main_loader_display->update_submessages( "Saving Function", resource_name );
+        main_gpe_splash_page->update_submessages( "Saving Function", resource_name );
     }
     if( fileTarget!=NULL)
     {

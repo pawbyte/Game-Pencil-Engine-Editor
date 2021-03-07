@@ -3,10 +3,10 @@ particle_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,10 +45,10 @@ particleResource::particleResource(pawgui::widget_resource_container * pFolder)
     emitterTexture = NULL;
     //emitterTexture->load_new_texture( renderer_main, gpe::app_directory_name+"resources/gfx/animations/c_snow.png",-1,true );
     myEmitter->change_texture( emitterTexture, gpe::blend_mode_blend );
-    transformResourceButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png","Transform the Image",-1);
-    openExternalEditorButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens Texture Image In External Editor");
-    refreshResourceDataButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refreshes the loaded texture image");
-    clearTextureButton = new pawgui::widget_button_label("Clear Image...","Clears texture and reverts to shape" );
+    transformResource_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png","Transform the Image",-1);
+    openExternalEditor_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens Texture Image In External Editor");
+    refreshResourceData_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refreshes the loaded texture image");
+    clearTexture_button = new pawgui::widget_button_label("Clear Image...","Clears texture and reverts to shape" );
     textureIsRotated = new pawgui::widget_checkbox("Rotate Texture","The Particle texture rotates with it's direction", true );
 
 
@@ -81,11 +81,15 @@ particleResource::particleResource(pawgui::widget_resource_container * pFolder)
 
 
     showDebugInfo = new pawgui::widget_checkbox("Show Debugger","Preview Particle Stats in Editor", true );
-    emissionRateField = new pawgui::widget_input_number("particles per second", true, 0, gpe::PARTICLE_MAX_PER_EMITTER );
+    emissionRateField = new pawgui::widget_input_number("particles per second", true, 0, gpe::partical_max_per_emitter );
     emissionRateField->set_number( 60 );
     emissionRateField->set_label( "Emission Rate Per Second" );
 
-    particleCountField = new pawgui::widget_input_number("Max Per Emitter", true, 0, gpe::PARTICLE_MAX_PER_EMITTER );
+    emissionDisabled = new pawgui::widget_checkbox("Emission Disabled","Emission is disabled", false );
+    emissionPaused = new pawgui::widget_checkbox("Emission Paused","Emission is paused", false );
+    emissionDrawReversed = new pawgui::widget_checkbox("Reverse render order","Reverse render order", false );
+
+    particleCountField = new pawgui::widget_input_number("Max Per Emitter", true, 0, gpe::partical_max_per_emitter );
     particleCountField->set_number( 150 );
 
     lifeMinField = new pawgui::widget_input_number("Min Life (seconds)", true, 0, 500 );
@@ -164,30 +168,6 @@ void particleResource::compile_cpp()
 
 }
 
-bool particleResource::get_mouse_coords( gpe::shape_rect * view_space, gpe::shape_rect * cam )
-{
-    view_space = gpe::camera_find(view_space);
-    cam = gpe::camera_find(cam);
-    /*areaMouseXPos = 0;
-    areaMouseYPos = 0;*/
-    if( view_space!=NULL && cam!=NULL )
-    {
-        if( gpe::point_within(   gpe::input->mouse_position_x,gpe::input->mouse_position_y,
-                            view_space->x - cam->x,
-                            view_space->y - cam->y,
-                            view_space->x + view_space->w - cam->x,
-                            view_space->y + view_space->h - cam->y ) )
-        {
-            /*
-            areaMouseXPos = (gpe::input->mouse_position_x-animationPreviewCam->x )/zoomValue +animCameraRect.x - cam->x;
-            areaMouseYPos = (gpe::input->mouse_position_y-animationPreviewCam->y )/zoomValue +animCameraRect.y - cam->y;
-            */
-            return true;
-        }
-    }
-    return false;
-}
-
 void particleResource::handle_scrolling()
 {
 
@@ -216,7 +196,7 @@ bool particleResource::is_build_ready()
 
 void particleResource::load_image(std::string new_file_name, bool autoProcess )
 {
-    if( new_file_name.size() > 4 && sff_ex::file_exists( new_file_name ) )
+    if( new_file_name.size() > 4 && gpe::main_file_url_manager->file_exists( new_file_name ) )
     {
         textureLocationField->set_string( new_file_name );
         emitterTexture = gpe::rsm->texture_add_filename( new_file_name );
@@ -239,7 +219,7 @@ void particleResource::load_image(std::string new_file_name, bool autoProcess )
         texturePreviewImgLabel->set_height( 64 );
         if( autoProcess )
         {
-            sff_ex::file_copy( new_file_name, stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/particles/"+ stg_ex::get_local_from_global_file(new_file_name) );
+            gpe::main_file_url_manager->file_copy( new_file_name, stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/particles/"+ stg_ex::get_local_from_global_file(new_file_name) );
         }
     }
     else
@@ -250,18 +230,18 @@ void particleResource::load_image(std::string new_file_name, bool autoProcess )
 
 void particleResource::load_resource(std::string file_path )
 {
-    if( resourcePostProcessed ==false || sff_ex::file_exists(file_path))
+    if( resourcePostProcessed ==false || gpe::main_file_url_manager->file_exists(file_path))
     {
-        if( pawgui::main_loader_display != NULL )
+        if( main_gpe_splash_page != NULL )
         {
-            pawgui::main_loader_display->update_submessages( "Loading Particle Emitter", resource_name );
+            main_gpe_splash_page->update_submessages( "Loading Particle Emitter", resource_name );
         }
 
         std::string otherColContainerName = "";
 
         std::string newFileIn = "";
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/particles/";
-        if( sff_ex::file_exists(file_path) )
+        if( gpe::main_file_url_manager->file_exists(file_path) )
         {
             newFileIn = file_path;
             soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -283,9 +263,9 @@ void particleResource::load_resource(std::string file_path )
             {
                 int equalPos = 0;
                 std::string firstChar="";
-                std::string keyString="";
-                std::string valString="";
-                std::string subValString="";
+                std::string key_string="";
+                std::string valstring="";
+                std::string subValstring="";
                 std::string currLine="";
                 std::string currLineToBeProcessed;
 
@@ -309,11 +289,11 @@ void particleResource::load_resource(std::string file_path )
                                 if(equalPos!=(int)std::string::npos)
                                 {
                                     //if the equalPos is present, then parse on through and carryon
-                                    keyString = currLineToBeProcessed.substr(0,equalPos);
-                                    valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                                    if( keyString=="Version")
+                                    key_string = currLineToBeProcessed.substr(0,equalPos);
+                                    valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                    if( key_string=="Version")
                                     {
-                                        foundFileVersion = stg_ex::string_to_float(valString);
+                                        foundFileVersion = stg_ex::string_to_float(valstring);
                                     }
                                 }
                             }
@@ -328,112 +308,112 @@ void particleResource::load_resource(std::string file_path )
                             if(equalPos!=(int)std::string::npos)
                             {
                                 //if the equalPos is present, then parse on through and carryon
-                                keyString = currLineToBeProcessed.substr(0,equalPos);
-                                valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                key_string = currLineToBeProcessed.substr(0,equalPos);
+                                valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
-                                if( keyString=="ResourceName")
+                                if( key_string=="ResourceName")
                                 {
-                                    renameBox->set_string(valString);
+                                    renameBox->set_string(valstring);
                                 }
-                                else  if( keyString=="MaxParticles")
+                                else  if( key_string=="MaxParticles")
                                 {
-                                    particleCountField->set_string(valString);
+                                    particleCountField->set_string(valstring);
                                 }
-                                else  if( keyString=="EmissionRate")
+                                else  if( key_string=="EmissionRate")
                                 {
-                                    emissionRateField->set_string(valString);
+                                    emissionRateField->set_string(valstring);
                                 }
-                                else  if( keyString=="LifeMin")
+                                else  if( key_string=="LifeMin")
                                 {
-                                    lifeMinField->set_string(valString);
+                                    lifeMinField->set_string(valstring);
                                 }
-                                else  if( keyString=="LifeMax")
+                                else  if( key_string=="LifeMax")
                                 {
-                                    lifeMaxField->set_string(valString);
+                                    lifeMaxField->set_string(valstring);
                                 }
-                                else  if( keyString=="StartColor")
+                                else  if( key_string=="StartColor")
                                 {
-                                    sColorField->set_color_from_hex(valString);
+                                    sColorField->set_color_from_hex(valstring);
                                 }
-                                else  if( keyString=="StartColorVar")
+                                else  if( key_string=="StartColorVar")
                                 {
-                                    sVColorField->set_color_from_hex(valString);
+                                    sVColorField->set_color_from_hex(valstring);
                                 }
-                                else  if( keyString=="EndColor")
+                                else  if( key_string=="EndColor")
                                 {
-                                    eColorField->set_color_from_hex(valString);
+                                    eColorField->set_color_from_hex(valstring);
                                 }
-                                else  if( keyString=="EndColorVar")
+                                else  if( key_string=="EndColorVar")
                                 {
-                                    eVColorField->set_color_from_hex(valString);
+                                    eVColorField->set_color_from_hex(valstring);
                                 }
-                                else  if( keyString=="XStart")
+                                else  if( key_string=="XStart")
                                 {
-                                    xStartPosField->set_string(valString);
+                                    xStartPosField->set_string(valstring);
                                 }
-                                else  if( keyString=="YStart")
+                                else  if( key_string=="YStart")
                                 {
-                                    yStartPosField->set_string(valString);
+                                    yStartPosField->set_string(valstring);
                                 }
-                                else  if( keyString=="XRandom")
+                                else  if( key_string=="XRandom")
                                 {
-                                    xRandomField->set_string(valString);
+                                    xRandomField->set_string(valstring);
                                 }
-                                else  if( keyString=="YRandom")
+                                else  if( key_string=="YRandom")
                                 {
-                                    yRandomField->set_string(valString);
+                                    yRandomField->set_string(valstring);
                                 }
-                                else  if( keyString=="DirectionMin")
+                                else  if( key_string=="DirectionMin")
                                 {
-                                    directionMin->set_string(valString);
+                                    directionMin->set_string(valstring);
                                 }
-                                else  if( keyString=="DirectionMax")
+                                else  if( key_string=="DirectionMax")
                                 {
-                                    directionMax->set_string(valString);
+                                    directionMax->set_string(valstring);
                                 }
-                                else  if( keyString=="SpeedMin")
+                                else  if( key_string=="SpeedMin")
                                 {
-                                    speedMin->set_string(valString);
+                                    speedMin->set_string(valstring);
                                 }
-                                else  if( keyString=="SpeedMax")
+                                else  if( key_string=="SpeedMax")
                                 {
-                                    speedMax->set_string(valString);
+                                    speedMax->set_string(valstring);
                                 }
-                                else  if( keyString=="GravityXValue")
+                                else  if( key_string=="GravityXValue")
                                 {
-                                     gravityXValue->set_string(valString);
+                                     gravityXValue->set_string(valstring);
                                 }
-                                else  if( keyString=="GravityYValue")
+                                else  if( key_string=="GravityYValue")
                                 {
-                                    gravityYValue->set_string(valString);
+                                    gravityYValue->set_string(valstring);
                                 }
-                                else  if( keyString=="BlendType")
+                                else  if( key_string=="BlendType")
                                 {
-                                    blendTypeMenu->set_option_value( stg_ex::string_to_int(valString) );
+                                    blendTypeMenu->set_option_value( stg_ex::string_to_int(valstring) );
                                 }
-                                else  if( keyString=="EmitterShape")
+                                else  if( key_string=="EmitterShape")
                                 {
-                                    shapeMenu->set_option_value( stg_ex::string_to_int(valString) );
+                                    shapeMenu->set_option_value( stg_ex::string_to_int(valstring) );
                                 }
-                                else  if( keyString=="ShowDebugInfo")
+                                else  if( key_string=="ShowDebugInfo")
                                 {
-                                    showDebugInfo->set_clicked( stg_ex::string_to_bool(valString) );
+                                    showDebugInfo->set_clicked( stg_ex::string_to_bool(valstring) );
                                 }
-                                else  if( keyString=="Texture")
+                                else  if( key_string=="Texture")
                                 {
-                                    load_image( soughtDir+valString);
+                                    load_image( soughtDir+valstring);
                                 }
-                                else  if( keyString=="FallbackShape")
+                                else  if( key_string=="FallbackShape")
                                 {
-                                    emitterBackupTextureMenu->set_option_value( stg_ex::string_to_bool(valString) );
+                                    emitterBackupTextureMenu->set_option_value( stg_ex::string_to_bool(valstring) );
                                 }
-                                else  if( keyString=="ShapeW" || keyString=="ShapeR" )
+                                else  if( key_string=="ShapeW" || key_string=="ShapeR" )
                                 {
-                                     shapeWField->set_string(valString);
+                                     shapeWField->set_string(valstring);
                                 }
-                                else  if( keyString=="ShapeH")
+                                else  if( key_string=="ShapeH")
                                 {
-                                    shapeHField->set_string(valString);
+                                    shapeHField->set_string(valstring);
                                 }
                             }
                         }
@@ -459,73 +439,77 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
     view_space = gpe::camera_find( view_space);
     cam = gpe::camera_find( cam );
 
-    if( panel_main_area!=NULL )
+    if( panel_main_editor!=NULL )
     {
         int previousBlendMode = blendTypeMenu->get_selected_value();
         myEmitter->set_fallback_shape( emitterBackupTextureMenu->get_selected_value() );
-        panel_main_area->clear_panel();
+        panel_main_editor->clear_panel();
 
-        panel_main_area->add_gui_element(renameBox,true);
-        panel_main_area->add_gui_element(refreshResourceDataButton,false);
-        panel_main_area->add_gui_element(loadResourceButton,false);
-        //panel_main_area->add_gui_element(saveResourceButton,false);
-        panel_main_area->add_gui_element(transformResourceButton,false);
-        panel_main_area->add_gui_element( openExternalEditorButton,true);
+        panel_main_editor->add_gui_element(renameBox,true);
+        panel_main_editor->add_gui_element(refreshResourceData_button,false);
+        panel_main_editor->add_gui_element(loadResource_button,false);
+        //panel_main_editor->add_gui_element(saveResource_button,false);
+        panel_main_editor->add_gui_element(transformResource_button,false);
+        panel_main_editor->add_gui_element( openExternalEditor_button,true);
 
-        panel_main_area->add_gui_element(textureLabel,true);
-        panel_main_area->add_gui_element(textureLocationField,true);
+        panel_main_editor->add_gui_element(textureLabel,true);
+        panel_main_editor->add_gui_element(textureLocationField,true);
 
-        panel_main_area->add_gui_element(textureIsRotated,true);
-        panel_main_area->add_gui_element(clearTextureButton,true);
-        panel_main_area->add_gui_element(texturePreviewImgLabel,true);
+        panel_main_editor->add_gui_element(textureIsRotated,true);
+        panel_main_editor->add_gui_element(clearTexture_button,true);
+        panel_main_editor->add_gui_element(texturePreviewImgLabel,true);
 
-        panel_main_area->add_gui_element(emitterBackupTextureMenu,true);
-        panel_main_area->add_gui_element(shapeWField,true);
-        panel_main_area->add_gui_element(shapeHField,true);
-        panel_main_area->add_gui_element( shapeMenu,true);
-        panel_main_area->add_gui_element(particleCountField,true);
-        panel_main_area->add_gui_element(emissionRateField,true);
-        panel_main_area->add_gui_element(lifeMinField,true);
-        panel_main_area->add_gui_element(lifeMaxField,true);
+        panel_main_editor->add_gui_element(emitterBackupTextureMenu,true);
+        panel_main_editor->add_gui_element(shapeWField,true);
+        panel_main_editor->add_gui_element(shapeHField,true);
+        panel_main_editor->add_gui_element( shapeMenu,true);
+        panel_main_editor->add_gui_element(particleCountField,true);
+        panel_main_editor->add_gui_element(emissionRateField,true);
+        panel_main_editor->add_gui_element(lifeMinField,true);
+        panel_main_editor->add_gui_element(lifeMaxField,true);
 
-        panel_main_area->add_gui_element(xStartPosField,true);
-        panel_main_area->add_gui_element(yStartPosField,true);
-        panel_main_area->add_gui_element(xRandomField,true);
-        panel_main_area->add_gui_element(yRandomField,true);
-
-
-        panel_main_area->add_gui_element( blendTypeMenu,true);
-        panel_main_area->add_gui_element(colorsLabel,true);
-        panel_main_area->add_gui_element(sColorField,true);
-        panel_main_area->add_gui_element(sVColorField,true);
-        panel_main_area->add_gui_element(eColorField,true);
-        panel_main_area->add_gui_element(eVColorField,true);
+        panel_main_editor->add_gui_element(xStartPosField,true);
+        panel_main_editor->add_gui_element(yStartPosField,true);
+        panel_main_editor->add_gui_element(xRandomField,true);
+        panel_main_editor->add_gui_element(yRandomField,true);
 
 
-        panel_main_area->add_gui_element(physicsLabel,true);
-        panel_main_area->add_gui_element(directionMin,true);
-        panel_main_area->add_gui_element(directionMax,true);
+        panel_main_editor->add_gui_element( emissionDisabled,true);
+        panel_main_editor->add_gui_element( emissionPaused,true);
+        panel_main_editor->add_gui_element( emissionDrawReversed,true);
 
-        panel_main_area->add_gui_element(speedMin,true);
-        panel_main_area->add_gui_element(speedMax,true);
+        panel_main_editor->add_gui_element( blendTypeMenu,true);
+        panel_main_editor->add_gui_element(colorsLabel,true);
+        panel_main_editor->add_gui_element(sColorField,true);
+        panel_main_editor->add_gui_element(sVColorField,true);
+        panel_main_editor->add_gui_element(eColorField,true);
+        panel_main_editor->add_gui_element(eVColorField,true);
 
-        panel_main_area->add_gui_element(gravityXValue,true);
-        panel_main_area->add_gui_element(gravityYValue,true);
 
-        panel_main_area->add_gui_element(showDebugInfo,true);
-        panel_main_area->add_gui_element(confirmResourceButton,true);
-        panel_main_area->add_gui_element(cancelResourceButton,true);
-        panel_main_area->process_self();
+        panel_main_editor->add_gui_element(physicsLabel,true);
+        panel_main_editor->add_gui_element(directionMin,true);
+        panel_main_editor->add_gui_element(directionMax,true);
 
-        if( loadResourceButton!=NULL && loadResourceButton->is_clicked() )
+        panel_main_editor->add_gui_element(speedMin,true);
+        panel_main_editor->add_gui_element(speedMax,true);
+
+        panel_main_editor->add_gui_element(gravityXValue,true);
+        panel_main_editor->add_gui_element(gravityYValue,true);
+
+        panel_main_editor->add_gui_element(showDebugInfo,true);
+        panel_main_editor->add_gui_element(confirmResource_button,true);
+        panel_main_editor->add_gui_element(cancelResource_button,true);
+        panel_main_editor->process_self();
+
+        if( loadResource_button!=NULL && loadResource_button->is_clicked() )
         {
             std::string newTextureLocation = pawgui::get_filename_open_from_popup("Choose Particle Texture","Images",pawgui::main_settings->fileOpenTextureDir);
-            if( sff_ex::file_exists( newTextureLocation) && stg_ex::file_is_image(newTextureLocation) )
+            if( gpe::main_file_url_manager->file_exists( newTextureLocation) && stg_ex::file_is_image(newTextureLocation) )
             {
                 load_image( newTextureLocation);
             }
         }
-        else if( refreshResourceDataButton!=NULL && refreshResourceDataButton->is_clicked() )
+        else if( refreshResourceData_button!=NULL && refreshResourceData_button->is_clicked() )
         {
             if(  emitterTexture!=NULL )
             {
@@ -534,7 +518,7 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
                 load_image(currentFileToRefresh);
             }
         }
-        else if( clearTextureButton!=NULL && clearTextureButton->is_clicked() )
+        else if( clearTexture_button!=NULL && clearTexture_button->is_clicked() )
         {
             emitterTexture = NULL;
             textureLocationField->set_string( "" );
@@ -545,91 +529,77 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
             texturePreviewImgLabel->set_height( 16 );
         }
 
-        else if( transformResourceButton!=NULL && transformResourceButton->is_clicked())
+        else if( transformResource_button!=NULL && transformResource_button->is_clicked())
         {
             if (emitterTexture!=NULL && emitterTexture->get_width() > 0 && emitterTexture->get_height() > 0)
             {
                 pawgui::context_menu_open(-1,-1,256);
                 pawgui::main_context_menu->add_menu_option("Erase BG Color",0);
                 pawgui::main_context_menu->add_menu_option("Invert Colors",1);
-                pawgui::main_context_menu->add_menu_option("Make GrayScale",2);
+                pawgui::main_context_menu->add_menu_option("Make Gray_scale",2);
                 pawgui::main_context_menu->add_menu_option("Exit",10);
                 int menuSelection = pawgui::context_menu_process();
+
                 if( menuSelection>=0 && menuSelection <=3)
                 {
-                    std::string tempStr = emitterTexture->get_filename();
-                    SDL_Surface * oTempSurface = sdl_surface_ex::load_surface_image( tempStr.c_str());
-                    SDL_Surface *nTempSurface = NULL;
-                    if( oTempSurface!=NULL)
+                    std::string current_file_name = emitterTexture->get_filename();
+                    if( menuSelection==0)
                     {
-                        if( menuSelection==0)
+                        gpe::color * foundBGColor = gpe::c_fuchsia->duplicate_color();
+                        if( pawgui::get_color_from_popup("Image Background Color To Remove",foundBGColor) )
                         {
-                            gpe::color * foundBGColor = gpe::c_fuchsia->duplicate_color();
-                            if( pawgui::get_color_from_popup("Image Background Color To Remove, ",foundBGColor) )
+                            if( pawgui::display_prompt_message("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
                             {
-                                if( pawgui::display_prompt_message("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                                {
-                                    gpe::error_log->report("Modifying image at: "+emitterTexture->get_filename()+".");
-                                    nTempSurface= sdl_surface_ex::surface_remove_color_rgba(oTempSurface, foundBGColor->get_r(), foundBGColor->get_r(), foundBGColor->get_b() );
+                                gpe::error_log->report("Modifying image at: "+ current_file_name +".");
+                                gpe::renderer_main->file_perform_effect_color_erase( current_file_name, foundBGColor );
+                            }
+                        }
+                        delete foundBGColor;
+                        foundBGColor = NULL;
 
-                                    delete foundBGColor;
-                                    foundBGColor = NULL;
-                                }
-                            }
-
-                        }
-                        else if( menuSelection==1 )
-                        {
-                            if( pawgui::display_prompt_message("Are you sure you want to invert your image's colors?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                            {
-                                nTempSurface= sdl_surface_ex::surface_invert(oTempSurface);
-                            }
-                        }
-                        else if( menuSelection==2 )
-                        {
-                            if( pawgui::display_prompt_message("Are you sure you want to grayscale your image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                            {
-                                nTempSurface= sdl_surface_ex::surface_grayscale(oTempSurface);
-                            }
-                        }
-                        if( nTempSurface!=NULL)
-                        {
-                            remove( emitterTexture->get_filename().c_str() );
-                            std::string newImageName = stg_ex::get_file_noext( emitterTexture->get_filename())+".png";
-                            IMG_SavePNG(nTempSurface,newImageName.c_str() );
-                            load_image(newImageName);
-                            SDL_FreeSurface(nTempSurface);
-                            nTempSurface = NULL;
-                        }
-                        SDL_FreeSurface(oTempSurface);
-                        oTempSurface = NULL;
                     }
+                    else if( menuSelection==1 )
+                    {
+                        if( pawgui::display_prompt_message("Are you sure you want to invert your image's colors?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
+                        {
+                            gpe::renderer_main->file_perform_effect_color_invert( current_file_name );
+                        }
+                    }
+                    else if( menuSelection==2 )
+                    {
+                        if( pawgui::display_prompt_message("Are you sure you want to grayscale your image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
+                        {
+                            gpe::renderer_main->file_perform_effect_grayscale( current_file_name );
+                        }
+                    }
+                    load_image(current_file_name);
                 }
+
             }
         }
-        else if( openExternalEditorButton!=NULL && openExternalEditorButton->is_clicked() )
+        else if( openExternalEditor_button!=NULL && openExternalEditor_button->is_clicked() )
         {
             if(  emitterTexture!=NULL )
             {
-                if( sff_ex::file_exists(emitterTexture->get_filename() ) )
+                if( gpe::main_file_url_manager->file_exists(emitterTexture->get_filename() ) )
                 {
                     if( main_editor_settings!=NULL && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]!=NULL)
                     {
-                        gpe::external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]->get_string(),emitterTexture->get_filename(), true );
+                        gpe::main_file_url_manager->external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]->get_string(),emitterTexture->get_filename(), true );
                     }
                     else
                     {
-                        gpe::external_open_url(emitterTexture->get_filename());
+                        gpe::main_file_url_manager->external_open_url(emitterTexture->get_filename());
                     }
-                    sff_ex::append_to_file( gpe::get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit texture ["+emitterTexture->get_filename()+"]...");
+                    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit texture ["+emitterTexture->get_filename()+"]...");
                 }
             }
         }
-        else if( confirmResourceButton->is_clicked() )
+        else if( confirmResource_button->is_clicked() )
         {
             save_resource();
         }
-        else if( cancelResourceButton->is_clicked() )
+        else if( cancelResource_button->is_clicked() )
         {
             if( pawgui::display_prompt_message("Are you sure you will like to reverse particle changes?","This will load in data from save-file!", true )== pawgui::display_query_yes )
             {
@@ -650,8 +620,22 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
 
     if( myEmitter!=NULL )
     {
-        myEmitter->emitterXPos = view_space->w/2;
-        myEmitter->emitterYPos = view_space->h/2;
+        if( get_mouse_coords( view_space, cam ) )
+        {
+            if( gpe::input->check_mouse_pressed( mb_left ) )
+            {
+                myEmitter->emitterXPos = local_mouse_x;
+                myEmitter->emitterYPos = local_mouse_y;
+            }
+        }
+        if( myEmitter->emitterXPos > view_space->w || myEmitter->emitterXPos < 0 )
+        {
+            myEmitter->emitterXPos = view_space->w/2;
+        }
+        if( myEmitter->emitterYPos > view_space->h || myEmitter->emitterYPos < 0 )
+        {
+            myEmitter->emitterYPos = view_space->h/2;
+        }
 
         myEmitter->lifeMin = lifeMinField->get_held_number();
         myEmitter->lifeMax = lifeMaxField->get_held_number();
@@ -674,6 +658,10 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
 
         myEmitter->xRandom = xRandomField->get_held_number();
         myEmitter->yRandom = yRandomField->get_held_number();
+
+        myEmitter->emission_disabled = emissionDisabled->is_clicked();
+        myEmitter->emission_paused = emissionPaused->is_clicked();
+        myEmitter->reverse_draw = emissionPaused->is_clicked();
 
         if(emitterBackupTextureMenu->just_activated() )
         {
@@ -719,15 +707,15 @@ void particleResource::revert_data_fields()
 
 void particleResource::save_resource(std::string file_path, int backupId )
 {
-    if( pawgui::main_loader_display != NULL )
+    if( main_gpe_splash_page != NULL )
     {
-        pawgui::main_loader_display->update_submessages( "Saving Particle", resource_name );
+        main_gpe_splash_page->update_submessages( "Saving Particle", resource_name );
     }
 
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( sff_ex::path_exists(soughtDir) )
+    if( gpe::main_file_url_manager->path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
@@ -979,7 +967,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
     }
 }
 
-void particleResource::update_box(int newX, int newY, int newW, int newH )
+void particleResource::update_box(int x_new, int y_new, int newW, int newH )
 {
 
 }

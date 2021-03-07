@@ -112,8 +112,8 @@ gamePencilExtraTools::gamePencilExtraTools()
     editorPageList->barXMargin = 0;
 
     sectionTitleExtras = new pawgui::widget_label_title("Extras","Extras");
-    transformImageDirectoryButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png","Transform IMG Folder","Transforms all Images in a given folder",-1);
-    refreshAtlasRefreshButton = new pawgui::widget_button_label("Refresh Atlas Info","Hit to refresh the atlas info..." );
+    transformImageDirectory_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png","Transform IMG Folder","Transforms all Images in a given folder",-1);
+    refreshAtlasRefresh_button = new pawgui::widget_button_label("Refresh Atlas Info","Hit to refresh the atlas info..." );
     refresh_atlas_info();
 }
 
@@ -125,16 +125,16 @@ gamePencilExtraTools::~gamePencilExtraTools()
         sectionTitleExtras = NULL;
     }
 
-    if( transformImageDirectoryButton!=NULL )
+    if( transformImageDirectory_button!=NULL )
     {
-        delete transformImageDirectoryButton;
-        transformImageDirectoryButton = NULL;
+        delete transformImageDirectory_button;
+        transformImageDirectory_button = NULL;
     }
 }
 
 bool gamePencilExtraTools::include_local_files( std::string pBuildDir , int buildType )
 {
-
+    return true;
 }
 
 void gamePencilExtraTools::load_resource(std::string file_path)
@@ -145,9 +145,9 @@ void gamePencilExtraTools::load_resource(std::string file_path)
 int gamePencilExtraTools::modify_folder_images(std::string folderLocation, int modifcationType)
 {
     int imagesModifiedCount = -1;
-    if( sff_ex::path_exists(folderLocation) && modifcationType >=0 && modifcationType < 3)
+    if( gpe::main_file_url_manager->path_exists(folderLocation) && modifcationType >=0 && modifcationType < 3)
     {
-        gpe::GPE_FileDirectory * foundFolder = new gpe::GPE_FileDirectory();
+        gpe::file_directory_class * foundFolder = new gpe::file_directory_class();
         foundFolder->open_directory_sorted(folderLocation);
 
         gpe::color * colorToRemove = gpe::c_fuchsia->duplicate_color();
@@ -182,9 +182,7 @@ int gamePencilExtraTools::modify_folder_images(std::string folderLocation, int m
             if( continueWithAction)
             {
                 std::string newImageName = "";
-                gpe::GPE_File * tempFile = NULL;
-                SDL_Surface * oTempSurface = NULL;
-                SDL_Surface *nTempSurface = NULL;
+                gpe::file_object * tempFile = NULL;
                 for( int i = 0; i < foundFolder->get_count(); i++)
                 {
                     tempFile = foundFolder->get_file(i);
@@ -193,55 +191,31 @@ int gamePencilExtraTools::modify_folder_images(std::string folderLocation, int m
                         if( tempFile->get_type()=="bmp" || tempFile->get_type()=="png")
                         {
                             newImageName = folderLocation+"/"+tempFile->get_name();
-                            oTempSurface = sdl_surface_ex::load_surface_image( newImageName.c_str() );
-                            if( oTempSurface->w > 0 && oTempSurface->h > 0)
+                            gpe::error_log->report("Modifying image at: "+newImageName+".");
+
+                            if( main_gpe_splash_page != NULL )
                             {
-                                nTempSurface = NULL;
-                                if( oTempSurface!=NULL)
+                                main_gpe_splash_page->update_messages( "Modifying Image", tempFile->get_name(),"Please wait..." );
+                            }
+
+                            if( modifcationType==0)
+                            {
+                                if( pawgui::get_color_from_popup("Image Background Color To Remove",colorToRemove) )
                                 {
-                                    gpe::error_log->report("Modifying image at: "+newImageName+".");
+                                    if( pawgui::display_prompt_message("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
+                                    {
+                                        gpe::renderer_main->file_perform_effect_color_erase(newImageName, colorToRemove );
 
-                                    if( pawgui::main_loader_display != NULL )
-                                    {
-                                        pawgui::main_loader_display->update_messages( "Modifying Image", tempFile->get_name(),"Please wait..." );
                                     }
-
-                                    if( modifcationType==0)
-                                    {
-                                        if( pawgui::get_color_from_popup("Image Background Color To Remove",colorToRemove) )
-                                        {
-                                            if( pawgui::display_prompt_message("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                                            {
-                                                nTempSurface= sdl_surface_ex::surface_remove_color_rgba(oTempSurface, colorToRemove->get_r(), colorToRemove->get_r(), colorToRemove->get_b() );
-
-                                            }
-                                        }
-                                    }
-                                    else if( modifcationType==1 )
-                                    {
-                                        nTempSurface= sdl_surface_ex::surface_invert(oTempSurface);
-                                    }
-                                    else if( modifcationType==2 )
-                                    {
-                                        nTempSurface= sdl_surface_ex::surface_grayscale(oTempSurface);
-                                    }
-                                    if( nTempSurface!=NULL)
-                                    {
-                                        if( tempFile->get_type()=="bmp" || tempFile->get_type()=="png")
-                                        {
-                                            SDL_SaveBMP(nTempSurface,newImageName.c_str() );
-                                        }
-                                        else if( tempFile->get_type()=="png")
-                                        {
-                                            IMG_SavePNG(nTempSurface,newImageName.c_str() );
-                                        }
-                                        SDL_FreeSurface(nTempSurface);
-                                        nTempSurface = NULL;
-                                        imagesModifiedCount++;
-                                    }
-                                    SDL_FreeSurface(oTempSurface);
-                                    oTempSurface = NULL;
                                 }
+                            }
+                            else if( modifcationType==1 )
+                            {
+                                gpe::renderer_main->file_perform_effect_color_invert( newImageName);
+                            }
+                            else if( modifcationType==2 )
+                            {
+                                gpe::renderer_main->file_perform_effect_grayscale(newImageName );
                             }
                         }
                     }
@@ -271,14 +245,14 @@ void gamePencilExtraTools::process_self( gpe::shape_rect * view_space, gpe::shap
     if( cam!=NULL && editorPageList!=NULL && view_space!=NULL)
     {
         int prevTab = sideAreaPanel->get_selection();
-        if( panel_main_area!=NULL )
+        if( panel_main_editor!=NULL )
         {
             subViewedSpace.x = 0;
             subViewedSpace.y = 0;
             subViewedSpace.w = view_space->w;
             subViewedSpace.h = view_space->h;
-            panel_main_area->add_gui_element_fullsize( sideAreaPanel );
-            panel_main_area->process_self();
+            panel_main_editor->add_gui_element_fullsize( sideAreaPanel );
+            panel_main_editor->process_self();
         }
         else
         {
@@ -309,15 +283,15 @@ void gamePencilExtraTools::process_self( gpe::shape_rect * view_space, gpe::shap
         }
         else if( sideAreaPanel->get_selected_name()=="Image Editing")
         {
-            editorPageList->add_gui_element( transformImageDirectoryButton, true );
+            editorPageList->add_gui_element( transformImageDirectory_button, true );
             editorPageList->process_self( view_space,cam);
 
-            if( transformImageDirectoryButton->is_clicked()  )
+            if( transformImageDirectory_button->is_clicked()  )
             {
                 pawgui::context_menu_open(-1,-1,256);
                 pawgui::main_context_menu->add_menu_option("Erase BG Color On All Images",0);
                 pawgui::main_context_menu->add_menu_option("Invert Colors On All Images",1);
-                pawgui::main_context_menu->add_menu_option("Make GrayScale On All Images",2);
+                pawgui::main_context_menu->add_menu_option("Make Gray_scale On All Images",2);
                 pawgui::main_context_menu->add_menu_option("Exit Menu",10);
                 int menuSelection = pawgui::context_menu_process();
                 if( menuSelection>=0 && menuSelection <=3)
@@ -339,10 +313,10 @@ void gamePencilExtraTools::process_self( gpe::shape_rect * view_space, gpe::shap
                     current_atlas->add_to_list( editorPageList );
                 }
             }
-            editorPageList->add_gui_element( refreshAtlasRefreshButton, true );
+            editorPageList->add_gui_element( refreshAtlasRefresh_button, true );
             editorPageList->process_self( view_space,cam);
 
-            if( refreshAtlasRefreshButton!=NULL && refreshAtlasRefreshButton->is_clicked() )
+            if( refreshAtlasRefresh_button!=NULL && refreshAtlasRefresh_button->is_clicked() )
             {
                 refresh_atlas_info();
             }
@@ -388,7 +362,7 @@ void gamePencilExtraTools::render_self( gpe::shape_rect * view_space, gpe::shape
     view_space = gpe::camera_find(view_space);
     if( cam!=NULL && view_space!=NULL)
     {
-        if( sideAreaPanel!=NULL && panel_main_area==NULL )
+        if( sideAreaPanel!=NULL && panel_main_editor==NULL )
         {
             sideAreaPanel->render_self( view_space,cam);
         }

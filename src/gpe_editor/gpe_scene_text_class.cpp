@@ -3,10 +3,10 @@ gpe_scene_text_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,8 +36,8 @@ SOFTWARE.
 
 GPE_SceneText::GPE_SceneText( pawgui::widget_resource_container *pFolder )
 {
-    branchType = gpe::branch_type::STEXT;
-    dualScaleClass = false;
+    branch_type_id = gpe::branch_type::STEXT;
+    dual_scaleClass = false;
     angleField->scale_width( 0.4 );
 
     iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/font.png") ;
@@ -55,9 +55,9 @@ GPE_SceneText::GPE_SceneText( pawgui::widget_resource_container *pFolder )
     text = "";
     fontId = -1;
 
-    if( xScaleField!=NULL)
+    if( x_scaleField!=NULL)
     {
-        xScaleField->set_label("Text Scale:");
+        x_scaleField->set_label("Text scale:");
     }
 
     fontHalign = gpe::fa_left;
@@ -163,8 +163,8 @@ void GPE_SceneText::render_branch( )
         return;
     }
 
-    spm->tempRect->x = ceil( (xPos*spm->zoomValue-spm->currentCamera->x*spm->zoomValue) );
-    spm->tempRect->y = ceil( (yPos*spm->zoomValue-spm->currentCamera->y*spm->zoomValue) );
+    spm->tempRect->x = ceil( (x_pos*spm->zoomValue-spm->currentCamera->x*spm->zoomValue) );
+    spm->tempRect->y = ceil( (y_pos*spm->zoomValue-spm->currentCamera->y*spm->zoomValue) );
 
     gpe::font_base * foundFont = NULL;
     pawgui::widget_resource_container * fContainer = fontInEditor->get_selected_container();
@@ -174,13 +174,13 @@ void GPE_SceneText::render_branch( )
         fontResource * actualFontObject = (fontResource*) fContainer->get_held_resource();
         if( actualFontObject!=NULL)
         {
-            fontRendered = actualFontObject->render_held_font( spm->tempRect->x, spm->tempRect->y, defaultTextElement->get_string(), branchColor->get_color(), fontHalign, fontValign, angle, spm->zoomValue * xScale, branchAlpha->get_value() );
+            fontRendered = actualFontObject->render_held_font( spm->tempRect->x, spm->tempRect->y, defaultTextElement->get_string(), branchColor->get_color(), fontHalign, fontValign, angle, spm->zoomValue * x_scale, branchAlpha->get_value() );
         }
     }
     //Renders using default for preview
     if( !fontRendered && gpe::font_default!=NULL )
     {
-        gpe::font_default->render_text_special( spm->tempRect->x, spm->tempRect->y, "DEFAULT:  "+defaultTextElement->get_string(), branchColor->get_color(), fontHalign, fontValign, angle, spm->zoomValue * xScale, branchAlpha->get_value() );
+        gpe::font_default->render_text_special( spm->tempRect->x, spm->tempRect->y, "DEFAULT:  "+defaultTextElement->get_string(), branchColor->get_color(), fontHalign, fontValign, angle, spm->zoomValue * x_scale, branchAlpha->get_value() );
     }
 }
 
@@ -191,19 +191,19 @@ bool GPE_SceneText::save_branch_data(std::ofstream * fileTarget, int nestedFolde
         std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"   [GPE_GameText=";
         *fileTarget << fontId << ",";
-        if( xPosField!=NULL)
+        if( x_posField!=NULL)
         {
-            xPosField->make_valid_number(0);
-            *fileTarget <<  xPosField->get_held_number() << ",";
+            x_posField->make_valid_number(0);
+            *fileTarget <<  x_posField->get_held_number() << ",";
         }
         else
         {
             *fileTarget << "-1,";
         }
-        if( yPosField!=NULL)
+        if( y_posField!=NULL)
         {
-            yPosField->make_valid_number(0);
-            *fileTarget << yPosField->get_held_number() << ",";
+            y_posField->make_valid_number(0);
+            *fileTarget << y_posField->get_held_number() << ",";
         }
         else
         {
@@ -253,7 +253,7 @@ void GPE_SceneMultilineText::add_typed_elements()
 
 GPE_SceneMultilineText::GPE_SceneMultilineText( pawgui::widget_resource_container *pFolder )
 {
-    dualScaleClass = false;
+    dual_scaleClass = false;
     iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/paragraph.png") ;
     projectParentFolder = pFolder;
 
@@ -267,7 +267,7 @@ GPE_SceneMultilineText::GPE_SceneMultilineText( pawgui::widget_resource_containe
         fontInEditor  = NULL;
     }
 
-    branchType = gpe::branch_type::TEXT;
+    branch_type_id = gpe::branch_type::TEXT;
     text = "";
     fontId = -1;
 
@@ -285,7 +285,7 @@ GPE_SceneMultilineText::GPE_SceneMultilineText( pawgui::widget_resource_containe
     sceneTextValign->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/align-right.png","Align bottom", gpe::fa_bottom, false );
 
     customTextElement = new pawgui::widget_text_editor( false );
-    customTextElement->showButtonBar = false;
+    customTextElement->show_buttonBar = false;
     customTextElement->isCodeEditor = false;
 
     textSection = new pawgui::widget_input_text("","Text Section");
@@ -367,19 +367,19 @@ bool GPE_SceneMultilineText::save_branch_data(std::ofstream * fileTarget, int ne
         std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"   [GPE_GameText=";
         *fileTarget << fontId << ",";
-        if( xPosField!=NULL)
+        if( x_posField!=NULL)
         {
-            xPosField->make_valid_number(0);
-            *fileTarget <<  xPosField->get_held_number() << ",";
+            x_posField->make_valid_number(0);
+            *fileTarget <<  x_posField->get_held_number() << ",";
         }
         else
         {
             *fileTarget << "-1,";
         }
-        if( yPosField!=NULL)
+        if( y_posField!=NULL)
         {
-            yPosField->make_valid_number(0);
-            *fileTarget << yPosField->get_held_number() << ",";
+            y_posField->make_valid_number(0);
+            *fileTarget << y_posField->get_held_number() << ",";
         }
         else
         {

@@ -3,10 +3,10 @@ texture_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -41,11 +41,11 @@ textureResource::textureResource(pawgui::widget_resource_container * pFolder)
     textureInEditor = NULL;
     isPreloaded = true;
     preloadCheckBox = new pawgui::widget_checkbox("Preload Texture","Check to load texture at game open", true);
-    transformResourceButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png","Transform the Image",-1);
+    transformResource_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png","Transform the Image",-1);
     labelImageDimensions = new pawgui::widget_label_text ("","");
     //labelTextureMessage = new pawgui::widget_label_text ("","");
-    openExternalEditorButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens Texture Image In External Editor");
-    refreshResourceDataButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refreshes the loaded texture image");
+    openExternalEditor_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens Texture Image In External Editor");
+    refreshResourceData_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refreshes the loaded texture image");
     labelInfoMaxTextureSize = new pawgui::widget_label_text ("Max Image Size: 4096 X 4096px","Max Image Size: 4096 X 4096px");
 }
 
@@ -56,15 +56,15 @@ textureResource::~textureResource()
         delete labelInfoMaxTextureSize;
         labelInfoMaxTextureSize = NULL;
     }
-    if( openExternalEditorButton!=NULL)
+    if( openExternalEditor_button!=NULL)
     {
-        delete openExternalEditorButton;
-        openExternalEditorButton = NULL;
+        delete openExternalEditor_button;
+        openExternalEditor_button = NULL;
     }
-    if( refreshResourceDataButton!=NULL)
+    if( refreshResourceData_button!=NULL)
     {
-        delete refreshResourceDataButton;
-        refreshResourceDataButton = NULL;
+        delete refreshResourceData_button;
+        refreshResourceData_button = NULL;
     }
 
     if( preloadCheckBox!=NULL)
@@ -72,10 +72,10 @@ textureResource::~textureResource()
         delete preloadCheckBox;
         preloadCheckBox = NULL;
     }
-    if( transformResourceButton!=NULL)
+    if( transformResource_button!=NULL)
     {
-        delete transformResourceButton;
-        transformResourceButton = NULL;
+        delete transformResource_button;
+        transformResource_button = NULL;
     }
     if( labelImageDimensions!=NULL)
     {
@@ -126,13 +126,13 @@ gpe::texture_base * textureResource::get_resource_texture()
 
 bool textureResource::include_local_files( std::string pBuildDir , int buildType )
 {
-    sff_ex::append_to_file( gpe::get_user_settings_folder()+"resources_check.txt",get_name() +"...");
+    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"resources_check.txt",get_name() +"...");
 
     if( ( textureInEditor!=NULL) && ( textureInEditor->get_width() > 0 ) )
     {
         return textureInEditor->copy_image_source(pBuildDir+"/resources/textures");
     }
-    sff_ex::append_to_file( gpe::get_user_settings_folder()+"resources_check.txt","Does not contain texture...");
+    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"resources_check.txt","Does not contain texture...");
     return true;
 }
 
@@ -161,7 +161,7 @@ bool textureResource::is_build_ready()
 
 int textureResource::load_image(std::string new_file_name)
 {
-    if( sff_ex::file_exists(new_file_name) )
+    if( gpe::main_file_url_manager->file_exists(new_file_name) )
     {
         if( stg_ex::file_is_image(new_file_name) )
         {
@@ -179,11 +179,11 @@ int textureResource::load_image(std::string new_file_name)
 
 void textureResource::load_resource(std::string file_path)
 {
-    if( resourcePostProcessed ==false  || sff_ex::file_exists(file_path) )
+    if( resourcePostProcessed ==false  || gpe::main_file_url_manager->file_exists(file_path) )
     {
-        if( pawgui::main_loader_display != NULL )
+        if( main_gpe_splash_page != NULL )
         {
-            pawgui::main_loader_display->update_submessages( "Processing Texture",resource_name );
+            main_gpe_splash_page->update_submessages( "Processing Texture",resource_name );
         }
 
         std::string otherColContainerName = "";
@@ -191,7 +191,7 @@ void textureResource::load_resource(std::string file_path)
         std::string newFileIn ="";
 
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/textures/";
-        if( sff_ex::file_exists(file_path) )
+        if( gpe::main_file_url_manager->file_exists(file_path) )
         {
             newFileIn = file_path;
             soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -212,9 +212,9 @@ void textureResource::load_resource(std::string file_path)
             {
                 int equalPos = 0;
                 std::string firstChar="";
-                std::string keyString="";
-                std::string valString="";
-                std::string subValString="";
+                std::string key_string="";
+                std::string valstring="";
+                std::string subValstring="";
                 std::string currLine="";
                 std::string currLineToBeProcessed;
                 float foundFileVersion = 0;
@@ -237,11 +237,11 @@ void textureResource::load_resource(std::string file_path)
                                 if(equalPos!=(int)std::string::npos)
                                 {
                                     //if the equalPos is present, then parse on through and carryon
-                                    keyString = currLineToBeProcessed.substr(0,equalPos);
-                                    valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                                    if( keyString=="Version")
+                                    key_string = currLineToBeProcessed.substr(0,equalPos);
+                                    valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                    if( key_string=="Version")
                                     {
-                                        foundFileVersion = stg_ex::string_to_float(valString);
+                                        foundFileVersion = stg_ex::string_to_float(valstring);
                                     }
                                 }
                             }
@@ -256,23 +256,23 @@ void textureResource::load_resource(std::string file_path)
                             if(equalPos!=(int)std::string::npos)
                             {
                                 //if the equalPos is present, then parse on through and carryon
-                                keyString = currLineToBeProcessed.substr(0,equalPos);
-                                valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                key_string = currLineToBeProcessed.substr(0,equalPos);
+                                valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
-                                if( keyString=="ResourceName")
+                                if( key_string=="ResourceName")
                                 {
-                                    renameBox->set_string(valString);
+                                    renameBox->set_string(valstring);
                                 }
-                                else if( keyString=="ImageLocation")
+                                else if( key_string=="ImageLocation")
                                 {
-                                    if( valString!="NULL")
+                                    if( valstring!="NULL")
                                     {
-                                        load_image( soughtDir+valString );
+                                        load_image( soughtDir+valstring );
                                     }
                                 }
-                                else if( keyString=="Preload")
+                                else if( key_string=="Preload")
                                 {
-                                    isPreloaded = stg_ex::string_to_bool(valString);
+                                    isPreloaded = stg_ex::string_to_bool(valstring);
                                     preloadCheckBox->set_checked(isPreloaded );
                                 }
                             }
@@ -301,7 +301,7 @@ void textureResource::process_self( gpe::shape_rect * view_space, gpe::shape_rec
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && view_space!=NULL && panel_main_area!=NULL)
+    if(cam!=NULL && view_space!=NULL && panel_main_editor!=NULL )
     {
         /*
         if( textureInEditor!=NULL)
@@ -316,14 +316,14 @@ void textureResource::process_self( gpe::shape_rect * view_space, gpe::shape_rec
                 "Image not loaded",pawgui::theme_main->main_box_font_color,gpe::font_default,gpe::fa_left,gpe::fa_top);
             }
         */
-        panel_main_area->clear_panel();
+        panel_main_editor->clear_panel();
 
-        panel_main_area->add_gui_element(renameBox,true);
-        panel_main_area->add_gui_element(refreshResourceDataButton,false);
-        panel_main_area->add_gui_element(loadResourceButton,false);
-        //panel_main_area->add_gui_element(saveResourceButton,false);
-        panel_main_area->add_gui_element(transformResourceButton,false);
-        panel_main_area->add_gui_element( openExternalEditorButton,true);
+        panel_main_editor->add_gui_element(renameBox,true);
+        panel_main_editor->add_gui_element(refreshResourceData_button,false);
+        panel_main_editor->add_gui_element(loadResource_button,false);
+        //panel_main_editor->add_gui_element(saveResource_button,false);
+        panel_main_editor->add_gui_element(transformResource_button,false);
+        panel_main_editor->add_gui_element( openExternalEditor_button,true);
 
         if( textureInEditor!=NULL)
         {
@@ -333,157 +333,149 @@ void textureResource::process_self( gpe::shape_rect * view_space, gpe::shape_rec
         {
             labelImageDimensions->set_name("Image not loaded");
         }
-        panel_main_area->add_gui_element( labelImageDimensions,true);
-        panel_main_area->add_gui_element(labelInfoMaxTextureSize,true);
+        panel_main_editor->add_gui_element( labelImageDimensions,true);
+        panel_main_editor->add_gui_element(labelInfoMaxTextureSize,true);
 
-        panel_main_area->add_gui_element(preloadCheckBox,true);
-        panel_main_area->add_gui_element(confirmResourceButton,true);
-        panel_main_area->add_gui_element(cancelResourceButton,true);
-        //panel_main_area->set_maxed_out_width();
-        //panel_main_area->process_self(NULL, NULL);
-        if( editorMode==0)
+        panel_main_editor->add_gui_element(preloadCheckBox,true);
+        panel_main_editor->add_gui_element(confirmResource_button,true);
+        panel_main_editor->add_gui_element(cancelResource_button,true);
+        //panel_main_editor->set_maxed_out_width();
+        panel_main_editor->process_self(NULL, NULL);
+
+        if( loadResource_button!=NULL && loadResource_button->is_clicked() )
         {
-            if( loadResourceButton!=NULL && loadResourceButton->is_clicked() )
+            std::string new_file_name = pawgui::get_filename_open_from_popup("Load Your Texture and such...","Images",pawgui::main_settings->fileOpenTextureDir);
+            if( (int)new_file_name.size() > 3)
             {
-                std::string new_file_name = pawgui::get_filename_open_from_popup("Load Your Texture and such...","Images",pawgui::main_settings->fileOpenTextureDir);
-                if( (int)new_file_name.size() > 3)
+                int loadResult = load_image(new_file_name);
+                if( loadResult==false)
                 {
-                    int loadResult = load_image(new_file_name);
-                    if( loadResult==false)
-                    {
-                        pawgui::display_user_alert("Unable to load image","File type["+stg_ex::get_file_ext(new_file_name)+"] not supported when loading ["+new_file_name+"].");
-                    }
-                    else if( loadResult==-1)
-                    {
-                        pawgui::display_user_alert("Unable to load image","File does not exist["+new_file_name+"].");
-                    }
+                    pawgui::display_user_alert("Unable to load image","File type["+stg_ex::get_file_ext(new_file_name)+"] not supported when loading ["+new_file_name+"].");
+                }
+                else if( loadResult==-1)
+                {
+                    pawgui::display_user_alert("Unable to load image","File does not exist["+new_file_name+"].");
                 }
             }
-            else if( refreshResourceDataButton!=NULL && refreshResourceDataButton->is_clicked() )
+            std::string currentFileToRefresh = stg_ex::get_short_filename (textureInEditor->get_filename(),true );
+        }
+        else if( refreshResourceData_button!=NULL && refreshResourceData_button->is_clicked() )
+        {
+            if(  textureInEditor!=NULL )
             {
-                if(  textureInEditor!=NULL )
-                {
-                    std::string currentFileToRefresh = stg_ex::get_short_filename (textureInEditor->get_filename(),true );
-                    currentFileToRefresh = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/textures/"+currentFileToRefresh;
-                    load_image(currentFileToRefresh);
-                }
+                std::string currentFileToRefresh = stg_ex::get_short_filename (textureInEditor->get_filename(),true );
+                currentFileToRefresh = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/textures/"+currentFileToRefresh;
+                textureInEditor->load_new_texture( gpe::renderer_main, currentFileToRefresh, -1, true, true );
             }
-            else if( confirmResourceButton->is_clicked() )
+        }
+        else if( confirmResource_button->is_clicked() )
+        {
+            save_resource();
+        }
+        else if( cancelResource_button->is_clicked() )
+        {
+            if( pawgui::display_prompt_message("Are you sure you will like to reverse changes?","This will load in data from save-file!", true )== pawgui::display_query_yes )
             {
-                save_resource();
+                resourcePostProcessed = false;
+                load_resource();
             }
-            else if( cancelResourceButton->is_clicked() )
-            {
-                if( pawgui::display_prompt_message("Are you sure you will like to reverse changes?","This will load in data from save-file!", true )== pawgui::display_query_yes )
-                {
-                    resourcePostProcessed = false;
-                    load_resource();
-                }
-            }
-            if(renameBox!=NULL)
-            {
-                if( renameBox->get_string()!=resource_name)
-                {
-                    isModified = true;
-                }
-            }
-
-            if(isPreloaded!=preloadCheckBox->is_clicked() )
+        }
+        if(renameBox!=NULL)
+        {
+            if( renameBox->get_string()!=resource_name)
             {
                 isModified = true;
             }
-            if( confirmResourceButton!=NULL)
-            {
-                //actual saving of the tilesheet onto the engine and files
-                if( confirmResourceButton->is_clicked() )
-                {
-                    isPreloaded = preloadCheckBox->is_clicked();
-                }
-            }
-            if( transformResourceButton!=NULL)
-            {
-                if( transformResourceButton->is_clicked() && textureInEditor!=NULL)
-                {
-                    if( textureInEditor->get_width() > 0 && textureInEditor->get_height() > 0)
-                    {
-                        pawgui::context_menu_open(-1,-1,256);
-                        pawgui::main_context_menu->add_menu_option("Erase BG Color",0);
-                        pawgui::main_context_menu->add_menu_option("Invert Colors",1);
-                        pawgui::main_context_menu->add_menu_option("Make GrayScale",2);
-                        pawgui::main_context_menu->add_menu_option("Exit",10);
-                        int menuSelection = pawgui::context_menu_process();
-                        if( menuSelection>=0 && menuSelection <=3)
-                        {
-                            std::string tempStr = textureInEditor->get_filename();
-                            SDL_Surface * oTempSurface = sdl_surface_ex::load_surface_image( tempStr.c_str());
-                            SDL_Surface *nTempSurface = NULL;
-                            if( oTempSurface!=NULL)
-                            {
-                                if( menuSelection==0)
-                                {
-                                    gpe::color * foundBGColor = gpe::c_fuchsia->duplicate_color();
-                                    if( pawgui::get_color_from_popup("Image Background Color To Remove, ",foundBGColor) )
-                                    {
-                                        if( pawgui::display_prompt_message("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                                        {
-                                            gpe::error_log->report("Modifying image at: "+textureInEditor->get_filename()+".");
-                                            nTempSurface= sdl_surface_ex::surface_remove_color_rgba(oTempSurface, foundBGColor->get_r(), foundBGColor->get_r(), foundBGColor->get_b() );
-                                            delete foundBGColor;
-                                            foundBGColor = NULL;
-                                        }
-                                    }
+        }
 
-                                }
-                                else if( menuSelection==1 )
+        if(isPreloaded!=preloadCheckBox->is_clicked() )
+        {
+            isModified = true;
+        }
+        if( confirmResource_button!=NULL)
+        {
+            //actual saving of the tilesheet onto the engine and files
+            if( confirmResource_button->is_clicked() )
+            {
+                isPreloaded = preloadCheckBox->is_clicked();
+            }
+        }
+        if( transformResource_button!=NULL)
+        {
+            if( transformResource_button->is_clicked() && textureInEditor!=NULL)
+            {
+                if( textureInEditor->get_width() > 0 && textureInEditor->get_height() > 0)
+                {
+                    pawgui::context_menu_open(-1,-1,256);
+                    pawgui::main_context_menu->add_menu_option("Erase BG Color",0);
+                    pawgui::main_context_menu->add_menu_option("Invert Colors",1);
+                    pawgui::main_context_menu->add_menu_option("Make Gray_scale",2);
+                    pawgui::main_context_menu->add_menu_option("Exit",10);
+                    int menuSelection = pawgui::context_menu_process();
+
+                    if( menuSelection>=0 && menuSelection <=3)
+                    {
+                        std::string current_file_name = textureInEditor->get_filename();
+                        if( menuSelection==0)
+                        {
+                            gpe::color * foundBGColor = gpe::c_fuchsia->duplicate_color();
+                            if( pawgui::get_color_from_popup("Image Background Color To Remove",foundBGColor) )
+                            {
+                                if( pawgui::display_prompt_message("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
                                 {
-                                    if( pawgui::display_prompt_message("Are you sure you want to invert your image's colors?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                                    {
-                                        nTempSurface= sdl_surface_ex::surface_invert(oTempSurface);
-                                    }
+                                    gpe::error_log->report("Modifying image at: "+ current_file_name +".");
+                                    gpe::renderer_main->file_perform_effect_color_erase( current_file_name, foundBGColor );
                                 }
-                                else if( menuSelection==2 )
-                                {
-                                    if( pawgui::display_prompt_message("Are you sure you want to grayscale your image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                                    {
-                                        nTempSurface= sdl_surface_ex::surface_grayscale(oTempSurface);
-                                    }
-                                }
-                                if( nTempSurface!=NULL)
-                                {
-                                    remove( textureInEditor->get_filename().c_str() );
-                                    std::string newImageName = stg_ex::get_file_noext(textureInEditor->get_filename())+".png";
-                                    IMG_SavePNG(nTempSurface,newImageName.c_str() );
-                                    load_image(newImageName);
-                                    SDL_FreeSurface(nTempSurface);
-                                    nTempSurface = NULL;
-                                }
-                                SDL_FreeSurface(oTempSurface);
-                                oTempSurface = NULL;
+                            }
+                            delete foundBGColor;
+                            foundBGColor = NULL;
+
+                        }
+                        else if( menuSelection==1 )
+                        {
+                            if( pawgui::display_prompt_message("Are you sure you want to invert your image's colors?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
+                            {
+                                gpe::renderer_main->file_perform_effect_color_invert( current_file_name );
                             }
                         }
+                        else if( menuSelection==2 )
+                        {
+                            if( pawgui::display_prompt_message("Are you sure you want to grayscale your image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
+                            {
+                                gpe::renderer_main->file_perform_effect_grayscale( current_file_name );
+                            }
+                        }
+                        load_image(current_file_name);
+                        textureInEditor->load_new_texture( gpe::renderer_main, current_file_name, -1, true, true );
+
                     }
                 }
             }
+        }
 
-            if( openExternalEditorButton!=NULL && textureInEditor!=NULL)
+        if( openExternalEditor_button!=NULL && textureInEditor!=NULL)
+        {
+            if( openExternalEditor_button->is_clicked() )
             {
-                if( openExternalEditorButton->is_clicked() )
+                if( gpe::main_file_url_manager->file_exists(textureInEditor->get_filename() ) )
                 {
-                    if( sff_ex::file_exists(textureInEditor->get_filename() ) )
+                    std::string external_editor_program = "";
+                    if( main_editor_settings!=NULL && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]!=NULL)
                     {
-                        if( main_editor_settings!=NULL && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]!=NULL)
-                        {
-                            gpe::external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]->get_string(),textureInEditor->get_filename(), true );
-                        }
-                        else
-                        {
-                             gpe::external_open_url(textureInEditor->get_filename());
-                        }
-                        sff_ex::append_to_file( gpe::get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit texture ["+textureInEditor->get_filename()+"]...");
+                        external_editor_program = main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]->get_string();
                     }
+
+                    if( (int)external_editor_program.size() > 0 )
+                    {
+                        gpe::main_file_url_manager->external_open_program( external_editor_program, textureInEditor->get_filename(), true );
+                    }
+                    else
+                    {
+                         gpe::main_file_url_manager->external_open_program(textureInEditor->get_filename());
+                    }
+                    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit texture ["+textureInEditor->get_filename()+"]...");
                 }
             }
-
         }
     }
 }
@@ -516,8 +508,8 @@ void textureResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect
             }
             else
             {
-                float neededTextureScale= (float)std::min( (float)view_space->w/ (float)textureInEditor->get_width(),  (float)view_space->h / (float)textureInEditor->get_height() );
-                textureInEditor->render_tex_scaled( 0, 0,neededTextureScale,neededTextureScale,NULL);
+                float neededTexture_scale= (float)std::min( (float)view_space->w/ (float)textureInEditor->get_width(),  (float)view_space->h / (float)textureInEditor->get_height() );
+                textureInEditor->render_tex_scaled( 0, 0,neededTexture_scale,neededTexture_scale,NULL);
             }
         }
     }
@@ -526,14 +518,14 @@ void textureResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect
 void textureResource::save_resource(std::string file_path, int backupId)
 {
     isModified = false;
-    if( pawgui::main_loader_display != NULL )
+    if( main_gpe_splash_page != NULL )
     {
-        pawgui::main_loader_display->update_submessages( "Saving Texture",resource_name );
+        main_gpe_splash_page->update_submessages( "Saving Texture",resource_name );
     }
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if(  sff_ex::path_exists(soughtDir) )
+    if(  gpe::main_file_url_manager->path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
@@ -562,7 +554,7 @@ void textureResource::save_resource(std::string file_path, int backupId)
                 {
                     std::string resFileCopySrc = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/textures/"+resFileLocation;
                     std::string resFileCopyDest = soughtDir+resFileLocation;
-                    if( sff_ex::file_exists(resFileCopyDest) )
+                    if( gpe::main_file_url_manager->file_exists(resFileCopyDest) )
                     {
                         /*
                         if( pawgui::display_prompt_message("[WARNING]Texture Image Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] texture file? This action is irreversible!")==pawgui::display_query_yes)
@@ -573,7 +565,7 @@ void textureResource::save_resource(std::string file_path, int backupId)
                     }
                     else
                     {
-                         sff_ex::file_copy(resFileCopySrc,resFileCopyDest);
+                         gpe::main_file_url_manager->file_copy(resFileCopySrc,resFileCopyDest);
                     }
                 }
             }
@@ -599,15 +591,15 @@ void textureResource::save_resource(std::string file_path, int backupId)
 }
 
 
-void textureResource::update_box(int newX, int newY, int newW, int newH)
+void textureResource::update_box(int x_new, int y_new, int newW, int newH)
 {
-    if( newX!=-1)
+    if( x_new!=-1)
     {
-        encapBox.x = newX;
+        encapBox.x = x_new;
     }
-    if(newY!=-1)
+    if(y_new!=-1)
     {
-        encapBox.y = newY;
+        encapBox.y = y_new;
     }
 
     if( newW!=-1)

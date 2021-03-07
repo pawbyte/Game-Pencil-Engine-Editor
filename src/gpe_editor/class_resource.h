@@ -3,10 +3,10 @@ class_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -42,7 +42,7 @@ public:
     pawgui::widget_text_editor * classHeaderCode;
     pawgui::widget_text_editor * classSourceCode;
     pawgui::widget_tabbar * codeCategoryTabs;
-    pawgui::widget_button_icon * saveButton;
+    pawgui::widget_button_icon * save_button;
     pawgui::widget_panel_list * classEditorList;
     classResource(pawgui::widget_resource_container * pFolder = NULL);
     ~classResource();

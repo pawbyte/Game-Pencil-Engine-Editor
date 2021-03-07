@@ -3,10 +3,10 @@ gpe_scene_object_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,7 +36,7 @@ SOFTWARE.
 GPE_SceneGameObject::GPE_SceneGameObject( std::string nName)
 {
     isLocked = false;
-    branchType = gpe::branch_type::OBJECT;
+    branch_type_id = gpe::branch_type::OBJECT;
     iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/automobile.png") ;
 
     objTypeName = "";
@@ -76,11 +76,11 @@ bool GPE_SceneGameObject::build_intohtml5_file(std::ofstream * fileTarget, int l
     std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
     if( fObjToPlace!=NULL)
     {
-        *fileTarget << nestedTabsStr << "newBranch = _scn_temp_layer.scnStartObjects.push( {objId:" <<stg_ex::int_to_string(fObjToPlace->exportBuildGlobalId) << "} ); \n";
+        *fileTarget << nestedTabsStr << "newBranch = scn_temp_layer.scnStartObjects.push( {objId:" <<stg_ex::int_to_string(fObjToPlace->exportBuildGlobalId) << "} ); \n";
     }
     else
     {
-        *fileTarget << nestedTabsStr << "newBranch = _scn_temp_layer.scnStartObjects.push( {objId: -1} ); \n";
+        *fileTarget << nestedTabsStr << "newBranch = scn_temp_layer.scnStartObjects.push( {objId: -1} ); \n";
     }
     GPE_SceneBasicClass::build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController);
     return true;
@@ -102,8 +102,8 @@ void GPE_SceneGameObject::render_branch()
     yPivot = 16;
     width = 32;
     height = 32;
-    spm->tempRect->x = ceil( (xPos*spm->zoomValue-spm->currentCamera->x*spm->zoomValue) );
-    spm->tempRect->y = ceil( (yPos*spm->zoomValue-spm->currentCamera->y*spm->zoomValue) );
+    spm->tempRect->x = ceil( (x_pos*spm->zoomValue-spm->currentCamera->x*spm->zoomValue) );
+    spm->tempRect->y = ceil( (y_pos*spm->zoomValue-spm->currentCamera->y*spm->zoomValue) );
     if( objTypeId > 0 && spm->cSceneObjList!=NULL )
     {
         //renders the object's animation
@@ -123,12 +123,12 @@ void GPE_SceneGameObject::render_branch()
                         animationResource*animRes = (animationResource*) sprTypeContainer->get_held_resource();
                         if( animRes!=NULL && animRes->animInEditor!=NULL)
                         {
-                            xPivot = animRes->animInEditor->colBox->get_center();
-                            yPivot = animRes->animInEditor->colBox->get_middle();
+                            xPivot = animRes->animInEditor->collision_box->get_center();
+                            yPivot = animRes->animInEditor->collision_box->get_middle();
                             width = animRes->animInEditor->get_width();
                             height = animRes->animInEditor->get_height();
-                            //animRes->animInEditor->render_rotated( animRes->get_preview_frame(),spm->tempRect->x,spm->tempRect->y, angle, xScale*spm->zoomValue,yScale*spm->zoomValue, NULL );
-                            animRes->animInEditor->render_special( animRes->get_preview_frame(),spm->tempRect->x,spm->tempRect->y, xScale*spm->zoomValue,yScale*spm->zoomValue,angle, branchColor->get_color(),branchAlpha->get_value(), NULL );
+                            //animRes->animInEditor->render_rotated( animRes->get_preview_frame(),spm->tempRect->x,spm->tempRect->y, angle, x_scale*spm->zoomValue,y_scale*spm->zoomValue, NULL );
+                            animRes->animInEditor->render_special( animRes->get_preview_frame(),spm->tempRect->x,spm->tempRect->y, x_scale*spm->zoomValue,y_scale*spm->zoomValue,angle, branchColor->get_color(),branchAlpha->get_value(), NULL );
                             //gpe::gfs->render_text( spm->tempRect->x, spm->tempRect->y-48, "XOff:"+ stg_ex::int_to_string(xOffset)+",YOff:"+ stg_ex::int_to_string(yOffset),c_red,gpe::font_default,gpe::fa_center,gpe::fa_bottom, 255 );
                             //gpe::gfs->render_text( spm->tempRect->x, spm->tempRect->y-16, "W:"+ stg_ex::int_to_string(width)+",H:"+ stg_ex::int_to_string(height),c_red,gpe::font_default,gpe::fa_center,gpe::fa_bottom, 255 );
                             objectanimationRender = true;
@@ -138,12 +138,12 @@ void GPE_SceneGameObject::render_branch()
             }
             else
             {
-                xPos = 16;
-                yPos = 16;
+                x_pos = 16;
+                y_pos = 16;
             }
             if( !objectanimationRender )
             {
-                //objTypeContainer->render_image( spm->tempRect->x,spm->tempRect->y,ceil( (float)spm->tempRect->w*xScale*spm->zoomValue),ceil( (float)spm->tempRect->h*yScale*spm->zoomValue ),view_space,cam);
+                //objTypeContainer->render_image( spm->tempRect->x,spm->tempRect->y,ceil( (float)spm->tempRect->w*x_scale*spm->zoomValue),ceil( (float)spm->tempRect->h*y_scale*spm->zoomValue ),view_space,cam);
             }
         }
         else
@@ -174,8 +174,8 @@ bool GPE_SceneGameObject::save_branch_data(std::ofstream * fileTarget, int neste
         {
             *fileTarget <<  objTypeId << ",";
         }
-        *fileTarget << xPos << "," <<yPos<< "," ;
-        *fileTarget <<  angle << "," << xScale << "," << yScale << "," ;
+        *fileTarget << x_pos << "," <<y_pos<< "," ;
+        *fileTarget <<  angle << "," << x_scale << "," << y_scale << "," ;
         if( branchColor!=NULL)
         {
             *fileTarget << branchColor->get_hex_string() +",";

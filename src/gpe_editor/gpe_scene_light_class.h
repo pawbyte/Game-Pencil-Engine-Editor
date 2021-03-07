@@ -3,10 +3,10 @@ gpe_scene_light_class.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -43,11 +43,11 @@ public:
     pawgui::widget_drop_down_resource_menu * lightInEditor;
 
     //Ambient Light by default
-    pawgui::widget_checkbox * lightIsActive;
-    pawgui::widget_input_number * lightRadius;
-    pawgui::widget_input_number * lightWidth;
-    pawgui::widget_input_number * lightX2Pos;
-    pawgui::widget_input_number * lightY2Pos;
+    pawgui::widget_checkbox * light_is_active;
+    pawgui::widget_input_number * light_radius;
+    pawgui::widget_input_number * light_width;
+    pawgui::widget_input_number * light_x2Pos;
+    pawgui::widget_input_number * light_y2Pos;
 
     GPE_SceneBasicLight( pawgui::widget_resource_container *pFolder = NULL);
     ~GPE_SceneBasicLight();

@@ -3,10 +3,10 @@ gpe_editor_aboutpage.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -103,21 +103,20 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
     }
 
     pencilInformation->add_line( versionInfoLine+"." );
-    pencilInformation->add_line("SDL Version:                   "+ stg_ex::int_to_string(SDL_MAJOR_VERSION)+"."+ stg_ex::int_to_string(SDL_MINOR_VERSION)+"."+ stg_ex::int_to_string(SDL_PATCHLEVEL)+"." );
     pencilInformation->add_line("Renderer:                      "+ gpe::renderer_main->get_renderer_name() + " - " + gpe::renderer_main->get_renderer_type() + "." );
     pencilInformation->add_line("PAWGUI Version:                  "+ stg_ex::int_to_string(pawgui::version_major)+"."+ stg_ex::int_to_string(pawgui::version_minor)+"."+ stg_ex::int_to_string( pawgui::version_patch_level)+"." );
     pencilInformation->add_line("GPE(editor) Version:          "+ stg_ex::int_to_string(editor_version_number_major)+"."+ stg_ex::int_to_string(editor_version_number_minor)+"."+ stg_ex::int_to_string( editor_version_number_update)+"." );
     pencilInformation->add_line("GPE(runtime) Version:          "+ stg_ex::int_to_string(gpe::version_number_major)+"."+ stg_ex::int_to_string(gpe::version_number_minor)+"."+ stg_ex::int_to_string(gpe::version_number_update)+"." );
 
-    pencilInformation->add_line("Release Date:                  03-18-2020");
+    pencilInformation->add_line("Release Date:                  03-18-2021");
     pencilInformation->add_line("Author:                        PawByte");
     pencilInformation->add_line("Lead Developer:                Nathan Hurde aka theweirdn8");
     pencilInformation->add_line("Email:                         help@pawbyte.com");
     pencilInformation->add_line("Website:                       gamepencil.pawbyte.com");
     pencilInformation->isCodeEditor = false;
 
-    updateCheckerButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/download.png","Download new updates...","Compares latest version to your copy");
-    updateCheckerButton->set_website("http://gamepencil.pawbyte.com/get-game-pencil-engine/");
+    updateChecker_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/download.png","Download new updates...","Compares latest version to your copy");
+    updateChecker_button->set_website("http://gamepencil.pawbyte.com/get-game-pencil-engine/");
 
     pencilCredits = new pawgui::widget_text_editor();
     pencilCredits->isCodeEditor = false;
@@ -216,35 +215,35 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
 
     //Community
     communityLinksTitle = new pawgui::widget_label_title("Community","Community links to stay connected");
-    pawgui::widget_button_icon * tSocialButton = NULL;
+    pawgui::widget_button_icon * tSocial_button = NULL;
 
-    tSocialButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/facebook.png","Facebook" );
-    tSocialButton->set_website("https://facebook.com/pawbyte");
-    add_communitylink(tSocialButton);
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/facebook.png","Facebook" );
+    tSocial_button->set_website("https://facebook.com/pawbyte");
+    add_communitylink(tSocial_button);
 
-    tSocialButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/reddit.png","Reddit" );
-    tSocialButton->set_website("https://reddit.com/r/gamepencil");
-    add_communitylink(tSocialButton);
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/reddit.png","Reddit" );
+    tSocial_button->set_website("https://reddit.com/r/gamepencil");
+    add_communitylink(tSocial_button);
 
-    tSocialButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/github.png","GitHub repo");
-    tSocialButton->set_website("https://github.com/pawbyte/Game-Pencil-Engine");
-    add_communitylink(tSocialButton);
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/github.png","GitHub repo");
+    tSocial_button->set_website("https://github.com/pawbyte/Game-Pencil-Engine");
+    add_communitylink(tSocial_button);
 
-    tSocialButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/comments.png","Discord Chat Group" );
-    tSocialButton->set_website("https://discord.gg/bua3rDW");
-    add_communitylink(tSocialButton);
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/comments.png","Discord Chat Group" );
+    tSocial_button->set_website("https://discord.gg/bua3rDW");
+    add_communitylink(tSocial_button);
 
-    tSocialButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/twitter.png","Twitter" );
-    tSocialButton->set_website("https://twitter.com/pawbyte");
-    add_communitylink(tSocialButton);
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/twitter.png","Twitter" );
+    tSocial_button->set_website("https://twitter.com/pawbyte");
+    add_communitylink(tSocial_button);
 
-    tSocialButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/youtube.png","YouTube" );
-    tSocialButton->set_website("https://www.youtube.com/user/PawByte");
-    add_communitylink(tSocialButton);
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/youtube.png","YouTube" );
+    tSocial_button->set_website("https://www.youtube.com/user/PawByte");
+    add_communitylink(tSocial_button);
 
-    tSocialButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/gamecontroller.png","IndieDB" );
-    tSocialButton->set_website("http://www.indiedb.com/engines/game-pencil-engine");
-    add_communitylink(tSocialButton);
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/gamecontroller.png","IndieDB" );
+    tSocial_button->set_website("http://www.indiedb.com/engines/game-pencil-engine");
+    add_communitylink(tSocial_button);
 
     aboutPageList->barXPadding = pawgui::padding_default;
     aboutPageList->barXMargin = 0;
@@ -300,10 +299,10 @@ gamePencilAboutPageResource::~gamePencilAboutPageResource()
         delete engineLogo;
         engineLogo = NULL;
     }
-    if( updateCheckerButton!=NULL)
+    if( updateChecker_button!=NULL)
     {
-        delete updateCheckerButton;
-        updateCheckerButton = NULL;
+        delete updateChecker_button;
+        updateChecker_button = NULL;
     }
 
     if( helpfulLinksTitle!=NULL)
@@ -319,12 +318,12 @@ gamePencilAboutPageResource::~gamePencilAboutPageResource()
     }
 }
 
-void gamePencilAboutPageResource::add_helpfulbutton(pawgui::widget_button_push * newButton)
+void gamePencilAboutPageResource::add_helpfulbutton(pawgui::widget_button_push * new_button)
 {
-    if( newButton!=NULL)
+    if( new_button!=NULL)
     {
-        newButton->scale_object( 2 );
-        helpfulButtons.push_back(newButton);
+        new_button->scale_object( 2 );
+        helpful_buttons.push_back(new_button);
     }
 }
 
@@ -341,7 +340,7 @@ void gamePencilAboutPageResource::add_communitylink( pawgui::widget_button_icon 
     if( newLink!=NULL)
     {
         newLink->scale_object( 2 );
-        communityButtons.push_back(newLink);
+        community_buttons.push_back(newLink);
     }
 }
 
@@ -367,14 +366,14 @@ void gamePencilAboutPageResource::process_self( gpe::shape_rect * view_space, gp
     if( view_space!=NULL && aboutPageList!=NULL)
     {
         int prevTab = sideAreaPanel->get_selection();
-        if( panel_main_area!=NULL )
+        if( panel_main_editor!=NULL )
         {
             subViewedSpace.x = 0;
             subViewedSpace.y = 0;
             subViewedSpace.w = view_space->w;
             subViewedSpace.h = view_space->h;
-            panel_main_area->add_gui_element_fullsize( sideAreaPanel );
-            panel_main_area->process_self();
+            panel_main_editor->add_gui_element_fullsize( sideAreaPanel );
+            panel_main_editor->process_self();
 
         }
         else
@@ -415,14 +414,14 @@ void gamePencilAboutPageResource::process_self( gpe::shape_rect * view_space, gp
                 }
             }
             aboutPageList->add_gui_element(communityLinksTitle,true);
-            pawgui::widget_button_icon * tCommunityButton = NULL;
-            int menuLinksTotal = (int)communityButtons.size();
+            pawgui::widget_button_icon * tCommunity_button = NULL;
+            int menuLinksTotal = (int)community_buttons.size();
             for( subMenuI= 0; subMenuI < menuLinksTotal; subMenuI++)
             {
-                tCommunityButton = communityButtons.at(subMenuI);
-                if( tCommunityButton!=NULL)
+                tCommunity_button = community_buttons.at(subMenuI);
+                if( tCommunity_button!=NULL)
                 {
-                    aboutPageList->add_gui_element( tCommunityButton, subMenuI == menuLinksTotal-1 );
+                    aboutPageList->add_gui_element( tCommunity_button, subMenuI == menuLinksTotal-1 );
                 }
             }
         }
@@ -433,7 +432,7 @@ void gamePencilAboutPageResource::process_self( gpe::shape_rect * view_space, gp
         else if( sideAreaPanel->get_selected_name()=="Version Info" )
         {
             aboutPageList->add_gui_element(engineLogo, true );
-            aboutPageList->add_gui_element(updateCheckerButton, true );
+            aboutPageList->add_gui_element(updateChecker_button, true );
             aboutPageList->add_gui_element(pencilInformation, true );
         }
         else if( sideAreaPanel->get_selected_name()=="Shortkeys" )
@@ -466,7 +465,7 @@ void gamePencilAboutPageResource::render_self( gpe::shape_rect * view_space, gpe
     cam = gpe::camera_find(cam);
     if( cam!=NULL && view_space!=NULL)
     {
-        if( sideAreaPanel!=NULL && panel_main_area==NULL )
+        if( sideAreaPanel!=NULL && panel_main_editor==NULL )
         {
             sideAreaPanel->render_self( view_space,cam);
         }

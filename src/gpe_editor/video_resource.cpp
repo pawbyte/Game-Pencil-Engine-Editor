@@ -3,10 +3,10 @@ video_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -56,8 +56,8 @@ videoResource::videoResource(pawgui::widget_resource_container * pFolder)
     defaultVolume->set_string("100");
     defaultVolume->set_label("Default Volume:");
 
-    openExternalEditorButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens Audio In External Editor");
-    refreshResourceDataButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refreshes this resource's media files");
+    openExternalEditor_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens Audio In External Editor");
+    refreshResourceData_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refreshes this resource's media files");
 }
 
 videoResource::~videoResource()
@@ -77,15 +77,15 @@ videoResource::~videoResource()
         delete videoGroupName;
         videoGroupName = NULL;
     }
-    if( openExternalEditorButton!=NULL)
+    if( openExternalEditor_button!=NULL)
     {
-        delete openExternalEditorButton;
-        openExternalEditorButton = NULL;
+        delete openExternalEditor_button;
+        openExternalEditor_button = NULL;
     }
-    if( refreshResourceDataButton!=NULL)
+    if( refreshResourceData_button!=NULL)
     {
-        delete refreshResourceDataButton;
-        refreshResourceDataButton = NULL;
+        delete refreshResourceData_button;
+        refreshResourceData_button = NULL;
     }
 }
 
@@ -145,7 +145,7 @@ void videoResource::compile_cpp()
 
 }
 
-bool videoResource::copy_video_source(std::string outDirectoryName)
+bool videoResource::copy_video_source(std::string directory_output_name)
 {
     std::string copyDestinationStr = "";
     bool copyErrorFound = false;
@@ -153,9 +153,9 @@ bool videoResource::copy_video_source(std::string outDirectoryName)
     {
         if((int)videoFileName[i].size() > 0)
         {
-            copyDestinationStr = outDirectoryName+"/"+ stg_ex::get_short_filename(videoFileName[i],true);
+            copyDestinationStr = directory_output_name+"/"+ stg_ex::get_short_filename(videoFileName[i],true);
             gpe::error_log->report(videoFileName[i]+" attempted to copy to "+copyDestinationStr);
-            if( sff_ex::file_copy(videoFileName[i],copyDestinationStr )==false)
+            if( gpe::main_file_url_manager->file_copy(videoFileName[i],copyDestinationStr )==false)
             {
                 copyErrorFound = true;
             }
@@ -166,7 +166,7 @@ bool videoResource::copy_video_source(std::string outDirectoryName)
 
 bool videoResource::include_local_files( std::string pBuildDir , int buildType )
 {
-    sff_ex::append_to_file( gpe::get_user_settings_folder()+"resources_check.txt", get_name() +"...");
+    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"resources_check.txt", get_name() +"...");
     return true;
 }
 
@@ -208,18 +208,18 @@ void videoResource::load_video(std::string new_file_name)
 
 void videoResource::load_resource(std::string file_path)
 {
-    if( resourcePostProcessed == false  || sff_ex::file_exists(file_path) )
+    if( resourcePostProcessed == false  || gpe::main_file_url_manager->file_exists(file_path) )
     {
-        if( pawgui::main_loader_display != NULL )
+        if( main_gpe_splash_page != NULL )
         {
-            pawgui::main_loader_display->update_submessages( "Processing Video",resource_name );
+            main_gpe_splash_page->update_submessages( "Processing Video",resource_name );
         }
 
         std::string otherColContainerName = "";
 
         std::string newFileIn ="";
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/videos/";
-        if( sff_ex::file_exists(file_path) )
+        if( gpe::main_file_url_manager->file_exists(file_path) )
         {
             newFileIn = file_path;
             soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -236,9 +236,9 @@ void videoResource::load_resource(std::string file_path)
         {
             int equalPos = 0;
             std::string firstChar="";
-            std::string keyString="";
-            std::string valString="";
-            std::string subValString="";
+            std::string key_string="";
+            std::string valstring="";
+            std::string subValstring="";
             std::string currLine="";
             std::string currLineToBeProcessed;
             float foundFileVersion = 0;
@@ -261,11 +261,11 @@ void videoResource::load_resource(std::string file_path)
                             if(equalPos!=(int)std::string::npos)
                             {
                                 //if the equalPos is present, then parse on through and carryon
-                                keyString = currLineToBeProcessed.substr(0,equalPos);
-                                valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                                if( keyString=="Version")
+                                key_string = currLineToBeProcessed.substr(0,equalPos);
+                                valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                if( key_string=="Version")
                                 {
-                                    foundFileVersion = stg_ex::string_to_float(valString);
+                                    foundFileVersion = stg_ex::string_to_float(valstring);
                                 }
                             }
                         }
@@ -280,34 +280,34 @@ void videoResource::load_resource(std::string file_path)
                         if(equalPos!=(int)std::string::npos)
                         {
                             //if the equalPos is present, then parse on through and carryon
-                            keyString = currLineToBeProcessed.substr(0,equalPos);
-                            valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                            key_string = currLineToBeProcessed.substr(0,equalPos);
+                            valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
-                            if( keyString=="ResourceName")
+                            if( key_string=="ResourceName")
                             {
-                                renameBox->set_string(valString);
+                                renameBox->set_string(valstring);
                             }
-                            else if( keyString=="videoFileLocation")
+                            else if( key_string=="videoFileLocation")
                             {
-                                load_video( soughtDir+valString );
+                                load_video( soughtDir+valstring );
                             }
-                            else if( keyString=="VideoGroup")
+                            else if( key_string=="VideoGroup")
                             {
-                                videoGroupName->set_string(valString);
+                                videoGroupName->set_string(valstring);
                             }
-                            else if( keyString=="DefaultVolume")
+                            else if( key_string=="DefaultVolume")
                             {
-                                defaultVolume->set_number( stg_ex::string_to_int(valString,100));
+                                defaultVolume->set_number( stg_ex::string_to_int(valstring,100));
                             }
                             else
                             {
                                 for(int i = 0; i < SUPPORTED_VIDEO_FORMAT_COUNT; i++)
                                 {
-                                    if( keyString=="videoFile["+SUPPORTED_VIDEO_EXT[i]+"]")
+                                    if( key_string=="videoFile["+SUPPORTED_VIDEO_EXT[i]+"]")
                                     {
-                                        if( (int)valString.size() > 3)
+                                        if( (int)valstring.size() > 3)
                                         {
-                                            load_video( soughtDir+valString );
+                                            load_video( soughtDir+valstring );
                                         }
                                     }
                                 }
@@ -321,16 +321,16 @@ void videoResource::load_resource(std::string file_path)
                 }
             }
 
-            if( pawgui::main_loader_display != NULL )
+            if( main_gpe_splash_page != NULL )
             {
-                pawgui::main_loader_display->increment_and_update( "Video resource processed",resource_name );
+                main_gpe_splash_page->increment_and_update( "Video resource processed",resource_name );
             }
         }
         else
         {
-            if( pawgui::main_loader_display != NULL )
+            if( main_gpe_splash_page != NULL )
             {
-                pawgui::main_loader_display->increment_and_update( "Video resource processingg error occurred",resource_name );
+                main_gpe_splash_page->increment_and_update( "Video resource processingg error occurred",resource_name );
             }
         }
     }
@@ -345,39 +345,39 @@ void videoResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && view_space!=NULL && panel_main_area!=NULL)
+    if(cam!=NULL && view_space!=NULL && panel_main_editor!=NULL)
     {
-        panel_main_area->clear_panel();
-        panel_main_area->add_gui_element(videoEditorMainNote,true);
-        panel_main_area->add_gui_element(renameBox,true);
+        panel_main_editor->clear_panel();
+        panel_main_editor->add_gui_element(videoEditorMainNote,true);
+        panel_main_editor->add_gui_element(renameBox,true);
 
-        panel_main_area->add_gui_element(refreshResourceDataButton,false );
-        panel_main_area->add_gui_element(loadResourceButton,false );
-        panel_main_area->add_gui_element(openExternalEditorButton,true);
+        panel_main_editor->add_gui_element(refreshResourceData_button,false );
+        panel_main_editor->add_gui_element(loadResource_button,false );
+        panel_main_editor->add_gui_element(openExternalEditor_button,true);
 
-        panel_main_area->add_gui_element(videoGroupName, true);
-        panel_main_area->add_gui_element(defaultVolume,true);
-        panel_main_area->add_gui_element(confirmResourceButton,true);
-        panel_main_area->add_gui_element(cancelResourceButton,true);
-        //panel_main_area->set_maxed_out_width();
-        panel_main_area->process_self(NULL, NULL);
+        panel_main_editor->add_gui_element(videoGroupName, true);
+        panel_main_editor->add_gui_element(defaultVolume,true);
+        panel_main_editor->add_gui_element(confirmResource_button,true);
+        panel_main_editor->add_gui_element(cancelResource_button,true);
+        //panel_main_editor->set_maxed_out_width();
+        panel_main_editor->process_self(NULL, NULL);
 
 
-        if( loadResourceButton!=NULL && loadResourceButton->is_clicked() )
+        if( loadResource_button!=NULL && loadResource_button->is_clicked() )
         {
             std::string new_file_name = pawgui::get_filename_open_from_popup("Load In an video File","Video",pawgui::main_settings->fileOpenVideoDir);
             load_video(new_file_name);
         }
-        else if( confirmResourceButton!=NULL && confirmResourceButton->is_clicked() )
+        else if( confirmResource_button!=NULL && confirmResource_button->is_clicked() )
         {
             save_resource();
         }
-        else if( cancelResourceButton->is_clicked() )
+        else if( cancelResource_button->is_clicked() )
         {
             resourcePostProcessed = false;
             load_resource();
         }
-        else if( openExternalEditorButton!=NULL &&  openExternalEditorButton->is_clicked() )
+        else if( openExternalEditor_button!=NULL &&  openExternalEditor_button->is_clicked() )
         {
             bool hasFileToOpen = false;
             int ii = 0;
@@ -392,7 +392,7 @@ void videoResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
             if( hasFileToOpen )
             {
                 pawgui::context_menu_open(-1,-1,256);
-                pawgui::main_context_menu->set_width(openExternalEditorButton->get_width() );
+                pawgui::main_context_menu->set_width(openExternalEditor_button->get_width() );
                 for( ii = 0; ii < SUPPORTED_VIDEO_FORMAT_COUNT; ii++)
                 {
                     if( (int)videoFileName[ii].size() > 0)
@@ -407,20 +407,20 @@ void videoResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
 
                     if( main_editor_settings!=NULL && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_VID]!=NULL)
                     {
-                        gpe::external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_VID]->get_string(),fileToEdit, true );
+                        gpe::main_file_url_manager->external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_VID]->get_string(),fileToEdit, true );
                     }
                     else
                     {
-                        gpe::external_open_url(fileToEdit);
+                        gpe::main_file_url_manager->external_open_url(fileToEdit);
                     }
                     /*
                     fileToEdit = "\"C:/Program Files (x86)/Audacity/audacity.exe\" \""+fileToEdit+"\"";
                     external_open_url(fileToEdit);*/
-                    sff_ex::append_to_file( gpe::get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+fileToEdit+"]...");
+                    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+fileToEdit+"]...");
                 }
             }
         }
-        else if( refreshResourceDataButton!=NULL &&  refreshResourceDataButton->is_clicked() )
+        else if( refreshResourceData_button!=NULL &&  refreshResourceData_button->is_clicked() )
         {
             resourcePostProcessed = false;
             load_resource();
@@ -452,15 +452,15 @@ void videoResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *
 
 void videoResource::save_resource(std::string file_path, int backupId)
 {
-    if( pawgui::main_loader_display != NULL )
+    if( main_gpe_splash_page != NULL )
     {
-        pawgui::main_loader_display->update_submessages( "Saving Game video", resource_name );
+        main_gpe_splash_page->update_submessages( "Saving Game video", resource_name );
     }
 
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( sff_ex::path_exists(soughtDir) )
+    if( gpe::main_file_url_manager->path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
@@ -490,18 +490,18 @@ void videoResource::save_resource(std::string file_path, int backupId)
                 {
                     resFileCopySrc = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/video/"+resFileLocation;
                     resFileCopyDest = soughtDir+resFileLocation;
-                    if( sff_ex::file_exists(resFileCopyDest) )
+                    if( gpe::main_file_url_manager->file_exists(resFileCopyDest) )
                     {
                         /*
                         if( pawgui::display_prompt_message("[WARNING]Video File Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] Video file? This action is irreversible!")==pawgui::display_query_yes)
                         {
-                            sff_ex::file_copy(resFileCopySrc,resFileCopyDest);
+                            gpe::main_file_url_manager->file_copy(resFileCopySrc,resFileCopyDest);
                         }
                         */
                     }
                     else
                     {
-                        sff_ex::file_copy(resFileCopySrc,resFileCopyDest);
+                        gpe::main_file_url_manager->file_copy(resFileCopySrc,resFileCopyDest);
                     }
                 }
             }
@@ -523,17 +523,17 @@ void videoResource::save_resource(std::string file_path, int backupId)
         {
             isModified = false;
         }
-        if( pawgui::main_loader_display != NULL )
+        if( main_gpe_splash_page != NULL )
         {
-            pawgui::main_loader_display->increment_and_update( "Video resource saved",resource_name );
+            main_gpe_splash_page->increment_and_update( "Video resource saved",resource_name );
         }
         return;
     }
 
     main_editor_log->log_general_error("Unable to save file ["+newFileOut+"]");
-    if( pawgui::main_loader_display != NULL )
+    if( main_gpe_splash_page != NULL )
     {
-        pawgui::main_loader_display->increment_and_update( "Video resource unable to save",resource_name );
+        main_gpe_splash_page->increment_and_update( "Video resource unable to save",resource_name );
     }
 }
 

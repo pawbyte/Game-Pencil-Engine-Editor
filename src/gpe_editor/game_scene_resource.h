@@ -3,10 +3,10 @@ game_scene_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -89,10 +89,10 @@ protected:
     gpe::shape_rect editorCameraRect;
     pawgui::widget_panel_list * sceneTopBarList;
 
-    pawgui::widget_button_iconbar * editorButtonBar;
-    pawgui::widget_button_iconbar * shortcutButtonBar;
-    pawgui::widget_button_icon * objectLockStateButton;
-    pawgui::widget_button_icon * lightingStateButton;
+    pawgui::widget_button_iconbar * editor_buttonBar;
+    pawgui::widget_button_iconbar * shortcut_buttonBar;
+    pawgui::widget_button_icon * objectLockState_button;
+    pawgui::widget_button_icon * lightingState_button;
     pawgui::widget_label_title * sceneEditorSubTitle;
     pawgui::widget_label_title * customComponentsTitle;
 
@@ -116,13 +116,13 @@ protected:
     pawgui::widget_checkbox * checkBoxIsContinuous;
     pawgui::gpe_widget_color_picker * sceneBackgroundColor;
 
-    pawgui::widget_button_label * addGroupButton;
-    pawgui::widget_button_label * addTileMapButton;
-    pawgui::widget_button_label * changeGroupNameButton;
+    pawgui::widget_button_label * addGroup_button;
+    pawgui::widget_button_label * addTileMap_button;
+    pawgui::widget_button_label * changeGroupName_button;
 
     //Used for the Layers Tab
-    pawgui::widget_button_label * changeLayerNameButton;
-    pawgui::widget_button_label * renameLayerButton;
+    pawgui::widget_button_label * changeLayerName_button;
+    pawgui::widget_button_label * renameLayer_button;
     pawgui::widget_checkbox * viewTileGridCheckBox;
     bool showTileLines;
 
@@ -133,8 +133,8 @@ protected:
     float zoomValue;
 
     //used for the object placement tab
-    pawgui::widget_button_label * inheritParentComponentButton;
-    pawgui::widget_button_label * resetComponentsButton;
+    pawgui::widget_button_label * inheritParentComponent_button;
+    pawgui::widget_button_label * resetComponents_button;
     pawgui::widget_dropdown_menu * addNewComponentDropDown;
 
     //Object related gui elements.
@@ -152,7 +152,7 @@ protected:
     //Grid Related Varables [ Begin ]
     pawgui::widget_input_number * gridWidthField;
     pawgui::widget_input_number * gridHeightField;
-    pawgui::widget_button_label * forceSnapButton;
+    pawgui::widget_button_label * forceSnap_button;
     pawgui::gpe_widget_color_picker * gridColorField;
     pawgui::widget_input_number * gridAlphaField;
     int sceneGridX, sceneGridY;
@@ -160,24 +160,23 @@ protected:
     bool useSceneGrid;
     //Grid Related Variables [ End ]
 
-    pawgui::widget_checkbox * onlyRemoveThisObjectTypeButton;
-    pawgui::widget_button_label * removeObjectButton;
-    pawgui::widget_button_label * clearObjectsButton;
+    pawgui::widget_checkbox * onlyRemoveThisObjectType_button;
+    pawgui::widget_button_label * removeObject_button;
+    pawgui::widget_button_label * clearObjects_button;
 
     pawgui::widget_label_text  * objectEditorNameTitle;
     pawgui::widget_label_text  * objectEditorPropertiesTitle;
 
 
-    pawgui::widget_button_icon * objCustomVariableSettingsButtton;
+    pawgui::widget_button_icon * objCustomVariable_settingsButtton;
     pawgui::widget_button_icon * objCustomVariableAddButtton;
-    pawgui::widget_button_icon * objCustomVariableRemoveButton;
-    pawgui::widget_button_icon * objCustomVariableRefeshButton;
+    pawgui::widget_button_icon * objCustomVariableRemove_button;
+    pawgui::widget_button_icon * objCustomVariableRefesh_button;
 
     //used for the tile placement tab
-    pawgui::widget_button_label * resizeMapButton;
+    pawgui::widget_button_label * resizeMap_button;
 
     int layerInEdit;
-    float sceneMouseXPos, sceneMouseYPos;
     float sceneObjMouseX, sceneObjMouseY;
     int lastCreatedObjXPos, lastCreatedObjYPos;
     int lastCreatedObjTypeId;
@@ -186,11 +185,11 @@ protected:
     sceneLayer * defaultObjectLayer;
     sceneLayer * defaultBackgroundLayer;
     pawgui::widget_button_icon * gridToggleButtton;
-    pawgui::widget_button_icon * rotationButton;
-    pawgui::widget_button_icon * layerRemoveButton;
+    pawgui::widget_button_icon * rotation_button;
+    pawgui::widget_button_icon * layerRemove_button;
     pawgui::widget_button_icon * layerMoveUpButtton;
-    pawgui::widget_button_icon * layerMoveDownButton;
-    pawgui::widget_button_icon * layerToggleHideButton;
+    pawgui::widget_button_icon * layerMoveDown_button;
+    pawgui::widget_button_icon * layerToggleHide_button;
 
     pawgui::widget_label_text  * selectedBranchLabel;
     pawgui::widget_label_text  * layerErrorMessage;
@@ -216,7 +215,7 @@ public:
     pawgui::widget_scrollbar_xaxis * sceneXScroll;
     pawgui::widget_scrollbar_yaxis * sceneYScroll;
 
-    pawgui::widget_button_icon * saveButton;
+    pawgui::widget_button_icon * save_button;
     //Used to calculate the derotated/scaled box of an resource
     float rmx;
     float rmy;
@@ -233,8 +232,8 @@ public:
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
     sceneLayer * find_layer(int layeToFind);
-    bool find_scene_branch( GPE_SceneBasicClass * branchHolder, bool nestDown = false );
-    bool find_scene_branches( GPE_SceneBasicClass * branchHolder, bool nestDown  = false );
+    bool find_scene_branch( GPE_SceneBasicClass * branchHolder, bool nest_down = false );
+    bool find_scene_branches( GPE_SceneBasicClass * branchHolder, bool nest_down  = false );
 
     bool get_mouse_coords( );
     void handle_scrolling();
@@ -247,8 +246,8 @@ public:
     void load_resource(std::string file_path = "");
     void process_components();
     void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-    void render_grid( int xStart, int yStart, int cellW, int cellH, int xMax = -1, int yMax = -1, gpe::color * gridLineColor = NULL, int gridLineAlpha = 128 );
-    void render_scene_layers( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, gpe::shape_rect * sceneCamera = NULL, float renderScale = -1,bool showEditorPreviews = true, bool checkListDependent = true);
+    void render_grid( int x_start, int y_start, int cellW, int cellH, int xMax = -1, int yMax = -1, gpe::color * gridLineColor = NULL, int gridLineAlpha = 128 );
+    void render_scene_layers( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, gpe::shape_rect * sceneCamera = NULL, float render_scale = -1,bool showEditorPreviews = true, bool checkListDependent = true);
     void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void reset_placement_info();
     void save_resource(std::string file_path = "", int backupId = -1);
@@ -257,12 +256,12 @@ public:
     void swap_lighting( );
     void swap_lock( bool lockState );
     bool unselect_object( bool selectParent = false );
-    void update_box(int newX=-1, int newY=-1, int newW=-1, int newH=-1);
+    void update_box(int x_new=-1, int y_new=-1, int newW=-1, int newH=-1);
     void update_project_layers();
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 
-extern gpeEditorDockPanel * PANEL_GRID_INFO;
+extern pawgui::widget_dock_panel * PANEL_GRID_INFO;
 
 extern gameSceneResource * scene_currentToRender;
 #endif

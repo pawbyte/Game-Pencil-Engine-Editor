@@ -3,10 +3,10 @@ gpe_editor_settings.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -59,13 +59,14 @@ public:
     void clear_colors();
     bool copy_theme( pawgui::gui_theme * systemTheme, bool copyToSelf = true );
     bool load_background( std::string bg_textureLocation, bool allOrNothing = false);
+    void remove_background();
 };
 
-class gamePencilEditorSettingsResource: public pawgui::general_resource
+class gamePencilEditor_settingsResource: public pawgui::general_resource
 {
 public:
-    pawgui::widget_button_push * confirmResourceButton;
-    pawgui::widget_button_push * cancelResourceButton;
+    pawgui::widget_button_push * confirmResource_button;
+    pawgui::widget_button_push * cancelResource_button;
     pawgui::widget_selectbox * sideAreaPanel;
     gpe::shape_rect * sidePanelRect;
     pawgui::widget_checkbox * showShortProjectNames;
@@ -73,13 +74,17 @@ public:
     pawgui::widget_selectbox * subEditorSelectBox;
 
 
-    //General Editor Settings
+    //General Editor _settings
     pawgui::widget_checkbox * userInvertMouseScroll;
 
     pawgui::widget_button_push * openEditorFolder;
-    pawgui::widget_button_push * openLocalSettingsFolder;
+    pawgui::widget_button_push * openLocal_settingsFolder;
     pawgui::widget_checkbox * autoSaveScreenshots;
     pawgui::widget_checkbox * makeMetaScreenshots;
+
+    //Dock Editor _settings
+    pawgui::widget_label_title * dock_settingsLabel;
+    pawgui::widget_dropdown_menu * dockDefaultPanel;
 
     //Coding language related settings
     pawgui::widget_label_title * CodingLanguageTitle;
@@ -88,20 +93,20 @@ public:
     pawgui::widget_text_url * CodingLanguageURL;
     pawgui::widget_selectbox * codingLanguageSelector;
     //FPS Related Items
-    pawgui::widget_label_title * editorGuiSettingsLabel;
-    pawgui::widget_label_title * ideSettingsFPSRateLabel;
-    pawgui::widget_dropdown_menu * ideSettingsFPSRate;
+    pawgui::widget_label_title * editorGui_settingsLabel;
+    pawgui::widget_label_title * ide_settingsFPSRateLabel;
+    pawgui::widget_dropdown_menu * ide_settingsFPSRate;
     pawgui::widget_label_text  * ideFPSRatioLabel;
-    pawgui::widget_label_text  *    ideButtonBarSizeLabel;
+    pawgui::widget_label_text  *    ide_buttonBarSizeLabel;
     pawgui::widget_checkbox * showFPSOnEditor;
 
-    pawgui::widget_dropdown_menu * ideButtonBarSize;
-    pawgui::widget_radio_button_controller * ideButtonBarAlignment;
+    pawgui::widget_dropdown_menu * ide_buttonBarSize;
+    pawgui::widget_radio_button_controller * ide_buttonBarAlignment;
 
     //External Editor Section
     pawgui::widget_label_title * externalEditorsTitle;
     pawgui::widget_input_text * pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_MAX];
-    pawgui::widget_button_icon * pencilExternalEditorsLoadButton[GPE_EXTERNAL_EDITOR_MAX];
+    pawgui::widget_button_icon * pencilExternalEditorsLoad_button[GPE_EXTERNAL_EDITOR_MAX];
 
     pawgui::widget_input_number * editorTextAreaDelayTime;
     pawgui::widget_input_number * editorTextInputDelayTime;
@@ -123,29 +128,30 @@ public:
     //Themes Section
     pawgui::widget_label_title * themesLabel;
     pawgui::widget_dropdown_menu * themePicker;
-    pawgui::widget_button_icon * themeLoadButton;
-    pawgui::widget_button_icon * themeAddButton;
-    pawgui::widget_button_icon * themeRemoveButton;
-    pawgui::widget_button_label * themeSetDefaultButton;
+    pawgui::widget_button_icon * themeLoad_button;
+    pawgui::widget_button_icon * themeAdd_button;
+    pawgui::widget_button_icon * themeRemove_button;
+    pawgui::widget_button_label * themeSetDefault_button;
     pawgui::widget_text_url * itchLinkForThemes;
     std::vector< theme_holder * > themeHolders;
     int defaultTemplateEndPos;
     int currentThemeInEdit;
 
     pawgui::widget_label_text  * themeBgLabel;
-    pawgui::widget_button_label * themeBgBrowseButton;
+    pawgui::widget_button_label * themeBgBrowse_button;
+    pawgui::widget_button_label * themeBgRemove_button;
     //Advanced Section
     pawgui::widget_label_title * advancedAreaLabel;
     pawgui::widget_checkbox * showHiddenFilesInBrowser;
     pawgui::widget_checkbox * forceFrameRedraw;
-    pawgui::widget_button_push * clearCacheButton;
+    pawgui::widget_button_push * clearCache_button;
 
     //Editor Related variables
     gpe::shape_rect subViewedSpace;
     pawgui::widget_panel_list * editorPageList;
     std::string projectFolderListLocation;
-    gamePencilEditorSettingsResource();
-    ~gamePencilEditorSettingsResource();
+    gamePencilEditor_settingsResource();
+    ~gamePencilEditor_settingsResource();
     bool include_local_files( std::string pBuildDir , int buildType );
 
     void load_themes_from_folder( std::string themeFolder );
@@ -157,5 +163,5 @@ public:
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 
-extern gamePencilEditorSettingsResource * main_editor_settings;
+extern gamePencilEditor_settingsResource * main_editor_settings;
 #endif // GPE_EDITOR_SETTINGS_RESOURCES_H

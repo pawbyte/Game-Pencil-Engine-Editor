@@ -37,28 +37,28 @@ SOFTWARE.
 
 #include "gpe_basic_resource_page.h"
 
-class gameJSCompilerSettingsResource: public standardEditableGameResource
+class gameJSCompiler_settingsResource: public standardEditableGameResource
 {
 public:
     pawgui::widget_selectbox * sideAreaPanel;
     gpe::shape_rect * sidePanelRect;
-    //Compiler Settings
+    //Compiler _settings
     pawgui::widget_checkbox * stopCompileOnError;
     //Added as of 1.15 [ BEGIN ]
     pawgui::widget_checkbox * minifyCode;
     pawgui::widget_checkbox * pluginConstantValues;
     pawgui::widget_checkbox * obfuscateCode;
     pawgui::widget_input_text * obfuscatorDirectoryField;
-    pawgui::widget_button_icon * obfuscatorDirectoryLoadButton;
+    pawgui::widget_button_icon * obfuscatorDirectoryLoad_button;
     pawgui::widget_input_text * googleClosureCompilerFile;
-    pawgui::widget_button_icon * googleClosureCompilerLoadButton;
+    pawgui::widget_button_icon * googleClosureCompilerLoad_button;
     //Added as of 1.15 [ END ]
     gpe::shape_rect subViewedSpace;
     pawgui::widget_tabbar * editorPageTabBar;
     pawgui::widget_panel_list * editorPageList;
     std::string projectFolderListLocation;
-    gameJSCompilerSettingsResource(pawgui::widget_resource_container * pFolder = NULL);
-    ~gameJSCompilerSettingsResource();
+    gameJSCompiler_settingsResource(pawgui::widget_resource_container * pFolder = NULL);
+    ~gameJSCompiler_settingsResource();
     bool include_local_files( std::string pBuildDir , int buildType );
     void prerender_self( );
     void load_resource(std::string file_path = "");
@@ -68,6 +68,6 @@ public:
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 
-extern gameJSCompilerSettingsResource * GPE_JS_COMPILER_SETTINGS;
+extern gameJSCompiler_settingsResource * GPE_JS_COMPILER_SETTINGS;
 
 #endif

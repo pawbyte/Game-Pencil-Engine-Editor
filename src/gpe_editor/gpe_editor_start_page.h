@@ -3,10 +3,10 @@ gpe_editor_start_page.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -59,10 +59,10 @@ public:
 
     //Project Browser related variables [ BEGIN ]
     pawgui::widget_label_text  * projectFolderLocationLabel;
-    pawgui::widget_button_push * scanProjectFolderButton;
-    pawgui::widget_button_push * newProjectButton;
-    pawgui::widget_button_push * loadProjectButton;
-    pawgui::widget_button_push * refreshButton;
+    pawgui::widget_button_push * scanProjectFolder_button;
+    pawgui::widget_button_push * newProject_button;
+    pawgui::widget_button_push * loadProject_button;
+    pawgui::widget_button_push * refresh_button;
     pawgui::widget_label_text  * emptyProjectsListLabel;
     std::string foundProjectsDirectory;
     std::vector< pawgui::widget_button_card_vertical * > foundProjectsList;
@@ -98,12 +98,12 @@ public:
     std::vector< pawgui::widget_text_url * > helpfulWebLinks;
     pawgui::widget_label_title * communityLinksTitle;
 
-    std::vector< pawgui::widget_button_icon * > communityButtons;
+    std::vector< pawgui::widget_button_icon * > community_buttons;
 
-    pawgui::widget_button_push * projectBrowserButton;
-    pawgui::widget_button_push * forumPageButton;
-    pawgui::widget_button_push * helpPageButton;
-    pawgui::widget_button_push * tipOfTheDayButton;
+    pawgui::widget_button_push * projectBrowser_button;
+    pawgui::widget_button_push * forumPage_button;
+    pawgui::widget_button_push * helpPage_button;
+    pawgui::widget_button_push * tipOfTheDay_button;
 
     pawgui::widget_panel_list * startPageList;
     gamePencilStartPageResource();

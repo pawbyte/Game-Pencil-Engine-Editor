@@ -3,10 +3,10 @@ project_properties.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -40,37 +40,37 @@ SOFTWARE.
 class projectPropertiesResource: public standardEditableGameResource
 {
 public:
-    pawgui::widget_selectbox * projectSettingsBar;
+    pawgui::widget_selectbox * project_settingsBar;
 
     //Icon data and such
     std::string iconFileName;
     pawgui::widget_label_text  * projectIconLabel;
     pawgui::widget_label_image * projectIconImg;
-    pawgui::widget_button_label * browseIconButton;
+    pawgui::widget_button_label * browseIcon_button;
     //Meta information to be built into the project
     pawgui::widget_text_editor * projectGameMacros;
     pawgui::widget_text_editor * projectGameNotes;
     pawgui::widget_checkbox * showMetaData;
     pawgui::widget_label_text  * projectLanguageLabel;
     pawgui::widget_dropdown_menu * projectLanguage;
-    //Export Settings Tab
-    pawgui::widget_selectbox * exportSettingsBar;
-    //Export Settings [ HTML5]
+    //Export _settings Tab
+    pawgui::widget_selectbox * export_settingsBar;
+    //Export _settings [ HTML5]
     pawgui::widget_checkbox * obfuscateCodeCheckbox;
     pawgui::widget_checkbox * minifyCodeCheckbox;
     pawgui::widget_checkbox * warnOnCloseCheckbox;
 
-    pawgui::widget_button_push * buildToSourceButton; //used to create projects to raw CPP files / dependencies
+    pawgui::widget_button_push * buildToSource_button; //used to create projects to raw CPP files / dependencies
     pawgui::widget_dropdown_menu  * buildPlatformdropdown; //used to select which "build script we use for building thru source"
     pawgui::widget_text_url * buildPlatformRefreshLabel;
-    pawgui::widget_button_push * exportPushButton;
-    pawgui::widget_button_push * exportAndPlayPushButton;
-    pawgui::widget_button_push * cleanBuildFolderPushButton;
-    pawgui::widget_button_push * cleanBuildAllFolderPushButton;
-    pawgui::widget_button_push * playProgramPushButton;
+    pawgui::widget_button_push * exportPush_button;
+    pawgui::widget_button_push * exportAndPlayPush_button;
+    pawgui::widget_button_push * cleanBuildFolderPush_button;
+    pawgui::widget_button_push * cleanBuildAllFolderPush_button;
+    pawgui::widget_button_push * playProgramPush_button;
 
-    //[Export Settings Desktop]
-    pawgui::widget_tabbar * desktopSettingsTabBar;
+    //[Export _settings Desktop]
+    pawgui::widget_tabbar * desktop_settingsTabBar;
     pawgui::widget_label_title * exportApplicationLabel;
     pawgui::widget_label_title * exportWindowsLabel;
     pawgui::widget_label_title * exportOSXLabel;
@@ -111,17 +111,17 @@ public:
     pawgui::widget_text_url * otherPlatformLabelURL;
 
 
-    //Settings Tab
+    //_settings Tab
     pawgui::widget_input_number * projectScreenWidthField;
     pawgui::widget_input_number * projectScreenHeightField;
     pawgui::widget_input_number * projectGameVersionField;
     pawgui::widget_input_text * projectGameSubVersionField;
-    pawgui::widget_radio_button_controller * projectScaleSettings;
-    pawgui::widget_label_text  * projectSettingsFPSRateLabel;
-    pawgui::widget_dropdown_menu * projectSettingsFPSRate;
+    pawgui::widget_radio_button_controller * project_scale_settings;
+    pawgui::widget_label_text  * project_settingsFPSRateLabel;
+    pawgui::widget_dropdown_menu * project_settingsFPSRate;
     //Publisher Setting
     pawgui::widget_label_title * sectionTitlePublisher;
-    pawgui::widget_label_title * sectionTitleGameSettings;
+    pawgui::widget_label_title * sectionTitleGame_settings;
     pawgui::widget_input_text * projectGameTitleField;
     pawgui::widget_input_text * projectGameShortTitleField;
     pawgui::widget_input_text * projectGameDateField;
@@ -146,7 +146,7 @@ public:
     pawgui::gpe_widget_color_picker * projectTextLinkVisitedColor;
     gpe::shape_rect subViewedSpace;
 
-    pawgui::widget_panel_list * projectSettingsList;
+    pawgui::widget_panel_list * project_settingsList;
     pawgui::widget_panel_list * collisionLayerMatrixList;
     pawgui::widget_checkbox * projectCollisionLayerMatrix[1024];
     pawgui::widget_label_rotated_90 * projectLayerNamesColumnTitles[32];

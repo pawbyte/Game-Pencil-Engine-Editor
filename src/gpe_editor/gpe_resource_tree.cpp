@@ -3,10 +3,10 @@ gpe_resource_tree.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -102,14 +102,14 @@ void GPE_ResourceTree::add_resource_container( pawgui::widget_resource_container
         return;
     }
     new_resource->element_box.x = widget_box.x;
-    subOptions.push_back(new_resource);
+    sub_options.push_back(new_resource);
 }
 
 pawgui::widget_resource_container * GPE_ResourceTree::add_resource_folder(int resourceType, std::string projFolderName, std::string resourceTypeName)
 {
     pawgui::widget_resource_container * newResourceFolder = new pawgui::widget_resource_container(projFolderName,resourceTypeName,resourceType,-1,true,0,pawgui::restype_superfolder);
     newResourceFolder->element_box.x = widget_box.x;
-    subOptions.push_back(newResourceFolder);
+    sub_options.push_back(newResourceFolder);
     return newResourceFolder;
 }
 
@@ -117,7 +117,7 @@ pawgui::widget_resource_container * GPE_ResourceTree::add_project_folder(int res
 {
     pawgui::widget_resource_container * newResourceFolder = new pawgui::widget_resource_container(projFolderName,resourceTypeName,resourceType,-1,true,0, pawgui::restype_projfolder);
     newResourceFolder->element_box.x = widget_box.x;
-    subOptions.push_back(newResourceFolder);
+    sub_options.push_back(newResourceFolder);
     return newResourceFolder;
 }
 
@@ -129,9 +129,9 @@ void GPE_ResourceTree::delete_project_resources(std::string projectFileName)
 void GPE_ResourceTree::prerender_self( )
 {
     pawgui::widget_resource_container * tSubOption= NULL;
-    for( int i = 0; i < (int)subOptions.size(); i++)
+    for( int i = 0; i < (int)sub_options.size(); i++)
     {
-        tSubOption = subOptions[i];
+        tSubOption = sub_options[i];
         if( tSubOption!=NULL)
         {
             tSubOption->prerender_self( );
@@ -154,9 +154,9 @@ void GPE_ResourceTree::process_self( gpe::shape_rect * view_space, gpe::shape_re
     cameraBox.w = widget_box.w - yScroll->get_box_width();
     cameraBox.h = widget_box.h - xScroll->get_box_height();
 
-    int xPos = 0;
-    int yPos = 0;
-    int y2Pos = yPos;
+    int x_pos = pawgui::padding_default;
+    int y_pos = pawgui::padding_default;
+    int y2Pos = y_pos;
 
     if( isHovered )
     {
@@ -178,8 +178,8 @@ void GPE_ResourceTree::process_self( gpe::shape_rect * view_space, gpe::shape_re
 
     //if( mouseInRange || menuResized || resourcebarMoved)
     {
-        entireBox.x = 0;
-        entireBox.y = 0;
+        entireBox.x = pawgui::padding_default;
+        entireBox.y = pawgui::padding_default;
         entireBox.w = cameraBox.w - pawgui::padding_default;
         entireBox.h = pawgui::resource_container_default_height*3;
         pawgui::widget_resource_container * cContainer = NULL;
@@ -189,12 +189,12 @@ void GPE_ResourceTree::process_self( gpe::shape_rect * view_space, gpe::shape_re
         viewBox.w = cameraBox.w;
         viewBox.h = cameraBox.h;
 
-        for(int i=0; i<(int)subOptions.size(); i++)
+        for(int i=0; i<(int)sub_options.size(); i++)
         {
-            cContainer = subOptions[i];
+            cContainer = sub_options[i];
             if(cContainer!=NULL)
             {
-                sOpNumber=cContainer->process_container(xPos,y2Pos,selectedSubOption, &viewBox,&cameraBox,mouseInRange);
+                sOpNumber=cContainer->process_container(x_pos,y2Pos,selectedSubOption, &viewBox,&cameraBox,mouseInRange);
                 if( sOpNumber>=0)
                 {
                     selectedSubOption = sOpNumber;
@@ -450,16 +450,21 @@ void GPE_ResourceTree::render_self( gpe::shape_rect *view_space, gpe::shape_rect
 
     if( pawgui::theme_main->theme_texture_bg == NULL)
     {
-        gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->program_color,false);
+        //gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->panel_color,false);
+    }
+
+    if( hasScrollControl)
+    {
+        gpe::gcanvas->render_roundrect_filled_color( widget_box.x,widget_box.y,widget_box.x+widget_box.w,widget_box.y+widget_box.h, pawgui::theme_main->button_box_highlight_color );
     }
 
     pawgui::widget_resource_container * cResource = NULL;
-    int xDrawPos = 0;
-    int yDrawPos = 0;
-    int optionSize = (int)subOptions.size();
+    int xDrawPos = pawgui::padding_default;
+    int yDrawPos = pawgui::padding_default;
+    int optionSize = (int)sub_options.size();
     for(int i=0; i< optionSize; i++ )
     {
-        cResource = subOptions[i];
+        cResource = sub_options[i];
         if(cResource!=NULL)
         {
             cResource->render_option(xDrawPos,yDrawPos,selectedSubOption, view_space,&cameraBox, true );
@@ -482,15 +487,6 @@ void GPE_ResourceTree::render_self( gpe::shape_rect *view_space, gpe::shape_rect
         }
     }
 
-    if( hasScrollControl)
-    {
-        gpe::gcanvas->render_rectangle( widget_box.x,widget_box.y,widget_box.x+widget_box.w,widget_box.y+widget_box.h,pawgui::theme_main->button_box_highlight_color,true);
-    }
-    else
-    {
-        gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->text_box_outline_color,true);
-    }
-
     gpe::renderer_main->reset_viewpoint( );
     gpe::renderer_main->set_viewpoint( NULL);
 
@@ -501,14 +497,14 @@ void GPE_ResourceTree::remove_project_resources(std::string projectFileName)
     if( (int)projectFileName.size()>0 )
     {
         pawgui::widget_resource_container * tContainer = NULL;
-        for( int i = (int)subOptions.size()-1; i>=0; i--)
+        for( int i = (int)sub_options.size()-1; i>=0; i--)
         {
-            tContainer = subOptions[i];
+            tContainer = sub_options[i];
             if( tContainer!=NULL )
             {
                 if( projectFileName.compare(tContainer->projectParentFileName )==0)
                 {
-                    subOptions.erase(subOptions.begin()+i);
+                    sub_options.erase(sub_options.begin()+i);
                 }
             }
         }

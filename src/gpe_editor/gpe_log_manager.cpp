@@ -3,10 +3,10 @@ gpe_log_manager.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -54,13 +54,13 @@ log_manager::log_manager()
     }
 
     minLogHeight = 64;
-    isVisible = true;
+    is_visible = true;
     logTabs = new pawgui::widget_tabbar( true );
     add_default_tab("Game Pencil Log", true);
     add_default_tab("Build Log");
     add_default_tab("Search");
     add_default_tab("Search Results");
-    add_default_tab("Other");
+    add_default_tab("Other Log");
 
     generalTextLog = new pawgui::widget_text_editor();
     generalTextLog->isCodeEditor = false;
@@ -236,7 +236,7 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
     }
 
     //exits if it's not in use or view
-    if( !isEnabled || !isVisible || view_space==NULL || cam==NULL || widget_box.h <= 8 )
+    if( !isEnabled || !is_visible || view_space==NULL || cam==NULL || widget_box.h <= 8 )
     {
         return;
     }
@@ -286,13 +286,13 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                     tempPair = defaultTabs[iTab];
                     if( tempPair !=NULL)
                     {
-                        if( logTabs->contains_tab( tempPair->keyString))
+                        if( logTabs->contains_tab( tempPair->key_string))
                         {
-                            toggleMenuOption->add_menu_option("Toggle "+tempPair->keyString,1000+iTab,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/check-square.png"),-1,NULL,false);
+                            toggleMenuOption->add_menu_option("Toggle "+tempPair->key_string,1000+iTab,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/check-square.png"),-1,NULL,false);
                         }
                         else
                         {
-                            toggleMenuOption->add_menu_option("Toggle "+tempPair->keyString,1000+iTab,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
+                            toggleMenuOption->add_menu_option("Toggle "+tempPair->key_string,1000+iTab,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
                         }
                     }
                 }
@@ -367,7 +367,7 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                     logToView = generalTextLog;
                     pawgui::main_search_controller->close_finder();
                 }
-                else if( logTabs->get_selected_name()=="Other" || logTabs->get_selected_name()=="Other..." )
+                else if( logTabs->get_selected_name()=="Other" || logTabs->get_selected_name()=="Other..." || logTabs->get_selected_name() == "Other Log" )
                 {
                     logToView = otherLog;
                     pawgui::main_search_controller->close_finder();
@@ -386,29 +386,29 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                                 pawgui::main_search_controller->textSearchMode = pawgui::main_search_controller->previousSearchMode;
                                 if( pawgui::main_search_controller->textSearchMode==pawgui::search_mode::find_text || pawgui::main_search_controller->textSearchMode==pawgui::search_mode::find_text_all )
                                 {
-                                    pawgui::main_search_controller->findTextStringBox->switch_inuse( true);
-                                    pawgui::main_search_controller->findTextStringBox->inputSubmitted = false;
-                                    pawgui::main_search_controller->findTextStringBox->resubmissionAllowed = true;
-                                    pawgui::main_search_controller->findTextStringBox->set_clicked( true);
-                                    pawgui::main_search_controller->findButton->set_clicked( false);
-                                    pawgui::main_search_controller->findAllButton->set_clicked( false);
+                                    pawgui::main_search_controller->findTextstringBox->switch_inuse( true);
+                                    pawgui::main_search_controller->findTextstringBox->inputSubmitted = false;
+                                    pawgui::main_search_controller->findTextstringBox->resubmissionAllowed = true;
+                                    pawgui::main_search_controller->findTextstringBox->set_clicked( true);
+                                    pawgui::main_search_controller->find_button->set_clicked( false);
+                                    pawgui::main_search_controller->findAll_button->set_clicked( false);
                                 }
                                 else if( pawgui::main_search_controller->textSearchMode==pawgui::search_mode::goto_line )
                                 {
-                                    pawgui::main_search_controller->goToLineStringBox->switch_inuse( true);
-                                    pawgui::main_search_controller->goToLineStringBox->inputSubmitted = false;
-                                    pawgui::main_search_controller->goToLineStringBox->resubmissionAllowed = true;
-                                    pawgui::main_search_controller->goToLineStringBox->set_clicked( true);
-                                    pawgui::main_search_controller->goToButton->set_clicked( false);
+                                    pawgui::main_search_controller->goToLinestringBox->switch_inuse( true);
+                                    pawgui::main_search_controller->goToLinestringBox->inputSubmitted = false;
+                                    pawgui::main_search_controller->goToLinestringBox->resubmissionAllowed = true;
+                                    pawgui::main_search_controller->goToLinestringBox->set_clicked( true);
+                                    pawgui::main_search_controller->goTo_button->set_clicked( false);
                                 }
                                 else
                                 {
-                                    pawgui::main_search_controller->findTextStringBox->switch_inuse( true);
-                                    pawgui::main_search_controller->findTextStringBox->set_clicked( false);
-                                    pawgui::main_search_controller->findButton->set_clicked( true);
-                                    pawgui::main_search_controller->findAllButton->set_clicked( false);
-                                    pawgui::main_search_controller->findTextStringBox->inputSubmitted = false;
-                                    pawgui::main_search_controller->findTextStringBox->resubmissionAllowed = true;
+                                    pawgui::main_search_controller->findTextstringBox->switch_inuse( true);
+                                    pawgui::main_search_controller->findTextstringBox->set_clicked( false);
+                                    pawgui::main_search_controller->find_button->set_clicked( true);
+                                    pawgui::main_search_controller->findAll_button->set_clicked( false);
+                                    pawgui::main_search_controller->findTextstringBox->inputSubmitted = false;
+                                    pawgui::main_search_controller->findTextstringBox->resubmissionAllowed = true;
                                 }
                             }
                             //open_search_mode();
@@ -422,7 +422,7 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                             bottomInfoList->set_coords(widget_box.x,widget_box.y + logTabs->get_height() );
                         }
                         bottomInfoList->set_width(widget_box.w);
-                        bottomInfoList->set_height(widget_box.h-32);
+                        bottomInfoList->set_height(widget_box.h );
                         bottomInfoList->barYMargin = bottomInfoList->barYPadding = pawgui::padding_default/2;
                         bottomInfoList->barXMargin = bottomInfoList->barXPadding = pawgui::padding_default;
                         bottomInfoList->clear_list();
@@ -430,14 +430,14 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                         {
                         //find case
                         case pawgui::search_mode::find_text:
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->findTextStringBox,false);
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->findButton,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->findTextstringBox,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->find_button,false);
                             bottomInfoList->add_gui_element(pawgui::main_search_controller->findMatchCase,false);
                             break;
 
                         case pawgui::search_mode::find_text_all:
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->findTextStringBox,false);
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->findButton,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->findTextstringBox,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->find_button,false);
                             bottomInfoList->add_gui_element(pawgui::main_search_controller->findMatchCase,false);
                             bottomInfoList->add_gui_element(pawgui::main_search_controller->scopeLabel,false);
                             bottomInfoList->add_gui_element(pawgui::main_search_controller->findScope,false);
@@ -446,26 +446,26 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
 
                         //goto case
                         case pawgui::search_mode::goto_line:
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->goToLineStringBox,false);
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->goToButton,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->goToLinestringBox,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->goTo_button,false);
                             break;
 
                         case pawgui::search_mode::replace_text:
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->findTextStringBox,false);
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->findButton,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->findTextstringBox,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->find_button,false);
                             bottomInfoList->add_gui_element(pawgui::main_search_controller->findMatchCase,true);
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->replaceTextStringBox,false);
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->replaceButton,false);
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->replaceAllButton,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->replaceTextstringBox,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->replace_button,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->replaceAll_button,false);
                             break;
 
                         case pawgui::search_mode::replace_text_all:
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->findTextStringBox,false);
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->findButton,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->findTextstringBox,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->find_button,false);
                             bottomInfoList->add_gui_element(pawgui::main_search_controller->findMatchCase,true);
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->replaceTextStringBox,false);
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->replaceButton,false);
-                            bottomInfoList->add_gui_element(pawgui::main_search_controller->replaceAllButton,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->replaceTextstringBox,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->replace_button,false);
+                            bottomInfoList->add_gui_element(pawgui::main_search_controller->replaceAll_button,false);
                             bottomInfoList->add_gui_element(pawgui::main_search_controller->scopeLabel,false);
                             bottomInfoList->add_gui_element(pawgui::main_search_controller->findScope,false);
                             break;
@@ -480,24 +480,24 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                         bottomInfoList->process_self(view_space,cam);
                         if( pawgui::main_search_controller->textSearchMode == pawgui::search_mode::find_text_all )
                         {
-                            if( pawgui::main_search_controller->findButton->is_clicked() || pawgui::main_search_controller->findTextStringBox->was_submitted() )
+                            if( pawgui::main_search_controller->find_button->is_clicked() || pawgui::main_search_controller->findTextstringBox->was_submitted() )
                             {
-                                if( (int)pawgui::main_search_controller->findTextStringBox->get_string().size() > 0 )
+                                if( (int)pawgui::main_search_controller->findTextstringBox->get_string().size() > 0 )
                                 {
                                     if( pawgui::main_search_controller->findScope!=NULL)
                                     {
                                         clear_search_anchors();
                                         if( pawgui::main_search_controller->findScope->get_selected_tag()=="Open Tabs" && pawgui::main_tab_resource_bar!=NULL )
                                         {
-                                            log_general_comment("Searching Tabs for ["+pawgui::main_search_controller->findTextStringBox->get_string()+"]...");
-                                            pawgui::main_tab_resource_bar->search_for_string(pawgui::main_search_controller->findTextStringBox->get_string() );
+                                            log_general_comment("Searching Tabs for ["+pawgui::main_search_controller->findTextstringBox->get_string()+"]...");
+                                            pawgui::main_tab_resource_bar->search_for_string(pawgui::main_search_controller->findTextstringBox->get_string() );
                                         }
                                         else if( pawgui::main_search_controller->findScope->get_selected_tag()=="Project Resources" && current_project!=NULL )
                                         {
                                             if( current_project->RESC_project_FOLDER!=NULL)
                                             {
-                                                log_general_comment("Searching Project for ["+pawgui::main_search_controller->findTextStringBox->get_string()+"]...");
-                                                current_project->RESC_project_FOLDER->search_for_string(pawgui::main_search_controller->findTextStringBox->get_string() );
+                                                log_general_comment("Searching Project for ["+pawgui::main_search_controller->findTextstringBox->get_string()+"]...");
+                                                current_project->RESC_project_FOLDER->search_for_string(pawgui::main_search_controller->findTextstringBox->get_string() );
                                             }
                                         }
                                         gpe::input->reset_all_input();
@@ -525,7 +525,7 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                             bottomInfoList->set_coords(widget_box.x,widget_box.y + logTabs->get_height() );
                         }
                         bottomInfoList->set_width(widget_box.w);
-                        bottomInfoList->set_height(widget_box.h-32);
+                        bottomInfoList->set_height(widget_box.h );
                         bottomInfoList->clear_list();
                         if( (int)searchAnchors.size()== 0 )
                         {
@@ -595,12 +595,12 @@ void log_manager::render_self( gpe::shape_rect * view_space, gpe::shape_rect *ca
                 }
                 else if( bottomInfoList!=NULL)
                 {
-                    bottomInfoList->render_self( view_space,cam);
+                    //bottomInfoList->render_self( view_space,cam);
                 }
             }
             logTabs->render_self( view_space,cam);
         }
-        gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->text_box_outline_color,true);
+        //gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->text_box_outline_color,true);
     }
     gpe::renderer_main->reset_viewpoint();
 }
@@ -796,7 +796,7 @@ void log_manager::open_other_log()
     }
     if( logTabs!=NULL)
     {
-        logTabs->open_tab("Other");
+        logTabs->open_tab("Other Log");
     }
 }
 

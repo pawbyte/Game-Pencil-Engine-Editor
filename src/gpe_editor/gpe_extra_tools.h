@@ -4,10 +4,10 @@ gpe_extra_tools.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -59,8 +59,8 @@ class gamePencilExtraTools: public pawgui::general_resource
     public:
         pawgui::widget_selectbox * sideAreaPanel;
         pawgui::widget_label_title * sectionTitleExtras;
-        pawgui::widget_button_label * refreshAtlasRefreshButton;
-        pawgui::widget_button_push * transformImageDirectoryButton;//Editor Related variables
+        pawgui::widget_button_label * refreshAtlasRefresh_button;
+        pawgui::widget_button_push * transformImageDirectory_button;//Editor Related variables
         gpe::shape_rect subViewedSpace;
         gpe::shape_rect * sidePanelRect;
         pawgui::widget_panel_list * editorPageList;

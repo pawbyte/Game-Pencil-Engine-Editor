@@ -3,10 +3,10 @@ particle_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -48,15 +48,19 @@ public:
     pawgui::widget_label_title * textureLabel;
     pawgui::widget_label_image * texturePreviewImgLabel;
     pawgui::widget_input_text * textureLocationField;
-    pawgui::widget_button_icon * transformResourceButton;
-    pawgui::widget_button_icon * openExternalEditorButton;
-    pawgui::widget_button_icon * refreshResourceDataButton;
-    pawgui::widget_button_label * clearTextureButton;
+    pawgui::widget_button_icon * transformResource_button;
+    pawgui::widget_button_icon * openExternalEditor_button;
+    pawgui::widget_button_icon * refreshResourceData_button;
+    pawgui::widget_button_label * clearTexture_button;
     pawgui::widget_dropdown_menu * emitterBackupTextureMenu;
     pawgui::widget_checkbox * textureIsRotated;
 
     pawgui::widget_input_number * particleCountField;
     pawgui::widget_input_number * emissionRateField;
+
+    pawgui::widget_checkbox * emissionDisabled;
+    pawgui::widget_checkbox * emissionPaused;
+    pawgui::widget_checkbox * emissionDrawReversed;
 
     pawgui::widget_input_number * lifeMinField;
     pawgui::widget_input_number * lifeMaxField;
@@ -96,7 +100,6 @@ public:
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
-    bool get_mouse_coords( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     bool include_local_files( std::string pBuildDir , int buildType );
     void handle_scrolling();
     bool is_build_ready();
@@ -108,7 +111,7 @@ public:
     void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void revert_data_fields();
     void save_resource(std::string file_path = "", int backupId = -1);
-    void update_box(int newX=-1, int newY=-1, int newW=-1, int newH=-1);
+    void update_box(int x_new=-1, int y_new=-1, int newW=-1, int newH=-1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 

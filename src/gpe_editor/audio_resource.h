@@ -3,10 +3,10 @@ audio_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -44,10 +44,10 @@ public:
     int audioType;
     gpe::sound_base * soundVal;
     gpe::music_base * musicVal;
-    pawgui::widget_button_icon * playButton;
-    pawgui::widget_button_icon * openExternalEditorButton;
-    pawgui::widget_button_icon * refreshResourceDataButton;
-    pawgui::widget_radio_button_controller * audioTypeButtonController;
+    pawgui::widget_button_icon * play_button;
+    pawgui::widget_button_icon * openExternalEditor_button;
+    pawgui::widget_button_icon * refreshResourceData_button;
+    pawgui::widget_radio_button_controller * audioType_buttonController;
     std::string audioFileName[ gpe::sound_format_max ];
     pawgui::widget_checkbox * preloadCheckBox;
     pawgui::widget_input_text * audioGroupName;
@@ -61,7 +61,7 @@ public:
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
-    bool copy_audio_source(std::string outDirectoryName);
+    bool copy_audio_source(std::string directory_output_name);
     bool include_local_files( std::string pBuildDir , int buildType );
     bool is_build_ready();
     void load_audio(std::string new_file_name);

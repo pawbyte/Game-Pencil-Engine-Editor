@@ -3,10 +3,10 @@ gpe_js_compiler_settings.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -33,9 +33,9 @@ SOFTWARE.
 
 #include "gpe_js_compiler_settings.h"
 
-gameJSCompilerSettingsResource * GPE_JS_COMPILER_SETTINGS = NULL;
+gameJSCompiler_settingsResource * GPE_JS_COMPILER_SETTINGS = NULL;
 
-gameJSCompilerSettingsResource::gameJSCompilerSettingsResource(pawgui::widget_resource_container * pFolder)
+gameJSCompiler_settingsResource::gameJSCompiler_settingsResource(pawgui::widget_resource_container * pFolder)
 {
     isFullScreenResource = true;
     resourceFileName = "";
@@ -77,16 +77,16 @@ gameJSCompilerSettingsResource::gameJSCompilerSettingsResource(pawgui::widget_re
     obfuscateCode = new pawgui::widget_checkbox("Obfuscate Code","Obfuscate your games code as a layer of protection",true);
     obfuscatorDirectoryField = new pawgui::widget_input_text("","");
     obfuscatorDirectoryField->set_label("Obfuscator Directory");
-    obfuscatorDirectoryLoadButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/binoculars.png","Search Directory..",-1,32);
+    obfuscatorDirectoryLoad_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/binoculars.png","Search Directory..",-1,32);
 
     googleClosureCompilerFile = new pawgui::widget_input_text("","");
     googleClosureCompilerFile->set_label("Google Closure File Location");
-    googleClosureCompilerLoadButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/binoculars.png","Find Editor..",-1,32);
+    googleClosureCompilerLoad_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/binoculars.png","Find Editor..",-1,32);
 
     //Added as of 1.13 [ END ]
 }
 
-gameJSCompilerSettingsResource::~gameJSCompilerSettingsResource()
+gameJSCompiler_settingsResource::~gameJSCompiler_settingsResource()
 {
     if( editorPageList!=NULL)
     {
@@ -124,10 +124,10 @@ gameJSCompilerSettingsResource::~gameJSCompilerSettingsResource()
         obfuscatorDirectoryField = NULL;
     }
 
-    if( obfuscatorDirectoryLoadButton!=NULL)
+    if( obfuscatorDirectoryLoad_button!=NULL)
     {
-        delete obfuscatorDirectoryLoadButton;
-        obfuscatorDirectoryLoadButton = NULL;
+        delete obfuscatorDirectoryLoad_button;
+        obfuscatorDirectoryLoad_button = NULL;
     }
 
     if( googleClosureCompilerFile!=NULL)
@@ -136,34 +136,34 @@ gameJSCompilerSettingsResource::~gameJSCompilerSettingsResource()
         googleClosureCompilerFile = NULL;
     }
 
-    if( googleClosureCompilerLoadButton!=NULL)
+    if( googleClosureCompilerLoad_button!=NULL)
     {
-        delete googleClosureCompilerLoadButton;
-        googleClosureCompilerLoadButton = NULL;
+        delete googleClosureCompilerLoad_button;
+        googleClosureCompilerLoad_button = NULL;
     }
 }
 
-bool gameJSCompilerSettingsResource::include_local_files( std::string pBuildDir , int buildType )
+bool gameJSCompiler_settingsResource::include_local_files( std::string pBuildDir , int buildType )
 {
 
 }
 
-void gameJSCompilerSettingsResource::prerender_self( )
+void gameJSCompiler_settingsResource::prerender_self( )
 {
 
 }
 
-void gameJSCompilerSettingsResource::load_resource(std::string file_path)
+void gameJSCompiler_settingsResource::load_resource(std::string file_path)
 {
     //showStatupTipsBox->set_clicked( editor_gui_main->showTipsAtStartUp );
-    if( pawgui::main_loader_display != NULL )
+    if( main_gpe_splash_page != NULL )
     {
-        pawgui::main_loader_display->update_submessages( "Loading JS Compiler Settings","Please Wait..." );
+        main_gpe_splash_page->update_submessages( "Loading JS Compiler Settings","Please Wait..." );
     }
 
     std::string otherColContainerName = "";
 
-    std::string newFileIn =  gpe::get_user_settings_folder()+"gpe_js_compiler_settings.txt";
+    std::string newFileIn =  gpe::main_file_url_manager->get_user_settings_folder()+"gpe_js_compiler_settings.txt";
     std::ifstream gameResourceFileIn( newFileIn.c_str() );
 
     gpe::error_log->report("Loading Local settings - "+newFileIn);
@@ -175,15 +175,14 @@ void gameJSCompilerSettingsResource::load_resource(std::string file_path)
         {
             int equalPos = 0;
             std::string firstChar="";
-            std::string keyString="";
-            std::string valString="";
-            std::string subValString="";
+            std::string key_string="";
+            std::string valstring="";
+            std::string subValstring="";
             std::string currLine="";
             std::string currLineToBeProcessed;
             std::string colortheme_name;
             float foundFileVersion = 0;
             int textDelTime = 0;
-            int foundFPSValue = gpe::fps_cap;
             while ( gameResourceFileIn.good() )
             {
                 getline (gameResourceFileIn,currLine); //gets the next line of the file
@@ -203,11 +202,11 @@ void gameJSCompilerSettingsResource::load_resource(std::string file_path)
                             if(equalPos!=(int)std::string::npos)
                             {
                                 //if the equalPos is present, then parse on through and carryon
-                                keyString = currLineToBeProcessed.substr(0,equalPos);
-                                valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                                if( keyString=="Version")
+                                key_string = currLineToBeProcessed.substr(0,equalPos);
+                                valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                if( key_string=="Version")
                                 {
-                                    foundFileVersion = stg_ex::string_to_float(valString);
+                                    foundFileVersion = stg_ex::string_to_float(valstring);
                                 }
                             }
                         }
@@ -222,11 +221,11 @@ void gameJSCompilerSettingsResource::load_resource(std::string file_path)
                         if(equalPos!=(int)std::string::npos)
                         {
                             //if the equalPos is present, then parse on through and carryon
-                            keyString = currLineToBeProcessed.substr(0,equalPos);
-                            valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                            if( keyString=="ShowCompileAtFirstError")
+                            key_string = currLineToBeProcessed.substr(0,equalPos);
+                            valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                            if( key_string=="ShowCompileAtFirstError")
                             {
-                                stopCompileOnError->set_clicked( stg_ex::string_to_bool( valString ) );
+                                stopCompileOnError->set_clicked( stg_ex::string_to_bool( valstring ) );
                             }
                         }
                     }
@@ -236,21 +235,21 @@ void gameJSCompilerSettingsResource::load_resource(std::string file_path)
     }
 }
 
-void gameJSCompilerSettingsResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
+void gameJSCompiler_settingsResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
 {
     cam = gpe::camera_find(cam);
     view_space = gpe::camera_find(view_space);
     if( cam!=NULL && editorPageList!=NULL && editorPageTabBar!=NULL && view_space!=NULL)
     {
         int prevTab = sideAreaPanel->get_selection();
-        if( panel_main_area!=NULL )
+        if( panel_main_editor!=NULL )
         {
             subViewedSpace.x = 0;
             subViewedSpace.y = 0;
             subViewedSpace.w = view_space->w;
             subViewedSpace.h = view_space->h;
-            panel_main_area->add_gui_element_fullsize( sideAreaPanel );
-            panel_main_area->process_self();
+            panel_main_editor->add_gui_element_fullsize( sideAreaPanel );
+            panel_main_editor->process_self();
 
         }
         else
@@ -279,41 +278,41 @@ void gameJSCompilerSettingsResource::process_self( gpe::shape_rect * view_space,
         {
             editorPageList->add_gui_element(stopCompileOnError,true);
 
-            editorPageList->add_gui_element(confirmResourceButton,false);
-            editorPageList->add_gui_element(cancelResourceButton,true);
+            editorPageList->add_gui_element(confirmResource_button,false);
+            editorPageList->add_gui_element(cancelResource_button,true);
         }
         else if(sideAreaPanel->get_selected_name()=="Obfuscation")
         {
             // To be used in future Versions hopefully...
             editorPageList->add_gui_element(obfuscatorDirectoryField,false);
-            editorPageList->add_gui_element(obfuscatorDirectoryLoadButton,true);
+            editorPageList->add_gui_element(obfuscatorDirectoryLoad_button,true);
             editorPageList->add_gui_element(googleClosureCompilerFile,false);
-            editorPageList->add_gui_element(googleClosureCompilerLoadButton,true);
+            editorPageList->add_gui_element(googleClosureCompilerLoad_button,true);
             editorPageList->add_gui_element(minifyCode,true);
             editorPageList->add_gui_element(pluginConstantValues,true);
             editorPageList->add_gui_element(obfuscateCode,true);
-            editorPageList->add_gui_element(confirmResourceButton,false);
-            editorPageList->add_gui_element(cancelResourceButton,true);
+            editorPageList->add_gui_element(confirmResource_button,false);
+            editorPageList->add_gui_element(cancelResource_button,true);
         }
         editorPageList->process_self( view_space,cam);
-        if( confirmResourceButton->is_clicked() )
+        if( confirmResource_button->is_clicked() )
         {
             save_resource();
         }
-        if( cancelResourceButton->is_clicked() )
+        if( cancelResource_button->is_clicked() )
         {
             load_resource();
         }
     }
 }
 
-void gameJSCompilerSettingsResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
+void gameJSCompiler_settingsResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
     cam = gpe::camera_find(cam);
     view_space = gpe::camera_find(view_space);
     if( cam!=NULL && view_space!=NULL)
     {
-        if( sideAreaPanel!=NULL && panel_main_area==NULL )
+        if( sideAreaPanel!=NULL && panel_main_editor==NULL )
         {
             sideAreaPanel->render_self( view_space,cam);
         }
@@ -324,11 +323,11 @@ void gameJSCompilerSettingsResource::render_self( gpe::shape_rect * view_space, 
     }
 }
 
-void gameJSCompilerSettingsResource::save_resource(std::string file_path, int backupId )
+void gameJSCompiler_settingsResource::save_resource(std::string file_path, int backupId )
 {
     bool usingAltSaveSource = false;
     isModified = false;
-    std::string newSaveDataFilename =  gpe::get_user_settings_folder()+"gpe_js_compiler_settings.txt";
+    std::string newSaveDataFilename =  gpe::main_file_url_manager->get_user_settings_folder()+"gpe_js_compiler_settings.txt";
     std::ofstream newSaveDataFile( newSaveDataFilename.c_str() );
     //If the scene file could be saved
     if( !newSaveDataFile.fail() )
@@ -342,7 +341,7 @@ void gameJSCompilerSettingsResource::save_resource(std::string file_path, int ba
         }
     }
 }
-bool gameJSCompilerSettingsResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn )
+bool gameJSCompiler_settingsResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn )
 {
 
 }

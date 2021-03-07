@@ -1,12 +1,12 @@
 /*
-fontResource.cpp
+font_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -52,52 +52,52 @@ fontResource::fontResource(pawgui::widget_resource_container * pFolder)
     fontType = -1;
     fontWidth = 32;
     fontHeight = 32;
-    fontSize = 12;
-    fontSizeField = new pawgui::widget_input_number("Range: 8 to 512",true,2,256);
+    font_size = 12;
+    font_sizeField = new pawgui::widget_input_number("Range: 8 to 512",true,2,256);
     fontPreviewTextField = new pawgui::widget_input_text("ABCD012456789","Previewed Text");
     fontPreviewTextField->set_label("Preview Text");
-    fontSizeField->set_string("12");
-    fontSizeField->set_label("Font Size");
-    if( saveResourceButton!=NULL)
+    font_sizeField->set_string("12");
+    font_sizeField->set_label("Font Size");
+    if( saveResource_button!=NULL)
     {
-        fontSizeField->set_coords(-1,saveResourceButton->get_ypos()+saveResourceButton->get_height()+pawgui::padding_default+48);
+        font_sizeField->set_coords(-1,saveResource_button->get_ypos()+saveResource_button->get_height()+pawgui::padding_default+48);
     }
-    fontTypeButtonController = new pawgui::widget_radio_button_controller("Font Type", true,1);
-    fontTypeButtonController->add_opton("Normal Font");
-    fontTypeButtonController->add_opton("MonoSpace Font");
-    loadResourceButton->set_name("Load Custom Font");
-    saveResourceButton->set_width( loadResourceButton->get_width() );
-    fontFamilyName = "";
+    fontType_buttonController = new pawgui::widget_radio_button_controller("Font Type", true,1);
+    fontType_buttonController->add_opton("Normal Font");
+    fontType_buttonController->add_opton("MonoSpace Font");
+    loadResource_button->set_name("Load Custom Font");
+    saveResource_button->set_width( loadResource_button->get_width() );
+    font_family_name = "";
 
-    openExternalEditorButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Use External Editor" );
+    openExternalEditor_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Use External Editor" );
 }
 
 fontResource::~fontResource()
 {
-    if( fontTypeButtonController!=NULL)
+    if( fontType_buttonController!=NULL)
     {
-        delete fontTypeButtonController;
-        fontTypeButtonController = NULL;
+        delete fontType_buttonController;
+        fontType_buttonController = NULL;
     }
     if( fontPreviewTextField!=NULL)
     {
         delete fontPreviewTextField;
         fontPreviewTextField = NULL;
     }
-    if( fontSizeField!=NULL)
+    if( font_sizeField!=NULL)
     {
-        delete fontSizeField;
-        fontSizeField = NULL;
+        delete font_sizeField;
+        font_sizeField = NULL;
     }
     if( fontInEditor!=NULL)
     {
         gpe::gfs->close_font(fontInEditor);
         fontInEditor= NULL;
     }
-    if( openExternalEditorButton!=NULL)
+    if( openExternalEditor_button!=NULL)
     {
-        delete openExternalEditorButton;
-        openExternalEditorButton= NULL;
+        delete openExternalEditor_button;
+        openExternalEditor_button= NULL;
     }
 }
 
@@ -109,9 +109,9 @@ bool fontResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabA
 
         *fileTarget << nestedTabsStr << "var " << resource_name << " =  GPE.rsm.add_font(";
         *fileTarget << stg_ex::int_to_string (exportBuildGlobalId ) +",'";
-        if( (int)fontFamilyName.size() > 4)
+        if( (int)font_family_name.size() > 4)
         {
-            *fileTarget << fontFamilyName+"',";
+            *fileTarget << font_family_name+"',";
         }
         else
         {
@@ -119,7 +119,7 @@ bool fontResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabA
         }
         for( int i = 0; i < FONT_FILE_TYPES; i++)
         {
-            //*fileTarget  << "'resources/animations/"+stg_ex::get_short_filename (animInEditor->fileName,true )+"',";
+            //*fileTarget  << "'resources/animations/"+stg_ex::get_short_filename (animInEditor->file_name,true )+"',";
             if( (int)storedFontFileNames[i].size() > 4)
             {
                 *fileTarget << "'resources/fonts/"+ stg_ex::get_short_filename( storedFontFileNames[i],true) <<  "',";
@@ -131,23 +131,23 @@ bool fontResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabA
         }
         if( fontInEditor==NULL )
         {
-            fontSize = fontSizeField->get_held_number();
+            font_size = font_sizeField->get_held_number();
         }
-        if( fontSize <=8)
+        if( font_size <=8)
         {
-            fontSize = 8;
+            font_size = 8;
         }
-        if( fontSize >=256)
+        if( font_size >=256)
         {
-            fontSize = 256;
+            font_size = 256;
         }
-        *fileTarget << stg_ex::int_to_string (fontSize ) +",";
+        *fileTarget << stg_ex::int_to_string (font_size ) +",";
 
         *fileTarget << stg_ex::int_to_string (fontWidth ) +",";
         *fileTarget << stg_ex::int_to_string (fontHeight ) +",";
-        if( fontTypeButtonController!=NULL)
+        if( fontType_buttonController!=NULL)
         {
-            *fileTarget << stg_ex::int_to_string (fontTypeButtonController->get_selected_id() );
+            *fileTarget << stg_ex::int_to_string (fontType_buttonController->get_selected_id() );
         }
         else
         {
@@ -179,7 +179,7 @@ bool fontResource::build_css3_file(std::ofstream * fileTarget, int leftTabAmount
         if( foundHeldFont)
         {
             *fileTarget << nestedTabsStr << "@font-face{\n";
-            *fileTarget << nestedTabsStr << "font-family: '"+fontFamilyName+"';\n";
+            *fileTarget << nestedTabsStr << "font-family: '"+font_family_name+"';\n";
             if( (int)storedFontFileNames[FONT_EOT].size() > 0)
             {
                 *fileTarget << nestedTabsStr << "src: url('../resources/fonts/" << stg_ex::get_short_filename(storedFontFileNames[FONT_EOT],true)   << "'),\n";
@@ -196,7 +196,7 @@ bool fontResource::build_css3_file(std::ofstream * fileTarget, int leftTabAmount
             }
             if( (int)storedFontFileNames[FONT_SVG].size() > 0)
             {
-                *fileTarget << nestedTabsStr << "\n" << "url('../resources/fonts/" << stg_ex::get_short_filename(storedFontFileNames[FONT_SVG],true)   << "#" << fontFamilyName << "') format('svg')";
+                *fileTarget << nestedTabsStr << "\n" << "url('../resources/fonts/" << stg_ex::get_short_filename(storedFontFileNames[FONT_SVG],true)   << "#" << font_family_name << "') format('svg')";
             }
             *fileTarget << nestedTabsStr << ";\n" << "font-weight: normal;\n";
             *fileTarget << nestedTabsStr << "font-style: normal;\n";
@@ -218,7 +218,7 @@ void fontResource::compile_cpp()
 
 bool fontResource::include_local_files( std::string pBuildDir , int buildType )
 {
-    sff_ex::append_to_file( gpe::get_user_settings_folder()+"resources_check.txt " , get_name() +"...");
+    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"resources_check.txt " , get_name() +"...");
 
     bool fontNotCopied = false;
     std::string copyFileDestination;
@@ -227,9 +227,9 @@ bool fontResource::include_local_files( std::string pBuildDir , int buildType )
         if( (int)storedFontFileNames[jFontType].size() > 3 )
         {
             copyFileDestination = pBuildDir+"/resources/fonts/"+ stg_ex::get_short_filename(storedFontFileNames[jFontType],true);
-            if( sff_ex::file_copy( storedFontFileNames[jFontType],copyFileDestination)==false )
+            if( gpe::main_file_url_manager->file_copy( storedFontFileNames[jFontType],copyFileDestination)==false )
             {
-                sff_ex::append_to_file( gpe::get_user_settings_folder()+"resources_check.txt","Unable to copy ["+storedFontFileNames[jFontType]+"] to ["+copyFileDestination+"]...");
+                gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"resources_check.txt","Unable to copy ["+storedFontFileNames[jFontType]+"] to ["+copyFileDestination+"]...");
                 return fontNotCopied;
             }
         }
@@ -244,37 +244,37 @@ bool fontResource::is_build_ready()
     return true;
 }
 
-void fontResource::load_font(std::string new_file_name, int newFontSize )
+void fontResource::load_font(std::string new_file_name, int newfont_size )
 {
     if( (int)new_file_name.size() > 0)
     {
-        if( newFontSize < 0 && fontSizeField->get_held_number() > 0 )
+        if( newfont_size < 0 && font_sizeField->get_held_number() > 0 )
         {
-            newFontSize = fontSizeField->get_held_number();
+            newfont_size = font_sizeField->get_held_number();
         }
-        else if( newFontSize < 0 )
+        else if( newfont_size < 0 )
         {
-            newFontSize = 8;
+            newfont_size = 8;
         }
-        else if(newFontSize > 512)
+        else if(newfont_size > 512)
         {
-            newFontSize = 512;
+            newfont_size = 512;
         }
-        fontSizeField->set_string( stg_ex::int_to_string(newFontSize) );
-        fontSize = newFontSize;
+        font_sizeField->set_string( stg_ex::int_to_string(newfont_size) );
+        font_size = newfont_size;
 
         //Saves the font where possible...
         if( stg_ex::get_file_ext(new_file_name)=="eot" || stg_ex::get_file_ext(new_file_name)=="EOT" )
         {
             std::string copyDestinationStr = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ stg_ex::get_short_filename(new_file_name,true);
             storedFontFileNames[FONT_EOT] = copyDestinationStr;
-            sff_ex::file_copy(new_file_name.c_str(),copyDestinationStr );
+            gpe::main_file_url_manager->file_copy(new_file_name.c_str(),copyDestinationStr );
         }
         else if( stg_ex::get_file_ext(new_file_name)=="svg" || stg_ex::get_file_ext(new_file_name)=="SVG" )
         {
             std::string copyDestinationStr = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ stg_ex::get_short_filename(new_file_name,true);
             storedFontFileNames[FONT_SVG] = copyDestinationStr;
-            sff_ex::file_copy(new_file_name.c_str(),copyDestinationStr );
+            gpe::main_file_url_manager->file_copy(new_file_name.c_str(),copyDestinationStr );
         }
         else if( stg_ex::get_file_ext(new_file_name)=="otf" || stg_ex::get_file_ext(new_file_name)=="OTF" )
         {
@@ -285,13 +285,13 @@ void fontResource::load_font(std::string new_file_name, int newFontSize )
             }
             fontInEditorFileName = stg_ex::get_short_filename(new_file_name,true);
             std::string copyDestinationStr = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ fontInEditorFileName;
-            sff_ex::file_copy(new_file_name.c_str(),copyDestinationStr );
+            gpe::main_file_url_manager->file_copy(new_file_name.c_str(),copyDestinationStr );
 
-            fontInEditor = gpe::gfs->open_font( copyDestinationStr.c_str(),newFontSize,false,"Custom Font");
-            fontFamilyName =fontInEditor->get_family_name();
+            fontInEditor = gpe::gfs->open_font( copyDestinationStr.c_str(),newfont_size,false,"Custom Font");
+            font_family_name =fontInEditor->get_family_name();
             if( fontInEditor==NULL)
             {
-                pawgui::display_user_alert("Font Resource Editor","Oh dear! Houston has a problem reading this .ttf font"+new_file_name+"/"+ stg_ex::int_to_string(newFontSize)+"...");
+                pawgui::display_user_alert("Font Resource Editor","Oh dear! Houston has a problem reading this .ttf font"+new_file_name+"/"+ stg_ex::int_to_string(newfont_size)+"...");
             }
             else
             {
@@ -313,13 +313,13 @@ void fontResource::load_font(std::string new_file_name, int newFontSize )
             }
             fontInEditorFileName = stg_ex::get_short_filename(new_file_name,true);
             std::string copyDestinationStr = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ fontInEditorFileName;
-            sff_ex::file_copy(new_file_name.c_str(),copyDestinationStr );
+            gpe::main_file_url_manager->file_copy(new_file_name.c_str(),copyDestinationStr );
 
-            fontInEditor = gpe::gfs->open_font(copyDestinationStr.c_str(),newFontSize,false,"Custom Font");
-            fontFamilyName =fontInEditor->get_family_name();
+            fontInEditor = gpe::gfs->open_font(copyDestinationStr.c_str(),newfont_size,false,"Custom Font");
+            font_family_name =fontInEditor->get_family_name();
             if( fontInEditor==NULL)
             {
-                pawgui::display_user_alert("Font Resource Editor","Oh dear! Houston has a problem reading this .ttf font"+new_file_name+"/"+ stg_ex::int_to_string(newFontSize)+"...");
+                pawgui::display_user_alert("Font Resource Editor","Oh dear! Houston has a problem reading this .ttf font"+new_file_name+"/"+ stg_ex::int_to_string(newfont_size)+"...");
             }
             else
             {
@@ -337,13 +337,13 @@ void fontResource::load_font(std::string new_file_name, int newFontSize )
         {
             std::string copyDestinationStr = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ stg_ex::get_short_filename(new_file_name,true);
             storedFontFileNames[FONT_WOFF] = copyDestinationStr;
-            sff_ex::file_copy(new_file_name.c_str(),copyDestinationStr );
+            gpe::main_file_url_manager->file_copy(new_file_name.c_str(),copyDestinationStr );
         }
         else if( stg_ex::get_file_ext(new_file_name)=="woff2" || stg_ex::get_file_ext(new_file_name)=="WOFF2" )
         {
             std::string copyDestinationStr = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ stg_ex::get_short_filename(new_file_name,true);
             storedFontFileNames[FONT_WOFF2] = copyDestinationStr;
-            sff_ex::file_copy(new_file_name.c_str(),copyDestinationStr );
+            gpe::main_file_url_manager->file_copy(new_file_name.c_str(),copyDestinationStr );
         }
         else
         {
@@ -354,18 +354,18 @@ void fontResource::load_font(std::string new_file_name, int newFontSize )
 
 void fontResource::load_resource(std::string file_path)
 {
-    if( resourcePostProcessed ==false || sff_ex::file_exists(file_path) )
+    if( resourcePostProcessed ==false || gpe::main_file_url_manager->file_exists(file_path) )
     {
-        if( pawgui::main_loader_display != NULL )
+        if( main_gpe_splash_page != NULL )
         {
-            pawgui::main_loader_display->update_submessages( "Processing Font", resource_name );
+            main_gpe_splash_page->update_submessages( "Processing Font", resource_name );
         }
 
         std::string otherColContainerName = "";
 
         std::string newFileIn ="";
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/";
-        if( sff_ex::file_exists(file_path) )
+        if( gpe::main_file_url_manager->file_exists(file_path) )
         {
             newFileIn = file_path;
             soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -386,14 +386,14 @@ void fontResource::load_resource(std::string file_path)
                 int equalPos = 0;
                 std::string firstChar="";
                 std::string section="";
-                std::string keyString="";
-                std::string valString="";
-                std::string subValString="";
+                std::string key_string="";
+                std::string valstring="";
+                std::string subValstring="";
                 std::string currLine="";
                 std::string currLineToBeProcessed;
                 float foundFileVersion = 0;
                 std::string fFontFile = "";
-                int tFontSize = 12;
+                int tfont_size = 12;
                 while ( gameResourceFileIn.good() )
                 {
                     getline (gameResourceFileIn,currLine); //gets the next line of the file
@@ -413,11 +413,11 @@ void fontResource::load_resource(std::string file_path)
                                 if(equalPos!=(int)std::string::npos)
                                 {
                                     //if the equalPos is present, then parse on through and carryon
-                                    keyString = currLineToBeProcessed.substr(0,equalPos);
-                                    valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                                    if( keyString=="Version")
+                                    key_string = currLineToBeProcessed.substr(0,equalPos);
+                                    valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                    if( key_string=="Version")
                                     {
-                                        foundFileVersion = stg_ex::string_to_float(valString);
+                                        foundFileVersion = stg_ex::string_to_float(valstring);
                                     }
                                 }
                             }
@@ -432,33 +432,33 @@ void fontResource::load_resource(std::string file_path)
                             if(equalPos!=(int)std::string::npos)
                             {
                                 //if the equalPos is present, then parse on through and carryon
-                                keyString = currLineToBeProcessed.substr(0,equalPos);
-                                valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                key_string = currLineToBeProcessed.substr(0,equalPos);
+                                valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
-                                if( keyString=="ResourceName")
+                                if( key_string=="ResourceName")
                                 {
-                                    renameBox->set_string(valString);
+                                    renameBox->set_string(valstring);
                                 }
-                                else if( keyString=="FontSize")
+                                else if( key_string=="font_size")
                                 {
-                                    fontSizeField->set_string(valString);
-                                    tFontSize = fontSizeField->get_held_number();
+                                    font_sizeField->set_string(valstring);
+                                    tfont_size = font_sizeField->get_held_number();
                                 }
-                                else if( keyString=="FontType")
+                                else if( key_string=="FontType")
                                 {
-                                    fontTypeButtonController->set_selection( stg_ex::string_to_int(valString,0));
+                                    fontType_buttonController->set_selection( stg_ex::string_to_int(valstring,0));
                                 }
-                                if( keyString=="PreviewText")
+                                if( key_string=="PreviewText")
                                 {
-                                    fontPreviewTextField->set_string(valString);
+                                    fontPreviewTextField->set_string(valstring);
                                 }
                                 else
                                 {
                                     for( int i = 0; i < FONT_FILE_TYPES; i++)
                                     {
-                                        if( keyString==SUPPORTED_FONT_EXT[i]+"_File")
+                                        if( key_string==SUPPORTED_FONT_EXT[i]+"_File")
                                         {
-                                            load_font( soughtDir+valString,tFontSize );
+                                            load_font( soughtDir+valstring,tfont_size );
                                         }
                                     }
                                 }
@@ -478,9 +478,9 @@ void fontResource::load_resource(std::string file_path)
 void fontResource::prerender_self( )
 {
     standardEditableGameResource::prerender_self( );
-    if( fontTypeButtonController!=NULL)
+    if( fontType_buttonController!=NULL)
     {
-        fontTypeButtonController->prerender_self( );
+        fontType_buttonController->prerender_self( );
     }
 }
 
@@ -488,24 +488,24 @@ void fontResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect *
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && view_space!=NULL && panel_main_area!=NULL && fontSizeField!=NULL)
+    if(cam!=NULL && view_space!=NULL && panel_main_editor!=NULL && font_sizeField!=NULL)
     {
-        panel_main_area->clear_panel();
-        panel_main_area->add_gui_element(renameBox,true);
-        panel_main_area->add_gui_element(loadResourceButton,false);
-        panel_main_area->add_gui_element(exportResourceButton,false);
-        panel_main_area->add_gui_element(openExternalEditorButton,true);
+        panel_main_editor->clear_panel();
+        panel_main_editor->add_gui_element(renameBox,true);
+        panel_main_editor->add_gui_element(loadResource_button,false);
+        panel_main_editor->add_gui_element(exportResource_button,false);
+        panel_main_editor->add_gui_element(openExternalEditor_button,true);
 
-        panel_main_area->add_gui_element(fontSizeField,true);
-        panel_main_area->add_gui_element(fontPreviewTextField,true);
-        panel_main_area->add_gui_element(fontTypeButtonController,true);
-        panel_main_area->add_gui_element(confirmResourceButton,true);
-        panel_main_area->add_gui_element(cancelResourceButton,true);
-        int prevFontSize = fontSizeField->get_held_number();
+        panel_main_editor->add_gui_element(font_sizeField,true);
+        panel_main_editor->add_gui_element(fontPreviewTextField,true);
+        panel_main_editor->add_gui_element(fontType_buttonController,true);
+        panel_main_editor->add_gui_element(confirmResource_button,true);
+        panel_main_editor->add_gui_element(cancelResource_button,true);
+        int prevfont_size = font_sizeField->get_held_number();
 
 
-        panel_main_area->process_self(NULL, NULL);
-        if( openExternalEditorButton!=NULL &&  openExternalEditorButton->is_clicked() )
+        panel_main_editor->process_self(NULL, NULL);
+        if( openExternalEditor_button!=NULL &&  openExternalEditor_button->is_clicked() )
         {
             bool hasFileToOpen = false;
             int ii = 0;
@@ -535,40 +535,40 @@ void fontResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect *
 
                     if( main_editor_settings!=NULL && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_FONT]!=NULL)
                     {
-                        gpe::external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_FONT]->get_string(),fileToEdit, true );
+                        gpe::main_file_url_manager->external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_FONT]->get_string(),fileToEdit, true );
                     }
                     else
                     {
-                        gpe::external_open_url(fileToEdit);
+                        gpe::main_file_url_manager->external_open_url(fileToEdit);
                     }
                     /*
                     fileToEdit = "\"C:/Program Files (x86)/Audacity/audacity.exe\" \""+fileToEdit+"\"";
                     external_open_url(fileToEdit);*/
-                    sff_ex::append_to_file( gpe::get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+fileToEdit+"]...");
+                    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+fileToEdit+"]...");
                 }
             }
         }
 
-        if( fontSizeField->is_valid() )
+        if( font_sizeField->is_valid() )
         {
-            if( fontSizeField->get_held_number()!=prevFontSize && fontSizeField->get_held_number() >= 8 )
+            if( font_sizeField->get_held_number()!=prevfont_size && font_sizeField->get_held_number() >= 8 )
             {
-                load_font( storedFontFileNames[FONT_TTF], fontSizeField->get_held_number() );
+                load_font( storedFontFileNames[FONT_TTF], font_sizeField->get_held_number() );
             }
         }
-        if( loadResourceButton->is_clicked() )
+        if( loadResource_button->is_clicked() )
         {
             std::string newFontFile = pawgui::get_filename_open_from_popup("Load In Custom Font...","",pawgui::main_settings->fileOpenFontDir );
             if( (int)newFontFile.size() > 3)
             {
-                load_font( newFontFile, fontSizeField->get_held_number() );
+                load_font( newFontFile, font_sizeField->get_held_number() );
             }
         }
-        else if( confirmResourceButton->is_clicked() )
+        else if( confirmResource_button->is_clicked() )
         {
             save_resource();
         }
-        else if( cancelResourceButton->is_clicked() )
+        else if( cancelResource_button->is_clicked() )
         {
             if( pawgui::display_prompt_message("Are you sure you will like to reverse changes?","This will load in data from save-file!", true )== pawgui::display_query_yes )
             {
@@ -579,11 +579,11 @@ void fontResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect *
     }
 }
 
-bool fontResource::render_held_font( int xPos, int yPos, std::string textureText, gpe::color * textColor,int hAlign,int vAlign, float renderAngle, float renderScale, int renderAlpha  )
+bool fontResource::render_held_font( int x_pos, int y_pos, std::string text_to_render, gpe::color * text_color,int alignment_h,int alignment_v, float render_angle, float render_scale, int render_alpha  )
 {
     if( fontInEditor!=NULL )
     {
-        return fontInEditor->render_text_special( xPos, yPos, textureText, textColor, hAlign, vAlign, renderAngle, renderScale, renderAlpha );
+        return fontInEditor->render_text_special( x_pos, y_pos, text_to_render, text_color, alignment_h, alignment_v, render_angle, render_scale, render_alpha );
     }
     return false;
 }
@@ -594,13 +594,13 @@ void fontResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *c
     cam = gpe::camera_find(cam);
     if( cam!=NULL && view_space!=NULL  )
     {
-        if(fontTypeButtonController!=NULL)
+        if(fontType_buttonController!=NULL)
         {
             gpe::gcanvas->render_vertical_line_color( 0,0,view_space->h,pawgui::theme_main->program_color_header );
         }
         if( fontInEditor!=NULL)
         {
-            gpe::gfs->render_text( pawgui::padding_default,pawgui::padding_default,"Font Preview: "+stg_ex::get_short_filename(storedFontFileNames[FONT_TTF],true)+" | "+fontFamilyName,pawgui::theme_main->main_box_font_color,pawgui::FONT_LABEL,gpe::fa_left, gpe::fa_top);
+            gpe::gfs->render_text( pawgui::padding_default,pawgui::padding_default,"Font Preview: "+stg_ex::get_short_filename(storedFontFileNames[FONT_TTF],true)+" | "+font_family_name,pawgui::theme_main->main_box_font_color,pawgui::FONT_LABEL,gpe::fa_left, gpe::fa_top);
             gpe::gfs->render_text( pawgui::padding_default,pawgui::padding_default+32,fontPreviewTextField->get_string(),pawgui::theme_main->main_box_font_color,fontInEditor,gpe::fa_left,gpe::fa_top);
         }
         else
@@ -623,15 +623,15 @@ void fontResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *c
 
 void fontResource::save_resource(std::string file_path, int backupId)
 {
-    if( pawgui::main_loader_display != NULL )
+    if( main_gpe_splash_page != NULL )
     {
-        pawgui::main_loader_display->update_submessages( "Saving Font", resource_name );
+        main_gpe_splash_page->update_submessages( "Saving Font", resource_name );
     }
 
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if(  sff_ex::path_exists(soughtDir) )
+    if(  gpe::main_file_url_manager->path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
@@ -646,13 +646,13 @@ void fontResource::save_resource(std::string file_path, int backupId)
     if( !newSaveDataFile.fail() && newSaveDataFile.is_open() )
     {
         write_header_on_file(&newSaveDataFile);
-        if( fontSizeField!=NULL)
+        if( font_sizeField!=NULL)
         {
-            newSaveDataFile << "FontSize=" << std::max(8,(int)fontSizeField->get_held_number() )<< "\n";
+            newSaveDataFile << "font_size=" << std::max(8,(int)font_sizeField->get_held_number() )<< "\n";
         }
         else
         {
-            newSaveDataFile << "FontSize=12\n";
+            newSaveDataFile << "font_size=12\n";
         }
 
         std::string resFileLocation = "";
@@ -668,7 +668,7 @@ void fontResource::save_resource(std::string file_path, int backupId)
                 {
                     resFileCopySrc = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+resFileLocation;
                     resFileCopyDest = soughtDir+resFileLocation;
-                    if( sff_ex::file_exists(resFileCopyDest) )
+                    if( gpe::main_file_url_manager->file_exists(resFileCopyDest) )
                     {
                         /*
                         if( pawgui::display_prompt_message("[WARNING]Font File Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] font file? This action is irreversible!")==pawgui::display_query_yes)
@@ -679,15 +679,15 @@ void fontResource::save_resource(std::string file_path, int backupId)
                     }
                     else
                     {
-                        sff_ex::file_copy(resFileCopySrc,resFileCopyDest);
+                        gpe::main_file_url_manager->file_copy(resFileCopySrc,resFileCopyDest);
                     }
                 }
             }
         }
 
-        if( fontTypeButtonController!=NULL)
+        if( fontType_buttonController!=NULL)
         {
-            newSaveDataFile << "FontType=" <<fontTypeButtonController->get_selected_id() << "\n";
+            newSaveDataFile << "FontType=" <<fontType_buttonController->get_selected_id() << "\n";
         }
         else
         {
@@ -702,17 +702,17 @@ void fontResource::save_resource(std::string file_path, int backupId)
         {
             isModified = false;
         }
-        if( pawgui::main_loader_display != NULL )
+        if( main_gpe_splash_page != NULL )
         {
-            pawgui::main_loader_display->update_submessages( "Font Successfully Saved!", resource_name );
+            main_gpe_splash_page->update_submessages( "Font Successfully Saved!", resource_name );
         }
         return;
     }
 
     main_editor_log->log_general_error("Unable to save file ["+newFileOut+"]");
-    if( pawgui::main_loader_display != NULL )
+    if( main_gpe_splash_page != NULL )
     {
-        pawgui::main_loader_display->update_submessages( "Font Unable to  Save!", resource_name );
+        main_gpe_splash_page->update_submessages( "Font Unable to  Save!", resource_name );
     }
 }
 

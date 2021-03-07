@@ -3,10 +3,10 @@ gpe_scene_animation_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -48,11 +48,11 @@ GPE_SceneAnimation::GPE_SceneAnimation( pawgui::widget_resource_container *pFold
     {
         animationInEditor = NULL;
     }
-    branchType = gpe::branch_type::ANIMATION;
-    xPosField = new pawgui::widget_input_number("",true, 0 );
-    xPosField->set_label("X-Pos");
-    yPosField = new pawgui::widget_input_number("",true, 0 );
-    yPosField->set_label("Y-Pos");
+    branch_type_id = gpe::branch_type::ANIMATION;
+    x_posField = new pawgui::widget_input_number("",true, 0 );
+    x_posField->set_label("X-Pos");
+    y_posField = new pawgui::widget_input_number("",true, 0 );
+    y_posField->set_label("Y-Pos");
 
     startPositionField = new pawgui::widget_input_number("",false, 0 );
     startPositionField->set_label("Animation Start Frame");
@@ -61,8 +61,8 @@ GPE_SceneAnimation::GPE_SceneAnimation( pawgui::widget_resource_container *pFold
     animationId = -1;
     animRes = NULL;
     animSpeed = 1;
-    xScale = 1;
-    yScale = 1;
+    x_scale = 1;
+    y_scale = 1;
     frameStartPosition = 0;
     framePosition = 0;
 
@@ -79,16 +79,16 @@ GPE_SceneAnimation::~GPE_SceneAnimation()
         delete startPositionField;
         startPositionField = NULL;
     }
-    if( xPosField!=NULL)
+    if( x_posField!=NULL)
     {
-        delete xPosField;
-        xPosField = NULL;
+        delete x_posField;
+        x_posField = NULL;
     }
 
-    if( yPosField!=NULL)
+    if( y_posField!=NULL)
     {
-        delete yPosField;
-        yPosField = NULL;
+        delete y_posField;
+        y_posField = NULL;
     }
     if( useCustomSpeed!=NULL )
     {
@@ -100,15 +100,15 @@ GPE_SceneAnimation::~GPE_SceneAnimation()
         delete animationSpeedField;
         animationSpeedField = NULL;
     }
-    if( xScaleField!=NULL)
+    if( x_scaleField!=NULL)
     {
-        delete xScaleField;
-        xScaleField = NULL;
+        delete x_scaleField;
+        x_scaleField = NULL;
     }
-    if( yScaleField!=NULL)
+    if( y_scaleField!=NULL)
     {
-        delete yScaleField;
-        yScaleField = NULL;
+        delete y_scaleField;
+        y_scaleField = NULL;
     }
 }
 

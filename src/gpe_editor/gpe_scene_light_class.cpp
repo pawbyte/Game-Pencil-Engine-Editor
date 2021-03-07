@@ -3,10 +3,10 @@ gpe_scene_light_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,12 +36,12 @@ GPE_SceneBasicLight::GPE_SceneBasicLight(pawgui::widget_resource_container *pFol
 {
     iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/lightbulb-o.png") ;
 
-    branchType = gpe::branch_type::LIGHT;
+    branch_type_id = gpe::branch_type::LIGHT;
     if( branchColor!=NULL)
     {
         branchColor->set_label("Light Color");
     }
-    lightIsActive = new pawgui::widget_checkbox("Is Active","Active When Scene Starts", true );
+    light_is_active = new pawgui::widget_checkbox("Is Active","Active When Scene Starts", true );
 
     projectParentFolder = pFolder;
     if( projectParentFolder!=NULL)
@@ -57,10 +57,10 @@ GPE_SceneBasicLight::GPE_SceneBasicLight(pawgui::widget_resource_container *pFol
 
 GPE_SceneBasicLight::~GPE_SceneBasicLight()
 {
-    if( lightIsActive!=NULL )
+    if( light_is_active!=NULL )
     {
-        delete lightIsActive;
-        lightIsActive = NULL;
+        delete light_is_active;
+        light_is_active = NULL;
     }
 }
 
@@ -68,7 +68,7 @@ void GPE_SceneBasicLight::add_typed_elements()
 {
     if( panel_inspector!=NULL )
     {
-        panel_inspector->add_gui_element( lightIsActive, true );
+        panel_inspector->add_gui_element( light_is_active, true );
     }
 }
 
@@ -94,19 +94,19 @@ bool GPE_SceneBasicLight::save_branch_data(std::ofstream * fileTarget, int neste
     {
         std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"   GPE_AmbientLight=";
-        if( xPosField!=NULL)
+        if( x_posField!=NULL)
         {
-            xPosField->make_valid_number(0);
-            *fileTarget <<  xPosField->get_held_number() << ",";
+            x_posField->make_valid_number(0);
+            *fileTarget <<  x_posField->get_held_number() << ",";
         }
         else
         {
             *fileTarget << "-0,";
         }
-        if( yPosField!=NULL)
+        if( y_posField!=NULL)
         {
-            yPosField->make_valid_number(0);
-            *fileTarget << yPosField->get_held_number() << ",";
+            y_posField->make_valid_number(0);
+            *fileTarget << y_posField->get_held_number() << ",";
         }
         else
         {
@@ -128,9 +128,9 @@ bool GPE_SceneBasicLight::save_branch_data(std::ofstream * fileTarget, int neste
         {
             *fileTarget << "255,";
         }
-        if( lightIsActive!=NULL)
+        if( light_is_active!=NULL)
         {
-            *fileTarget << lightIsActive->is_clicked() << ",";
+            *fileTarget << light_is_active->is_clicked() << ",";
         }
         else
         {

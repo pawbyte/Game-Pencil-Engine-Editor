@@ -3,10 +3,10 @@ project_properties.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -68,10 +68,10 @@ projectPropertiesResource::projectPropertiesResource(pawgui::widget_resource_con
     unselectAllCollisionBoxes = new pawgui::widget_button_label( "Unselect All Layers","Unselect All Layers");
     resourceFileName = "";
     resource_name = "Project Properties";
-    commonButtonAlignment = 1;
+    common_buttonAlignment = 1;
     projectParentFolder = pFolder;
 
-    //Settings Tab
+    //_settings Tab
 
     //Project language
 
@@ -107,7 +107,7 @@ projectPropertiesResource::projectPropertiesResource(pawgui::widget_resource_con
     projectIconImg = new pawgui::widget_label_image("roject_icon_image","" );
     projectIconImg->set_width(128);
     projectIconImg->set_height(128);
-    browseIconButton = new pawgui::widget_button_label( "Browse..","Find image icon");
+    browseIcon_button = new pawgui::widget_button_label( "Browse..","Find image icon");
 
     projectScreenWidthField = new pawgui::widget_input_number("Default: 640",true,64,4096);
     projectScreenWidthField->set_label("Screen Width");
@@ -125,25 +125,25 @@ projectPropertiesResource::projectPropertiesResource(pawgui::widget_resource_con
     projectGameSubVersionField->set_label("Game Sub-Version Number");
     projectGameSubVersionField->set_number(0);
 
-    projectScaleSettings = new pawgui::widget_radio_button_controller("Scale Settings", true,1);
-    projectScaleSettings->add_opton("Do Not Scale");
-    projectScaleSettings->add_opton("Half-Size[50%]");
-    projectScaleSettings->add_opton("float-Size[200%]");
-    projectScaleSettings->add_opton("Keep Aspect Ratio[Recommended]");
-    projectScaleSettings->add_opton("Full Scale");
+    project_scale_settings = new pawgui::widget_radio_button_controller("_scale Settings", true,1);
+    project_scale_settings->add_opton("Do Not scale");
+    project_scale_settings->add_opton("Half-Size[50%]");
+    project_scale_settings->add_opton("float-Size[200%]");
+    project_scale_settings->add_opton("Keep Aspect Ratio[Recommended]");
+    project_scale_settings->add_opton("Full Scale");
 
-    projectSettingsFPSRateLabel = new pawgui::widget_label_text ("Frame Rate Cap","Sets the (max) framerate set for the game(Usually 30 or 60)");
-    projectSettingsFPSRate = new pawgui::widget_dropdown_menu( "FPS Cap",true);
-    projectSettingsFPSRate->add_menu_option("15 FPS","",15);
-    projectSettingsFPSRate->add_menu_option("20 FPS","",20);
-    projectSettingsFPSRate->add_menu_option("24 FPS","",24);
-    projectSettingsFPSRate->add_menu_option("25 FPS","",25);
-    projectSettingsFPSRate->add_menu_option("30 FPS","",30,true);
-    projectSettingsFPSRate->add_menu_option("60 FPS","",60);
-    projectSettingsFPSRate->add_menu_option("Uncapped","",-1);
+    project_settingsFPSRateLabel = new pawgui::widget_label_text ("Frame Rate Cap","Sets the (max) framerate set for the game(Usually 30 or 60)");
+    project_settingsFPSRate = new pawgui::widget_dropdown_menu( "FPS Cap",true);
+    project_settingsFPSRate->add_menu_option("15 FPS","",15);
+    project_settingsFPSRate->add_menu_option("20 FPS","",20);
+    project_settingsFPSRate->add_menu_option("24 FPS","",24);
+    project_settingsFPSRate->add_menu_option("25 FPS","",25);
+    project_settingsFPSRate->add_menu_option("30 FPS","",30,true);
+    project_settingsFPSRate->add_menu_option("60 FPS","",60);
+    project_settingsFPSRate->add_menu_option("Uncapped","",-1);
 
     //Publisher Section
-    sectionTitleGameSettings = new pawgui::widget_label_title("Game Settings","Game Settings");
+    sectionTitleGame_settings = new pawgui::widget_label_title("Game Settings","Game Settings");
     sectionTitlePublisher = new pawgui::widget_label_title("Publishing","Publishing");
     projectGameTitleField = new pawgui::widget_input_text();
     projectGameTitleField->set_label("Game Title");
@@ -220,35 +220,35 @@ projectPropertiesResource::projectPropertiesResource(pawgui::widget_resource_con
     projectGameNotes = new pawgui::widget_text_editor();
     projectGameNotes->isCodeEditor = false;
 
-    //Export Settings Tab
-    buildToSourceButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file-code-o.png","Build to Source","Packages code in preparation for building");
+    //Export _settings Tab
+    buildToSource_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file-code-o.png","Build to Source","Packages code in preparation for building");
     buildPlatformdropdown = new pawgui::widget_dropdown_menu("Source Build Method", false);
     buildPlatformRefreshLabel = new pawgui::widget_text_url("Refresh methods","Click to re-load build platforms","#");
-    exportPushButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cog.png","Build Project","Recompiles Project");
-    exportAndPlayPushButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Build & Play Project","Recompiles Project & Runs it");
+    exportPush_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cog.png","Build Project","Recompiles Project");
+    exportAndPlayPush_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Build & Play Project","Recompiles Project & Runs it");
 
-    cleanBuildFolderPushButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Clean Build Folders","Removes files from the build folder matching the criteria above.");
-    cleanBuildAllFolderPushButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Clean ALL Build Folders","Removes files from all build folders of this project.");
-    playProgramPushButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Play Game","Runs game matching the criteria above");
+    cleanBuildFolderPush_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Clean Build Folders","Removes files from the build folder matching the criteria above.");
+    cleanBuildAllFolderPush_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Clean ALL Build Folders","Removes files from all build folders of this project.");
+    playProgramPush_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Play Game","Runs game matching the criteria above");
 
-    projectSettingsBar = new pawgui::widget_selectbox( "Settings");
-    projectSettingsBar->set_width(160);
-    projectSettingsBar->set_option_height(32);
+    project_settingsBar = new pawgui::widget_selectbox( "Settings");
+    project_settingsBar->set_width(160);
+    project_settingsBar->set_option_height(32);
 
-    projectSettingsBar->add_option("General",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),NULL,2, false, false);
-    projectSettingsBar->add_option("Platforms",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/umbrella.png"),NULL,2, false, false);
-    projectSettingsBar->add_option("Layers",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/map.png"),NULL,2, false, false);
-    projectSettingsBar->add_option("Macros",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/tags.png"),NULL,2, false, false);
-    projectSettingsBar->add_option("Notes",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/sticky-note.png"),NULL,2, false, false);
+    project_settingsBar->add_option("General",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),NULL,2, false, false);
+    project_settingsBar->add_option("Platforms",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/umbrella.png"),NULL,2, false, false);
+    project_settingsBar->add_option("Layers",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/map.png"),NULL,2, false, false);
+    project_settingsBar->add_option("Macros",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/tags.png"),NULL,2, false, false);
+    project_settingsBar->add_option("Notes",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/sticky-note.png"),NULL,2, false, false);
 
-    exportSettingsBar = new pawgui::widget_selectbox( "Platforms");
-    exportSettingsBar->set_width(160);
-    exportSettingsBar->set_option_height(32);
-    exportSettingsBar->add_option("Windows", gpe::system_os_windows,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/windows.png"));
-    exportSettingsBar->add_option("Mac", gpe::system_os_mac,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/apple.png"));
-    exportSettingsBar->add_option("Linux", gpe::system_os_linux,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/linux.png"));
-    exportSettingsBar->add_option("HTML5", gpe::system_os_html5,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/html5.png"));
-    exportSettingsBar->add_option("Other", gpe::system_os_html5,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/question-circle.png"));
+    export_settingsBar = new pawgui::widget_selectbox( "Platforms");
+    export_settingsBar->set_width(160);
+    export_settingsBar->set_option_height(32);
+    export_settingsBar->add_option("Windows", gpe::system_os_windows,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/windows.png"));
+    export_settingsBar->add_option("Mac", gpe::system_os_mac,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/apple.png"));
+    export_settingsBar->add_option("Linux", gpe::system_os_linux,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/linux.png"));
+    export_settingsBar->add_option("HTML5", gpe::system_os_html5,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/html5.png"));
+    export_settingsBar->add_option("Other", gpe::system_os_html5,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/question-circle.png"));
 
 
     otherPlatformLabel = new pawgui::widget_label_text ("Have another platform to extend GPE to?","Follow the instructions below:" );
@@ -259,7 +259,7 @@ projectPropertiesResource::projectPropertiesResource(pawgui::widget_resource_con
 
     exportWindowsLabel = new pawgui::widget_label_title("Windows Settings","Windows  Export Settings");
     exportOSXLabel = new pawgui::widget_label_title("Mac Settings","Mac Export Settings");
-    exportLinuxLabel = new pawgui::widget_label_title("Linux Settings","Linux Export Settingsation");
+    exportLinuxLabel = new pawgui::widget_label_title("Linux Settings","Linux Export Settings");
 
     win64BitCheckbox = new pawgui::widget_checkbox("64 Bit Build","Leave unchecked to use 32-bit build", true);
     osx64BitCheckbox = new pawgui::widget_checkbox("64 Bit Build","Leave unchecked to use 32-bit build", true);
@@ -322,28 +322,28 @@ projectPropertiesResource::projectPropertiesResource(pawgui::widget_resource_con
     gpe::texture_base * windowsLogoTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/windows.png");
     gpe::texture_base * html5LogoTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/html5.png");
 
-    //HTML5 Settings
+    //HTML5 _settings
     warnOnCloseCheckbox = new pawgui::widget_checkbox("Warn on Close","If checked warn user on close",true);
 
-    desktopSettingsTabBar = new pawgui::widget_tabbar();
-    desktopSettingsTabBar->set_coords(16, 16);
-    desktopSettingsTabBar->add_new_tab("Windows");
-    desktopSettingsTabBar->add_new_tab("OSX");
-    desktopSettingsTabBar->add_new_tab("Linux");
-    desktopSettingsTabBar->open_tab(0);
+    desktop_settingsTabBar = new pawgui::widget_tabbar();
+    desktop_settingsTabBar->set_coords(16, 16);
+    desktop_settingsTabBar->add_new_tab("Windows");
+    desktop_settingsTabBar->add_new_tab("OSX");
+    desktop_settingsTabBar->add_new_tab("Linux");
+    desktop_settingsTabBar->open_tab(0);
 
     renameBox->disable_self();
-    loadResourceButton->disable_self();
-    //confirmResourceButton->disable_self();
-    //cancelResourceButton->disable_self();
-    saveResourceButton->disable_self();
+    loadResource_button->disable_self();
+    //confirmResource_button->disable_self();
+    //cancelResource_button->disable_self();
+    saveResource_button->disable_self();
     resourcePostProcessed = false;
-    projectSettingsList = new pawgui::widget_panel_list();
-    projectSettingsList->panelAlignType = pawgui::panel_align_full;
+    project_settingsList = new pawgui::widget_panel_list();
+    project_settingsList->panelAlignType = pawgui::panel_align_full;
 
     collisionLayerMatrixList = new pawgui::widget_panel_list();
-    projectSettingsList->barXPadding = pawgui::padding_default;
-    projectSettingsList->barXMargin = pawgui::padding_default;
+    project_settingsList->barXPadding = pawgui::padding_default;
+    project_settingsList->barXMargin = pawgui::padding_default;
     subViewedSpace.x = 0;
     subViewedSpace.y = 0;
     subViewedSpace.w = gpe::screen_width;
@@ -378,10 +378,10 @@ projectPropertiesResource::~projectPropertiesResource()
     }
     gpe::error_log->report("Project Propertries Deletion #2");
     //Publisher Tab
-    if( sectionTitleGameSettings!=NULL)
+    if( sectionTitleGame_settings!=NULL)
     {
-        delete sectionTitleGameSettings;
-        sectionTitleGameSettings = NULL;
+        delete sectionTitleGame_settings;
+        sectionTitleGame_settings = NULL;
     }
     if( sectionTitlePublisher!=NULL)
     {
@@ -415,7 +415,7 @@ projectPropertiesResource::~projectPropertiesResource()
         delete projectGameDeveloperField;
         projectGameDeveloperField = NULL;
     }
-    //Settings Tab
+    //_settings Tab
     if( projectScreenWidthField!=NULL)
     {
         delete projectScreenWidthField;
@@ -437,20 +437,20 @@ projectPropertiesResource::~projectPropertiesResource()
         projectGameSubVersionField = NULL;
     }
     gpe::error_log->report("Project Propertries Deletion #4");
-    if( projectScaleSettings!=NULL)
+    if( project_scale_settings!=NULL)
     {
-        delete projectScaleSettings;
-        projectScaleSettings = NULL;
+        delete project_scale_settings;
+        project_scale_settings = NULL;
     }
-    if( projectSettingsFPSRateLabel!=NULL)
+    if( project_settingsFPSRateLabel!=NULL)
     {
-        delete projectSettingsFPSRateLabel;
-        projectSettingsFPSRateLabel = NULL;
+        delete project_settingsFPSRateLabel;
+        project_settingsFPSRateLabel = NULL;
     }
-    if( projectSettingsFPSRate!=NULL)
+    if( project_settingsFPSRate!=NULL)
     {
-        delete projectSettingsFPSRate;
-        projectSettingsFPSRate = NULL;
+        delete project_settingsFPSRate;
+        project_settingsFPSRate = NULL;
     }
     if( projectGameCopyrightField!=NULL)
     {
@@ -565,10 +565,10 @@ projectPropertiesResource::~projectPropertiesResource()
     gpe::error_log->report("Project Propertries Deletion #8");
 
     //Other variables
-    if( projectSettingsList!=NULL)
+    if( project_settingsList!=NULL)
     {
-        delete projectSettingsList;
-        projectSettingsList = NULL;
+        delete project_settingsList;
+        project_settingsList = NULL;
     }
 }
 
@@ -615,7 +615,7 @@ bool projectPropertiesResource::export_and_play_native(bool launchProgram)
         else if( pawgui::main_tab_resource_bar!=NULL )
         {
             pawgui::main_tab_resource_bar->add_new_tab(this );
-            projectSettingsBar->set_selected_option("Platforms");
+            project_settingsBar->set_selected_option("Platforms");
         }
     }
     return buildAndRunSuccessful;
@@ -628,7 +628,7 @@ void projectPropertiesResource::integrate_into_syntax()
     {
         std::string currentLineToRead = "";
         std::string foundVariable = "";
-        std::string variableString = "";
+        std::string variablestring = "";
         bool isInBlockCommentMode = false;
         bool isInfloatQuoteMode = false;
         bool isInSingleQuoteMode = false;
@@ -725,17 +725,17 @@ void projectPropertiesResource::integrate_into_syntax()
                                     if( varDeclarationPos!=(int)std::string::npos)
                                     {
                                         variableEndPos = 0;
-                                        variableString = stg_ex::get_substring(currentLineToRead,varDeclarationPos+4);
-                                        variableString = stg_ex::string_replace_all(variableString," ","");
-                                        if( (int)variableString.size() > 3)
+                                        variablestring = stg_ex::get_substring(currentLineToRead,varDeclarationPos+4);
+                                        variablestring = stg_ex::string_replace_all(variablestring," ","");
+                                        if( (int)variablestring.size() > 3)
                                         {
-                                            commaPos = variableString.find(",",0);
+                                            commaPos = variablestring.find(",",0);
                                             lastCommaPos = 0;
                                             if( commaPos > 0)
                                             {
                                                 while( commaPos >=0)
                                                 {
-                                                    foundVariable = stg_ex::get_substring(variableString,lastCommaPos, commaPos);
+                                                    foundVariable = stg_ex::get_substring(variablestring,lastCommaPos, commaPos);
                                                     if( (int)foundVariable.size() > 3 )
                                                     {
                                                         while( stg_ex::char_is_alnum(foundVariable[variableEndPos],false,true) )
@@ -753,7 +753,7 @@ void projectPropertiesResource::integrate_into_syntax()
                                                         commaPos = std::max(commaPos,lineParseXCursorPos);
                                                         if( commaPos > 0)
                                                         {
-                                                            commaPos = variableString.find(",",commaPos);
+                                                            commaPos = variablestring.find(",",commaPos);
                                                             variableEndPos = 0;
                                                             lineParseXCursorPos = commaPos;
                                                             if( commaPos > 0)
@@ -762,12 +762,12 @@ void projectPropertiesResource::integrate_into_syntax()
                                                             }
                                                             else
                                                             {
-                                                                commaPos = (int)variableString.size();
+                                                                commaPos = (int)variablestring.size();
                                                             }
                                                         }
                                                         else
                                                         {
-                                                            commaPos = (int)variableString.size();
+                                                            commaPos = (int)variablestring.size();
                                                             lineParseXCursorPos = currentLineSize;
                                                         }
                                                     }
@@ -780,12 +780,12 @@ void projectPropertiesResource::integrate_into_syntax()
                                             }
                                             else
                                             {
-                                                while( stg_ex::char_is_alnum(variableString[variableEndPos],false,true) )
+                                                while( stg_ex::char_is_alnum(variablestring[variableEndPos],false,true) )
                                                 {
                                                     variableEndPos++;
                                                     lineParseXCursorPos++;
                                                 }
-                                                foundVariable = stg_ex::get_substring(variableString,0,variableEndPos);
+                                                foundVariable = stg_ex::get_substring(variablestring,0,variableEndPos);
                                                 if( (int)foundVariable.size() > 0 )
                                                 {
                                                     current_project->add_project_keyword(foundVariable,"Defined in Project Marcos",-1,"User Global");
@@ -864,12 +864,12 @@ void projectPropertiesResource::open_code(int lineNumb, int colNumb, std::string
         if( codeTitle == "Macros")
         {
             foundTextArea = projectGameMacros;
-            projectSettingsBar->set_selected_option("Macros");
+            project_settingsBar->set_selected_option("Macros");
         }
         else if( codeTitle == "Notes")
         {
             foundTextArea = projectGameNotes;
-            projectSettingsBar->set_selected_option("Notes");
+            project_settingsBar->set_selected_option("Notes");
 
         }
 
@@ -891,17 +891,17 @@ void projectPropertiesResource::prerender_self(  )
 
 void projectPropertiesResource::load_resource(std::string file_path)
 {
-    if( resourcePostProcessed ==false  || sff_ex::file_exists(file_path) )
+    if( resourcePostProcessed ==false  || gpe::main_file_url_manager->file_exists(file_path) )
     {
-        if( pawgui::main_loader_display != NULL )
+        if( main_gpe_splash_page != NULL )
         {
-            pawgui::main_loader_display->update_submessages( "Processing Project Properties","Please wait..." );
+            main_gpe_splash_page->update_submessages( "Processing Project Properties","Please wait..." );
         }
 
         std::string otherColContainerName = "";
 
         std::string newFileIn ="";
-        if( sff_ex::file_exists(file_path) )
+        if( gpe::main_file_url_manager->file_exists(file_path) )
         {
             newFileIn = file_path;
         }
@@ -914,9 +914,9 @@ void projectPropertiesResource::load_resource(std::string file_path)
 
         int equalPos = 0;
         std::string firstChar="";
-        std::string keyString="";
-        std::string valString="";
-        std::string subValString="";
+        std::string key_string="";
+        std::string valstring="";
+        std::string subValstring="";
         std::string currLine="";
         std::string currLineToBeProcessed;
         std::string sprDataStr;
@@ -949,11 +949,11 @@ void projectPropertiesResource::load_resource(std::string file_path)
                                 if(equalPos!=(int)std::string::npos)
                                 {
                                     //if the equalPos is present, then parse on through and carryon
-                                    keyString = currLineToBeProcessed.substr(0,equalPos);
-                                    valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                                    if( keyString=="Version")
+                                    key_string = currLineToBeProcessed.substr(0,equalPos);
+                                    valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                    if( key_string=="Version")
                                     {
-                                        foundFileVersion = stg_ex::string_to_float(valString);
+                                        foundFileVersion = stg_ex::string_to_float(valstring);
                                     }
                                 }
                             }
@@ -968,33 +968,33 @@ void projectPropertiesResource::load_resource(std::string file_path)
                             if(equalPos!=(int)std::string::npos)
                             {
                                 //if the equalPos is present, then parse on through and carryon
-                                keyString = currLineToBeProcessed.substr(0,equalPos);
-                                valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                key_string = currLineToBeProcessed.substr(0,equalPos);
+                                valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
-                                if( keyString=="ScreenWidth")
+                                if( key_string=="ScreenWidth")
                                 {
-                                    projectScreenWidthField->set_number( std::max(160, stg_ex::string_to_int(valString) )  );
+                                    projectScreenWidthField->set_number( std::max(160, stg_ex::string_to_int(valstring) )  );
                                 }
-                                else if( keyString=="ScreenHeight")
+                                else if( key_string=="ScreenHeight")
                                 {
-                                    projectScreenHeightField->set_number( std::max(120, stg_ex::string_to_int(valString) ) );
+                                    projectScreenHeightField->set_number( std::max(120, stg_ex::string_to_int(valstring) ) );
                                 }
-                                else if( keyString=="ProjectVersion")
+                                else if( key_string=="ProjectVersion")
                                 {
-                                    projectGameVersionField->set_string(valString);
+                                    projectGameVersionField->set_string(valstring);
                                 }
-                                else if( keyString=="ProjectSubVersion")
+                                else if( key_string=="ProjectSubVersion")
                                 {
-                                    projectGameSubVersionField->set_string(valString);
+                                    projectGameSubVersionField->set_string(valstring);
                                 }
-                                else if( keyString=="ProjectIcon")
+                                else if( key_string=="ProjectIcon")
                                 {
-                                    iconFileName = stg_ex::file_to_dir(parentProjectName)+"/"+valString;
+                                    iconFileName = stg_ex::file_to_dir(parentProjectName)+"/"+valstring;
                                     if( current_project!=NULL )
                                     {
                                         current_project->projectIconName =  stg_ex::get_local_from_global_file( iconFileName);
                                     }
-                                    if( sff_ex::file_exists(iconFileName) && stg_ex::file_is_image(iconFileName) )
+                                    if( gpe::main_file_url_manager->file_exists(iconFileName) && stg_ex::file_is_image(iconFileName) )
                                     {
                                         if( projectIconImg!=NULL)
                                         {
@@ -1007,95 +1007,95 @@ void projectPropertiesResource::load_resource(std::string file_path)
                                         iconFileName = "";
                                     }
                                 }
-                                else if( keyString=="ProjectScaleSettings")
+                                else if( key_string=="Project_scaleSettings")
                                 {
-                                    projectScaleSettings->set_selection( stg_ex::string_to_int(valString) );
+                                    project_scale_settings->set_selection( stg_ex::string_to_int(valstring) );
                                 }
-                                else if( keyString=="ProjectFPSCap")
+                                else if( key_string=="ProjectFPSCap")
                                 {
-                                    projectSettingsFPSRate->set_id( stg_ex::string_to_int(valString) );
+                                    project_settingsFPSRate->set_id( stg_ex::string_to_int(valstring) );
                                 }
-                                else if( keyString=="ProjectTitle")
+                                else if( key_string=="ProjectTitle")
                                 {
-                                    projectGameTitleField->set_string(valString);
+                                    projectGameTitleField->set_string(valstring);
                                 }
-                                else if( keyString=="ProjectShortTitle")
+                                else if( key_string=="ProjectShortTitle")
                                 {
-                                    projectGameShortTitleField->set_string(valString);
+                                    projectGameShortTitleField->set_string(valstring);
                                 }
-                                else if( keyString=="ProjectDate")
+                                else if( key_string=="ProjectDate")
                                 {
-                                    projectGameDateField->set_string(valString);
+                                    projectGameDateField->set_string(valstring);
                                 }
-                                else if( keyString=="ProjectDescription")
+                                else if( key_string=="ProjectDescription")
                                 {
-                                    projectGameDescriptionField->set_string(valString);
+                                    projectGameDescriptionField->set_string(valstring);
                                 }
-                                else if( keyString=="ProjectLanguage")
+                                else if( key_string=="ProjectLanguage")
                                 {
-                                    projectLanguage->set_option_subvalue(valString);
+                                    projectLanguage->set_option_subvalue(valstring);
                                 }
                                 //
-                                else if( keyString=="ProjectPublisher")
+                                else if( key_string=="ProjectPublisher")
                                 {
-                                    projectGamePublisherField->set_string(valString);
+                                    projectGamePublisherField->set_string(valstring);
                                 }
-                                else if( keyString=="ProjectDeveloper")
+                                else if( key_string=="ProjectDeveloper")
                                 {
-                                    projectGameDeveloperField->set_string(valString);
+                                    projectGameDeveloperField->set_string(valstring);
                                 }
-                                else if( keyString=="ProjectCopyright")
+                                else if( key_string=="ProjectCopyright")
                                 {
-                                    projectGameCopyrightField->set_string(valString);
+                                    projectGameCopyrightField->set_string(valstring);
                                 }
-                                else if( keyString=="ProjectWebsite")
+                                else if( key_string=="ProjectWebsite")
                                 {
-                                    projectGameWebsiteField->set_string(valString);
+                                    projectGameWebsiteField->set_string(valstring);
                                 }
-                                else if( keyString=="ProjectEmail")
+                                else if( key_string=="ProjectEmail")
                                 {
-                                    projectGameEmailField->set_string(valString);
+                                    projectGameEmailField->set_string(valstring);
                                 }
 
-                                else if( keyString=="BorderColor")
+                                else if( key_string=="BorderColor")
                                 {
-                                    projectBorderColor->set_color_from_rgb(valString);
+                                    projectBorderColor->set_color_from_rgb(valstring);
                                 }
-                                else if( keyString=="GameBackgroundColor")
+                                else if( key_string=="GameBackgroundColor")
                                 {
-                                    projectGameBackgroundColor->set_color_from_rgb(valString);
+                                    projectGameBackgroundColor->set_color_from_rgb(valstring);
                                 }
-                                else if( keyString=="WebsiteBackgroundColor")
+                                else if( key_string=="WebsiteBackgroundColor")
                                 {
-                                    projectWebsiteBackgroundColor->set_color_from_rgb(valString);
+                                    projectWebsiteBackgroundColor->set_color_from_rgb(valstring);
                                 }
-                                else if( keyString=="HeaderColor")
+                                else if( key_string=="HeaderColor")
                                 {
-                                    projectTextHeaderColor->set_color_from_rgb(valString);
+                                    projectTextHeaderColor->set_color_from_rgb(valstring);
                                 }
-                                else if( keyString=="ParagraphColor")
+                                else if( key_string=="ParagraphColor")
                                 {
-                                    projectTextParagraphColor->set_color_from_rgb(valString);
+                                    projectTextParagraphColor->set_color_from_rgb(valstring);
                                 }
-                                else if( keyString=="LinkColor")
+                                else if( key_string=="LinkColor")
                                 {
-                                    projectTextLinkColor->set_color_from_rgb(valString);
+                                    projectTextLinkColor->set_color_from_rgb(valstring);
                                 }
-                                else if( keyString=="LinkActiveColor")
+                                else if( key_string=="LinkActiveColor")
                                 {
-                                    projectTextLinkActiveColor->set_color_from_rgb(valString);
+                                    projectTextLinkActiveColor->set_color_from_rgb(valstring);
                                 }
-                                else if( keyString=="LinkHoverColor")
+                                else if( key_string=="LinkHoverColor")
                                 {
-                                    projectTextLinkHoverColor->set_color_from_rgb(valString);
+                                    projectTextLinkHoverColor->set_color_from_rgb(valstring);
                                 }
-                                else if( keyString=="LinkVisitedColor")
+                                else if( key_string=="LinkVisitedColor")
                                 {
-                                    projectTextLinkVisitedColor->set_color_from_rgb(valString);
+                                    projectTextLinkVisitedColor->set_color_from_rgb(valstring);
                                 }
-                                else if( keyString=="HTML5WarnOnClose")
+                                else if( key_string=="HTML5WarnOnClose")
                                 {
-                                    warnOnCloseCheckbox->set_checked(stg_ex::string_to_bool(valString) );
+                                    warnOnCloseCheckbox->set_checked(stg_ex::string_to_bool(valstring) );
                                 }
                             }
                         }
@@ -1131,17 +1131,17 @@ void projectPropertiesResource::load_resource(std::string file_path)
                     if(equalPos!=(int)std::string::npos)
                     {
                         //if the equalPos is present, then parse on through and carryon
-                        keyString = currLineToBeProcessed.substr(0,equalPos);
-                        valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                        key_string = currLineToBeProcessed.substr(0,equalPos);
+                        valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
                         for(  iLayerRow = 0; iLayerRow < 12; iLayerRow++)
                         {
-                            if( keyString=="CollisionLayer["+ stg_ex::int_to_string(iLayerRow)+"]")
+                            if( key_string=="CollisionLayer["+ stg_ex::int_to_string(iLayerRow)+"]")
                             {
                                 for(  jLayerCol = 0; jLayerCol < 12-iLayerRow; jLayerCol++)
                                 {
-                                    valString = stg_ex::split_first_int(valString,',');
-                                    projectCollisionLayerMatrix[iLayerRow*12+jLayerCol]->set_checked( stg_ex::string_to_bool(valString) );
+                                    valstring = stg_ex::split_first_int(valstring,',');
+                                    projectCollisionLayerMatrix[iLayerRow*12+jLayerCol]->set_checked( stg_ex::string_to_bool(valstring) );
                                 }
                             }
                         }
@@ -1153,7 +1153,7 @@ void projectPropertiesResource::load_resource(std::string file_path)
             {
                 for(  jLayerCol = 0; jLayerCol < 32-iLayerRow; jLayerCol++)
                 {
-                    valString = stg_ex::split_first_int(valString,',');
+                    valstring = stg_ex::split_first_int(valstring,',');
                     projectCollisionLayerMatrix[iLayerRow*32+jLayerCol]->descriptionText = "["+current_project->projectLayerNames[iLayerRow]+" * "+current_project->projectLayerNames[jLayerCol]+"]";
                 }
             }
@@ -1183,21 +1183,21 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
         }
     }
 
-    if ( exportSettingsBar!=NULL )
+    if ( export_settingsBar!=NULL )
     {
-        int html5OptionId = exportSettingsBar->get_option_id("HTML5");
+        int html5OptionId = export_settingsBar->get_option_id("HTML5");
 
         //Add/Remove the HTML5 option depending on current project language
         if( isJSProject )
         {
             if( html5OptionId < 0)
             {
-                exportSettingsBar->add_option("HTML5", gpe::system_os_html5,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/html5.png"));
+                export_settingsBar->add_option("HTML5", gpe::system_os_html5,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/html5.png"));
             }
         }
         else if(  html5OptionId > 0 )
         {
-            exportSettingsBar->remove_option( html5OptionId );
+            export_settingsBar->remove_option( html5OptionId );
         }
     }
 
@@ -1205,94 +1205,94 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
     {
         collisionLayerMatrixList->clear_list();
     }
-    if( cam!=NULL && projectSettingsList!=NULL && projectSettingsBar!=NULL && view_space!=NULL)
+    if( cam!=NULL && project_settingsList!=NULL && project_settingsBar!=NULL && view_space!=NULL)
     {
-        std::string nExportOptionName = exportSettingsBar->get_selected_name();
+        std::string nExportOptionName = export_settingsBar->get_selected_name();
 
-        std::string nExportDesktopOS = desktopSettingsTabBar->get_selected_name();
+        std::string nExportDesktopOS = desktop_settingsTabBar->get_selected_name();
 
-        int prevTab = projectSettingsBar->get_selection();
-        if( panel_main_area!=NULL )
+        int prevTab = project_settingsBar->get_selection();
+        if( panel_main_editor!=NULL )
         {
             subViewedSpace.x = 0;
             subViewedSpace.y = 0;
             subViewedSpace.w = view_space->w;
             subViewedSpace.h = view_space->h;
-            panel_main_area->add_gui_element_fullsize( projectSettingsBar );
-            panel_main_area->process_self();
-            exportSettingsBar->set_coords( 0, 0 );
+            panel_main_editor->add_gui_element_fullsize( project_settingsBar );
+            panel_main_editor->process_self();
+            export_settingsBar->set_coords( 0, 0 );
 
         }
         else
         {
-            projectSettingsBar->set_coords(0, 0 );
-            projectSettingsBar->set_height( view_space->h );
-            projectSettingsBar->process_self( view_space, cam );
-            subViewedSpace.x = projectSettingsBar->get_x2();
+            project_settingsBar->set_coords(0, 0 );
+            project_settingsBar->set_height( view_space->h );
+            project_settingsBar->process_self( view_space, cam );
+            subViewedSpace.x = project_settingsBar->get_x2();
             subViewedSpace.y = 0;
-            subViewedSpace.w = view_space->w - projectSettingsBar->get_width();
+            subViewedSpace.w = view_space->w - project_settingsBar->get_width();
             subViewedSpace.h = view_space->h;
-            exportSettingsBar->set_coords(projectSettingsBar->get_x2(), 0 );
+            export_settingsBar->set_coords(project_settingsBar->get_x2(), 0 );
 
         }
 
-        if( prevTab!= projectSettingsBar->get_selection() )
+        if( prevTab!= project_settingsBar->get_selection() )
         {
-            projectSettingsList->reset_self();
+            project_settingsList->reset_self();
             gpe::input->reset_all_input();
             return;
         }
-        projectSettingsList->clear_list();
-        projectSettingsList->set_coords( subViewedSpace.x, subViewedSpace.y);
-        projectSettingsList->set_width(subViewedSpace.w);
-        projectSettingsList->set_height(subViewedSpace.h );
-        projectSettingsList->barXPadding = pawgui::padding_default;
-        projectSettingsList->barYPadding = pawgui::padding_default;
-        projectSettingsList->barXMargin = pawgui::padding_default;
-        projectSettingsList->barYMargin = pawgui::padding_default;
+        project_settingsList->clear_list();
+        project_settingsList->set_coords( subViewedSpace.x, subViewedSpace.y);
+        project_settingsList->set_width(subViewedSpace.w);
+        project_settingsList->set_height(subViewedSpace.h );
+        project_settingsList->barXPadding = pawgui::padding_default;
+        project_settingsList->barYPadding = pawgui::padding_default;
+        project_settingsList->barXMargin = pawgui::padding_default;
+        project_settingsList->barYMargin = pawgui::padding_default;
 
-        if( projectSettingsBar->get_selected_name()=="General" || projectSettingsBar->get_selected_name()=="Settings")
+        if( project_settingsBar->get_selected_name()=="General" || project_settingsBar->get_selected_name()=="Settings")
         {
-            projectSettingsList->add_gui_element(sectionTitleGameSettings,true);
-            projectSettingsList->add_gui_element(projectScreenWidthField,true);
-            projectSettingsList->add_gui_element(projectScreenHeightField,true);
-            projectSettingsList->add_gui_element(projectGameVersionField,true);
-            projectSettingsList->add_gui_element(projectGameSubVersionField,true);
+            project_settingsList->add_gui_element(sectionTitleGame_settings,true);
+            project_settingsList->add_gui_element(projectScreenWidthField,true);
+            project_settingsList->add_gui_element(projectScreenHeightField,true);
+            project_settingsList->add_gui_element(projectGameVersionField,true);
+            project_settingsList->add_gui_element(projectGameSubVersionField,true);
 
-            projectSettingsList->add_gui_element(projectLanguageLabel,true);
-            projectSettingsList->add_gui_element(projectLanguage,true);
+            project_settingsList->add_gui_element(projectLanguageLabel,true);
+            project_settingsList->add_gui_element(projectLanguage,true);
 
-            projectSettingsList->add_gui_element(projectIconLabel,true);
-            projectSettingsList->add_gui_element(browseIconButton,true);
-            projectSettingsList->add_gui_element(projectIconImg,true);
+            project_settingsList->add_gui_element(projectIconLabel,true);
+            project_settingsList->add_gui_element(browseIcon_button,true);
+            project_settingsList->add_gui_element(projectIconImg,true);
 
-            projectSettingsList->add_gui_element(projectScaleSettings,true);
-            projectSettingsList->add_gui_element(projectSettingsFPSRateLabel,true);
-            projectSettingsList->add_gui_element(projectSettingsFPSRate,true);
+            project_settingsList->add_gui_element(project_scale_settings,true);
+            project_settingsList->add_gui_element(project_settingsFPSRateLabel,true);
+            project_settingsList->add_gui_element(project_settingsFPSRate,true);
 
-            projectSettingsList->add_gui_element(sectionTitlePublisher,true);
-            projectSettingsList->add_gui_element(projectGameTitleField,true);
-            projectSettingsList->add_gui_element(projectGameShortTitleField,true);
-            projectSettingsList->add_gui_element(projectGamePublisherField,true);
-            projectSettingsList->add_gui_element(projectGameDeveloperField,true);
-            projectSettingsList->add_gui_element(projectGameDescriptionField,true);
-            projectSettingsList->add_gui_element(projectGameCopyrightField,true);
-            projectSettingsList->add_gui_element(projectGameDateField,true);
-            projectSettingsList->add_gui_element(projectGameWebsiteField,true);
-            projectSettingsList->add_gui_element(projectGameEmailField,true);
-            projectSettingsList->add_gui_element(checkBoxShowPublisherInfo,true);
+            project_settingsList->add_gui_element(sectionTitlePublisher,true);
+            project_settingsList->add_gui_element(projectGameTitleField,true);
+            project_settingsList->add_gui_element(projectGameShortTitleField,true);
+            project_settingsList->add_gui_element(projectGamePublisherField,true);
+            project_settingsList->add_gui_element(projectGameDeveloperField,true);
+            project_settingsList->add_gui_element(projectGameDescriptionField,true);
+            project_settingsList->add_gui_element(projectGameCopyrightField,true);
+            project_settingsList->add_gui_element(projectGameDateField,true);
+            project_settingsList->add_gui_element(projectGameWebsiteField,true);
+            project_settingsList->add_gui_element(projectGameEmailField,true);
+            project_settingsList->add_gui_element(checkBoxShowPublisherInfo,true);
 
-            projectSettingsList->add_gui_element(confirmResourceButton,true);
-            projectSettingsList->process_self( view_space,cam);
+            project_settingsList->add_gui_element(confirmResource_button,true);
+            project_settingsList->process_self( view_space,cam);
 
-            if( browseIconButton->is_clicked() )
+            if( browseIcon_button->is_clicked() )
             {
                 if( (int)editor_gui_main->fileOpenProjectIconDir.size()==0 && current_project!=NULL )
                 {
                     editor_gui_main->fileOpenProjectIconDir = current_project->get_project_directory();
                 }
                 std::string newProjectIconName = pawgui::get_filename_open_from_popup("Find Project Icon","Image",editor_gui_main->fileOpenProjectIconDir );
-                if( sff_ex::file_exists(newProjectIconName ) )
+                if( gpe::main_file_url_manager->file_exists(newProjectIconName ) )
                 {
                     if( stg_ex::file_is_image(newProjectIconName) )
                     {
@@ -1304,58 +1304,58 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                         if( current_project!=NULL )
                         {
                             iconFileName = current_project->projectIconName = stg_ex::get_local_from_global_file(newProjectIconName );
-                            sff_ex::file_copy(newProjectIconName, current_project->get_project_directory()+"/"+current_project->projectIconName  );
+                            gpe::main_file_url_manager->file_copy(newProjectIconName, current_project->get_project_directory()+"/"+current_project->projectIconName  );
                         }
                     }
                 }
             }
         }
-        else if(projectSettingsBar->get_selected_name()=="Platforms")
+        else if(project_settingsBar->get_selected_name()=="Platforms")
         {
-            exportSettingsBar->set_height(subViewedSpace.h);
-            exportSettingsBar->process_self(view_space,cam);
-            subViewedSpace.x+= exportSettingsBar->get_width();
-            subViewedSpace.w-= exportSettingsBar->get_width();
-            projectSettingsList->set_coords( subViewedSpace.x, subViewedSpace.y );
-            projectSettingsList->set_width( subViewedSpace.w  );
-            projectSettingsList->set_height(subViewedSpace.h );
+            export_settingsBar->set_height(subViewedSpace.h);
+            export_settingsBar->process_self(view_space,cam);
+            subViewedSpace.x+= export_settingsBar->get_width();
+            subViewedSpace.w-= export_settingsBar->get_width();
+            project_settingsList->set_coords( subViewedSpace.x, subViewedSpace.y );
+            project_settingsList->set_width( subViewedSpace.w  );
+            project_settingsList->set_height(subViewedSpace.h );
             if( nExportOptionName=="HTML5" )
             {
-                projectSettingsList->add_gui_element(exportApplicationLabel,true);
-                projectSettingsList->add_gui_element(warnOnCloseCheckbox,true);
-                projectSettingsList->add_gui_element(html5DebugModeCheckbox,true);
+                project_settingsList->add_gui_element(exportApplicationLabel,true);
+                project_settingsList->add_gui_element(warnOnCloseCheckbox,true);
+                project_settingsList->add_gui_element(html5DebugModeCheckbox,true);
                 //Colors Section
-                projectSettingsList->add_gui_element(sectionWebColorsTitle,true);
-                projectSettingsList->add_gui_element(projectBorderColor,true);
-                projectSettingsList->add_gui_element(projectGameBackgroundColor,true);
+                project_settingsList->add_gui_element(sectionWebColorsTitle,true);
+                project_settingsList->add_gui_element(projectBorderColor,true);
+                project_settingsList->add_gui_element(projectGameBackgroundColor,true);
                 ///
-                projectSettingsList->add_gui_element(projectWebsiteBackgroundColor,true);
-                projectSettingsList->add_gui_element(projectTextHeaderColor,true);
-                projectSettingsList->add_gui_element(projectTextParagraphColor,true);
+                project_settingsList->add_gui_element(projectWebsiteBackgroundColor,true);
+                project_settingsList->add_gui_element(projectTextHeaderColor,true);
+                project_settingsList->add_gui_element(projectTextParagraphColor,true);
 
-                projectSettingsList->add_gui_element(projectTextLinkColor,true);
-                projectSettingsList->add_gui_element(projectTextLinkActiveColor,true);
-                projectSettingsList->add_gui_element(projectTextLinkHoverColor,true);
-                projectSettingsList->add_gui_element(projectTextLinkVisitedColor,true);
+                project_settingsList->add_gui_element(projectTextLinkColor,true);
+                project_settingsList->add_gui_element(projectTextLinkActiveColor,true);
+                project_settingsList->add_gui_element(projectTextLinkHoverColor,true);
+                project_settingsList->add_gui_element(projectTextLinkVisitedColor,true);
 
-                projectSettingsList->add_gui_element(exportPushButton,true);
-                projectSettingsList->add_gui_element(exportAndPlayPushButton,true );
-                projectSettingsList->add_gui_element(playProgramPushButton, true);
-                projectSettingsList->process_self( view_space,cam);
+                project_settingsList->add_gui_element(exportPush_button,true);
+                project_settingsList->add_gui_element(exportAndPlayPush_button,true );
+                project_settingsList->add_gui_element(playProgramPush_button, true);
+                project_settingsList->process_self( view_space,cam);
 
                 if( current_project!=NULL )
                 {
-                    if( exportPushButton->is_clicked() )
+                    if( exportPush_button->is_clicked() )
                     {
                         current_project->save_project();
                         current_project->export_project_html5("","",gpe::system_os_html5,true);
                     }
-                    else if( exportAndPlayPushButton->is_clicked() )
+                    else if( exportAndPlayPush_button->is_clicked() )
                     {
                         current_project->save_project();
                         current_project->export_project_html5("","",gpe::system_os_html5,true);
                     }
-                    else if( playProgramPushButton->is_clicked() )
+                    else if( playProgramPush_button->is_clicked() )
                     {
                         current_project->run_project("",gpe::system_os_html5);
                     }
@@ -1366,42 +1366,42 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                 int buildBits = 32;
                 if( nExportOptionName=="Windows" )
                 {
-                    projectSettingsList->add_gui_element(exportWindowsLabel,true);
-                    projectSettingsList->add_gui_element(win64BitCheckbox,true );
-                    projectSettingsList->add_gui_element(winDebugModeCheckbox, true);
+                    project_settingsList->add_gui_element(exportWindowsLabel,true);
+                    project_settingsList->add_gui_element(win64BitCheckbox,true );
+                    project_settingsList->add_gui_element(winDebugModeCheckbox, true);
                     if( isJSProject )
                     {
-                        projectSettingsList->add_gui_element(windowsNativeBuildTypeOptions, true);
+                        project_settingsList->add_gui_element(windowsNativeBuildTypeOptions, true);
                     }
                     if( gpe::system_found_os == gpe::system_os_windows )
                     {
-                        projectSettingsList->add_gui_auto(buildToSourceButton );
-                        projectSettingsList->add_gui_auto(buildPlatformdropdown );
-                        projectSettingsList->add_gui_auto(buildPlatformRefreshLabel );
+                        project_settingsList->add_gui_auto(buildToSource_button );
+                        project_settingsList->add_gui_auto(buildPlatformdropdown );
+                        project_settingsList->add_gui_auto(buildPlatformRefreshLabel );
                         /*
-                        projectSettingsList->add_gui_auto(exportPushButton );
-                        projectSettingsList->add_gui_auto(exportAndPlayPushButton );
+                        project_settingsList->add_gui_auto(exportPush_button );
+                        project_settingsList->add_gui_auto(exportAndPlayPush_button );
                         */
-                        projectSettingsList->add_gui_auto(playProgramPushButton );
+                        project_settingsList->add_gui_auto(playProgramPush_button );
                     }
                     else
                     {
-                        projectSettingsList->add_gui_element(exportPushButton,true);
+                        project_settingsList->add_gui_element(exportPush_button,true);
                     }
 
                     if( isJSProject )
                     {
-                        projectSettingsList->add_gui_element(electronCompileNote,true);
-                        projectSettingsList->add_gui_element(electronCompileUrl,true);
+                        project_settingsList->add_gui_element(electronCompileNote,true);
+                        project_settingsList->add_gui_element(electronCompileUrl,true);
                     }
-                    projectSettingsList->process_self( view_space,cam);
+                    project_settingsList->process_self( view_space,cam);
 
                     if( buildPlatformRefreshLabel->is_clicked() )
                     {
                         refresh_build_to_source_targets();
                     }
 
-                    if( buildToSourceButton->is_clicked() && current_project!=NULL && buildPlatformdropdown!=NULL )
+                    if( buildToSource_button->is_clicked() && current_project!=NULL && buildPlatformdropdown!=NULL )
                     {
                         if( buildPlatformdropdown->get_selected_id() >= 0 && buildPlatformdropdown->get_menu_size() > 0 )
                         {
@@ -1419,7 +1419,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                     {
                         buildBits = 64;
                     }
-                    if( exportPushButton->is_clicked() && current_project!=NULL)
+                    if( exportPush_button->is_clicked() && current_project!=NULL)
                     {
                         current_project->save_project();
                         current_project->export_project_windows("",buildPlatformdropdown->get_selected_name(),buildBits,false, winDebugModeCheckbox->is_clicked(), windowsNativeBuildTypeOptions->get_selected_value() );
@@ -1427,11 +1427,11 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                     }
                     else if( gpe::system_found_os== gpe::system_os_windows && current_project!=NULL )
                     {
-                        if( exportAndPlayPushButton->is_clicked() )
+                        if( exportAndPlayPush_button->is_clicked() )
                         {
                             export_and_play_native(true );
                         }
-                        else if( playProgramPushButton->is_clicked() )
+                        else if( playProgramPush_button->is_clicked() )
                         {
                             current_project->run_project("",gpe::system_os_windows,buildBits, winDebugModeCheckbox->is_clicked() );
                         }
@@ -1439,44 +1439,44 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                 }
                 else if( nExportOptionName=="Linux" )
                 {
-                    projectSettingsList->add_gui_element(exportLinuxLabel,true);
-                    projectSettingsList->add_gui_element(linux64BitCheckbox,true);
-                    projectSettingsList->add_gui_element(linuxDebugModeCheckbox, true);
+                    project_settingsList->add_gui_element(exportLinuxLabel,true);
+                    project_settingsList->add_gui_element(linux64BitCheckbox,true);
+                    project_settingsList->add_gui_element(linuxDebugModeCheckbox, true);
                     if( isJSProject )
                     {
-                        projectSettingsList->add_gui_element(linuxNativeBuildTypeOptions, true);
+                        project_settingsList->add_gui_element(linuxNativeBuildTypeOptions, true);
                     }
                     if( gpe::system_found_os == gpe::system_os_linux )
                     {
-                        projectSettingsList->add_gui_auto(buildToSourceButton );
-                        projectSettingsList->add_gui_auto(buildPlatformdropdown );
-                        projectSettingsList->add_gui_auto(buildPlatformRefreshLabel );
+                        project_settingsList->add_gui_auto(buildToSource_button );
+                        project_settingsList->add_gui_auto(buildPlatformdropdown );
+                        project_settingsList->add_gui_auto(buildPlatformRefreshLabel );
                         /*
-                        projectSettingsList->add_gui_auto(exportPushButton );
-                        projectSettingsList->add_gui_auto(exportAndPlayPushButton );
+                        project_settingsList->add_gui_auto(exportPush_button );
+                        project_settingsList->add_gui_auto(exportAndPlayPush_button );
                         */
-                        projectSettingsList->add_gui_auto(playProgramPushButton );
+                        project_settingsList->add_gui_auto(playProgramPush_button );
                     }
                     else
                     {
-                        projectSettingsList->add_gui_auto(buildToSourceButton );
-                        projectSettingsList->add_gui_auto(buildPlatformdropdown );
-                        projectSettingsList->add_gui_auto(buildPlatformRefreshLabel );
-                        projectSettingsList->add_gui_element(exportPushButton,true);
+                        project_settingsList->add_gui_auto(buildToSource_button );
+                        project_settingsList->add_gui_auto(buildPlatformdropdown );
+                        project_settingsList->add_gui_auto(buildPlatformRefreshLabel );
+                        project_settingsList->add_gui_element(exportPush_button,true);
                     }
                     if( isJSProject )
                     {
-                        projectSettingsList->add_gui_element(electronCompileNote,true);
-                        projectSettingsList->add_gui_element(electronCompileUrl,true);
+                        project_settingsList->add_gui_element(electronCompileNote,true);
+                        project_settingsList->add_gui_element(electronCompileUrl,true);
                     }
-                    projectSettingsList->process_self( view_space,cam);
+                    project_settingsList->process_self( view_space,cam);
 
                     if( buildPlatformRefreshLabel->is_clicked() )
                     {
                         refresh_build_to_source_targets();
                     }
 
-                    if( buildToSourceButton->is_clicked() && current_project!=NULL && buildPlatformdropdown!=NULL )
+                    if( buildToSource_button->is_clicked() && current_project!=NULL && buildPlatformdropdown!=NULL )
                     {
                         if( buildPlatformdropdown->get_selected_id() >= 0 && buildPlatformdropdown->get_menu_size() > 0 )
                         {
@@ -1493,7 +1493,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                     {
                         buildBits = 64;
                     }
-                    if( exportPushButton->is_clicked() && current_project!=NULL)
+                    if( exportPush_button->is_clicked() && current_project!=NULL)
                     {
                         current_project->save_project();
                         current_project->export_project_linux("","", buildBits,false, linuxDebugModeCheckbox->is_clicked(), linuxNativeBuildTypeOptions->get_selected_value() );
@@ -1501,11 +1501,11 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                     }
                     else if( gpe::system_found_os == gpe::system_os_linux && current_project!=NULL )
                     {
-                        if( exportAndPlayPushButton->is_clicked() )
+                        if( exportAndPlayPush_button->is_clicked() )
                         {
                             export_and_play_native(true);
                         }
-                        else if( playProgramPushButton->is_clicked() )
+                        else if( playProgramPush_button->is_clicked() )
                         {
                             current_project->run_project("",gpe::system_os_linux,buildBits, linuxDebugModeCheckbox->is_clicked() );
                         }
@@ -1513,44 +1513,44 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                 }
                 else if( nExportOptionName=="OSX" || nExportOptionName=="Mac" )
                 {
-                    projectSettingsList->add_gui_element( exportOSXLabel,true);
-                    projectSettingsList->add_gui_element(osx64BitCheckbox,true);
-                    projectSettingsList->add_gui_element(osxDebugModeCheckbox, true);
+                    project_settingsList->add_gui_element( exportOSXLabel,true);
+                    project_settingsList->add_gui_element(osx64BitCheckbox,true);
+                    project_settingsList->add_gui_element(osxDebugModeCheckbox, true);
                     if( isJSProject )
                     {
-                        projectSettingsList->add_gui_element(osxNativeBuildTypeOptions, true);
+                        project_settingsList->add_gui_element(osxNativeBuildTypeOptions, true);
                     }
                     if( gpe::system_found_os == gpe::system_os_mac )
                     {
-                        projectSettingsList->add_gui_auto(buildToSourceButton );
-                        projectSettingsList->add_gui_auto(buildPlatformdropdown );
-                        projectSettingsList->add_gui_auto(buildPlatformRefreshLabel );
+                        project_settingsList->add_gui_auto(buildToSource_button );
+                        project_settingsList->add_gui_auto(buildPlatformdropdown );
+                        project_settingsList->add_gui_auto(buildPlatformRefreshLabel );
                         /*
-                        projectSettingsList->add_gui_auto(exportPushButton );
-                        projectSettingsList->add_gui_auto(exportAndPlayPushButton );
+                        project_settingsList->add_gui_auto(exportPush_button );
+                        project_settingsList->add_gui_auto(exportAndPlayPush_button );
                         */
-                        projectSettingsList->add_gui_auto(playProgramPushButton );
+                        project_settingsList->add_gui_auto(playProgramPush_button );
                     }
                     else
                     {
-                        projectSettingsList->add_gui_auto(buildToSourceButton );
-                        projectSettingsList->add_gui_auto(buildPlatformdropdown );
-                        projectSettingsList->add_gui_auto(buildPlatformRefreshLabel );
-                        projectSettingsList->add_gui_element(exportPushButton,true);
+                        project_settingsList->add_gui_auto(buildToSource_button );
+                        project_settingsList->add_gui_auto(buildPlatformdropdown );
+                        project_settingsList->add_gui_auto(buildPlatformRefreshLabel );
+                        project_settingsList->add_gui_element(exportPush_button,true);
                     }
                     if( isJSProject )
                     {
-                        projectSettingsList->add_gui_element(electronCompileNote,true);
-                        projectSettingsList->add_gui_element(electronCompileUrl,true);
+                        project_settingsList->add_gui_element(electronCompileNote,true);
+                        project_settingsList->add_gui_element(electronCompileUrl,true);
                     }
-                    projectSettingsList->process_self( view_space,cam);
+                    project_settingsList->process_self( view_space,cam);
 
                     if( buildPlatformRefreshLabel->is_clicked() )
                     {
                         refresh_build_to_source_targets();
                     }
 
-                    if( buildToSourceButton->is_clicked() && current_project!=NULL && buildPlatformdropdown!=NULL )
+                    if( buildToSource_button->is_clicked() && current_project!=NULL && buildPlatformdropdown!=NULL )
                     {
                         if( buildPlatformdropdown->get_selected_id() >= 0 && buildPlatformdropdown->get_menu_size() > 0 )
                         {
@@ -1569,7 +1569,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                         buildBits = 64;
                     }
 
-                    if( exportPushButton->is_clicked() && current_project!=NULL)
+                    if( exportPush_button->is_clicked() && current_project!=NULL)
                     {
                         current_project->save_project();
                         current_project->export_project_osx("","",buildBits,false, osxDebugModeCheckbox->is_clicked(), osxNativeBuildTypeOptions->get_selected_value()  );
@@ -1577,11 +1577,11 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                     }
                     else if( gpe::system_found_os == gpe::system_os_mac && current_project!=NULL )
                     {
-                        if( exportAndPlayPushButton->is_clicked() )
+                        if( exportAndPlayPush_button->is_clicked() )
                         {
                             export_and_play_native(true);
                         }
-                        else if( playProgramPushButton->is_clicked() )
+                        else if( playProgramPush_button->is_clicked() )
                         {
                             current_project->run_project("",gpe::system_os_mac,buildBits, osxDebugModeCheckbox->is_clicked() );
                         }
@@ -1589,29 +1589,29 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                 }
                 else
                 {
-                    projectSettingsList->add_gui_element(otherPlatformLabel,true);
-                    projectSettingsList->add_gui_element(otherPlatformLabelParagraph,true );
-                    projectSettingsList->add_gui_element(otherPlatformLabelURL, true);
-                    projectSettingsList->process_self( view_space,cam);
+                    project_settingsList->add_gui_element(otherPlatformLabel,true);
+                    project_settingsList->add_gui_element(otherPlatformLabelParagraph,true );
+                    project_settingsList->add_gui_element(otherPlatformLabelURL, true);
+                    project_settingsList->process_self( view_space,cam);
                 }
             }
         }
-        else if( projectSettingsBar->get_selected_name()=="Macros")
+        else if( project_settingsBar->get_selected_name()=="Macros")
         {
             projectGameMacros->set_width(subViewedSpace.w-32 );
             projectGameMacros->set_height(subViewedSpace.h-96 );
-            projectSettingsList->add_gui_element(projectGameMacros,true);
-            projectSettingsList->process_self( view_space,cam);
+            project_settingsList->add_gui_element(projectGameMacros,true);
+            project_settingsList->process_self( view_space,cam);
 
         }
-        else if( projectSettingsBar->get_selected_name()=="Notes")
+        else if( project_settingsBar->get_selected_name()=="Notes")
         {
             projectGameNotes->set_width(subViewedSpace.w-32 );
             projectGameNotes->set_height(subViewedSpace.h-96 );
-            projectSettingsList->add_gui_element(projectGameNotes,true);
-            projectSettingsList->process_self( view_space,cam);
+            project_settingsList->add_gui_element(projectGameNotes,true);
+            project_settingsList->process_self( view_space,cam);
         }
-        else if( projectSettingsBar->get_selected_name() == "Layers")
+        else if( project_settingsBar->get_selected_name() == "Layers")
         {
             int iLayerN = 0;
             int widestTitle = 0;
@@ -1654,7 +1654,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
             }
             collisionLayerMatrixList->add_gui_element(selectAllCollisionBoxes, true);
             collisionLayerMatrixList->add_gui_element(unselectAllCollisionBoxes, true);
-            collisionLayerMatrixList->add_gui_element(confirmResourceButton,true);
+            collisionLayerMatrixList->add_gui_element(confirmResource_button,true);
             collisionLayerMatrixList->process_self( view_space,cam);
 
             bool renameLayer = false;
@@ -1724,13 +1724,13 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
             }
         }
 
-        //projectSettingsList->set_maxed_out_width();
+        //project_settingsList->set_maxed_out_width();
 
-        if( confirmResourceButton->is_clicked() )
+        if( confirmResource_button->is_clicked() )
         {
             save_resource();
         }
-        if( nExportOptionName != exportSettingsBar->get_selected_name() )
+        if( nExportOptionName != export_settingsBar->get_selected_name() )
         {
             //process_self(view_space,cam);
         }
@@ -1781,23 +1781,23 @@ void projectPropertiesResource::render_self( gpe::shape_rect * view_space, gpe::
     cam = gpe::camera_find(cam);
     if( cam!=NULL && view_space!=NULL)
     {
-        if(  projectSettingsBar!=NULL && panel_main_area==NULL )
+        if(  project_settingsBar!=NULL && panel_main_editor==NULL )
         {
-            projectSettingsBar->render_self( view_space,cam);
+            project_settingsBar->render_self( view_space,cam);
         }
-        if(  exportSettingsBar!=NULL && projectSettingsBar!=NULL  && projectSettingsBar->get_selected_name()=="Platforms" )
+        if(  export_settingsBar!=NULL && project_settingsBar!=NULL  && project_settingsBar->get_selected_name()=="Platforms" )
         {
-            exportSettingsBar->render_self( view_space,cam);
+            export_settingsBar->render_self( view_space,cam);
         }
 
         //Seperate render process since the layer is aligned differently then rest of menus
-        if( projectSettingsBar->get_selected_name()=="Layers")
+        if( project_settingsBar->get_selected_name()=="Layers")
         {
             collisionLayerMatrixList->render_self( view_space,cam );
         }
-        else if( projectSettingsList!=NULL )
+        else if( project_settingsList!=NULL )
         {
-            projectSettingsList->render_self( view_space,cam);
+            project_settingsList->render_self( view_space,cam);
         }
     }
 }
@@ -1808,14 +1808,14 @@ void projectPropertiesResource::save_resource(std::string file_path, int backupI
     isModified = false;
     if( projectParentFolder!=NULL)
     {
-        std::string projectSettingsFileName = projectParentFolder->parentProjectDirectory+"/gpe_project/project_settings.gpf";
-        gpe::error_log->report("Saving project settings to "+projectSettingsFileName);
-        std::ofstream newSaveDataFile (projectSettingsFileName.c_str() );
+        std::string project_settingsFileName = projectParentFolder->parentProjectDirectory+"/gpe_project/project_settings.gpf";
+        gpe::error_log->report("Saving project settings to "+project_settingsFileName);
+        std::ofstream newSaveDataFile (project_settingsFileName.c_str() );
         if (newSaveDataFile.is_open() )
         {
             write_header_on_file(&newSaveDataFile);
             //newSaveDataFile << "ResourceName=" << resource_name << "\n";
-            newSaveDataFile << "#Project Settings     \n";
+            newSaveDataFile << "#Project _settings     \n";
             newSaveDataFile << "ProjectIcon=" << stg_ex::get_local_from_global_file(iconFileName) << "\n";
             if( projectScreenWidthField!=NULL)
             {
@@ -1834,14 +1834,14 @@ void projectPropertiesResource::save_resource(std::string file_path, int backupI
             {
                 newSaveDataFile << "ProjectSubVersion=" << projectGameSubVersionField->get_string() << "\n";
             }
-            if( projectScaleSettings!=NULL)
+            if( project_scale_settings!=NULL)
             {
-                newSaveDataFile << "ProjectScaleSettings=" << projectScaleSettings->get_selected_id() << "\n";
+                newSaveDataFile << "Project_scale_settings=" << project_scale_settings->get_selected_id() << "\n";
             }
 
-            if( projectSettingsFPSRate!=NULL)
+            if( project_settingsFPSRate!=NULL)
             {
-                newSaveDataFile << "ProjectFPSCap=" << projectSettingsFPSRate->get_selected_id() << "\n";
+                newSaveDataFile << "ProjectFPSCap=" << project_settingsFPSRate->get_selected_id() << "\n";
             }
 
             newSaveDataFile << "#Project Publishing MetaData     \n";
@@ -1958,7 +1958,7 @@ void projectPropertiesResource::save_resource(std::string file_path, int backupI
         {
             write_header_on_file(&projectCollisionMatrixFile);
             //newSaveDataFile << "ResourceName=" << resource_name << "\n";
-            projectCollisionMatrixFile << "#Project Layer Collision Matrix Settings     \n";
+            projectCollisionMatrixFile << "#Project Layer Collision Matrix _settings     \n";
             int jLayerCol = 0;
             for( int iLayerRow = 0; iLayerRow < 32; iLayerRow++)
             {
@@ -1977,8 +1977,8 @@ void projectPropertiesResource::save_resource(std::string file_path, int backupI
 
 int projectPropertiesResource::search_for_string(std::string needle)
 {
-    int foundStrings = 0;
-    main_editor_log->log_general_comment("Searching [Project Settings]..");
+    int foundstrings = 0;
+    main_editor_log->log_general_comment("Searching [Project _settings]..");
     if( pawgui::main_anchor_controller!=NULL)
     {
         pawgui::main_anchor_controller->searchResultProjectName = parentProjectName;
@@ -1986,23 +1986,23 @@ int projectPropertiesResource::search_for_string(std::string needle)
         pawgui::main_anchor_controller->searchResultResourceName = resource_name;
         if( projectGameMacros!=NULL && projectGameMacros->has_content() )
         {
-            foundStrings+=projectGameMacros->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true,"Macros");
+            foundstrings+=projectGameMacros->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true,"Macros");
         }
 
         if( projectGameNotes!=NULL && projectGameNotes->has_content() )
         {
-            foundStrings+=projectGameNotes->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true,"Notes");
+            foundstrings+=projectGameNotes->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true,"Notes");
         }
     }
-    return foundStrings;
+    return foundstrings;
 }
 
 int projectPropertiesResource::search_and_replace_string(std::string needle, std::string newStr )
 {
-    int foundStrings = 0;
+    int foundstrings = 0;
     int tempFoundCount = 0;
 
-    main_editor_log->log_general_comment("Searching [Project Settings]..");
+    main_editor_log->log_general_comment("Searching [Project _settings]..");
     if( pawgui::main_anchor_controller!=NULL)
     {
         pawgui::main_anchor_controller->searchResultProjectName = parentProjectName;
@@ -2013,8 +2013,8 @@ int projectPropertiesResource::search_and_replace_string(std::string needle, std
             tempFoundCount = projectGameMacros->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true,"Macros");
             if( tempFoundCount > 0)
             {
-                foundStrings+=tempFoundCount;
-                //displayMessageString = "Replaced "+ stg_ex::int_to_string( projectGameMacros->replace_all_found(needle, newStr ) )+" copies.";
+                foundstrings+=tempFoundCount;
+                //displayMessagestring = "Replaced "+ stg_ex::int_to_string( projectGameMacros->replace_all_found(needle, newStr ) )+" copies.";
             }
         }
 
@@ -2023,12 +2023,12 @@ int projectPropertiesResource::search_and_replace_string(std::string needle, std
             tempFoundCount = projectGameNotes->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true,"Notes");
             if( tempFoundCount > 0)
             {
-                foundStrings+=tempFoundCount;
-                //displayMessageString = "Replaced "+ stg_ex::int_to_string( projectGameNotes->replace_all_found(needle, newStr ) )+" copies.";
+                foundstrings+=tempFoundCount;
+                //displayMessagestring = "Replaced "+ stg_ex::int_to_string( projectGameNotes->replace_all_found(needle, newStr ) )+" copies.";
             }
         }
     }
-    return foundStrings;
+    return foundstrings;
 }
 
 

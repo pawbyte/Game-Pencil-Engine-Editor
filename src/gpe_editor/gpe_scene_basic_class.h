@@ -3,10 +3,10 @@ game_scene_basic_class.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,7 +36,7 @@ SOFTWARE.
 #define GPE_SCENE_BASIC_CLASS_H
 
 #include "gpe_basic_resource_page.h"
-#include "gpe_dock_system.h"
+#include "gpe_editor_globals.h"
 #include "../pawgui/pawgui_stree.h"
 
 //Basic Scene Editing Modes
@@ -52,23 +52,23 @@ const int SCENE_MODE_ASSIGN = 7;
 class GPE_SceneBasicClass: public pawgui::widget_branch
 {
 protected:
-    bool dualScaleClass;
+    bool dual_scaleClass;
     pawgui::widget_resource_container * projectParentFolder;
 public:
     GPE_SceneBasicClass * parentSceneBranch;
     bool isBeingMoved;
     int layerParentId;
-    float xPos, yPos;
-    float xScale, yScale;
+    float x_pos, y_pos;
+    float x_scale, y_scale;
     float angle;
     int xPivot, yPivot;
     int width, height;
     pawgui::widget_label_text  * branchGlobalId;
     pawgui::widget_input_number * angleField;
-    pawgui::widget_input_number * xPosField;
-    pawgui::widget_input_number * yPosField;
-    pawgui::widget_input_number * xScaleField;
-    pawgui::widget_input_number * yScaleField;
+    pawgui::widget_input_number * x_posField;
+    pawgui::widget_input_number * y_posField;
+    pawgui::widget_input_number * x_scaleField;
+    pawgui::widget_input_number * y_scaleField;
     pawgui::widget_input_text * branchNameField;
     pawgui::widget_input_text * branchTagField;
     pawgui::gpe_widget_color_picker * branchColor;
@@ -89,9 +89,9 @@ public:
     float roty( float rx, float ry);
     virtual void render_branch();
     bool save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn = 0);
-    void set_angle( float newAngle );
+    void set_angle( float new_angle );
     void set_name( std::string new_name );
-    void set_tag ( std::string newTag );
+    void set_tag ( std::string tag_new );
     void set_position( float x, float y);
     bool under_mouse(float mx, float my);
 };

@@ -3,10 +3,10 @@ gpe_editor_aboutpage.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,14 +45,14 @@ public:
     //General Help Tab [ begin]
     pawgui::widget_label_title * helpfulLinksTitle;
     pawgui::widget_label_title * communityLinksTitle;
-    std::vector< pawgui::widget_button_push * > helpfulButtons;
+    std::vector< pawgui::widget_button_push * > helpful_buttons;
     std::vector< pawgui::widget_text_url * > helpfulLinks;
-    std::vector< pawgui::widget_button_icon * > communityButtons;
+    std::vector< pawgui::widget_button_icon * > community_buttons;
     pawgui::widget_label_image * engineLogo;
     pawgui::widget_text_editor * pencilInformation;
     pawgui::widget_text_editor * pencilChangelog;
     pawgui::widget_text_editor * pencilShortkeys;
-    pawgui::widget_button_push * updateCheckerButton;
+    pawgui::widget_button_push * updateChecker_button;
     //General Help Tab [ end ]
 
     //Meta information to be built into the project
@@ -66,7 +66,7 @@ public:
     gamePencilAboutPageResource();
     ~gamePencilAboutPageResource();
 
-    void add_helpfulbutton(pawgui::widget_button_push * newButton);
+    void add_helpfulbutton(pawgui::widget_button_push * new_button);
     void add_helpfullink(pawgui::widget_text_url * newLink);
     void add_communitylink( pawgui::widget_button_icon * newLink);
 

@@ -3,10 +3,10 @@ gpe_editor_start_page.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -60,7 +60,7 @@ bool quickProjectReader::review_project(std::string projectFileName)
     detectedLocation = "";
     detectedSaveTime = "";
     detectedVersion = "Unknown";
-    if( sff_ex::file_exists(projectFileName) )
+    if( gpe::main_file_url_manager->file_exists(projectFileName) )
     {
         std::ifstream newprofileFile( projectFileName.c_str() );
 
@@ -74,9 +74,9 @@ bool quickProjectReader::review_project(std::string projectFileName)
                 detectedLocation = projectFileName;
 
                 std::string firstChar="";
-                std::string keyString="";
-                std::string valString="";
-                std::string subValString="";
+                std::string key_string="";
+                std::string valstring="";
+                std::string subValstring="";
                 std::string currLine="";
                 std::string newresource_name= "";
                 std::string tempNewresource_name = "";
@@ -104,12 +104,12 @@ bool quickProjectReader::review_project(std::string projectFileName)
                             if(equalPos!=(int)std::string::npos)
                             {
                                 //if the equalPos is present, then parse on through and carryon
-                                keyString = currLine.substr(0,equalPos);
-                                valString = currLine.substr(equalPos+1,currLine.length());
+                                key_string = currLine.substr(0,equalPos);
+                                valstring = currLine.substr(equalPos+1,currLine.length());
                                 //finds the version of the game level file
-                                if (keyString== "Version")
+                                if (key_string== "Version")
                                 {
-                                    detectedVersion = valString;
+                                    detectedVersion = valstring;
                                     if( detectedVersion=="1")
                                     {
                                         detectedVersion = "1.00";
@@ -123,24 +123,24 @@ bool quickProjectReader::review_project(std::string projectFileName)
                                         detectedVersion = "3.00";
                                     }
                                 }
-                                else if( keyString=="Count" || keyString=="ResourcesCount")
+                                else if( key_string=="Count" || key_string=="ResourcesCount")
                                 {
-                                    resourcesInProject = stg_ex::string_to_int(valString);
+                                    resourcesInProject = stg_ex::string_to_int(valstring);
                                 }
-                                else if(keyString=="ProjectName" || keyString=="Name")
+                                else if(key_string=="ProjectName" || key_string=="Name")
                                 {
-                                    detectedName = valString;
+                                    detectedName = valstring;
                                 }
-                                else if(keyString=="ProjectLanguage" || keyString=="ProgrammingLanguage" || keyString=="CodingLanguage")
+                                else if(key_string=="ProjectLanguage" || key_string=="ProgrammingLanguage" || key_string=="CodingLanguage")
                                 {
-                                    detectedLanguage = valString;
+                                    detectedLanguage = valstring;
                                 }
-                                else if( keyString=="ProjectIcon")
+                                else if( key_string=="ProjectIcon")
                                 {
-                                    if( sff_ex::path_exists( stg_ex::get_file_noext(projectFileName) ) )
+                                    if( gpe::main_file_url_manager->path_exists( stg_ex::get_file_noext(projectFileName) ) )
                                     {
-                                        tempFoundIcon = stg_ex::get_file_noext(projectFileName)+"/"+valString;
-                                        if( sff_ex::file_exists( tempFoundIcon )  && stg_ex::file_is_image(tempFoundIcon) )
+                                        tempFoundIcon = stg_ex::get_file_noext(projectFileName)+"/"+valstring;
+                                        if( gpe::main_file_url_manager->file_exists( tempFoundIcon )  && stg_ex::file_is_image(tempFoundIcon) )
                                         {
                                             detectedIcon = tempFoundIcon;
                                         }
@@ -151,9 +151,9 @@ bool quickProjectReader::review_project(std::string projectFileName)
                     }
                 }
                 newprofileFile.close();
-                if( ( (int)tempFoundIcon.size()==0) && sff_ex::path_exists( stg_ex::get_file_noext(projectFileName) ) )
+                if( ( (int)tempFoundIcon.size()==0) && gpe::main_file_url_manager->path_exists( stg_ex::get_file_noext(projectFileName) ) )
                 {
-                    if( sff_ex::file_exists( stg_ex::get_file_noext(projectFileName)+"/icon.png" ) )
+                    if( gpe::main_file_url_manager->file_exists( stg_ex::get_file_noext(projectFileName)+"/icon.png" ) )
                     {
                         detectedIcon = stg_ex::get_file_noext(projectFileName)+"/icon.png";
                     }
@@ -259,70 +259,70 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
     tTempUrl->hasLineBreak = true;
     helpfulWebLinks.push_back(tTempUrl);
 
-    forumPageButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/comments.png","Forums","",-1);
-    forumPageButton->set_website("http://community.pawbyte.com");
-    forumPageButton->showBackground = false;
+    forumPage_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/comments.png","Forums","",-1);
+    forumPage_button->set_website("http://community.pawbyte.com");
+    forumPage_button->showBackground = false;
 
-    helpPageButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/question.png","Help","",-1);
-    helpPageButton->showBackground = false;
+    helpPage_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/question.png","Help","",-1);
+    helpPage_button->showBackground = false;
 
 
-    tipOfTheDayButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/info.png","Tip of the Day","",-1);
-    tipOfTheDayButton->showBackground = false;
+    tipOfTheDay_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/info.png","Tip of the Day","",-1);
+    tipOfTheDay_button->showBackground = false;
 
     //Community
     communityLinksTitle = new pawgui::widget_label_title("Community","Community links to stay connected");
-    pawgui::widget_button_icon * tSocialButton = NULL;
+    pawgui::widget_button_icon * tSocial_button = NULL;
 
-    tSocialButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/facebook.png","Facebook" );
-    tSocialButton->set_website("https://facebook.com/pawbyte");
-    add_communitylink(tSocialButton);
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/facebook.png","Facebook" );
+    tSocial_button->set_website("https://facebook.com/pawbyte");
+    add_communitylink(tSocial_button);
 
-    tSocialButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/reddit.png","Reddit" );
-    tSocialButton->set_website("https://reddit.com/r/gamepencil");
-    add_communitylink(tSocialButton);
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/reddit.png","Reddit" );
+    tSocial_button->set_website("https://reddit.com/r/gamepencil");
+    add_communitylink(tSocial_button);
 
-    tSocialButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/github.png","GitHub repo");
-    tSocialButton->set_website("https://github.com/pawbyte/Game-Pencil-Engine");
-    add_communitylink(tSocialButton);
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/github.png","GitHub repo");
+    tSocial_button->set_website("https://github.com/pawbyte/Game-Pencil-Engine");
+    add_communitylink(tSocial_button);
 
-    tSocialButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/comments.png","Discord Chat Group" );
-    tSocialButton->set_website("https://discord.gg/bua3rDW");
-    add_communitylink(tSocialButton);
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/comments.png","Discord Chat Group" );
+    tSocial_button->set_website("https://discord.gg/bua3rDW");
+    add_communitylink(tSocial_button);
 
-    tSocialButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/twitter.png","Twitter" );
-    tSocialButton->set_website("https://twitter.com/pawbyte");
-    add_communitylink(tSocialButton);
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/twitter.png","Twitter" );
+    tSocial_button->set_website("https://twitter.com/pawbyte");
+    add_communitylink(tSocial_button);
 
-    tSocialButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/youtube.png","YouTube" );
-    tSocialButton->set_website("https://www.youtube.com/user/PawByte");
-    add_communitylink(tSocialButton);
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/youtube.png","YouTube" );
+    tSocial_button->set_website("https://www.youtube.com/user/PawByte");
+    add_communitylink(tSocial_button);
 
-    tSocialButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/gamecontroller.png","IndieDB" );
-    tSocialButton->set_website("http://www.indiedb.com/engines/game-pencil-engine");
-    add_communitylink(tSocialButton);
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/gamecontroller.png","IndieDB" );
+    tSocial_button->set_website("http://www.indiedb.com/engines/game-pencil-engine");
+    add_communitylink(tSocial_button);
 
-    std::string copyRightInfoString = "";
+    std::string copyRightInfostring = "";
 
     if( gpe::version_number_update==0)
     {
-        copyRightInfoString = stg_ex::float_to_string( gpe::version_number_total )+".0.0";
+        copyRightInfostring = stg_ex::float_to_string( gpe::version_number_total )+".0.0";
     }
     else
     {
-        copyRightInfoString = stg_ex::float_to_string( gpe::version_number_total );
+        copyRightInfostring = stg_ex::float_to_string( gpe::version_number_total );
     }
 
     if( release_current_mode==release_type_rc)
     {
-        copyRightInfoString+="   - Release Candidate";
+        copyRightInfostring+="   - Release Candidate";
     }
     else if( release_current_mode==release_type_beta)
     {
-        copyRightInfoString+="   - Beta Version";
+        copyRightInfostring+="   - Beta Version";
     }
 
-    labelCopyrightInfo = new pawgui::widget_label_text ("Game Pencil Engine - Version "+copyRightInfoString+".","");
+    labelCopyrightInfo = new pawgui::widget_label_text ("Game Pencil Engine - Version "+copyRightInfostring+".","");
     labelImgGPELogo = new pawgui::widget_label_image("Game Pencil Engine",gpe::app_directory_name+"resources/gfx/textures/logo_white.png" );
     labelImgGPELogo->set_full_width( true );
 
@@ -335,16 +335,16 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
 
     emptyProjectsListLabel = new pawgui::widget_label_text ("No Recent projects","No Recent projects");
 
-    scanProjectFolderButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/search.png","Scan Folder","Scan Folder");
+    scanProjectFolder_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/search.png","Scan Folder","Scan Folder");
 
-    newProjectButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file.png","New Project","New Project");
+    newProject_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file.png","New Project","New Project");
 
-    loadProjectButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/folder-open.png","Load Project","Load Project");
+    loadProject_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/folder-open.png","Load Project","Load Project");
 
-    refreshButton = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refresh","Refresh Project Lists");
+    refresh_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refresh","Refresh Project Lists");
 
     quickProjectReader * qpr = new quickProjectReader();
-    pawgui::widget_button_card_vertical * tRecentListButton = NULL;
+    pawgui::widget_button_card_vertical * tRecentList_button = NULL;
     std::string tempProjectName = "";
     std::string newMultiLine = "";
     int  rProjectListSize = (int)recentProjectsList.size();
@@ -353,11 +353,11 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
     for( i = 0; i < recent_project_list_size; i++)
     {
         tempProjectName = editor_gui_main->get_recent_project_name(i);
-        if( (int)tempProjectName.size() > 0 && sff_ex::file_exists(tempProjectName) )
+        if( (int)tempProjectName.size() > 0 && gpe::main_file_url_manager->file_exists(tempProjectName) )
         {
             if( qpr->review_project(tempProjectName) )
             {
-                if( sff_ex::file_exists(qpr->detectedIcon) ==false)
+                if( gpe::main_file_url_manager->file_exists(qpr->detectedIcon) ==false)
                 {
                     qpr->detectedIcon =gpe::app_directory_name+"resources/gamepencil_icon_72dpi.png";
                 }
@@ -371,8 +371,8 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
                     newMultiLine+="\nLanguage: "+qpr->detectedLanguage;
                 }
                 //newMultiLine+="\nLocation: "+tempProjectName;
-                tRecentListButton = new pawgui::widget_button_card_vertical( qpr->detectedIcon,newMultiLine,qpr->detectedLocation);
-                recentProjectsList.push_back(tRecentListButton);
+                tRecentList_button = new pawgui::widget_button_card_vertical( qpr->detectedIcon,newMultiLine,qpr->detectedLocation);
+                recentProjectsList.push_back(tRecentList_button);
             }
         }
     }
@@ -469,21 +469,21 @@ gamePencilStartPageResource::~gamePencilStartPageResource()
         delete projectFolderLocationLabel;
         projectFolderLocationLabel = NULL;
     }
-    if( scanProjectFolderButton!=NULL)
+    if( scanProjectFolder_button!=NULL)
     {
-        delete scanProjectFolderButton;
-        scanProjectFolderButton = NULL;
+        delete scanProjectFolder_button;
+        scanProjectFolder_button = NULL;
     }
-    if( newProjectButton!=NULL)
+    if( newProject_button!=NULL)
     {
-        delete newProjectButton;
-        newProjectButton = NULL;
+        delete newProject_button;
+        newProject_button = NULL;
     }
 
-    if( loadProjectButton!=NULL)
+    if( loadProject_button!=NULL)
     {
-        delete loadProjectButton;
-        loadProjectButton = NULL;
+        delete loadProject_button;
+        loadProject_button = NULL;
     }
     gpe::error_log->report("Startpage successfully deleted....");
 }
@@ -493,7 +493,7 @@ void gamePencilStartPageResource::add_communitylink( pawgui::widget_button_icon 
     if( newLink!=NULL)
     {
         newLink->scale_object( 2 );
-        communityButtons.push_back(newLink);
+        community_buttons.push_back(newLink);
     }
 }
 
@@ -504,7 +504,7 @@ bool gamePencilStartPageResource::include_local_files( std::string pBuildDir , i
 
 void gamePencilStartPageResource::load_example_projects_folder( )
 {
-    pawgui::widget_button_card_vertical * tempProjectButton = NULL;
+    pawgui::widget_button_card_vertical * tempProject_button = NULL;
 
     int i = 0;
     int j = 0;
@@ -512,11 +512,11 @@ void gamePencilStartPageResource::load_example_projects_folder( )
 
     for( i = (int)examplesProjectsList.size()-1; i>=0; i--)
     {
-        tempProjectButton = examplesProjectsList[i];
-        if( tempProjectButton!=NULL)
+        tempProject_button = examplesProjectsList[i];
+        if( tempProject_button!=NULL)
         {
-            delete tempProjectButton;
-            tempProjectButton = NULL;
+            delete tempProject_button;
+            tempProject_button = NULL;
         }
     }
     examplesProjectsList.clear();
@@ -524,14 +524,14 @@ void gamePencilStartPageResource::load_example_projects_folder( )
     std::string newMultiLine= "";
     std::string exampleProjectsLocation = gpe::app_directory_name+"examples";
     gpe::error_log->report("Browsing for example projects in ["+exampleProjectsLocation+"] folder");
-    if( sff_ex::path_exists( exampleProjectsLocation ) )
+    if( gpe::main_file_url_manager->path_exists( exampleProjectsLocation ) )
     {
         quickProjectReader * qpr = new quickProjectReader();
-        gpe::GPE_FileDirectory * exampleFolderDirectory = new gpe::GPE_FileDirectory();
+        gpe::file_directory_class * exampleFolderDirectory = new gpe::file_directory_class();
 
         exampleFolderDirectory->open_directory( exampleProjectsLocation );
 
-        gpe::GPE_File * tempFile = NULL;
+        gpe::file_object * tempFile = NULL;
         std::vector<std::string > fileFilterTypes;
         fileFilterTypes.push_back("gppf");
 
@@ -550,13 +550,13 @@ void gamePencilStartPageResource::load_example_projects_folder( )
                 {
                     tempProjectName = exampleProjectsLocation+"/"+tempFile->get_name();
 
-                    if( (int)tempProjectName.size() > 0 && sff_ex::file_exists(tempProjectName) )
+                    if( (int)tempProjectName.size() > 0 && gpe::main_file_url_manager->file_exists(tempProjectName) )
                     {
                         projectLoadedAlready = false;
                         /*for( j = (int)recentProjectsList.size()-1; j>=0; j--)
                         {
-                            tempProjectButton = recentProjectsList[j];
-                            if( tempProjectButton!=NULL && tempProjectButton->descriptionText==tempProjectName )
+                            tempProject_button = recentProjectsList[j];
+                            if( tempProject_button!=NULL && tempProject_button->descriptionText==tempProjectName )
                             {
                                 projectLoadedAlready = true;
                                 break;
@@ -565,7 +565,7 @@ void gamePencilStartPageResource::load_example_projects_folder( )
 
                         if( !projectLoadedAlready && qpr->review_project(tempProjectName) )
                         {
-                            if( sff_ex::file_exists(qpr->detectedIcon) ==false)
+                            if( gpe::main_file_url_manager->file_exists(qpr->detectedIcon) ==false)
                             {
                                 qpr->detectedIcon =gpe::app_directory_name+"resources/gamepencil_icon_72dpi.png";
                             }
@@ -579,8 +579,8 @@ void gamePencilStartPageResource::load_example_projects_folder( )
                                 newMultiLine+="\nLanguage: "+qpr->detectedLanguage;
                             }
                             //newMultiLine+="\nLocation: "+tempProjectName;
-                            tempProjectButton = new pawgui::widget_button_card_vertical( qpr->detectedIcon,newMultiLine, qpr->detectedLocation);
-                            examplesProjectsList.push_back(tempProjectButton);
+                            tempProject_button = new pawgui::widget_button_card_vertical( qpr->detectedIcon,newMultiLine, qpr->detectedLocation);
+                            examplesProjectsList.push_back(tempProject_button);
                         }
                     }
                 }
@@ -596,7 +596,7 @@ void gamePencilStartPageResource::load_example_projects_folder( )
 
 void gamePencilStartPageResource::load_projecs_folder( std::string projectsDirectory)
 {
-    pawgui::widget_button_card_vertical * tempProjectButton = NULL;
+    pawgui::widget_button_card_vertical * tempProject_button = NULL;
 
     int i = 0;
     int j = 0;
@@ -605,25 +605,25 @@ void gamePencilStartPageResource::load_projecs_folder( std::string projectsDirec
 
     for( i = (int)foundProjectsList.size()-1; i>=0; i--)
     {
-        tempProjectButton = foundProjectsList[i];
-        if( tempProjectButton!=NULL)
+        tempProject_button = foundProjectsList[i];
+        if( tempProject_button!=NULL)
         {
-            delete tempProjectButton;
-            tempProjectButton = NULL;
+            delete tempProject_button;
+            tempProject_button = NULL;
         }
     }
     foundProjectsList.clear();
 
     gpe::error_log->report("Browsing for  projects in ["+projectsDirectory+"] folder");
-    if( sff_ex::path_exists(projectsDirectory) )
+    if( gpe::main_file_url_manager->path_exists(projectsDirectory) )
     {
         quickProjectReader * qpr = new quickProjectReader();
-        gpe::GPE_FileDirectory * favFolderDirectory = new gpe::GPE_FileDirectory();
+        gpe::file_directory_class * favFolderDirectory = new gpe::file_directory_class();
         foundProjectsDirectory = projectsDirectory;
 
         favFolderDirectory->open_directory(projectsDirectory);
 
-        gpe::GPE_File * tempFile = NULL;
+        gpe::file_object * tempFile = NULL;
         std::vector<std::string > fileFilterTypes;
         fileFilterTypes.push_back("gppf");
 
@@ -645,13 +645,13 @@ void gamePencilStartPageResource::load_projecs_folder( std::string projectsDirec
                 {
                     tempProjectName = projectsDirectory+"/"+tempFile->get_name();
 
-                    if( (int)tempProjectName.size() > 0 && sff_ex::file_exists(tempProjectName) )
+                    if( (int)tempProjectName.size() > 0 && gpe::main_file_url_manager->file_exists(tempProjectName) )
                     {
                         projectLoadedAlready = false;
                         for( j = (int)recentProjectsList.size()-1; j>=0; j--)
                         {
-                            tempProjectButton = recentProjectsList[j];
-                            if( tempProjectButton!=NULL && tempProjectButton->descriptionText==tempProjectName )
+                            tempProject_button = recentProjectsList[j];
+                            if( tempProject_button!=NULL && tempProject_button->descriptionText==tempProjectName )
                             {
                                 projectLoadedAlready = true;
                                 break;
@@ -660,7 +660,7 @@ void gamePencilStartPageResource::load_projecs_folder( std::string projectsDirec
 
                         if( !projectLoadedAlready && qpr->review_project(tempProjectName) )
                         {
-                            if( sff_ex::file_exists(qpr->detectedIcon) ==false)
+                            if( gpe::main_file_url_manager->file_exists(qpr->detectedIcon) ==false)
                             {
                                 qpr->detectedIcon =gpe::app_directory_name+"resources/gamepencil_icon_72dpi.png";
                             }
@@ -674,8 +674,8 @@ void gamePencilStartPageResource::load_projecs_folder( std::string projectsDirec
                                 newMultiLine+="\nLanguage: "+qpr->detectedLanguage;
                             }
                             //newMultiLine+="\nLocation: "+tempProjectName;
-                            tempProjectButton = new pawgui::widget_button_card_vertical( qpr->detectedIcon,newMultiLine, qpr->detectedLocation);
-                            foundProjectsList.push_back(tempProjectButton);
+                            tempProject_button = new pawgui::widget_button_card_vertical( qpr->detectedIcon,newMultiLine, qpr->detectedLocation);
+                            foundProjectsList.push_back(tempProject_button);
                         }
                     }
                 }
@@ -718,7 +718,7 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
         headerSpaceHeight = 100;
 
 
-        if( panel_main_area!=NULL )
+        if( panel_main_editor!=NULL )
         {
             headerViewedSpace->x = 0;
             headerViewedSpace->y = 0;
@@ -758,9 +758,9 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
         headerPageList->barXPadding = pawgui::padding_default;
         headerPageList->barXMargin = 0;
         headerPageList->add_gui_element(labelCopyrightInfo,true);
-        headerPageList->add_gui_element(loadProjectButton,false);
-        headerPageList->add_gui_element(newProjectButton,false);
-        headerPageList->add_gui_element(refreshButton,true);
+        headerPageList->add_gui_element(loadProject_button,false);
+        headerPageList->add_gui_element(newProject_button,false);
+        headerPageList->add_gui_element(refresh_button,true);
         projectsCategoryTabs->set_width( headerViewedSpace->w - pawgui::padding_default * 5 );
         headerPageList->add_gui_element(projectsCategoryTabs,true);
         headerPageList->process_self( view_space,cam);
@@ -776,8 +776,9 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
         startPageList->set_width(subViewedSpace->w);
         startPageList->set_height(subViewedSpace->h );
         startPageList->barXPadding = pawgui::padding_default;
+        startPageList->barYPadding = pawgui::padding_default;
         startPageList->barXMargin = pawgui::padding_default;
-        startPageList->set_horizontal_align( gpe::fa_center );
+        startPageList->set_horizontal_align( gpe::fa_left );
         startPageList->yScroll->documentActions = true;
         //Recent Projects
         pawgui::widget_text_url * tTUrl = NULL;
@@ -829,7 +830,7 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
         {
             //Favorites Folder
             favProjectListSize = (int)foundProjectsList.size();
-            startPageList->add_gui_element(scanProjectFolderButton,true);
+            startPageList->add_gui_element(scanProjectFolder_button,true);
             if( favProjectListSize > 0)
             {
                 startPageList->add_gui_element(projectFolderLocationLabel,true);
@@ -851,49 +852,49 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
         startPageList->add_gui_element(urlPatreonPage,true);
 
         startPageList->add_gui_element(communityLinksTitle,true);
-        pawgui::widget_button_icon * tCommunityButton = NULL;
-        int menuLinksTotal = (int)communityButtons.size();
+        pawgui::widget_button_icon * tCommunity_button = NULL;
+        int menuLinksTotal = (int)community_buttons.size();
         for( int subMenuI= 0; subMenuI < menuLinksTotal; subMenuI++)
         {
-            tCommunityButton = communityButtons.at(subMenuI);
-            if( tCommunityButton!=NULL)
+            tCommunity_button = community_buttons.at(subMenuI);
+            if( tCommunity_button!=NULL)
             {
-                startPageList->add_gui_element( tCommunityButton, subMenuI == menuLinksTotal-1 );
+                startPageList->add_gui_element( tCommunity_button, subMenuI == menuLinksTotal-1 );
             }
         }
         startPageList->process_self(view_space,cam);
 
-        if( refreshButton!=NULL && refreshButton->is_clicked() )
+        if( refresh_button!=NULL && refresh_button->is_clicked() )
         {
             rProjectListSize = (int)recentProjectsList.size();
             i = 0;
-            pawgui::widget_button_card_vertical * tRecentListButton = NULL;
+            pawgui::widget_button_card_vertical * tRecentList_button = NULL;
             if( rProjectListSize > 0)
             {
                 for( i = rProjectListSize-1; i >=0; i--)
                 {
-                    tRecentListButton = recentProjectsList[i];
-                    if( tRecentListButton!=NULL)
+                    tRecentList_button = recentProjectsList[i];
+                    if( tRecentList_button!=NULL)
                     {
-                        delete tRecentListButton;
-                        tRecentListButton = NULL;
+                        delete tRecentList_button;
+                        tRecentList_button = NULL;
                     }
                 }
                 recentProjectsList.clear();
             }
 
             quickProjectReader * qpr = new quickProjectReader();
-            tRecentListButton = NULL;
+            tRecentList_button = NULL;
             std::string tempProjectName = "";
             std::string newMultiLine = "";
             for( i = 0; i < recent_project_list_size; i++)
             {
                 tempProjectName = editor_gui_main->get_recent_project_name(i);
-                if( (int)tempProjectName.size() > 0 && sff_ex::file_exists(tempProjectName) )
+                if( (int)tempProjectName.size() > 0 && gpe::main_file_url_manager->file_exists(tempProjectName) )
                 {
                     if( qpr->review_project(tempProjectName) )
                     {
-                        if( sff_ex::file_exists(qpr->detectedIcon) ==false)
+                        if( gpe::main_file_url_manager->file_exists(qpr->detectedIcon) ==false)
                         {
                             qpr->detectedIcon =gpe::app_directory_name+"resources/gamepencil_icon_72dpi.png";
                         }
@@ -907,8 +908,8 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
                             newMultiLine+="\nLanguage: "+qpr->detectedLanguage;
                         }
                         //newMultiLine+="\nLocation: "+tempProjectName;
-                        tRecentListButton = new pawgui::widget_button_card_vertical( qpr->detectedIcon, newMultiLine, qpr->detectedLocation);
-                        recentProjectsList.push_back(tRecentListButton);
+                        tRecentList_button = new pawgui::widget_button_card_vertical( qpr->detectedIcon, newMultiLine, qpr->detectedLocation);
+                        recentProjectsList.push_back(tRecentList_button);
                     }
                 }
             }
@@ -929,19 +930,19 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
             load_example_projects_folder();
             process_self(view_space,cam);
         }
-        else if( newProjectButton!=NULL && newProjectButton->is_clicked() )
+        else if( newProject_button!=NULL && newProject_button->is_clicked() )
         {
             editor_gui_main->launch_new_project();
         }
-        else if( loadProjectButton!=NULL && loadProjectButton->is_clicked() )
+        else if( loadProject_button!=NULL && loadProject_button->is_clicked() )
         {
             editor_gui_main->open_new_project();
         }
-        else if( scanProjectFolderButton!=NULL && scanProjectFolderButton->is_clicked() )
+        else if( scanProjectFolder_button!=NULL && scanProjectFolder_button->is_clicked() )
         {
             std::string lastDirectory = "";
             std::string newPathToScan = pawgui::get_directory_name_from_popup("Scan Folder for Projects", lastDirectory,false);
-            if( sff_ex::path_exists(newPathToScan) )
+            if( gpe::main_file_url_manager->path_exists(newPathToScan) )
             {
                 load_projecs_folder(newPathToScan);
                 gpe::input->reset_all_input();
@@ -999,20 +1000,20 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
         }
         processedFirst = true;
 
-        if( panel_main_area!=NULL )
+        if( panel_main_editor!=NULL )
         {
-            panel_main_area->clear_panel();
-            panel_main_area->panelGuiList->set_horizontal_align( gpe::fa_center );
-            panel_main_area->add_gui_element(labelImgGPELogo,true);
-            panel_main_area->add_gui_element(helpPageButton,true);
-            panel_main_area->add_gui_element(tipOfTheDayButton,true);
-            panel_main_area->add_gui_element(labelHelpfulLinks,true);
+            panel_main_editor->clear_panel();
+            panel_main_editor->panelGuiList->set_horizontal_align( gpe::fa_center );
+            panel_main_editor->add_gui_element(labelImgGPELogo,true);
+            panel_main_editor->add_gui_element(helpPage_button,true);
+            panel_main_editor->add_gui_element(tipOfTheDay_button,true);
+            panel_main_editor->add_gui_element(labelHelpfulLinks,true);
             for( int i = 0 ; i < (int)helpfulWebLinks.size(); i++)
             {
-                panel_main_area->add_gui_element( helpfulWebLinks[i],true);
+                panel_main_editor->add_gui_element( helpfulWebLinks[i],true);
             }
 
-            panel_main_area->process_self();
+            panel_main_editor->process_self();
         }
         else if( sidePanelList !=NULL )
         {
@@ -1025,8 +1026,8 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
 
             sidePanelList->clear_list();
             sidePanelList->add_gui_element(labelImgGPELogo,true );
-            sidePanelList->add_gui_element(helpPageButton,true);
-            sidePanelList->add_gui_element(tipOfTheDayButton,true);
+            sidePanelList->add_gui_element(helpPage_button,true);
+            sidePanelList->add_gui_element(tipOfTheDay_button,true);
             sidePanelList->yScroll->documentActions = true;
 
             sidePanelList->add_gui_element(labelHelpfulLinks,true);
@@ -1039,11 +1040,11 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
         }
 
         //Get individual processes here
-        if( tipOfTheDayButton->is_clicked() )
+        if( tipOfTheDay_button->is_clicked() )
         {
             GPE_Show_Tip_Of_Day();
         }
-        else if( helpPageButton->is_clicked() )
+        else if( helpPage_button->is_clicked() )
         {
             pawgui::main_tab_resource_bar->add_new_tab( main_about_page );
         }
@@ -1061,7 +1062,7 @@ void gamePencilStartPageResource::render_self( gpe::shape_rect * view_space, gpe
             startPageList->render_self( view_space,cam);
         }
 
-        if( sidePanelList!=NULL && panel_main_area==NULL )
+        if( sidePanelList!=NULL && panel_main_editor==NULL )
         {
             sidePanelList->render_self( view_space,cam );
         }

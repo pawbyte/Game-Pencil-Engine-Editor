@@ -3,10 +3,10 @@ audio_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -51,18 +51,18 @@ audioResource::audioResource(pawgui::widget_resource_container * pFolder)
     audioGroupName = new pawgui::widget_input_text("","default=blank");
     audioGroupName->set_name("Audio Group");
     audioGroupName->set_label("Audio Group");
-    audioTypeButtonController = new pawgui::widget_radio_button_controller("Audio Type", true,1);
-    audioTypeButtonController->add_opton("Normal Audio");
-    audioTypeButtonController->add_opton("Voice");
-    audioTypeButtonController->add_opton("Background Music");
-    if( saveResourceButton!=NULL)
+    audioType_buttonController = new pawgui::widget_radio_button_controller("Audio Type", true,1);
+    audioType_buttonController->add_opton("Normal Audio");
+    audioType_buttonController->add_opton("Voice");
+    audioType_buttonController->add_opton("Background Music");
+    if( saveResource_button!=NULL)
     {
-        audioTypeButtonController->set_coords(-1,saveResourceButton->get_ypos()+saveResourceButton->get_height()+pawgui::padding_default);
+        audioType_buttonController->set_coords(-1,saveResource_button->get_ypos()+saveResource_button->get_height()+pawgui::padding_default);
     }
-    openExternalEditorButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Use External Editor" );
-    refreshResourceDataButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png"," Refreshes this resource's media files");
+    openExternalEditor_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Use External Editor" );
+    refreshResourceData_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png"," Refreshes this resource's media files");
 
-    playButton = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Play" );
+    play_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Play" );
     preloadCheckBox = new pawgui::widget_checkbox("Preload Audio","Check to load audio at game open", true);
     volumeLabel = new pawgui::widget_label_text ("Volume","Default Volume Level");
     defaultVolume = new pawgui::widget_input_number("Range 0 to 100",true,0,200 );
@@ -103,10 +103,10 @@ audioResource::~audioResource()
         gpe::error_log->report("Removing Audio file...");
     }
 
-    if( audioTypeButtonController!=NULL)
+    if( audioType_buttonController!=NULL)
     {
-        delete audioTypeButtonController;
-        audioTypeButtonController = NULL;
+        delete audioType_buttonController;
+        audioType_buttonController = NULL;
     }
     if( defaultVolume!=NULL)
     {
@@ -123,15 +123,15 @@ audioResource::~audioResource()
         delete audioGroupName;
         audioGroupName = NULL;
     }
-    if( playButton!=NULL)
+    if( play_button!=NULL)
     {
-        delete playButton;
-        playButton = NULL;
+        delete play_button;
+        play_button = NULL;
     }
-    if( refreshResourceDataButton!=NULL)
+    if( refreshResourceData_button!=NULL)
     {
-        delete refreshResourceDataButton;
-        refreshResourceDataButton = NULL;
+        delete refreshResourceData_button;
+        refreshResourceData_button = NULL;
     }
 }
 
@@ -157,9 +157,9 @@ bool audioResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTab
                 *fileTarget << "'',";
             }
         }
-        if( audioTypeButtonController!=NULL)
+        if( audioType_buttonController!=NULL)
         {
-            *fileTarget << audioTypeButtonController->get_selected_id() << ",";
+            *fileTarget << audioType_buttonController->get_selected_id() << ",";
         }
         else
         {
@@ -207,7 +207,7 @@ void audioResource::compile_cpp()
 
 }
 
-bool audioResource::copy_audio_source(std::string outDirectoryName)
+bool audioResource::copy_audio_source(std::string directory_output_name)
 {
     std::string copyDestinationStr = "";
     bool copyErrorFound = false;
@@ -215,8 +215,8 @@ bool audioResource::copy_audio_source(std::string outDirectoryName)
     {
         if((int)audioFileName[i].size() > 0)
         {
-            copyDestinationStr = outDirectoryName+"/"+ stg_ex::get_short_filename(audioFileName[i],true);
-            if( sff_ex::file_copy(audioFileName[i],copyDestinationStr )==false)
+            copyDestinationStr = directory_output_name+"/"+ stg_ex::get_short_filename(audioFileName[i],true);
+            if( gpe::main_file_url_manager->file_copy(audioFileName[i],copyDestinationStr )==false)
             {
                 copyErrorFound = true;
             }
@@ -241,8 +241,8 @@ void audioResource::load_audio(std::string new_file_name)
     {
         bool loadableAudio = false;
         bool isAudioFile = true;
-        playButton->set_name("Play");
-        playButton->descriptionText = "Push to Play Audio";
+        play_button->set_name("Play");
+        play_button->descriptionText = "Push to Play Audio";
         std::string newFileExt = stg_ex::get_file_ext(new_file_name);
         if( newFileExt=="aac")
         {
@@ -298,15 +298,15 @@ void audioResource::load_audio(std::string new_file_name)
 void audioResource::load_resource(std::string file_path )
 {
 
-    if( pawgui::main_loader_display != NULL )
+    if( main_gpe_splash_page != NULL )
     {
-        pawgui::main_loader_display->update_submessages( "Processing Audio", resource_name );
+        main_gpe_splash_page->update_submessages( "Processing Audio", resource_name );
     }
     std::string otherColContainerName = "";
 
     std::string newFileIn ="";
     std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/audio/";
-    if( sff_ex::file_exists(file_path) )
+    if( gpe::main_file_url_manager->file_exists(file_path) )
     {
         newFileIn = file_path;
         soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -332,9 +332,9 @@ void audioResource::load_resource(std::string file_path )
     int equalPos = 0;
     std::string firstChar="";
     std::string section="";
-    std::string keyString="";
-    std::string valString="";
-    std::string subValString="";
+    std::string key_string="";
+    std::string valstring="";
+    std::string subValstring="";
     std::string currLine="";
     std::string currLineToBeProcessed;
     float foundFileVersion = 0;
@@ -358,11 +358,11 @@ void audioResource::load_resource(std::string file_path )
                     if(equalPos!=(int)std::string::npos)
                     {
                         //if the equalPos is present, then parse on through and carryon
-                        keyString = currLineToBeProcessed.substr(0,equalPos);
-                        valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                        if( keyString=="Version")
+                        key_string = currLineToBeProcessed.substr(0,equalPos);
+                        valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                        if( key_string=="Version")
                         {
-                            foundFileVersion = stg_ex::string_to_float(valString);
+                            foundFileVersion = stg_ex::string_to_float(valstring);
                         }
                     }
                 }
@@ -377,45 +377,45 @@ void audioResource::load_resource(std::string file_path )
                 if(equalPos!=(int)std::string::npos)
                 {
                     //if the equalPos is present, then parse on through and carryon
-                    keyString = currLineToBeProcessed.substr(0,equalPos);
-                    valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                    key_string = currLineToBeProcessed.substr(0,equalPos);
+                    valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
-                    if( keyString=="ResourceName")
+                    if( key_string=="ResourceName")
                     {
-                        renameBox->set_string(valString);
+                        renameBox->set_string(valstring);
                     }
-                    else if( keyString=="AudioFileLocation")
+                    else if( key_string=="AudioFileLocation")
                     {
-                        load_audio( soughtDir+valString );
+                        load_audio( soughtDir+valstring );
                     }
-                    else if( keyString=="Preload")
+                    else if( key_string=="Preload")
                     {
-                        isPreloaded = stg_ex::string_to_bool(valString);
+                        isPreloaded = stg_ex::string_to_bool(valstring);
                         preloadCheckBox->set_checked(isPreloaded );
                     }
-                    else if( keyString=="AudioGroup")
+                    else if( key_string=="AudioGroup")
                     {
-                        audioGroupName->set_string(valString);
+                        audioGroupName->set_string(valstring);
                     }
-                    else if( keyString=="AudioType")
+                    else if( key_string=="AudioType")
                     {
-                        audioType = stg_ex::string_to_int(valString,0);
-                        audioTypeButtonController->set_selection(audioType);
+                        audioType = stg_ex::string_to_int(valstring,0);
+                        audioType_buttonController->set_selection(audioType);
                     }
-                    else if( keyString=="DefaultVolume")
+                    else if( key_string=="DefaultVolume")
                     {
-                        defaultVolume->set_number( stg_ex::string_to_int(valString,100));
+                        defaultVolume->set_number( stg_ex::string_to_int(valstring,100));
                     }
                     else
                     {
                         for(int i = 0; i < gpe::sound_format_max; i++)
                         {
-                            if( keyString=="AudioFile["+ gpe::sound_type_names[i]+"]")
+                            if( key_string=="AudioFile["+ gpe::sound_type_names[i]+"]")
                             {
                                 //to at least include if a file type is available in string
-                                if( (int)valString.size() > 3 )
+                                if( (int)valstring.size() > 3 )
                                 {
-                                    load_audio( soughtDir+valString );
+                                    load_audio( soughtDir+valstring );
                                 }
                             }
                         }
@@ -434,21 +434,21 @@ void audioResource::load_resource(std::string file_path )
 void audioResource::prerender_self( )
 {
     standardEditableGameResource::prerender_self( );
-    if( playButton!=NULL)
+    if( play_button!=NULL)
     {
-        playButton->prerender_self( );
+        play_button->prerender_self( );
     }
-    if( openExternalEditorButton!=NULL)
+    if( openExternalEditor_button!=NULL)
     {
-        openExternalEditorButton->prerender_self( );
+        openExternalEditor_button->prerender_self( );
     }
     if( preloadCheckBox!=NULL)
     {
         preloadCheckBox->prerender_self( );
     }
-    if( audioTypeButtonController!=NULL)
+    if( audioType_buttonController!=NULL)
     {
-        audioTypeButtonController->prerender_self( );
+        audioType_buttonController->prerender_self( );
     }
 
 }
@@ -462,84 +462,84 @@ void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
         int prevVolumeSliderVal = volumeSlider->get_value();
         int prevVolumeTypedVal = defaultVolume->get_held_number();
 
-        if( panel_main_area!=NULL )
+        if( panel_main_editor!=NULL )
         {
-            panel_main_area->clear_panel();
+            panel_main_editor->clear_panel();
 
-            panel_main_area->add_gui_element(audioEditorMainNote,true);
-            panel_main_area->add_gui_element(renameBox,true);
-            panel_main_area->add_gui_element(audioGroupName, true);
+            panel_main_editor->add_gui_element(audioEditorMainNote,true);
+            panel_main_editor->add_gui_element(renameBox,true);
+            panel_main_editor->add_gui_element(audioGroupName, true);
 
-            panel_main_area->add_gui_auto(refreshResourceDataButton);
-            panel_main_area->add_gui_auto(loadResourceButton);
-            panel_main_area->add_gui_auto(playButton);
-            panel_main_area->add_gui_auto(exportResourceButton);
-            panel_main_area->add_gui_element(openExternalEditorButton,true);
+            panel_main_editor->add_gui_auto(refreshResourceData_button);
+            panel_main_editor->add_gui_auto(loadResource_button);
+            panel_main_editor->add_gui_auto(play_button);
+            panel_main_editor->add_gui_auto(exportResource_button);
+            panel_main_editor->add_gui_element(openExternalEditor_button,true);
 
-            panel_main_area->add_gui_element(audioTypeButtonController,true);
+            panel_main_editor->add_gui_element(audioType_buttonController,true);
 
-            panel_main_area->add_gui_element(volumeLabel, true);
-            panel_main_area->add_gui_element(volumeSlider, false);
-            panel_main_area->add_gui_element(defaultVolume,true);
+            panel_main_editor->add_gui_element(volumeLabel, true);
+            panel_main_editor->add_gui_element(volumeSlider, false);
+            panel_main_editor->add_gui_element(defaultVolume,true);
 
-            panel_main_area->add_gui_auto(confirmResourceButton);
-            panel_main_area->add_gui_auto(cancelResourceButton);
-            panel_main_area->process_self( NULL, NULL );
+            panel_main_editor->add_gui_auto(confirmResource_button);
+            panel_main_editor->add_gui_auto(cancelResource_button);
+            panel_main_editor->process_self( NULL, NULL );
 
-            if( confirmResourceButton!=NULL && confirmResourceButton->is_clicked() )
+            if( confirmResource_button!=NULL && confirmResource_button->is_clicked() )
             {
                 save_resource();
             }
-            else if( cancelResourceButton->is_clicked() )
+            else if( cancelResource_button->is_clicked() )
             {
                 resourcePostProcessed = false;
                 load_resource();
             }
-            if(audioTypeButtonController!=NULL)
+            if(audioType_buttonController!=NULL)
             {
-                audioType = audioTypeButtonController->get_selected_id();
+                audioType = audioType_buttonController->get_selected_id();
             }
             //plays or pauses the sound
-            if( playButton!=NULL)
+            if( play_button!=NULL)
             {
-                if( playButton->is_clicked() )
+                if( play_button->is_clicked() )
                 {
-                    if( playButton->get_name()=="Play")
+                    if( play_button->get_name()=="Play")
                     {
                         if( soundVal!=NULL)
                         {
                             soundVal->play();
-                            playButton->set_name("Stop");
-                            playButton->change_texture( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/stop.png" );
-                            playButton->descriptionText = "Push to Stop Audio";
+                            play_button->set_name("Stop");
+                            play_button->change_texture( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/stop.png" );
+                            play_button->descriptionText = "Push to Stop Audio";
                         }
                     }
-                    else if( playButton->get_name()=="Stop")
+                    else if( play_button->get_name()=="Stop")
                     {
                         if( soundVal != NULL )
                         {
                             soundVal->stop();
                         }
-                        playButton->set_name("Play");
-                        playButton->descriptionText = "Push to Play Audio";
-                        playButton->change_texture( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png" );
+                        play_button->set_name("Play");
+                        play_button->descriptionText = "Push to Play Audio";
+                        play_button->change_texture( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png" );
 
                     }
-                    playButton->set_width(loadResourceButton->get_width() );
+                    play_button->set_width(loadResource_button->get_width() );
                 }
-                else if( playButton->get_name()=="Stop")
+                else if( play_button->get_name()=="Stop")
                 {
                     /*if( audio_is_play( )== false )
                     {
-                        playButton->set_name("Play");
-                        playButton->descriptionText = "Push to Play Audio";
-                        playButton->change_texture( app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png" );
+                        play_button->set_name("Play");
+                        play_button->descriptionText = "Push to Play Audio";
+                        play_button->change_texture( app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png" );
                     }*/
                 }
             }
-            if( loadResourceButton!=NULL)
+            if( loadResource_button!=NULL)
             {
-                if( loadResourceButton->is_clicked() )
+                if( loadResource_button->is_clicked() )
                 {
                     std::string new_file_name = pawgui::get_filename_open_from_popup("Load In an Audio File","Audio",pawgui::main_settings->fileOpenAudioDir);
                     if( (int)new_file_name.size() > 3)
@@ -548,9 +548,9 @@ void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
                     }
                 }
             }
-            if( openExternalEditorButton!=NULL)
+            if( openExternalEditor_button!=NULL)
             {
-                if( openExternalEditorButton->is_clicked() )
+                if( openExternalEditor_button->is_clicked() )
                 {
                     bool hasFileToOpen = false;
                     int ii = 0;
@@ -565,7 +565,7 @@ void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
                     if( hasFileToOpen )
                     {
                         pawgui::context_menu_open();
-                        pawgui::main_context_menu->set_width(openExternalEditorButton->get_width() );
+                        pawgui::main_context_menu->set_width(openExternalEditor_button->get_width() );
                         for( ii = 0; ii < gpe::sound_format_max; ii++)
                         {
                             if( (int)audioFileName[ii].size() > 0)
@@ -580,24 +580,24 @@ void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
 
                             if( main_editor_settings!=NULL && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_AUD]!=NULL)
                             {
-                                gpe::external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_AUD]->get_string(),fileToEdit, true );
+                                gpe::main_file_url_manager->external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_AUD]->get_string(),fileToEdit, true );
                             }
                             else
                             {
-                                gpe::external_open_url(fileToEdit);
+                                gpe::main_file_url_manager->external_open_url(fileToEdit);
                             }
                             /*
                             fileToEdit = "\"C:/Program Files (x86)/Audacity/audacity.exe\" \""+fileToEdit+"\"";
                             external_open_url(fileToEdit);*/
-                            sff_ex::append_to_file( gpe::get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+fileToEdit+"]...");
+                            gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+fileToEdit+"]...");
                         }
                     }
                 }
             }
 
-            if( refreshResourceDataButton!=NULL )
+            if( refreshResourceData_button!=NULL )
             {
-                if( refreshResourceDataButton->is_clicked() )
+                if( refreshResourceData_button->is_clicked() )
                 {
                     resourcePostProcessed = false;
                     load_resource();
@@ -665,15 +665,15 @@ void audioResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *
 
 void audioResource::save_resource(std::string file_path, int backupId)
 {
-    if( pawgui::main_loader_display != NULL )
+    if( main_gpe_splash_page != NULL )
     {
-        pawgui::main_loader_display->update_submessages( "Saving Audio", resource_name );
+        main_gpe_splash_page->update_submessages( "Saving Audio", resource_name );
     }
 
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( sff_ex::path_exists(soughtDir) )
+    if( gpe::main_file_url_manager->path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
@@ -703,7 +703,7 @@ void audioResource::save_resource(std::string file_path, int backupId)
                     {
                         resFileCopySrc = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/audio/"+resFileLocation;
                         resFileCopyDest = soughtDir+resFileLocation;
-                        if( sff_ex::file_exists(resFileCopyDest) )
+                        if( gpe::main_file_url_manager->file_exists(resFileCopyDest) )
                         {
                             /*
                             if( pawgui::display_prompt_message("[WARNING]Audio File Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] audio file? This action is irreversible!")==pawgui::display_query_yes)
@@ -714,7 +714,7 @@ void audioResource::save_resource(std::string file_path, int backupId)
                         }
                         else
                         {
-                            sff_ex::file_copy(resFileCopySrc,resFileCopyDest);
+                            gpe::main_file_url_manager->file_copy(resFileCopySrc,resFileCopyDest);
                         }
                     }
 
@@ -733,9 +733,9 @@ void audioResource::save_resource(std::string file_path, int backupId)
                 newSaveDataFile << "AudioGroup="+audioGroupName->get_string()+"\n";
 
             }
-            if( audioTypeButtonController!=NULL)
+            if( audioType_buttonController!=NULL)
             {
-                newSaveDataFile << "AudioType="+ stg_ex::int_to_string(audioTypeButtonController->get_selected_id() )+"\n";
+                newSaveDataFile << "AudioType="+ stg_ex::int_to_string(audioType_buttonController->get_selected_id() )+"\n";
             }
 
             newSaveDataFile.close();

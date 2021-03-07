@@ -3,10 +3,10 @@ gpe_gamepad_tester.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -40,8 +40,8 @@ class gamePencilgamepadTesterResource: public pawgui::general_resource
 {
 public:
     int controllerInView;
-    pawgui::widget_button_push * confirmResourceButton;
-    pawgui::widget_button_push * cancelResourceButton;
+    pawgui::widget_button_push * confirmResource_button;
+    pawgui::widget_button_push * cancelResource_button;
     pawgui::widget_selectbox * sideAreaPanel;
     gpe::shape_rect * sidePanelRect;
     pawgui::widget_checkbox * requireInputToConnect;
@@ -56,10 +56,10 @@ public:
     pawgui::widget_input_number * playerSizeRadius[gp_max_devices];
     pawgui::gpe_widget_color_picker * playerTestColor[gp_max_devices];
     pawgui::gpe_widget_color_picker * playerFontColor[gp_max_devices];
-    pawgui::widget_button_push * detectControllersButton;
-    pawgui::widget_button_push * vibrateControllerButton;
-    pawgui::widget_button_icon * previousControllerButton;
-    pawgui::widget_button_icon * nextControllerButton;
+    pawgui::widget_button_push * detectControllers_button;
+    pawgui::widget_button_push * vibrateController_button;
+    pawgui::widget_button_icon * previousController_button;
+    pawgui::widget_button_icon * nextController_button;
     pawgui::widget_input_number * conrollerIdField;
     pawgui::widget_label_title * controllerViewTitleLabel;
     pawgui::widget_label_text  * controllerNameLabel;

@@ -3,10 +3,10 @@ gpe_basic_resource_page.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,13 +36,11 @@ SOFTWARE.
 #define GPE_BASIC_project_RESOURCE_H
 
 
-#include "gpe_dock_system.h"
+#include "../pawgui/pawgui_dock_system.h"
 #include "gpe_editor_globals.h"
 #include "gpe_editor_project.h"
 #include "../pawgui/pawgui_general_resource.h"
 #include "../pawgui/pawgui.h"
-#include "../sdl_libs/gpe_sdl_converter.h"
-#include "../sdl_libs/sdl_surface_ex.h"
 
 extern gpe::texture_base * texture_transparent_bg;
 extern gpe::texture_base * texture_gpe_logo;
@@ -56,8 +54,8 @@ public:
     GPE_ObjectComponent();
     ~GPE_ObjectComponent();
 
-    void load_data(std::string dataString);
-    void remove_data(std::string dataString);
+    void load_data(std::string datastring);
+    void remove_data(std::string datastring);
     void rename_component(std::string new_name);
     std::string get_data();
     std::string get_name();
@@ -71,15 +69,17 @@ public:
 class standardEditableGameResource : public pawgui::general_resource
 {
 protected:
-    pawgui::widget_button_icon * loadResourceButton;
-    pawgui::widget_button_icon * exportResourceButton;
-    pawgui::widget_button_icon * saveResourceButton;
-    pawgui::widget_button_push * confirmResourceButton;
-    pawgui::widget_button_push * cancelResourceButton;
+    pawgui::widget_button_icon * loadResource_button;
+    pawgui::widget_button_icon * exportResource_button;
+    pawgui::widget_button_icon * saveResource_button;
+    pawgui::widget_button_push * confirmResource_button;
+    pawgui::widget_button_push * cancelResource_button;
     pawgui::widget_input_text * renameBox;
+    float local_mouse_x, local_mouse_y;
+    float zoom_level;
 public:
     bool resourcePostProcessed;
-    int commonButtonAlignment;
+    int common_buttonAlignment;
     std::vector < GPE_ObjectComponent * > customComponentRealList;
     pawgui::widget_resource_container * projectParentFolder;
     standardEditableGameResource(pawgui::widget_resource_container * ppFolder = NULL);
@@ -89,6 +89,8 @@ public:
     virtual bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     virtual bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     virtual void compile_cpp();
+    virtual bool get_mouse_coords( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+
     virtual bool include_local_files( std::string pBuildDir , int buildType );
     virtual void integrate_into_syntax();
     virtual bool is_build_ready();

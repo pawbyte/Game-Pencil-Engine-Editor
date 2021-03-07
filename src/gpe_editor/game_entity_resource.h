@@ -3,10 +3,10 @@ game_entity_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -80,12 +80,12 @@ public:
     pawgui::widget_panel_list * customComponentsGuiList;
     pawgui::widget_label_text  * componentsMainGuiLabel;
     pawgui::widget_label_text  * componentsGuiLabel;
-    pawgui::widget_button_push * inheritParentComponentButton;
-    pawgui::widget_button_push * resetComponentsButton;
+    pawgui::widget_button_push * inheritParentComponent_button;
+    pawgui::widget_button_push * resetComponents_button;
     pawgui::widget_dropdown_menu * addNewComponentDropDown;
-    pawgui::widget_button_icon * removeComponentButton;
-    pawgui::widget_button_icon * editCompnentButton;
-    pawgui::widget_button_icon * componentSettingsButton;
+    pawgui::widget_button_icon * removeComponent_button;
+    pawgui::widget_button_icon * editCompnent_button;
+    pawgui::widget_button_icon * component_settings_button;
 
     gameEntityResource(pawgui::widget_resource_container * pFolder = NULL);
     ~gameEntityResource();
@@ -108,7 +108,7 @@ public:
     void save_resource(std::string file_path = "", int backupId = -1);
     int search_for_string(std::string needle);
     int search_and_replace_string(std::string needle, std::string newStr = "");
-    void update_box(int newX=-1, int newY=-1, int newW=-1, int newH=-1);
+    void update_box(int x_new=-1, int y_new=-1, int newW=-1, int newH=-1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 

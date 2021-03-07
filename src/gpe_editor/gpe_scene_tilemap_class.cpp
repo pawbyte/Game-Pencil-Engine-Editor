@@ -3,10 +3,10 @@ gpe_scene_tilemap_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,7 +36,7 @@ SOFTWARE.
 GPE_SceneTile::GPE_SceneTile()
 {
     isLocked = false;
-    branchType = gpe::branch_type::TILE;
+    branch_type_id = gpe::branch_type::TILE;
     iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/table.png") ;
 
     tileTypeId = -1;
@@ -88,7 +88,7 @@ GPE_SceneTileMap::GPE_SceneTileMap( std::string mapName, int x, int y, pawgui::w
 
     isLocked = false;
     set_position( x, y);
-    branchType = gpe::branch_type::TILEMAP;
+    branch_type_id = gpe::branch_type::TILEMAP;
     iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/th.png") ;
 
     update_rectangle(&tsPlacementArea,0,0,0,0);
@@ -99,11 +99,11 @@ GPE_SceneTileMap::GPE_SceneTileMap( std::string mapName, int x, int y, pawgui::w
     tileAmountX = prevTileAmountX = 0;
     tileAmountY = prevTileAmountY = 0;
 
-    xPosField->set_number( xPos );
-    xPosField->set_label("Map-XStart");
+    x_posField->set_number( x_pos );
+    x_posField->set_label("Map-XStart");
 
-    yPosField->set_number( yPos );
-    yPosField->set_label("Map-YStart");
+    y_posField->set_number( y_pos );
+    y_posField->set_label("Map-YStart");
 
     fieldTileWidth = new pawgui::widget_input_number( "32" );
     fieldTileWidth->set_number( tileWidth );
@@ -193,10 +193,10 @@ void GPE_SceneTileMap::calculate_size()
 
 }
 
-void GPE_SceneTileMap::create_new_map(int newTX, int newTY,int ntileType )
+void GPE_SceneTileMap::create_new_map(int new_xt, int new_yt,int ntileType )
 {
-    tileAmountX=newTX;
-    tileAmountY=newTY;
+    tileAmountX=new_xt;
+    tileAmountY=new_yt;
     int newSize = tileAmountX*tileAmountY;
     if( mapTiles.size() >0 )
     {
@@ -214,8 +214,8 @@ void GPE_SceneTileMap::create_new_map(int newTX, int newTY,int ntileType )
         mapTiles.push_back(newTile);
     }
 
-    xPosField->set_number( xPos );
-    yPosField->set_number( yPos );
+    x_posField->set_number( x_pos );
+    y_posField->set_number( y_pos );
 
     fieldTileWidth->set_number( tileWidth );
     fieldTileHeight->set_number( tileHeight );
@@ -233,12 +233,12 @@ int GPE_SceneTileMap::get_map_size()
 
 int GPE_SceneTileMap::get_xmax()
 {
-    return xPos+tileWidth * tileAmountX;
+    return x_pos+tileWidth * tileAmountX;
 }
 
 int GPE_SceneTileMap::get_ymax()
 {
-    return yPos+tileHeight * tileAmountY;
+    return y_pos+tileHeight * tileAmountY;
 }
 
 int GPE_SceneTileMap::get_sizex()
@@ -257,9 +257,9 @@ int GPE_SceneTileMap::get_tile_x( int xInPixels)
     {
         return -1;
     }
-    if( xInPixels > xPos )
+    if( xInPixels > x_pos )
     {
-        xInPixels-= xPos;
+        xInPixels-= x_pos;
         if( xInPixels < tileWidth * tileAmountX )
         {
             return xInPixels /tileWidth;
@@ -278,9 +278,9 @@ int GPE_SceneTileMap::get_tile_y( int yInPixels)
     {
         return -1;
     }
-    if( yInPixels > yPos )
+    if( yInPixels > y_pos )
     {
-        yInPixels-= yPos;
+        yInPixels-= y_pos;
         if( yInPixels < tileHeight * tileAmountY )
         {
             return yInPixels /tileHeight;
@@ -313,7 +313,7 @@ void GPE_SceneTileMap::process_elements()
 {
     GPE_SceneBasicClass::process_elements();
     int previousTileSheetId = tilesheetDropDown->get_selected_id();
-    PANEL_TS_RESOURCE = GPE_DOCK->find_panel("Tilesheet");
+    PANEL_TS_RESOURCE = gpe_dock->find_panel("Tilesheet");
     if(PANEL_TS_RESOURCE!=NULL )
     {
         if( tSPreviewer!=NULL )
@@ -355,7 +355,7 @@ void GPE_SceneTileMap::process_elements()
     {
         if( tileWidth > 0)
         {
-            sceneTileMouseX = ( spm->mouseXPos - xPos) / tileWidth;
+            sceneTileMouseX = ( spm->mouseXPos - x_pos) / tileWidth;
         }
         else
         {
@@ -363,14 +363,14 @@ void GPE_SceneTileMap::process_elements()
         }
         if( tileHeight > 0)
         {
-            sceneTileMouseY = ( spm->mouseYPos - yPos) /tileHeight;
+            sceneTileMouseY = ( spm->mouseYPos - y_pos) /tileHeight;
         }
     }
     else
     {
         return;
     }
-    //if( shortcutButtonBar->get_tab_id() == SCENE_MODE_PLACE && mouseIsInScene && tSPreviewer!=NULL  &&  !selectedLayerMap->isLocked  )
+    //if( shortcut_buttonBar->get_tab_id() == SCENE_MODE_PLACE && mouseIsInScene && tSPreviewer!=NULL  &&  !selectedLayerMap->isLocked  )
     if( tSPreviewer!=NULL &&  !isLocked && tSPreviewer!=NULL && spm->mouseInScene && spm->editMode == SCENE_MODE_PLACE )
     {
         if( gpe::input->check_mouse_down( mb_left ) && tileWidth  > 0 && tileHeight  > 0  && (int)tSPreviewer->tilesIdsInPreview.size()>0  )
@@ -413,7 +413,7 @@ void GPE_SceneTileMap::process_elements()
             }
         }
     }
-    //else if(shortcutButtonBar->get_tab_id() == SCENE_MODE_ERASE && mouseIsInScene && selectedLayerMap!=NULL  &&  !selectedLayerMap->isLocked  )
+    //else if(shortcut_buttonBar->get_tab_id() == SCENE_MODE_ERASE && mouseIsInScene && selectedLayerMap!=NULL  &&  !selectedLayerMap->isLocked  )
     else if(  !isLocked && gpe::input->check_mouse_down( mb_right )   && spm->mouseInScene  && spm->editMode == SCENE_MODE_ERASE  )
     {
         //Remove Tiles / Delete Tiles
@@ -433,11 +433,11 @@ void GPE_SceneTileMap::process_elements()
     }
 }
 
-void GPE_SceneTileMap::resize_tilemap( int newTX, int newTY,int ntileType)
+void GPE_SceneTileMap::resize_tilemap( int new_xt, int new_yt,int ntileType)
 {
-    if( (newTX!=tileAmountX || newTY!=tileAmountY )&& newTX>0 && newTY>0)
+    if( (new_xt!=tileAmountX || new_yt!=tileAmountY )&& new_xt>0 && new_yt>0)
     {
-        int newSize = newTX*newTY;
+        int newSize = new_xt*new_yt;
         GPE_SceneTile *newTile = NULL;
         GPE_SceneTile *prevTile = NULL;
         int i, j;
@@ -466,7 +466,7 @@ void GPE_SceneTileMap::resize_tilemap( int newTX, int newTY,int ntileType)
         mapTiles.clear();
 
         gpe::error_log->report("Map cleared ("+ stg_ex::int_to_string((int)mapTiles.size() ) +").");
-        gpe::error_log->report("New Dimensions ("+ stg_ex::int_to_string(newTX)  +" x "+ stg_ex::int_to_string(newTY)+" = "+ stg_ex::int_to_string(newSize)+".");
+        gpe::error_log->report("New Dimensions ("+ stg_ex::int_to_string(new_xt)  +" x "+ stg_ex::int_to_string(new_yt)+" = "+ stg_ex::int_to_string(newSize)+".");
 
         for( i=0; i<newSize; i++)
         {
@@ -478,8 +478,8 @@ void GPE_SceneTileMap::resize_tilemap( int newTX, int newTY,int ntileType)
         gpe::error_log->report("Map resized ("+ stg_ex::int_to_string((int)mapTiles.size() ) +").");
         //creates the tile layer with new dimensions all blanked out
         newTile = NULL;
-        int iMaxPrevXTiles = std::max(newTX, tileAmountX);
-        int jMaxPrevYTiles = std::max(newTY, tileAmountY);
+        int iMaxPrevXTiles = std::max(new_xt, tileAmountX);
+        int jMaxPrevYTiles = std::max(new_yt, tileAmountY);
 
         if( (int)tempMapTiles.size() >0 && (int)mapTiles.size() >0 )
         {
@@ -495,9 +495,9 @@ void GPE_SceneTileMap::resize_tilemap( int newTX, int newTY,int ntileType)
                     {
                         prevTile = NULL;
                     }
-                    if( newTX > i && newTY > j)
+                    if( new_xt > i && new_yt > j)
                     {
-                        newTile = mapTiles.at(i+newTX*j);
+                        newTile = mapTiles.at(i+new_xt*j);
                     }
                     else
                     {
@@ -513,8 +513,8 @@ void GPE_SceneTileMap::resize_tilemap( int newTX, int newTY,int ntileType)
             }
         }
 
-        tileAmountX=newTX;
-        tileAmountY=newTY;
+        tileAmountX=new_xt;
+        tileAmountY=new_yt;
         //destroys the temp map
         if( (int)tempMapTiles.size() >0 )
         {
@@ -525,8 +525,8 @@ void GPE_SceneTileMap::resize_tilemap( int newTX, int newTY,int ntileType)
             tempMapTiles.clear();
         }
 
-        xPosField->set_number( xPos );
-        yPosField->set_number( yPos );
+        x_posField->set_number( x_pos );
+        y_posField->set_number( y_pos );
 
         fieldTileWidth->set_number( tileWidth );
         fieldTileHeight->set_number( tileHeight );
@@ -693,8 +693,8 @@ bool GPE_SceneTileMap::save_branch_data(std::ofstream * fileTarget, int nestedFo
         *fileTarget << stg_ex::int_to_string( tileHeight )+",";
         *fileTarget << stg_ex::int_to_string( tileAmountX )+",";
         *fileTarget << stg_ex::int_to_string( tileAmountY )+",";
-        *fileTarget << stg_ex::int_to_string( xPos )+",";
-        *fileTarget << stg_ex::int_to_string( yPos )+",";
+        *fileTarget << stg_ex::int_to_string( x_pos )+",";
+        *fileTarget << stg_ex::int_to_string( y_pos )+",";
         if( fillScene!=NULL)
         {
             *fileTarget << stg_ex::int_to_string( fillScene->is_clicked() )+",";

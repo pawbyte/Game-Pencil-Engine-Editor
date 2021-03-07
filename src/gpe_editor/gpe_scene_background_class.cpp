@@ -3,10 +3,10 @@ gpe_scene_background_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,7 +36,7 @@ SOFTWARE.
 
 GPE_SceneBackground::GPE_SceneBackground(pawgui::widget_resource_container *pFolder)
 {
-    branchType = gpe::branch_type::BACKGROUND;
+    branch_type_id = gpe::branch_type::BACKGROUND;
     iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/image.png") ;
 
     textureId = -1;
@@ -44,9 +44,9 @@ GPE_SceneBackground::GPE_SceneBackground(pawgui::widget_resource_container *pFol
     inFront = false;
     tileHori = false;
     tileVert = false;
-    stretchBG = false;
-    bgXSpeed = 0;
-    bgYSpeed =0;
+    strech_bg = false;
+    bg_xspeed = 0;
+    bg_yspeed =0;
     projectParentFolder = pFolder;
 
     if( projectParentFolder!=NULL)
@@ -106,20 +106,20 @@ bool GPE_SceneBackground::build_intohtml5_file( std::ofstream * fileTarget, int 
      pawgui::widget_resource_container * tempBgResource = allTexturesFolder->find_resource_from_id( textureId);
     if( tempBgResource!=NULL)
     {
-        *fileTarget << nestedTabsStr << "newBranch = _scn_temp_layer.scnStartBackgrounds.push( {bgTexId:" <<stg_ex::int_to_string(tempBgResource->exportBuildGlobalId) << ",";
+        *fileTarget << nestedTabsStr << "newBranch = scn_temp_layer.scnStartBackgrounds.push( {bgTexId:" <<stg_ex::int_to_string(tempBgResource->exportBuildGlobalId) << ",";
 
-        *fileTarget << "bgXPos: " << stg_ex::int_to_string( xPos) << ",";
-        *fileTarget << "bgYPos: " << stg_ex::int_to_string( yPos) << ",";
-        *fileTarget << "bgXSpeed: " << stg_ex::int_to_string(bgXSpeed) << ",";
-        *fileTarget << "bgYSpeed: " << stg_ex::int_to_string(bgYSpeed) << ",";
+        *fileTarget << "bgXPos: " << stg_ex::int_to_string( x_pos) << ",";
+        *fileTarget << "bgYPos: " << stg_ex::int_to_string( y_pos) << ",";
+        *fileTarget << "bg_xspeed: " << stg_ex::int_to_string(bg_xspeed) << ",";
+        *fileTarget << "bg_yspeed: " << stg_ex::int_to_string(bg_yspeed) << ",";
         *fileTarget << "bgTileHori: " << stg_ex::int_to_string(tileHori) << ",";
         *fileTarget << "bgTileVert: " << stg_ex::int_to_string(tileVert) << ",";
-        *fileTarget << "bgStartStretch: " << stg_ex::int_to_string(stretchBG);
+        *fileTarget << "bgStartStretch: " << stg_ex::int_to_string(strech_bg);
         *fileTarget << "} ); \n";
     }
     else
     {
-        *fileTarget << nestedTabsStr << "newBranch = _scn_temp_layer.scnStartBackground = -1; \n";
+        *fileTarget << nestedTabsStr << "newBranch = scn_temp_layer.scnStartBackground = -1; \n";
     }
     GPE_SceneBasicClass::build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController);
     return true;
@@ -136,11 +136,11 @@ void GPE_SceneBackground::process_elements()
     textureId = backgroundInEditor->get_selected_id();
     if(backgroundInEditor->get_selected_id() > 0)
     {
-        bgXSpeed = bgHorSpeedField->get_held_number();
-        bgYSpeed = bgVertSpeedField->get_held_number();
+        bg_xspeed = bgHorSpeedField->get_held_number();
+        bg_yspeed = bgVertSpeedField->get_held_number();
         tileHori =checkTileHori->is_clicked();
         tileVert =checkTileVert->is_clicked();
-        stretchBG =checkStretch->is_clicked();
+        strech_bg =checkStretch->is_clicked();
     }
 }
 
@@ -153,8 +153,8 @@ void GPE_SceneBackground::render_branch()
     pawgui::widget_resource_container * texTypeContainer = spm->cSceneTexList->find_resource_from_id(textureId );
     if( texTypeContainer!=NULL)
     {
-        spm->tempRect->x = floor( (xPos*spm->zoomValue)- spm->cameraFloorXPos);
-        spm->tempRect->y = floor( (yPos*spm->zoomValue)- spm->cameraFloorYPos );
+        spm->tempRect->x = floor( (x_pos*spm->zoomValue)- spm->cameraFloorXPos);
+        spm->tempRect->y = floor( (y_pos*spm->zoomValue)- spm->cameraFloorYPos );
         textureResource * texRes = (textureResource*) texTypeContainer->get_held_resource();
 
         int bgXItr = 0, bgYItr= 0;
@@ -162,9 +162,9 @@ void GPE_SceneBackground::render_branch()
         {
             if( texRes->textureInEditor->get_width() >0 && texRes->textureInEditor->get_height() >0 )
             {
-                spm->tempRect->x = floor( (xPos* spm->zoomValue)- spm->cameraFloorXPos );
-                spm->tempRect->y = floor( (yPos* spm->zoomValue)- spm->cameraFloorYPos );
-                if( stretchBG)
+                spm->tempRect->x = floor( (x_pos* spm->zoomValue)- spm->cameraFloorXPos );
+                spm->tempRect->y = floor( (y_pos* spm->zoomValue)- spm->cameraFloorYPos );
+                if( strech_bg)
                 {
                     texRes->textureInEditor->render_tex_resized( 0,0,spm->currentCamera->w,spm->currentCamera->h,NULL, branchColor->get_color(), branchAlpha->get_value()  );
                 }
@@ -216,19 +216,19 @@ bool GPE_SceneBackground::save_branch_data(std::ofstream * fileTarget, int neste
         {
             *fileTarget << "-1,";
         }
-        if( xPosField!=NULL)
+        if( x_posField!=NULL)
         {
-            xPosField->make_valid_number(0);
-            *fileTarget <<  xPosField->get_held_number() << ",";
+            x_posField->make_valid_number(0);
+            *fileTarget <<  x_posField->get_held_number() << ",";
         }
         else
         {
             *fileTarget << "-1,";
         }
-        if( yPosField!=NULL)
+        if( y_posField!=NULL)
         {
-            yPosField->make_valid_number(0);
-            *fileTarget << yPosField->get_held_number() << ",";
+            y_posField->make_valid_number(0);
+            *fileTarget << y_posField->get_held_number() << ",";
         }
         else
         {

@@ -1,10 +1,9 @@
 /*
-gpe_scene_group_class.h
+gpe_editor_splash_page.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
 Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
-
 Copyright (c) 2014-2021 PawByte LLC.
 Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
@@ -31,22 +30,40 @@ SOFTWARE.
 
 */
 
-#ifndef GPE_SCENE_GROUP_CLASS_H
-#define GPE_SCENE_GROUP_CLASS_H
+#ifndef GPE_EDITOR_SPLASH_PAGE_H
+#define GPE_EDITOR_SPLASH_PAGE_H
 
-#include "gpe_scene_basic_class.h"
+#include <string>
+#include "../gpe/gpe.h"
+#include "../pawgui/pawgui.h"
 
-class sceneBranchGroup: public GPE_SceneBasicClass
+class gpe_splash_page
 {
-public:
-    sceneBranchGroup(std::string nName = "");
-    ~sceneBranchGroup();
-    void add_typed_elements();
-    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
-    void calculate_size();
-    void process_elements();
-    void render_branch();
-    bool save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn = 0);
+    private:
+        float item1Value;
+        float item1Max;
+        float item2Value;
+        float item2Max;
+        gpe::texture_base * gpe_logo;
+    public:
+        bool in_startup_mode;
+        std::string displayMessageTitle;
+        std::string displayMessageSubtitle;
+        std::string displayMessagestring;
+        gpe_splash_page();
+        ~gpe_splash_page();
+        void increment_bar1();
+        void increment_bar2();
+        void increment_and_update( std::string subTitle, std::string message, int barNumber = 0, bool renderUpdate = true );
+
+        void set_bar1( float max_value);
+        void set_bar2( float max_value);
+        void render_loader();
+        void reset();
+        void update_messages(std::string title, std::string subTitle, std::string message, bool renderUpdate = true );
+        void update_submessages(  std::string subTitle, std::string message, bool renderUpdate = true  );
 };
 
-#endif //GPE_SCENE_GROUP_CLASS_H
+extern gpe_splash_page * main_gpe_splash_page;
+
+#endif //GPE_EDITOR_SPLASH_PAGE_H

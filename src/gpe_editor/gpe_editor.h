@@ -3,10 +3,10 @@ gpe_editor.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,6 +36,7 @@ SOFTWARE.
 
 #include "../pawgui/pawgui.h"
 #include "../pawgui/pawgui_resource_dropdown.h"
+#include "../pawgui/pawgui_dock_system.h"
 
 #include "gpe_editor_constants.h"
 #include "gpe_editor_globals.h"
@@ -76,6 +77,7 @@ public:
     void clean_current_project_build_folder(int buildMetaTemplate);
     void clear_recent_project_list();
     void close_project(std::string projectFileName );
+    void dock_reset();
     GPE_ProjectFolder * find_project_from_name(std::string projectName);
     GPE_ProjectFolder * find_project_from_filename(std::string projectFileName);
     int find_project_id_from_name(std::string projectName, int ignoreId = -1);

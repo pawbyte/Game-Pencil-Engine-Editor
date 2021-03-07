@@ -3,10 +3,10 @@ gpe_scene_particle_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,7 +35,7 @@ SOFTWARE.
 GPE_SceneParticleEmitter::GPE_SceneParticleEmitter( pawgui::widget_resource_container *pFolder )
 {
     iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png") ;
-    branchType = gpe::branch_type::PARTIClE_EMITTER;
+    branch_type_id = gpe::branch_type::PARTIClE_EMITTER;
     if( projectParentFolder!=NULL)
     {
         emmitterInEditor = new pawgui::widget_drop_down_resource_menu( "Particle Emitter",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_emitter]),-1,true);
@@ -56,7 +56,7 @@ void GPE_SceneParticleEmitter::add_typed_elements()
 {
     if( panel_inspector!=NULL )
     {
-        //panel_inspector->add_gui_element( lightIsActive, true );
+        //panel_inspector->add_gui_element( light_is_active, true );
     }
 }
 
@@ -82,19 +82,19 @@ bool GPE_SceneParticleEmitter::save_branch_data(std::ofstream * fileTarget, int 
     {
         std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"   GPE_AmbientLight=";
-        if( xPosField!=NULL)
+        if( x_posField!=NULL)
         {
-            xPosField->make_valid_number(0);
-            *fileTarget <<  xPosField->get_held_number() << ",";
+            x_posField->make_valid_number(0);
+            *fileTarget <<  x_posField->get_held_number() << ",";
         }
         else
         {
             *fileTarget << "-0,";
         }
-        if( yPosField!=NULL)
+        if( y_posField!=NULL)
         {
-            yPosField->make_valid_number(0);
-            *fileTarget << yPosField->get_held_number() << ",";
+            y_posField->make_valid_number(0);
+            *fileTarget << y_posField->get_held_number() << ",";
         }
         else
         {

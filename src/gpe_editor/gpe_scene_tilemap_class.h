@@ -3,10 +3,10 @@ gpe_scene_tilemap_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,9 +39,9 @@ SOFTWARE.
 #include "gpe_scene_basic_class.h"
 #include "gpe_scene_helper_class.h"
 #include "tilesheet_resource.h"
-#include "gpe_dock_system.h"
+#include "gpe_editor_globals.h"
 
-extern gpeEditorDockPanel * PANEL_TS_RESOURCE;
+extern pawgui::widget_dock_panel * PANEL_TS_RESOURCE;
 
 class GPE_SceneTile: public pawgui::widget_branch
 {
@@ -89,9 +89,9 @@ public:
     void add_typed_elements();
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
     void calculate_size();
-    void create_new_map(int newTX=8, int newTY=8, int ntileType=0);
+    void create_new_map(int new_xt=8, int new_yt=8, int ntileType=0);
     GPE_SceneTile* get_tile_at(int x, int y);
-    void resize_tilemap(int newTX=8, int newTY=8, int ntileType=0);
+    void resize_tilemap(int new_xt=8, int new_yt=8, int ntileType=0);
     int get_map_size();
     void set_map_size( int newW, int newH );
     int get_xmax();

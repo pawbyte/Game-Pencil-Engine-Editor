@@ -3,10 +3,10 @@ gpe_game_master_itenary.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -28,10 +28,10 @@ SOFTWARE.
 
 -Game Pencil Engine <https://www.pawbyte.com/gamepencilengine>
 
- ____                ____        _
-|  _ \ __ ___      _| __ ) _   _| |_ ___
-| |_) / _` \ \ /\ / /  _ \| | | | __/ _ \
-|  __/ (_| |\ V  V /| |_) | |_| | ||  __/
+ ___                ___
+|   \ _ __      | _ )    | |_ __
+| |_) / ` \ \ /\ / /   \| | | | _/  \
+|  _/ (_| |\ V  V /| |_) | |_| | ||  _/
 |_|   \__,_| \_/\_/ |____/ \__, |\__\___|
                            |___/
 Created By PawByte

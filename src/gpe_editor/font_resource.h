@@ -1,12 +1,12 @@
 /*
-audio_resource.h
+font_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -48,18 +48,18 @@ extern std::string SUPPORTED_FONT_EXT[FONT_FILE_TYPES];
 class fontResource: public standardEditableGameResource
 {
 private:
-    pawgui::widget_radio_button_controller * fontTypeButtonController;
-    pawgui::widget_button_icon * openExternalEditorButton;
+    pawgui::widget_radio_button_controller * fontType_buttonController;
+    pawgui::widget_button_icon * openExternalEditor_button;
     std::string fontInEditorFileName;
-    std::string fontFamilyName;
+    std::string font_family_name;
     gpe::font_base * fontInEditor;
 public:
-    int fontSize;
+    int font_size;
     int fontId;
     int fontType;
     int fontWidth;
     int fontHeight;
-    pawgui::widget_input_number * fontSizeField;
+    pawgui::widget_input_number * font_sizeField;
     pawgui::widget_input_text * fontPreviewTextField;
     std::string storedFontFileNames[FONT_FILE_TYPES];
     fontResource(pawgui::widget_resource_container * pFolder = NULL);
@@ -70,11 +70,11 @@ public:
     void compile_cpp();
     bool include_local_files( std::string pBuildDir , int buildType );
     bool is_build_ready();
-    void load_font(std::string new_file_name, int newFontSize = 12);
+    void load_font(std::string new_file_name, int newfont_size = 12);
     void load_resource(std::string file_path = "");
     void prerender_self( );
     void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-    bool render_held_font( int xPos, int yPos, std::string textureText, gpe::color * textColor = NULL,int hAlign = gpe::fa_left,int vAlign = gpe::fa_top, float renderAngle = 0.f, float renderScale = 1, int renderAlpha = 255 );
+    bool render_held_font( int x_pos, int y_pos, std::string text_to_render, gpe::color * text_color = NULL,int alignment_h = gpe::fa_left,int alignment_v = gpe::fa_top, float render_angle = 0.f, float render_scale = 1, int render_alpha = 255 );
     void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void save_resource(std::string file_path = "", int backupId = -1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);

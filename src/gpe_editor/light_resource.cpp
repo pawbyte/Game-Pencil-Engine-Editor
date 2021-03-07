@@ -3,10 +3,10 @@ light_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,8 +45,8 @@ lightResource::lightResource(pawgui::widget_resource_container * pFolder)
     myPointLight = new gpe::light_point2d();
 
     //emitterTexture->load_new_texture( gpe::renderer_main, app_directory_name+"resources/gfx/animations/c_snow.png",-1,true );
-    browseTextureButton = new pawgui::widget_button_label("Browse...","Browse for texture image" );
-    clearTextureButton = new pawgui::widget_button_label("Clear Image...","Clears texture and reverts to shape" );
+    browseTexture_button = new pawgui::widget_button_label("Browse...","Browse for texture image" );
+    clearTexture_button = new pawgui::widget_button_label("Clear Image...","Clears texture and reverts to shape" );
 
     textureLabel = new pawgui::widget_label_text ("Direction Light Texture","Enter below:" );
     texturePreviewImgLabel = new pawgui::widget_label_image(  "Direction Light","" );
@@ -57,11 +57,11 @@ lightResource::lightResource(pawgui::widget_resource_container * pFolder)
     lightType->add_menu_option("Direction Light","direction_light", gpe::light_type_direction2d, false );
     lightType->add_menu_option("Point Light","point", gpe::light_type_point2d, true );
 
-    lightColorField = new pawgui::gpe_widget_color_picker("Light Color","Light Color");
-    lightColorField->set_color_from_rgb( gpe::c_yellow );
+    light_colorField = new pawgui::gpe_widget_color_picker("Light Color","Light Color");
+    light_colorField->set_color_from_rgb( gpe::c_yellow );
 
-    lightRadiusField = new pawgui::widget_input_number("Radius(pixels)", true, 0, 1024 );
-    lightRadiusField->set_number( 128 );
+    light_radiusField = new pawgui::widget_input_number("Radius(pixels)", true, 0, 1024 );
+    light_radiusField->set_number( 128 );
 
     lightSecondRadiusField = new pawgui::widget_input_number("Secondary Radius(pixels)", true, 0, 1024 );
     lightSecondRadiusField->set_number( 128 );
@@ -69,14 +69,14 @@ lightResource::lightResource(pawgui::widget_resource_container * pFolder)
     lightThirdRadiusField = new pawgui::widget_input_number("Third Radius(pixels)", true, 0, 1024 );
     lightThirdRadiusField->set_number( 0 );
 
-    lightLengthField = new pawgui::widget_input_number("Length (pixels)", true, 0, 1024 );
-    lightLengthField->set_number( 256 );
+    light_lengthField = new pawgui::widget_input_number("Length (pixels)", true, 0, 1024 );
+    light_lengthField->set_number( 256 );
 
-    lightWidthField = new pawgui::widget_input_number("Width (pixels)", true, 0, 1024 );
-    lightWidthField->set_number( 64 );
+    light_widthField = new pawgui::widget_input_number("Width (pixels)", true, 0, 1024 );
+    light_widthField->set_number( 64 );
 
-    lightIntensityField = new pawgui::widget_input_number("Intensity (pixels)", true, 0, 255 );
-    lightIntensityField->set_number( 228 );
+    light_intensityField = new pawgui::widget_input_number("Intensity (pixels)", true, 0, 255 );
+    light_intensityField->set_number( 228 );
 
     lightSecondIntensityField = new pawgui::widget_input_number("Secondary Light Intensity (pixels)", true, 0, 255 );
     lightSecondIntensityField->set_number( 192 );
@@ -84,16 +84,16 @@ lightResource::lightResource(pawgui::widget_resource_container * pFolder)
     lightThirdIntensityField = new pawgui::widget_input_number("Secondary Light Intensity (pixels)", true, 0, 255 );
     lightThirdIntensityField->set_number( 160 );
 
-    lightFlickerTimeField = new pawgui::widget_input_number("Light Flicker Timer (milliseconds)", true, 0, 9000 );
-    lightFlickerTimeField->set_number( 255 );
+    light_flicker_timeField = new pawgui::widget_input_number("Light Flicker Timer (milliseconds)", true, 0, 9000 );
+    light_flicker_timeField->set_number( 255 );
 
     lightFlickerAmountField = new pawgui::widget_input_number("Flicker Random Amount (pixels)", true, 0, 1024 );
     lightFlickerAmountField->set_number( 2 );
 
     lightUseFlicker = new pawgui::widget_checkbox("Flicker Light","Check to flicker the light in intervals", false );
 
-    lightDirectionField = new pawgui::widget_input_number("Direction (degrees)", false, -360, 360 );
-    lightDirectionField->set_number( 270 );
+    light_directionField = new pawgui::widget_input_number("Direction (degrees)", false, -360, 360 );
+    light_directionField->set_number( 270 );
 
     directionLightTexture = NULL;
 }
@@ -138,29 +138,6 @@ bool lightResource::is_build_ready()
     return true;
 }
 
-bool lightResource::get_mouse_coords( gpe::shape_rect * view_space, gpe::shape_rect * cam )
-{
-    view_space = gpe::camera_find(view_space);
-    cam = gpe::camera_find(cam);
-    areaMouseXPos = 0;
-    areaMouseYPos = 0;
-    if( view_space!=NULL && cam!=NULL )
-    {
-        if( gpe::point_within(   gpe::input->mouse_position_x,gpe::input->mouse_position_y,
-                            view_space->x - cam->x,
-                            view_space->y - cam->y,
-                            view_space->x + view_space->w - cam->x,
-                            view_space->y + view_space->h - cam->y ) )
-        {
-
-            areaMouseXPos = (gpe::input->mouse_position_x-view_space->x ) + cam->x;
-            areaMouseYPos = (gpe::input->mouse_position_y-view_space->y ) + cam->y;
-
-            return true;
-        }
-    }
-    return false;
-}
 
 void lightResource::handle_scrolling()
 {
@@ -186,30 +163,30 @@ void lightResource::load_image(std::string new_file_name, bool autoProcess )
     }
     directionLightTexture->load_new_texture( gpe::renderer_main,new_file_name );
     directionLightTexture->set_blend_mode( gpe::blend_mode_add );
-    myDirectionLight->lightTexture = directionLightTexture;
+    myDirectionLight->light_texture = directionLightTexture;
     texturePreviewImgLabel->change_texture( directionLightTexture );
     texturePreviewImgLabel->set_width( 64 );
     texturePreviewImgLabel->set_height( 64 );
     if( autoProcess)
     {
-        sff_ex::file_copy( new_file_name, stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/lights/"+ stg_ex::get_local_from_global_file(new_file_name) );
+        gpe::main_file_url_manager->file_copy( new_file_name, stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/lights/"+ stg_ex::get_local_from_global_file(new_file_name) );
     }
 }
 
 void lightResource::load_resource(std::string file_path )
 {
-    if( resourcePostProcessed ==false || sff_ex::file_exists(file_path))
+    if( resourcePostProcessed ==false || gpe::main_file_url_manager->file_exists(file_path))
     {
-        if( pawgui::main_loader_display != NULL )
+        if( main_gpe_splash_page != NULL )
         {
-            pawgui::main_loader_display->update_submessages( "Loading Light", resource_name );
+            main_gpe_splash_page->update_submessages( "Loading Light", resource_name );
         }
 
         std::string otherColContainerName = "";
 
         std::string newFileIn = "";
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/lights/";
-        if( sff_ex::file_exists(file_path) )
+        if( gpe::main_file_url_manager->file_exists(file_path) )
         {
             newFileIn = file_path;
             soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -231,9 +208,9 @@ void lightResource::load_resource(std::string file_path )
             {
                 int equalPos = 0;
                 std::string firstChar="";
-                std::string keyString="";
-                std::string valString="";
-                std::string subValString="";
+                std::string key_string="";
+                std::string valstring="";
+                std::string subValstring="";
                 std::string currLine="";
                 std::string currLineToBeProcessed;
 
@@ -257,11 +234,11 @@ void lightResource::load_resource(std::string file_path )
                                 if(equalPos!=(int)std::string::npos)
                                 {
                                     //if the equalPos is present, then parse on through and carryon
-                                    keyString = currLineToBeProcessed.substr(0,equalPos);
-                                    valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                                    if( keyString=="Version")
+                                    key_string = currLineToBeProcessed.substr(0,equalPos);
+                                    valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                    if( key_string=="Version")
                                     {
-                                        foundFileVersion = stg_ex::string_to_float(valString);
+                                        foundFileVersion = stg_ex::string_to_float(valstring);
                                     }
                                 }
                             }
@@ -276,16 +253,16 @@ void lightResource::load_resource(std::string file_path )
                             if(equalPos!=(int)std::string::npos)
                             {
                                 //if the equalPos is present, then parse on through and carryon
-                                keyString = currLineToBeProcessed.substr(0,equalPos);
-                                valString = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
+                                key_string = currLineToBeProcessed.substr(0,equalPos);
+                                valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
-                                if( keyString=="ResourceName")
+                                if( key_string=="ResourceName")
                                 {
-                                    renameBox->set_string(valString);
+                                    renameBox->set_string(valstring);
                                 }
-                                else if( keyString=="DirectionLightTexture")
+                                else if( key_string=="DirectionLightTexture")
                                 {
-                                    load_image( soughtDir+valString);
+                                    load_image( soughtDir+valstring);
                                 }
                             }
                         }
@@ -311,60 +288,60 @@ void lightResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
     view_space = gpe::camera_find( view_space);
     cam = gpe::camera_find( cam );
 
-    if( panel_main_area!=NULL )
+    if( panel_main_editor!=NULL )
     {
-        panel_main_area->clear_panel();
+        panel_main_editor->clear_panel();
 
-        panel_main_area->add_gui_element(renameBox,true);
+        panel_main_editor->add_gui_element(renameBox,true);
 
-        panel_main_area->add_gui_element( lightType,true);
-        panel_main_area->add_gui_element(lightColorField,true);
-        panel_main_area->add_gui_element( lightIntensityField,true);
+        panel_main_editor->add_gui_element( lightType,true);
+        panel_main_editor->add_gui_element(light_colorField,true);
+        panel_main_editor->add_gui_element( light_intensityField,true);
 
         if( lightType->get_selected_value() == gpe::light_type_direction2d )
         {
-            panel_main_area->add_gui_element(lightLengthField,true);
-            panel_main_area->add_gui_element(lightWidthField,true);
-            panel_main_area->add_gui_element(lightDirectionField,true);
-            panel_main_area->add_gui_element(autorotateAngle,true);
+            panel_main_editor->add_gui_element(light_lengthField,true);
+            panel_main_editor->add_gui_element(light_widthField,true);
+            panel_main_editor->add_gui_element(light_directionField,true);
+            panel_main_editor->add_gui_element(autorotateAngle,true);
 
-            panel_main_area->add_gui_element(textureLabel,true);
-            panel_main_area->add_gui_element(textureLocationField,true);
-            panel_main_area->add_gui_element(browseTextureButton,true);
-            panel_main_area->add_gui_element(clearTextureButton,true);
-            panel_main_area->add_gui_element(texturePreviewImgLabel,true);
+            panel_main_editor->add_gui_element(textureLabel,true);
+            panel_main_editor->add_gui_element(textureLocationField,true);
+            panel_main_editor->add_gui_element(browseTexture_button,true);
+            panel_main_editor->add_gui_element(clearTexture_button,true);
+            panel_main_editor->add_gui_element(texturePreviewImgLabel,true);
         }
         else if( lightType->get_selected_value() == gpe::light_type_point2d )
         {
-            panel_main_area->add_gui_element(lightRadiusField,true);
-            panel_main_area->add_gui_element(lightSecondRadiusField,true);
-            panel_main_area->add_gui_element(lightSecondIntensityField,true);
-            panel_main_area->add_gui_element(lightThirdRadiusField,true);
-            panel_main_area->add_gui_element(lightThirdIntensityField,true);
-            panel_main_area->add_gui_element(lightUseFlicker,true);
-            panel_main_area->add_gui_element(lightFlickerTimeField,true);
-            panel_main_area->add_gui_element(lightFlickerAmountField,true);
+            panel_main_editor->add_gui_element(light_radiusField,true);
+            panel_main_editor->add_gui_element(lightSecondRadiusField,true);
+            panel_main_editor->add_gui_element(lightSecondIntensityField,true);
+            panel_main_editor->add_gui_element(lightThirdRadiusField,true);
+            panel_main_editor->add_gui_element(lightThirdIntensityField,true);
+            panel_main_editor->add_gui_element(lightUseFlicker,true);
+            panel_main_editor->add_gui_element(light_flicker_timeField,true);
+            panel_main_editor->add_gui_element(lightFlickerAmountField,true);
         }
         else
         {
 
         }
 
-        panel_main_area->add_gui_element(confirmResourceButton,true);
-        panel_main_area->add_gui_element(cancelResourceButton,true);
-        panel_main_area->process_self();
+        panel_main_editor->add_gui_element(confirmResource_button,true);
+        panel_main_editor->add_gui_element(cancelResource_button,true);
+        panel_main_editor->process_self();
 
         if( lightType->get_selected_value() == gpe::light_type_direction2d )
         {
-            if( browseTextureButton!=NULL && browseTextureButton->is_clicked() )
+            if( browseTexture_button!=NULL && browseTexture_button->is_clicked() )
             {
                 std::string newTextureLocation = pawgui::get_filename_open_from_popup("Choose Light Texture","Images",pawgui::main_settings->fileOpenTextureDir);
-                if( sff_ex::file_exists( newTextureLocation) && stg_ex::file_is_image(newTextureLocation) )
+                if( gpe::main_file_url_manager->file_exists( newTextureLocation) && stg_ex::file_is_image(newTextureLocation) )
                 {
                     load_image( newTextureLocation, true);
                 }
             }
-            else if( clearTextureButton!=NULL && clearTextureButton->is_clicked() )
+            else if( clearTexture_button!=NULL && clearTexture_button->is_clicked() )
             {
                 if( directionLightTexture!=NULL )
                 {
@@ -372,18 +349,18 @@ void lightResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
                     directionLightTexture = NULL;
                 }
                 textureLocationField->set_string( "" );
-                myDirectionLight->lightTexture = NULL;
+                myDirectionLight->light_texture = NULL;
                 texturePreviewImgLabel->change_texture( NULL );
                 texturePreviewImgLabel->set_width( 16 );
                 texturePreviewImgLabel->set_height( 16 );
             }
         }
 
-        if( confirmResourceButton->is_clicked() )
+        if( confirmResource_button->is_clicked() )
         {
             save_resource();
         }
-        else if( cancelResourceButton->is_clicked() )
+        else if( cancelResource_button->is_clicked() )
         {
             if( pawgui::display_prompt_message("Are you sure you will like to reverse light changes?","This will load in data from save-file!", true )== pawgui::display_query_yes )
             {
@@ -406,37 +383,37 @@ void lightResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
 
     if( myAmbientLight!=NULL )
     {
-        myAmbientLight->lightColor->change_and_verify_rgba( lightColorField->get_r(), lightColorField->get_g(), lightColorField->get_b(), 255 );
-        myAmbientLight->lightIntensity = lightIntensityField->get_held_int();
+        myAmbientLight->light_color->change_and_verify_rgba( light_colorField->get_r(), light_colorField->get_g(), light_colorField->get_b(), 255 );
+        myAmbientLight->light_intensity = light_intensityField->get_held_int();
     }
 
     if( myDirectionLight!=NULL )
     {
-        myDirectionLight->lightColor->change_and_verify_rgba( lightColorField->get_r(), lightColorField->get_g(), lightColorField->get_b(), 255 );
-        myDirectionLight->lightIntensity = lightIntensityField->get_held_int();
+        myDirectionLight->light_color->change_and_verify_rgba( light_colorField->get_r(), light_colorField->get_g(), light_colorField->get_b(), 255 );
+        myDirectionLight->light_intensity = light_intensityField->get_held_int();
         if( autorotateAngle->is_clicked() )
         {
             myDirectionLight->set_direction( tempAngleExtra );
         }
         else
         {
-            myDirectionLight->set_direction( lightDirectionField->get_held_int() );
+            myDirectionLight->set_direction( light_directionField->get_held_int() );
         }
-        myDirectionLight->lightWidth = lightWidthField->get_held_int();
-        myDirectionLight->lightLength = lightLengthField->get_held_int();
+        myDirectionLight->light_width = light_widthField->get_held_int();
+        myDirectionLight->light_length = light_lengthField->get_held_int();
     }
 
     if( myPointLight!=NULL )
     {
-        myPointLight->lightColor->change_and_verify_rgba( lightColorField->get_r(), lightColorField->get_g(), lightColorField->get_b(), 255 );
-        myPointLight->lightIntensity = lightIntensityField->get_held_int();
-        myPointLight->lightRadius = lightRadiusField->get_held_int();
-        myPointLight->secondRadius = lightSecondRadiusField->get_held_int();
-        myPointLight->secondRadiusIntensity = lightSecondIntensityField->get_held_int();
+        myPointLight->light_color->change_and_verify_rgba( light_colorField->get_r(), light_colorField->get_g(), light_colorField->get_b(), 255 );
+        myPointLight->light_intensity = light_intensityField->get_held_int();
+        myPointLight->light_radius = light_radiusField->get_held_int();
+        myPointLight->light_radius_second = lightSecondRadiusField->get_held_int();
+        myPointLight->light_radius_second_intensity = lightSecondIntensityField->get_held_int();
 
         if( lightUseFlicker!=NULL && lightUseFlicker->is_clicked() )
         {
-            myPointLight->setup_flicker( lightFlickerTimeField->get_held_int(), lightFlickerAmountField->get_held_int() );
+            myPointLight->setup_flicker( light_flicker_timeField->get_held_int(), lightFlickerAmountField->get_held_int() );
             myPointLight->update_light( gpe::time_keeper->get_delta_ticks() );
 
         }
@@ -464,7 +441,7 @@ void lightResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *
     {
         if(  mouseInView && !tempAngleExtra )
         {
-            myDirectionLight->render_light_at( areaMouseXPos, areaMouseYPos, 1 );
+            myDirectionLight->render_light_at( local_mouse_x, local_mouse_y, 1 );
         }
         else
         {
@@ -475,7 +452,7 @@ void lightResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *
     {
         if(  mouseInView )
         {
-            myPointLight->render_light_at( areaMouseXPos, areaMouseYPos, 1 );
+            myPointLight->render_light_at( local_mouse_x, local_mouse_y, 1 );
 
         }
         else
@@ -488,7 +465,7 @@ void lightResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *
         myAmbientLight->render_light( 1, view_space );
     }
 
-    //gpe::gcanvas->render_circle_color( editorView.w/2, editorView.h/2, c_white, 255 );
+    //gpe::gcanvas->render_circle_filled_color( editorView.w/2, editorView.h/2, c_white, 255 );
     gpe::gcanvas->switch_ligting_overlay( false );
     gpe::renderer_main->reset_viewpoint( );
     gpe::renderer_main->set_viewpoint( view_space );
@@ -502,15 +479,15 @@ void lightResource::revert_data_fields()
 
 void lightResource::save_resource(std::string file_path, int backupId )
 {
-    if( pawgui::main_loader_display != NULL )
+    if( main_gpe_splash_page != NULL )
     {
-        pawgui::main_loader_display->update_submessages( "Saving Light", resource_name );
+        main_gpe_splash_page->update_submessages( "Saving Light", resource_name );
     }
 
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( sff_ex::path_exists(soughtDir) )
+    if( gpe::main_file_url_manager->path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
@@ -537,17 +514,17 @@ void lightResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "LightType="+ stg_ex::int_to_string( gpe::light_type_point2d )+"\n";
             }
-            if( lightColorField!=NULL )
+            if( light_colorField!=NULL )
             {
-                newSaveDataFile << "LightColor=" + lightColorField->get_hex_string() +"\n";
+                newSaveDataFile << "LightColor=" + light_colorField->get_hex_string() +"\n";
             }
             else
             {
                 newSaveDataFile << "LightColor=#FFF\n";
             }
-            if( lightIntensityField!=NULL )
+            if( light_intensityField!=NULL )
             {
-                newSaveDataFile << "LightIntensity[0]=" + stg_ex::int_to_string( lightIntensityField->get_held_int() ) +"\n";
+                newSaveDataFile << "LightIntensity[0]=" + stg_ex::int_to_string( light_intensityField->get_held_int() ) +"\n";
             }
             else
             {
@@ -569,9 +546,9 @@ void lightResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "LightIntensity[2]=128\n";
             }
-            if( lightRadiusField!=NULL )
+            if( light_radiusField!=NULL )
             {
-                newSaveDataFile << "PointLightRadius[0]=" + stg_ex::int_to_string( lightRadiusField->get_held_int() ) +"\n";
+                newSaveDataFile << "PointLightRadius[0]=" + stg_ex::int_to_string( light_radiusField->get_held_int() ) +"\n";
             }
             else
             {
@@ -595,25 +572,25 @@ void lightResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "PointLightRadius[2]=128\n";
             }
 
-            if( lightLengthField!=NULL )
+            if( light_lengthField!=NULL )
             {
-                newSaveDataFile << "DirectionLightLength=" + stg_ex::int_to_string( lightLengthField->get_held_int() ) +"\n";
+                newSaveDataFile << "DirectionLightLength=" + stg_ex::int_to_string( light_lengthField->get_held_int() ) +"\n";
             }
             else
             {
                 newSaveDataFile << "DirectionLightLength=128\n";
             }
-            if( lightWidthField!=NULL )
+            if( light_widthField!=NULL )
             {
-                newSaveDataFile << "DirectionLightWidth=" + stg_ex::int_to_string( lightWidthField->get_held_int() ) +"\n";
+                newSaveDataFile << "DirectionLightWidth=" + stg_ex::int_to_string( light_widthField->get_held_int() ) +"\n";
             }
             else
             {
                 newSaveDataFile << "DirectionLightWidth=64\n";
             }
-            if( lightDirectionField!=NULL )
+            if( light_directionField!=NULL )
             {
-                newSaveDataFile << "DirectionLightAngle=" + stg_ex::int_to_string( lightDirectionField->get_held_int() ) +"\n";
+                newSaveDataFile << "DirectionLightAngle=" + stg_ex::int_to_string( light_directionField->get_held_int() ) +"\n";
             }
             else
             {
@@ -627,9 +604,9 @@ void lightResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "LightFlicker=" + stg_ex::int_to_string( lightUseFlicker->is_clicked() )+"\n";
             }
-            if( lightFlickerTimeField!=NULL )
+            if( light_flicker_timeField!=NULL )
             {
-                newSaveDataFile << "LightFlickerTime=" + stg_ex::int_to_string( lightFlickerTimeField->get_held_int() )+"\n";
+                newSaveDataFile << "LightFlickerTime=" + stg_ex::int_to_string( light_flicker_timeField->get_held_int() )+"\n";
             }
             if( lightFlickerAmountField!=NULL )
             {
@@ -658,7 +635,7 @@ void lightResource::save_resource(std::string file_path, int backupId )
     }
 }
 
-void lightResource::update_box(int newX, int newY, int newW, int newH )
+void lightResource::update_box(int x_new, int y_new, int newW, int newH )
 {
 
 }

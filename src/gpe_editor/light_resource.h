@@ -3,10 +3,10 @@ light_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -45,15 +45,15 @@ private:
     gpe::light_basic_2d * myAmbientLight;
     gpe::light_direction2d * myDirectionLight;
     gpe::light_point2d * myPointLight;
-    float areaMouseXPos, areaMouseYPos;
+    float local_mouse_x, local_mouse_y;
 public:
     float tempAngleExtra;
     pawgui::widget_radio_button_controller * lightType;
-    pawgui::gpe_widget_color_picker * lightColorField;
-    pawgui::widget_input_number * lightIntensityField;
+    pawgui::gpe_widget_color_picker * light_colorField;
+    pawgui::widget_input_number * light_intensityField;
 
     //Point Light Related Variables [ BEGIN ]
-    pawgui::widget_input_number * lightRadiusField;
+    pawgui::widget_input_number * light_radiusField;
     pawgui::widget_input_number * lightSecondRadiusField;
     pawgui::widget_input_number * lightThirdRadiusField;
     pawgui::widget_input_number * lightSecondIntensityField;
@@ -61,23 +61,23 @@ public:
     //Point Light Related Variables [ END ]
 
     //Direction Light Related Variables [ END ]
-    pawgui::widget_input_number * lightLengthField;
-    pawgui::widget_input_number * lightWidthField;
-    pawgui::widget_input_number * lightDirectionField;
+    pawgui::widget_input_number * light_lengthField;
+    pawgui::widget_input_number * light_widthField;
+    pawgui::widget_input_number * light_directionField;
      //Texture related variables
     gpe::texture_base * directionLightTexture;
     pawgui::widget_label_text  * textureLabel;
     pawgui::widget_label_image * texturePreviewImgLabel;
     pawgui::widget_input_text * textureLocationField;
-    pawgui::widget_button_label * browseTextureButton;
-    pawgui::widget_button_label * clearTextureButton;
+    pawgui::widget_button_label * browseTexture_button;
+    pawgui::widget_button_label * clearTexture_button;
     pawgui::widget_checkbox * autorotateAngle;
     //Direction Light Related Variables [ END ]
 
 
     //Light Flickering variables
     pawgui::widget_checkbox * lightUseFlicker;
-    pawgui::widget_input_number * lightFlickerTimeField;
+    pawgui::widget_input_number * light_flicker_timeField;
     pawgui::widget_input_number * lightFlickerAmountField;
 
     lightResource( pawgui::widget_resource_container * pFolder = NULL );
@@ -88,7 +88,6 @@ public:
 
     void compile_cpp();
     bool include_local_files( std::string pBuildDir , int buildType );
-    bool get_mouse_coords( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void handle_scrolling();
     bool is_build_ready();
 
@@ -100,7 +99,7 @@ public:
     void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
     void revert_data_fields();
     void save_resource(std::string file_path = "", int backupId = -1);
-    void update_box(int newX=-1, int newY=-1, int newW=-1, int newH=-1);
+    void update_box(int x_new=-1, int y_new=-1, int newW=-1, int newH=-1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 

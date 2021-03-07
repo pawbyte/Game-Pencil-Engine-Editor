@@ -3,10 +3,10 @@ gpe_scene_basic_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,16 +36,16 @@ SOFTWARE.
 
 GPE_SceneBasicClass::GPE_SceneBasicClass()
 {
-    dualScaleClass = true;
+    dual_scaleClass = true;
     projectParentFolder = NULL;
     parentSceneBranch = NULL;
     isBeingMoved = false;
     layerParentId = -1;
-    xPos = yPos = 0;
+    x_pos = y_pos = 0;
     width = height = 32;
-    xScale = yScale = 1;
+    x_scale = y_scale = 1;
     angle =  0;
-    branchType = gpe::branch_type::BASIC_SCENE_ELEMENT;
+    branch_type_id = gpe::branch_type::BASIC_SCENE_ELEMENT;
     xPivot = width/2;
     yPivot = height/2;
     isLocked = false;
@@ -56,25 +56,25 @@ GPE_SceneBasicClass::GPE_SceneBasicClass()
     angleField->set_label("Angle");
     angleField->set_number(angle);
 
-    xPosField = new pawgui::widget_input_number("","");
-    xPosField->set_label("X-Pos");
-    xPosField->set_label("X-Start");
-    xPosField->scale_width( 0.4 );
+    x_posField = new pawgui::widget_input_number("","");
+    x_posField->set_label("X-Pos");
+    x_posField->set_label("X-Start");
+    x_posField->scale_width( 0.4 );
 
-    yPosField = new pawgui::widget_input_number("","");
-    yPosField->set_label("Y-Pos");
-    yPosField->set_label("Y-Start");
-    yPosField->scale_width( 0.4 );
+    y_posField = new pawgui::widget_input_number("","");
+    y_posField->set_label("Y-Pos");
+    y_posField->set_label("Y-Start");
+    y_posField->scale_width( 0.4 );
 
-    xScaleField = new pawgui::widget_input_number("",false);
-    xScaleField->set_string("1.0");
-    xScaleField->set_label("X-Scale");
-    xScaleField->scale_width( 0.4 );
+    x_scaleField = new pawgui::widget_input_number("",false);
+    x_scaleField->set_string("1.0");
+    x_scaleField->set_label("X-scale");
+    x_scaleField->scale_width( 0.4 );
 
-    yScaleField = new pawgui::widget_input_number("",false);
-    yScaleField->set_string("1.0");
-    yScaleField->set_label("Y-Scale");
-    yScaleField->scale_width( 0.4 );
+    y_scaleField = new pawgui::widget_input_number("",false);
+    y_scaleField->set_string("1.0");
+    y_scaleField->set_label("Y-scale");
+    y_scaleField->scale_width( 0.4 );
 
     branchNameField = new pawgui::widget_input_text("name","branch name");
     branchNameField->set_string("0");
@@ -95,16 +95,16 @@ GPE_SceneBasicClass::GPE_SceneBasicClass()
 GPE_SceneBasicClass::~GPE_SceneBasicClass()
 {
     reset_components();
-    if( xPosField!=NULL )
+    if( x_posField!=NULL )
     {
-        delete xPosField;
-        xPosField = NULL;
+        delete x_posField;
+        x_posField = NULL;
     }
 
-    if( yPosField!=NULL )
+    if( y_posField!=NULL )
     {
-        delete yPosField;
-        yPosField = NULL;
+        delete y_posField;
+        y_posField = NULL;
     }
     if( angleField!=NULL)
     {
@@ -112,16 +112,16 @@ GPE_SceneBasicClass::~GPE_SceneBasicClass()
         angleField = NULL;
     }
 
-    if( xScaleField!=NULL )
+    if( x_scaleField!=NULL )
     {
-        delete xScaleField;
-        xScaleField = NULL;
+        delete x_scaleField;
+        x_scaleField = NULL;
     }
 
-    if( yScaleField!=NULL )
+    if( y_scaleField!=NULL )
     {
-        delete yScaleField;
-        yScaleField = NULL;
+        delete y_scaleField;
+        y_scaleField = NULL;
     }
 
     if( branchColor!=NULL)
@@ -153,28 +153,28 @@ void GPE_SceneBasicClass::add_basic_elements()
 {
     if( panel_inspector!=NULL)
     {
-        if( branchType != gpe::branch_type::LAYER )
+        if( branch_type_id != gpe::branch_type::LAYER )
         {
             panel_inspector->add_gui_element(branchNameField , true );
         }
         panel_inspector->add_gui_element( branchGlobalId , true );
 
-        if( branchType != gpe::branch_type::LAYER && branchType!= gpe::branch_type::GROUP)
+        if( branch_type_id != gpe::branch_type::LAYER && branch_type_id!= gpe::branch_type::GROUP)
         {
             if( !isLocked )
             {
-                panel_inspector->add_gui_element( xPosField , false );
-                panel_inspector->add_gui_element( yPosField , true );
+                panel_inspector->add_gui_element( x_posField , false );
+                panel_inspector->add_gui_element( y_posField , true );
             }
             panel_inspector->add_gui_element( branchTagField, true );
-            if( dualScaleClass )
+            if( dual_scaleClass )
             {
                 /*
                 Temporarily disabled
                 panel_inspector->add_gui_element( angleField , true );
                 */
-                panel_inspector->add_gui_element( xScaleField , false );
-                panel_inspector->add_gui_element( yScaleField , true );
+                panel_inspector->add_gui_element( x_scaleField , false );
+                panel_inspector->add_gui_element( y_scaleField , true );
                 panel_inspector->add_gui_element( branchColor  , true );
                 panel_inspector->add_gui_element( branchAlpha  , true );
             }
@@ -184,7 +184,7 @@ void GPE_SceneBasicClass::add_basic_elements()
                 Temporarily disabled
                 panel_inspector->add_gui_element( angleField , true );
                 */
-                panel_inspector->add_gui_element( xScaleField , true );
+                panel_inspector->add_gui_element( x_scaleField , true );
                 panel_inspector->add_gui_element( branchColor  , true );
                 panel_inspector->add_gui_element( branchAlpha  , true );
             }
@@ -201,7 +201,7 @@ bool GPE_SceneBasicClass::add_scene_branch( GPE_SceneBasicClass * branch, bool c
 {
     if( branch!=NULL )
     {
-        if( branchType == gpe::branch_type::LAYER || branchType == gpe::branch_type::GROUP )
+        if( branch_type_id == gpe::branch_type::LAYER || branch_type_id == gpe::branch_type::GROUP )
         {
             add_branch( branch, changeId);
             branch->layerParentId = layerParentId;
@@ -259,9 +259,9 @@ bool GPE_SceneBasicClass::build_intohtml5_file(std::ofstream * fileTarget, int l
     //Loops thru all of his sub-elements
     std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount );
     *fileTarget << nestedTabsStr << "newBranch.init_basic(";
-    stg_ex::int_to_string(xPos)+","+ stg_ex::int_to_string(yPos)+","+
+    stg_ex::int_to_string(x_pos)+","+ stg_ex::int_to_string(y_pos)+","+
     stg_ex::int_to_string(angle)+","+
-    stg_ex::int_to_string(xScale)+","+ stg_ex::int_to_string(yScale)+");\n";
+    stg_ex::int_to_string(x_scale)+","+ stg_ex::int_to_string(y_scale)+");\n";
     int componentsSize = (int)objCustomValPairs.size();
     if( componentsSize > 0 )
     {
@@ -315,10 +315,10 @@ void GPE_SceneBasicClass::calculate_size()
 
 void GPE_SceneBasicClass::process_elements()
 {
-    xPos = xPosField->get_held_number();
-    yPos = yPosField->get_held_number();
-    xScale = xScaleField->get_held_number();
-    yScale = yScaleField->get_held_number();
+    x_pos = x_posField->get_held_number();
+    y_pos = y_posField->get_held_number();
+    x_scale = x_scaleField->get_held_number();
+    y_scale = y_scaleField->get_held_number();
     angle = angleField->get_held_number();
 }
 
@@ -361,12 +361,12 @@ void GPE_SceneBasicClass::render_branch()
 
 float GPE_SceneBasicClass::rotx( float rx, float ry )
 {
-    return xPos + semath::lengthdir_x(rx, angle) * xScale - semath::lengthdir_x(ry, angle - 90) * yScale;
+    return x_pos + semath::lengthdir_x(rx, angle) * x_scale - semath::lengthdir_x(ry, angle - 90) * y_scale;
 }
 
 float GPE_SceneBasicClass::roty( float rx, float ry )
 {
-    return yPos + semath::lengthdir_y(rx, angle) * xScale - semath::lengthdir_y(ry, angle - 90) * yScale;
+    return y_pos + semath::lengthdir_y(rx, angle) * x_scale - semath::lengthdir_y(ry, angle - 90) * y_scale;
 }
 
 bool GPE_SceneBasicClass::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn )
@@ -395,9 +395,9 @@ bool GPE_SceneBasicClass::save_branch_data(std::ofstream * fileTarget, int neste
     return false;
 }
 
-void GPE_SceneBasicClass::set_angle( float newAngle )
+void GPE_SceneBasicClass::set_angle( float new_angle )
 {
-    angle = newAngle;
+    angle = new_angle;
     if( angle < -720 )
     {
         angle = 0;
@@ -418,11 +418,11 @@ void GPE_SceneBasicClass::set_name( std::string new_name )
     }
 }
 
-void GPE_SceneBasicClass::set_tag( std::string newTag )
+void GPE_SceneBasicClass::set_tag( std::string tag_new )
 {
     if( branchTagField!=NULL )
     {
-        branchTagField->set_string( newTag );
+        branchTagField->set_string( tag_new );
     }
 }
 
@@ -430,20 +430,20 @@ void GPE_SceneBasicClass::set_position( float x, float y)
 {
     x = round(x);
     y = round(y);
-    xPos = x;
-    yPos = y;
-    xPosField->set_number( xPos );
-    yPosField->set_number( yPos );
+    x_pos = x;
+    y_pos = y;
+    x_posField->set_number( x_pos );
+    y_posField->set_number( y_pos );
 }
 
 bool GPE_SceneBasicClass::under_mouse(float mx, float my )
 {
-    if( branchType > gpe::branch_type::GROUP )
+    if( branch_type_id > gpe::branch_type::GROUP )
     {
-        float relativeMouseX = mx - xPos;
-        float relativeMouseY = my - yPos;
-        int lmx = ( semath::lengthdir_x( relativeMouseX, -angle) - semath::lengthdir_x( relativeMouseY, -(angle - 90) ) ) / abs( xScale );
-        int lmy = ( semath::lengthdir_y( relativeMouseX, -angle)  - semath::lengthdir_y( relativeMouseY, -(angle - 90) ) ) / abs( yScale );
+        float relativeMouseX = mx - x_pos;
+        float relativeMouseY = my - y_pos;
+        int lmx = ( semath::lengthdir_x( relativeMouseX, -angle) - semath::lengthdir_x( relativeMouseY, -(angle - 90) ) ) / abs( x_scale );
+        int lmy = ( semath::lengthdir_y( relativeMouseX, -angle)  - semath::lengthdir_y( relativeMouseY, -(angle - 90) ) ) / abs( y_scale );
         if (lmx >= -xPivot && lmx <= width-xPivot)
         {
             if(  lmy >= -yPivot && lmy <= height-yPivot)
@@ -453,7 +453,7 @@ bool GPE_SceneBasicClass::under_mouse(float mx, float my )
         }
     }
     /*
-    else if( point_within( mx, my, xPos, yPos, xPos+width, yPos+height) )
+    else if( point_within( mx, my, x_pos, y_pos, x_pos+width, y_pos+height) )
     {
         return true;
     }

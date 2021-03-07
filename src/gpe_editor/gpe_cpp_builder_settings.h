@@ -46,15 +46,15 @@ class gpeCPPSubsytemHolder
     std::string subsystemName;
     pawgui::widget_label_text  * systemNameLabel;
     pawgui::widget_input_text * systemNameField;
-    pawgui::widget_button_label * removeSystemButton;
+    pawgui::widget_button_label * removeSystem_button;
 
     pawgui::widget_label_text  * systemProgramScriptLabel;
     pawgui::widget_input_text * mainProgramFileScript;
-    pawgui::widget_button_label * mainProgramFileScriptButton;
+    pawgui::widget_button_label * mainProgramFileScript_button;
 
     pawgui::widget_label_text  * systemProgramTemplateFileLabel;
     pawgui::widget_input_text * systemProgramTemplateFile;
-    pawgui::widget_button_label * systemProgramTemplateFileButton;
+    pawgui::widget_button_label * systemProgramTemplateFile_button;
 
     gpeCPPSubsytemHolder(std::string gpeSubSystemName  = "");
     ~gpeCPPSubsytemHolder();
@@ -69,7 +69,7 @@ class gpeCPPBuildHolder
     std::string builderName;
     pawgui::widget_label_text  * builderNameLabel;
     pawgui::widget_input_text * builderNameField;
-    pawgui::widget_button_label * addSubSystemButton;
+    pawgui::widget_button_label * addSubSystem_button;
     pawgui::widget_dropdown_menu * buildSystemOS;
     std::vector <gpeCPPSubsytemHolder *> mySubsystems;
     gpeCPPBuildHolder(std::string buildSystemName = "NewBuildHolder");
@@ -82,7 +82,7 @@ class gpeCPPBuildHolder
     bool remove_subsystem_indexed(int subsystemPos, bool resetIdToRemove = false);
 };
 
-class gameCPPBuilderSettingsResource: public standardEditableGameResource
+class gameCPPBuilder_settingsResource: public standardEditableGameResource
 {
     public:
         std::string fileOpenDefaultScriptDir;
@@ -91,21 +91,21 @@ class gameCPPBuilderSettingsResource: public standardEditableGameResource
         pawgui::widget_dropdown_menu * cppBuildSystemsDropDown;
         pawgui::widget_selectbox * sideAreaPanel;
         gpe::shape_rect * sidePanelRect;
-        //Compiler Settings
+        //Compiler _settings
         pawgui::widget_label_title * cppbuildSystemsLabel;
-        pawgui::widget_button_label * addCPPBuildSystemButton;
+        pawgui::widget_button_label * addCPPBuildSystem_button;
         pawgui::widget_dropdown_menu * compilerInUse;
-        pawgui::widget_button_label * defaultCompilerButton;
-        pawgui::widget_button_label * copyCompilerButton;
-        pawgui::widget_button_label * renameCompilerButton;
-        pawgui::widget_button_label * resetDefaultsCompilerButton;
+        pawgui::widget_button_label * defaultCompiler_button;
+        pawgui::widget_button_label * copyCompiler_button;
+        pawgui::widget_button_label * renameCompiler_button;
+        pawgui::widget_button_label * resetDefaultsCompiler_button;
         pawgui::widget_checkbox * stopCompileOnError;
         gpe::shape_rect gpeLogoSpace;
         gpe::shape_rect subViewedSpace;
         pawgui::widget_panel_list * editorPageList;
         std::string projectFolderListLocation;
-        gameCPPBuilderSettingsResource(pawgui::widget_resource_container * pFolder = NULL);
-        ~gameCPPBuilderSettingsResource();
+        gameCPPBuilder_settingsResource(pawgui::widget_resource_container * pFolder = NULL);
+        ~gameCPPBuilder_settingsResource();
         gpeCPPBuildHolder * add_cpp_build_system( std::string newSysName = "");
         void clear_build_systems();
         gpeCPPBuildHolder * find_build_system( std::string sysName );
@@ -116,11 +116,11 @@ class gameCPPBuilderSettingsResource: public standardEditableGameResource
         void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
         void save_resource(std::string file_path = "", int backupId = -1);
-        bool write_cpp_header_file(std::ofstream * fileTarget,std::string fName);
+        bool write_cpp_header_file(std::ofstream * fileTarget,std::string f_name);
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 
 };
 
-extern gameCPPBuilderSettingsResource * GPE_CPP_BUILDER_SETTINGS;
+extern gameCPPBuilder_settingsResource * GPE_CPP_BUILDER_SETTINGS;
 
 #endif
