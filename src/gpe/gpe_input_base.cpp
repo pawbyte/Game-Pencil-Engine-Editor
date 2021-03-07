@@ -911,13 +911,13 @@ namespace gpe
         if( window_controller_main->is_resized() )
         {
             window_input_received = true;
-            //screen_width = window_controller_main->get_window_width();
-            //screen_height = window_controller_main->get_window_height();
+            screen_width = window_controller_main->get_window_width();
+            screen_height = window_controller_main->get_window_height();
             if(  window_controller_main->is_resized() )
             {
                 time(&last_screen_resize);
             }
-            //reset_all_input();
+            reset_all_input();
         }
 
         if( window_controller_main->window_closed)
@@ -956,6 +956,7 @@ namespace gpe
         if( window_controller_main !=nullptr )
         {
             window_controller_main->reset_input();
+            window_controller_main->start_loop();
         }
 
         int key = 0;

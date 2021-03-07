@@ -34,6 +34,7 @@ SOFTWARE.
 #ifndef renderer_base_h
 #define renderer_base_h
 
+#include "gpe_color.h"
 #include "gpe_shapes.h"
 #include <string>
 
@@ -81,8 +82,13 @@ namespace gpe
             virtual bool disable_scaling();
             virtual bool enable_scaling();
 
+
             //Check if anything's wrong with the window
             bool error_check();
+
+            virtual bool file_perform_effect_color_erase( std::string file_location, color * color_to_erase );
+            virtual bool file_perform_effect_color_invert( std::string file_location);
+            virtual bool file_perform_effect_grayscale( std::string file_location );
 
             int get_blend_mode();
             virtual std::string get_renderer_name();
@@ -116,6 +122,7 @@ namespace gpe
             virtual void set_render_blend_mode( int blend_mode_new );
             virtual void set_viewpoint( gpe::shape_rect * newViewPoint = nullptr);
             virtual void update_renderer( bool windowIsMinimized );
+
     };
     extern renderer_base * renderer_main;
 

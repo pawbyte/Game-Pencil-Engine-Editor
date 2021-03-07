@@ -47,7 +47,7 @@ namespace gpe
             std::vector <gpe::key_pair *> ini_sections;
         public:
         gpe_ini_file();
-        ~gpe_ini_file();
+        virtual ~ gpe_ini_file();
         virtual gpe::key_pair * add_section( std::string section_name);
         virtual void clear_all_sections();
         virtual void clear_section( std::string section_name );

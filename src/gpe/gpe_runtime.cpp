@@ -107,7 +107,6 @@ namespace gpe
     //gameloop
     int runtime_master::game_loop()
     {
-
         state_handle_changes();
         //If the gameloop starts off on exit, we return false
         if( stg_ex::string_lower( state_seeked_name )== "exit" )
@@ -152,15 +151,15 @@ namespace gpe
             eTicks = time_keeper->get_ticks();
             error_log->log_ms_action("state_current->apply_logic",eTicks - sTicks, 20);
 
-            if( window_controller_main->is_minimized() == false )
+            //if( window_controller_main->is_minimized() == false )
             {
                 sTicks = time_keeper->get_ticks();
 
                 if( rph!=nullptr )
                 {
-                    rph->clear_render_packages();
+                    //rph->clear_render_packages();
                 }
-                //renderer_main->clear_renderer( false );
+                renderer_main->clear_renderer( false );
 
                 if( state_current!=nullptr )
                 {
@@ -173,6 +172,7 @@ namespace gpe
                 //Updates the screen, calculates/caps fps and more.
                 end_loop();
             }
+            /*
             else
             {
                 if(input!=nullptr)
@@ -184,6 +184,7 @@ namespace gpe
                     time_keeper->reset_timer();
                 }
             }
+            */
         }
         return true; //Otherwise return true that the gameloop ended properly
     }
@@ -213,12 +214,12 @@ namespace gpe
         loop_started = false;
         if(  window_controller_main->is_minimized() )
         {
-            //error_log->report("End loop resetting timer...");
-            //time_keeper->reset_timer();
+            error_log->report("End loop resetting timer...");
+            time_keeper->reset_timer();
             return;
         }
 
-        if( rph!=nullptr )
+        if( rph != nullptr )
         {
             rph->update_render_packages();
         }

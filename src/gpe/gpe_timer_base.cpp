@@ -299,7 +299,7 @@ namespace gpe
     void time_keeper_base::start_timer()
     {
         ticks_start = get_ticks();
-        time_past = get_performance_ms();
+        time_past = get_ticks();
     }
 
     void time_keeper_base::stop_timer()

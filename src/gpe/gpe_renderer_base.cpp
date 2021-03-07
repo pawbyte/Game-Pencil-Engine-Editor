@@ -96,6 +96,21 @@ namespace gpe
         return false;
     }
 
+    bool renderer_base::file_perform_effect_color_erase( std::string file_location, color * color_to_erase )
+    {
+        return false;
+    }
+
+    bool renderer_base::file_perform_effect_color_invert( std::string file_location)
+    {
+        return false;
+    }
+
+    bool renderer_base::file_perform_effect_grayscale(std::string file_location )
+    {
+        return false;
+    }
+
     int renderer_base::get_blend_mode()
     {
         return render_blend_mode;

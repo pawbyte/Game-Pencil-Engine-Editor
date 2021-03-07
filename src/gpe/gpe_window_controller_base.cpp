@@ -177,6 +177,7 @@ namespace gpe
     {
         resized = false;
         window_closed = false;
+        minimized = false;
         if( window_base_renderer!=nullptr )
         {
             window_base_renderer->resize_renderer( window_width, window_height );

@@ -35,6 +35,14 @@ SOFTWARE.
 #include "gpe_file_system.h"
 #include "gpe_globals.h"
 
+#ifdef _WIN32
+
+#include <windows.h>
+#include <Commdlg.h>
+
+#endif
+#include <sys/stat.h>
+
 namespace gpe
 {
     file_and_url_manager * main_file_url_manager = nullptr;
@@ -491,7 +499,10 @@ namespace gpe
 
     void  file_and_url_manager::file_ammend_string(std::string file_name, std::string str_in )
     {
-
+        std::ofstream filestr(file_name.c_str(), std::ios::out | std::ios::app);
+        filestr << str_in;
+        filestr << " \n";
+        filestr.close();
     }
 
     bool file_and_url_manager::file_copy(std::string source_file_name, std::string destination_file_name, bool overwrite_existing )
@@ -499,9 +510,31 @@ namespace gpe
         return true;
     }
 
+    bool file_and_url_manager::file_delete( std::string f_name)
+    {
+        return false;
+    }
+
     bool file_and_url_manager::file_exists(std::string new_file_name)
     {
-        return true;
+        if( (int)new_file_name.size() > 0 )
+        {
+            /*
+                Code derieved from http://stackoverflow.com/questions/146924/how-can-i-tell-if-a-given-path-is-a-directory-or-a-file-c-c
+                http://stackoverflow.com/a/146938
+                Mk12 - http://stackoverflow.com/users/148195/mk12
+            */
+            struct stat s;
+            if( stat(new_file_name.c_str(),&s) == 0 )
+            {
+                if( s.st_mode & S_IFREG )
+                {
+                    //it's a file
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     int file_and_url_manager::file_get_size_bytes(const std::string &file_name)
@@ -555,9 +588,24 @@ namespace gpe
         return "";
     }
 
-    bool file_and_url_manager::delete_file( std::string f_name)
+
+    int file_and_url_manager::path_clean(std::string folder_name)
     {
-        return false;
+        return folder_clean( folder_name );
     }
 
+    int file_and_url_manager::path_copy(std::string folder_name, std::string folder_target, bool copy_subfolders , bool overwrite_existing_files  )
+    {
+        return folder_copy( folder_name, folder_target, copy_subfolders, overwrite_existing_files );
+    }
+
+    int file_and_url_manager::path_create( std::string new_path_name)
+    {
+        return folder_create( new_path_name );
+    }
+
+    bool file_and_url_manager::path_exists(std::string path_name)
+    {
+        return folder_exists( path_name );
+    }
 }

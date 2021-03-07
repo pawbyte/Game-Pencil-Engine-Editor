@@ -116,6 +116,8 @@ namespace gpe
 
             virtual void file_ammend_string(std::string file_name, std::string str_in );
             virtual bool file_copy(std::string source_file_name, std::string destination_file_name, bool overwrite_existing = true);
+            virtual bool file_delete( std::string f_name);
+
             virtual bool file_exists(std::string new_file_name);
 
 
@@ -132,7 +134,11 @@ namespace gpe
             virtual bool seek_settings_folder();
             virtual std::string get_user_temp_folder();
             virtual std::string get_user_screenshot_folder();
-            virtual bool delete_file( std::string f_name);
+
+            virtual int path_clean(std::string folder_name);
+            virtual int path_copy(std::string folder_name, std::string folder_target, bool copy_subfolders = false, bool overwrite_existing_files = false );
+            virtual int path_create( std::string new_path_name);
+            virtual bool path_exists(std::string path_name);
     };
 
     extern file_and_url_manager * main_file_url_manager;

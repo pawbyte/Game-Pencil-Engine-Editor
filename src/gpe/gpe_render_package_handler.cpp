@@ -74,7 +74,8 @@ namespace gpe
             tempPackage = r_packages[i];
             if( tempPackage!=nullptr && tempPackage->packageRenderer!=nullptr && tempPackage->packageWindow!=nullptr )
             {
-                tempPackage->packageRenderer->clear_renderer( tempPackage->packageWindow->is_minimized() );
+                tempPackage->packageRenderer->clear_renderer( false );
+                //tempPackage->packageRenderer->clear_renderer( tempPackage->packageWindow->is_minimized() );
             }
         }
     }
@@ -233,6 +234,9 @@ namespace gpe
     {
         int packageMax = (int)r_packages.size();
         render_package * tempPackage = nullptr;
+
+        //error_log->report("Updating render packages...");
+
         for( int i = packageMax -1; i >= 0; i--)
         {
             tempPackage = r_packages[i];
@@ -240,6 +244,7 @@ namespace gpe
             if( tempPackage!=nullptr && tempPackage->packageRenderer!=nullptr && tempPackage->packageWindow!=nullptr )
             {
                 tempPackage->packageRenderer->update_renderer( tempPackage->packageWindow->is_minimized() );
+                //error_log->report("Updated render package ["+stg_ex::int_to_string( i )+"]..." );
             }
         }
     }

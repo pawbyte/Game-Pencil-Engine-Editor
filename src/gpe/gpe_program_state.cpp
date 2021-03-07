@@ -53,6 +53,21 @@ namespace gpe
 
     }
 
+    void program_state::apply_logic()
+    {
+
+    }
+
+    void program_state::clean_up()
+    {
+
+    }
+
+    void program_state::end_state()
+    {
+
+    }
+
     std::string program_state::get_state_name()
     {
         return state_name;
@@ -66,6 +81,11 @@ namespace gpe
     std::string program_state::get_state_name_previous()
     {
         return state_previous_name;
+    }
+
+    void program_state::process_input()
+    {
+
     }
 
     void program_state::render()
@@ -110,11 +130,21 @@ namespace gpe
     bool program_state::set_state_name_next( std::string s_name )
     {
         state_next_name = s_name;
+        return true;
     }
 
     bool program_state::set_state_name_previous( std::string s_name )
     {
+        if( s_name == state_name )
+        {
+            return false;
+        }
         state_previous_name = s_name;
         return true;
+    }
+
+    void program_state::start_state()
+    {
+
     }
 }

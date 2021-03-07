@@ -57,15 +57,15 @@ namespace gpe
             program_state();
             virtual ~program_state();
 
-            virtual void apply_logic() = 0;
-            virtual void clean_up() = 0;
-            virtual void end_state() = 0;
+            virtual void apply_logic();
+            virtual void clean_up();
+            virtual void end_state();
 
             std::string get_state_name();
             std::string get_state_name_next();
             std::string get_state_name_previous();
 
-            virtual void process_input() = 0;
+            virtual void process_input();
 
             virtual void render();
 
@@ -74,7 +74,7 @@ namespace gpe
 
             virtual bool set_state_name_next( std::string s_name );
             virtual bool set_state_name_previous( std::string s_name );
-            virtual void start_state() = 0;
+            virtual void start_state();
     };
 }
 
