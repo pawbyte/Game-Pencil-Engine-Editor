@@ -56,8 +56,8 @@ namespace gpe
             Texture  get_raylib_texture();
 
             texture_base * create_new();
-            void render_overlay(  renderer_base * renderer,int x, int y, gpe::shape_rect* clip = NULL, int alpha = 255  );
-            void render_overlay_scaled(  renderer_base * renderer,int x, int y,float x_scale, float y_scale, gpe::shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
+            void render_overlay(  renderer_base * renderer,int x, int y, gpe::shape_rect* clip = nullptr, int alpha = 255  );
+            void render_overlay_scaled(  renderer_base * renderer,int x, int y,float x_scale, float y_scale, gpe::shape_rect* clip = nullptr, color * render_color = nullptr, int alpha = 255 );
 
             void resize_target( renderer_base * renderer,int w, int h, int id = -1,bool useLinearScaling = true  );
             void set_blend_mode( int blend_mode_new);

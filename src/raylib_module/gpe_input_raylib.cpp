@@ -170,7 +170,7 @@ namespace gpe
 
         if( debug_input )
         {
-            error_log->report("    No Game Controllers found...");
+            error_log->report("No Game Controllers found...");
         }
         return false;
     }
@@ -178,7 +178,7 @@ namespace gpe
     bool input_manager_raylib::gamepad_disconnect( int gamepad_id )
     {
         input_manager_base::gamepad_disconnect( gamepad_id );
-        gamepad_raylib * temp_raylib_gamepad = NULL;
+        gamepad_raylib * temp_raylib_gamepad = nullptr;
         for( int i = gp_max_devices - 1; i >=0; i--)
         {
             if( game_pads[i]->get_system_handler() == "raylib" )
@@ -216,28 +216,31 @@ namespace gpe
             {
                 error_log->report("Finding gamepad...");
             }
-            gamepad_raylib * tgamepad = game_pads_raylib[ gamepad_id ];
+            gamepad_base * tgamepad = game_pads[ gamepad_id ];
             if( tgamepad->get_system_handler() == "raylib" )
             {
-                gamepad_raylib * tgamepad = (gamepad_raylib*) tgamepad;
-                if( debug_input )
+                if( tgamepad != nullptr )
                 {
-                    error_log->report("Finding Joystick ID...");
-                }
-                tgamepad->set_connected( true );
-                tgamepad->set_name( GetGamepadName( gamepad_id ) );
+                    gamepad_raylib * tgamepad = (gamepad_raylib*) tgamepad;
+                    if( debug_input )
+                    {
+                        error_log->report("Finding Joystick ID...");
+                    }
+                    tgamepad->set_connected( true );
+                    tgamepad->set_name( GetGamepadName( gamepad_id ) );
 
-                if( debug_input )
-                {
-                    error_log->report("Mapping buttons...");
+                    if( debug_input )
+                    {
+                        error_log->report("Mapping buttons...");
+                    }
+                    tgamepad->setup_default_mapping();
+                    if( debug_input )
+                    {
+                        error_log->report("New gamepad has been setup.");
+                    }
+                    gamepad_current_count++;
+                    return true;
                 }
-                tgamepad->setup_default_mapping();
-                if( debug_input )
-                {
-                    error_log->report("New gamepad has been setup.");
-                }
-                gamepad_current_count++;
-                return true;
             }
             else if( debug_input )
             {
@@ -258,29 +261,168 @@ namespace gpe
     {
         handle_input_start( dump_event, is_embedded );
 
-        /* Check for events */
-        int cbutton = -1;
-        int frame_wait = 2; /* anything less than 16 ms is good */
-        unsigned tries = 3; /* use UINT_MAX for no effective limit */
         int fControllerInputId = 0;
-        gamepad_raylib *  tempController = NULL;
+        gamepad_raylib *  tempController = nullptr;
         float  tempAxisValue  = 0.0;
 
+        mouse_wheel_received  = false;
+        mouse_scrolling_left  = false;
+        mouse_scrolling_right = false;
+        mouse_scrolling_up = false;
+        mouse_scrolling_down = false;
+
+        bool key_detected_down = false, key_detected_up = false;
+        for( int i_key = 0; i_key < kb_button_count; i_key++ )
+        {
+            key_detected_down = false;
+            key_detected_up = false;
+
+            if( kb_binding[ i_key] >= 0 )
+            {
+                if( IsKeyPressed ( kb_binding[i_key] ) )
+                {
+                    key_detected_down = true;
+                }
+            }
+            if(  kb_binding_alt[i_key]  >= 0 )
+            {
+                if(  IsKeyPressed ( kb_binding_alt[i_key] ) )
+                {
+                    key_detected_down = true;
+                }
+            }
+
+            if( key_detected_down )
+            {
+                kb_input_received = true;
+                kb_button_pressed[i_key] =  true;
+                kb_button_down[i_key] =  true;
+                kb_last_button = i_key;
+
+                if( i_key == kb_shift)
+                {
+                    kb_shift_pressed = true;
+                }
+
+                if( i_key == kb_backspace)
+                {
+                    kb_backspace_pressed = true;
+                }
+            }
+            key_detected_down = false;
+
+
+            if( kb_binding[ i_key] >= 0 )
+            {
+                if( IsKeyReleased ( kb_binding[i_key] ) )
+                {
+                    key_detected_up = true;
+                }
+            }
+            if(  kb_binding_alt[i_key]  >= 0 )
+            {
+                if(  IsKeyReleased ( kb_binding_alt[i_key] ) )
+                {
+                    key_detected_up = true;
+                }
+            }
+
+            if( key_detected_up )
+            {
+                kb_input_received = true;
+                kb_button_pressed[i_key] =  false;
+                kb_button_down[i_key] =  false;
+                kb_button_locked[i_key] = false;
+                kb_last_button = i_key;
+
+                if( i_key == kb_shift)
+                {
+                    kb_shift_pressed = false;
+                }
+
+                if( i_key == kb_backspace)
+                {
+                    kb_backspace_pressed = false;
+                }
+            }
+            key_detected_up = false;
+        }
+
+
+        for( int i_mouse_button = MOUSE_LEFT_BUTTON; i_mouse_button <= MOUSE_MIDDLE_BUTTON; i_mouse_button++ )
+        {
+            if( IsMouseButtonPressed( i_mouse_button) )
+            {
+                input_received = true;
+                mouse_input_received = true;
+
+                mouse_down_button[i_mouse_button] = true;
+                mouse_released_button[i_mouse_button] = false;
+
+            }
+            if( IsMouseButtonUp( i_mouse_button) )
+            {
+                mouse_down_button[ i_mouse_button ] = false;
+                mouse_pressed_button[ i_mouse_button] = false;
+            }
+        }
 
         mouse_position_x = GetMouseX();
         mouse_position_y = GetMouseY();
+
+        if( mouse_position_x!= mouse_previous_position_x || mouse_position_y != mouse_previous_position_y )
+        {
+            mouse_movement_received = true;
+            mouse_input_received = true;
+        }
+
+        float mouse_wheel_movement = GetMouseWheelMove();
+        if( mouse_wheel_movement != 0.f )
+        {
+            mouse_wheel_received = true;
+            mouse_input_received = true;
+
+            if( mouse_wheel_movement > 0.f )
+            {
+                if( mouse_scroll_inverted )
+                {
+                    mouse_scrolling_down = true;
+                }
+                else
+                {
+                    mouse_scrolling_up = true;
+                }
+            }
+            else if ( mouse_wheel_movement < 0.f )
+            {
+                if( mouse_scroll_inverted )
+                {
+                    mouse_scrolling_up = true;
+                }
+                else
+                {
+                    mouse_scrolling_down = true;
+                }
+            }
+        }
 
         handle_input_end( dump_event, is_embedded );
     }
 
     void input_manager_raylib::key_bind_qwerty()
     {
-        kb_binding[kb_esc] = KEY_ESCAPE;
-        kb_binding[kb_enter] = KEY_ENTER;
-        kb_binding[kb_up] = KEY_UP;
-        kb_binding[kb_down] = KEY_DOWN;
-        kb_binding[kb_left] = KEY_LEFT;
-        kb_binding[kb_right] = KEY_RIGHT;
+        for (int key=0; key<kb_button_count; key++)
+        {
+            kb_binding[ key] = -1;
+            kb_binding_alt[ key] = -1;
+        }
+
+        kb_binding[kb_esc] = kb_binding_alt[kb_esc] ==  KEY_ESCAPE;
+        kb_binding[kb_enter] = kb_binding_alt[kb_enter] = KEY_ENTER;
+        kb_binding[kb_up] = kb_binding[kb_up] = KEY_UP;
+        kb_binding[kb_down] = kb_binding[kb_down] =KEY_DOWN;
+        kb_binding[kb_left] = kb_binding[kb_left] =KEY_LEFT;
+        kb_binding[kb_right] = kb_binding[kb_right] =KEY_RIGHT;
         kb_binding[kb_space] = kb_binding_alt[kb_space] = KEY_SPACE;
         kb_binding[kb_page_down] = kb_binding_alt[kb_page_down] = KEY_PAGE_DOWN;
         kb_binding[kb_page_up] = kb_binding_alt[kb_page_up] = KEY_PAGE_UP;
@@ -310,16 +452,8 @@ namespace gpe
         kb_binding[kb_x] = kb_binding_alt[kb_x] = KEY_X;
         kb_binding[kb_y] = kb_binding_alt[kb_y] = KEY_Y;
         kb_binding[kb_z] = kb_binding_alt[kb_z] = KEY_Z;
-        kb_binding[kb_minus] = KEY_MINUS;
-        kb_binding[kb_plus] = KEY_EQUAL;
-
-        kb_binding_alt[kb_esc] = KEY_ESCAPE;
-        kb_binding_alt[kb_enter] = KEY_ENTER;
-
-        kb_binding_alt[kb_up] = KEY_UP;
-        kb_binding_alt[kb_down] = KEY_DOWN;
-        kb_binding_alt[kb_left] = KEY_LEFT;
-        kb_binding_alt[kb_right] = KEY_RIGHT;
+        kb_binding[kb_minus] = kb_binding_alt[kb_minus] = KEY_MINUS;
+        kb_binding[kb_plus] = kb_binding_alt[kb_plus] = KEY_EQUAL;
 
         kb_binding[kb_1] = kb_binding_alt[kb_1] = KEY_ONE;
         kb_binding[kb_2] = kb_binding_alt[kb_2] = KEY_TWO;
@@ -358,7 +492,7 @@ namespace gpe
 
         kb_binding[kb_comma] = KEY_COMMA;
         kb_binding_alt[kb_comma] = KEY_COMMA;
-        kb_binding[kb_period]  = KEY_PERIOD          ;
+        kb_binding[kb_period]  = KEY_PERIOD;
         kb_binding_alt[kb_period] = KEY_PERIOD;
 
         kb_binding[kb_alt] = KEY_LEFT_ALT;
@@ -384,6 +518,16 @@ namespace gpe
         kb_binding[kb_tab] = kb_binding_alt[kb_tab] = KEY_TAB;
     }
 
+    void input_manager_raylib::key_bind_load()
+    {
+
+    }
+
+    void input_manager_raylib::key_bind_save()
+    {
+
+    }
+
     bool input_manager_raylib::load_input_settings(std::string file_path )
     {
         return input_manager_base::load_input_settings( file_path );
@@ -392,19 +536,19 @@ namespace gpe
     bool init_raylib_input_system()
     {
         error_log->report("Starting raylib_module input system...");
-        if( input != NULL )
+        if( input != nullptr )
         {
             delete input;
-            input = NULL;
+            input = nullptr;
         }
         input = new input_manager_raylib();
         error_log->report("Input swapped from base to raylib_module class...");
-        return true;
+        return ( input!= nullptr);
     }
 
     void quit_raylib_input_system()
     {
-        if( input != NULL && input->get_type() == "raylib")
+        if( input != nullptr && input->get_type() == "raylib")
         {
             delete input;
             input = new input_manager_base();

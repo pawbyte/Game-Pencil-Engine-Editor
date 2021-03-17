@@ -40,22 +40,22 @@ namespace gpe
     //GPE Render calls [ Begin ]
     artist_raylib::artist_raylib( renderer_system_raylib * aRenderer)
     {
-        raylibRenderer = NULL;
+        raylibRenderer = nullptr;
         lightingOverlayTexture = new texture_target_raylib();
 
         artist_renderer = aRenderer;
 
         raylibRenderer = aRenderer;
-        lightingOverlayTexture = NULL;
+        lightingOverlayTexture = nullptr;
 
     }
 
     artist_raylib::~artist_raylib()
     {
-        if( lightingOverlayTexture != NULL )
+        if( lightingOverlayTexture != nullptr )
         {
             delete lightingOverlayTexture;
-            lightingOverlayTexture = NULL;
+            lightingOverlayTexture = nullptr;
         }
     }
 
@@ -70,26 +70,23 @@ namespace gpe
         {
             return;
         }
+
+        start_angle = start_angle * semath::math_degrees_multiplier;
+        end_angle = end_angle * semath::math_degrees_multiplier;
         float step = (end_angle - start_angle) / arc_vertices;
-        float theta = start_angle;
-        float vx  = 0,  vy = 0;
 
-        raylib_temp_color.r = render_color->get_r();
-        raylib_temp_color.g = render_color->get_g();
-        raylib_temp_color.b = render_color->get_b();
-        raylib_temp_color.a = alpha_channel;
 
-        for(int arc_i = 0; arc_i < arc_vertices; arc_i++)
+
+        if( render_color != nullptr )
         {
-            vx = arc_x + arc_radius * cos(theta);
-            vy = arc_y + arc_radius * sin(theta);
-            //line_render_points[arc_i].x = vx;
-            //line_render_points[arc_i].y = vy;
-            theta += step;
+            raylib_temp_color.r = render_color->get_r();
+            raylib_temp_color.g = render_color->get_g();
+            raylib_temp_color.b = render_color->get_b();
         }
-        //set_color( render_color->get_r(),render_color->get_g(),render_color->get_b(),alpha_channel );
-
-        //raylib_RenderDrawLinesF( raylibRenderer, line_render_points, arc_vertices );
+        raylib_temp_color.a = alpha_channel;
+        arc_x += renderer_main_raylib->scissor_mode_offset.x;
+        arc_y += renderer_main_raylib->scissor_mode_offset.y;
+        DrawRing( (Vector2){ arc_x, arc_y}, arc_radius - 1.f, arc_radius, start_angle, end_angle , step, raylib_temp_color );
 
     }
 
@@ -114,20 +111,21 @@ namespace gpe
             render_arc_color( arc_x, arc_y, arc_radius, start_angle, end_angle, arc_vertices, render_color, alpha_channel );
             return;
         }
+
+        start_angle = start_angle * semath::math_degrees_multiplier;
+        end_angle = end_angle * semath::math_degrees_multiplier;
         float step = (end_angle - start_angle) / arc_vertices;
-        float theta = start_angle;// std::min(start_angle, end_angle);
-        float vx  = 0,  vy = 0;
 
-        set_color( render_color->get_r(),render_color->get_g(),render_color->get_b());
-        set_render_alpha(alpha_channel  );
-        for(int arc_i = 0; arc_i < arc_vertices; arc_i++)
+        if( render_color != nullptr )
         {
-            vx = arc_x + arc_radius * cos(theta);
-            vy = arc_y + arc_radius * sin(theta);
-            theta += step;
-            render_circle_filled_color( vx, vy, line_width, render_color, alpha_channel );
+            raylib_temp_color.r = render_color->get_r();
+            raylib_temp_color.g = render_color->get_g();
+            raylib_temp_color.b = render_color->get_b();
         }
-
+        raylib_temp_color.a = alpha_channel;
+        arc_x += renderer_main_raylib->scissor_mode_offset.x;
+        arc_y += renderer_main_raylib->scissor_mode_offset.y;
+        DrawRing( (Vector2){ arc_x, arc_y}, arc_radius - line_width, arc_radius, start_angle, end_angle , step, raylib_temp_color );
     }
 
     bool artist_raylib::render_circle_filled( int x, int y, int rad )
@@ -137,7 +135,7 @@ namespace gpe
 
     bool artist_raylib::render_circle_filled_color( int x, int y, int rad, color *render_color, int alpha_channel )
     {
-        if( rad <= 0  || alpha_channel < 1 || render_color == NULL )
+        if( rad <= 0  || alpha_channel < 1 || render_color == nullptr )
         {
             return false;
         }
@@ -145,6 +143,10 @@ namespace gpe
         raylib_temp_color.g = render_color->get_g();
         raylib_temp_color.b = render_color->get_b();
         raylib_temp_color.a = alpha_channel;
+
+        x += renderer_main_raylib->scissor_mode_offset.x;
+        y += renderer_main_raylib->scissor_mode_offset.y;
+
         DrawCircle(x, y, rad, raylib_temp_color );
         return true;
     }
@@ -159,7 +161,7 @@ namespace gpe
 
     bool artist_raylib::render_circle_outline_color( int x, int y, int rad,  color * render_color, int alpha_channel )
     {
-        if( rad <= 0  || alpha_channel < 1 || render_color == NULL )
+        if( rad <= 0  || alpha_channel < 1 || render_color == nullptr )
         {
             return false;
         }
@@ -168,6 +170,9 @@ namespace gpe
         raylib_temp_color.g = render_color->get_g();
         raylib_temp_color.b = render_color->get_b();
         raylib_temp_color.a = alpha_channel;
+        x += renderer_main_raylib->scissor_mode_offset.x;
+        y += renderer_main_raylib->scissor_mode_offset.y;
+
         DrawCircleLines(x, y, rad, raylib_temp_color );
         return true;
     }
@@ -180,7 +185,7 @@ namespace gpe
 
     bool artist_raylib::render_oval_color( int x, int y, int w, int h, color *render_color, int alpha_channel, bool renderOutLine )
     {
-        if( w <= 0  || h <= 0 || alpha_channel < 1 || render_color == NULL )
+        if( w <= 0  || h <= 0 || alpha_channel < 1 || render_color == nullptr )
         {
             return false;
         }
@@ -188,6 +193,10 @@ namespace gpe
         raylib_temp_color.g = render_color->get_g();
         raylib_temp_color.b = render_color->get_b();
         raylib_temp_color.a = alpha_channel;
+
+        x += renderer_main_raylib->scissor_mode_offset.x;
+        y += renderer_main_raylib->scissor_mode_offset.y;
+
         DrawEllipse(x, y, w,h, raylib_temp_color );
         return true;
     }
@@ -199,10 +208,14 @@ namespace gpe
 
     bool artist_raylib::render_semi_circle_color( int x, int y, int rad, int direction, color *render_color, int alpha_channel, bool renderOutLine )
     {
-        if( rad <= 0  || alpha_channel < 1 || render_color == NULL )
+        if( rad <= 0  || alpha_channel < 1 || render_color == nullptr )
         {
             return false;
         }
+
+        x += renderer_main_raylib->scissor_mode_offset.x;
+        y += renderer_main_raylib->scissor_mode_offset.y;
+
         circle_center_pt.x = x;
         circle_center_pt.x = y;
 
@@ -215,25 +228,76 @@ namespace gpe
     }
 
 
-    void artist_raylib::render_gradient_circle(  int radius, shape_rect * rendRect , color * render_color )
+    void artist_raylib::render_gradient_circle(  int radius, shape_rect * rendRect , color * render_color1, color * render_color2 )
     {
         //Function not completed yet
     }
 
-    void artist_raylib::render_gradient_vertical( shape_rect * rendRect, color * render_color)
+    void artist_raylib::render_gradient_vertical( shape_rect * rendRect, color * render_color1, color * render_color2)
     {
-        if( raylibRenderer==NULL)
+        if( raylibRenderer==nullptr)
         {
             return;
         }
+        if( rendRect == nullptr)
+        {
+            return;
+        }
+
+        if( render_color1 == nullptr || render_color2 == nullptr )
+        {
+            return;
+        }
+
+        raylib_gradient_color1.r = render_color1->get_r();
+        raylib_gradient_color1.g = render_color1->get_g();
+        raylib_gradient_color1.b = render_color1->get_b();
+        raylib_gradient_color1.a = 255;
+
+        raylib_gradient_color2.r = render_color2->get_r();
+        raylib_gradient_color2.g = render_color2->get_g();
+        raylib_gradient_color2.b = render_color2->get_b();
+        raylib_gradient_color2.a = 255;
+
+
+        DrawRectangleGradientV( rendRect->get_x() + renderer_main_raylib->scissor_mode_offset.x,
+                               rendRect->get_y() +  renderer_main_raylib->scissor_mode_offset.y,
+                               rendRect->get_x2() +  renderer_main_raylib->scissor_mode_offset.x,
+                               rendRect->get_y2() +  renderer_main_raylib->scissor_mode_offset.y,
+                                raylib_gradient_color1, raylib_gradient_color2);
     }
 
-    void artist_raylib::render_gradient_horizontal( shape_rect * rendRect, color * render_color)
+    void artist_raylib::render_gradient_horizontal( shape_rect * rendRect, color * render_color1, color * render_color2)
     {
-        if( raylibRenderer==NULL)
+        if( raylibRenderer==nullptr)
         {
             return;
         }
+        if( rendRect == nullptr)
+        {
+            return;
+
+        }
+
+        if( render_color1 == nullptr || render_color2 == nullptr )
+        {
+            return;
+        }
+        raylib_gradient_color1.r = render_color1->get_r();
+        raylib_gradient_color1.g = render_color1->get_g();
+        raylib_gradient_color1.b = render_color1->get_b();
+        raylib_gradient_color1.a = 255;
+
+        raylib_gradient_color2.r = render_color2->get_r();
+        raylib_gradient_color2.g = render_color2->get_g();
+        raylib_gradient_color2.b = render_color2->get_b();
+        raylib_gradient_color2.a = 255;
+
+        DrawRectangleGradientH( rendRect->get_x() +  renderer_main_raylib->scissor_mode_offset.x,
+                               rendRect->get_y()  +  renderer_main_raylib->scissor_mode_offset.y,
+                               rendRect->get_x2() +  renderer_main_raylib->scissor_mode_offset.x,
+                               rendRect->get_y2() +  renderer_main_raylib->scissor_mode_offset.y,
+                                raylib_gradient_color1, raylib_gradient_color2);
     }
 
 
@@ -253,11 +317,11 @@ namespace gpe
 
     void artist_raylib::render_rect( shape_rect * rendRect, color * render_color,bool outline, int alpha_channel)
     {
-        if( raylibRenderer==NULL)
+        if( raylibRenderer==nullptr)
         {
             return;
         }
-        if( rendRect!=NULL)
+        if( rendRect!=nullptr)
         {
             raylib_temp_color.r = render_color->get_r();
             raylib_temp_color.g = render_color->get_g();
@@ -265,11 +329,11 @@ namespace gpe
             raylib_temp_color.a = alpha_channel;
             if( outline)
             {
-                DrawRectangleLines(rendRect->x, rendRect->y,rendRect->x, rendRect->h,raylib_temp_color );
+                DrawRectangleLines(rendRect->x + renderer_main_raylib->scissor_mode_offset.x, rendRect->y + renderer_main_raylib->scissor_mode_offset.y,rendRect->w, rendRect->h,raylib_temp_color );
             }
             else
             {
-                 DrawRectangle(rendRect->x, rendRect->y,rendRect->x, rendRect->h,raylib_temp_color );
+                 DrawRectangle(rendRect->x + renderer_main_raylib->scissor_mode_offset.x, rendRect->y + renderer_main_raylib->scissor_mode_offset.y,rendRect->w, rendRect->h,raylib_temp_color );
             }
         }
     }
@@ -290,11 +354,11 @@ namespace gpe
         raylib_temp_color.a = alpha_channel;
         if( outline)
         {
-            DrawRectangleLines( x1, y1, x2-x1, y2-y1,raylib_temp_color );
+            DrawRectangleLines( x1 + renderer_main_raylib->scissor_mode_offset.x, y1 +renderer_main_raylib->scissor_mode_offset.y, x2-x1, y2-y1,raylib_temp_color );
         }
         else
         {
-             DrawRectangle( x1, y1, x2-x1, y2-y1,raylib_temp_color );
+             DrawRectangle( x1 + renderer_main_raylib->scissor_mode_offset.x, y1 + renderer_main_raylib->scissor_mode_offset.y, x2-x1, y2-y1 ,raylib_temp_color );
         }
     }
 
@@ -305,7 +369,7 @@ namespace gpe
 
     void artist_raylib::render_roundrect_filled(int x1, int y1, int x2, int y2 )
     {
-        int rad = std::min( std::abs( x1 - x2 ), std::abs( y2 - y1) ) /2;
+        int rad = std::min( std::abs( x1 - x2 ), std::abs( y2 - y1) ) /4;
         render_roundrect_filled_color_radius( x1, y1, x2, y2, rad,color_current, alpha_current );
     }
 
@@ -327,27 +391,55 @@ namespace gpe
         {
             return;
         }
-        //DrawRectangleRounded()
+        if(render_color != nullptr )
+        {
+            raylib_paint_color.r = render_color->get_r();
+            raylib_paint_color.g = render_color->get_g();
+            raylib_paint_color.b = render_color->get_b();
+
+        }
+        raylib_paint_color.a = alpha_channel;
+        rectangle_box.x = x1 + renderer_main_raylib->scissor_mode_offset.x;
+        rectangle_box.y = y1 + renderer_main_raylib->scissor_mode_offset.y;
+        rectangle_box.width = x2 - x1;
+        rectangle_box.height = y2 - y1;
+        DrawRectangleRounded(rectangle_box, 0.05f, 0,  raylib_paint_color);
     }
 
     void artist_raylib::render_roundrect_outline(int x1, int y1, int x2, int y2)
     {
-
+        render_roundrect_outline_color_radius( x1, y1, x2, y2, 1, color_current,alpha_current );
     }
 
     void artist_raylib::render_roundrect_outline_radius(int x1, int y1, int x2, int y2, int rad)
     {
-
+        render_roundrect_outline_color_radius( x1, y1, x2, y2, rad, color_current,alpha_current  );
     }
 
     void artist_raylib::render_roundrect_outline_color( int x1, int y1,int x2, int y2, color * render_color, int alpha_channel  )
     {
-
+        render_roundrect_outline_color_radius( x1, y1, x2, y2, 1, render_color, alpha_channel );
     }
 
     void artist_raylib::render_roundrect_outline_color_radius( int x1, int y1,int x2, int y2, int rad,color * render_color, int alpha_channel  )
     {
+        if( rad <=0 )
+        {
+            return;
+        }
+        if(render_color != nullptr )
+        {
+            raylib_paint_color.r = render_color->get_r();
+            raylib_paint_color.g = render_color->get_g();
+            raylib_paint_color.b = render_color->get_b();
 
+        }
+        raylib_paint_color.a = alpha_channel;
+        rectangle_box.x = x1 + renderer_main_raylib->scissor_mode_offset.x;
+        rectangle_box.y = y1 + renderer_main_raylib->scissor_mode_offset.y;
+        rectangle_box.width = x2 - x1;
+        rectangle_box.height = y2 - y1;
+        DrawRectangleRoundedLines(rectangle_box, rad, 0, rad,   raylib_paint_color);
     }
 
     void artist_raylib::render_triangle( shape_triangle2d * tri )
@@ -357,21 +449,30 @@ namespace gpe
 
     void artist_raylib::render_triangle_color( shape_triangle2d * tri, color * render_color, int alpha_channel )
     {
-        if( tri == NULL )
+        if( tri == nullptr )
         {
             return;
         }
 
         if( tri->vertices[0].x == tri->vertices[1].x || tri->vertices[0].x == tri->vertices[2].x || tri->vertices[1].x == tri->vertices[2].x )
         {
-            return;
+            //return;
         }
 
         if( tri->vertices[0].y == tri->vertices[1].y || tri->vertices[0].y == tri->vertices[2].y || tri->vertices[1].y == tri->vertices[2].y )
         {
-            return;
+            //return;
         }
-        //DrawTriangle
+        if( render_color != nullptr )
+        {
+            raylib_temp_color.r = render_color->get_r();
+            raylib_temp_color.g = render_color->get_g();
+            raylib_temp_color.b = render_color->get_b();
+        }
+        raylib_temp_color.a = alpha_channel;
+        DrawTriangle( (Vector2){ tri->vertices[0].x + renderer_main_raylib->scissor_mode_offset.x,  tri->vertices[0].y+ renderer_main_raylib->scissor_mode_offset.y} ,
+                         (Vector2){tri->vertices[1].x + renderer_main_raylib->scissor_mode_offset.x,  tri->vertices[1].y + renderer_main_raylib->scissor_mode_offset.y},
+                         (Vector2){tri->vertices[2].x + renderer_main_raylib->scissor_mode_offset.x,  tri->vertices[2].y + renderer_main_raylib->scissor_mode_offset.y}, raylib_temp_color );
     }
 
 
@@ -392,8 +493,7 @@ namespace gpe
 
     void artist_raylib::render_triangle_outline_color( shape_triangle2d * tri, color * render_color , int alpha_channel,int line_width )
     {
-        //Based on http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html
-        if( tri == NULL)
+        if( tri == nullptr)
         {
             return;
         }
@@ -402,15 +502,15 @@ namespace gpe
             set_color( render_color->get_r(),render_color->get_g(),render_color->get_b() );
             set_render_alpha( alpha_channel );
 
-            DrawLine( tri->vertices[0].x, tri->vertices[0].y, tri->vertices[1].x,tri->vertices[1].y, raylib_paint_color );
-            DrawLine( tri->vertices[1].x,tri->vertices[1].y, tri->vertices[2].x,tri->vertices[2].y, raylib_paint_color );
-            DrawLine( tri->vertices[0].x,tri->vertices[0].y, tri->vertices[2].x,tri->vertices[2].y, raylib_paint_color );
+            DrawLine( tri->vertices[0].x + renderer_main_raylib->scissor_mode_offset.x, tri->vertices[0].y + renderer_main_raylib->scissor_mode_offset.y, tri->vertices[1].x + renderer_main_raylib->scissor_mode_offset.x,tri->vertices[1].y + renderer_main_raylib->scissor_mode_offset.y, raylib_paint_color );
+            DrawLine( tri->vertices[1].x + renderer_main_raylib->scissor_mode_offset.x,tri->vertices[1].y + renderer_main_raylib->scissor_mode_offset.y, tri->vertices[2].x + renderer_main_raylib->scissor_mode_offset.x,tri->vertices[2].y + renderer_main_raylib->scissor_mode_offset.y, raylib_paint_color );
+            DrawLine( tri->vertices[0].x + renderer_main_raylib->scissor_mode_offset.x,tri->vertices[0].y + renderer_main_raylib->scissor_mode_offset.y, tri->vertices[2].x + renderer_main_raylib->scissor_mode_offset.x,tri->vertices[2].y + renderer_main_raylib->scissor_mode_offset.y, raylib_paint_color );
         }
         else
         {
-            render_line_width_color(tri->vertices[0].x, tri->vertices[0].y, tri->vertices[1].x, tri->vertices[1].y, line_width,render_color, alpha_channel);
-            render_line_width_color(tri->vertices[1].x, tri->vertices[1].y, tri->vertices[2].x, tri->vertices[2].y, line_width,render_color, alpha_channel);
-            render_line_width_color(tri->vertices[2].x, tri->vertices[2].y, tri->vertices[0].x, tri->vertices[0].y, line_width,render_color, alpha_channel);
+            render_line_width_color(tri->vertices[0].x + renderer_main_raylib->scissor_mode_offset.x, tri->vertices[0].y + renderer_main_raylib->scissor_mode_offset.y, tri->vertices[1].x + renderer_main_raylib->scissor_mode_offset.x, tri->vertices[1].y + renderer_main_raylib->scissor_mode_offset.y, line_width,render_color, alpha_channel);
+            render_line_width_color(tri->vertices[1].x + renderer_main_raylib->scissor_mode_offset.x, tri->vertices[1].y + renderer_main_raylib->scissor_mode_offset.y, tri->vertices[2].x + renderer_main_raylib->scissor_mode_offset.x, tri->vertices[2].y + renderer_main_raylib->scissor_mode_offset.y, line_width,render_color, alpha_channel);
+            render_line_width_color(tri->vertices[2].x + renderer_main_raylib->scissor_mode_offset.x, tri->vertices[2].y + renderer_main_raylib->scissor_mode_offset.y, tri->vertices[0].x + renderer_main_raylib->scissor_mode_offset.x, tri->vertices[0].y + renderer_main_raylib->scissor_mode_offset.y, line_width,render_color, alpha_channel);
         }
         return;
     }
@@ -427,15 +527,15 @@ namespace gpe
             set_color( render_color->get_r(),render_color->get_g(),render_color->get_b() );
             set_render_alpha( alpha_channel );
 
-            DrawLine( x1, y1, x2, y2, raylib_paint_color );
-            DrawLine( x2, y2, x3, y3, raylib_paint_color );
-            DrawLine( x1, y1, x3, y3, raylib_paint_color );
+            DrawLine( x1 + renderer_main_raylib->scissor_mode_offset.x, y1 + renderer_main_raylib->scissor_mode_offset.y, x2 + renderer_main_raylib->scissor_mode_offset.x, y2 + renderer_main_raylib->scissor_mode_offset.y, raylib_paint_color );
+            DrawLine( x2 + renderer_main_raylib->scissor_mode_offset.x, y2 + renderer_main_raylib->scissor_mode_offset.y, x3 + renderer_main_raylib->scissor_mode_offset.x, y3 + renderer_main_raylib->scissor_mode_offset.y, raylib_paint_color );
+            DrawLine( x1 + renderer_main_raylib->scissor_mode_offset.x, y1 + renderer_main_raylib->scissor_mode_offset.y, x3 + renderer_main_raylib->scissor_mode_offset.x, y3 + renderer_main_raylib->scissor_mode_offset.y, raylib_paint_color );
         }
         else
         {
-            render_line_width_color(x1, y1, x2, y2, line_width,render_color, alpha_channel);
-            render_line_width_color(x2, y2, x3, y3, line_width,render_color, alpha_channel);
-            render_line_width_color(x3, y3, x1, y1, line_width,render_color, alpha_channel);
+            render_line_width_color(x1 + renderer_main_raylib->scissor_mode_offset.x, y1 + renderer_main_raylib->scissor_mode_offset.y, x2 + renderer_main_raylib->scissor_mode_offset.x, y2 + renderer_main_raylib->scissor_mode_offset.y, line_width,render_color, alpha_channel);
+            render_line_width_color(x2 + renderer_main_raylib->scissor_mode_offset.x, y2 + renderer_main_raylib->scissor_mode_offset.y, x3 + renderer_main_raylib->scissor_mode_offset.x, y3 + renderer_main_raylib->scissor_mode_offset.y, line_width,render_color, alpha_channel);
+            render_line_width_color(x3 + renderer_main_raylib->scissor_mode_offset.x, y3 + renderer_main_raylib->scissor_mode_offset.y, x1 + renderer_main_raylib->scissor_mode_offset.x, y1 + renderer_main_raylib->scissor_mode_offset.y, line_width,render_color, alpha_channel);
         }
         return;
     }
@@ -488,7 +588,7 @@ namespace gpe
         {
             set_color( render_color->get_r(),render_color->get_g(),render_color->get_b() );
             set_render_alpha( alpha_current );
-            DrawLine( x1, y1, x2, y2, raylib_paint_color );
+            DrawLine( x1 + renderer_main_raylib->scissor_mode_offset.x, y1 + renderer_main_raylib->scissor_mode_offset.y, x2 + renderer_main_raylib->scissor_mode_offset.x, y2 + renderer_main_raylib->scissor_mode_offset.y, raylib_paint_color );
             return;
         }
         if( line_width < 0 )
@@ -552,7 +652,7 @@ namespace gpe
             blend_current_mode = blend_mode_blend;
         }
 
-        if( raylibRenderer!=NULL )
+        if( raylibRenderer!=nullptr )
         {
             raylibRenderer->set_render_blend_mode( blend_current_mode );
         }
@@ -561,7 +661,7 @@ namespace gpe
 
     void artist_raylib::set_color( color * color)
     {
-        if( color==NULL )
+        if( color==nullptr )
         {
             return;
         }
@@ -596,7 +696,7 @@ namespace gpe
 
     void artist_raylib::render_ligting_overlay( int x, int y)
     {
-        if( lightingOverlayTexture!=NULL )
+        if( lightingOverlayTexture!=nullptr )
         {
             lightingOverlayTexture->render_overlay(artist_renderer,-x, -y );
         }
@@ -604,7 +704,7 @@ namespace gpe
 
     void artist_raylib::render_ligting_overlay_scaled( int x, int y, float scale_size)
     {
-        if( lightingOverlayTexture!=NULL )
+        if( lightingOverlayTexture!=nullptr )
         {
             lightingOverlayTexture->render_overlay_scaled( artist_renderer,-x, -y, scale_size, scale_size );
         }
@@ -612,7 +712,7 @@ namespace gpe
 
     void artist_raylib::resize_ligting_overlay( int w, int h)
     {
-        if( lightingOverlayTexture==NULL )
+        if( lightingOverlayTexture==nullptr )
         {
             lightingOverlayTexture = new texture_target_raylib();
         }
@@ -624,14 +724,14 @@ namespace gpe
 
     void artist_raylib::switch_ligting_overlay( bool on )
     {
-        raylibRenderer->set_viewpoint( NULL );
+        raylibRenderer->set_viewpoint( nullptr );
         EndTextureMode();
-        if( on && lightingOverlayTexture!=NULL )
+        if( on && lightingOverlayTexture!=nullptr )
         {
             if( lightingOverlayTexture->get_texture_type() == "target-raylib")
             {
                 texture_target_raylib * raylibTextureTarget = (texture_target_raylib * ) lightingOverlayTexture;
-                if( raylibTextureTarget !=NULL)
+                if( raylibTextureTarget !=nullptr)
                 {
                     BeginTextureMode( raylibTextureTarget->get_raylib_render_texture() );
                     renderer_main_raylib->reset_viewpoint();

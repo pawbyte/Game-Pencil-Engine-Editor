@@ -36,7 +36,7 @@ SOFTWARE.
 
 #include "../gpe/gpe_audio_base.h"
 #include "raylib.h"
-
+#include "config.h"
 namespace gpe
 {
     class sound_raylib: public sound_base

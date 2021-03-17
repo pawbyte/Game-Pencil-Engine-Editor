@@ -37,30 +37,32 @@ namespace gpe
 {
     bool init_raylib_render_package()
     {
-        if( renderer_main!=NULL )
+        if( renderer_main!=nullptr )
         {
             delete renderer_main;
-            renderer_main = NULL;
+            renderer_main = nullptr;
         }
-        if( gcanvas != NULL )
+        if( gcanvas != nullptr )
         {
             delete gcanvas;
-            gcanvas = NULL;
+            gcanvas = nullptr;
         }
         renderer_main_raylib = new renderer_system_raylib( window_controller_main_raylib->get_window_id(), settings->defaultWindowWidth, settings->defaultWindowHeight );
         renderer_main = renderer_main_raylib;
 
-        if( rph == NULL )
+        if( rph != nullptr )
         {
-            rph = new render_package_handler();
-
+            delete rph;
+            rph = nullptr;
         }
+        rph = new render_package_handler();
+
 
         render_package * defaultr_package = rph->add_render_package( "raylib" );
-        if( gpe::rsm != NULL )
+        if( gpe::rsm != nullptr )
         {
             delete gpe::rsm;
-            gpe::rsm = NULL;
+            gpe::rsm = nullptr;
             gpe::rsm = new gpe::asset_manager( defaultr_package, "gcm-rsm-raylib" );
         }
 

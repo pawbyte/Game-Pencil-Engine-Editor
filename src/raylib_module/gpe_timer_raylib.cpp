@@ -39,10 +39,10 @@ namespace gpe
     bool init_raylib_time_system()
     {
         error_log->report("Starting raylib_module timekeeper...");
-        if( time_keeper != NULL )
+        if( time_keeper != nullptr )
         {
             delete time_keeper;
-            time_keeper = NULL;
+            time_keeper = nullptr;
         }
         time_keeper = new time_keeper_raylib("raylib");
         time_keeper->set_fps( fps_cap );
@@ -52,10 +52,10 @@ namespace gpe
 
     void quit_raylib_time_system()
     {
-        if( time_keeper !=NULL )
+        if( time_keeper !=nullptr )
         {
             delete time_keeper;
-            time_keeper = NULL;
+            time_keeper = nullptr;
         }
         time_keeper = new time_keeper_base();
     }
@@ -112,12 +112,14 @@ namespace gpe
         delta_ticks =  ticks_now - ticks_start;
         delta_performance = time_now - time_past;
 
+        /*
         if( delta_ticks < ticks_per_frame )
         {
             delay( ticks_per_frame - delta_ticks );
             time_now = get_performance_ms();
             delta_performance = time_now - time_past;
         }
+        */
     }
 
     void time_keeper_raylib::delay( float delay_time )
@@ -134,7 +136,7 @@ namespace gpe
             delta_ticks = ticks_per_frame;
             return;
         }
-
+        return;
         float time_c = 0;
         float time_p = get_ticks();
         float timeDiff = 0;
@@ -156,12 +158,12 @@ namespace gpe
 
     float time_keeper_raylib::get_delta_performance()
     {
-        return delta_performance;
+        return (float)GetFrameTime() * 1000.f;
     }
 
     float time_keeper_raylib::get_delta_ticks()
     {
-        return delta_ticks;
+        return (float)GetFrameTime() * 1000.f;
     }
 
     float time_keeper_raylib::get_fps()
@@ -181,12 +183,12 @@ namespace gpe
 
     float time_keeper_raylib::get_performance_seconds()
     {
-        return GetFrameTime();
+        return (float)GetFrameTime();
     }
 
     uint64_t time_keeper_raylib::get_ticks()
     {
-        return (float)GetFrameTime() / 1000.f;
+        return (float)GetFrameTime() * 1000.f;
     }
 
     float time_keeper_raylib::get_time_difference( uint64_t time_p, uint64_t time_c )
@@ -243,6 +245,7 @@ namespace gpe
             fps_cap = 20;
         }
         my_fps = fps_cap;
+        SetTargetFPS( my_fps );
         ticks_per_frame = 1000.f / my_fps;
         seconds_per_frame = 1.f/my_fps;
         fps_ratio = my_fps/20.f;
@@ -271,7 +274,7 @@ namespace gpe
     void time_keeper_raylib::start_timer()
     {
         ticks_start = get_ticks();
-        time_past = get_performance_ms();
+        time_past = ticks_start;
     }
 
     void time_keeper_raylib::stop_timer()

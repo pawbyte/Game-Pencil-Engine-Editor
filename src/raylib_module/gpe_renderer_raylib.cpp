@@ -37,14 +37,16 @@ SOFTWARE.
 #include "../gpe/gpe_settings.h"
 #include "../other_libs/stg_ex.h"
 
+
 namespace gpe
 {
-    renderer_system_raylib * renderer_main_raylib = NULL;
+    renderer_system_raylib * renderer_main_raylib = nullptr;
 
     renderer_system_raylib::renderer_system_raylib( int rId, int wWidth, int wHeight )
     {
-        r_type = "raylib";
-        r_name = "raylib_renderer";
+        r_name = RAYLIB_VERSION;
+        r_name = "raylib_renderer " + r_name;
+        r_type = "opengl";
 
         render_blend_mode = blend_mode_blend;
         last_rendered_width = 0;
@@ -55,10 +57,16 @@ namespace gpe
         r_width = wWidth;
         r_height = wHeight;
         last_screenshot_id = 0;
+        supports_render_mode[ rmode_2d ] = true;
+        supports_render_mode[ rmode_25d ] = true;
+        supports_render_mode[ rmode_3d ] = true;
+        supports_render_mode[ rmode_vr ] = true;
+        scissor_mode_target = LoadRenderTexture( r_width, r_height );
+        in_scissor_mode = false;
 
-        ClearBackground( BLACK );
-        EndBlendMode();
-        BeginBlendMode( BLEND_ALPHA );
+        scissor_mode_offset.x = 0;
+        scissor_mode_offset.y = 0;
+
     }
 
     renderer_system_raylib::~renderer_system_raylib()
@@ -94,9 +102,11 @@ namespace gpe
         EndScissorMode();
         render_sub_rectangle->x = 0;
         render_sub_rectangle->y = 0;
-        render_sub_rectangle->w = r_width;
-        render_sub_rectangle->h = r_height;
-
+        render_sub_rectangle->w = 0;
+        render_sub_rectangle->h = 0;
+        scissor_mode_offset.x = 0;
+        scissor_mode_offset.y = 0;
+        in_scissor_mode = false;
     }
 
     void renderer_system_raylib::resize_renderer(int newW, int newH )
@@ -105,24 +115,50 @@ namespace gpe
         {
             return;
         }
+        r_width = newW;
+        r_height = newH;
+
+        if( r_width != scissor_mode_target.texture.width || r_height != scissor_mode_target.texture.height )
+        {
+            UnloadRenderTexture( scissor_mode_target );
+            scissor_mode_target = LoadRenderTexture( r_width, r_height );
+            error_log->report("Updating RenderTexture to "+stg_ex::int_to_string(r_width)+","+stg_ex::int_to_string(r_height)+"....");
+            in_scissor_mode = false;
+        }
     }
 
     void renderer_system_raylib::set_viewpoint( shape_rect * newViewPoint)
     {
-        EndScissorMode();
-        if( newViewPoint!=NULL)
+        reset_viewpoint();
+
+        if( newViewPoint!=nullptr)
         {
             render_sub_rectangle->x = newViewPoint->x;
             render_sub_rectangle->y = newViewPoint->y;
             render_sub_rectangle->w = newViewPoint->w;
             render_sub_rectangle->h = newViewPoint->h;
-            BeginScissorMode( render_sub_rectangle->x, render_sub_rectangle->y, render_sub_rectangle->w, render_sub_rectangle->h );
+
+            scissor_mode_offset.x = newViewPoint->x;
+            scissor_mode_offset.y = newViewPoint->y;
+            if( render_sub_rectangle->w != 0 || render_sub_rectangle->h != 0 )
+            {
+                EndScissorMode();
+                BeginScissorMode( render_sub_rectangle->x, render_sub_rectangle->y, render_sub_rectangle->w, render_sub_rectangle->h );
+                in_scissor_mode = true;
+                return;
+            }
         }
+        in_scissor_mode = false;
+        reset_viewpoint();
+        render_sub_rectangle->x = 0;
+        render_sub_rectangle->y = 0;
+        render_sub_rectangle->w = 0;
+        render_sub_rectangle->h = 0;
     }
 
     std::string renderer_system_raylib::get_renderer_name()
     {
-        return "raylib";
+        return r_name;
     }
 
     std::string renderer_system_raylib::get_renderer_type()
@@ -137,16 +173,20 @@ namespace gpe
         {
             return;
         }
-        BeginDrawing();
-        ClearBackground( BLACK );
-        BeginBlendMode( BLEND_ALPHA );
-        return;
-
         uint32_t sTicks = time_keeper->get_ticks();
         set_render_blend_mode( blend_mode_blend );
 
+
+        BeginDrawing();
+        EndScissorMode();
+        in_scissor_mode = false;
+        ClearBackground( WHITE );
+        BeginBlendMode( BLEND_ALPHA );
+
         uint32_t eTicks = time_keeper->get_ticks();
         error_log->log_ms_action("renderer_system_raylib::clear_renderer()",eTicks - sTicks,10 );
+        return;
+
     }
 
     bool renderer_system_raylib::render_circle_color( int16_t x, int16_t y, int16_t rad, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
@@ -159,13 +199,13 @@ namespace gpe
         render_current_color.g = g;
         render_current_color.b = b;
         render_current_color.a = a;
-        DrawCircle( x, y, rad, render_current_color);
+        DrawCircle( x + scissor_mode_offset.x , y + scissor_mode_offset.y, rad, render_current_color);
         return true;
     }
 
     void renderer_system_raylib::render_horizontal_line(int y, int x1, int x2)
     {
-        DrawLine( x1, y, x2, y, render_current_color );
+        DrawLine( x1 + scissor_mode_offset.x, y + scissor_mode_offset.y, x2 + scissor_mode_offset.x, y + scissor_mode_offset.y, render_current_color );
     }
 
     void renderer_system_raylib::render_horizontal_line_color( int y, int x1, int x2,  uint8_t r, uint8_t g, uint8_t b, uint8_t a )
@@ -174,7 +214,7 @@ namespace gpe
         render_current_color.g = g;
         render_current_color.b = b;
         render_current_color.a = a;
-        DrawLine( x1, y, x2, y, render_current_color );
+        DrawLine( x1 + scissor_mode_offset.x, y + scissor_mode_offset.y, x2 + scissor_mode_offset.x, y + scissor_mode_offset.y, render_current_color );
 
     }
 
@@ -204,7 +244,7 @@ namespace gpe
         if( render_blend_mode!=blend_mode_new)
         {
             render_blend_mode = blend_mode_new;
-            EndBlendMode();
+            //EndBlendMode();
             switch( blend_mode_new)
             {
                 case blend_mode_add:
@@ -240,12 +280,13 @@ namespace gpe
         {
             set_render_blend_mode( blend_mode_blend );
 
+            reset_viewpoint();
             EndDrawing();
 
             cleared_this_frame = false;
             rendered_once = true;
         }
         uint32_t eTicks =  time_keeper->get_ticks();
-        error_log->log_ms_action("renderer_system_raylib::update_renderer()",eTicks - sTicks,10 );
+        //error_log->log_ms_action("renderer_system_raylib::update_renderer()",eTicks - sTicks,10 );
     }
 }

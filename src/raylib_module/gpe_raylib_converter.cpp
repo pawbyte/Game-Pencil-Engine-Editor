@@ -37,9 +37,9 @@ namespace gpe
 {
     /*raylib_Color * to_raylib_color( color * color_from_gpe )
     {
-        if( color_from_gpe == NULL )
+        if( color_from_gpe == nullptr )
         {
-            return NULL;
+            return nullptr;
         }
         raylib_Color color_new = { color_from_gpe->get_r(), color_from_gpe->get_g(), color_from_gpe->get_b(), color_from_gpe->get_a() };
         return &color_new;

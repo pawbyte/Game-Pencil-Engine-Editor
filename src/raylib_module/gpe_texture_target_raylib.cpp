@@ -52,7 +52,7 @@ namespace gpe
 
     void texture_target_raylib::change_color( color * color_new)
     {
-        if( color_new == NULL)
+        if( color_new == nullptr)
         {
             return;
         }
@@ -78,16 +78,16 @@ namespace gpe
 
     renderer_system_raylib * texture_target_raylib::get_gpe_renderer_raylib(renderer_base * renderer)
     {
-        if( renderer == NULL)
+        if( renderer == nullptr)
         {
-            return NULL;
+            return nullptr;
         }
         if( renderer->get_renderer_type() == "raylib")
         {
             renderer_system_raylib * raylibRenderer = (renderer_system_raylib * )renderer;
             return raylibRenderer;
         }
-        return NULL;
+        return nullptr;
     }
 
     RenderTexture2D  texture_target_raylib::get_raylib_render_texture()
@@ -107,13 +107,13 @@ namespace gpe
 
     void texture_target_raylib::render_overlay(  renderer_base * renderer,int x, int y, gpe::shape_rect* clip , int alpha  )
     {
-        if( alpha == 0 ||  renderer == NULL)
+        if( alpha == 0 ||  renderer == nullptr)
         {
             return;
         }
         renderer_system_raylib * raylibRenderer = get_gpe_renderer_raylib(renderer);
 
-        if( raylibRenderer == NULL)
+        if( raylibRenderer == nullptr)
         {
             return;
         }
@@ -122,7 +122,7 @@ namespace gpe
         change_color( 255,255,255 );
         set_alpha( alpha );
         //Set clip rendering dimensions
-        if( clip != NULL )
+        if( clip != nullptr )
         {
 
         }
@@ -134,13 +134,13 @@ namespace gpe
 
     void texture_target_raylib::render_overlay_scaled( renderer_base * renderer, int x, int y,float x_scale, float y_scale, gpe::shape_rect* clip, color * render_color, int alpha )
     {
-        if( x_scale <= 0 || y_scale <= 0 || alpha == 0 || renderer == NULL)
+        if( x_scale <= 0 || y_scale <= 0 || alpha == 0 || renderer == nullptr)
         {
             return;
         }
         renderer_system_raylib * raylibRenderer = get_gpe_renderer_raylib(renderer);
 
-        if( raylibRenderer == NULL)
+        if( raylibRenderer == nullptr)
         {
             return;
         }
@@ -152,7 +152,7 @@ namespace gpe
         int new_width = 0;
         int new_height = 0;
         bool flipHori = false,  flipVert = false;
-        if( clip != NULL )
+        if( clip != nullptr )
         {
         }
         else

@@ -35,45 +35,46 @@ SOFTWARE.
 
 namespace gpe
 {
-    cursor_controller_raylib * cursor_main_raylib_controller = NULL;
+    cursor_controller_raylib * cursor_main_raylib_controller = nullptr;
 
     bool init_raylib_cursor_system()
     {
-        if( cursor_main_raylib_controller == NULL )
+        if( cursor_main_raylib_controller != nullptr )
         {
-            if( cursor_main_controller !=NULL )
-            {
-                delete cursor_main_controller;
-                cursor_main_controller = NULL;
-            }
-            cursor_main_controller = cursor_main_raylib_controller = new cursor_controller_raylib();
-            return true;
+            delete cursor_main_raylib_controller;
+            cursor_main_raylib_controller = nullptr;
         }
-        return false;
+        if( cursor_main_controller !=nullptr )
+        {
+            delete cursor_main_controller;
+            cursor_main_controller = nullptr;
+        }
+        cursor_main_controller = cursor_main_raylib_controller = new cursor_controller_raylib();
+        return true;
     }
 
     void quit_raylib_cursor_system()
     {
-        if( cursor_main_raylib_controller != NULL )
+        if( cursor_main_raylib_controller != nullptr )
         {
-            if( cursor_main_controller!=NULL )
+            if( cursor_main_controller!=nullptr )
             {
                 if( cursor_main_controller->equals( cursor_main_raylib_controller) )
                 {
                     delete cursor_main_raylib_controller;
-                    cursor_main_raylib_controller = NULL;
-                    cursor_main_controller = NULL;
+                    cursor_main_raylib_controller = nullptr;
+                    cursor_main_controller = nullptr;
                 }
                 else
                 {
                     delete cursor_main_raylib_controller;
-                    cursor_main_raylib_controller = NULL;
+                    cursor_main_raylib_controller = nullptr;
                 }
             }
             else
             {
                 delete cursor_main_raylib_controller;
-                cursor_main_raylib_controller = NULL;
+                cursor_main_raylib_controller = nullptr;
             }
         }
     }

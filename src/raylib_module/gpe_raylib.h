@@ -70,6 +70,7 @@ SOFTWARE.
 #include "gpe_artist_raylib.h"
 #include "gpe_audio_raylib.h"
 #include "gpe_cursor_raylib.h"
+#include "gpe_file_system_raylib.h"
 #include "gpe_font_raylib.h"
 #include "gpe_input_raylib.h"
 #include "gpe_render_package_raylib.h"

@@ -41,8 +41,8 @@ namespace gpe
     bool init_raylib_main_system()
     {
         //Initialize all raylib subsystems
-        error_log->report("--Starting raylib_module...");
-
+        error_log->report(" ");
+        error_log->report("Starting raylib_module...");
         error_log->report("--raylib_module systems started...");
 
         //raylib is so simple it appears we don't need to do anything here just yet.

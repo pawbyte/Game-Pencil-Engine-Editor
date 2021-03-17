@@ -53,7 +53,7 @@ namespace gpe
 
     void texture_raylib::change_color( color * color_new)
     {
-        if( color_new!=NULL)
+        if( color_new!=nullptr)
         {
             if( color_new->get_r() == currentR && color_new->get_g() == currentG && color_new->get_b() == currentB )
             {
@@ -114,16 +114,16 @@ namespace gpe
 
     renderer_system_raylib * texture_raylib::get_gpe_renderer_raylib(renderer_base * renderer)
     {
-        if( renderer == NULL)
+        if( renderer == nullptr)
         {
-            return NULL;
+            return nullptr;
         }
         if( renderer->get_renderer_type() == "raylib")
         {
             renderer_system_raylib * raylibRenderer = (renderer_system_raylib * )renderer;
             return raylibRenderer;
         }
-        return NULL;
+        return nullptr;
     }
 
     void texture_raylib::load_new_texture( renderer_base * renderer,std::string file_name, int id, bool transparent, bool useLinearScaling )
@@ -139,19 +139,27 @@ namespace gpe
         }
         currentBlendMode = blend_mode_blend;
 
-        //Load the image
-        img_raylib = LoadTexture( file_name.c_str() );
+        //Load as an image first since gpu loading maybe delayed
+        Image temp_image = LoadImage( file_name.c_str() );
 
         //If the image loaded
-        if( img_raylib.width == 0 || img_raylib.height == 0 )
+        if( temp_image.width == 0 || temp_image.height == 0 )
         {
             texWid = 0;
             texHeight = 0;
             fileLocation ="notfound.png";
             error_log->report("[Bad] Unable to load filed loacated at <"+file_name+">...");
+            UnloadImage( temp_image );
             return;
         }
-
+        else
+        {
+            texWid = temp_image.width;
+            texHeight = temp_image.height;
+            fileLocation = file_name;
+            img_raylib = LoadTextureFromImage( temp_image );
+        }
+        UnloadImage( temp_image );
     }
 
     Texture2D texture_raylib::get_raylib_texture()
@@ -172,7 +180,7 @@ namespace gpe
 
     void texture_raylib::prerender_rectangle( renderer_base * renderer, int w, int h, color * color_new, int id, bool transparent, bool useLinearScaling , bool isOutline)
     {
-        if( renderer == NULL)
+        if( renderer == nullptr)
         {
             return;
         }
@@ -225,9 +233,25 @@ namespace gpe
 
     void texture_raylib::render_tex(  int x, int y, gpe::shape_rect* clip , int alpha)
     {
-        if( alpha > 0 )
+        if( alpha < 1 )
         {
+            return;
+        }
 
+        current_texture_tint.r = currentR;
+        current_texture_tint.g = currentG;
+        current_texture_tint.b = currentB;
+        current_texture_tint.a = alpha;
+
+        current_texture_position.x = x + renderer_main_raylib->scissor_mode_offset.x;
+        current_texture_position.y = y+ renderer_main_raylib->scissor_mode_offset.y;
+        if( clip !=NULL )
+        {
+            DrawTextureRec( img_raylib, current_texture_clip,current_texture_position, current_texture_tint);
+        }
+        else
+        {
+            DrawTexture( img_raylib, x + + renderer_main_raylib->scissor_mode_offset.x, y + + renderer_main_raylib->scissor_mode_offset.y,  current_texture_tint );
         }
     }
 
@@ -238,6 +262,7 @@ namespace gpe
             change_color(render_color);
             set_alpha( alpha );
             //Set clip rendering dimensions
+            render_tex( x,y, clip, alpha);
         }
     }
 
@@ -245,7 +270,7 @@ namespace gpe
     {
         if( alpha > 0 )
         {
-            if( clip != NULL )
+            if( clip != nullptr )
             {
                 if( clip->w !=0 && clip->h!= 0 )
                 {
@@ -273,6 +298,43 @@ namespace gpe
         {
             return;
         }
+
+        if( render_color != nullptr )
+        {
+            current_texture_tint.r = render_color->get_r();
+            current_texture_tint.g = render_color->get_g();
+            current_texture_tint.b = render_color->get_b();
+        }
+        else
+        {
+            current_texture_tint.r = currentR;
+            current_texture_tint.g = currentG;
+            current_texture_tint.b = currentB;
+        }
+        current_texture_tint.a = alpha;
+
+
+
+        if( clip !=nullptr )
+        {
+            current_texture_clip.x = clip->x;
+            current_texture_clip.y = clip->y;
+            current_texture_clip.width = clip->w;
+            current_texture_clip.height = clip->h;
+        }
+        else
+        {
+            current_texture_clip.x = 0;
+            current_texture_clip.y = 0;
+            current_texture_clip.width = img_raylib.width;
+            current_texture_clip.height = img_raylib.height;
+        }
+        current_texture_dest.x = x + + renderer_main_raylib->scissor_mode_offset.x;
+        current_texture_dest.y = y + + renderer_main_raylib->scissor_mode_offset.y;
+        current_texture_dest.width = current_texture_clip.width * x_scale;
+        current_texture_dest.height = current_texture_clip.height * y_scale;
+
+        DrawTexturePro( img_raylib, current_texture_clip, current_texture_dest, current_texture_rotation_origin, 0, current_texture_tint );
     }
 
     void texture_raylib::render_tex_rotated(  int x, int y, float render_angle, color * render_color, gpe::shape_rect* clip , int alpha )
@@ -282,14 +344,91 @@ namespace gpe
             return;
         }
 
+        if( render_color != nullptr )
+        {
+            current_texture_tint.r = render_color->get_r();
+            current_texture_tint.g = render_color->get_g();
+            current_texture_tint.b = render_color->get_b();
+        }
+        else
+        {
+            current_texture_tint.r = currentR;
+            current_texture_tint.g = currentG;
+            current_texture_tint.b = currentB;
+        }
+        current_texture_tint.a = alpha;
+
+
+
+        if( clip !=nullptr )
+        {
+            current_texture_clip.x = clip->x;
+            current_texture_clip.y = clip->y;
+            current_texture_clip.width = clip->w;
+            current_texture_clip.height = clip->h;
+        }
+        else
+        {
+            current_texture_clip.x = 0;
+            current_texture_clip.y = 0;
+            current_texture_clip.width = img_raylib.width;
+            current_texture_clip.height = img_raylib.height;
+        }
+        current_texture_dest.x = x + renderer_main_raylib->scissor_mode_offset.x;
+        current_texture_dest.y = y + renderer_main_raylib->scissor_mode_offset.y;
+        current_texture_dest.width = current_texture_clip.width;
+        current_texture_dest.height = current_texture_clip.height;
+
+        current_texture_rotation_origin.x = current_texture_dest.x + current_texture_clip.width/2;
+        current_texture_rotation_origin.y = current_texture_dest.y + current_texture_clip.height/2;
+        DrawTexturePro( img_raylib, current_texture_clip, current_texture_dest, current_texture_rotation_origin, render_angle * semath::math_degrees_multiplier, current_texture_tint );
     }
 
     void texture_raylib::render_tex_rotated_at_point(  int x, int y, float render_angle, int point_x, int point_y, color * render_color, gpe::shape_rect* clip , int alpha )
     {
-        if( alpha <= 0 )
+        if( alpha <= 1 )
         {
             return;
         }
+
+        if( render_color != nullptr )
+        {
+            current_texture_tint.r = render_color->get_r();
+            current_texture_tint.g = render_color->get_g();
+            current_texture_tint.b = render_color->get_b();
+        }
+        else
+        {
+            current_texture_tint.r = currentR;
+            current_texture_tint.g = currentG;
+            current_texture_tint.b = currentB;
+        }
+        current_texture_tint.a = alpha;
+
+
+
+        if( clip !=nullptr )
+        {
+            current_texture_clip.x = clip->x;
+            current_texture_clip.y = clip->y;
+            current_texture_clip.width = clip->w;
+            current_texture_clip.height = clip->h;
+        }
+        else
+        {
+            current_texture_clip.x = 0;
+            current_texture_clip.y = 0;
+            current_texture_clip.width = img_raylib.width;
+            current_texture_clip.height = img_raylib.height;
+        }
+        current_texture_dest.x = x + renderer_main_raylib->scissor_mode_offset.x;
+        current_texture_dest.y = y + renderer_main_raylib->scissor_mode_offset.y;
+        current_texture_dest.width = current_texture_clip.width;
+        current_texture_dest.height = current_texture_clip.height;
+
+        current_texture_rotation_origin.x = point_x;
+        current_texture_rotation_origin.y = point_y;
+        DrawTexturePro( img_raylib, current_texture_clip, current_texture_dest, current_texture_rotation_origin, render_angle * semath::math_degrees_multiplier, current_texture_tint );
     }
 
     void texture_raylib::render_tex_special(  int x, int y, float render_angle, int new_width, int new_height, color * render_color, gpe::shape_rect* clip , int alpha )
@@ -307,6 +446,45 @@ namespace gpe
         {
             new_height = texHeight;
         }
+
+        if( render_color != nullptr )
+        {
+            current_texture_tint.r = render_color->get_r();
+            current_texture_tint.g = render_color->get_g();
+            current_texture_tint.b = render_color->get_b();
+        }
+        else
+        {
+            current_texture_tint.r = currentR;
+            current_texture_tint.g = currentG;
+            current_texture_tint.b = currentB;
+        }
+        current_texture_tint.a = alpha;
+
+
+
+        if( clip !=nullptr )
+        {
+            current_texture_clip.x = clip->x;
+            current_texture_clip.y = clip->y;
+            current_texture_clip.width = clip->w;
+            current_texture_clip.height = clip->h;
+        }
+        else
+        {
+            current_texture_clip.x = 0;
+            current_texture_clip.y = 0;
+            current_texture_clip.width = img_raylib.width;
+            current_texture_clip.height = img_raylib.height;
+        }
+        current_texture_dest.x = x + renderer_main_raylib->scissor_mode_offset.x;
+        current_texture_dest.y = y + renderer_main_raylib->scissor_mode_offset.y;
+        current_texture_dest.width = new_width;
+        current_texture_dest.height = new_height;
+
+        current_texture_rotation_origin.x = current_texture_dest.x + current_texture_clip.width/2;
+        current_texture_rotation_origin.y = current_texture_dest.y + current_texture_clip.height/2;
+        DrawTexturePro( img_raylib, current_texture_clip, current_texture_dest, current_texture_rotation_origin, render_angle * semath::math_degrees_multiplier, current_texture_tint );
     }
 
     void texture_raylib::render_tex_special_at_point(  int x, int y, float render_angle, int point_x, int point_y,int new_width, int new_height, color * render_color, gpe::shape_rect* clip , int alpha )
@@ -334,6 +512,46 @@ namespace gpe
         {
             new_height = texHeight;
         }
+
+                if( render_color != nullptr )
+        {
+            current_texture_tint.r = render_color->get_r();
+            current_texture_tint.g = render_color->get_g();
+            current_texture_tint.b = render_color->get_b();
+        }
+        else
+        {
+            current_texture_tint.r = currentR;
+            current_texture_tint.g = currentG;
+            current_texture_tint.b = currentB;
+        }
+        current_texture_tint.a = alpha;
+
+
+
+        if( clip !=nullptr )
+        {
+            current_texture_clip.x = clip->x;
+            current_texture_clip.y = clip->y;
+            current_texture_clip.width = clip->w;
+            current_texture_clip.height = clip->h;
+        }
+        else
+        {
+            current_texture_clip.x = 0;
+            current_texture_clip.y = 0;
+            current_texture_clip.width = img_raylib.width;
+            current_texture_clip.height = img_raylib.height;
+        }
+        current_texture_dest.x = x + renderer_main_raylib->scissor_mode_offset.x;
+        current_texture_dest.y = y + renderer_main_raylib->scissor_mode_offset.y;
+        current_texture_dest.width = new_width;
+        current_texture_dest.height = new_height;
+
+        current_texture_rotation_origin.x = point_x;
+        current_texture_rotation_origin.y = point_y;
+        DrawTexturePro( img_raylib, current_texture_clip, current_texture_dest, current_texture_rotation_origin, render_angle * semath::math_degrees_multiplier, current_texture_tint );
+
     }
 
     void texture_raylib::set_alpha( int alpha )

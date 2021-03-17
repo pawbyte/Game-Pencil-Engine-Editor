@@ -84,16 +84,18 @@ namespace gpe
             bool clipboard_set( std::string new_clipboard_string);
             std::string clipboard_string();
 
-            void key_bind_qwerty();
-            void key_bind_load();
-            void key_bind_save();
-
             //void handle_modifers( raylibMod mod );
             bool gamepad_detect_all();
             bool gamepad_disconnect( int gamepad_id);
             bool gamepad_setup(int gamepad_id );
-            bool load_input_settings(std::string file_path = "");
+
             void handle_input(bool dump_event = false, bool is_embedded=false );
+
+            void key_bind_load();
+            void key_bind_qwerty();
+            void key_bind_save();
+
+             bool load_input_settings(std::string file_path = "");
             //void reset_all_input();
             //void reset_temp_input();
     };

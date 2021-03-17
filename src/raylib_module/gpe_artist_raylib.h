@@ -44,7 +44,6 @@ SOFTWARE.
 #include "gpe_renderer_raylib.h"
 #include "gpe_texture_raylib.h"
 #include "gpe_texture_target_raylib.h"
-#include "raylib.h"
 
 namespace gpe
 {
@@ -57,6 +56,8 @@ namespace gpe
             texture_target_raylib * lightingOverlayTexture;
             Color raylib_paint_color;
             Color raylib_temp_color;
+            Color raylib_gradient_color1;
+            Color raylib_gradient_color2;
             Vector2 circle_center_pt;
             Vector2 circle_center_pt2;
 
@@ -66,6 +67,7 @@ namespace gpe
 
             Vector2 rectangle_point;
             Vector2 rectangle_size;
+            Rectangle rectangle_box;
 
             int raylib_geometry_segments;
         public:
@@ -74,27 +76,27 @@ namespace gpe
 
             //Arc Rendering Functions
              virtual void render_arc( float arc_x, float arc_y, float arc_radius, float start_angle, float end_angle, float arc_vertices  );
-             virtual void render_arc_color( float arc_x, float arc_y,float arc_radius, float start_angle, float end_angle, float arc_vertices,  color * render_color = NULL, int alpha_channel = 255   );
+             virtual void render_arc_color( float arc_x, float arc_y,float arc_radius, float start_angle, float end_angle, float arc_vertices,  color * render_color = nullptr, int alpha_channel = 255   );
 
              virtual void render_arc_width( float arc_x, float arc_y, float arc_radius, int line_width, float start_angle, float end_angle, float arc_vertices  );
-             virtual void render_arc_width_color( float arc_x, float arc_y,float arc_radius, int line_width, float start_angle, float end_angle, float arc_vertices,  color * render_color = NULL, int alpha_channel = 255 );
+             virtual void render_arc_width_color( float arc_x, float arc_y,float arc_radius, int line_width, float start_angle, float end_angle, float arc_vertices,  color * render_color = nullptr, int alpha_channel = 255 );
 
             //Circle and SemiCircles and Ovals Rendering Functions
              bool render_circle_filled( int x, int y, int rad);
-             bool render_circle_filled_color( int x, int y, int rad, color * render_color = NULL, int alpha_channel = 255 );
+             bool render_circle_filled_color( int x, int y, int rad, color * render_color = nullptr, int alpha_channel = 255 );
              bool render_circle_outline(  int x, int y, int rad );
-             bool render_circle_outline_color( int x, int y, int rad,  color * render_color = NULL, int alpha_channel = 255);
+             bool render_circle_outline_color( int x, int y, int rad,  color * render_color = nullptr, int alpha_channel = 255);
 
              bool render_oval( int x, int y, int w, int h, bool renderOutLine = false);
 
              bool render_oval_color( int x, int y, int w, int h, color *render_color, int alpha_channel = 255, bool renderOutLine = false);
              bool render_semi_circle( int x, int y, int rad, int direction = 0, bool renderOutLine = false);
-             bool render_semi_circle_color( int x, int y, int rad, int direction = 0, color *render_color = NULL, int alpha_channel = 255, bool renderOutLine = false);
+             bool render_semi_circle_color( int x, int y, int rad, int direction = 0, color *render_color = nullptr, int alpha_channel = 255, bool renderOutLine = false);
 
             //Gradients Rendering [ BEGIN ]
-             void render_gradient_circle(  int radius, shape_rect * rendRect = NULL, color * render_color = NULL);
-             void render_gradient_horizontal(  shape_rect * rendRect = NULL, color * render_color = NULL);
-             void render_gradient_vertical(  shape_rect * rendRect = NULL, color * render_color = NULL);
+            void render_gradient_circle(  int radius, shape_rect * rendRect, color * render_color1, color * render_color2 = nullptr);
+            void render_gradient_horizontal(  shape_rect * rendRect, color * render_color1, color * render_color2 = nullptr);
+            void render_gradient_vertical(  shape_rect * rendRect, color * render_color1, color * render_color2 = nullptr);
             //Gradients Rendering [ END ]
 
             //Line Rendering [ BEGIN ]
@@ -121,36 +123,36 @@ namespace gpe
              void render_rect(  shape_rect * rendRect,color * render_color,bool outline = false, int alpha_channel = 255);
              void render_rectangle( int x1, int y1, int x2, int y2,  color *render_color,bool outline = false, int alpha_channel = 255);
              void render_square( int x, int y, int squareSize,  color *render_color,bool outline = false, int alpha_channel = 255);
-             void render_rotated_rectangle(int get_center(), int yCenter, int w, int h, int angle, color * render_color = NULL, int alpha_channel = 255);
+             void render_rotated_rectangle(int get_center(), int yCenter, int w, int h, int angle, color * render_color = nullptr, int alpha_channel = 255);
              //Rectangles Rendering [ END ]
 
              //Roundrects Rendering [ BEGIN ]
 
              void render_roundrect_filled(int x1, int y1, int x2, int y2);
              void render_roundrect_filled_radius(int x1, int y1, int x2, int y2, int rad);
-             void render_roundrect_filled_color( int x1, int y1,int x2, int y2,color * render_color = NULL, int alpha_channel  = 255);
-             void render_roundrect_filled_color_radius( int x1, int y1,int x2, int y2, int rad, color * render_color = NULL, int alpha_channel  = 255);
+             void render_roundrect_filled_color( int x1, int y1,int x2, int y2,color * render_color = nullptr, int alpha_channel  = 255);
+             void render_roundrect_filled_color_radius( int x1, int y1,int x2, int y2, int rad, color * render_color = nullptr, int alpha_channel  = 255);
 
              void render_roundrect_outline(int x1, int y1, int x2, int y2);
              void render_roundrect_outline_radius(int x1, int y1, int x2, int y2, int rad);
-             void render_roundrect_outline_color( int x1, int y1,int x2, int y2, color * render_color = NULL, int alpha_channel  = 255);
-             void render_roundrect_outline_color_radius( int x1, int y1,int x2, int y2, int rad,color * render_color = NULL, int alpha_channel  = 255);
+             void render_roundrect_outline_color( int x1, int y1,int x2, int y2, color * render_color = nullptr, int alpha_channel  = 255);
+             void render_roundrect_outline_color_radius( int x1, int y1,int x2, int y2, int rad,color * render_color = nullptr, int alpha_channel  = 255);
 
             //Rectangles Rendering [ END ]
 
 
              //Triangle Rendering [ BEGIN ]
              void render_triangle( shape_triangle2d * tri );
-             void render_triangle_color( shape_triangle2d * tri, color * render_color = NULL, int alpha_channel = 255 );
+             void render_triangle_color( shape_triangle2d * tri, color * render_color = nullptr, int alpha_channel = 255 );
 
              void render_triangle_coords( int x1, int y1, int x2, int y2, int x3, int y3);
-             void render_triangle_color_coords( int x1, int y1, int x2, int y2, int x3, int y3, color * render_color = NULL, int alpha_channel = 255 );
+             void render_triangle_color_coords( int x1, int y1, int x2, int y2, int x3, int y3, color * render_color = nullptr, int alpha_channel = 255 );
 
              void render_triangle_outline( shape_triangle2d * tri, int line_width = 1);
-             void render_triangle_outline_color( shape_triangle2d * tri, color * render_color = NULL, int alpha_channel = 255,int line_width = 1);
+             void render_triangle_outline_color( shape_triangle2d * tri, color * render_color = nullptr, int alpha_channel = 255,int line_width = 1);
 
              void render_triangle_outline_coords( int x1, int y1, int x2, int y2, int x3, int y3, int line_width = 1);
-             void render_triangle_outline_color_coords( int x1, int y1, int x2, int y2, int x3, int y3, color * render_color = NULL, int alpha_channel = 255,int line_width = 1);
+             void render_triangle_outline_color_coords( int x1, int y1, int x2, int y2, int x3, int y3, color * render_color = nullptr, int alpha_channel = 255,int line_width = 1);
 
              //Triangle Rendering [ END ]
 

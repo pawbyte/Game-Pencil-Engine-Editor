@@ -40,22 +40,34 @@ SOFTWARE.
 #include "../gpe/gpe_shapes.h"
 #include "../gpe/gpe_renderer_base.h"
 #include "../gpe/gpe_timer_base.h"
-
 #include "raylib.h"
+#include "config.h"
+
+#if defined(PLATFORM_DESKTOP)
+    #define GLSL_VERSION            330
+#else   // PLATFORM_RPI, PLATFORM_ANDROID, PLATFORM_WEB
+    #define GLSL_VERSION            100
+#endif
 
 namespace gpe
 {
-    //Our Renderer raylib Wrapper
+    //Our Renderer raylib wrapper
     class renderer_system_raylib: public renderer_base
     {
         private:
             Color render_current_color;
+            bool in_scissor_mode;
+            RenderTexture2D  scissor_mode_target;
+            Rectangle scissor_mode_rectangle_source;
+            Rectangle scissor_mode_rectangle_dest;
+            Vector2 scissor_mode_position;
         public:
+            Vector2 scissor_mode_offset;
             //raylib_SysWMinfo * get_sys_info();
             renderer_system_raylib(int rId, int wWidth, int wHeight );
             ~renderer_system_raylib();
 
-            void clear_renderer( bool windowIsMinimized );
+            void clear_renderer( bool windowIsMinimized = false );
 
             bool disable_scaling();
             bool enable_scaling();
@@ -84,11 +96,12 @@ namespace gpe
 
             bool screen_was_cleared();
             void set_render_blend_mode( int blend_mode_new );
-            void set_viewpoint( shape_rect * newViewPoint = NULL);
+            void set_viewpoint( shape_rect * newViewPoint = nullptr);
             void set_window_title(std::string new_title);
             void update_renderer( bool windowIsMinimized);
     };
 
     extern renderer_system_raylib * renderer_main_raylib;
 }
+
 #endif // GPE_RENDERER_raylib_H

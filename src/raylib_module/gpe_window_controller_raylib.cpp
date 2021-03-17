@@ -38,15 +38,15 @@ SOFTWARE.
 
 namespace gpe
 {
-    window_controller_raylib * window_controller_main_raylib = NULL;
+    window_controller_raylib * window_controller_main_raylib = nullptr;
 
     bool init_raylib_window_system()
     {
         error_log->report("Starting raylib_module window system...");
-        if( window_controller_main != NULL )
+        if( window_controller_main != nullptr )
         {
             delete window_controller_main;
-            window_controller_main = NULL;
+            window_controller_main = nullptr;
         }
         window_controller_main_raylib = new window_controller_raylib( settings->programTitle,settings->defaultWindowWidth, settings->defaultWindowHeight,  settings->showWindowBorder, settings->startFullScreen, settings->startMaximized, settings->mainWindowIsResizable );
         window_controller_main = window_controller_main_raylib;
@@ -56,25 +56,26 @@ namespace gpe
 
     void quit_raylib_window_system()
     {
-        if( window_controller_main_raylib != NULL )
+        if( window_controller_main_raylib != nullptr )
         {
             delete window_controller_main_raylib;
-            window_controller_main_raylib = NULL;
+            window_controller_main_raylib = nullptr;
         }
-        window_controller_main = NULL;
+        window_controller_main = nullptr;
     }
 
     window_controller_raylib::window_controller_raylib(std::string windowTitle, int wWidth, int wHeight,bool showBorder, bool fullScreen, bool maximized, bool isResizable )
     {
-        if( window_base_renderer!=NULL )
+        if( window_base_renderer!=nullptr )
         {
             delete window_base_renderer;
         }
-        window_base_renderer = NULL;
+        window_base_renderer = nullptr;
         window_id = 0;
         window_closed = false;
         window_has_mouse= false;
         window_has_focus = false;
+        window_scaling = false;
 
         if( wWidth < 0 )
         {
@@ -124,9 +125,10 @@ namespace gpe
         windowed = true;
         window_id = 0;
 
-        SetWindowPosition( position_x, position_y);
         window_width = GetScreenWidth();
         window_height = GetScreenHeight();
+        SetWindowPosition( position_x - window_width/2, position_y - window_height/2);
+
     }
 
     window_controller_raylib::~window_controller_raylib()
@@ -148,6 +150,7 @@ namespace gpe
 
     bool window_controller_raylib::hide_window()
     {
+        minimized  = true;
         if( IsWindowHidden() )
         {
             return false;
@@ -159,8 +162,9 @@ namespace gpe
     void window_controller_raylib::process_event( input_event_container * event_holder )
     {
         resized = false;
+        minimized = false;
 
-        if( event_holder == NULL )
+        if( event_holder == nullptr )
         {
             error_log->report("Event holder = null!");
             return;
@@ -297,20 +301,21 @@ namespace gpe
 
     void window_controller_raylib::reset_input()
     {
-        //window_base_renderer::reset_input();
+        window_controller_base::reset_input();
         resized = false;
         window_closed = false;
-        if(  window_base_renderer!=NULL)
+
+
+        if(  window_base_renderer!=nullptr )
         {
-            window_width = GetScreenWidth();
-            window_height = GetScreenHeight();
             window_base_renderer->reset_input();
         }
     }
 
     void window_controller_raylib::resize_window()
     {
-        if( window_base_renderer!=NULL )
+        resized = true;
+        if( window_base_renderer!=nullptr )
         {
             window_base_renderer->resize_renderer( window_width, window_height );
         }
@@ -324,7 +329,7 @@ namespace gpe
 
     bool window_controller_raylib::scale_window( int s_width, int s_height , bool scale_int )
     {
-        if( window_base_renderer !=NULL )
+        if( window_base_renderer !=nullptr )
         {
             window_scaling = window_base_renderer->scale_renderer(s_width, s_height, scale_int );
 
@@ -346,7 +351,7 @@ namespace gpe
 
     bool window_controller_raylib::scale_window_factor( float s_width, float s_height, bool scale_int )
     {
-        if( window_base_renderer !=NULL )
+        if( window_base_renderer !=nullptr )
         {
             window_scaling = window_base_renderer->scale_renderer_factor(s_width, s_height, scale_int );
             return window_scaling;
@@ -356,12 +361,12 @@ namespace gpe
 
     void window_controller_raylib::set_renderer( renderer_base * new_renderer, bool remove_current )
     {
-        if( remove_current && window_base_renderer!=NULL )
+        if( remove_current && window_base_renderer!=nullptr )
         {
             delete window_base_renderer;
-            window_base_renderer = NULL;
+            window_base_renderer = nullptr;
         }
-        if( new_renderer == NULL )
+        if( new_renderer == nullptr )
         {
             error_log->report(" new_renderer = null in [void window_controller_raylib::set_renderer()] function!");
             return;
@@ -384,7 +389,7 @@ namespace gpe
             {
                 new_y = GetMonitorHeight(current_monitor ) / 2;
             }
-            SetWindowPosition(  new_x, new_y );
+            SetWindowPosition(  new_x - GetScreenWidth()/2, new_y  - GetScreenHeight()/2 );
         }
     }
 
@@ -396,13 +401,14 @@ namespace gpe
 
             window_width = n_width;
             window_height = n_height;
+            resize_window();
+            return true;
 
-            if( window_base_renderer !=NULL )
+            if( window_base_renderer !=nullptr )
             {
                 window_base_renderer->resize_renderer(n_width, n_height );
                 window_width = gpe::screen_width = n_width;
                 window_height = gpe::screen_height = n_height;
-                return true;
             }
             return true;
         }
@@ -411,13 +417,13 @@ namespace gpe
 
     void window_controller_raylib::set_window_title(std::string new_title)
     {
-        SetWindowTitle(new_title.c_str() );
+        SetWindowTitle( new_title.c_str() );
     }
 
     bool window_controller_raylib::show_window()
     {
-
         RestoreWindow(  );
+        minimized  = false;
         return true;
     }
 
@@ -425,6 +431,31 @@ namespace gpe
     void window_controller_raylib::start_loop()
     {
         resized = false;
+
+        int past_width = window_width;
+        int past_height = window_height;
+        window_width = GetScreenWidth();
+        window_height = GetScreenHeight();
+
+        if( past_width != window_width || past_height != window_height )
+        {
+            resized = true;
+            resize_window();
+        }
+        else if( IsWindowResized() )
+        {
+            resized = true;
+            resize_window();
+        }
+        else
+        {
+            resized = false;
+        }
+        window_has_mouse = IsWindowFocused();
+        window_has_focus = IsWindowFocused();
+        window_closed = WindowShouldClose();
+        minimized = IsWindowMinimized();
+        windowed = !minimized;
     }
 
     void window_controller_raylib::toggle_fullscreen()

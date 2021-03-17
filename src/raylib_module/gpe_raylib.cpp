@@ -44,6 +44,10 @@ namespace gpe
             error_log->report( "Unable to properly initialize raylib_main_system! \n" );
             inittd_succesffully = false;
         }
+        else
+        {
+            error_log->report( "Successfully initialized raylib_main_system! \n" );
+        }
 
         //Then we begin our window
         if( init_raylib_window_system() == false )
@@ -51,12 +55,31 @@ namespace gpe
             error_log->report( "Unable to properly initialize raylib_window_system! \n" );
             inittd_succesffully = false;
         }
+        else
+        {
+            error_log->report( "Successfully initialized raylib_window_system! \n" );
+        }
+
+        //Then we begin our file system
+        if( init_raylib_file_system() == false )
+        {
+            error_log->report( "Unable to properly initialize raylib_file_system! \n" );
+            inittd_succesffully = false;
+        }
+        else
+        {
+            error_log->report( "Successfully initialized raylib_file_system! \n" );
+        }
 
         //We will be using the raylib Graphics System...
         if( init_raylib_render_package() == false )
         {
             error_log->report( "Unable to properly initialize raylib_render_package! \n" );
             inittd_succesffully = false;
+        }
+        else
+        {
+            error_log->report( "Successfully initialized raylib_render_package! \n" );
         }
 
         if( init_raylib_cursor_system()  )
@@ -74,11 +97,19 @@ namespace gpe
             error_log->report( "Unable to properly initialize raylib_input_system! \n" );
             inittd_succesffully = false;
         }
+        else
+        {
+            error_log->report( "Successfully initialized raylib_input_system! \n" );
+        }
 
         if( init_raylib_font_system() == false )
         {
             error_log->report( "Unable to properly initialize raylib_font_system! \n" );
             inittd_succesffully = false;
+        }
+        else
+        {
+            error_log->report( "Successfully initialized raylib_font_system! \n" );
         }
 
         //We will be using the raylib Audio System...
@@ -87,11 +118,19 @@ namespace gpe
             error_log->report( "Unable to properly initialize raylib_audio_system! \n" );
             inittd_succesffully = false;
         }
+        else
+        {
+            error_log->report( "Successfully initialized raylib_audio_system! \n" );
+        }
 
         if( init_raylib_time_system() == false )
         {
             error_log->report( "Unable to properly initialize raylib_time_system! \n" );
             inittd_succesffully = false;
+        }
+        else
+        {
+            error_log->report( "Successfully initialized raylib_time_system! \n" );
         }
 
         return inittd_succesffully;
@@ -99,7 +138,12 @@ namespace gpe
 
     void quit_raylib_all_systems()
     {
-
+        gpe::quit_raylib_font_system();
+        gpe::quit_raylib_audio_system();
+        gpe::quit_raylib_render_package();
+        gpe::quit_raylib_file_system();
+        gpe::quit_raylib_window_system();
+        gpe::quit_raylib_main_system();
     }
 
 }

@@ -67,6 +67,9 @@ namespace gpe
             std::map < const std::string, font_pair_raylib * > font_text_pairs;
             std::map <const std::string, font_pair_raylib * > font_character_pairs;
             Font raylib_held_font;
+            Color current_font_color;
+            Vector2 current_font_position;
+            Rectangle current_font_box;
         public:
             font_raylib_tff( const std::string file_loc, int f_size, bool make_monospaced = false, const std::string f_nickname = "", int id_number =-1);
             ~font_raylib_tff();

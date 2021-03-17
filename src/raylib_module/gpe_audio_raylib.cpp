@@ -36,7 +36,7 @@ SOFTWARE.
 
 namespace gpe
 {
-    bool init_raylib_mixer_audio_system()
+    bool init_raylib_audio_system()
     {
         error_log->report("-audio_raylib_system...");
         // load support for the OGG and MOD sample/music formats
@@ -44,9 +44,16 @@ namespace gpe
         //Initialize raylib_audio system
         InitAudioDevice();
 
-        if( IsAudioDeviceReady() == false)
+        sound_is_working = IsAudioDeviceReady();
+        if( sound_is_working )
         {
-            sound_is_working = false;
+            gpe::error_log->report("Raylib audio device started successfully....");
+        }
+        else
+        {
+            gpe::error_log->report("Raylib audio device FAILED TO START...");
+            CloseAudioDevice();
+            return false;
         }
 
         bool at_least_one_type_supported = false;
@@ -88,42 +95,49 @@ namespace gpe
             }
         }
 
-        if( sound_music_object != NULL )
+        sound_is_working = at_least_one_type_supported;
+
+        if( sound_music_object != nullptr )
         {
             delete sound_music_object;
-            sound_music_object = NULL;
+            sound_music_object = nullptr;
         }
 
         sound_music_object = new music_raylib("","",-1, -1 );
 
-        if( standard_sound_object != NULL )
+        if( standard_sound_object != nullptr )
         {
             delete standard_sound_object;
-            standard_sound_object = NULL;
+            standard_sound_object = nullptr;
         }
         standard_sound_object = new sound_raylib("","",-1, -1 );
-        sound_system_name = "raylib_audio";
-        return true;
+        sound_system_name = RAYLIB_VERSION;
+        sound_system_name = "raylib_audio " + sound_system_name;
+        return sound_is_working;
     }
 
     void quit_raylib_audio_system()
     {
         error_log->report("Quitting audio_raylib_system....");
-        CloseAudioDevice();
-        if( sound_music_object != NULL )
+        if( sound_music_object != nullptr )
         {
             delete sound_music_object;
-            sound_music_object = NULL;
+            sound_music_object = nullptr;
         }
         sound_music_object = new music_base("","",-1, -1 );
 
-        if( standard_sound_object != NULL )
+        if( standard_sound_object != nullptr )
         {
             delete standard_sound_object;
-            standard_sound_object = NULL;
+            standard_sound_object = nullptr;
         }
         standard_sound_object = new sound_base("","",-1, -1 );
-
+        for( int  i_format = 0; i_format < sound_format_max; i_format++ )
+        {
+            sound_is_format_supported[ i_format ] = false;
+        }
+        CloseAudioDevice();
+        sound_is_working = false;
         sound_system_name = "undefined";
     }
 
@@ -257,6 +271,7 @@ namespace gpe
     int music_raylib::play( int play_count , int s_channel )
     {
         PlayMusicStream( raylib_music );
+        return play_count;
     }
 
     void music_raylib::stop()
