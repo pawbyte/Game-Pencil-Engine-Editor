@@ -119,7 +119,6 @@ namespace pawgui
 
         hovering_over_action = false;
         hovering_over_x = false;
-        widget_basic::process_self( view_space, cam );
         remove_requested = false;
 
         if( pawgui::font_textinput != nullptr )
@@ -149,6 +148,8 @@ namespace pawgui
 
         box_close_x->x = widget_box.get_x2() - box_close_x->w;
         box_close_x->y = widget_box.y;
+
+        widget_basic::process_self( view_space, cam );
 
         if( is_hovered() )
         {
@@ -183,18 +184,26 @@ namespace pawgui
         {
             text_wid = 16;
             text_height = 16;
+            gpe::error_log->report("Font is nullptr, so can't calculate widths...");
             return;
         }
         text_wid = pawgui::font_textinput->get_mono_width();
-        text_height = pawgui::font_textinput->get_mono_width();
+        text_height = pawgui::font_textinput->get_mono_height();
 
-        int max_chars_per_line = pawgui::font_textinput->get_mono_width();
-        if( max_chars_per_line !=0 && max_text_width!=0 )
+        int max_chars_per_line = max_text_width;
+        if( max_text_width !=0 && text_wid!=0 )
         {
-            max_chars_per_line = max_text_width / max_chars_per_line;
+            max_chars_per_line = max_text_width / text_wid;
+        }
+        else
+        {
+            max_chars_per_line = -1;
         }
         stg_ex::wrap_string( descriptionText, text_vector, max_chars_per_line );
-        widget_box.h = (int)text_vector.size() * ( pawgui::font_textinput->get_mono_height()+padding_default )+ padding_default;
+        widget_box.h = (int)text_vector.size() * ( text_height+padding_default )+ padding_default;
+
+        gpe::error_log->report("gpe::screen_width , widget_box.w (" + stg_ex::int_to_string( gpe::screen_width ) + "," + stg_ex::int_to_string( widget_box.w ) + ")" );
+        gpe::error_log->report("max_text_width , text_wid , max_chars_per_line(" + stg_ex::int_to_string(max_text_width) + "," + stg_ex::int_to_string( text_wid ) + "," + stg_ex::int_to_string(max_chars_per_line) + ")" );
     }
 
     void widget_notifcation_base::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
@@ -251,17 +260,17 @@ namespace pawgui
 
     void widget_notifcation_base::set_width(int new_width)
     {
-        if( widget_box.w == new_width )
+        if( widget_box.w != new_width )
         {
-            return;
+            //return;
         }
         widget_basic::set_width( new_width );
-        refresh_notification();
     }
 
     widget_notfications_holder::widget_notfications_holder()
     {
         notifications_in_view_max  = 3;
+        widget_box.w = -1;
     }
 
     widget_notfications_holder::~widget_notfications_holder()
@@ -316,21 +325,20 @@ namespace pawgui
         int temp_y_pos = get_ypos();
         int notification_being_removed = -1;
 
-        widget_box.h = 0;
         for( int i = (int)notifications.size() -1; i>=iMin; i-- )
         {
             temp_notification = notifications[i];
             if( temp_notification != nullptr )
             {
-                temp_notification->set_width( get_width() );
                 temp_notification->set_coords( get_xpos(), temp_y_pos );
+                //temp_notification->set_width( widget_box.w );
                 temp_notification->process_self( view_space, cam );
                 temp_y_pos += temp_notification->get_height();
                 if( temp_notification->remove_requested )
                 {
                     notification_being_removed = i;
                 }
-                widget_box.h += temp_notification->get_height();
+                //widget_box.h += temp_notification->get_height();
             }
         }
 
@@ -377,7 +385,8 @@ namespace pawgui
             temp_notification = notifications[i];
             if( temp_notification != nullptr )
             {
-                temp_notification->set_width( get_width() );
+                temp_notification->set_width( new_width );
+                temp_notification->refresh_notification();
                 if( i >= iMin )
                 {
                     widget_box.h += temp_notification->get_height();

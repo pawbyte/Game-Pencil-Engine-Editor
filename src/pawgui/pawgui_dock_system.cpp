@@ -278,7 +278,7 @@ namespace pawgui
 
         view_space = gpe::camera_find( view_space );
         cam = gpe::camera_find( cam );
-        gpe::renderer_main->reset_viewpoint();
+        //gpe::renderer_main->reset_viewpoint();
         gpe::renderer_main->set_viewpoint( view_space);
 
         gpe::gcanvas->render_roundrect_filled_color(widget_box.x, widget_box.y, widget_box.get_x2(), widget_box.get_y2(), pawgui::theme_main->panel_border_color, 255 );
@@ -1178,6 +1178,7 @@ namespace pawgui
         {
             dock_updated_this_frame = true;
             setup_dock();
+            gpe::error_log->report("Dock resizes this frame...");
             return;
         }
 
@@ -1206,6 +1207,7 @@ namespace pawgui
                     {
                         tPanel_buttonHitID = iPanel;
                         tPanel->dock_settings_button->set_clicked( false );
+                        gpe::error_log->report("Resetting input" + stg_ex::int_to_string( iPanel) );
                         gpe::input->reset_all_input();
                     }
                 }

@@ -312,7 +312,7 @@ namespace pawgui
         }
         if( isHovered)
         {
-            if( gpe::input->check_mouse_button_clicked(0) )
+            if( gpe::input->check_mouse_button_clicked( mb_left) )
             {
                 if( lastfloatClickAction ==0)
                 {
@@ -411,7 +411,7 @@ namespace pawgui
                 gpe::input->reset_all_input();
 
             }
-            else if( gpe::input->check_mouse_pressed(0)   )
+            else if( gpe::input->check_mouse_pressed( mb_left)   )
             {
                 get_cursor_from_mouse(view_space,cam);
                 selectionCursorPos = cursorPos;

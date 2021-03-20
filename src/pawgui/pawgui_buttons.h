@@ -102,7 +102,7 @@ namespace pawgui
         widget_button_label( std::string name, std::string description,int id = -1);
         ~widget_button_label();
         void prerender_self( );
-        void process_self( gpe::shape_rect * view_space =nullptr, gpe::shape_rect *render_camera = nullptr);
+        void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect *render_camera = nullptr);
         void set_id(int new_id);
         void set_name(std::string new_name);
         void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
@@ -127,7 +127,7 @@ namespace pawgui
         void set_name(std::string new_name);
         void set_website(std::string url_string);
         void prerender_self( );
-        void process_self( gpe::shape_rect * view_space =nullptr, gpe::shape_rect *render_camera = nullptr);
+        void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect *render_camera = nullptr);
         void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     };
 
@@ -157,7 +157,7 @@ namespace pawgui
         void set_name(std::string new_name);
         void set_website(std::string url_string);
         void prerender_self( );
-        void process_self( gpe::shape_rect * view_space =nullptr, gpe::shape_rect *render_camera = nullptr);
+        void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect *render_camera = nullptr);
         void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     };
 }

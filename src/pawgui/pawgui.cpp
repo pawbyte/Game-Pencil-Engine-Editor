@@ -99,6 +99,7 @@ namespace pawgui
             main_settings = nullptr;
         }
 
+
         gpe::error_log->report("Deleting mini-code-highlighter....");
         if( main_syntax_highlighter!=nullptr)
         {
