@@ -46,6 +46,7 @@ SOFTWARE.
 #include "gpe_renderer_raylib.h"
 #include "gpe_texture_raylib.h"
 #include "raylib.h"
+#include "rlgl.h"
 
 namespace gpe
 {

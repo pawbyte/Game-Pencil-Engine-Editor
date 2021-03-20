@@ -128,7 +128,7 @@ namespace gpe
 
         gpe::error_log->report("Finding monospace sizes of font");
 
-        Vector2 raylib_text_sizes = MeasureTextEx(raylib_held_font, "W",font_size,0 );
+        Vector2 raylib_text_sizes = MeasureTextEx(raylib_held_font, "W",font_size,raylib_held_font.charsPadding );
         number_width = mono_width = raylib_text_sizes.x;
         number_height = mono_height = raylib_text_sizes.y;
 
@@ -236,8 +236,8 @@ namespace gpe
             else
             {
                 Vector2 raylib_text_sizes = MeasureTextEx(raylib_held_font, text_to_render.c_str(),font_size,0 );
-                *width_value = raylib_text_sizes.x;
-                *height_value = raylib_text_sizes.y;
+                *width_value = raylib_text_sizes.x + raylib_held_font.charsPadding;
+                *height_value = raylib_text_sizes.y + raylib_held_font.charsPadding;
 
                 /*
                 font_pair_raylib *  newFoundPair = find_texture_raylib( text_to_render);
@@ -639,8 +639,8 @@ namespace gpe
 
         current_font_box.x = x_pos + renderer_main_raylib->scissor_mode_offset.x;
         current_font_box.y = y_pos + renderer_main_raylib->scissor_mode_offset.y;
-        current_font_box.width = render_width + raylib_held_font.charsPadding;
-        current_font_box.height = render_height + raylib_held_font.charsPadding;
+        current_font_box.width = render_width;
+        current_font_box.height = render_height;
 
         DrawTextRec( raylib_held_font, text_to_render.c_str(),current_font_box, font_size, 0, false, current_font_color );
     }
@@ -733,41 +733,32 @@ namespace gpe
 
     void font_raylib_tff::render_text_rotated( int x_pos, int y_pos, std::string text_to_render, color * text_color, float textAngle, int render_alpha )
     {
-        if( render_alpha > 0)
+        if( render_alpha < 1 || text_color==nullptr)
         {
-            font_pair_raylib * strTex = find_texture_raylib(text_to_render);
-            texture_raylib * fPairTex=  nullptr;
-            if( strTex!=nullptr)
-            {
-                fPairTex = strTex->get_texture();
-                if( render_alpha > 255)
-                {
-                    render_alpha = 255;
-                }
-                if( fPairTex!=nullptr && render_alpha >0)
-                {
-                    int texWid = 0;
-                    int texHeight =0;
-                    //raylib_SetTextureColorMod( fPairTex, text_color->get_r(), text_color->get_g(), text_color->get_b() );
-
-                    if( strTex->lastAlphaRendered!=render_alpha )
-                    {
-                        //raylib_SetTextureAlphaMod(fPairTex,render_alpha);
-                        strTex->lastAlphaRendered = render_alpha;
-                    }
-                    //Get image dimensions
-                    texWid = strTex->get_width();
-                    texHeight = strTex->get_height();
-                    //Incompleted
-                    /*
-                    raylib_Rect raylibDstrect = {x_pos-texWid, y_pos-texHeight, texWid,texHeight};
-                    raylib_Point raylibCenterPoint = {texWid, texHeight};
-                    raylib_RenderCopyEx( renderer_main_raylib->get_gpe_renderer_raylib(),fPairTex, nullptr,&raylibDstrect,textAngle,&raylibCenterPoint, raylib_FLIP_NONE );
-                    //raylib_SetTextureColorMod( fPairTex, c_white->get_r(), c_white->get_g(), c_white->get_b() );
-                    */
-                }
-            }
+            return;
         }
+        if( (int)text_to_render.size() == 0 )
+        {
+            return;
+        }
+
+        current_font_color.r = text_color->get_r();
+        current_font_color.g = text_color->get_g();
+        current_font_color.b = text_color->get_b();
+        current_font_color.a = render_alpha;
+
+        int texWid = 0, texHeight = 0;
+        get_metrics( text_to_render, &texWid, &texHeight ); //Get font render dimensions
+        rlPushMatrix( );
+        rlTranslatef( x_pos + renderer_main_raylib->scissor_mode_offset.x, y_pos + renderer_main_raylib->scissor_mode_offset.y , 0 );
+        rlRotatef( -textAngle  , 0,0,1 );
+
+        //draw text normal call
+        current_font_position.x = 0;
+        current_font_position.y = 0;
+        DrawTextEx(raylib_held_font, text_to_render.c_str(), current_font_position, font_size, 0, current_font_color);
+        rlPopMatrix();
+
     }
 
     bool font_raylib_tff::render_text_special( int x_pos, int y_pos, std::string text_to_render, color * text_color, int alignment_h,int alignment_v, float render_angle , float render_scale, int render_alpha )

@@ -271,6 +271,29 @@ namespace gpe
         mouse_scrolling_up = false;
         mouse_scrolling_down = false;
 
+        //Process keys typed
+        inputted_keys = "";
+        int typed_key = GetCharPressed();
+        // Check if more characters have been pressed on the same frame
+        while (  typed_key > 0)
+        {
+            // NOTE: Only allow keys in range [32..125]
+            if ((typed_key >= 32) && (typed_key <= 125) )
+            {
+                inputted_keys += (char)typed_key;
+            }
+
+            typed_key = GetCharPressed();  // Check next character in the queue
+        }
+
+        int typed_key_size = (int)inputted_keys.size();
+        if( typed_key_size  > 0 && IsKeyPressed(KEY_BACKSPACE))
+        {
+            //backspace it to hades...
+        }
+
+        //Then handle keyboard input
+
         bool key_detected_down = false, key_detected_up = false;
         for( int i_key = 0; i_key < kb_button_count; i_key++ )
         {

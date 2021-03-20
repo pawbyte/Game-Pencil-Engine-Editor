@@ -46,7 +46,7 @@ namespace gpe
     {
         r_name = RAYLIB_VERSION;
         r_name = "raylib_renderer " + r_name;
-        r_type = "opengl";
+        r_type = "Opengl V" + stg_ex::int_to_string( rlGetVersion() );
 
         render_blend_mode = blend_mode_blend;
         last_rendered_width = 0;
@@ -99,7 +99,11 @@ namespace gpe
 
     void renderer_system_raylib::reset_viewpoint()
     {
-        EndScissorMode();
+        if( in_scissor_mode )
+        {
+            rlPopMatrix();
+            EndScissorMode();
+        }
         render_sub_rectangle->x = 0;
         render_sub_rectangle->y = 0;
         render_sub_rectangle->w = 0;
@@ -138,13 +142,16 @@ namespace gpe
             render_sub_rectangle->w = newViewPoint->w;
             render_sub_rectangle->h = newViewPoint->h;
 
-            scissor_mode_offset.x = newViewPoint->x;
-            scissor_mode_offset.y = newViewPoint->y;
+            scissor_mode_offset.x = 0; //newViewPoint->x;
+            scissor_mode_offset.y = 0; //newViewPoint->y;
             if( render_sub_rectangle->w != 0 || render_sub_rectangle->h != 0 )
             {
                 EndScissorMode();
                 BeginScissorMode( render_sub_rectangle->x, render_sub_rectangle->y, render_sub_rectangle->w, render_sub_rectangle->h );
                 in_scissor_mode = true;
+                rlPushMatrix( );
+                rlTranslatef(newViewPoint->x ,newViewPoint->y, 0 );
+
                 return;
             }
         }

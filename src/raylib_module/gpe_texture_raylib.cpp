@@ -128,7 +128,7 @@ namespace gpe
 
     void texture_raylib::load_new_texture( renderer_base * renderer,std::string file_name, int id, bool transparent, bool useLinearScaling )
     {
-        UnloadTexture( img_raylib );
+        //UnloadTexture( img_raylib );
         texId=id;
         isTransparent = transparent;
         //The image that's loaded
@@ -148,8 +148,8 @@ namespace gpe
             texWid = 0;
             texHeight = 0;
             fileLocation ="notfound.png";
-            error_log->report("[Bad] Unable to load filed loacated at <"+file_name+">...");
-            UnloadImage( temp_image );
+            error_log->report("[SADNESS] Unable to load filed loacated at <"+file_name+">...");
+            //UnloadImage( temp_image );
             return;
         }
         else

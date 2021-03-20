@@ -40,8 +40,11 @@ SOFTWARE.
 #include "../gpe/gpe_shapes.h"
 #include "../gpe/gpe_renderer_base.h"
 #include "../gpe/gpe_timer_base.h"
-#include "raylib.h"
+
 #include "config.h"
+#include "raylib.h"
+#include "rlgl.h"
+
 
 #if defined(PLATFORM_DESKTOP)
     #define GLSL_VERSION            330
