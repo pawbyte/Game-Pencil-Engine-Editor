@@ -62,14 +62,16 @@ namespace gpe
 
     class cursor_controller_base
     {
-        private:
-            int cursor_controller_id;
         protected:
+            int custom_cursor_render;
+            int cursor_controller_id;
             std::string cursor_previous;
             std::string cursor_current;
             std::vector<std::string >cursor_default_names;
             std::string cursor_controller_type;
             int cursor_window_id;
+            bool supports_custom_cursors;
+            bool cursor_is_hidden;
         public:
             cursor_controller_base();
             virtual ~cursor_controller_base();
@@ -80,6 +82,7 @@ namespace gpe
             virtual void cursor_clear_dynamic();
             virtual bool cursor_contains( std::string cursor_name );
             virtual bool cursor_create_from_image(std::string f_name );
+            bool cursor_hidden();
             virtual int cursor_map_size();
             virtual std::string cursor_system_name( int cId );
 
@@ -88,7 +91,10 @@ namespace gpe
             int get_id();
             int get_window_id();
 
+            virtual void hide_cursor();
             virtual void process_cursors();
+            virtual void render();
+            virtual void show_cusor( );
     };
 
     extern cursor_controller_base * cursor_main_controller;

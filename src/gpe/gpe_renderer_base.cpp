@@ -47,6 +47,11 @@ namespace gpe
         scale_percentage_y = 0;
         scale_source_width = 0;
         scale_source_height = 0;
+
+        for( int i_render_mode = 0; i_render_mode < render_mode::rmode_other; i_render_mode++ )
+        {
+            supports_render_mode[ i_render_mode] = false;
+        }
     }
 
     renderer_base::renderer_base(int rId, int widthStart, int heightStart )
@@ -62,11 +67,38 @@ namespace gpe
         scale_percentage_y = 0;
         scale_source_width = 0;
         scale_source_height = 0;
+
+        for( int i_render_mode = 0; i_render_mode < render_mode::rmode_other; i_render_mode++ )
+        {
+            supports_render_mode[ i_render_mode] = false;
+        }
+
     }
+
 
     renderer_base::~renderer_base()
     {
 
+    }
+
+    bool renderer_base::begin_mode_2d()
+    {
+        return false;
+    }
+
+    bool renderer_base::begin_mode_25d()
+    {
+        return false;
+    }
+
+    bool renderer_base::begin_mode_3d()
+    {
+        return false;
+    }
+
+    bool renderer_base::begin_mode_vr()
+    {
+        return false;
     }
 
     void renderer_base::clean_up()
@@ -89,6 +121,26 @@ namespace gpe
         return false;
     }
 
+
+    bool renderer_base::end_mode_2d()
+    {
+        return false;
+    }
+
+    bool renderer_base::end_mode_25d()
+    {
+        return false;
+    }
+
+    bool renderer_base::end_mode_3d()
+    {
+        return false;
+    }
+
+    bool renderer_base::end_mode_vr()
+    {
+        return false;
+    }
 
     //Check if anything's wrong with the window
     bool renderer_base::error_check()
@@ -154,6 +206,16 @@ namespace gpe
     bool renderer_base::is_integer_scaling()
     {
         return use_integer_scaling;
+    }
+
+
+    bool renderer_base::is_mode_supported( int checked_mode )
+    {
+        if( checked_mode < 0 || checked_mode > rmode_other )
+        {
+            return false;
+        }
+        return supports_render_mode[ checked_mode ];
     }
 
     bool renderer_base::is_scaled()

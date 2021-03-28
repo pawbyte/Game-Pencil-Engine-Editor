@@ -74,8 +74,8 @@ namespace gpe
             tempPackage = r_packages[i];
             if( tempPackage!=nullptr && tempPackage->packageRenderer!=nullptr && tempPackage->packageWindow!=nullptr )
             {
-                tempPackage->packageRenderer->clear_renderer( false );
-                //tempPackage->packageRenderer->clear_renderer( tempPackage->packageWindow->is_minimized() );
+                //tempPackage->packageRenderer->clear_renderer( false );
+                tempPackage->packageRenderer->clear_renderer( tempPackage->packageWindow->is_minimized() );
             }
         }
     }
@@ -200,7 +200,7 @@ namespace gpe
                 if( tempPackage !=nullptr)
                 {
                     delete tempPackage;
-                    tempPackage =nullptr;
+                    tempPackage = nullptr;
                 }
             }
         }
@@ -221,7 +221,7 @@ namespace gpe
                 if( deletePackage )
                 {
                     delete tempPackage;
-                    tempPackage =nullptr;
+                    tempPackage = nullptr;
                 }
                 r_packages.erase( r_packages.begin() + i );
                 package_found_to_remove = true;

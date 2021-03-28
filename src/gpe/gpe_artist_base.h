@@ -106,9 +106,9 @@ namespace gpe
 
 
             //Gradients Rendering [ BEGIN ]
-            virtual void render_gradient_circle(  int radius, shape_rect * rendRect = nullptr, color * render_color = nullptr);
-            virtual void render_gradient_horizontal(  shape_rect * rendRect = nullptr, color * render_color = nullptr);
-            virtual void render_gradient_vertical(  shape_rect * rendRect = nullptr, color * render_color = nullptr);
+            virtual void render_gradient_circle(  int radius, shape_rect * rendRect, color * render_color1, color * render_color2 = nullptr);
+            virtual void render_gradient_horizontal(  shape_rect * rendRect, color * render_color1, color * render_color2 = nullptr);
+            virtual void render_gradient_vertical(  shape_rect * rendRect, color * render_color1, color * render_color2 = nullptr);
             //Gradients Rendering [ END ]
 
             //Line Rendering [ BEGIN ]

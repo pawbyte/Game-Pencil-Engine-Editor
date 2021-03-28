@@ -157,9 +157,9 @@ namespace gpe
 
                 if( rph!=nullptr )
                 {
-                    //rph->clear_render_packages();
+                    rph->clear_render_packages();
                 }
-                renderer_main->clear_renderer( false );
+                //renderer_main->clear_renderer( false );
 
                 if( state_current!=nullptr )
                 {
@@ -234,8 +234,12 @@ namespace gpe
 
     void runtime_master::finish_loop()
     {
-        end_loop();
+        if( loop_started )
+        {
+            end_loop();
+        }
     }
+
 
 
     void runtime_master::reset_loop()

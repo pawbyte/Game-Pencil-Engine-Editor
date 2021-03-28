@@ -35,30 +35,6 @@ SOFTWARE.
 
 namespace gpe
 {
-    enum class render_system
-    {
-        render_sys_sdl1 = 0,
-        render_sys_sdl2 = 1,
-        render_sys_opengl = 2,
-        render_sys_directx = 3,
-        render_sys_vulkan = 4,
-        render_sys_metal = 5,
-        render_sys_raylib = 6,
-        render_sys_sfml = 7,
-        render_sys_irrlicht = 8,
-        render_sys_nanovg = 9,
-        render_sys_other = 10,
-    };
-
-    enum class render_mode
-    {
-        rmode_1d = 0,
-        rmode_2d = 1,
-        rmode_25d = 2,
-        rmode_3d = 2,
-        rmode_4d = 4,
-        rmode_other = 5,
-    };
 
     //Game Pencil Runtime
     const float version_number_major = 1;

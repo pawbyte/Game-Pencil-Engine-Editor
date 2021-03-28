@@ -262,21 +262,20 @@ namespace gpe
 
 
     //Gradients Rendering [ BEGIN ]
-    void artist_base::render_gradient_circle(  int radius, shape_rect * rendRect , color * render_color )
+    void artist_base::render_gradient_circle(  int radius, shape_rect * rendRect , color * render_color1, color * render_color2 )
     {
 
     }
 
-    void artist_base::render_gradient_horizontal(  shape_rect * rendRect, color * render_color )
+    void artist_base::render_gradient_horizontal(  shape_rect * rendRect, color * render_color1, color * render_color2 )
     {
 
     }
 
-    void artist_base::render_gradient_vertical(  shape_rect * rendRect, color * render_color )
+    void artist_base::render_gradient_vertical(  shape_rect * rendRect, color * render_color1, color * render_color2 )
     {
 
     }
-
     //Gradients Rendering [ END ]
 
     //Line Rendering [ BEGIN ]

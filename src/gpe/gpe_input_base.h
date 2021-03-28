@@ -258,6 +258,8 @@ namespace gpe
             std::string input_clipboard_text;
             std::string manager_type;
         public:
+            bool handles_double_clicks;
+            int double_clicked_ms_rest; // milliseconds before the double click check is ended(not meant for sdl2 module)
             bool debug_input;
             char* file_dropped_path;
             bool exit_requested;
@@ -309,11 +311,10 @@ namespace gpe
             int mouse_pressed_button[mouse_button_count];
             int mouse_released_button[mouse_button_count];
             int mouse_clicked_button[mouse_button_count];
+            int mouse_double_clicked_time[mouse_button_count];
             std::string mouse_button[mouse_button_count];
             std::vector < std::string >files_dropped_list;
 
-            bool scroll_up;
-            bool scroll_down;
             bool window_input_received;
 
             //Constructor / deconstructor / functions
@@ -322,9 +323,9 @@ namespace gpe
 
             //Keyboard functions [begin]
             bool any_key_pressed();
-            void key_bind_qwerty();
-            void key_bind_load();
-            void key_bind_save();
+            virtual void key_bind_qwerty();
+            virtual void key_bind_load();
+            virtual void key_bind_save();
 
             virtual bool clipboard_empty();
             virtual bool clipboard_set( std::string new_clipboard_string);
@@ -335,6 +336,12 @@ namespace gpe
             bool check_kb_down(int button_id=-1);
             bool check_kb_pressed(int button_id=-1);
             bool check_kb_released(int button_id=-1);
+
+            //Useful for raylib and other modules, sdl2 not required, but for uniformity can happen
+            void disable_double_click_checker();
+            void enable_double_click_checker( int new_dc_ms_time = 600);
+            bool double_click_checker_on();
+            int double_click_checker_time();
 
             //keyboard functions [ end ]
 
@@ -379,7 +386,7 @@ namespace gpe
             int move_cursor(int cursor, int max_value, int row_max=1);
 
             //mouse functions [ begin ]
-            bool check_mouse_button_clicked(int button_id=-1);
+            bool check_mouse_button_double_clicked(int button_id=-1);
             bool check_mouse_down(int button_id=-1);
             bool check_mouse_pressed(int button_id=-1);
             bool check_mouse_released(int button_id=-1);

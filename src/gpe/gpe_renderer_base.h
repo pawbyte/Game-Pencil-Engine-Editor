@@ -46,10 +46,38 @@ namespace gpe
     const int blend_mode_mul = 4;
     const int blend_mode_none = 5;
 
+    enum class render_system
+    {
+        render_sys_sdl1 = 0,
+        render_sys_sdl2 = 1,
+        render_sys_opengl = 2,
+        render_sys_directx = 3,
+        render_sys_vulkan = 4,
+        render_sys_metal = 5,
+        render_sys_raylib = 6,
+        render_sys_sfml = 7,
+        render_sys_irrlicht = 8,
+        render_sys_nanovg = 9,
+        render_sys_other = 10,
+    };
+
+    enum render_mode
+    {
+        rmode_1d = 0,
+        rmode_2d = 1,
+        rmode_25d = 2,
+        rmode_3d = 3,
+        rmode_vr = 4,
+        rmode_4d = 5,
+        rmode_other = 6,
+    };
+
     //Our Renderer Wrapper base class
     class renderer_base
     {
         protected:
+            bool supports_render_mode[ render_mode::rmode_other ];
+
             bool previously_scaled;
             bool renderer_scaling;
             bool use_integer_scaling;
@@ -75,6 +103,10 @@ namespace gpe
             renderer_base(int rId, int widthStart, int heightStart );
             virtual ~renderer_base();
 
+            virtual bool begin_mode_2d();
+            virtual bool begin_mode_25d();
+            virtual bool begin_mode_3d();
+            virtual bool begin_mode_vr();
 
             virtual void clean_up();
             virtual void clear_renderer( bool windowIsMinimized );
@@ -82,6 +114,11 @@ namespace gpe
             virtual bool disable_scaling();
             virtual bool enable_scaling();
 
+
+            virtual bool end_mode_2d();
+            virtual bool end_mode_25d();
+            virtual bool end_mode_3d();
+            virtual bool end_mode_vr();
 
             //Check if anything's wrong with the window
             bool error_check();
@@ -102,6 +139,7 @@ namespace gpe
             float get_scale_y();
 
             bool is_integer_scaling();
+            bool is_mode_supported( int checked_mode );
             bool is_scaled();
 
             //Some Shape Stuff

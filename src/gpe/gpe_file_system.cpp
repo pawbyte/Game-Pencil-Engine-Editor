@@ -35,13 +35,14 @@ SOFTWARE.
 #include "gpe_file_system.h"
 #include "gpe_globals.h"
 
-#ifdef _WIN32
+
+#include <sys/stat.h>
+
+#if defined(_WIN32)
 
 #include <windows.h>
-#include <Commdlg.h>
 
-#endif
-#include <sys/stat.h>
+#endif // defined
 
 namespace gpe
 {
@@ -507,11 +508,37 @@ namespace gpe
 
     bool file_and_url_manager::file_copy(std::string source_file_name, std::string destination_file_name, bool overwrite_existing )
     {
-        return true;
+        if( source_file_name != destination_file_name)
+        {
+            if(file_exists(source_file_name) )
+            {
+                if( !overwrite_existing && file_exists( destination_file_name ) )
+                {
+                    return false;
+                }
+                #ifdef _WIN32
+
+                            CopyFile( source_file_name.c_str(), destination_file_name.c_str(), false );
+                #else
+                            std::ifstream srce( source_file_name.c_str(), std::ios::binary ) ;
+                            std::ofstream dest( destination_file_name.c_str(), std::ios::binary ) ;
+                            dest << srce.rdbuf() ;
+                #endif
+                return true;
+            }
+        }
+        return false;
     }
 
     bool file_and_url_manager::file_delete( std::string f_name)
     {
+        if( file_exists( f_name) )
+        {
+            if( remove( f_name.c_str() ) == 0 )
+            {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -539,53 +566,408 @@ namespace gpe
 
     int file_and_url_manager::file_get_size_bytes(const std::string &file_name)
     {
-        return 0 ;
+        std::ifstream file(file_name.c_str(), std::ifstream::in | std::ifstream::binary);
+
+        if(!file.is_open())
+        {
+            return -1;
+        }
+
+        file.seekg(0, std::ios::end);
+        int fileSize = file.tellg();
+        file.close();
+
+        return fileSize;
     }
 
     std::string file_and_url_manager::file_get_size_string(const std::string &file_name)
     {
-        return "0";
+        float f_sizeInBytes = file_get_size_bytes( file_name );
+        if( f_sizeInBytes <  0 )
+        {
+            return "Error: File Size not found...";
+        }
+        if( f_sizeInBytes >=byte_size_tb )
+        {
+            return stg_ex::float_to_string( f_sizeInBytes/byte_size_tb )+"GB";
+        }
+        else if( f_sizeInBytes >=byte_size_gb )
+        {
+            return stg_ex::float_to_string( f_sizeInBytes/byte_size_gb )+"GB";
+        }
+        else if( f_sizeInBytes >=byte_size_mb )
+        {
+            return stg_ex::float_to_string( f_sizeInBytes/byte_size_mb )+"MB";
+        }
+        else if( f_sizeInBytes >=byte_size_kb )
+        {
+            return stg_ex::float_to_string( f_sizeInBytes/byte_size_kb )+"KB";
+        }
+        return stg_ex::float_to_string( f_sizeInBytes )+" bytes";
     }
 
     int file_and_url_manager::folder_clean(std::string folder_name)
     {
-        return -1;
+        file_directory_class * dir = new file_directory_class();
+        file_object * file = nullptr;
+        int iFile = 0;
+        int iDirectory = 0;
+
+        std::string fileToClick = "";
+        std::vector< std::string > foldersToDelete;
+        foldersToDelete.push_back(folder_name);
+        std::string currentFolderToClear = folder_name;
+        int filesDeletedCount = 0;
+        if( dir!=nullptr)
+        {
+            while( (int)foldersToDelete.size() > 0 )
+            {
+                currentFolderToClear = foldersToDelete[0];
+                dir->open_directory(currentFolderToClear);
+                for (iFile = (int)dir->get_count()-1; iFile>=0; iFile--)
+                {
+                    file = dir->get_file(iFile);
+                    if( file!=nullptr)
+                    {
+                        fileToClick = file->get_name();
+                        if( fileToClick!="." && fileToClick!="..")
+                        {
+                            fileToClick = currentFolderToClear+"/"+fileToClick;
+                            if( file->is_directory() )
+                            {
+                                foldersToDelete.push_back(fileToClick );
+                            }
+                            else
+                            {
+                                remove(fileToClick.c_str() );
+                                filesDeletedCount++;
+                            }
+                        }
+                    }
+                }
+                for( iDirectory = (int)foldersToDelete.size()-1; iDirectory >=0; iDirectory--)
+                {
+                    if( currentFolderToClear==foldersToDelete.at(iDirectory) )
+                    {
+                        foldersToDelete.erase( foldersToDelete.begin()+iDirectory);
+                    }
+                }
+            }
+            delete dir;
+            dir = nullptr;
+            return filesDeletedCount;
+        }
+        return 0;
     }
 
 
     int file_and_url_manager::folder_copy(std::string folder_name, std::string folder_target, bool copy_subfolders, bool overwrite_existing_files )
     {
-        return -1;
+        if( folder_exists( folder_name ) == false )
+        {
+            return -1;
+        }
+        if( folder_exists(folder_target) == false )
+        {
+            return -2;
+        }
+
+        int filesCopiedCount = 0;
+        file_directory_class * dir = new file_directory_class();
+        file_object * file = nullptr;
+        std::string currentFileName = "";
+        int iFile = 0;
+        int iDirectory = 0;
+        int addedFolderFileCount = 0;
+        if( dir!=nullptr )
+        {
+            dir->open_directory(folder_name);
+            for (iFile = 0; iFile < (int)dir->get_count(); iFile++)
+            {
+                file = dir->get_file(iFile);
+                if( file!=nullptr)
+                {
+                    currentFileName = file->get_name();
+                    if( currentFileName!="." && currentFileName!="..")
+                    {
+                        //displayMessagestring = "Copying "+currentFileName;
+                        currentFileName = folder_name+"/"+currentFileName;
+                        if( file->is_directory() )
+                        {
+                            if( copy_subfolders)
+                            {
+                                folder_create(folder_target+"/"+file->get_name() );
+                                addedFolderFileCount= folder_copy( currentFileName, folder_target+"/"+ file->get_name(), true, overwrite_existing_files );
+
+                                if( addedFolderFileCount > 0 )
+                                {
+                                    filesCopiedCount += addedFolderFileCount;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if( file_copy(currentFileName,folder_target+"/"+ file->get_name(), overwrite_existing_files ) )
+                            {
+                                filesCopiedCount++;
+                            }
+                        }
+                    }
+                }
+            }
+            delete dir;
+            dir = nullptr;
+            return filesCopiedCount;
+        }
+        return 0;
     }
 
     int file_and_url_manager::folder_create( std::string new_path_name)
     {
+        if( (int)new_path_name.size() > 2)
+        {
+            if( path_exists(new_path_name) )
+            {
+                return 0;
+            }
+            #ifdef _WIN32
+                if (CreateDirectory(new_path_name.c_str(), nullptr) || ERROR_ALREADY_EXISTS == GetLastError())
+                {
+                    return true;
+                }
+                else
+                {
+                    -1;
+                }
+            #else
+                int foundError = -1;
+                foundError = mkdir(newPathToCreate.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+                if( foundError==0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return -1;
+                }
+            #endif
+        }
         return -1;
     }
 
     bool file_and_url_manager::folder_exists(std::string path_name)
     {
+        int pNameSize = (int)path_name.size();
+        if( pNameSize > 0 )
+        {
+
+            if( path_name[ pNameSize-1] =='/' || path_name[ pNameSize-1] =='\\')
+            {
+                path_name = path_name.substr(0,pNameSize-1);
+            }
+            /*
+                Code derieved from http://stackoverflow.com/questions/146924/how-can-i-tell-if-a-given-path-is-a-directory-or-a-file-c-c
+                http://stackoverflow.com/a/146938
+                Mk12 - http://stackoverflow.com/users/148195/mk12
+            */
+            struct stat s;
+            if( stat(path_name.c_str(),&s) == 0 )
+            {
+                if( s.st_mode & S_IFDIR )
+                {
+                    //it's a directory
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
     std::string  file_and_url_manager::get_user_settings_folder()
     {
-        return "";
+        return settings_app_folder;
     }
 
     bool file_and_url_manager::seek_settings_folder()
     {
-        return false;
+        //Sets the folder used in all  get_user_settings_folder() calls based on the 2 parameters above
+        settings_app_folder = app_directory_name;
+        if( (int)settings->programPublisher.size() ==0 )
+        {
+            return false;
+        }
+        //if a publisher is said to be to this program
+        //Here is where he fun happens...
+        bool useProgramFolder = false;
+        bool homeDirFound  = true;
+
+        //Going thru all of the possible getenv paramters that i know of...
+        char* homeDir = getenv("%UserProfile%");
+        std::string foundPath = "";
+        //Attempt 1...
+        if( homeDir!=nullptr)
+        {
+            //Attempt 1...
+            foundPath = homeDir;
+        }
+        else
+        {
+            //Attempt 2...
+            homeDir = getenv("home");
+            if( homeDir!=nullptr )
+            {
+                foundPath = homeDir;
+            }
+            else
+            {
+                //Attempt 3...
+                homeDir = getenv("HOME");
+                if( homeDir!=nullptr)
+                {
+                    foundPath = homeDir;
+                }
+                else
+                {
+                    //final shot...
+                    homeDir = getenv("homepath");
+                    if( homeDir!=nullptr )
+                    {
+                        foundPath = homeDir;
+                    }
+                    else
+                    {
+                        //All attempts failed defaults to program folder...
+                        return false;
+                    }
+                }
+            }
+        }
+
+        if( homeDirFound && path_exists(foundPath) )
+        {
+            std::string appDataPath = foundPath;
+            if( system_found_os== system_os_windows)
+            {
+                //First Layer of Windows unlocked :-)
+                if( folder_create(appDataPath+"/AppData")!=-1)
+                {
+                    foundPath = appDataPath = appDataPath+"/AppData";
+
+                    //See if we can get into the Roaming folder now
+                    if( folder_create(appDataPath+"/Roaming")!=-1)
+                    {
+                        foundPath = appDataPath = appDataPath+"/Roaming";
+                    }
+                    else if( folder_create(appDataPath+"/Local")!=-1 )
+                    {
+                        //If failed, lets see if we can get into the Local folder now
+                        foundPath = appDataPath = appDataPath+"/Local";
+                    }
+                    else if( folder_create(appDataPath+"/LocalLow")!=-1 )
+                    {
+                        foundPath = appDataPath = appDataPath+"/LocalLow";
+                    }
+                    else
+                    {
+                        //Windows failed to get into settings...
+                        return false;
+                    }
+                }
+                else
+                {
+                    useProgramFolder = true;
+                    appDataPath = foundPath = "";
+                }
+            }
+            else if( system_found_os== system_os_mac)
+            {
+                appDataPath = foundPath+"/~/Library/Preferences";
+                if( folder_create(appDataPath)==-1)
+                {
+                    useProgramFolder = true;
+                    appDataPath = foundPath = "";
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            if( useProgramFolder )
+            {
+                //Something failed above so now we just use the program folder...
+                return false;
+            }
+
+            //If we have some sort of file path...
+            if( system_found_os== system_os_linux )
+            {
+                appDataPath = appDataPath+"/."+settings->programPublisher;
+            }
+            else
+            {
+                //Windows, Mac, etc afaik...
+                appDataPath = appDataPath+"/"+settings->programPublisher;
+            }
+
+            //If we are able to get into the publisher folder
+            if( folder_create(appDataPath)!=-1)
+            {
+                foundPath = appDataPath;
+                settings_app_folder = foundPath;
+                if( (int)settings->programTitle.size() > 0 )
+                {
+                    //If we are able to get into the titled program's folder
+                    if( folder_create( foundPath+"/"+settings->programTitle )!=-1 )
+                    {
+                        foundPath = foundPath+"/"+settings->programTitle;
+                        settings_app_folder = foundPath;
+                    }
+                    settings_app_folder = settings_app_folder+"/";
+                    //If this fails we will just default to the publisher and call it a day...
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        //save the settings and local directory to the application directory
+        if( useProgramFolder )
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
+
 
     std::string file_and_url_manager::get_user_temp_folder()
     {
-        return "";
+        std::string foundPath =  get_user_settings_folder();
+        std::string tempFolderstring = foundPath;
+        foundPath = foundPath+"/temp_files";
+        if( folder_create(foundPath)!=-1)
+        {
+            tempFolderstring = foundPath+"/";
+        }
+        return tempFolderstring;
     }
 
     std::string file_and_url_manager::get_user_screenshot_folder()
     {
-        return "";
+        std::string foundPath =  get_user_settings_folder();
+        std::string tempScreenshotstring = foundPath;
+        foundPath = foundPath+"/screenshots";
+        if( folder_create(foundPath)!=-1)
+        {
+            tempScreenshotstring = foundPath+"/";
+        }
+        return tempScreenshotstring;
     }
 
 

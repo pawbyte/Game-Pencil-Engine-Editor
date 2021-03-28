@@ -63,7 +63,6 @@ namespace gpe
 
     void texture_target_base::render_overlay(  renderer_base * renderer,int x, int y, gpe::shape_rect* clip , int alpha  )
     {
-
     }
 
     void texture_target_base::render_overlay_scaled(  renderer_base * renderer,int x, int y,float x_scale, float y_scale, gpe::shape_rect* clip, color * render_color, int alpha )

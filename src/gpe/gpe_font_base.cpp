@@ -80,6 +80,7 @@ namespace gpe
         last_used_halign = fa_left;
         last_used_valign = fa_top;
         font_id = -1;
+        font_size = 0;
         mono_width = 0;
         mono_height = 0;
         number_width = 0;

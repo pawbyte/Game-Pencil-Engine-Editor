@@ -109,7 +109,7 @@ namespace gpe
             std::string manager_type;
         public:
             file_and_url_manager();
-            ~file_and_url_manager();
+            virtual ~file_and_url_manager();
 
             virtual void external_open_program(std::string program_location, std::string program_info="", bool show_program_info_on_fail = false);
             virtual void external_open_url(std::string url_string);
@@ -130,15 +130,17 @@ namespace gpe
             virtual bool folder_exists(std::string path_name);
 
 
-            virtual std::string  get_user_settings_folder();
-            virtual bool seek_settings_folder();
-            virtual std::string get_user_temp_folder();
-            virtual std::string get_user_screenshot_folder();
+            std::string get_user_settings_folder();
+            std::string get_user_temp_folder();
+            std::string get_user_screenshot_folder();
 
             virtual int path_clean(std::string folder_name);
             virtual int path_copy(std::string folder_name, std::string folder_target, bool copy_subfolders = false, bool overwrite_existing_files = false );
             virtual int path_create( std::string new_path_name);
             virtual bool path_exists(std::string path_name);
+
+            virtual bool seek_settings_folder();
+
     };
 
     extern file_and_url_manager * main_file_url_manager;

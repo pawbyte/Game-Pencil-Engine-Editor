@@ -42,6 +42,7 @@ namespace gpe
 
 
     bool debug_mode_active = false;
+    bool debug_texture_renders = false;
     bool fps_show_counter = false;
 
     std::string app_file_name = "";

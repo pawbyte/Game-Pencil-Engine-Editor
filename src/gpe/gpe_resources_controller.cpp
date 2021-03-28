@@ -169,10 +169,16 @@ namespace gpe
         {
             return newTexture;
         }
-        else if( main_file_url_manager->file_exists( texture_file_name) )
+        else if( main_file_url_manager->file_exists( texture_file_name) && !main_file_url_manager->folder_exists( texture_file_name) )
         {
-            gpe::error_log->report("Attempting to add Texture["+resource_name+"+,"+texture_file_name+"]" );
-            error_log->report("Loading "+texture_file_name+" texture image.");
+            if( resource_name!= texture_file_name )
+            {
+                gpe::error_log->report("Attempting to add Texture["+resource_name+","+texture_file_name+"]" );
+            }
+            else
+            {
+                gpe::error_log->report("Attempting to add Texture["+texture_file_name+"]" );
+            }
             //loads in the animation's texture
             newTexture = rr_package->create_texture();
             if( newTexture!=nullptr)
@@ -352,7 +358,7 @@ namespace gpe
             if( temp_anim !=nullptr)
             {
                 delete temp_anim;
-                temp_anim =nullptr;
+                temp_anim = nullptr;
             }
         }
         atlas_animations.clear();
@@ -393,7 +399,7 @@ namespace gpe
             if( temp_texture !=nullptr)
             {
                 delete temp_texture;
-                temp_texture =nullptr;
+                temp_texture = nullptr;
             }
         }
         atlas_textures.clear();
