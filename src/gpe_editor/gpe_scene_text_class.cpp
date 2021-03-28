@@ -43,19 +43,19 @@ GPE_SceneText::GPE_SceneText( pawgui::widget_resource_container *pFolder )
     iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/font.png") ;
     projectParentFolder = pFolder;
 
-    if( projectParentFolder!=NULL)
+    if( projectParentFolder!=nullptr)
     {
         fontInEditor  = new pawgui::widget_drop_down_resource_menu( "Font",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_font]),-1,true);
         fontInEditor->set_width(192);
     }
     else
     {
-        fontInEditor  = NULL;
+        fontInEditor  = nullptr;
     }
     text = "";
     fontId = -1;
 
-    if( x_scaleField!=NULL)
+    if( x_scaleField!=nullptr)
     {
         x_scaleField->set_label("Text scale:");
     }
@@ -85,36 +85,36 @@ GPE_SceneText::GPE_SceneText( pawgui::widget_resource_container *pFolder )
 
 GPE_SceneText::~GPE_SceneText()
 {
-    if( sceneTextHalign !=NULL )
+    if( sceneTextHalign !=nullptr )
     {
         delete sceneTextHalign;
-        sceneTextHalign = NULL;
+        sceneTextHalign = nullptr;
     }
-    if( sceneTextValign !=NULL )
+    if( sceneTextValign !=nullptr )
     {
         delete sceneTextValign;
-        sceneTextValign = NULL;
+        sceneTextValign = nullptr;
     }
-    if( defaultTextElement !=NULL )
+    if( defaultTextElement !=nullptr )
     {
         delete defaultTextElement;
-        defaultTextElement = NULL;
+        defaultTextElement = nullptr;
     }
-    if( textSection !=NULL )
+    if( textSection !=nullptr )
     {
         delete textSection;
-        textSection = NULL;
+        textSection = nullptr;
     }
-    if( textKey !=NULL )
+    if( textKey !=nullptr )
     {
         delete textKey;
-        textKey = NULL;
+        textKey = nullptr;
     }
 }
 
 void GPE_SceneText::add_typed_elements()
 {
-    if( panel_inspector!=NULL )
+    if( panel_inspector!=nullptr )
     {
         panel_inspector->add_gui_element( fontInEditor, true );
         panel_inspector->add_gui_element( sceneTextHalign, true );
@@ -139,11 +139,11 @@ void GPE_SceneText::calculate_size()
 void GPE_SceneText::process_elements()
 {
     GPE_SceneBasicClass::process_elements();
-    if( sceneTextHalign!=NULL )
+    if( sceneTextHalign!=nullptr )
     {
         fontHalign = sceneTextHalign->get_tab_id();
     }
-    if( sceneTextValign!=NULL )
+    if( sceneTextValign!=nullptr )
     {
         fontValign = sceneTextValign->get_tab_id();
     }
@@ -153,12 +153,12 @@ void GPE_SceneText::process_elements()
 void GPE_SceneText::render_branch( )
 {
     //Avoid the time waste and don't continue if alpha is too low.
-    if( branchAlpha!=NULL && branchAlpha->get_value() < 5)
+    if( branchAlpha!=nullptr && branchAlpha->get_value() < 5)
     {
         return;
     }
 
-    if( spm == NULL || defaultTextElement == NULL || fontInEditor == NULL )
+    if( spm == nullptr || defaultTextElement == nullptr || fontInEditor == nullptr )
     {
         return;
     }
@@ -166,19 +166,19 @@ void GPE_SceneText::render_branch( )
     spm->tempRect->x = ceil( (x_pos*spm->zoomValue-spm->currentCamera->x*spm->zoomValue) );
     spm->tempRect->y = ceil( (y_pos*spm->zoomValue-spm->currentCamera->y*spm->zoomValue) );
 
-    gpe::font_base * foundFont = NULL;
+    gpe::font_base * foundFont = nullptr;
     pawgui::widget_resource_container * fContainer = fontInEditor->get_selected_container();
     bool fontRendered = false;
-    if( fContainer!=NULL && fContainer->get_held_resource() )
+    if( fContainer!=nullptr && fContainer->get_held_resource() )
     {
         fontResource * actualFontObject = (fontResource*) fContainer->get_held_resource();
-        if( actualFontObject!=NULL)
+        if( actualFontObject!=nullptr)
         {
             fontRendered = actualFontObject->render_held_font( spm->tempRect->x, spm->tempRect->y, defaultTextElement->get_string(), branchColor->get_color(), fontHalign, fontValign, angle, spm->zoomValue * x_scale, branchAlpha->get_value() );
         }
     }
     //Renders using default for preview
-    if( !fontRendered && gpe::font_default!=NULL )
+    if( !fontRendered && gpe::font_default!=nullptr )
     {
         gpe::font_default->render_text_special( spm->tempRect->x, spm->tempRect->y, "DEFAULT:  "+defaultTextElement->get_string(), branchColor->get_color(), fontHalign, fontValign, angle, spm->zoomValue * x_scale, branchAlpha->get_value() );
     }
@@ -186,12 +186,12 @@ void GPE_SceneText::render_branch( )
 
 bool GPE_SceneText::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn )
 {
-    if( fileTarget!=NULL && fileTarget->is_open() )
+    if( fileTarget!=nullptr && fileTarget->is_open() )
     {
         std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"   [GPE_GameText=";
         *fileTarget << fontId << ",";
-        if( x_posField!=NULL)
+        if( x_posField!=nullptr)
         {
             x_posField->make_valid_number(0);
             *fileTarget <<  x_posField->get_held_number() << ",";
@@ -200,7 +200,7 @@ bool GPE_SceneText::save_branch_data(std::ofstream * fileTarget, int nestedFolde
         {
             *fileTarget << "-1,";
         }
-        if( y_posField!=NULL)
+        if( y_posField!=nullptr)
         {
             y_posField->make_valid_number(0);
             *fileTarget << y_posField->get_held_number() << ",";
@@ -209,7 +209,7 @@ bool GPE_SceneText::save_branch_data(std::ofstream * fileTarget, int nestedFolde
         {
             *fileTarget << "-1,";
         }
-        if( sceneTextValign!=NULL)
+        if( sceneTextValign!=nullptr)
         {
             *fileTarget << sceneTextValign->get_tab_id() << ",";
         }
@@ -218,7 +218,7 @@ bool GPE_SceneText::save_branch_data(std::ofstream * fileTarget, int nestedFolde
             *fileTarget << "0,";
         }
 
-        if( sceneTextValign!=NULL)
+        if( sceneTextValign!=nullptr)
         {
             *fileTarget << sceneTextValign->get_tab_id() << ",";
         }
@@ -241,7 +241,7 @@ bool GPE_SceneText::save_branch_data(std::ofstream * fileTarget, int nestedFolde
 
 void GPE_SceneMultilineText::add_typed_elements()
 {
-    if( panel_inspector!=NULL )
+    if( panel_inspector!=nullptr )
     {
         panel_inspector->add_gui_element( fontInEditor, true );
         panel_inspector->add_gui_element( sceneTextHalign, true );
@@ -257,14 +257,14 @@ GPE_SceneMultilineText::GPE_SceneMultilineText( pawgui::widget_resource_containe
     iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/paragraph.png") ;
     projectParentFolder = pFolder;
 
-    if( projectParentFolder!=NULL)
+    if( projectParentFolder!=nullptr)
     {
         fontInEditor  = new pawgui::widget_drop_down_resource_menu( "Font",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_font]),-1,true);
         fontInEditor->set_width(192);
     }
     else
     {
-        fontInEditor  = NULL;
+        fontInEditor  = nullptr;
     }
 
     branch_type_id = gpe::branch_type::TEXT;
@@ -298,35 +298,35 @@ GPE_SceneMultilineText::GPE_SceneMultilineText( pawgui::widget_resource_containe
 
 GPE_SceneMultilineText::~GPE_SceneMultilineText()
 {
-    if( checkWrapText !=NULL )
+    if( checkWrapText !=nullptr )
     {
         delete checkWrapText;
-        checkWrapText = NULL;
+        checkWrapText = nullptr;
     }
-    if( sceneTextHalign !=NULL )
+    if( sceneTextHalign !=nullptr )
     {
         delete sceneTextHalign;
-        sceneTextHalign = NULL;
+        sceneTextHalign = nullptr;
     }
-    if( sceneTextValign !=NULL )
+    if( sceneTextValign !=nullptr )
     {
         delete sceneTextValign;
-        sceneTextValign = NULL;
+        sceneTextValign = nullptr;
     }
-    if( customTextElement !=NULL )
+    if( customTextElement !=nullptr )
     {
         delete customTextElement;
-        customTextElement = NULL;
+        customTextElement = nullptr;
     }
-    if( textSection !=NULL )
+    if( textSection !=nullptr )
     {
         delete textSection;
-        textSection = NULL;
+        textSection = nullptr;
     }
-    if( textKey !=NULL )
+    if( textKey !=nullptr )
     {
         delete textKey;
-        textKey = NULL;
+        textKey = nullptr;
     }
 }
 
@@ -345,11 +345,11 @@ void GPE_SceneMultilineText::calculate_size()
 void GPE_SceneMultilineText::process_elements()
 {
     GPE_SceneBasicClass::process_elements();
-    if( sceneTextHalign!=NULL )
+    if( sceneTextHalign!=nullptr )
     {
         fontHalign = sceneTextHalign->get_tab_id();
     }
-    if( sceneTextValign!=NULL )
+    if( sceneTextValign!=nullptr )
     {
         fontValign = sceneTextValign->get_tab_id();
     }
@@ -362,12 +362,12 @@ void GPE_SceneMultilineText::render_branch( )
 
 bool GPE_SceneMultilineText::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn )
 {
-    if( fileTarget!=NULL && fileTarget->is_open() )
+    if( fileTarget!=nullptr && fileTarget->is_open() )
     {
         std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"   [GPE_GameText=";
         *fileTarget << fontId << ",";
-        if( x_posField!=NULL)
+        if( x_posField!=nullptr)
         {
             x_posField->make_valid_number(0);
             *fileTarget <<  x_posField->get_held_number() << ",";
@@ -376,7 +376,7 @@ bool GPE_SceneMultilineText::save_branch_data(std::ofstream * fileTarget, int ne
         {
             *fileTarget << "-1,";
         }
-        if( y_posField!=NULL)
+        if( y_posField!=nullptr)
         {
             y_posField->make_valid_number(0);
             *fileTarget << y_posField->get_held_number() << ",";
@@ -385,7 +385,7 @@ bool GPE_SceneMultilineText::save_branch_data(std::ofstream * fileTarget, int ne
         {
             *fileTarget << "-1,";
         }
-        if( sceneTextValign!=NULL)
+        if( sceneTextValign!=nullptr)
         {
             *fileTarget << sceneTextValign->get_tab_id() << ",";
         }
@@ -394,7 +394,7 @@ bool GPE_SceneMultilineText::save_branch_data(std::ofstream * fileTarget, int ne
             *fileTarget << "0,";
         }
 
-        if( sceneTextValign!=NULL)
+        if( sceneTextValign!=nullptr)
         {
             *fileTarget << sceneTextValign->get_tab_id() << ",";
         }
@@ -403,7 +403,7 @@ bool GPE_SceneMultilineText::save_branch_data(std::ofstream * fileTarget, int ne
             *fileTarget << "0,";
         }
 
-        if( checkWrapText!=NULL)
+        if( checkWrapText!=nullptr)
         {
             *fileTarget << checkWrapText->is_clicked() << ",";
         }

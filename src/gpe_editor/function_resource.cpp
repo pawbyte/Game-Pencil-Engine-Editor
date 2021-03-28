@@ -63,44 +63,44 @@ functionResource::functionResource(pawgui::widget_resource_container * pFolder)
 
 functionResource::~functionResource()
 {
-    if(functionEditorList!=NULL)
+    if(functionEditorList!=nullptr)
     {
         delete functionEditorList;
-        functionEditorList = NULL;
+        functionEditorList = nullptr;
     }
 
-    if(functionCodeHeader!=NULL)
+    if(functionCodeHeader!=nullptr)
     {
         delete functionCodeHeader;
-        functionCodeHeader = NULL;
+        functionCodeHeader = nullptr;
     }
-    if(functionCodeSource!=NULL)
+    if(functionCodeSource!=nullptr)
     {
         delete functionCodeSource;
-        functionCodeSource = NULL;
+        functionCodeSource = nullptr;
     }
 
-    if(functionReturnType!=NULL)
+    if(functionReturnType!=nullptr)
     {
         delete functionReturnType;
-        functionReturnType = NULL;
+        functionReturnType = nullptr;
     }
 
-    if(parametersField!=NULL)
+    if(parametersField!=nullptr)
     {
         delete parametersField;
-        parametersField = NULL;
+        parametersField = nullptr;
     }
 
-    if(renameBox!=NULL)
+    if(renameBox!=nullptr)
     {
         delete renameBox;
-        renameBox = NULL;
+        renameBox = nullptr;
     }
-    if( save_button!=NULL)
+    if( save_button!=nullptr)
     {
         delete save_button;
-        save_button = NULL;
+        save_button = nullptr;
     }
 
 }
@@ -127,10 +127,10 @@ bool functionResource::include_local_files( std::string pBuildDir , int buildTyp
 
 void functionResource::integrate_into_syntax()
 {
-    if( current_project!=NULL)
+    if( current_project!=nullptr)
     {
         std::string fReturnType = "unknown_void";
-        if( functionReturnType!=NULL)
+        if( functionReturnType!=nullptr)
         {
             if( functionReturnType->get_string().size() > 0)
             {
@@ -138,7 +138,7 @@ void functionResource::integrate_into_syntax()
             }
         }
         std::string functionDescription = "User defined function...";
-        if( functionCodeSource!=NULL)
+        if( functionCodeSource!=nullptr)
         {
             std::string firstLineOfCode = functionCodeSource->get_line_string(0);
             if( (int)firstLineOfCode.size() > 2)
@@ -149,7 +149,7 @@ void functionResource::integrate_into_syntax()
                 }
             }
         }
-        if( parametersField !=NULL )
+        if( parametersField !=nullptr )
         {
             current_project->add_project_function(resource_name,functionDescription,parametersField->get_string(),fReturnType,"User Defined Global Function");
         }
@@ -168,7 +168,7 @@ bool functionResource::is_build_ready()
 
 void functionResource::open_code( int lineNumb, int colNumb,std::string codeTitle)
 {
-    if( functionCodeSource!=NULL && functionCodeSource->has_content() )
+    if( functionCodeSource!=nullptr && functionCodeSource->has_content() )
     {
         functionCodeSource->scroll_to_pos(lineNumb, colNumb);
     }
@@ -178,7 +178,7 @@ void functionResource::load_resource(std::string file_path)
 {
     if( resourcePostProcessed ==false  || gpe::main_file_url_manager->file_exists(file_path) )
     {
-        if( main_gpe_splash_page != NULL )
+        if( main_gpe_splash_page != nullptr )
         {
             main_gpe_splash_page->update_submessages( "Processing Function", resource_name );
         }
@@ -200,7 +200,7 @@ void functionResource::load_resource(std::string file_path)
 
         std::string  functionCodeLoadLocation = soughtDir+ "function_" + resource_name + ".cps";
 
-        if( current_project !=NULL )
+        if( current_project !=nullptr )
         {
             if( current_project->get_project_language_id() ==
                pawgui::program_language_cpp )
@@ -209,7 +209,7 @@ void functionResource::load_resource(std::string file_path)
             }
         }
 
-        if( functionCodeSource!=NULL)
+        if( functionCodeSource!=nullptr)
         {
             functionCodeSource->import_text(functionCodeLoadLocation);
             functionCodeSource->activate_self();
@@ -319,13 +319,13 @@ void functionResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && view_space!=NULL && save_button!=NULL && functionEditorList!=NULL && parametersField!=NULL && functionCodeSource!=NULL )
+    if(cam!=nullptr && view_space!=nullptr && save_button!=nullptr && functionEditorList!=nullptr && parametersField!=nullptr && functionCodeSource!=nullptr )
     {
         functionEditorList->set_coords( 0,0 );
         functionEditorList->set_width(view_space->w );
         functionEditorList->set_height(view_space->h);
         functionEditorList->clear_list();
-        if( panel_main_editor!=NULL )
+        if( panel_main_editor!=nullptr )
         {
             functionEditorList->barXMargin = functionEditorList->barYMargin = 0;
             functionEditorList->barXPadding = functionEditorList->barYPadding = 0;
@@ -381,7 +381,7 @@ void functionResource::render_self( gpe::shape_rect * view_space, gpe::shape_rec
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && view_space!=NULL && functionEditorList!=NULL )
+    if(cam!=nullptr && view_space!=nullptr && functionEditorList!=nullptr )
     {
         functionEditorList->render_self( view_space, cam );
     }
@@ -389,7 +389,7 @@ void functionResource::render_self( gpe::shape_rect * view_space, gpe::shape_rec
 
 void functionResource::save_resource(std::string file_path, int backupId)
 {
-    if( main_gpe_splash_page != NULL )
+    if( main_gpe_splash_page != nullptr )
     {
         main_gpe_splash_page->update_submessages( "Processing Function", resource_name );
     }
@@ -416,7 +416,7 @@ void functionResource::save_resource(std::string file_path, int backupId)
         {
             write_header_on_file(&newSaveDataFile);
 
-            if( functionCodeSource!=NULL)
+            if( functionCodeSource!=nullptr)
             {
                 //    *fileTarget << functionCodeSource->get_xcursor() << "," << functionCodeSource->get_ycursor() << ",";
                 std::string  functionCodeSaveLocation = soughtDir+resource_name+".cps";
@@ -478,7 +478,7 @@ int functionResource::search_for_string(std::string needle)
 {
     int foundstrings = 0;
     main_editor_log->log_general_comment("Searching ["+resource_name+"] function..");
-    if( functionCodeSource!=NULL && pawgui::main_anchor_controller!=NULL && functionCodeSource->has_content() )
+    if( functionCodeSource!=nullptr && pawgui::main_anchor_controller!=nullptr && functionCodeSource->has_content() )
     {
         pawgui::main_anchor_controller->searchResultProjectName = parentProjectName;
         pawgui::main_anchor_controller->searchResultResourceId = globalResouceIdNumber;
@@ -491,10 +491,10 @@ int functionResource::search_for_string(std::string needle)
 int functionResource::search_and_replace_string(std::string needle, std::string newStr )
 {
     int foundstrings = 0;
-    if( functionCodeSource!=NULL && pawgui::main_search_controller!=NULL && functionCodeSource->has_content() )
+    if( functionCodeSource!=nullptr && pawgui::main_search_controller!=nullptr && functionCodeSource->has_content() )
     {
         foundstrings=functionCodeSource->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked() );
-        if( main_gpe_splash_page != NULL )
+        if( main_gpe_splash_page != nullptr )
         {
             main_gpe_splash_page->update_messages( "Replacing Substring", needle, "with ["+newStr+"]" );
         }
@@ -517,11 +517,11 @@ int functionResource::search_and_replace_string(std::string needle, std::string 
 
 bool functionResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn)
 {
-    if( main_gpe_splash_page != NULL )
+    if( main_gpe_splash_page != nullptr )
     {
         main_gpe_splash_page->update_submessages( "Saving Function", resource_name );
     }
-    if( fileTarget!=NULL)
+    if( fileTarget!=nullptr)
     {
         if( fileTarget->is_open() )
         {

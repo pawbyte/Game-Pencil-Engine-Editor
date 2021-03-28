@@ -40,7 +40,7 @@ GPE_SceneBackground::GPE_SceneBackground(pawgui::widget_resource_container *pFol
     iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/image.png") ;
 
     textureId = -1;
-    texRes = NULL;
+    texRes = nullptr;
     inFront = false;
     tileHori = false;
     tileVert = false;
@@ -49,14 +49,14 @@ GPE_SceneBackground::GPE_SceneBackground(pawgui::widget_resource_container *pFol
     bg_yspeed =0;
     projectParentFolder = pFolder;
 
-    if( projectParentFolder!=NULL)
+    if( projectParentFolder!=nullptr)
     {
         backgroundInEditor = new pawgui::widget_drop_down_resource_menu( "Background Texture",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_texture]),-1,true);
         backgroundInEditor->set_width(192);
     }
     else
     {
-        backgroundInEditor = NULL;
+        backgroundInEditor = nullptr;
     }
 
     bgHorSpeedField = new pawgui::widget_input_number("","");
@@ -82,7 +82,7 @@ GPE_SceneBackground::~GPE_SceneBackground()
 
 void GPE_SceneBackground::add_typed_elements()
 {
-    if( panel_inspector!=NULL )
+    if( panel_inspector!=nullptr )
     {
         panel_inspector->add_gui_element( backgroundInEditor, true );
         panel_inspector->add_gui_element( bgHorSpeedField, false );
@@ -97,14 +97,14 @@ void GPE_SceneBackground::add_typed_elements()
 bool GPE_SceneBackground::build_intohtml5_file( std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
 {
     pawgui::widget_resource_container * allTexturesFolder = localResTypeController->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_texture]);
-    if( allTexturesFolder == NULL)
+    if( allTexturesFolder == nullptr)
     {
         GPE_SceneBasicClass::build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController);
         return false;
     }
     std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount );
      pawgui::widget_resource_container * tempBgResource = allTexturesFolder->find_resource_from_id( textureId);
-    if( tempBgResource!=NULL)
+    if( tempBgResource!=nullptr)
     {
         *fileTarget << nestedTabsStr << "newBranch = scn_temp_layer.scnStartBackgrounds.push( {bgTexId:" <<stg_ex::int_to_string(tempBgResource->exportBuildGlobalId) << ",";
 
@@ -146,19 +146,19 @@ void GPE_SceneBackground::process_elements()
 
 void GPE_SceneBackground::render_branch()
 {
-    if( spm->cSceneTexList == NULL )
+    if( spm->cSceneTexList == nullptr )
     {
         return;
     }
     pawgui::widget_resource_container * texTypeContainer = spm->cSceneTexList->find_resource_from_id(textureId );
-    if( texTypeContainer!=NULL)
+    if( texTypeContainer!=nullptr)
     {
         spm->tempRect->x = floor( (x_pos*spm->zoomValue)- spm->cameraFloorXPos);
         spm->tempRect->y = floor( (y_pos*spm->zoomValue)- spm->cameraFloorYPos );
         textureResource * texRes = (textureResource*) texTypeContainer->get_held_resource();
 
         int bgXItr = 0, bgYItr= 0;
-        if( texRes!=NULL && texRes->textureInEditor!=NULL )
+        if( texRes!=nullptr && texRes->textureInEditor!=nullptr )
         {
             if( texRes->textureInEditor->get_width() >0 && texRes->textureInEditor->get_height() >0 )
             {
@@ -166,7 +166,7 @@ void GPE_SceneBackground::render_branch()
                 spm->tempRect->y = floor( (y_pos* spm->zoomValue)- spm->cameraFloorYPos );
                 if( strech_bg)
                 {
-                    texRes->textureInEditor->render_tex_resized( 0,0,spm->currentCamera->w,spm->currentCamera->h,NULL, branchColor->get_color(), branchAlpha->get_value()  );
+                    texRes->textureInEditor->render_tex_resized( 0,0,spm->currentCamera->w,spm->currentCamera->h,nullptr, branchColor->get_color(), branchAlpha->get_value()  );
                 }
                 else if(tileHori  )
                 {
@@ -176,12 +176,12 @@ void GPE_SceneBackground::render_branch()
                         {
                             for(bgYItr = spm->tempRect->y; bgYItr <= ( spm->sHeight )* spm->zoomValue; bgYItr+=texRes->textureInEditor->get_height()* spm->zoomValue )
                             {
-                                texRes->textureInEditor->render_tex_scaled( floor(bgXItr),floor(bgYItr), spm->zoomValue, spm->zoomValue, NULL, branchColor->get_color(), branchAlpha->get_value() );
+                                texRes->textureInEditor->render_tex_scaled( floor(bgXItr),floor(bgYItr), spm->zoomValue, spm->zoomValue, nullptr, branchColor->get_color(), branchAlpha->get_value() );
                             }
                         }
                         else
                         {
-                            texRes->textureInEditor->render_tex_scaled( floor( bgXItr ),floor(spm->tempRect->y), spm->zoomValue, spm->zoomValue, NULL, branchColor->get_color(), branchAlpha->get_value() );
+                            texRes->textureInEditor->render_tex_scaled( floor( bgXItr ),floor(spm->tempRect->y), spm->zoomValue, spm->zoomValue, nullptr, branchColor->get_color(), branchAlpha->get_value() );
                         }
                     }
                 }
@@ -189,12 +189,12 @@ void GPE_SceneBackground::render_branch()
                 {
                     for(bgYItr = spm->tempRect->y; bgYItr <=( spm->sHeight)*spm->zoomValue; bgYItr+=texRes->textureInEditor->get_height()* spm->zoomValue )
                     {
-                        texRes->textureInEditor->render_tex_scaled( floor(spm->tempRect->x),floor( bgYItr ),spm->zoomValue ,spm->zoomValue,NULL, branchColor->get_color(), branchAlpha->get_value()  );
+                        texRes->textureInEditor->render_tex_scaled( floor(spm->tempRect->x),floor( bgYItr ),spm->zoomValue ,spm->zoomValue,nullptr, branchColor->get_color(), branchAlpha->get_value()  );
                     }
                 }
                 else
                 {
-                    texRes->textureInEditor->render_tex_scaled( floor(spm->tempRect->x),floor(spm->tempRect->y), spm->zoomValue , spm->zoomValue ,NULL, branchColor->get_color(), branchAlpha->get_value()  );
+                    texRes->textureInEditor->render_tex_scaled( floor(spm->tempRect->x),floor(spm->tempRect->y), spm->zoomValue , spm->zoomValue ,nullptr, branchColor->get_color(), branchAlpha->get_value()  );
                 }
             }
         }
@@ -204,11 +204,11 @@ void GPE_SceneBackground::render_branch()
 
 bool GPE_SceneBackground::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn  )
 {
-    if( fileTarget!=NULL && fileTarget->is_open() )
+    if( fileTarget!=nullptr && fileTarget->is_open() )
     {
         std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"   background=";
-        if( backgroundInEditor!=NULL)
+        if( backgroundInEditor!=nullptr)
         {
             *fileTarget << backgroundInEditor->get_selected_name() << ",";
         }
@@ -216,7 +216,7 @@ bool GPE_SceneBackground::save_branch_data(std::ofstream * fileTarget, int neste
         {
             *fileTarget << "-1,";
         }
-        if( x_posField!=NULL)
+        if( x_posField!=nullptr)
         {
             x_posField->make_valid_number(0);
             *fileTarget <<  x_posField->get_held_number() << ",";
@@ -225,7 +225,7 @@ bool GPE_SceneBackground::save_branch_data(std::ofstream * fileTarget, int neste
         {
             *fileTarget << "-1,";
         }
-        if( y_posField!=NULL)
+        if( y_posField!=nullptr)
         {
             y_posField->make_valid_number(0);
             *fileTarget << y_posField->get_held_number() << ",";
@@ -234,7 +234,7 @@ bool GPE_SceneBackground::save_branch_data(std::ofstream * fileTarget, int neste
         {
             *fileTarget << "-1,";
         }
-        if( bgHorSpeedField!=NULL)
+        if( bgHorSpeedField!=nullptr)
         {
             bgHorSpeedField->make_valid_number(0);
             *fileTarget << bgHorSpeedField->get_held_number() << ",";
@@ -243,7 +243,7 @@ bool GPE_SceneBackground::save_branch_data(std::ofstream * fileTarget, int neste
         {
             *fileTarget << "-1,";
         }
-        if( bgVertSpeedField!=NULL)
+        if( bgVertSpeedField!=nullptr)
         {
             bgVertSpeedField->make_valid_number(0);
             *fileTarget << bgVertSpeedField->get_held_number() << ",";
@@ -252,7 +252,7 @@ bool GPE_SceneBackground::save_branch_data(std::ofstream * fileTarget, int neste
         {
             *fileTarget << "-1,";
         }
-        if( checkTileHori!=NULL)
+        if( checkTileHori!=nullptr)
         {
             *fileTarget << checkTileHori->is_clicked() << ",";
         }
@@ -260,7 +260,7 @@ bool GPE_SceneBackground::save_branch_data(std::ofstream * fileTarget, int neste
         {
             *fileTarget << "-1,";
         }
-        if( checkTileVert!=NULL)
+        if( checkTileVert!=nullptr)
         {
             *fileTarget << checkTileVert->is_clicked() << ",";
         }
@@ -268,7 +268,7 @@ bool GPE_SceneBackground::save_branch_data(std::ofstream * fileTarget, int neste
         {
             *fileTarget << "-1,";
         }
-        if( checkStretch!=NULL)
+        if( checkStretch!=nullptr)
         {
             *fileTarget << checkStretch->is_clicked() << ",";
         }

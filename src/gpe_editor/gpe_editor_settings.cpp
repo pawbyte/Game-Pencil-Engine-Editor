@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include "gpe_editor_settings.h"
 
-gamePencilEditor_settingsResource * main_editor_settings = NULL;
+gamePencilEditor_settingsResource * main_editor_settings = nullptr;
 
 theme_holder::theme_holder( std::string tName, std::string tFileName, bool isCustomTheme )
 {
@@ -48,33 +48,33 @@ theme_holder::theme_holder( std::string tName, std::string tFileName, bool isCus
 theme_holder::~theme_holder()
 {
     clear_colors();
-    if( nameInEditor!=NULL )
+    if( nameInEditor!=nullptr )
     {
         delete nameInEditor;
-        nameInEditor = NULL;
+        nameInEditor = nullptr;
     }
-    if( themeIconImg!=NULL )
+    if( themeIconImg!=nullptr )
     {
         delete themeIconImg;
-        themeIconImg = NULL;
+        themeIconImg = nullptr;
     }
-    if( theme_bg_location!=NULL )
+    if( theme_bg_location!=nullptr )
     {
         delete theme_bg_location;
-        theme_bg_location = NULL;
+        theme_bg_location = nullptr;
     }
 }
 
 void theme_holder::clear_colors()
 {
-    pawgui::gpe_widget_color_picker * tColor = NULL;
+    pawgui::gpe_widget_color_picker * tColor = nullptr;
     for( int i = (int)colorsInEditor.size()-1; i >=0; i-- )
     {
         tColor = colorsInEditor[i];
-        if( tColor!=NULL )
+        if( tColor!=nullptr )
         {
             delete tColor;
-            tColor = NULL;
+            tColor = nullptr;
         }
     }
     colorsInEditor.clear();
@@ -83,13 +83,13 @@ void theme_holder::clear_colors()
 
 bool theme_holder::copy_theme( pawgui::gui_theme * systemTheme, bool copyToSelf )
 {
-    if( systemTheme == NULL)
+    if( systemTheme == nullptr)
     {
         gpe::error_log->report("Unable to find system theme...");
         return false;
     }
-    gpe::color * fThemeColor = NULL;
-    pawgui::gpe_widget_color_picker * myColorInEditor = NULL;
+    gpe::color * fThemeColor = nullptr;
+    pawgui::gpe_widget_color_picker * myColorInEditor = nullptr;
     int jThemeColor = 0;
     int jThemeColorMax = 0;
 
@@ -116,7 +116,7 @@ bool theme_holder::copy_theme( pawgui::gui_theme * systemTheme, bool copyToSelf 
         if(copyToSelf )
         {
             fThemeColor = systemTheme->get_color( jThemeColor );
-            if( fThemeColor !=NULL )
+            if( fThemeColor !=nullptr )
             {
                 myColorInEditor = new pawgui::gpe_widget_color_picker(fThemeColor->get_name(),"" );
                 myColorInEditor->set_color_from_rgb( fThemeColor );
@@ -133,10 +133,10 @@ bool theme_holder::copy_theme( pawgui::gui_theme * systemTheme, bool copyToSelf 
         {
             //modifies the actual template
             myColorInEditor = colorsInEditor[jThemeColor];
-            if( myColorInEditor!=NULL )
+            if( myColorInEditor!=nullptr )
             {
                 fThemeColor = systemTheme->find_color( myColorInEditor->get_name() );
-                if( fThemeColor!=NULL)
+                if( fThemeColor!=nullptr)
                 {
                     fThemeColor->change_rgba( myColorInEditor->get_r(), myColorInEditor->get_g(), myColorInEditor->get_b(), 255 );
                 }
@@ -155,7 +155,7 @@ bool theme_holder::load_background( std::string bg_textureLocation, bool allOrNo
     std::string miniBGFileName = "";
     if( gpe::main_file_url_manager->file_exists(bg_textureLocation ) && stg_ex::file_is_image(bg_textureLocation) )
     {
-        if(themeIconImg!=NULL)
+        if(themeIconImg!=nullptr)
         {
             themeIconImg->load_label_image( bg_textureLocation );
             themeIconImg->set_height(64);
@@ -198,9 +198,9 @@ bool theme_holder::load_background( std::string bg_textureLocation, bool allOrNo
 
 void theme_holder::remove_background()
 {
-    if( themeIconImg !=NULL )
+    if( themeIconImg !=nullptr )
     {
-        themeIconImg->change_texture( NULL );
+        themeIconImg->change_texture( nullptr );
     }
     templateBgFileName = "";
     theme_bg_location->set_string( "" );
@@ -221,12 +221,12 @@ gamePencilEditor_settingsResource::gamePencilEditor_settingsResource()
     sideAreaPanel = new pawgui::widget_selectbox("Mode");
     sideAreaPanel->set_width(256);
     sideAreaPanel->set_option_height(32);
-    sideAreaPanel->add_option("General",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cubes.png"),NULL,2, false, false);
-    sideAreaPanel->add_option("Dock Settings",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/columns.png"),NULL,2, false, false);
-    sideAreaPanel->add_option("External Editors",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/external-link-square.png"),NULL,2, false, false);
-    sideAreaPanel->add_option("Coding Languages",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/code-fork.png"),NULL,2, false, false);
-    sideAreaPanel->add_option("Themes",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/eye.png"),NULL,2, false, false);
-    sideAreaPanel->add_option("Advanced",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/stethoscope.png"),NULL,2, false, false);
+    sideAreaPanel->add_option("General",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cubes.png"),nullptr,2, false, false);
+    sideAreaPanel->add_option("Dock Settings",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/columns.png"),nullptr,2, false, false);
+    sideAreaPanel->add_option("External Editors",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/external-link-square.png"),nullptr,2, false, false);
+    sideAreaPanel->add_option("Coding Languages",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/code-fork.png"),nullptr,2, false, false);
+    sideAreaPanel->add_option("Themes",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/eye.png"),nullptr,2, false, false);
+    sideAreaPanel->add_option("Advanced",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/stethoscope.png"),nullptr,2, false, false);
 
     sidePanelRect = new gpe::shape_rect();
 
@@ -286,7 +286,7 @@ gamePencilEditor_settingsResource::gamePencilEditor_settingsResource()
     editorCursorBlinkDelayTime->set_label("Cursor Blink Time: (15-6000 ms)[300 Recommended]");
     editorCursorBlinkDelayTime->set_number( pawgui::main_settings->cursorBlinkTime );
 
-    advancedAreaLabel = new pawgui::widget_label_title("Advanced","Advanged Editor Settings");
+    advancedAreaLabel = new pawgui::widget_label_title("Advanced","Advanced Editor Settings");
     forceFrameRedraw = new pawgui::widget_checkbox("Redraw every frame[Not reccommended]","Redraws the Editor every frame regardless of user input", false);
     showHiddenFilesInBrowser = new pawgui::widget_checkbox("Show Hidden Files in Browser","(Linux only feature", true);
     clearCache_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/close.png","Clear Font Cache","Clears the cache of pre-rendered texts");
@@ -325,13 +325,13 @@ gamePencilEditor_settingsResource::gamePencilEditor_settingsResource()
     ide_settingsFPSRate->add_menu_option("1000 FPS","",1000);
     showFPSOnEditor = new pawgui::widget_checkbox("Show FPS Counter","Show FPS Counter", gpe::fps_show_counter );
 
-    ide_buttonBarSizeLabel= new pawgui::widget_label_text ("_buttonbar Size","Changes the size of the buttonbar");
-    ide_buttonBarSize = new pawgui::widget_dropdown_menu( "_buttonbar size",true);
+    ide_buttonBarSizeLabel= new pawgui::widget_label_text ("Buttonbar Size","Changes the size of the buttonbar");
+    ide_buttonBarSize = new pawgui::widget_dropdown_menu( "Buttonbar Size",true);
     ide_buttonBarSize->add_menu_option("Small","",24);
     ide_buttonBarSize->add_menu_option("Medium","",32);
     ide_buttonBarSize->add_menu_option("Large","",48);
     ide_buttonBarSize->add_menu_option("Invisible","",0);
-    ide_buttonBarAlignment = new pawgui::widget_radio_button_controller("_buttonbar Alignment");
+    ide_buttonBarAlignment = new pawgui::widget_radio_button_controller("Buttonbar Alignment");
     ide_buttonBarAlignment->add_menu_option("Left","Aligns to the left size of window",0,true);
     ide_buttonBarAlignment->add_menu_option("Center","Aligns to the center size of window",1,false);
     ide_buttonBarAlignment->add_menu_option("Right","Aligns to the right size of window",2,false);
@@ -375,12 +375,12 @@ gamePencilEditor_settingsResource::gamePencilEditor_settingsResource()
     itchLinkForThemes = new pawgui::widget_text_url("Find Themes on Itch.io","Browse the GPE Themes category on itch.io","https://itch.io/game-assets/tag-gamepencil/tag-theme");
     defaultTemplateEndPos = (int)editor_theme_controller->theme_list.size();
 
-    theme_holder * newLoadedTheme = NULL;
-    pawgui::gui_theme * currentThemeBeingLoaded = NULL;
+    theme_holder * newLoadedTheme = nullptr;
+    pawgui::gui_theme * currentThemeBeingLoaded = nullptr;
     for( int iTheme = 0; iTheme < defaultTemplateEndPos; iTheme++ )
     {
         currentThemeBeingLoaded = editor_theme_controller->theme_list[iTheme];
-        if( currentThemeBeingLoaded !=NULL )
+        if( currentThemeBeingLoaded !=nullptr )
         {
             newLoadedTheme = new theme_holder( currentThemeBeingLoaded->theme_name, currentThemeBeingLoaded->theme_local_location );
 
@@ -409,194 +409,194 @@ gamePencilEditor_settingsResource::gamePencilEditor_settingsResource()
     subViewedSpace.w = gpe::screen_width;
     subViewedSpace.h = gpe::screen_height;
 
-    subEditorSelectBox = NULL; //Now stop crashing until I add your feature! :-)
+    subEditorSelectBox = nullptr; //Now stop crashing until I add your feature! :-)
 
 }
 
 gamePencilEditor_settingsResource::~gamePencilEditor_settingsResource()
 {
-    if( openEditorFolder!=NULL)
+    if( openEditorFolder!=nullptr)
     {
         delete openEditorFolder;
-        openEditorFolder = NULL;
+        openEditorFolder = nullptr;
     }
-    if( openLocal_settingsFolder!=NULL)
+    if( openLocal_settingsFolder!=nullptr)
     {
         delete openLocal_settingsFolder;
-        openLocal_settingsFolder = NULL;
+        openLocal_settingsFolder = nullptr;
     }
-    if( themeSetDefault_button!=NULL)
+    if( themeSetDefault_button!=nullptr)
     {
         delete themeSetDefault_button;
-        themeSetDefault_button = NULL;
+        themeSetDefault_button = nullptr;
     }
 
-    if( themeBgLabel!=NULL)
+    if( themeBgLabel!=nullptr)
     {
         delete themeBgLabel;
-        themeBgLabel = NULL;
+        themeBgLabel = nullptr;
     }
 
-    if( themeBgBrowse_button!=NULL)
+    if( themeBgBrowse_button!=nullptr)
     {
         delete themeBgBrowse_button;
-        themeBgBrowse_button = NULL;
+        themeBgBrowse_button = nullptr;
     }
 
-    if( themeBgRemove_button!=NULL)
+    if( themeBgRemove_button!=nullptr)
     {
         delete themeBgRemove_button;
-        themeBgRemove_button = NULL;
+        themeBgRemove_button = nullptr;
     }
 
-    if( itchLinkForThemes!=NULL)
+    if( itchLinkForThemes!=nullptr)
     {
         delete itchLinkForThemes;
-        itchLinkForThemes = NULL;
+        itchLinkForThemes = nullptr;
     }
 
-    if( editorPageList!=NULL)
+    if( editorPageList!=nullptr)
     {
         editorPageList->clear_list();
         delete editorPageList;
-        editorPageList = NULL;
+        editorPageList = nullptr;
     }
 
-    if( editorStatupTipsLabel!=NULL)
+    if( editorStatupTipsLabel!=nullptr)
     {
         delete editorStatupTipsLabel;
-        editorStatupTipsLabel = NULL;
+        editorStatupTipsLabel = nullptr;
     }
 
-    if( clearCache_button!=NULL)
+    if( clearCache_button!=nullptr)
     {
         delete clearCache_button;
-        clearCache_button = NULL;
+        clearCache_button = nullptr;
     }
 
-    if( ide_settingsFPSRate!=NULL)
+    if( ide_settingsFPSRate!=nullptr)
     {
         delete ide_settingsFPSRate;
-        ide_settingsFPSRate = NULL;
+        ide_settingsFPSRate = nullptr;
     }
 
-    if( ide_settingsFPSRateLabel!=NULL)
+    if( ide_settingsFPSRateLabel!=nullptr)
     {
         delete ide_settingsFPSRateLabel;
-        ide_settingsFPSRateLabel = NULL;
+        ide_settingsFPSRateLabel = nullptr;
     }
-    if( ideFPSRatioLabel!=NULL)
+    if( ideFPSRatioLabel!=nullptr)
     {
         delete ideFPSRatioLabel;
-        ideFPSRatioLabel = NULL;
+        ideFPSRatioLabel = nullptr;
     }
 
-    if( ide_buttonBarSize!=NULL)
+    if( ide_buttonBarSize!=nullptr)
     {
         delete ide_buttonBarSize;
-        ide_buttonBarSize = NULL;
+        ide_buttonBarSize = nullptr;
     }
-    if( ide_buttonBarAlignment!=NULL)
+    if( ide_buttonBarAlignment!=nullptr)
     {
         delete ide_buttonBarAlignment;
-        ide_buttonBarAlignment = NULL;
+        ide_buttonBarAlignment = nullptr;
     }
 
-    if( ide_buttonBarSizeLabel!=NULL)
+    if( ide_buttonBarSizeLabel!=nullptr)
     {
         delete ide_buttonBarSizeLabel;
-        ide_buttonBarSizeLabel = NULL;
+        ide_buttonBarSizeLabel = nullptr;
     }
 
-    if( editorGui_settingsLabel!=NULL)
+    if( editorGui_settingsLabel!=nullptr)
     {
         delete editorGui_settingsLabel;
-        editorGui_settingsLabel = NULL;
+        editorGui_settingsLabel = nullptr;
     }
 
-    if( editorTextAreaDelayTime!=NULL)
+    if( editorTextAreaDelayTime!=nullptr)
     {
         delete editorTextAreaDelayTime;
-        editorTextAreaDelayTime = NULL;
+        editorTextAreaDelayTime = nullptr;
     }
-    if( editorTextInputDelayTime!=NULL)
+    if( editorTextInputDelayTime!=nullptr)
     {
         delete editorTextInputDelayTime;
-        editorTextInputDelayTime = NULL;
+        editorTextInputDelayTime = nullptr;
     }
-    if( editorNormalDelayTime!=NULL)
+    if( editorNormalDelayTime!=nullptr)
     {
         delete editorNormalDelayTime;
-        editorNormalDelayTime = NULL;
+        editorNormalDelayTime = nullptr;
     }
 
-    if( advancedAreaLabel!=NULL)
+    if( advancedAreaLabel!=nullptr)
     {
         delete advancedAreaLabel;
-        advancedAreaLabel = NULL;
+        advancedAreaLabel = nullptr;
     }
 
-    if( showHiddenFilesInBrowser!=NULL)
+    if( showHiddenFilesInBrowser!=nullptr)
     {
         delete showHiddenFilesInBrowser;
-        showHiddenFilesInBrowser = NULL;
+        showHiddenFilesInBrowser = nullptr;
     }
-    if( forceFrameRedraw!=NULL)
+    if( forceFrameRedraw!=nullptr)
     {
         delete forceFrameRedraw;
-        forceFrameRedraw = NULL;
+        forceFrameRedraw = nullptr;
     }
 
-    if( subEditorSelectBox!=NULL)
+    if( subEditorSelectBox!=nullptr)
     {
         delete subEditorSelectBox;
-        subEditorSelectBox = NULL;
+        subEditorSelectBox = nullptr;
     }
-    if( renderSceneBGColor!=NULL)
+    if( renderSceneBGColor!=nullptr)
     {
         delete renderSceneBGColor;
-        renderSceneBGColor = NULL;
+        renderSceneBGColor = nullptr;
     }
 
-    if( dock_settingsLabel!=NULL )
+    if( dock_settingsLabel!=nullptr )
     {
         delete dock_settingsLabel;
-        dock_settingsLabel = NULL;
+        dock_settingsLabel = nullptr;
     }
-    if( dockDefaultPanel!=NULL )
+    if( dockDefaultPanel!=nullptr )
     {
         delete dockDefaultPanel;
-        dockDefaultPanel = NULL;
+        dockDefaultPanel = nullptr;
     }
-    pawgui::widget_input_text * tempInput = NULL;
-    pawgui::widget_button_icon * tempIcon = NULL;
-    if( externalEditorsTitle!=NULL)
+    pawgui::widget_input_text * tempInput = nullptr;
+    pawgui::widget_button_icon * tempIcon = nullptr;
+    if( externalEditorsTitle!=nullptr)
     {
         delete externalEditorsTitle;
-        externalEditorsTitle = NULL;
+        externalEditorsTitle = nullptr;
     }
 
     for( int i =GPE_EXTERNAL_EDITOR_MAX-1; i>=0; i--)
     {
-        if( pencilExternalEditorsFile[i]!=NULL)
+        if( pencilExternalEditorsFile[i]!=nullptr)
         {
             tempInput = pencilExternalEditorsFile[i];
-            if( tempInput!=NULL)
+            if( tempInput!=nullptr)
             {
                 delete tempInput;
-                tempInput = NULL;
+                tempInput = nullptr;
             }
-            pencilExternalEditorsFile[i] = NULL;
+            pencilExternalEditorsFile[i] = nullptr;
         }
-        if( pencilExternalEditorsLoad_button[i]!=NULL)
+        if( pencilExternalEditorsLoad_button[i]!=nullptr)
         {
             tempIcon = pencilExternalEditorsLoad_button[i];
-            if( tempIcon!=NULL)
+            if( tempIcon!=nullptr)
             {
                 delete tempIcon;
-                tempIcon = NULL;
+                tempIcon = nullptr;
             }
-            pencilExternalEditorsLoad_button[i] = NULL;
+            pencilExternalEditorsLoad_button[i] = nullptr;
         }
     }
 }
@@ -612,16 +612,16 @@ void gamePencilEditor_settingsResource::load_themes_from_folder( std::string the
     int iFile;
     std::string file_nameDiscovered = "";
     gpe::file_directory_class * dir = new gpe::file_directory_class();
-    gpe::file_object * file = NULL;
+    gpe::file_object * file = nullptr;
     theme_holder * newLoadedTheme;
     pawgui::gui_theme * newSystemTheme;
-    if( dir!=NULL)
+    if( dir!=nullptr)
     {
         dir->open_directory(themeFolder);
         for (iFile = 0; iFile < (int)dir->get_count(); iFile++)
         {
             file = dir->get_file(iFile);
-            if( file!=NULL)
+            if( file!=nullptr)
             {
                 file_nameDiscovered = file->get_name();
                 if( file_nameDiscovered!="." && file_nameDiscovered!="..")
@@ -639,7 +639,7 @@ void gamePencilEditor_settingsResource::load_themes_from_folder( std::string the
             }
         }
         delete dir;
-        dir = NULL;
+        dir = nullptr;
     }
 }
 
@@ -651,7 +651,7 @@ void gamePencilEditor_settingsResource::prerender_self( )
 void gamePencilEditor_settingsResource::load_resource(std::string file_path)
 {
     //showStatupTipsBox->set_clicked( editor_gui_main->showTipsAtStartUp );
-    if( main_gpe_splash_page != NULL )
+    if( main_gpe_splash_page != nullptr )
     {
         main_gpe_splash_page->update_submessages( "Loading Editor Settings", "Please wait..." );
     }
@@ -662,7 +662,7 @@ void gamePencilEditor_settingsResource::load_resource(std::string file_path)
     std::ifstream gameResourceFileIn( newFileIn.c_str() );
 
     gpe::error_log->report("Loading Local settings - "+newFileIn);
-    pawgui::gui_theme * foundDefaultTheme = NULL;
+    pawgui::gui_theme * foundDefaultTheme = nullptr;
     //If the level file could be loaded
     if( !gameResourceFileIn.fail() )
     {
@@ -722,10 +722,10 @@ void gamePencilEditor_settingsResource::load_resource(std::string file_path)
                             valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
 
                             //gpe::error_log->report("Detected Key:     "+key_string);
-                            if( key_string=="DefaultTheme" && editor_theme_controller!=NULL )
+                            if( key_string=="DefaultTheme" && editor_theme_controller!=nullptr )
                             {
                                 foundDefaultTheme = editor_theme_controller->find_theme( valstring);
-                                if( foundDefaultTheme!=NULL )
+                                if( foundDefaultTheme!=nullptr )
                                 {
                                     pawgui::theme_main = foundDefaultTheme;
                                 }
@@ -870,7 +870,7 @@ void gamePencilEditor_settingsResource::load_resource(std::string file_path)
                 }
             }
             //Sets default value based on new found current theme
-            if( pawgui::theme_main!=NULL && themePicker!=NULL )
+            if( pawgui::theme_main!=nullptr && themePicker!=nullptr )
             {
                 themePicker->set_option_named( pawgui::theme_main->theme_name );
             }
@@ -882,10 +882,10 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
 {
     cam = gpe::camera_find(cam);
     view_space = gpe::camera_find(view_space);
-    if( cam!=NULL && editorPageList!=NULL && sideAreaPanel!=NULL && view_space!=NULL)
+    if( cam!=nullptr && editorPageList!=nullptr && sideAreaPanel!=nullptr && view_space!=nullptr)
     {
         int prevTab = sideAreaPanel->get_selection();
-        if( panel_main_editor!=NULL )
+        if( panel_main_editor!=nullptr )
         {
             subViewedSpace.x = 0;
             subViewedSpace.y = 0;
@@ -919,7 +919,7 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
         editorPageList->barXMargin = pawgui::padding_default;
         editorPageList->alignment_h = gpe::fa_center;
         int i = 0;
-        theme_holder * currentThemeBeingEdited = NULL;
+        theme_holder * currentThemeBeingEdited = nullptr;
         int iColor = 0, iThemeColorMax = 0;
         if(sideAreaPanel->get_selected_name()=="General")
         {
@@ -983,7 +983,7 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
             int colorsInLine = 0;*/
             bool goToNextColorLine = false;
 
-            if( currentThemeBeingEdited!=NULL )
+            if( currentThemeBeingEdited!=nullptr )
             {
                 editorPageList->add_gui_element( themeBgLabel, false );
                 editorPageList->add_gui_element( currentThemeBeingEdited->theme_bg_location, true );
@@ -1073,7 +1073,7 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
         if( sideAreaPanel->get_selected_name()=="Colors" || sideAreaPanel->get_selected_name()=="Themes" )
         {
             bool themeChanged = false;
-            if( themePicker!=NULL )
+            if( themePicker!=nullptr )
             {
                 int potentiallyselectedTheme = themePicker->get_selected_value();
                 if( currentThemeInEdit!= potentiallyselectedTheme && potentiallyselectedTheme >=0 && potentiallyselectedTheme < (int)themeHolders.size() )
@@ -1090,7 +1090,7 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
 
             if( !themeChanged )
             {
-                if( themeSetDefault_button!=NULL && themeSetDefault_button->is_clicked() )
+                if( themeSetDefault_button!=nullptr && themeSetDefault_button->is_clicked() )
                 {
                     if( currentThemeInEdit >=0 && currentThemeInEdit < (int)editor_theme_controller->theme_list.size() )
                     {
@@ -1099,16 +1099,16 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
 
                     }
                 }
-                else if( themeAdd_button!=NULL && themeAdd_button->is_clicked() )
+                else if( themeAdd_button!=nullptr && themeAdd_button->is_clicked() )
                 {
                     //Adds new theme if its a unique name
                     std::string newtheme_name = pawgui::get_string_from_popup("New Theme name","Only unique names allowed");
                     if( newtheme_name.size() > 0 && newtheme_name!="default" )
                     {
-                        if( editor_theme_controller->find_theme( newtheme_name)==NULL )
+                        if( editor_theme_controller->find_theme( newtheme_name)==nullptr )
                         {
                             pawgui::gui_theme * newGPETheme = editor_theme_controller->add_theme( newtheme_name, true );
-                            if( newGPETheme !=NULL )
+                            if( newGPETheme !=nullptr )
                             {
                                 //Now adds it to our editor here...
                                 theme_holder * newThemeHolder =  new theme_holder(newtheme_name, newtheme_name+".gpf" );
@@ -1124,30 +1124,30 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
                         }
                     }
                 }
-                else if( currentThemeBeingEdited!=NULL )
+                else if( currentThemeBeingEdited!=nullptr )
                 {
-                    if( themeBgBrowse_button!=NULL && themeBgBrowse_button->is_clicked() )
+                    if( themeBgBrowse_button!=nullptr && themeBgBrowse_button->is_clicked() )
                     {
-                        if( (int)editor_gui_main->fileOpenProjectIconDir.size()==0 && current_project!=NULL )
+                        if( (int)editor_gui_main->fileOpenProjectIconDir.size()==0 && current_project!=nullptr )
                         {
                             editor_gui_main->fileOpenProjectIconDir = current_project->get_project_directory();
                         }
                         std::string newThemeBGFileName = pawgui::get_filename_open_from_popup("Find Theme Background","Image",editor_gui_main->fileOpenProjectIconDir );
                         currentThemeBeingEdited->load_background( newThemeBGFileName );
                     }
-                    else if( themeBgRemove_button!=NULL && themeBgRemove_button->is_clicked() )
+                    else if( themeBgRemove_button!=nullptr && themeBgRemove_button->is_clicked() )
                     {
                         currentThemeBeingEdited->remove_background();
                     }
                 }
 
 
-                if( confirmResource_button!=NULL && confirmResource_button->is_clicked() )
+                if( confirmResource_button!=nullptr && confirmResource_button->is_clicked() )
                 {
-                    if( currentThemeBeingEdited!=NULL )
+                    if( currentThemeBeingEdited!=nullptr )
                     {
                         pawgui::gui_theme * fThemeToChange = editor_theme_controller->find_theme( currentThemeBeingEdited->theme_name );
-                        if( fThemeToChange !=NULL)
+                        if( fThemeToChange !=nullptr)
                         {
                             currentThemeBeingEdited->copy_theme( fThemeToChange, false );
                             fThemeToChange->save_theme();
@@ -1193,7 +1193,7 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
         {
 
         }
-        if( confirmResource_button!=NULL && confirmResource_button->is_clicked() )
+        if( confirmResource_button!=nullptr && confirmResource_button->is_clicked() )
         {
             gpe::fps_show_counter = showFPSOnEditor->is_clicked();
             editor_gui_main->showTipsAtStartUp = showStatupTipsBox->is_clicked();
@@ -1260,7 +1260,7 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
             save_resource();
         }
 
-        if( cancelResource_button!=NULL && cancelResource_button->is_clicked() )
+        if( cancelResource_button!=nullptr && cancelResource_button->is_clicked() )
         {
             load_resource();
             editor_gui_main->showTipsAtStartUp = showStatupTipsBox->is_clicked();
@@ -1273,19 +1273,19 @@ void gamePencilEditor_settingsResource::render_self( gpe::shape_rect * view_spac
 {
     cam = gpe::camera_find(cam);
     view_space = gpe::camera_find(view_space);
-    if( cam!=NULL && view_space!=NULL)
+    if( cam!=nullptr && view_space!=nullptr)
     {
-        if( sideAreaPanel!=NULL && panel_main_editor==NULL )
+        if( sideAreaPanel!=nullptr && panel_main_editor==nullptr )
         {
             sideAreaPanel->render_self( view_space,cam);
         }
 
-        if(  codingLanguageSelector!=NULL && sideAreaPanel!=NULL  && sideAreaPanel->get_selected_name()=="Coding Languages" )
+        if(  codingLanguageSelector!=nullptr && sideAreaPanel!=nullptr  && sideAreaPanel->get_selected_name()=="Coding Languages" )
         {
             codingLanguageSelector->render_self( view_space,cam);
         }
 
-        if( editorPageList!=NULL )
+        if( editorPageList!=nullptr )
         {
             editorPageList->render_self( view_space,cam);
         }
@@ -1337,7 +1337,7 @@ void gamePencilEditor_settingsResource::save_resource(std::string file_path, int
 
 bool gamePencilEditor_settingsResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn )
 {
-    if( fileTarget!=NULL)
+    if( fileTarget!=nullptr)
     {
         if( fileTarget->is_open() )
         {

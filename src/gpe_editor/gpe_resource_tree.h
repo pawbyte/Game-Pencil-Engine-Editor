@@ -61,8 +61,8 @@ public:
     pawgui::widget_resource_container * add_project_folder(int resourceType, std::string projFolderName,std::string resourceTypeName);
     void delete_project_resources(std::string projectFileName );
     void prerender_self( );
-    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL );
-    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr );
+    void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void remove_project_resources(std::string projectFileName );
 };
 

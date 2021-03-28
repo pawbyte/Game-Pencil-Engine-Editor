@@ -37,8 +37,8 @@ SOFTWARE.
 GPE_SceneBasicClass::GPE_SceneBasicClass()
 {
     dual_scaleClass = true;
-    projectParentFolder = NULL;
-    parentSceneBranch = NULL;
+    projectParentFolder = nullptr;
+    parentSceneBranch = nullptr;
     isBeingMoved = false;
     layerParentId = -1;
     x_pos = y_pos = 0;
@@ -95,63 +95,63 @@ GPE_SceneBasicClass::GPE_SceneBasicClass()
 GPE_SceneBasicClass::~GPE_SceneBasicClass()
 {
     reset_components();
-    if( x_posField!=NULL )
+    if( x_posField!=nullptr )
     {
         delete x_posField;
-        x_posField = NULL;
+        x_posField = nullptr;
     }
 
-    if( y_posField!=NULL )
+    if( y_posField!=nullptr )
     {
         delete y_posField;
-        y_posField = NULL;
+        y_posField = nullptr;
     }
-    if( angleField!=NULL)
+    if( angleField!=nullptr)
     {
         delete angleField;
-        angleField = NULL;
+        angleField = nullptr;
     }
 
-    if( x_scaleField!=NULL )
+    if( x_scaleField!=nullptr )
     {
         delete x_scaleField;
-        x_scaleField = NULL;
+        x_scaleField = nullptr;
     }
 
-    if( y_scaleField!=NULL )
+    if( y_scaleField!=nullptr )
     {
         delete y_scaleField;
-        y_scaleField = NULL;
+        y_scaleField = nullptr;
     }
 
-    if( branchColor!=NULL)
+    if( branchColor!=nullptr)
     {
         delete branchColor;
-        branchColor = NULL;
+        branchColor = nullptr;
     }
 
-    if( branchAlpha!=NULL)
+    if( branchAlpha!=nullptr)
     {
         delete branchAlpha;
-        branchAlpha = NULL;
+        branchAlpha = nullptr;
     }
 
-    if( branchNameField!=NULL )
+    if( branchNameField!=nullptr )
     {
         delete branchNameField;
-        branchNameField = NULL;
+        branchNameField = nullptr;
     }
 
-    if( branchTagField!=NULL )
+    if( branchTagField!=nullptr )
     {
         delete branchTagField;
-        branchTagField = NULL;
+        branchTagField = nullptr;
     }
 }
 
 void GPE_SceneBasicClass::add_basic_elements()
 {
-    if( panel_inspector!=NULL)
+    if( panel_inspector!=nullptr)
     {
         if( branch_type_id != gpe::branch_type::LAYER )
         {
@@ -199,7 +199,7 @@ void GPE_SceneBasicClass::add_typed_elements()
 
 bool GPE_SceneBasicClass::add_scene_branch( GPE_SceneBasicClass * branch, bool changeId, bool openBranch  )
 {
-    if( branch!=NULL )
+    if( branch!=nullptr )
     {
         if( branch_type_id == gpe::branch_type::LAYER || branch_type_id == gpe::branch_type::GROUP )
         {
@@ -213,7 +213,7 @@ bool GPE_SceneBasicClass::add_scene_branch( GPE_SceneBasicClass * branch, bool c
             branch->refresh_branch();
             return true;
         }
-        else if( parentSceneBranch!=NULL )
+        else if( parentSceneBranch!=nullptr )
         {
             return parentSceneBranch->add_scene_branch( branch, changeId, openBranch );
         }
@@ -223,22 +223,22 @@ bool GPE_SceneBasicClass::add_scene_branch( GPE_SceneBasicClass * branch, bool c
 
 GPE_ObjectComponent * GPE_SceneBasicClass::add_variable(pawgui::widget_basic * newVariable)
 {
-    if( newVariable!=NULL)
+    if( newVariable!=nullptr)
     {
         std::string newVarName = newVariable->get_name();
         if( (int)newVarName.size() > 0)
         {
             bool foundVal = false;
-            GPE_ObjectComponent * tField = NULL;
+            GPE_ObjectComponent * tField = nullptr;
             for( int i = 0; i < (int)objCustomValPairs.size(); i++)
             {
                 tField = objCustomValPairs[i];
-                if( tField!=NULL)
+                if( tField!=nullptr)
                 {
                     if( tField->get_name()==newVarName)
                     {
                         foundVal = true;
-                        return NULL;
+                        return nullptr;
                     }
                 }
             }
@@ -251,7 +251,7 @@ GPE_ObjectComponent * GPE_SceneBasicClass::add_variable(pawgui::widget_basic * n
             }
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 bool GPE_SceneBasicClass::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
@@ -265,13 +265,13 @@ bool GPE_SceneBasicClass::build_intohtml5_file(std::ofstream * fileTarget, int l
     int componentsSize = (int)objCustomValPairs.size();
     if( componentsSize > 0 )
     {
-        GPE_ObjectComponent * objCustVariableField = NULL;
+        GPE_ObjectComponent * objCustVariableField = nullptr;
         std::string customObjLabel;
         std::string customObjValue;
         for( int compItr = 0; compItr < componentsSize -1; compItr++)
         {
             objCustVariableField = objCustomValPairs.at(compItr);
-            if( objCustVariableField !=NULL)
+            if( objCustVariableField !=nullptr)
             {
                 customObjLabel = objCustVariableField->get_name();
                 customObjValue = objCustVariableField->get_plain_string();
@@ -293,12 +293,12 @@ bool GPE_SceneBasicClass::build_intohtml5_file(std::ofstream * fileTarget, int l
     int subElementsSize = (int)sub_elements.size();
     if( subElementsSize > 0 )
     {
-        pawgui::widget_branch * tBranch = NULL;
-        GPE_SceneBasicClass * tbasicBranch = NULL;
+        pawgui::widget_branch * tBranch = nullptr;
+        GPE_SceneBasicClass * tbasicBranch = nullptr;
         for( int iSubEl = 0; iSubEl < subElementsSize; iSubEl++)
         {
             tBranch = sub_elements.at(iSubEl);
-            if( tBranch!=NULL && tBranch->get_type() >= gpe::branch_type::BASIC_SCENE_ELEMENT )
+            if( tBranch!=nullptr && tBranch->get_type() >= gpe::branch_type::BASIC_SCENE_ELEMENT )
             {
                 tbasicBranch = (GPE_SceneBasicClass * )tBranch;
                 tbasicBranch->build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController );
@@ -324,7 +324,7 @@ void GPE_SceneBasicClass::process_elements()
 
 void GPE_SceneBasicClass::refresh_branch()
 {
-    if( branchGlobalId!=NULL)
+    if( branchGlobalId!=nullptr)
     {
         branchGlobalId->set_name( "Global Id:" + stg_ex::int_to_string(globalId) );
     }
@@ -332,14 +332,14 @@ void GPE_SceneBasicClass::refresh_branch()
 
 void GPE_SceneBasicClass::reset_components()
 {
-    GPE_ObjectComponent * tField = NULL;
+    GPE_ObjectComponent * tField = nullptr;
     for( int i = (int)objCustomValPairs.size()-1; i >=0; i--)
     {
         tField = objCustomValPairs[i];
-        if( tField!=NULL )
+        if( tField!=nullptr )
         {
             delete tField;
-            tField = NULL;
+            tField = nullptr;
         }
     }
     objCustomValPairs.clear();
@@ -348,11 +348,11 @@ void GPE_SceneBasicClass::reset_components()
 void GPE_SceneBasicClass::render_branch()
 {
     int subElCount  = (int)sub_elements.size();
-    pawgui::widget_branch * current_branch = NULL;
+    pawgui::widget_branch * current_branch = nullptr;
     for(  int myItr = 0; myItr < subElCount; myItr++ )
     {
         current_branch = sub_elements[myItr];
-        if( current_branch!=NULL)
+        if( current_branch!=nullptr)
         {
             current_branch->render_branch();
         }
@@ -374,16 +374,16 @@ bool GPE_SceneBasicClass::save_branch_data(std::ofstream * fileTarget, int neste
     int componentCount = (int) objCustomValPairs.size();
     if( componentCount > 0)
     {
-        if( fileTarget!=NULL && fileTarget->is_open() )
+        if( fileTarget!=nullptr && fileTarget->is_open() )
         {
             std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
             std::string componentNestedTabsStr = pawgui::generate_tabs( nestedFoldersIn +1 );
             *fileTarget << nestedTabsStr+"[GPECustomFields]\n";
-            GPE_ObjectComponent * tObjCustomProperty = NULL;
+            GPE_ObjectComponent * tObjCustomProperty = nullptr;
             for( int iComponent = 0; iComponent < componentCount ; iComponent++ )
             {
                 tObjCustomProperty = objCustomValPairs[iComponent];
-                if( tObjCustomProperty!=NULL)
+                if( tObjCustomProperty!=nullptr)
                 {
                     *fileTarget << componentNestedTabsStr+"[component]"+tObjCustomProperty->get_data()+"[/component]\n";
                 }
@@ -412,7 +412,7 @@ void GPE_SceneBasicClass::set_angle( float new_angle )
 void GPE_SceneBasicClass::set_name( std::string new_name )
 {
     pawgui::widget_branch::set_name( new_name);
-    if( branchNameField!=NULL )
+    if( branchNameField!=nullptr )
     {
         branchNameField->set_string( new_name );
     }
@@ -420,7 +420,7 @@ void GPE_SceneBasicClass::set_name( std::string new_name )
 
 void GPE_SceneBasicClass::set_tag( std::string tag_new )
 {
-    if( branchTagField!=NULL )
+    if( branchTagField!=nullptr )
     {
         branchTagField->set_string( tag_new );
     }

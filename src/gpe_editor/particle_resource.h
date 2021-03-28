@@ -94,7 +94,7 @@ public:
     pawgui::widget_input_number * shapeHField;
     pawgui::widget_checkbox * showDebugInfo;
 
-    particleResource( pawgui::widget_resource_container * pFolder = NULL );
+    particleResource( pawgui::widget_resource_container * pFolder = nullptr );
     ~particleResource();
 
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
@@ -107,8 +107,8 @@ public:
     void load_resource(std::string file_path = "");
     void prerender_self( );
     void process_data_fields(float versionToProcess = -1);
-    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+    void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void revert_data_fields();
     void save_resource(std::string file_path = "", int backupId = -1);
     void update_box(int x_new=-1, int y_new=-1, int newW=-1, int newH=-1);

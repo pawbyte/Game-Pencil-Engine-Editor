@@ -104,7 +104,7 @@ class gameCPPBuilder_settingsResource: public standardEditableGameResource
         gpe::shape_rect subViewedSpace;
         pawgui::widget_panel_list * editorPageList;
         std::string projectFolderListLocation;
-        gameCPPBuilder_settingsResource(pawgui::widget_resource_container * pFolder = NULL);
+        gameCPPBuilder_settingsResource(pawgui::widget_resource_container * pFolder = nullptr);
         ~gameCPPBuilder_settingsResource();
         gpeCPPBuildHolder * add_cpp_build_system( std::string newSysName = "");
         void clear_build_systems();
@@ -113,8 +113,8 @@ class gameCPPBuilder_settingsResource: public standardEditableGameResource
 
         void prerender_self( );
         void load_resource(std::string file_path = "");
-        void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-        void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+        void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+        void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
         void save_resource(std::string file_path = "", int backupId = -1);
         bool write_cpp_header_file(std::ofstream * fileTarget,std::string f_name);
         bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);

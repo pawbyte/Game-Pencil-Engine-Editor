@@ -55,7 +55,7 @@ GPE_SceneTile::~GPE_SceneTile()
 
 void GPE_SceneTile::add_typed_elements()
 {
-    if( panel_inspector!=NULL )
+    if( panel_inspector!=nullptr )
     {
     }
 }
@@ -73,7 +73,7 @@ bool GPE_SceneTile::save_branch_data(std::ofstream * fileTarget, int nestedFolde
 GPE_SceneTileMap::GPE_SceneTileMap( std::string mapName, int x, int y, pawgui::widget_resource_container *pFolder  )
 {
     projectParentFolder = pFolder;
-    if( projectParentFolder!=NULL)
+    if( projectParentFolder!=nullptr)
     {
         tilesheetDropDown = new pawgui::widget_drop_down_resource_menu( "Tilesheet",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_tilesheet]),-1,true );
         tilesheetDropDown->set_width(192);
@@ -82,8 +82,8 @@ GPE_SceneTileMap::GPE_SceneTileMap( std::string mapName, int x, int y, pawgui::w
     }
     else
     {
-        tilesheetDropDown = NULL;
-        tSPreviewer = NULL;
+        tilesheetDropDown = nullptr;
+        tSPreviewer = nullptr;
     }
 
     isLocked = false;
@@ -138,7 +138,7 @@ GPE_SceneTileMap::GPE_SceneTileMap( std::string mapName, int x, int y, pawgui::w
 
 void GPE_SceneTileMap::add_typed_elements()
 {
-    if( panel_inspector!=NULL )
+    if( panel_inspector!=nullptr )
     {
         panel_inspector->add_gui_element( tilesheetDropDown, true );
         panel_inspector->add_gui_element( fieldTileWidth, false );
@@ -151,31 +151,31 @@ void GPE_SceneTileMap::add_typed_elements()
 
 GPE_SceneTileMap::~GPE_SceneTileMap()
 {
-    if( tSPreviewer!=NULL)
+    if( tSPreviewer!=nullptr)
     {
         delete tSPreviewer;
-        tSPreviewer = NULL;
+        tSPreviewer = nullptr;
     }
 }
 
 bool GPE_SceneTileMap::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount, pawgui::widget_resource_container * localResTypeController )
 {
-    if( localResTypeController == NULL )
+    if( localResTypeController == nullptr )
     {
         return false;
     }
     std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
-    GPE_SceneTile * fSceneTile = NULL;
-    pawgui::widget_resource_container * fTSToPlace = NULL;
+    GPE_SceneTile * fSceneTile = nullptr;
+    pawgui::widget_resource_container * fTSToPlace = nullptr;
     int maxTilesInLayer = (int)mapTiles.size();
 
     for(  int i = 0; i < maxTilesInLayer; i++)
     {
         fSceneTile = mapTiles.at(i);
-        if( fSceneTile!=NULL &&fSceneTile->tilesheetIndexId>=0 && fSceneTile->tileIndexId>=0)
+        if( fSceneTile!=nullptr &&fSceneTile->tilesheetIndexId>=0 && fSceneTile->tileIndexId>=0)
         {
             fTSToPlace = localResTypeController->find_resource_from_id(fSceneTile->tilesheetIndexId);
-            if( fTSToPlace!=NULL)
+            if( fTSToPlace!=nullptr)
             {
                 *fileTarget << nestedTabsStr << "_scn_temp_layer.scnStartTiles.push( {tileNumber: " << stg_ex::int_to_string( i ) << ",";
                 *fileTarget << "tileSheetId: " << stg_ex::int_to_string(fTSToPlace->exportBuildGlobalId) << ",";
@@ -206,7 +206,7 @@ void GPE_SceneTileMap::create_new_map(int new_xt, int new_yt,int ntileType )
         }
         mapTiles.clear();
     }
-    GPE_SceneTile * newTile = NULL;
+    GPE_SceneTile * newTile = nullptr;
     for(int i=0; i<newSize; i++)
     {
         newTile = new GPE_SceneTile();
@@ -306,7 +306,7 @@ GPE_SceneTile* GPE_SceneTileMap::get_tile_at(int xIn, int yIn)
             }
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 void GPE_SceneTileMap::process_elements()
@@ -314,16 +314,16 @@ void GPE_SceneTileMap::process_elements()
     GPE_SceneBasicClass::process_elements();
     int previousTileSheetId = tilesheetDropDown->get_selected_id();
     PANEL_TS_RESOURCE = gpe_dock->find_panel("Tilesheet");
-    if(PANEL_TS_RESOURCE!=NULL )
+    if(PANEL_TS_RESOURCE!=nullptr )
     {
-        if( tSPreviewer!=NULL )
+        if( tSPreviewer!=nullptr )
         {
-            tSPreviewer->tileSheetToPreview = NULL;
+            tSPreviewer->tileSheetToPreview = nullptr;
             PANEL_TS_RESOURCE->clear_panel();
 
             PANEL_TS_RESOURCE->add_gui_element(tilesheetDropDown,true);
 
-            if( tilesheetDropDown!=NULL && tSPreviewer!=NULL )
+            if( tilesheetDropDown!=nullptr && tSPreviewer!=nullptr )
             {
                 if( tilesheetDropDown->is_clicked() || previousTileSheetId != tilesheetDropDown->get_selected_id() )
                 {
@@ -336,7 +336,7 @@ void GPE_SceneTileMap::process_elements()
                     tSPreviewer->reset_preview(true);
                 }
                 pawgui::widget_resource_container * tsTypeContainer = tilesheetDropDown->get_selected_container();
-                if( tsTypeContainer!=NULL)
+                if( tsTypeContainer!=nullptr)
                 {
                     tsRes = (tilesheetResource*) tsTypeContainer->get_held_resource();
                     tSPreviewer->tileSheetToPreview = tsRes->tilesheetInEditor;
@@ -351,7 +351,7 @@ void GPE_SceneTileMap::process_elements()
 
     int sceneTileMouseX = 0;
     int sceneTileMouseY = 0;
-    if( spm !=NULL )
+    if( spm !=nullptr )
     {
         if( tileWidth > 0)
         {
@@ -370,18 +370,18 @@ void GPE_SceneTileMap::process_elements()
     {
         return;
     }
-    //if( shortcut_buttonBar->get_tab_id() == SCENE_MODE_PLACE && mouseIsInScene && tSPreviewer!=NULL  &&  !selectedLayerMap->isLocked  )
-    if( tSPreviewer!=NULL &&  !isLocked && tSPreviewer!=NULL && spm->mouseInScene && spm->editMode == SCENE_MODE_PLACE )
+    //if( shortcut_buttonBar->get_tab_id() == SCENE_MODE_PLACE && mouseIsInScene && tSPreviewer!=nullptr  &&  !selectedLayerMap->isLocked  )
+    if( tSPreviewer!=nullptr &&  !isLocked && tSPreviewer!=nullptr && spm->mouseInScene && spm->editMode == SCENE_MODE_PLACE )
     {
         if( gpe::input->check_mouse_down( mb_left ) && tileWidth  > 0 && tileHeight  > 0  && (int)tSPreviewer->tilesIdsInPreview.size()>0  )
         {
             //Place Tiles and Such
-            if( tsRes!=NULL  && tsRes->tilesheetInEditor!=NULL && tsRes->tilesheetInEditor->tsImage!=NULL)
+            if( tsRes!=nullptr  && tsRes->tilesheetInEditor!=nullptr && tsRes->tilesheetInEditor->tsImage!=nullptr)
             {
                 //select tiles to place / place tiles / add tiles
-                //if( pawgui::resource_dragged==NULL && mouseIsInScene && sceneXScroll->is_scrolling()==false && sceneYScroll->is_scrolling()==false )
+                //if( pawgui::resource_dragged==nullptr && mouseIsInScene && sceneXScroll->is_scrolling()==false && sceneYScroll->is_scrolling()==false )
                 {
-                    GPE_SceneTile* fSceneTileToEdit = NULL;
+                    GPE_SceneTile* fSceneTileToEdit = nullptr;
 
                     int tileRowItr = 0;
                     int tilesItr= 0;
@@ -390,7 +390,7 @@ void GPE_SceneTileMap::process_elements()
                     for( tilesItr = 0; tilesItr < (int)tSPreviewer->tilesIdsInPreview.size(); tilesItr++ )
                     {
                         fSceneTileToEdit = get_tile_at(sceneTileMouseX+newTileX,sceneTileMouseY+newTileY);
-                        if( fSceneTileToEdit!=NULL)
+                        if( fSceneTileToEdit!=nullptr)
                         {
                             fSceneTileToEdit->tileIndexId = tSPreviewer->tilesIdsInPreview.at(tilesItr);
                             fSceneTileToEdit->tilesheetIndexId = tilesheetDropDown->get_selected_id();
@@ -413,17 +413,17 @@ void GPE_SceneTileMap::process_elements()
             }
         }
     }
-    //else if(shortcut_buttonBar->get_tab_id() == SCENE_MODE_ERASE && mouseIsInScene && selectedLayerMap!=NULL  &&  !selectedLayerMap->isLocked  )
+    //else if(shortcut_buttonBar->get_tab_id() == SCENE_MODE_ERASE && mouseIsInScene && selectedLayerMap!=nullptr  &&  !selectedLayerMap->isLocked  )
     else if(  !isLocked && gpe::input->check_mouse_down( mb_right )   && spm->mouseInScene  && spm->editMode == SCENE_MODE_ERASE  )
     {
         //Remove Tiles / Delete Tiles
         //if( mouseIsInScene && sceneXScroll->is_scrolling()==false && sceneYScroll->is_scrolling()==false )
-        if( spm!=NULL )
+        if( spm!=nullptr )
         {
-            GPE_SceneTile* fSceneTileToEdit = NULL;
+            GPE_SceneTile* fSceneTileToEdit = nullptr;
 
             fSceneTileToEdit = get_tile_at(sceneTileMouseX,sceneTileMouseY);
-            if( fSceneTileToEdit!=NULL )
+            if( fSceneTileToEdit!=nullptr )
             {
                 fSceneTileToEdit->tileIndexId = -1;
                 fSceneTileToEdit->tilesheetIndexId = -1;
@@ -438,15 +438,15 @@ void GPE_SceneTileMap::resize_tilemap( int new_xt, int new_yt,int ntileType)
     if( (new_xt!=tileAmountX || new_yt!=tileAmountY )&& new_xt>0 && new_yt>0)
     {
         int newSize = new_xt*new_yt;
-        GPE_SceneTile *newTile = NULL;
-        GPE_SceneTile *prevTile = NULL;
+        GPE_SceneTile *newTile = nullptr;
+        GPE_SceneTile *prevTile = nullptr;
         int i, j;
         std::vector <GPE_SceneTile*> tempMapTiles;
         for( i=0; i<(int)mapTiles.size(); i++)
         {
             prevTile = mapTiles[i];
             newTile = new GPE_SceneTile();
-            if( prevTile!=NULL)
+            if( prevTile!=nullptr)
             {
                 newTile->tileTypeId = ntileType;
                 newTile->tileIndexId = prevTile->tileIndexId;
@@ -477,7 +477,7 @@ void GPE_SceneTileMap::resize_tilemap( int new_xt, int new_yt,int ntileType)
 
         gpe::error_log->report("Map resized ("+ stg_ex::int_to_string((int)mapTiles.size() ) +").");
         //creates the tile layer with new dimensions all blanked out
-        newTile = NULL;
+        newTile = nullptr;
         int iMaxPrevXTiles = std::max(new_xt, tileAmountX);
         int jMaxPrevYTiles = std::max(new_yt, tileAmountY);
 
@@ -493,7 +493,7 @@ void GPE_SceneTileMap::resize_tilemap( int new_xt, int new_yt,int ntileType)
                     }
                     else
                     {
-                        prevTile = NULL;
+                        prevTile = nullptr;
                     }
                     if( new_xt > i && new_yt > j)
                     {
@@ -501,9 +501,9 @@ void GPE_SceneTileMap::resize_tilemap( int new_xt, int new_yt,int ntileType)
                     }
                     else
                     {
-                        newTile = NULL;
+                        newTile = nullptr;
                     }
-                    if( prevTile!=NULL && newTile!=NULL)
+                    if( prevTile!=nullptr && newTile!=nullptr)
                     {
                         newTile->tileTypeId = prevTile->tileIndexId;
                         newTile->tileIndexId = prevTile->tileIndexId;
@@ -555,17 +555,17 @@ void GPE_SceneTileMap::set_map_size( int newW, int newH )
 void GPE_SceneTileMap::render_branch()
 {
     //Avoid the time waste and don't continue if alpha is too low.
-    if( branchAlpha!=NULL && branchAlpha->get_value() < 5)
+    if( branchAlpha!=nullptr && branchAlpha->get_value() < 5)
     {
         return;
     }
 
-    if( spm == NULL)
+    if( spm == nullptr)
     {
         return;
     }
 
-    if( spm->cSceneTstList!=NULL &&  tileWidth!=0 && tileHeight!=0 && spm->zoomValue!=0 )
+    if( spm->cSceneTstList!=nullptr &&  tileWidth!=0 && tileHeight!=0 && spm->zoomValue!=0 )
     {
         gpe::shape_rect foundTsRect;
         int cTileXPos = 0;
@@ -590,9 +590,9 @@ void GPE_SceneTileMap::render_branch()
             tileYEndPos = tileAmountY;
         }
 
-        GPE_SceneTile * fSceneTile = NULL;
-        pawgui::widget_resource_container * foundTSResource = NULL;
-        tilesheetResource * foundHeldTSRes = NULL;
+        GPE_SceneTile * fSceneTile = nullptr;
+        pawgui::widget_resource_container * foundTSResource = nullptr;
+        tilesheetResource * foundHeldTSRes = nullptr;
 
         //gpe::error_log->report("Performing 1st loop");
         for( i = tileXStartPos; i < tileAmountX; i++ )
@@ -601,17 +601,17 @@ void GPE_SceneTileMap::render_branch()
             for(  j = tileYStartPos; j < tileAmountY; j++)
             {
                 fSceneTile = get_tile_at( i, j);
-                if( fSceneTile!=NULL)
+                if( fSceneTile!=nullptr)
                 {
                     if( fSceneTile->tilesheetIndexId >= 0 && fSceneTile->tileIndexId >= 0 )
                     {
                         foundTSResource = spm->cSceneTstList->find_resource_from_id(fSceneTile->tilesheetIndexId);
-                        if( foundTSResource!=NULL)
+                        if( foundTSResource!=nullptr)
                         {
                             foundHeldTSRes = (tilesheetResource * )foundTSResource->get_held_resource();
-                            if( foundHeldTSRes->tilesheetInEditor!=NULL )
+                            if( foundHeldTSRes->tilesheetInEditor!=nullptr )
                             {
-                                if( foundHeldTSRes->tilesheetInEditor->tsImage!=NULL && fSceneTile->tileIndexId < (int)foundHeldTSRes->tilesheetInEditor->tsRects.size() )
+                                if( foundHeldTSRes->tilesheetInEditor->tsImage!=nullptr && fSceneTile->tileIndexId < (int)foundHeldTSRes->tilesheetInEditor->tsRects.size() )
                                 {
                                     cTileXPos = floor( (i*tileWidth )  * spm->zoomValue ) - spm->currentCamera->x * spm->zoomValue;
                                     cTileYPos = floor( (j*tileHeight ) * spm->zoomValue ) - spm->currentCamera->y * spm->zoomValue;
@@ -638,10 +638,10 @@ void GPE_SceneTileMap::render_branch()
 
         //Previews tilesheet if selected
         pawgui::widget_resource_container * tsTypeContainer = tilesheetDropDown->get_selected_container();
-        if( tsTypeContainer!=NULL  && spm->mouseInScene && spm->editMode == SCENE_MODE_PLACE && pawgui::resource_dragged==NULL )
+        if( tsTypeContainer!=nullptr  && spm->mouseInScene && spm->editMode == SCENE_MODE_PLACE && pawgui::resource_dragged==nullptr )
         {
             tsRes = (tilesheetResource*) tsTypeContainer->get_held_resource();
-            if( tsRes!=NULL && tsRes->tilesheetInEditor!=NULL && tsRes->tilesheetInEditor->tsImage!=NULL)
+            if( tsRes!=nullptr && tsRes->tilesheetInEditor!=nullptr && tsRes->tilesheetInEditor->tsImage!=nullptr)
             {
                 //if( sceneXScroll->is_scrolling()==false && sceneYScroll->is_scrolling()==false )
                 {
@@ -660,20 +660,20 @@ void GPE_SceneTileMap::render_branch()
 
                     if( isLocked )
                     {
-                        tSPreviewer->render_selection( sceneTileMouseX,sceneTileMouseY, NULL,NULL, spm->zoomValue, gpe::c_orangered );
+                        tSPreviewer->render_selection( sceneTileMouseX,sceneTileMouseY, nullptr,nullptr, spm->zoomValue, gpe::c_orangered );
                     }
                     else if( sceneTileMouseX >=0 && sceneTileMouseY >=0 )
                     {
-                        tSPreviewer->render_selection( sceneTileMouseX,sceneTileMouseY,NULL,NULL,spm->zoomValue, gpe::c_white );
+                        tSPreviewer->render_selection( sceneTileMouseX,sceneTileMouseY,nullptr,nullptr,spm->zoomValue, gpe::c_white );
                     }
                     /*
                     else if( spm->mouseXPos < 0 || spm->mouseYPos < 0 || spm->mouseXPos > spm->tempRect->w || spm->mouseYPos > spm->tempRect->h )
                     {
-                        tSPreviewer->render_selection( sceneTileMouseX,sceneTileMouseY,NULL,NULL,true,spm->zoomValue, c_red );
+                        tSPreviewer->render_selection( sceneTileMouseX,sceneTileMouseY,nullptr,nullptr,true,spm->zoomValue, c_red );
                     }
                     else
                     {
-                        tSPreviewer->render_selection( sceneTileMouseX,sceneTileMouseY,NULL,NULL,true,spm->zoomValue,c_white);
+                        tSPreviewer->render_selection( sceneTileMouseX,sceneTileMouseY,nullptr,nullptr,true,spm->zoomValue,c_white);
                     }
                     */
                 }
@@ -685,7 +685,7 @@ void GPE_SceneTileMap::render_branch()
 
 bool GPE_SceneTileMap::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn )
 {
-    if( fileTarget!=NULL && fileTarget->is_open() )
+    if( fileTarget!=nullptr && fileTarget->is_open() )
     {
         std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+ "[GPE_TileMap=";
@@ -695,7 +695,7 @@ bool GPE_SceneTileMap::save_branch_data(std::ofstream * fileTarget, int nestedFo
         *fileTarget << stg_ex::int_to_string( tileAmountY )+",";
         *fileTarget << stg_ex::int_to_string( x_pos )+",";
         *fileTarget << stg_ex::int_to_string( y_pos )+",";
-        if( fillScene!=NULL)
+        if( fillScene!=nullptr)
         {
             *fileTarget << stg_ex::int_to_string( fillScene->is_clicked() )+",";
         }
@@ -715,11 +715,11 @@ bool GPE_SceneTileMap::save_branch_data(std::ofstream * fileTarget, int nestedFo
         GPE_SceneBasicClass::save_branch_data( fileTarget, nestedFoldersIn+1 );
         int maxTilesInMap = (int)mapTiles.size();
         nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn+1 );
-        GPE_SceneTile * fSceneTile = NULL;
+        GPE_SceneTile * fSceneTile = nullptr;
         for(  int i = 0; i < maxTilesInMap; i++)
         {
             fSceneTile = mapTiles.at(i);
-            if(  fSceneTile!=NULL && fSceneTile->tilesheetIndexId > 0 && fSceneTile->tileIndexId >= 0  )
+            if(  fSceneTile!=nullptr && fSceneTile->tilesheetIndexId > 0 && fSceneTile->tileIndexId >= 0  )
             {
                 *fileTarget << nestedTabsStr+ "GPE_SingleTile=";
                 //This is the position of the tile in the tilemap

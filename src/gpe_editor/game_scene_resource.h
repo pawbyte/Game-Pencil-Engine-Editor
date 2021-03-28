@@ -221,7 +221,7 @@ public:
     float rmy;
     float lmx;
     float lmy;
-    gameSceneResource(pawgui::widget_resource_container * pFolder = NULL);
+    gameSceneResource(pawgui::widget_resource_container * pFolder = nullptr);
     ~gameSceneResource();
     sceneLayer * add_retro_layer(int layerType, int newLayerProjectLayerId, bool selectedLayer = false );
     sceneLayer * add_layer( int newLayerProjectLayerId, bool selectedLayer = false );
@@ -245,10 +245,10 @@ public:
     void prerender_self( );
     void load_resource(std::string file_path = "");
     void process_components();
-    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-    void render_grid( int x_start, int y_start, int cellW, int cellH, int xMax = -1, int yMax = -1, gpe::color * gridLineColor = NULL, int gridLineAlpha = 128 );
-    void render_scene_layers( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, gpe::shape_rect * sceneCamera = NULL, float render_scale = -1,bool showEditorPreviews = true, bool checkListDependent = true);
-    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+    void render_grid( int x_start, int y_start, int cellW, int cellH, int xMax = -1, int yMax = -1, gpe::color * gridLineColor = nullptr, int gridLineAlpha = 128 );
+    void render_scene_layers( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr, gpe::shape_rect * sceneCamera = nullptr, float render_scale = -1,bool showEditorPreviews = true, bool checkListDependent = true);
+    void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void reset_placement_info();
     void save_resource(std::string file_path = "", int backupId = -1);
     bool seek_placeable_branch();

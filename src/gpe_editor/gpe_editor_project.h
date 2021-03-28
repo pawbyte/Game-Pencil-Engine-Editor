@@ -111,21 +111,21 @@ public:
     bool clean_build_folder( int buildMetaTemplate = -1 );
 
     //creates sub folders all sexy like
-    pawgui::widget_resource_container * create_blank_folder(pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    pawgui::widget_resource_container * create_blank_resource(int rNewType = -1,pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    pawgui::widget_resource_container * create_blank_audio( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    pawgui::widget_resource_container * create_blank_video( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    pawgui::widget_resource_container * create_blank_emitter( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    pawgui::widget_resource_container * create_blank_light( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    pawgui::widget_resource_container * create_blank_path( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    pawgui::widget_resource_container * create_blank_font( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    pawgui::widget_resource_container * create_blank_function( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    pawgui::widget_resource_container * create_blank_class( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    pawgui::widget_resource_container * create_blank_game_enttity( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    pawgui::widget_resource_container * create_blank_scene( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    pawgui::widget_resource_container * create_blank_animation( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    pawgui::widget_resource_container * create_blank_texture( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
-    pawgui::widget_resource_container * create_blank_tilesheet( pawgui::widget_resource_container * folderContainer = NULL, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_folder(pawgui::widget_resource_container * folderContainer = nullptr, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_resource(int rNewType = -1,pawgui::widget_resource_container * folderContainer = nullptr, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_audio( pawgui::widget_resource_container * folderContainer = nullptr, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_video( pawgui::widget_resource_container * folderContainer = nullptr, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_emitter( pawgui::widget_resource_container * folderContainer = nullptr, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_light( pawgui::widget_resource_container * folderContainer = nullptr, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_path( pawgui::widget_resource_container * folderContainer = nullptr, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_font( pawgui::widget_resource_container * folderContainer = nullptr, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_function( pawgui::widget_resource_container * folderContainer = nullptr, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_class( pawgui::widget_resource_container * folderContainer = nullptr, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_game_enttity( pawgui::widget_resource_container * folderContainer = nullptr, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_scene( pawgui::widget_resource_container * folderContainer = nullptr, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_animation( pawgui::widget_resource_container * folderContainer = nullptr, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_texture( pawgui::widget_resource_container * folderContainer = nullptr, std::string new_name="", int newResId = -1);
+    pawgui::widget_resource_container * create_blank_tilesheet( pawgui::widget_resource_container * folderContainer = nullptr, std::string new_name="", int newResId = -1);
 
     //Export based functions
     bool export_and_play_native(bool launchProgram = true);

@@ -46,7 +46,7 @@ tilesheetPreviewer::tilesheetPreviewer()
     local_mouse_x = 0;
     local_mouse_y = 0;
     showGrid = true;
-    tileSheetToPreview = NULL;
+    tileSheetToPreview = nullptr;
 
     tsEditorViewRect.x = 128;
     tsEditorViewRect.y = 32;
@@ -79,15 +79,15 @@ tilesheetPreviewer::tilesheetPreviewer()
 tilesheetPreviewer::~tilesheetPreviewer()
 {
     tilesIdsInPreview.clear();
-    if( previewXScroll!=NULL)
+    if( previewXScroll!=nullptr)
     {
         delete previewXScroll;
-        previewXScroll = NULL;
+        previewXScroll = nullptr;
     }
-    if( previewYScroll!=NULL)
+    if( previewYScroll!=nullptr)
     {
         delete previewYScroll;
-        previewYScroll = NULL;
+        previewYScroll = nullptr;
     }
 }
 
@@ -103,7 +103,7 @@ bool tilesheetPreviewer::get_mouse_coords( gpe::shape_rect * view_space, gpe::sh
     cam = gpe::camera_find(cam);
     local_mouse_x = 0;
     local_mouse_y = 0;
-    if( view_space!=NULL)
+    if( view_space!=nullptr)
     {
         if( gpe::point_within( gpe::input->mouse_position_x,gpe::input->mouse_position_y,
                          tsEditorViewRect.x+view_space->x,
@@ -230,18 +230,18 @@ void tilesheetPreviewer::handle_scrolling()
     if( xScrollHappened)
     {
         previewXScroll->contextRect.x = tsCameraRect.x;
-        previewXScroll->process_self(NULL,NULL );
+        previewXScroll->process_self(nullptr,nullptr );
     }
     if( yScrollHappened)
     {
         previewYScroll->contextRect.y = tsCameraRect.y;
-        previewYScroll->process_self(NULL,NULL );
+        previewYScroll->process_self(nullptr,nullptr );
     }
 }
 
 void tilesheetPreviewer::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
-    //sets viewedspace and cam to the default camera(entire screen if they are NULL )
+    //sets viewedspace and cam to the default camera(entire screen if they are nullptr )
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
     pawgui::widget_basic::process_self(view_space,cam);
@@ -257,7 +257,7 @@ void tilesheetPreviewer::process_self( gpe::shape_rect * view_space, gpe::shape_
     tsRect.h = tsEditorViewRect.h;
 
     //checks if the element has arrow and/or scroll control
-    if( isClicked && pawgui::resource_dragged==NULL )
+    if( isClicked && pawgui::resource_dragged==nullptr )
     {
         hasScrollControl = true;
         hasArrowkeyControl = true;
@@ -268,8 +268,8 @@ void tilesheetPreviewer::process_self( gpe::shape_rect * view_space, gpe::shape_
         hasArrowkeyControl = false;
     }
 
-    //If the loaded tilesheet is not NULL, continue with the logic below
-    if(tileSheetToPreview!=NULL && tileSheetToPreview->tsImage!=NULL && cam!=NULL && view_space!=NULL )
+    //If the loaded tilesheet is not nullptr, continue with the logic below
+    if(tileSheetToPreview!=nullptr && tileSheetToPreview->tsImage!=nullptr && cam!=nullptr && view_space!=nullptr )
     {
         tsEditorViewRect.x  = widget_box.x;
         tsEditorViewRect.y  = widget_box.y;
@@ -328,7 +328,7 @@ void tilesheetPreviewer::process_self( gpe::shape_rect * view_space, gpe::shape_
         if( isHovered)
         {
             //Calculates the tile to select via the tilesheet
-            if( previewXScroll->is_scrolling()==false && previewYScroll->is_scrolling()==false  && pawgui::resource_dragged==NULL )
+            if( previewXScroll->is_scrolling()==false && previewYScroll->is_scrolling()==false  && pawgui::resource_dragged==nullptr )
             {
                 if( areaIsScrollable )
                 {
@@ -433,14 +433,14 @@ void tilesheetPreviewer::process_self( gpe::shape_rect * view_space, gpe::shape_
                         pawgui::context_menu_open(-1,-1,256);
                         if( showGrid)
                         {
-                            pawgui::main_context_menu->add_menu_option("Show Grid",1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/check.png"),-1,NULL,true,true,false);
+                            pawgui::main_context_menu->add_menu_option("Show Grid",1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/check.png"),-1,nullptr,true,true,false);
                         }
                         else
                         {
-                            pawgui::main_context_menu->add_menu_option("Show Grid",1,NULL,-1,NULL,true,true,false );
+                            pawgui::main_context_menu->add_menu_option("Show Grid",1,nullptr,-1,nullptr,true,true,false );
                         }
                         int menuSelection = pawgui::context_menu_process();
-                        if( menuSelection==0 && pawgui::main_tab_resource_bar!=NULL && tileSheetToPreview!=NULL)
+                        if( menuSelection==0 && pawgui::main_tab_resource_bar!=nullptr && tileSheetToPreview!=nullptr)
                         {
                             //pawgui::main_tab_resource_bar->add_new_tab(tileSheetToPreview);
                         }
@@ -471,9 +471,9 @@ void tilesheetPreviewer::render_self( gpe::shape_rect * view_space, gpe::shape_r
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if( tileSheetToPreview!=NULL && cam!=NULL && view_space!=NULL )
+    if( tileSheetToPreview!=nullptr && cam!=nullptr && view_space!=nullptr )
     {
-        if(tileSheetToPreview->tsImage!=NULL)
+        if(tileSheetToPreview->tsImage!=nullptr)
         {
             tsImageCameraRect.x = tsCameraRect.x;
             tsImageCameraRect.y = tsCameraRect.y;
@@ -529,11 +529,11 @@ void tilesheetPreviewer::render_self( gpe::shape_rect * view_space, gpe::shape_r
             gpe::gfs->render_text_boxed( widget_box.x+widget_box.w-32,widget_box.y+widget_box.h-cam->y-32,
                               "Zoom Level: "+ stg_ex::float_to_string(zoomValue*100 )+"%",
                               pawgui::theme_main->text_box_font_color, gpe::c_black, gpe::font_default,gpe::fa_right,gpe::fa_bottom);
-            if( previewXScroll!=NULL)
+            if( previewXScroll!=nullptr)
             {
                 previewXScroll->render_self( view_space,cam);
             }
-            if( previewYScroll!=NULL)
+            if( previewYScroll!=nullptr)
             {
                 previewYScroll->render_self( view_space,cam);
             }
@@ -545,9 +545,9 @@ void tilesheetPreviewer::render_selection( int x_pos, int y_pos, gpe::shape_rect
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if( tileSheetToPreview!=NULL && cam!=NULL && view_space!=NULL && scale_size!=0 )
+    if( tileSheetToPreview!=nullptr && cam!=nullptr && view_space!=nullptr && scale_size!=0 )
     {
-        if(tileSheetToPreview->tsImage!=NULL)
+        if(tileSheetToPreview->tsImage!=nullptr)
         {
             if( tsselectedArea.x >=0 && tsselectedArea.y >=0 && tsselectedArea.w  >0 && tsselectedArea.h > 0 )
             {
@@ -581,11 +581,11 @@ tilesheetResource::tilesheetResource(pawgui::widget_resource_container * pFolder
 {
     projectParentFolder = pFolder;
     editorMode = 0;
-    tilesheetInEditor = NULL;
+    tilesheetInEditor = nullptr;
     tsPreviewer = new tilesheetPreviewer();
     preloadCheckBox = new pawgui::widget_checkbox("Preload tilesheet","Check to load tilesheet at game open", true);
     isPreloaded = true;
-    if(saveResource_button!=NULL)
+    if(saveResource_button!=nullptr)
     {
         //saveResource_button->disable_self();
     }
@@ -605,59 +605,59 @@ tilesheetResource::tilesheetResource(pawgui::widget_resource_container * pFolder
 
 tilesheetResource::~tilesheetResource()
 {
-    if( labelInfoMaxTextureSize!=NULL)
+    if( labelInfoMaxTextureSize!=nullptr)
     {
         delete labelInfoMaxTextureSize;
-        labelInfoMaxTextureSize = NULL;
+        labelInfoMaxTextureSize = nullptr;
     }
-    if( openExternalEditor_button!=NULL)
+    if( openExternalEditor_button!=nullptr)
     {
         delete openExternalEditor_button;
-        openExternalEditor_button = NULL;
+        openExternalEditor_button = nullptr;
     }
-    if( refreshResourceData_button!=NULL)
+    if( refreshResourceData_button!=nullptr)
     {
         delete refreshResourceData_button;
-        refreshResourceData_button = NULL;
+        refreshResourceData_button = nullptr;
     }
 
-    if( preloadCheckBox!=NULL)
+    if( preloadCheckBox!=nullptr)
     {
         delete preloadCheckBox;
-        preloadCheckBox = NULL;
+        preloadCheckBox = nullptr;
     }
-    if( tilesheetDimensionsStr!=NULL)
+    if( tilesheetDimensionsStr!=nullptr)
     {
         delete tilesheetDimensionsStr;
-        tilesheetDimensionsStr = NULL;
+        tilesheetDimensionsStr = nullptr;
     }
     for( int i =TILESHEET_DATA_FIELD_COUNT-1; i >=0; i--)
     {
-        if( tsDataFields[i]!=NULL)
+        if( tsDataFields[i]!=nullptr)
         {
             delete tsDataFields[i];
-            tsDataFields[i] = NULL;
+            tsDataFields[i] = nullptr;
         }
     }
-    if( transformResource_button!=NULL)
+    if( transformResource_button!=nullptr)
     {
         delete transformResource_button;
-        transformResource_button = NULL;
+        transformResource_button = nullptr;
     }
-    if( tsPreviewer!=NULL)
+    if( tsPreviewer!=nullptr)
     {
         delete tsPreviewer;
-        tsPreviewer = NULL;
+        tsPreviewer = nullptr;
     }
 }
 
 bool tilesheetResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount)
 {
-    if( fileTarget!=NULL && fileTarget->is_open() )
+    if( fileTarget!=nullptr && fileTarget->is_open() )
     {
         std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
         std::string html5TSName = get_name();
-        if( tilesheetInEditor!=NULL)
+        if( tilesheetInEditor!=nullptr)
         {
             *fileTarget << nestedTabsStr << "var " << html5TSName << " =  GPE.rsm.add_tilesheet(";
             *fileTarget << stg_ex::int_to_string (exportBuildGlobalId ) +",";
@@ -690,16 +690,16 @@ void tilesheetResource::compile_cpp()
 
 gpe::texture_base * tilesheetResource::get_resource_texture()
 {
-    if( tilesheetInEditor!=NULL && tilesheetInEditor->tsImage!=NULL)
+    if( tilesheetInEditor!=nullptr && tilesheetInEditor->tsImage!=nullptr)
     {
         return tilesheetInEditor->tsImage;
     }
-    return NULL;
+    return nullptr;
 }
 
 bool tilesheetResource::include_local_files( std::string pBuildDir , int buildType )
 {
-    if( tilesheetInEditor!=NULL && tilesheetInEditor->tsImage!=NULL )
+    if( tilesheetInEditor!=nullptr && tilesheetInEditor->tsImage!=nullptr )
     {
         if( tilesheetInEditor->tsImage->get_width() >   0)
         {
@@ -713,17 +713,17 @@ bool tilesheetResource::include_local_files( std::string pBuildDir , int buildTy
 bool tilesheetResource::is_build_ready()
 {
     recentErrorMessage = "";
-    if( tilesheetInEditor == NULL)
+    if( tilesheetInEditor == nullptr)
     {
-        recentErrorMessage = "tilesheetInEditor=NULL;";
+        recentErrorMessage = "tilesheetInEditor=nullptr;";
         return false;
     }
     bool isReady = true;
     for( int i = 0; i  < TILESHEET_DATA_FIELD_COUNT; i++)
     {
-        if( tsDataFields[i]== NULL )
+        if( tsDataFields[i]== nullptr )
         {
-            recentErrorMessage += "tsDataFields["+ stg_ex::int_to_string(i)+"] = NULL;";
+            recentErrorMessage += "tsDataFields["+ stg_ex::int_to_string(i)+"] = nullptr;";
             isReady = false;
         }
     }
@@ -754,19 +754,19 @@ void tilesheetResource::load_image(std::string new_file_name)
         tempTexture->load_new_texture(  gpe::renderer_main,new_file_name, -1, true);
         if( tempTexture->get_width()>0 )
         {
-            if(tilesheetInEditor==NULL)
+            if(tilesheetInEditor==nullptr)
             {
                 tilesheetInEditor = new gpe::tilesheet();
             }
-            if(tilesheetInEditor->tsImage!=NULL)
+            if(tilesheetInEditor->tsImage!=nullptr)
             {
                 delete tilesheetInEditor->tsImage;
-                tilesheetInEditor->tsImage = NULL;
+                tilesheetInEditor->tsImage = nullptr;
             }
-            if( tilesheetInEditor!=NULL)
+            if( tilesheetInEditor!=nullptr)
             {
                 tilesheetInEditor->tsImage = tempTexture;
-                if(tilesheetInEditor->tsImage!=NULL)
+                if(tilesheetInEditor->tsImage!=nullptr)
                 {
                     tilesheetInEditor->tsImage->load_new_texture( gpe::renderer_main, new_file_name, -1, true );
                     if( tilesheetInEditor->tsImage->get_width()>0 )
@@ -774,10 +774,10 @@ void tilesheetResource::load_image(std::string new_file_name)
                         if( tilesheetInEditor->tsImage->get_width() <1 || tilesheetInEditor->tsImage->get_width()>4096 || tilesheetInEditor->tsImage->get_height() <1 || tilesheetInEditor->tsImage->get_height()>4096)
                         {
                             pawgui::display_user_alert("Unable to load image","Editor Error: Unable to load ["+new_file_name+"] please check file and make sure it is between 1x1 and 4096x4096 pixels and is a valid image");
-                            if( tilesheetInEditor->tsImage!=NULL)
+                            if( tilesheetInEditor->tsImage!=nullptr)
                             {
                                 delete tilesheetInEditor->tsImage;
-                                tilesheetInEditor->tsImage = NULL;
+                                tilesheetInEditor->tsImage = nullptr;
                             }
                         }
                         else
@@ -819,7 +819,7 @@ void tilesheetResource::load_resource(std::string file_path)
 {
     if( resourcePostProcessed ==false  || gpe::main_file_url_manager->file_exists(file_path) )
     {
-        if( main_gpe_splash_page != NULL )
+        if( main_gpe_splash_page != nullptr )
         {
             main_gpe_splash_page->update_submessages( "Processing Tilesheet",resource_name );
         }
@@ -902,7 +902,7 @@ void tilesheetResource::load_resource(std::string file_path)
                                 }
                                 else if( key_string=="ImageLocation")
                                 {
-                                    if( valstring!="NULL")
+                                    if( valstring!="nullptr")
                                     {
                                         load_image( soughtDir+valstring );
                                     }
@@ -941,11 +941,11 @@ void tilesheetResource::process_data_fields()
 {
     ///constantly updates the tilesheet boxes
     bool allInputsAreValid = true;
-    if( tilesheetInEditor!=NULL)
+    if( tilesheetInEditor!=nullptr)
     {
         for(  int i =0; i < TILESHEET_DATA_FIELD_COUNT; i++)
         {
-            if( tsDataFields[i]!=NULL)
+            if( tsDataFields[i]!=nullptr)
             {
                 if( !tsDataFields[i]->is_valid() )
                 {
@@ -973,7 +973,7 @@ void tilesheetResource::process_data_fields()
 void tilesheetResource::prerender_self( )
 {
     standardEditableGameResource::prerender_self( );
-    if( preloadCheckBox!=NULL)
+    if( preloadCheckBox!=nullptr)
     {
         preloadCheckBox->prerender_self( );
     }
@@ -985,9 +985,9 @@ void tilesheetResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
     cam = gpe::camera_find(cam);
     int i;
     bool editorHasControl = false;
-    if( cam!=NULL && view_space!=NULL )
+    if( cam!=nullptr && view_space!=nullptr )
     {
-        if( panel_main_editor!=NULL )
+        if( panel_main_editor!=nullptr )
         {
             panel_main_editor->clear_panel();
             panel_main_editor->add_gui_element(renameBox,true);
@@ -1003,7 +1003,7 @@ void tilesheetResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
             //processes the tile data fields
             for(  i =0; i < TILESHEET_DATA_FIELD_COUNT; i++)
             {
-                if( tsDataFields[i]!=NULL)
+                if( tsDataFields[i]!=nullptr)
                 {
                     panel_main_editor->add_gui_element(tsDataFields[i],true);
                 }
@@ -1016,7 +1016,7 @@ void tilesheetResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
             editorHasControl = tsPreviewer->hasScrollControl;
             if( !editorHasControl )
             {
-                panel_main_editor->process_self(NULL, NULL);
+                panel_main_editor->process_self(nullptr, nullptr);
             }
             else
             {
@@ -1037,7 +1037,7 @@ void tilesheetResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
                     load_resource();
                 }
             }
-            else if( loadResource_button!=NULL && loadResource_button->is_clicked() )
+            else if( loadResource_button!=nullptr && loadResource_button->is_clicked() )
             {
                 std::string new_file_name = pawgui::get_filename_open_from_popup("Load Your tilesheet Image","Image",pawgui::main_settings->fileOpenTilesheetDir);
                 if( (int)new_file_name.size() > 3)
@@ -1045,17 +1045,17 @@ void tilesheetResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
                     load_image(new_file_name);
                 }
             }
-            else if( refreshResourceData_button!=NULL && refreshResourceData_button->is_clicked() )
+            else if( refreshResourceData_button!=nullptr && refreshResourceData_button->is_clicked() )
             {
-                if( tilesheetInEditor!=NULL  )
+                if( tilesheetInEditor!=nullptr  )
                 {
                     resourcePostProcessed = false;
                     load_resource();
                 }
             }
-            else if( transformResource_button!=NULL && transformResource_button->is_clicked() )
+            else if( transformResource_button!=nullptr && transformResource_button->is_clicked() )
             {
-                if( tilesheetInEditor!=NULL && tilesheetInEditor->tsImage!=NULL)
+                if( tilesheetInEditor!=nullptr && tilesheetInEditor->tsImage!=nullptr)
                 {
                     if( tilesheetInEditor->tsImage->get_width() > 0 && tilesheetInEditor->tsImage->get_height() > 0)
                     {
@@ -1081,7 +1081,7 @@ void tilesheetResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
                                     }
                                 }
                                 delete foundBGColor;
-                                foundBGColor = NULL;
+                                foundBGColor = nullptr;
 
                             }
                             else if( menuSelection==1 )
@@ -1103,15 +1103,15 @@ void tilesheetResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
                     }
                 }
             }
-            else if( openExternalEditor_button!=NULL && openExternalEditor_button->is_clicked() )
+            else if( openExternalEditor_button!=nullptr && openExternalEditor_button->is_clicked() )
             {
-                if( tilesheetInEditor!=NULL )
+                if( tilesheetInEditor!=nullptr )
                 {
                     if( gpe::main_file_url_manager->file_exists(tilesheetInEditor->file_nameLocation ) )
                     {
                         std::string external_editor_program = "";
 
-                        if( main_editor_settings!=NULL && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]!=NULL)
+                        if( main_editor_settings!=nullptr && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]!=nullptr)
                         {
                             external_editor_program = main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]->get_string();
                         }
@@ -1131,7 +1131,7 @@ void tilesheetResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
             }
         }
 
-        if(renameBox!=NULL)
+        if(renameBox!=nullptr)
         {
             if( renameBox->get_string()!=resource_name)
             {
@@ -1139,7 +1139,7 @@ void tilesheetResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
             }
         }
         process_data_fields();
-        if( tsPreviewer!=NULL && tilesheetInEditor!=NULL)
+        if( tsPreviewer!=nullptr && tilesheetInEditor!=nullptr)
         {
             tsPreviewer->set_coords(0,0);
             tsPreviewer->set_width(view_space->w );
@@ -1165,9 +1165,9 @@ void tilesheetResource::render_self( gpe::shape_rect *view_space, gpe::shape_rec
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
     bool texturePreviewIsRendered = false;
-    if( cam!=NULL && view_space!=NULL )
+    if( cam!=nullptr && view_space!=nullptr )
     {
-        if( tsPreviewer!=NULL)
+        if( tsPreviewer!=nullptr)
         {
             tsPreviewer->render_self( view_space,cam);
         }
@@ -1179,7 +1179,7 @@ void tilesheetResource::render_self( gpe::shape_rect *view_space, gpe::shape_rec
 
 void tilesheetResource::save_resource(std::string file_path, int backupId)
 {
-    if( main_gpe_splash_page != NULL )
+    if( main_gpe_splash_page != nullptr )
     {
         main_gpe_splash_page->update_submessages( "Saving Tilesheet",resource_name );
     }
@@ -1205,7 +1205,7 @@ void tilesheetResource::save_resource(std::string file_path, int backupId)
         {
             write_header_on_file(&newSaveDataFile);
 
-            if( tilesheetInEditor!=NULL)
+            if( tilesheetInEditor!=nullptr)
             {
                 std::string resFileLocation = stg_ex::get_short_filename(tilesheetInEditor->file_nameLocation,true);
                 newSaveDataFile << "ImageLocation="+resFileLocation+"\n";
@@ -1228,7 +1228,7 @@ void tilesheetResource::save_resource(std::string file_path, int backupId)
                     }
                 }
             }
-            if(preloadCheckBox!=NULL)
+            if(preloadCheckBox!=nullptr)
             {
                 newSaveDataFile << "Preload=" << preloadCheckBox->is_clicked() << "\n";
             }
@@ -1240,7 +1240,7 @@ void tilesheetResource::save_resource(std::string file_path, int backupId)
             {
                 newSaveDataFile << "TilesheetData[" << stg_ex::int_to_string(i)<< "]=";
 
-                if( tsDataFields[i]!=NULL)
+                if( tsDataFields[i]!=nullptr)
                 {
                     newSaveDataFile << stg_ex::int_to_string( tsDataFields[i]->get_held_number() )<<"\n";
                 }
@@ -1289,7 +1289,7 @@ void tilesheetResource::update_box(int x_new, int y_new, int newW, int newH)
 
 bool tilesheetResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn)
 {
-    if( fileTarget!=NULL)
+    if( fileTarget!=nullptr)
     {
         if( fileTarget->is_open() )
         {

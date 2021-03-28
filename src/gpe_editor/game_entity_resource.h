@@ -47,7 +47,7 @@ public:
     objectResParentChainLink( int origObjectType);
     ~objectResParentChainLink();
     std::vector< int> heldChains;
-    void grab_chain( objectResParentChainLink * chainIn = NULL);
+    void grab_chain( objectResParentChainLink * chainIn = nullptr);
     bool is_inchain(int chainId);
 };
 
@@ -87,7 +87,7 @@ public:
     pawgui::widget_button_icon * editCompnent_button;
     pawgui::widget_button_icon * component_settings_button;
 
-    gameEntityResource(pawgui::widget_resource_container * pFolder = NULL);
+    gameEntityResource(pawgui::widget_resource_container * pFolder = nullptr);
     ~gameEntityResource();
     void add_component(std::string newComponentData);
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
@@ -98,12 +98,12 @@ public:
     bool include_local_files( std::string pBuildDir , int buildType );
     bool is_build_ready();
     void integrate_into_syntax();
-    void manage_components( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void manage_components( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
     void prerender_self( );
     void load_resource(std::string file_path = "");
-    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+    void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
 
     void save_resource(std::string file_path = "", int backupId = -1);
     int search_for_string(std::string needle);

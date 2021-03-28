@@ -37,7 +37,7 @@ SOFTWARE.
 #include "gpe_project_resources.h"
 #include "project_properties.h"
 
-GPE_ProjectFolder * current_project = NULL;
+GPE_ProjectFolder * current_project = nullptr;
 
 GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directory_string, std::string new_file_name, std::string projectLanguageIn, bool createBlankScene )
 {
@@ -67,13 +67,13 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directory_str
     //Changes Project Language if name is found...
     if( (int)projectLanguageIn.size() > 0 )
     {
-        pawgui::syntax_language * tLanguage  = NULL;
+        pawgui::syntax_language * tLanguage  = nullptr;
         int maxLanguageCount = pawgui::main_syntax_highlighter->get_language_count();
         for( int cLanguage = 0; cLanguage < maxLanguageCount; cLanguage++ )
         {
             tLanguage = pawgui::main_syntax_highlighter->get_language_object(cLanguage);
-            //checks if the found lanuage isnt NULL and is a coding language
-            if( tLanguage!=NULL && tLanguage->isCodingLanguage)
+            //checks if the found lanuage isnt nullptr and is a coding language
+            if( tLanguage!=nullptr && tLanguage->isCodingLanguage)
             {
                 //if its regular name or short name matches. We end loop and change our project language.
                 if( projectLanguageIn == tLanguage->languageName || projectLanguageIn == tLanguage->languageShortName )
@@ -89,24 +89,24 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directory_str
     projectName = name;
     projectStartDirectoryName = projectDirectory = directory_string;
     projectFileName = new_file_name;
-    RESC_project_FOLDER = NULL;
-    RESC_ANIMATIONS = NULL;
-    RESC_TEXTURES = NULL;
-    RESC_TILESHEETS = NULL;
-    RESC_3DMODELS = NULL;
-    RESC_AUDIO = NULL;
-    RESC_VIDEOS = NULL;
-    RESC_FUNCTIONS = NULL;
-    RESC_ENTITIES = NULL;
-    RESC_CLASSES = NULL;
-    RESC_PATHS = NULL;
-    RESC_SCENES = NULL;
-    RESC_ACHIEVEMENTS = NULL;
-    RESC_FONTS = NULL;
-    RESC_SHADERS = NULL;
+    RESC_project_FOLDER = nullptr;
+    RESC_ANIMATIONS = nullptr;
+    RESC_TEXTURES = nullptr;
+    RESC_TILESHEETS = nullptr;
+    RESC_3DMODELS = nullptr;
+    RESC_AUDIO = nullptr;
+    RESC_VIDEOS = nullptr;
+    RESC_FUNCTIONS = nullptr;
+    RESC_ENTITIES = nullptr;
+    RESC_CLASSES = nullptr;
+    RESC_PATHS = nullptr;
+    RESC_SCENES = nullptr;
+    RESC_ACHIEVEMENTS = nullptr;
+    RESC_FONTS = nullptr;
+    RESC_SHADERS = nullptr;
     for( int i = 0; i < gpe::resource_type_max; i++)
     {
-        RESC_ALL[i] = NULL;
+        RESC_ALL[i] = nullptr;
         CREATED_RESOURCE_COUNT[i] = 0;
     }
     RESC_project_FOLDER = new pawgui::widget_resource_container(projectFileName,projectName,pawgui::restype_projfolder,-1,true, -1, pawgui::restype_projfolder);
@@ -128,7 +128,7 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directory_str
     RESC_SCENES =  RESC_ALL[ gpe::resource_type_scene] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_scene,"Scenes", increment_resouce_count(), pawgui::restype_superfolder);
     //RESC_ACHIEVEMENTS =  RESC_ALL[ gpe::resource_type_achievement] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_achievement,"Achievements", increment_resouce_count(), pawgui::restype_superfolder);
     RESC_FONTS =  RESC_ALL[ gpe::resource_type_font] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_font,"Fonts", increment_resouce_count(), pawgui::restype_superfolder);
-    RESC_DICTIONARIES =  RESC_ALL[ gpe::resource_type_dictionary]  = NULL;//=RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_dictionary,"Dictionaries", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_DICTIONARIES =  RESC_ALL[ gpe::resource_type_dictionary]  = nullptr;//=RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_dictionary,"Dictionaries", increment_resouce_count(), pawgui::restype_superfolder);
 
     int projectPropertiesId = increment_resouce_count();
     RESC_project_SETTINGS = new pawgui::widget_resource_container(projectFileName, gpe::resource_type_names[ gpe::resource_type_project_settings], gpe::resource_type_project_settings,projectPropertiesId,false, projectPropertiesId,-1);
@@ -150,26 +150,26 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directory_str
 GPE_ProjectFolder::~GPE_ProjectFolder()
 {
     gpe::error_log->report("Deleting RESC_project_FOLDER" );
-    if( RESC_project_FOLDER!=NULL )
+    if( RESC_project_FOLDER!=nullptr )
     {
         delete RESC_project_FOLDER;
-        RESC_project_FOLDER = NULL;
+        RESC_project_FOLDER = nullptr;
     }
 
-    if( projectRSM!=NULL )
+    if( projectRSM!=nullptr )
     {
         delete projectRSM;
-        projectRSM = NULL;
+        projectRSM = nullptr;
     }
 }
 
 bool GPE_ProjectFolder::add_project_function(std::string nName, std::string nDescription,std::string  nParameters, std::string tFunctionReturnType,std::string nScope)
 {
-    pawgui::syntax_compiler_term * tTerm = NULL;
+    pawgui::syntax_compiler_term * tTerm = nullptr;
     for( int i = (int)projectFunctions.size()-1; i>=0; i--)
     {
         tTerm = projectFunctions[i];
-        if( tTerm!=NULL)
+        if( tTerm!=nullptr)
         {
             if( tTerm->termstring==nName)
             {
@@ -184,11 +184,11 @@ bool GPE_ProjectFolder::add_project_function(std::string nName, std::string nDes
 
 bool GPE_ProjectFolder::add_project_keyword(std::string nName, std::string nDescription,int nType,std::string nScope)
 {
-    pawgui::syntax_compiler_term * tTerm = NULL;
+    pawgui::syntax_compiler_term * tTerm = nullptr;
     for( int i = (int)projectKeywords.size()-1; i>=0; i--)
     {
         tTerm = projectKeywords[i];
-        if( tTerm!=NULL)
+        if( tTerm!=nullptr)
         {
             if( tTerm->termstring==nName)
             {
@@ -203,7 +203,7 @@ bool GPE_ProjectFolder::add_project_keyword(std::string nName, std::string nDesc
 
 bool GPE_ProjectFolder::check_names_against_keywords( pawgui::widget_resource_container * resContainer )
 {
-    if( resContainer == NULL)
+    if( resContainer == nullptr)
     {
         return true;
     }
@@ -230,12 +230,12 @@ bool GPE_ProjectFolder::check_names_against_keywords( pawgui::widget_resource_co
         main_editor_log->log_build_comment("Checking ["+resContainer->get_name()+"] names.");
     }
 
-    pawgui::widget_resource_container * tempContainer = NULL;
+    pawgui::widget_resource_container * tempContainer = nullptr;
     int resLimit = resContainer->get_size();
     for( int iRes = 0; iRes < resLimit; iRes++)
     {
         tempContainer = resContainer->get_resource_at( iRes );
-        if( tempContainer!=NULL)
+        if( tempContainer!=nullptr)
         {
             if( check_names_against_keywords(tempContainer) == false )
             {
@@ -248,14 +248,14 @@ bool GPE_ProjectFolder::check_names_against_keywords( pawgui::widget_resource_co
 
 void GPE_ProjectFolder::clear_project_functions()
 {
-    pawgui::syntax_compiler_term * tTerm = NULL;
+    pawgui::syntax_compiler_term * tTerm = nullptr;
     for( int i = (int)projectFunctions.size()-1; i>=0; i--)
     {
         tTerm = projectFunctions[i];
-        if( tTerm!=NULL)
+        if( tTerm!=nullptr)
         {
             delete tTerm;
-            tTerm = NULL;
+            tTerm = nullptr;
         }
     }
     projectFunctions.clear();
@@ -263,14 +263,14 @@ void GPE_ProjectFolder::clear_project_functions()
 
 void GPE_ProjectFolder::clear_project_keywords()
 {
-    pawgui::syntax_compiler_term * tTerm = NULL;
+    pawgui::syntax_compiler_term * tTerm = nullptr;
     for( int i = (int)projectKeywords.size()-1; i>=0; i--)
     {
         tTerm = projectKeywords[i];
-        if( tTerm!=NULL)
+        if( tTerm!=nullptr)
         {
             delete tTerm;
-            tTerm = NULL;
+            tTerm = nullptr;
         }
     }
     projectKeywords.clear();
@@ -278,7 +278,7 @@ void GPE_ProjectFolder::clear_project_keywords()
 
 bool GPE_ProjectFolder::export_and_play_native(bool launchProgram)
 {
-    if( RESC_project_SETTINGS!=NULL && RESC_project_SETTINGS->get_held_resource()!=NULL)
+    if( RESC_project_SETTINGS!=nullptr && RESC_project_SETTINGS->get_held_resource()!=nullptr)
     {
         projectPropertiesResource * project_settingsObject = (projectPropertiesResource*)RESC_project_SETTINGS->get_held_resource();
         return project_settingsObject->export_and_play_native(launchProgram);
@@ -332,7 +332,7 @@ bool GPE_ProjectFolder::clean_build_folder( int buildMetaTemplate )
                 return filesDeleted;
             }
         }
-        else if( main_editor_log!=NULL )
+        else if( main_editor_log!=nullptr )
         {
             main_editor_log->log_build_line("---");
             main_editor_log->log_build_line("Cleaning Project ["+projectName+" build folder:");
@@ -346,7 +346,7 @@ bool GPE_ProjectFolder::clean_build_folder( int buildMetaTemplate )
 
 pawgui::widget_resource_container *  GPE_ProjectFolder::create_blank_folder(pawgui::widget_resource_container * folderContainer, std::string new_name, int newResId )
 {
-    if( folderContainer!=NULL )
+    if( folderContainer!=nullptr )
     {
         if( newResId < 0)
         {
@@ -361,7 +361,7 @@ pawgui::widget_resource_container *  GPE_ProjectFolder::create_blank_folder(pawg
         //folderContainer->open_folder();
         return newFolder;
     }
-    return NULL;
+    return nullptr;
 }
 
 pawgui::widget_resource_container *  GPE_ProjectFolder::create_blank_resource(int rNewType, pawgui::widget_resource_container * folderContainer, std::string new_name, int newResId )
@@ -369,7 +369,7 @@ pawgui::widget_resource_container *  GPE_ProjectFolder::create_blank_resource(in
     if( rNewType >= 0 && rNewType <= gpe::resource_type_achievement )
     {
         pawgui::widget_resource_container * RES_FOLDER_HOLDER = RESC_ALL[rNewType];
-        if(RES_FOLDER_HOLDER!=NULL)
+        if(RES_FOLDER_HOLDER!=nullptr)
         {
             CREATED_RESOURCE_COUNT[rNewType]+=1;
             int resourceNumb = CREATED_RESOURCE_COUNT[rNewType];
@@ -422,18 +422,18 @@ pawgui::widget_resource_container *  GPE_ProjectFolder::create_blank_resource(in
                     newProjectResource = new tilesheetResource(RESC_project_FOLDER);
                 break;
                 default:
-                    newProjectResource = NULL;
+                    newProjectResource = nullptr;
                 break;
             }
 
-            if( folderContainer==NULL )
+            if( folderContainer==nullptr )
             {
                 folderContainer = RES_FOLDER_HOLDER;
             }
 
-            if( folderContainer!=NULL )
+            if( folderContainer!=nullptr )
             {
-                if( newProjectResource!=NULL)
+                if( newProjectResource!=nullptr)
                 {
                     if( newResId < 0)
                     {
@@ -458,7 +458,7 @@ pawgui::widget_resource_container *  GPE_ProjectFolder::create_blank_resource(in
             }
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 pawgui::widget_resource_container *  GPE_ProjectFolder::create_blank_audio( pawgui::widget_resource_container * folderContainer,std::string new_name, int newResId  )
@@ -585,22 +585,22 @@ bool GPE_ProjectFolder::export_project_cpp(std::string projectBuildDirectory, st
         main_editor_log->log_build_error("Unable to detect BuildSystem. Exiting build now...");
         return false;
     }
-    if( GPE_CPP_BUILDER_SETTINGS == NULL)
+    if( GPE_CPP_BUILDER_SETTINGS == nullptr)
     {
         main_editor_log->log_build_error("Unable to detect GPE_CPP_BUILDER_SETTINGS. Exciting build now...");
-        return NULL;
+        return false;
     }
 
     main_editor_log->log_build_line("Seeking Build System ["+ gpeBuilderName+"]...");
     gpeCPPBuildHolder * currentBuildSystem = GPE_CPP_BUILDER_SETTINGS->find_build_system( gpeBuilderName );
 
-    if( currentBuildSystem == NULL)
+    if( currentBuildSystem == nullptr)
     {
         main_editor_log->log_build_error("Unable to detect BuildSystem["+gpeBuilderName+"]. Exciting build now...");
         return false;
     }
 
-    gpeCPPSubsytemHolder * tempSubSystem = NULL;
+    gpeCPPSubsytemHolder * tempSubSystem = nullptr;
     int cBuildSubsystemcount = (int)currentBuildSystem->mySubsystems.size();
     main_editor_log->log_build_line("Build subsystems detected ["+ stg_ex::int_to_string(cBuildSubsystemcount)+"]..");
 
@@ -610,11 +610,11 @@ bool GPE_ProjectFolder::export_project_cpp(std::string projectBuildDirectory, st
     for( int i = 0; i < cBuildSubsystemcount; i++)
     {
         tempSubSystem = currentBuildSystem->mySubsystems[i];
-        if( tempSubSystem !=NULL)
+        if( tempSubSystem !=nullptr)
         {
             main_editor_log->log_build_line("--- Initiating Build Subsystem ["+ tempSubSystem->subsystemName +"] ---");
 
-            if( tempSubSystem->systemProgramTemplateFile!=NULL && tempSubSystem->systemProgramTemplateFile!=NULL )
+            if( tempSubSystem->systemProgramTemplateFile!=nullptr && tempSubSystem->systemProgramTemplateFile!=nullptr )
             {
                 buildScriptFile = tempSubSystem->systemProgramTemplateFile->get_string();
                 buildTemplateFile = tempSubSystem->systemProgramTemplateFile->get_string();
@@ -701,7 +701,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
     int build_screen_height = 480;
 
     pawgui::main_syntax_highlighter->begin_compiling();
-    if( main_editor_log!=NULL)
+    if( main_editor_log!=nullptr)
     {
         if( buildMetaTemplate!= gpe::system_os_windows && buildMetaTemplate!= gpe::system_os_mac  && buildMetaTemplate!= gpe::system_os_linux )
         {
@@ -710,10 +710,10 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
         }
         main_editor_log->log_build_line("Exporting JS Based Project...");
 
-        if( firstSceneContainer!=NULL)
+        if( firstSceneContainer!=nullptr)
         {
             std::string projectFirstLevelName = firstSceneContainer->get_name();
-            if( firstObjectContainer!=NULL && pawgui::main_syntax_highlighter!=NULL)
+            if( firstObjectContainer!=nullptr && pawgui::main_syntax_highlighter!=nullptr)
             {
 
                 if( projectBuildDirectory.empty() )
@@ -744,14 +744,14 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
                     hadSaveErrors = true;
                 }
 
-                projectPropertiesResource * project_settingsObject = NULL;
+                projectPropertiesResource * project_settingsObject = nullptr;
 
-                if( RESC_project_SETTINGS!=NULL && RESC_project_SETTINGS->get_held_resource() !=NULL)
+                if( RESC_project_SETTINGS!=nullptr && RESC_project_SETTINGS->get_held_resource() !=nullptr)
                 {
                     project_settingsObject  = (projectPropertiesResource*)RESC_project_SETTINGS->get_held_resource();
                 }
 
-                if( project_settingsObject == NULL)
+                if( project_settingsObject == nullptr)
                 {
                     hadSaveErrors = true;
                 }
@@ -786,14 +786,14 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
 
                     if( buildMetaTemplate >=0 && buildMetaTemplate < gpe::system_os_max )
                     {
-                        if( main_gpe_splash_page!=NULL )
+                        if( main_gpe_splash_page!=nullptr )
                         {
                             main_gpe_splash_page->update_messages( GPE_BUILD_NAMES[buildMetaTemplate]+" Export", "Please Wait...", "DO NOT CLOSE" );
                         }
                     }
                     else
                     {
-                        if( main_gpe_splash_page!=NULL )
+                        if( main_gpe_splash_page!=nullptr )
                         {
                             main_gpe_splash_page->update_messages( "Unknown Export", "Please Wait...", "DO NOT CLOSE" );
                         }
@@ -926,9 +926,9 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
                             indexHTML5FILE << "<!--  If you have any problems reading this file please report it to help@pawbyte.com -->\n";
                             indexHTML5FILE << "    <head>\n";
                             /*
-                            if( buildMetaTemplate ==system_os_html5 && project_settingsObject->projectHtmlHeaderCode!=NULL)
+                            if( buildMetaTemplate ==system_os_html5 && project_settingsObject->projectHtmlHeaderCode!=nullptr)
                             {
-                                if( project_settingsObject->headerCodeBeforeGPECheckbox!=NULL && project_settingsObject->headerCodeBeforeGPECheckbox->is_clicked() )
+                                if( project_settingsObject->headerCodeBeforeGPECheckbox!=nullptr && project_settingsObject->headerCodeBeforeGPECheckbox->is_clicked() )
                                 {
                                     if( project_settingsObject->projectHtmlHeaderCode->has_content() )
                                     {
@@ -973,7 +973,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
                             indexHTML5FILE << "     </head>\n";
                             indexHTML5FILE << "     <body>\n";
                             indexHTML5FILE << "        <canvas id='gpeCanvas' width='auto' height='"<< build_screen_height << "' oncontextmenu='return false;'></canvas> \n";
-                            if( buildMetaTemplate == gpe::system_os_html5 && project_settingsObject->checkBoxShowPublisherInfo!=NULL)
+                            if( buildMetaTemplate == gpe::system_os_html5 && project_settingsObject->checkBoxShowPublisherInfo!=nullptr)
                             {
                                 if(project_settingsObject->checkBoxShowPublisherInfo->is_clicked() )
                                 {
@@ -987,7 +987,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
                                         indexHTML5FILE << "     <h3>" << project_settingsObject->projectGameDescriptionField->get_string() << "</h3>\n";
                                     }
 
-                                    if( project_settingsObject->projectGameNotes!=NULL)
+                                    if( project_settingsObject->projectGameNotes!=nullptr)
                                     {
                                         if( project_settingsObject->projectGameNotes->has_content() )
                                         {
@@ -1091,12 +1091,12 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
                                     sound_preload_count[ i_sound_format ] = 0;
                                 }
 
-                                if( RESC_project_SETTINGS!=NULL )
+                                if( RESC_project_SETTINGS!=nullptr )
                                 {
                                     indexJS_settingsFILE << "var Game_LayerMatrix = [];\n";
                                     indexJS_settingsFILE << "var Game_SelfCollideLayerList = [];\n";
                                     projectPropertiesResource * tProjectProps = (projectPropertiesResource *)RESC_project_SETTINGS->get_held_resource();
-                                    if( tProjectProps!=NULL)
+                                    if( tProjectProps!=nullptr)
                                     {
                                         int jLayerCol = 0;
                                         for( int iLayerRow = 0; iLayerRow < 32; iLayerRow++)
@@ -1187,14 +1187,14 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
                                 currentObjParents.clear();
                                 nextObjParents.clear();
 
-                                pawgui::widget_resource_container * tempContainer = NULL;
-                                pawgui::general_resource * tempHeldResource = NULL;
+                                pawgui::widget_resource_container * tempContainer = nullptr;
+                                pawgui::general_resource * tempHeldResource = nullptr;
                                 int maxResources = RESC_project_FOLDER->get_size();
 
                                 for( iRes = 0; iRes < maxResources; iRes++)
                                 {
                                     tempContainer = RESC_project_FOLDER->get_resource_at( iRes );
-                                    if( tempContainer!=NULL && tempContainer->get_held_resource()!=NULL )
+                                    if( tempContainer!=nullptr && tempContainer->get_held_resource()!=nullptr )
                                     {
                                         tempHeldResource = tempContainer->get_held_resource();
                                         tempHeldResource->build_intohtml5_file(&indexJSCustomGameFILE,0);
@@ -1259,7 +1259,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
                             pawgui::display_user_alert("Project Build Error!","Unable to create game [index.html] file...");
                             main_editor_log->log_build_error("Unable to create game [index.html] file...");
                         }
-                        if(RESC_project_FOLDER!=NULL)
+                        if(RESC_project_FOLDER!=nullptr)
                         {
                             //hadSaveErrors = RESC_project_FOLDER->write_data_into_projectfile(&indexHTML5FILE);
                         }
@@ -1297,7 +1297,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
 bool GPE_ProjectFolder::export_project_windows(std::string projectBuildDirectory, std::string gpeBuilderName , int buildBits, bool runGameOnCompile, bool inDebugMode, int nativeBuildType )
 {
     bool buildResult = false;
-    if( main_editor_log!=NULL)
+    if( main_editor_log!=nullptr)
     {
         main_editor_log->clear_build_log();
         main_editor_log->log_build_line("-------------- Building: ["+projectName+"] ["+GPE_BUILD_NAMES[gpe::system_os_windows]+" Export] (Compiler: Pawbitious Builder)---------------");
@@ -1312,7 +1312,7 @@ bool GPE_ProjectFolder::export_project_windows(std::string projectBuildDirectory
 
         if( myProjectLanguage == pawgui::program_language_cpp )
         {
-            if( main_gpe_splash_page != NULL )
+            if( main_gpe_splash_page != nullptr )
             {
                 main_gpe_splash_page->update_messages( "Exporting ["+projectName+"][Windows]", "Please wait...", "DO NOT CLOSE");
             }
@@ -1323,7 +1323,7 @@ bool GPE_ProjectFolder::export_project_windows(std::string projectBuildDirectory
         }
         else if( nativeBuildType!=native_option_none)
         {
-            if( main_gpe_splash_page != NULL )
+            if( main_gpe_splash_page != nullptr )
             {
                 main_gpe_splash_page->update_messages( "Exporting ["+projectName+"][Windows]", "Please wait...", "DO NOT CLOSE");
             }
@@ -1371,7 +1371,7 @@ bool GPE_ProjectFolder::export_project_windows(std::string projectBuildDirectory
 bool GPE_ProjectFolder::export_project_osx(std::string projectBuildDirectory,  std::string gpeBuilderName , int buildBits, bool runGameOnCompile, bool inDebugMode, int nativeBuildType)
 {
     bool buildResult = false;
-    if( main_editor_log!=NULL)
+    if( main_editor_log!=nullptr)
     {
         main_editor_log->clear_build_log();
         main_editor_log->log_build_line("- Building: ["+projectName+"] ["+GPE_BUILD_NAMES[ gpe::system_os_mac]+" Export] (Compiler: Pawbitious Builder)- ");
@@ -1386,7 +1386,7 @@ bool GPE_ProjectFolder::export_project_osx(std::string projectBuildDirectory,  s
 
         if( myProjectLanguage == pawgui::program_language_cpp )
         {
-            if( main_gpe_splash_page != NULL )
+            if( main_gpe_splash_page != nullptr )
             {
                 main_gpe_splash_page->update_messages( "Exporting ["+projectName+"][Windows]", "Please wait...", "DO NOT CLOSE");
             }
@@ -1406,7 +1406,7 @@ bool GPE_ProjectFolder::export_project_osx(std::string projectBuildDirectory,  s
         }
         else if( nativeBuildType!=native_option_none)
         {
-            if( main_gpe_splash_page != NULL )
+            if( main_gpe_splash_page != nullptr )
             {
                 main_gpe_splash_page->update_messages( "Exporting ["+projectName+"][OSX]", "Please wait...", "DO NOT CLOSE");
             }
@@ -1462,7 +1462,7 @@ bool GPE_ProjectFolder::export_project_osx(std::string projectBuildDirectory,  s
 bool GPE_ProjectFolder::export_project_linux(std::string projectBuildDirectory,  std::string gpeBuilderName , int buildBits, bool runGameOnCompile, bool inDebugMode, int nativeBuildType)
 {
     bool buildResult = false;
-    if( main_editor_log!=NULL)
+    if( main_editor_log!=nullptr)
     {
         main_editor_log->clear_build_log();
         main_editor_log->log_build_line("- Building: ["+projectName+"] ["+GPE_BUILD_NAMES[ gpe::system_os_linux]+" Export] (Compiler: Pawbitious Builder) --");
@@ -1477,7 +1477,7 @@ bool GPE_ProjectFolder::export_project_linux(std::string projectBuildDirectory, 
 
         if( myProjectLanguage == pawgui::program_language_cpp )
         {
-            if( main_gpe_splash_page != NULL )
+            if( main_gpe_splash_page != nullptr )
             {
                 main_gpe_splash_page->update_messages( "Exporting ["+projectName+"][Windows]", "Please wait...", "DO NOT CLOSE");
             }
@@ -1497,7 +1497,7 @@ bool GPE_ProjectFolder::export_project_linux(std::string projectBuildDirectory, 
         }
         else if( nativeBuildType!=native_option_none)
         {
-            if( main_gpe_splash_page != NULL )
+            if( main_gpe_splash_page != nullptr )
             {
                 main_gpe_splash_page->update_messages( "Exporting ["+projectName+"][Linux]", "Please wait...", "DO NOT CLOSE");
             }
@@ -1573,7 +1573,7 @@ std::string GPE_ProjectFolder::get_project_file_name()
 
 int GPE_ProjectFolder::get_resource_count()
 {
-    if( RESC_project_FOLDER!=NULL)
+    if( RESC_project_FOLDER!=nullptr)
     {
         return RESC_project_FOLDER->get_resource_count();
     }
@@ -1582,7 +1582,7 @@ int GPE_ProjectFolder::get_resource_count()
 
 bool GPE_ProjectFolder::include_local_files( pawgui::widget_resource_container * resContainer,std::string pBuildDir , int buildType )
 {
-    if( resContainer == NULL)
+    if( resContainer == nullptr)
     {
         return true;
     }
@@ -1600,12 +1600,12 @@ bool GPE_ProjectFolder::include_local_files( pawgui::widget_resource_container *
         main_editor_log->log_build_comment("Including ["+resContainer->get_name()+"] files.");
     }
 
-    pawgui::widget_resource_container * tempContainer = NULL;
+    pawgui::widget_resource_container * tempContainer = nullptr;
     int resLimit = resContainer->get_size();
     for( int iRes = 0; iRes < resLimit; iRes++)
     {
         tempContainer = resContainer->get_resource_at( iRes );
-        if( tempContainer!=NULL)
+        if( tempContainer!=nullptr)
         {
             if( include_local_files(tempContainer, pBuildDir, buildType ) == false )
             {
@@ -1618,7 +1618,7 @@ bool GPE_ProjectFolder::include_local_files( pawgui::widget_resource_container *
 
 bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
 {
-    if( main_gpe_splash_page != NULL )
+    if( main_gpe_splash_page != nullptr )
     {
         main_gpe_splash_page->update_messages( "Loading Project [" + projectName + "]", "Opening Project File","DO NOT CLOSE..." );
     }
@@ -1637,28 +1637,28 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
             if (newprofileFile.is_open())
             {
                 projectFileName = projectFileIn;
-                if( main_gpe_splash_page != NULL )
+                if( main_gpe_splash_page != nullptr )
                 {
                     main_gpe_splash_page->update_submessages( "Reading Project File","DO NOT CLOSE..." );
                 }
-                pawgui::widget_resource_container * currentResFolder = NULL;
-                pawgui::widget_resource_container * tempResFolder = NULL;
-                pawgui::widget_resource_container * containerFolderToEdit = NULL;
-                pawgui::widget_resource_container * newContainer = NULL;
-                animationResource * tempSprRes = NULL;
-                textureResource * tempTexRes = NULL;
-                tilesheetResource * tempTstRes = NULL;
-                audioResource * tempAudRes = NULL;
-                videoResource * tempVidRes = NULL;
-                gamePathResource * tempPathRes = NULL;
-                lightResource * tempLightRes = NULL;
-                particleResource * tempEmitterRes = NULL;
-                functionResource * tempFuncRes = NULL;
-                classResource *    tempClassRes = NULL;
-                gameEntityResource * tempObjRes = NULL;
-                gameSceneResource * tempScnRes = NULL;
-                //achievementResource * tempAchRes = NULL;
-                fontResource * tempFntRes = NULL;
+                pawgui::widget_resource_container * currentResFolder = nullptr;
+                pawgui::widget_resource_container * tempResFolder = nullptr;
+                pawgui::widget_resource_container * containerFolderToEdit = nullptr;
+                pawgui::widget_resource_container * newContainer = nullptr;
+                animationResource * tempSprRes = nullptr;
+                textureResource * tempTexRes = nullptr;
+                tilesheetResource * tempTstRes = nullptr;
+                audioResource * tempAudRes = nullptr;
+                videoResource * tempVidRes = nullptr;
+                gamePathResource * tempPathRes = nullptr;
+                lightResource * tempLightRes = nullptr;
+                particleResource * tempEmitterRes = nullptr;
+                functionResource * tempFuncRes = nullptr;
+                classResource *    tempClassRes = nullptr;
+                gameEntityResource * tempObjRes = nullptr;
+                gameSceneResource * tempScnRes = nullptr;
+                //achievementResource * tempAchRes = nullptr;
+                fontResource * tempFntRes = nullptr;
                 std::string firstChar="";
                 std::string key_string="";
                 std::string valstring="";
@@ -1779,10 +1779,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                         if( (int)valstring.size()>0)
                                         {
                                             tempResFolder = RESC_project_FOLDER->find_resource_from_name(valstring,false);
-                                            if( tempResFolder!=NULL)
+                                            if( tempResFolder!=nullptr)
                                             {
                                                 containerFolderToEdit = currentResFolder = tempResFolder;
-                                                tempResFolder = NULL;
+                                                tempResFolder = nullptr;
                                             }
                                         }
                                     }
@@ -1790,7 +1790,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                 else if(key_string == "[folder")
                                 {
                                     valstring = currLine.substr(equalPos+1,endBracketPos-equalPos-1);
-                                    if( (int)valstring.size()>0 && containerFolderToEdit!=NULL)
+                                    if( (int)valstring.size()>0 && containerFolderToEdit!=nullptr)
                                     {
                                         endBracketPos=currLine.find_first_of("]");
                                         if(endBracketPos!=(int)std::string::npos)
@@ -1801,7 +1801,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                                 newresource_name = stg_ex::split_first_string(valstring,',');
                                                 foundResGlobalId = stg_ex::string_to_int(valstring,-1);
                                                 tempResFolder = containerFolderToEdit->find_resource_from_name(newresource_name,false);
-                                                if( tempResFolder!=NULL)
+                                                if( tempResFolder!=nullptr)
                                                 {
                                                     containerFolderToEdit = containerFolderToEdit->find_resource_from_name(newresource_name,false);
                                                 }
@@ -1818,10 +1818,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                     tempNewresource_name = stg_ex::split_first_string(valstring,',');
                                     foundResGlobalId = stg_ex::split_first_int(valstring,',');
                                     newContainer = create_blank_animation(containerFolderToEdit,tempNewresource_name,foundResGlobalId);
-                                    if( newContainer->get_held_resource()!=NULL)
+                                    if( newContainer->get_held_resource()!=nullptr)
                                     {
                                         tempSprRes = (animationResource * )newContainer->get_held_resource();
-                                        if( tempSprRes!=NULL)
+                                        if( tempSprRes!=nullptr)
                                         {
                                             tempSprRes->resourcePostProcessed = false;
                                             projectGameanimations.push_back(tempSprRes);
@@ -1833,10 +1833,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                     tempNewresource_name = stg_ex::split_first_string(valstring,',');
                                     foundResGlobalId = stg_ex::split_first_int(valstring,',');
                                     newContainer = create_blank_texture(containerFolderToEdit,tempNewresource_name,foundResGlobalId);
-                                    if( newContainer->get_held_resource()!=NULL)
+                                    if( newContainer->get_held_resource()!=nullptr)
                                     {
                                         tempTexRes = (textureResource * )newContainer->get_held_resource();
-                                        if( tempTexRes!=NULL)
+                                        if( tempTexRes!=nullptr)
                                         {
                                             tempTexRes->resourcePostProcessed = false;
                                             projectGameTextures.push_back(tempTexRes);
@@ -1848,10 +1848,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                     tempNewresource_name = stg_ex::split_first_string(valstring,',');
                                     foundResGlobalId = stg_ex::split_first_int(valstring,',');
                                     newContainer = create_blank_tilesheet(containerFolderToEdit,tempNewresource_name,foundResGlobalId);
-                                    if( newContainer->get_held_resource()!=NULL)
+                                    if( newContainer->get_held_resource()!=nullptr)
                                     {
                                         tempTstRes = (tilesheetResource * )newContainer->get_held_resource();
-                                        if( tempTstRes!=NULL)
+                                        if( tempTstRes!=nullptr)
                                         {
                                             tempTstRes->resourcePostProcessed = false;
                                             projectGameTilesheets.push_back(tempTstRes);
@@ -1863,10 +1863,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                     tempNewresource_name = stg_ex::split_first_string(valstring,',');
                                     foundResGlobalId = stg_ex::split_first_int(valstring,',');
                                     newContainer = create_blank_audio(containerFolderToEdit,tempNewresource_name,foundResGlobalId);
-                                    if( newContainer->get_held_resource()!=NULL)
+                                    if( newContainer->get_held_resource()!=nullptr)
                                     {
                                         tempAudRes = (audioResource * )newContainer->get_held_resource();
-                                        if( tempAudRes!=NULL)
+                                        if( tempAudRes!=nullptr)
                                         {
                                             tempAudRes->resourcePostProcessed = false;
                                             projectGameAudio.push_back( tempAudRes);
@@ -1878,10 +1878,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                     tempNewresource_name = stg_ex::split_first_string(valstring,',');
                                     foundResGlobalId = stg_ex::split_first_int(valstring,',');
                                     newContainer = create_blank_video(containerFolderToEdit,tempNewresource_name,foundResGlobalId);
-                                    if( newContainer->get_held_resource()!=NULL)
+                                    if( newContainer->get_held_resource()!=nullptr)
                                     {
                                         tempVidRes = (videoResource * )newContainer->get_held_resource();
-                                        if( tempVidRes!=NULL)
+                                        if( tempVidRes!=nullptr)
                                         {
                                             tempVidRes->resourcePostProcessed = false;
                                             projectGameVideos.push_back( tempVidRes);
@@ -1895,10 +1895,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                     gpe::error_log->report("Adding 2d light["+tempNewresource_name+"]...");
                                     foundResGlobalId = stg_ex::split_first_int(valstring,',');
                                     newContainer = create_blank_light(containerFolderToEdit,tempNewresource_name,foundResGlobalId);
-                                    if( newContainer->get_held_resource()!=NULL)
+                                    if( newContainer->get_held_resource()!=nullptr)
                                     {
                                         tempLightRes = (lightResource * )newContainer->get_held_resource();
-                                        if( tempLightRes!=NULL)
+                                        if( tempLightRes!=nullptr)
                                         {
                                             tempLightRes->resourcePostProcessed = false;
                                             projectLights2d.push_back( tempLightRes);
@@ -1912,10 +1912,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                     gpe::error_log->report("Adding particle emitter ["+tempNewresource_name+"]...");
                                     foundResGlobalId = stg_ex::split_first_int(valstring,',');
                                     newContainer = create_blank_emitter(containerFolderToEdit,tempNewresource_name,foundResGlobalId);
-                                    if( newContainer->get_held_resource()!=NULL)
+                                    if( newContainer->get_held_resource()!=nullptr)
                                     {
                                         tempEmitterRes = (particleResource * )newContainer->get_held_resource();
-                                        if( tempEmitterRes!=NULL)
+                                        if( tempEmitterRes!=nullptr)
                                         {
                                             tempEmitterRes->resourcePostProcessed = false;
                                             projectEmitters.push_back( tempEmitterRes);
@@ -1927,10 +1927,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                     tempNewresource_name = stg_ex::split_first_string(valstring,',');
                                     foundResGlobalId = stg_ex::split_first_int(valstring,',');
                                     newContainer = create_blank_path(containerFolderToEdit,tempNewresource_name,foundResGlobalId);
-                                    if( newContainer->get_held_resource()!=NULL)
+                                    if( newContainer->get_held_resource()!=nullptr)
                                     {
                                         tempPathRes = (gamePathResource * )newContainer->get_held_resource();
-                                        if( tempPathRes!=NULL)
+                                        if( tempPathRes!=nullptr)
                                         {
                                             tempPathRes->resourcePostProcessed = false;
                                             projectGamePaths.push_back( tempPathRes);
@@ -1942,10 +1942,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                     tempNewresource_name = stg_ex::split_first_string(valstring,',');
                                     foundResGlobalId = stg_ex::split_first_int(valstring,',');
                                     newContainer = create_blank_function(containerFolderToEdit,tempNewresource_name,foundResGlobalId);
-                                    if( newContainer->get_held_resource()!=NULL)
+                                    if( newContainer->get_held_resource()!=nullptr)
                                     {
                                         tempFuncRes = (functionResource * )newContainer->get_held_resource();
-                                        if( tempFuncRes!=NULL)
+                                        if( tempFuncRes!=nullptr)
                                         {
                                             tempFuncRes->resourcePostProcessed = false;
                                             projectGameFunctions.push_back( tempFuncRes);
@@ -1959,10 +1959,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                     gpe::error_log->report("Adding class ["+tempNewresource_name+"]...");
                                     foundResGlobalId = stg_ex::split_first_int(valstring,',');
                                     newContainer = create_blank_class(containerFolderToEdit,tempNewresource_name,foundResGlobalId);
-                                    if( newContainer->get_held_resource()!=NULL)
+                                    if( newContainer->get_held_resource()!=nullptr)
                                     {
                                         tempClassRes = (classResource * )newContainer->get_held_resource();
-                                        if( tempClassRes!=NULL)
+                                        if( tempClassRes!=nullptr)
                                         {
                                             tempClassRes->resourcePostProcessed = false;
                                             projectGameClasses.push_back( tempClassRes);
@@ -1974,10 +1974,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                     tempNewresource_name = stg_ex::split_first_string(valstring,',');
                                     foundResGlobalId = stg_ex::split_first_int(valstring,',');
                                     newContainer = create_blank_game_enttity(containerFolderToEdit,tempNewresource_name,foundResGlobalId);
-                                    if( newContainer->get_held_resource()!=NULL)
+                                    if( newContainer->get_held_resource()!=nullptr)
                                     {
                                         tempObjRes = (gameEntityResource * )newContainer->get_held_resource();
-                                        if( tempObjRes!=NULL)
+                                        if( tempObjRes!=nullptr)
                                         {
                                             tempObjRes->resourcePostProcessed = false;
                                             projectGameEntities.push_back(tempObjRes);
@@ -1989,10 +1989,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                     tempNewresource_name = stg_ex::split_first_string(valstring,',');
                                     foundResGlobalId = stg_ex::split_first_int(valstring,',');
                                     newContainer = create_blank_scene(containerFolderToEdit,tempNewresource_name,foundResGlobalId);
-                                    if( newContainer->get_held_resource()!=NULL)
+                                    if( newContainer->get_held_resource()!=nullptr)
                                     {
                                         tempScnRes = (gameSceneResource * )newContainer->get_held_resource();
-                                        if( tempScnRes!=NULL)
+                                        if( tempScnRes!=nullptr)
                                         {
                                             tempScnRes->scnPostProcessed = false;
                                             projectScenes.push_back(tempScnRes);
@@ -2004,10 +2004,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                     tempNewresource_name = stg_ex::split_first_string(valstring,',');
                                     foundResGlobalId = stg_ex::split_first_int(valstring,',');
                                     newContainer = create_blank_font(containerFolderToEdit,tempNewresource_name,foundResGlobalId);
-                                    if( newContainer->get_held_resource()!=NULL)
+                                    if( newContainer->get_held_resource()!=nullptr)
                                     {
                                         tempFntRes = (fontResource * )newContainer->get_held_resource();
-                                        if( tempFntRes!=NULL)
+                                        if( tempFntRes!=nullptr)
                                         {
                                             tempFntRes->resourcePostProcessed = false;
                                             projectGameFonts.push_back(tempFntRes);
@@ -2017,27 +2017,27 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                             }
                             else if( stg_ex::string_lower( currLine ) == "[/folder]")
                             {
-                                if( containerFolderToEdit!=NULL)
+                                if( containerFolderToEdit!=nullptr)
                                 {
-                                    if( containerFolderToEdit->parentResource!=NULL)
+                                    if( containerFolderToEdit->parentResource!=nullptr)
                                     {
                                         containerFolderToEdit = containerFolderToEdit->parentResource;
                                     }
                                     else
                                     {
-                                        containerFolderToEdit = NULL;
-                                        tempResFolder = NULL;
+                                        containerFolderToEdit = nullptr;
+                                        tempResFolder = nullptr;
                                     }
                                 }
                                 else
                                 {
-                                    tempResFolder = NULL;
+                                    tempResFolder = nullptr;
                                 }
                             }
                             else if( stg_ex::string_lower( currLine ) =="[/superfolder]")
                             {
-                                containerFolderToEdit = NULL;
-                                tempResFolder = NULL;
+                                containerFolderToEdit = nullptr;
+                                tempResFolder = nullptr;
                             }
                         }
                     }
@@ -2081,7 +2081,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 for( iItr = 0; iItr < (int)projectGameTextures.size(); iItr++)
                 {
                     tempTexRes = projectGameTextures[iItr];
-                    if( tempTexRes!=NULL)
+                    if( tempTexRes!=nullptr)
                     {
                         tempTexRes->load_resource();
                     }
@@ -2089,7 +2089,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 for( iItr = 0; iItr < (int)projectGameTilesheets.size(); iItr++)
                 {
                     tempTstRes = projectGameTilesheets[iItr];
-                    if( tempTstRes!=NULL)
+                    if( tempTstRes!=nullptr)
                     {
                         tempTstRes->load_resource();
                     }
@@ -2097,7 +2097,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 for( iItr = 0; iItr < (int)projectGameanimations.size(); iItr++)
                 {
                     tempSprRes = projectGameanimations[iItr];
-                    if( tempSprRes!=NULL)
+                    if( tempSprRes!=nullptr)
                     {
                         tempSprRes->load_resource();
                     }
@@ -2105,7 +2105,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 for( iItr = 0; iItr < (int)projectGameAudio.size(); iItr++)
                 {
                     tempAudRes = projectGameAudio[iItr];
-                    if( tempAudRes!=NULL)
+                    if( tempAudRes!=nullptr)
                     {
                         tempAudRes->load_resource();
                     }
@@ -2113,7 +2113,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 for( iItr = 0; iItr < (int)projectGameVideos.size(); iItr++)
                 {
                     tempVidRes = projectGameVideos[iItr];
-                    if( tempVidRes!=NULL)
+                    if( tempVidRes!=nullptr)
                     {
                         tempVidRes->load_resource();
                     }
@@ -2122,7 +2122,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 for( iItr = 0; iItr < (int)projectGamePaths.size(); iItr++)
                 {
                     tempPathRes = projectGamePaths[iItr];
-                    if( tempPathRes!=NULL)
+                    if( tempPathRes!=nullptr)
                     {
                         tempPathRes->load_resource();
                     }
@@ -2130,7 +2130,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 for( iItr = 0; iItr < (int)projectLights2d.size(); iItr++)
                 {
                     tempLightRes = projectLights2d[iItr];
-                    if( tempLightRes!=NULL)
+                    if( tempLightRes!=nullptr)
                     {
                         tempLightRes->load_resource();
                     }
@@ -2138,7 +2138,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 for( iItr = 0; iItr < (int)projectEmitters.size(); iItr++)
                 {
                     tempEmitterRes = projectEmitters[iItr];
-                    if( tempEmitterRes!=NULL)
+                    if( tempEmitterRes!=nullptr)
                     {
                         tempEmitterRes->load_resource();
                     }
@@ -2147,7 +2147,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 for( iItr = 0; iItr < (int)projectGameFonts.size(); iItr++)
                 {
                     tempFntRes = projectGameFonts[iItr];
-                    if( tempFntRes!=NULL)
+                    if( tempFntRes!=nullptr)
                     {
                         tempFntRes->load_resource();
                     }
@@ -2156,7 +2156,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 for( iItr = 0; iItr < (int)projectGameFunctions.size(); iItr++)
                 {
                     tempFuncRes = projectGameFunctions[iItr];
-                    if( tempFuncRes!=NULL)
+                    if( tempFuncRes!=nullptr)
                     {
                         tempFuncRes->load_resource();
                     }
@@ -2165,7 +2165,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 for( iItr = 0; iItr < (int)projectGameClasses.size(); iItr++)
                 {
                     tempClassRes = projectGameClasses[iItr];
-                    if( tempClassRes!=NULL)
+                    if( tempClassRes!=nullptr)
                     {
                         tempClassRes->load_resource();
                     }
@@ -2174,7 +2174,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 for( iItr = 0; iItr < (int)projectGameEntities.size(); iItr++)
                 {
                     tempObjRes = projectGameEntities[iItr];
-                    if( tempObjRes!=NULL)
+                    if( tempObjRes!=nullptr)
                     {
                         tempObjRes->load_resource();
                     }
@@ -2182,7 +2182,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 for( iItr = 0; iItr < (int)projectScenes.size(); iItr++)
                 {
                     tempScnRes = projectScenes[iItr];
-                    if( tempScnRes!=NULL)
+                    if( tempScnRes!=nullptr)
                     {
                         tempScnRes->load_resource();
                     }
@@ -2256,7 +2256,7 @@ void GPE_ProjectFolder::integrate_syntax()
 {
     clear_project_functions();
     clear_project_keywords();
-    if( RESC_project_FOLDER!=NULL)
+    if( RESC_project_FOLDER!=nullptr)
     {
         RESC_project_FOLDER->integrate_into_syntax();
     }
@@ -2339,25 +2339,25 @@ bool GPE_ProjectFolder::process_build_script(std::string scriptFName, std::strin
     template_inputFile.close();
     templateOutputFile.close();
 
-    if( scriptIniReader!=NULL )
+    if( scriptIniReader!=nullptr )
     {
         delete scriptIniReader;
-        scriptIniReader = NULL;
+        scriptIniReader = nullptr;
     }
     return true;
 }
 
 void GPE_ProjectFolder::refresh_gui_syntax()
 {
-    if( pawgui::main_syntax_highlighter!=NULL )
+    if( pawgui::main_syntax_highlighter!=nullptr )
     {
-        pawgui::syntax_compiler_term * tempTerm = NULL;
+        pawgui::syntax_compiler_term * tempTerm = nullptr;
         pawgui::main_syntax_highlighter->activeProjectFunctions.clear();
         int i = 0;
         for( i = 0; i < (int)projectFunctions.size(); i++ )
         {
             tempTerm = projectFunctions[i];
-            if( tempTerm!=NULL)
+            if( tempTerm!=nullptr)
             {
                 pawgui::main_syntax_highlighter->activeProjectFunctions.push_back( tempTerm);
             }
@@ -2366,7 +2366,7 @@ void GPE_ProjectFolder::refresh_gui_syntax()
         for( i = 0; i < (int)projectKeywords.size(); i++ )
         {
             tempTerm = projectKeywords[i];
-            if( tempTerm!=NULL)
+            if( tempTerm!=nullptr)
             {
                 pawgui::main_syntax_highlighter->activeProjectKeywords.push_back( tempTerm );
             }
@@ -2512,7 +2512,7 @@ bool GPE_ProjectFolder::save_project_as(std::string projectFilenew_name)
     bool hadSaveErrors = false;
     if( (int)projectFilenew_name.size()>3)
     {
-        if( main_gpe_splash_page != NULL )
+        if( main_gpe_splash_page != nullptr )
         {
             main_gpe_splash_page->update_messages( "Saving Project [" + projectName + "]", "Please Wait...","DO NOT CLOSE..." );
         }
@@ -2564,7 +2564,7 @@ bool GPE_ProjectFolder::save_project_as(std::string projectFilenew_name)
                 {
                     pawgui::display_user_alert("Error!","Unable to save project("+projectFileName+")");
                 }
-                if(RESC_project_FOLDER!=NULL)
+                if(RESC_project_FOLDER!=nullptr)
                 {
                     RESC_project_FOLDER->set_project_parent_name(projectFileName);
                 }
@@ -2600,7 +2600,7 @@ bool GPE_ProjectFolder::save_project_as(std::string projectFilenew_name)
                     myfile << "ProjectLanguage=CPP\n";
                 }
                 myfile << "ProjectIcon=" << projectIconName << "\n";
-                if(RESC_project_FOLDER!=NULL)
+                if(RESC_project_FOLDER!=nullptr)
                 {
                     hadSaveErrors = RESC_project_FOLDER->write_data_into_projectfile(&myfile);
                 }
@@ -2646,7 +2646,7 @@ bool GPE_ProjectFolder::save_project_as(std::string projectFilenew_name)
 
 bool GPE_ProjectFolder::save_project_settings()
 {
-    if( RESC_project_SETTINGS!=NULL)
+    if( RESC_project_SETTINGS!=nullptr)
     {
         std::string project_settingsFileName = projectStartDirectoryName+"gpe_project/project_settings.ini";
         std::ofstream myfile (project_settingsFileName.c_str() );
@@ -2664,14 +2664,14 @@ void GPE_ProjectFolder::set_project_language( std::string newProjectLanguage)
 {
     if( (int)newProjectLanguage.size() > 0 )
     {
-        pawgui::syntax_language * tLanguage  = NULL;
+        pawgui::syntax_language * tLanguage  = nullptr;
         bool languageChanged = false;
         int languageMax = pawgui::main_syntax_highlighter->get_language_count();
         for( int cLanguage = 0; cLanguage < languageMax; cLanguage++ )
         {
             tLanguage = pawgui::main_syntax_highlighter->get_language_object(cLanguage);
-            //checks if the found language isnt NULL and is a coding language
-            if( tLanguage!=NULL && tLanguage->isCodingLanguage)
+            //checks if the found language isnt nullptr and is a coding language
+            if( tLanguage!=nullptr && tLanguage->isCodingLanguage)
             {
                 //if its regular name or short name matches. We end loop and change our project language.
                 if( newProjectLanguage == tLanguage->languageName || newProjectLanguage == tLanguage->languageShortName )
@@ -2698,8 +2698,8 @@ void GPE_ProjectFolder::set_project_language_id( int projectLanguageId )
     if( projectLanguageId >= 0 )
     {
         pawgui::syntax_language * tLanguage = pawgui::main_syntax_highlighter->get_language_object_from_id( projectLanguageId );
-        //checks if the found lanuage isnt NULL and is a coding language
-        if( tLanguage!=NULL && tLanguage->isCodingLanguage)
+        //checks if the found lanuage isnt nullptr and is a coding language
+        if( tLanguage!=nullptr && tLanguage->isCodingLanguage)
         {
             myProjectLanguage = projectLanguageId;
             projectLanguage = tLanguage->languageShortName;

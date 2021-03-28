@@ -49,7 +49,7 @@ public:
     pawgui::widget_input_number * light_x2Pos;
     pawgui::widget_input_number * light_y2Pos;
 
-    GPE_SceneBasicLight( pawgui::widget_resource_container *pFolder = NULL);
+    GPE_SceneBasicLight( pawgui::widget_resource_container *pFolder = nullptr);
     ~GPE_SceneBasicLight();
     void add_typed_elements();
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );

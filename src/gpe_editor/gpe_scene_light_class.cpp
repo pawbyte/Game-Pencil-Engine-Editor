@@ -37,36 +37,36 @@ GPE_SceneBasicLight::GPE_SceneBasicLight(pawgui::widget_resource_container *pFol
     iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/lightbulb-o.png") ;
 
     branch_type_id = gpe::branch_type::LIGHT;
-    if( branchColor!=NULL)
+    if( branchColor!=nullptr)
     {
         branchColor->set_label("Light Color");
     }
     light_is_active = new pawgui::widget_checkbox("Is Active","Active When Scene Starts", true );
 
     projectParentFolder = pFolder;
-    if( projectParentFolder!=NULL)
+    if( projectParentFolder!=nullptr)
     {
         lightInEditor = new pawgui::widget_drop_down_resource_menu( "Light Source",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_light]),-1,true);
         lightInEditor->set_width(192);
     }
     else
     {
-        lightInEditor = NULL;
+        lightInEditor = nullptr;
     }
 }
 
 GPE_SceneBasicLight::~GPE_SceneBasicLight()
 {
-    if( light_is_active!=NULL )
+    if( light_is_active!=nullptr )
     {
         delete light_is_active;
-        light_is_active = NULL;
+        light_is_active = nullptr;
     }
 }
 
 void GPE_SceneBasicLight::add_typed_elements()
 {
-    if( panel_inspector!=NULL )
+    if( panel_inspector!=nullptr )
     {
         panel_inspector->add_gui_element( light_is_active, true );
     }
@@ -90,11 +90,11 @@ void GPE_SceneBasicLight::render_branch()
 
 bool GPE_SceneBasicLight::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn )
 {
-    if( fileTarget!=NULL && fileTarget->is_open() )
+    if( fileTarget!=nullptr && fileTarget->is_open() )
     {
         std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"   GPE_AmbientLight=";
-        if( x_posField!=NULL)
+        if( x_posField!=nullptr)
         {
             x_posField->make_valid_number(0);
             *fileTarget <<  x_posField->get_held_number() << ",";
@@ -103,7 +103,7 @@ bool GPE_SceneBasicLight::save_branch_data(std::ofstream * fileTarget, int neste
         {
             *fileTarget << "-0,";
         }
-        if( y_posField!=NULL)
+        if( y_posField!=nullptr)
         {
             y_posField->make_valid_number(0);
             *fileTarget << y_posField->get_held_number() << ",";
@@ -112,7 +112,7 @@ bool GPE_SceneBasicLight::save_branch_data(std::ofstream * fileTarget, int neste
         {
             *fileTarget << "-0,";
         }
-        if( branchColor!=NULL)
+        if( branchColor!=nullptr)
         {
             *fileTarget << branchColor->get_hex_string() << ",";
         }
@@ -120,7 +120,7 @@ bool GPE_SceneBasicLight::save_branch_data(std::ofstream * fileTarget, int neste
         {
             *fileTarget << "#FFFF00,";
         }
-        if( branchAlpha!=NULL)
+        if( branchAlpha!=nullptr)
         {
             *fileTarget << stg_ex::int_to_string( branchAlpha->get_value() )<< ",";
         }
@@ -128,7 +128,7 @@ bool GPE_SceneBasicLight::save_branch_data(std::ofstream * fileTarget, int neste
         {
             *fileTarget << "255,";
         }
-        if( light_is_active!=NULL)
+        if( light_is_active!=nullptr)
         {
             *fileTarget << light_is_active->is_clicked() << ",";
         }

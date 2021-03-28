@@ -39,14 +39,14 @@ GPE_SceneAnimation::GPE_SceneAnimation( pawgui::widget_resource_container *pFold
 
     projectParentFolder = pFolder;
 
-    if( projectParentFolder!=NULL)
+    if( projectParentFolder!=nullptr)
     {
         animationInEditor = new pawgui::widget_drop_down_resource_menu( "Animation",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_animation]),-1,true);
         animationInEditor->set_width(192);
     }
     else
     {
-        animationInEditor = NULL;
+        animationInEditor = nullptr;
     }
     branch_type_id = gpe::branch_type::ANIMATION;
     x_posField = new pawgui::widget_input_number("",true, 0 );
@@ -59,7 +59,7 @@ GPE_SceneAnimation::GPE_SceneAnimation( pawgui::widget_resource_container *pFold
 
 
     animationId = -1;
-    animRes = NULL;
+    animRes = nullptr;
     animSpeed = 1;
     x_scale = 1;
     y_scale = 1;
@@ -74,41 +74,41 @@ GPE_SceneAnimation::GPE_SceneAnimation( pawgui::widget_resource_container *pFold
 
 GPE_SceneAnimation::~GPE_SceneAnimation()
 {
-    if( startPositionField!=NULL)
+    if( startPositionField!=nullptr)
     {
         delete startPositionField;
-        startPositionField = NULL;
+        startPositionField = nullptr;
     }
-    if( x_posField!=NULL)
+    if( x_posField!=nullptr)
     {
         delete x_posField;
-        x_posField = NULL;
+        x_posField = nullptr;
     }
 
-    if( y_posField!=NULL)
+    if( y_posField!=nullptr)
     {
         delete y_posField;
-        y_posField = NULL;
+        y_posField = nullptr;
     }
-    if( useCustomSpeed!=NULL )
+    if( useCustomSpeed!=nullptr )
     {
         delete useCustomSpeed;
-        useCustomSpeed = NULL;
+        useCustomSpeed = nullptr;
     }
-    if( animationSpeedField!=NULL)
+    if( animationSpeedField!=nullptr)
     {
         delete animationSpeedField;
-        animationSpeedField = NULL;
+        animationSpeedField = nullptr;
     }
-    if( x_scaleField!=NULL)
+    if( x_scaleField!=nullptr)
     {
         delete x_scaleField;
-        x_scaleField = NULL;
+        x_scaleField = nullptr;
     }
-    if( y_scaleField!=NULL)
+    if( y_scaleField!=nullptr)
     {
         delete y_scaleField;
-        y_scaleField = NULL;
+        y_scaleField = nullptr;
     }
 }
 
@@ -120,7 +120,7 @@ bool GPE_SceneAnimation::build_intohtml5_file(std::ofstream * fileTarget, int le
 
 void GPE_SceneAnimation::add_typed_elements()
 {
-    if( panel_inspector!=NULL )
+    if( panel_inspector!=nullptr )
     {
         panel_inspector->add_gui_element( animationInEditor , true );
         panel_inspector->add_gui_element( startPositionField ,true );

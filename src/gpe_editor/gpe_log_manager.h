@@ -67,8 +67,8 @@ class log_manager: public pawgui::widget_basic
         void add_default_tab(  std::string name,  bool open = false );
         void clear_defaults();
         void clear_search_anchors();
-        void process_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect *cam=NULL);
-        void render_self( gpe::shape_rect * view_space=NULL, gpe::shape_rect * cam = NULL);
+        void process_self( gpe::shape_rect * view_space=nullptr, gpe::shape_rect *cam=nullptr);
+        void render_self( gpe::shape_rect * view_space=nullptr, gpe::shape_rect * cam = nullptr);
         void clear_all_logs();
         void clear_debug_log();
         void clear_build_log();

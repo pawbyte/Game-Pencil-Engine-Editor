@@ -33,33 +33,33 @@ SOFTWARE.
 
 #include "gpe_basic_resource_page.h"
 
-gpe::texture_base * texture_transparent_bg = NULL;
-gpe::texture_base * texture_gpe_logo = NULL;
+gpe::texture_base * texture_transparent_bg = nullptr;
+gpe::texture_base * texture_gpe_logo = nullptr;
 
 GPE_ObjectComponent::GPE_ObjectComponent()
 {
-    component = NULL;
+    component = nullptr;
     settingsGear = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cogs.png","settings",-1,16 );
 }
 
 GPE_ObjectComponent::~GPE_ObjectComponent()
 {
-    if( component!=NULL )
+    if( component!=nullptr )
     {
         delete component;
-        component = NULL;
+        component = nullptr;
     }
 
-    if( settingsGear!=NULL)
+    if( settingsGear!=nullptr)
     {
         delete settingsGear;
-        settingsGear = NULL;
+        settingsGear = nullptr;
     }
 }
 
 void GPE_ObjectComponent::load_data(std::string datastring)
 {
-    if( component!=NULL)
+    if( component!=nullptr)
     {
         component->load_data(datastring);
     }
@@ -67,7 +67,7 @@ void GPE_ObjectComponent::load_data(std::string datastring)
 
 void GPE_ObjectComponent::remove_data(std::string datastring)
 {
-    if( component!=NULL)
+    if( component!=nullptr)
     {
         component->remove_data(datastring);
     }
@@ -75,12 +75,12 @@ void GPE_ObjectComponent::remove_data(std::string datastring)
 
 void GPE_ObjectComponent::rename_component(std::string new_name)
 {
-    if( component!=NULL)
+    if( component!=nullptr)
     {
         component->set_name(new_name);
     }
 
-    if( settingsGear!=NULL)
+    if( settingsGear!=nullptr)
     {
         settingsGear->set_name(new_name);
     }
@@ -98,7 +98,7 @@ pawgui::widget_button_icon * GPE_ObjectComponent::get_gear()
 
 std::string GPE_ObjectComponent::get_data()
 {
-    if( component!=NULL)
+    if( component!=nullptr)
     {
         return component->get_data();
     }
@@ -107,12 +107,12 @@ std::string GPE_ObjectComponent::get_data()
 
 std::string GPE_ObjectComponent::get_name()
 {
-    if( component!=NULL)
+    if( component!=nullptr)
     {
         return component->get_name();
     }
 
-    if( settingsGear!=NULL)
+    if( settingsGear!=nullptr)
     {
         return settingsGear->get_name();
     }
@@ -122,7 +122,7 @@ std::string GPE_ObjectComponent::get_name()
 
 std::string GPE_ObjectComponent::get_plain_string()
 {
-    if( component!=NULL)
+    if( component!=nullptr)
     {
         return component->get_plain_string();
     }
@@ -131,7 +131,7 @@ std::string GPE_ObjectComponent::get_plain_string()
 
 std::string GPE_ObjectComponent::get_type()
 {
-    if( component!=NULL)
+    if( component!=nullptr)
     {
         return component->get_element_type();
     }
@@ -141,15 +141,15 @@ std::string GPE_ObjectComponent::get_type()
 
 void GPE_ObjectComponent::set_component(pawgui::widget_basic * newComponent)
 {
-    if( newComponent!=NULL)
+    if( newComponent!=nullptr)
     {
-        if( component!=NULL)
+        if( component!=nullptr)
         {
             delete component;
         }
         component = newComponent;
         component->hasLineBreak = false;
-        if( settingsGear!=NULL)
+        if( settingsGear!=nullptr)
         {
             settingsGear->set_name( component->get_name() );
         }
@@ -169,7 +169,7 @@ standardEditableGameResource::standardEditableGameResource(pawgui::widget_resour
     justOpenedThisFrame = false;
     parentProjectName = "";
     projectParentFolder = ppFolder;
-    if( projectParentFolder!=NULL)
+    if( projectParentFolder!=nullptr)
     {
         parentProjectName = projectParentFolder->get_name();
     }
@@ -192,47 +192,47 @@ standardEditableGameResource::standardEditableGameResource(pawgui::widget_resour
 
 standardEditableGameResource::~standardEditableGameResource()
 {
-    if( confirmResource_button!=NULL)
+    if( confirmResource_button!=nullptr)
     {
         delete confirmResource_button;
-        confirmResource_button = NULL;
+        confirmResource_button = nullptr;
     }
-    if( cancelResource_button!=NULL)
+    if( cancelResource_button!=nullptr)
     {
         delete cancelResource_button;
-        cancelResource_button = NULL;
+        cancelResource_button = nullptr;
     }
-    if( loadResource_button!=NULL)
+    if( loadResource_button!=nullptr)
     {
         delete loadResource_button;
-        loadResource_button = NULL;
+        loadResource_button = nullptr;
     }
-    if( exportResource_button!=NULL)
+    if( exportResource_button!=nullptr)
     {
         delete exportResource_button;
-        exportResource_button = NULL;
+        exportResource_button = nullptr;
     }
-    if( saveResource_button!=NULL)
+    if( saveResource_button!=nullptr)
     {
         delete saveResource_button;
-        saveResource_button = NULL;
+        saveResource_button = nullptr;
     }
-    if( renameBox!=NULL)
+    if( renameBox!=nullptr)
     {
         delete renameBox;
-        renameBox = NULL;
+        renameBox = nullptr;
     }
 }
 
 std::string standardEditableGameResource::get_current_name()
 {
-    if( renameBox!=NULL)
+    if( renameBox!=nullptr)
     {
         if( stg_ex::is_alnum(renameBox->get_string(),false,true)==true)
         {
             return renameBox->get_string();
         }
-        else if( main_editor_log!=NULL && resourceType!=gpe::resource_type_project_settings && globalResouceIdNumber >=1000 )
+        else if( main_editor_log!=nullptr && resourceType!=gpe::resource_type_project_settings && globalResouceIdNumber >=1000 )
         {
             main_editor_log->log_general_comment("Non-alphabetical resource ["+renameBox->get_string()+"] being renamed to "+resource_name+"." );
         }
@@ -252,7 +252,7 @@ pawgui::widget_basic * standardEditableGameResource::add_gui_component(std::stri
             std::string newComponentType = stg_ex::split_first_string(componentData,":");
             std::string newComponentName = stg_ex::split_first_string(componentData,"==|||==");
 
-            pawgui::widget_basic * newComponentField = NULL;
+            pawgui::widget_basic * newComponentField = nullptr;
             if( newComponentType=="checkbox")
             {
                 newComponentField = new pawgui::widget_checkbox(newComponentName);
@@ -326,7 +326,7 @@ pawgui::widget_basic * standardEditableGameResource::add_gui_component(std::stri
                 std::string dropdownType = stg_ex::split_first_string(componentData,"=");
                 newComponentField = new pawgui::widget_drop_down_resource_menu( newComponentName, projectParentFolder );
             }
-            if( newComponentField!=NULL)
+            if( newComponentField!=nullptr)
             {
                 newComponentField->load_data(componentData);
             }
@@ -334,8 +334,8 @@ pawgui::widget_basic * standardEditableGameResource::add_gui_component(std::stri
             return newComponentField;
         }
     }
-    gpe::error_log->report("Returning NULL gui component using ["+componentData+"] data.");
-    return NULL;
+    gpe::error_log->report("Returning nullptr gui component using ["+componentData+"] data.");
+    return nullptr;
 }
 
 bool standardEditableGameResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount )
@@ -361,7 +361,7 @@ bool standardEditableGameResource::get_mouse_coords( gpe::shape_rect * view_spac
     local_mouse_y = 0;
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if( view_space == NULL || cam==NULL )
+    if( view_space == nullptr || cam==nullptr )
     {
         return false;
     }
@@ -382,7 +382,7 @@ bool standardEditableGameResource::get_mouse_coords( gpe::shape_rect * view_spac
     local_mouse_x = ( gpe::input->mouse_position_x-cam->x)/zoom_level - view_space->x;
     local_mouse_y = ( gpe::input->mouse_position_y-cam->y)/zoom_level - view_space->y;
 
-    if( pawgui::main_statusbar!=NULL)
+    if( pawgui::main_statusbar!=nullptr)
     {
         pawgui::main_statusbar->set_codestring( "Mouse( "+ stg_ex::int_to_string(local_mouse_x )+" , "+ stg_ex::int_to_string(local_mouse_y)+")"+
                                             "Camera( "+ stg_ex::float_to_string(cam->x )+" , "+ stg_ex::float_to_string(cam->y)+") Zoom:"+ stg_ex::float_to_string(zoom_level) );
@@ -398,23 +398,23 @@ bool standardEditableGameResource::include_local_files( std::string pBuildDir , 
 
 void standardEditableGameResource::prerender_self( )
 {
-    if( loadResource_button!=NULL)
+    if( loadResource_button!=nullptr)
     {
         loadResource_button->prerender_self( );
     }
-    if( exportResource_button!=NULL)
+    if( exportResource_button!=nullptr)
     {
         exportResource_button->prerender_self( );
     }
-    if( saveResource_button!=NULL)
+    if( saveResource_button!=nullptr)
     {
         saveResource_button->prerender_self( );
     }
-    if( confirmResource_button!=NULL)
+    if( confirmResource_button!=nullptr)
     {
         confirmResource_button->prerender_self( );
     }
-    if( cancelResource_button!=NULL)
+    if( cancelResource_button!=nullptr)
     {
         cancelResource_button->prerender_self( );
     }
@@ -431,27 +431,27 @@ void standardEditableGameResource::process_resource( gpe::shape_rect * view_spac
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
     //Unclicks buttons
-    if( loadResource_button!=NULL )
+    if( loadResource_button!=nullptr )
         loadResource_button->set_clicked( false );
-    if( saveResource_button!=NULL )
+    if( saveResource_button!=nullptr )
         saveResource_button->set_clicked( false );
-    if( exportResource_button!=NULL )
+    if( exportResource_button!=nullptr )
         exportResource_button->set_clicked( false );
-    if( confirmResource_button!=NULL )
+    if( confirmResource_button!=nullptr )
         confirmResource_button->set_clicked( false );
-    if( cancelResource_button!=NULL )
+    if( cancelResource_button!=nullptr )
         cancelResource_button->set_clicked( false );
 
     process_self(view_space,cam);
     process_export();
     /*
-    if( confirmResource_button!=NULL)
+    if( confirmResource_button!=nullptr)
     {
         if( common_buttonAlignment==1)
         {
             cancelResource_button->set_coords(view_space->w-cancelResource_button->get_width()-pawgui::padding_default,view_space->h-cancelResource_button->get_height()-pawgui::default_line_height);
             cancelResource_button->process_self(view_space,cam);
-            if( confirmResource_button!=NULL)
+            if( confirmResource_button!=nullptr)
             {
                 if( confirmResource_button->is_enabled() )
                 {
@@ -464,7 +464,7 @@ void standardEditableGameResource::process_resource( gpe::shape_rect * view_spac
                 confirmResource_button->process_self(view_space,cam);
                 if( confirmResource_button->is_clicked() && editorMode==0 )
                 {
-                    if( renameBox!=NULL)
+                    if( renameBox!=nullptr)
                     {
                         set_name( renameBox->get_string() );
                     }
@@ -475,7 +475,7 @@ void standardEditableGameResource::process_resource( gpe::shape_rect * view_spac
         {
             cancelResource_button->set_coords(-1,view_space->h-cancelResource_button->get_height()-pawgui::default_line_height);
             cancelResource_button->process_self(view_space,cam);
-            if( confirmResource_button!=NULL)
+            if( confirmResource_button!=nullptr)
             {
                 if( cancelResource_button->is_enabled() )
                 {
@@ -488,7 +488,7 @@ void standardEditableGameResource::process_resource( gpe::shape_rect * view_spac
                 confirmResource_button->process_self(view_space,cam);
                 if( confirmResource_button->is_clicked() && editorMode==0 )
                 {
-                    if( renameBox!=NULL)
+                    if( renameBox!=nullptr)
                     {
                         set_name( renameBox->get_string() );
                     }
@@ -496,7 +496,7 @@ void standardEditableGameResource::process_resource( gpe::shape_rect * view_spac
             }
         }
     }
-    if( renameBox!=NULL)
+    if( renameBox!=nullptr)
     {
         renameBox->process_self(view_space,cam);
         //set_name( renameBox->get_string() );
@@ -511,7 +511,7 @@ void standardEditableGameResource::process_resource( gpe::shape_rect * view_spac
 void standardEditableGameResource::process_export()
 {
     bool exportCalled = false;
-    if( exportResource_button!=NULL && exportResource_button->is_clicked() )
+    if( exportResource_button!=nullptr && exportResource_button->is_clicked() )
     {
         exportCalled = true;
     }
@@ -546,7 +546,7 @@ void standardEditableGameResource::process_export()
 
 void standardEditableGameResource::integrate_into_syntax()
 {
-    if( current_project!=NULL)
+    if( current_project!=nullptr)
     {
         if( resourceType >=0 && resourceType < gpe::resource_type_max)
         {
@@ -578,7 +578,7 @@ void standardEditableGameResource::render_self( gpe::shape_rect * view_space, gp
 
 void standardEditableGameResource::seek_parent_name()
 {
-    if( projectParentFolder!=NULL)
+    if( projectParentFolder!=nullptr)
     {
         parentProjectName = projectParentFolder->get_name();
     }
@@ -587,7 +587,7 @@ void standardEditableGameResource::seek_parent_name()
 void standardEditableGameResource::set_name(std::string new_name)
 {
     resource_name = new_name;
-    if(renameBox!=NULL)
+    if(renameBox!=nullptr)
     {
         renameBox->set_string(new_name);
     }

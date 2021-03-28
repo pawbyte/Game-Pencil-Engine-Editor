@@ -47,15 +47,15 @@ gpe_editor_state::gpe_editor_state(std::string s_name)
 
 gpe_editor_state::~gpe_editor_state()
 {
-    if( message !=NULL )
+    if( message !=nullptr )
     {
         delete message;
-        message = NULL;
+        message = nullptr;
     }
-    if( editor_gui_main!=NULL)
+    if( editor_gui_main!=nullptr)
     {
         delete editor_gui_main;
-        editor_gui_main = NULL;
+        editor_gui_main = nullptr;
     }
 }
 
@@ -77,13 +77,13 @@ void gpe_editor_state::process_input()
         editor_gui_main->main_notification_holder->set_coords(0, main_toolbar->get_y2() );
         editor_gui_main->main_notification_holder->set_width( gpe::screen_width );
         main_buttonbar->set_coords( 0, editor_gui_main->main_notification_holder->get_y2() );
-        if( main_editor_settings!=NULL)
+        if( main_editor_settings!=nullptr)
         {
-            if( main_editor_settings->ide_buttonBarSize!=NULL)
+            if( main_editor_settings->ide_buttonBarSize!=nullptr)
             {
                 int found_buttonSize =  main_editor_settings->ide_buttonBarSize->get_selected_value();
                 main_buttonbar->set_height( found_buttonSize );
-                if( main_editor_settings->ide_buttonBarAlignment !=NULL && found_buttonSize > 0)
+                if( main_editor_settings->ide_buttonBarAlignment !=nullptr && found_buttonSize > 0)
                 {
                     int found_buttonBarAlignment = main_editor_settings->ide_buttonBarAlignment->get_selected_value();
                     if( found_buttonBarAlignment==1)
@@ -115,7 +115,7 @@ void gpe_editor_state::apply_logic()
 {
     int dockX = 0, dockY = 0;
 
-    if( main_buttonbar!=NULL )
+    if( main_buttonbar!=nullptr )
     {
         dockY = main_buttonbar->get_y2() + pawgui::padding_default;
 
@@ -142,7 +142,7 @@ void gpe_editor_state::apply_logic()
                     break;
 
                     case 5:
-                        if( current_project!=NULL && current_project->RESC_project_SETTINGS!=NULL )
+                        if( current_project!=nullptr && current_project->RESC_project_SETTINGS!=nullptr )
                         {
                             pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_project_SETTINGS->get_held_resource() );
                             projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_project_SETTINGS->get_held_resource();
@@ -151,7 +151,7 @@ void gpe_editor_state::apply_logic()
                     break;
 
                     case 6:
-                        if( current_project!=NULL && current_project->RESC_project_SETTINGS!=NULL )
+                        if( current_project!=nullptr && current_project->RESC_project_SETTINGS!=nullptr )
                         {
                             current_project->export_and_play_native();
                         }
@@ -164,11 +164,11 @@ void gpe_editor_state::apply_logic()
         }
     }
 
-    if( gpe_dock!=NULL )
+    if( gpe_dock!=nullptr )
     {
         gpe_dock->set_coords( dockX, dockY );
         gpe_dock->set_width( gpe::screen_width );
-        if( pawgui::main_statusbar != NULL )
+        if( pawgui::main_statusbar != nullptr )
         {
             gpe_dock->set_height( gpe::screen_height  - gpe_dock->get_ypos() - pawgui::main_statusbar->get_height() );
         }
@@ -199,20 +199,20 @@ void gpe_editor_state::render()
 {
     uint64_t sTicks, eTicks;
     sTicks = gpe::time_keeper->get_ticks();
-    pawgui::theme_main->render_background(NULL, NULL);
+    pawgui::theme_main->render_background(nullptr, nullptr);
     eTicks = gpe::time_keeper->get_ticks();
     gpe::error_log->log_ms_action("pawgui::theme_main->render_background()",eTicks - sTicks,10 );
 
     sTicks = gpe::time_keeper->get_ticks();
-    if( main_buttonbar!=NULL  )
+    if( main_buttonbar!=nullptr  )
     {
-       main_buttonbar->render_self( NULL, NULL);
+       main_buttonbar->render_self( nullptr, nullptr);
     }
     eTicks = gpe::time_keeper->get_ticks();
     gpe::error_log->log_ms_action( "main_buttonbar->render_self)",eTicks - sTicks,10 );
 
     sTicks = gpe::time_keeper->get_ticks();
-    if( editor_gui_main!=NULL )
+    if( editor_gui_main!=nullptr )
     {
         editor_gui_main->render_foreground_engine();
     }
@@ -243,66 +243,66 @@ void gpe_editor_state::start_state()
     main_buttonbar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cog.png","Build Project",5,false);
     main_buttonbar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png","Build & PLAY Project",6,false);
 
-    pawgui::popup_menu_option * newOption = NULL;
-    pawgui::popup_menu_option * newOptionLayer2 = NULL;
-    pawgui::popup_menu_option * newOptionLayer3 = NULL;
+    pawgui::popup_menu_option * newOption = nullptr;
+    pawgui::popup_menu_option * newOptionLayer2 = nullptr;
+    pawgui::popup_menu_option * newOptionLayer3 = nullptr;
     newOption = main_toolbar->add_menu_option("File");
-    newOption->add_menu_option("New Project",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file.png"),-1,NULL,false,true,false,kb_ctrl,kb_n );
-    newOption->add_menu_option("Open Project",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/folder.png"),-1,NULL,false,true,false,kb_ctrl,kb_o );
+    newOption->add_menu_option("New Project",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file.png"),-1,nullptr,false,true,false,kb_ctrl,kb_n );
+    newOption->add_menu_option("Open Project",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/folder.png"),-1,nullptr,false,true,false,kb_ctrl,kb_o );
     newOption->add_menu_option("Browse Projects",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/binoculars.png") );
-    newOptionLayer2 = main_TOOLBAR_RECENT_PROJECTS = newOption->add_menu_option("Recent Projects",-1,NULL,-1,NULL,true);
+    newOptionLayer2 = main_TOOLBAR_RECENT_PROJECTS = newOption->add_menu_option("Recent Projects",-1,nullptr,-1,nullptr,true);
     editor_gui_main->update_recent_project_list(false);
     //Adds the recent projects to the list
 
     //Adds the recent files to the list
-    newOption->add_menu_option("Save Project",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png"),-1,NULL,false,true,false,kb_ctrl,kb_s  );
-    newOption->add_menu_option("Save All Projects",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png"),-1,NULL,false,true,false,kb_ctrl,kb_s,kb_shift );
+    newOption->add_menu_option("Save Project",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png"),-1,nullptr,false,true,false,kb_ctrl,kb_s  );
+    newOption->add_menu_option("Save All Projects",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png"),-1,nullptr,false,true,false,kb_ctrl,kb_s,kb_shift );
     /*
-    newOption->add_menu_option("Export",-1,-1,NULL,false);
+    newOption->add_menu_option("Export",-1,-1,nullptr,false);
     newOption->add_menu_option("Import Resources");
     newOption->add_menu_option("Export Resources");
-    newOption->add_menu_option("Properties",-1,5,NULL,true);
+    newOption->add_menu_option("Properties",-1,5,nullptr,true);
     */
-    newOption->add_menu_option("Quit Editor",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/truck.png"),76,NULL,false,true,false,kb_ctrl,kb_q);
+    newOption->add_menu_option("Quit Editor",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/truck.png"),76,nullptr,false,true,false,kb_ctrl,kb_q);
 
 
     /*
     newOption = main_toolbar->add_menu_option("Edit");
-    newOption->add_menu_option("Undo",-1,-1,NULL,false);
-    newOption->add_menu_option("Redo",-1,-1,NULL,false);
-    newOption->add_menu_option("Cut",-1,-1,NULL,false);
-    newOption->add_menu_option("Copy",-1,-1,NULL,false,false);
-    newOption->add_menu_option("Paste",-1,-1,NULL,false);
+    newOption->add_menu_option("Undo",-1,-1,nullptr,false);
+    newOption->add_menu_option("Redo",-1,-1,nullptr,false);
+    newOption->add_menu_option("Cut",-1,-1,nullptr,false);
+    newOption->add_menu_option("Copy",-1,-1,nullptr,false,false);
+    newOption->add_menu_option("Paste",-1,-1,nullptr,false);
     */
 
     newOption = main_toolbar->add_menu_option("View");
-    //newOption->add_menu_option("Reset View",-1,-1,NULL,false);
+    //newOption->add_menu_option("Reset View",-1,-1,nullptr,false);
 
-    newOption->add_menu_option("Toggle Fullscreen Mode",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/crop.png"),-1,NULL,false,true,false, kb_f11);
+    newOption->add_menu_option("Toggle Fullscreen Mode",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/crop.png"),-1,nullptr,false,true,false, kb_f11);
 
 
-    newOptionLayer2 = newOption->add_menu_option("Text Area Settings",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cogs.png"),-1,NULL,false,false);
-    newOptionLayer2->add_menu_option("Toggle Line Count",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
-    newOptionLayer2->add_menu_option("Toggle Syntax Highlighting",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
-    //newOptionLayer2->add_menu_option("",-1,-1,NULL,false);
+    newOptionLayer2 = newOption->add_menu_option("Text Area Settings",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cogs.png"),-1,nullptr,false,false);
+    newOptionLayer2->add_menu_option("Toggle Line Count",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,nullptr,false);
+    newOptionLayer2->add_menu_option("Toggle Syntax Highlighting",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,nullptr,false);
+    //newOptionLayer2->add_menu_option("",-1,-1,nullptr,false);
 
-    newOptionLayer2 = newOption->add_menu_option("Dock Settings",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/columns.png"),-1,NULL,false,false);
+    newOptionLayer2 = newOption->add_menu_option("Dock Settings",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/columns.png"),-1,nullptr,false,false);
 
-    newOptionLayer2->add_menu_option("Toggle Resource viewer",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
+    newOptionLayer2->add_menu_option("Toggle Resource viewer",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,nullptr,false);
 
-    newOption->add_menu_option("Start Page",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cube.png"),-1,NULL,false);
-    newOption->add_menu_option("Tip of the Day",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/info.png"),-1,NULL,false);
+    newOption->add_menu_option("Start Page",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cube.png"),-1,nullptr,false);
+    newOption->add_menu_option("Tip of the Day",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/info.png"),-1,nullptr,false);
 
     //newOption = main_toolbar->add_menu_option("Tools");
     //newOption = main_toolbar->add_menu_option("Resources");
 
     newOption = main_toolbar->add_menu_option("Search");
-    newOption->add_menu_option("Find...",-1,NULL,-1,NULL,false,true,false, kb_ctrl,kb_f);
-    newOption->add_menu_option("Find in files...",-1,NULL,-1,NULL,false,true,false, kb_ctrl,kb_f,kb_shift);
-    newOption->add_menu_option("Replace...",-1,NULL,-1,NULL,false,true,false, kb_ctrl,kb_r);
-    newOption->add_menu_option("Replace in files....",-1,NULL,-1,NULL,false,true,false, kb_ctrl,kb_r,kb_shift);
-    newOption->add_menu_option("Goto Line...",-1,NULL,-1,NULL,false,true,false, kb_ctrl,kb_g);
-    newOption->add_menu_option("Find Project Resource...",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/search.png"),-1,NULL,false);
+    newOption->add_menu_option("Find...",-1,nullptr,-1,nullptr,false,true,false, kb_ctrl,kb_f);
+    newOption->add_menu_option("Find in files...",-1,nullptr,-1,nullptr,false,true,false, kb_ctrl,kb_f,kb_shift);
+    newOption->add_menu_option("Replace...",-1,nullptr,-1,nullptr,false,true,false, kb_ctrl,kb_r);
+    newOption->add_menu_option("Replace in files....",-1,nullptr,-1,nullptr,false,true,false, kb_ctrl,kb_r,kb_shift);
+    newOption->add_menu_option("Goto Line...",-1,nullptr,-1,nullptr,false,true,false, kb_ctrl,kb_g);
+    newOption->add_menu_option("Find Project Resource...",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/search.png"),-1,nullptr,false);
 
     newOption = main_toolbar->add_menu_option("Import");
     for( int tempResType = gpe::resource_type_animation; tempResType <= gpe::resource_type_font; tempResType++ )
@@ -314,27 +314,27 @@ void gpe_editor_state::start_state()
     newOption = main_toolbar->add_menu_option("Build");
     // HTML5/ Web platforms
 
-    newOption->add_menu_option("Build HTML5 GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/html5.png"),-1,NULL,true,true,false,kb_ctrl,kb_f5);
-    newOption->add_menu_option("RUN HTML5 GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play-circle.png"),-1,NULL,true,true,false,kb_f8);
-    newOption->add_menu_option("Build HTML5 GAME & RUN",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png"),-1,NULL,true,true,false,kb_f5);
+    newOption->add_menu_option("Build HTML5 GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/html5.png"),-1,nullptr,true,true,false,kb_ctrl,kb_f5);
+    newOption->add_menu_option("RUN HTML5 GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play-circle.png"),-1,nullptr,true,true,false,kb_f8);
+    newOption->add_menu_option("Build HTML5 GAME & RUN",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png"),-1,nullptr,true,true,false,kb_f5);
     //desktop / laptop platforms
     if( gpe::system_found_os == gpe::system_os_windows)
     {
-        newOption->add_menu_option("Build WINDOWS GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/windows.png"),-1,NULL,false,true );
-        newOption->add_menu_option("Build OSX GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/apple.png"),-1,NULL,false,true );
-        newOption->add_menu_option("Build LINUX GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/linux.png"),-1,NULL,true,true );
+        newOption->add_menu_option("Build WINDOWS GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/windows.png"),-1,nullptr,false,true );
+        newOption->add_menu_option("Build OSX GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/apple.png"),-1,nullptr,false,true );
+        newOption->add_menu_option("Build LINUX GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/linux.png"),-1,nullptr,true,true );
     }
     else if( gpe::system_found_os== gpe::system_os_mac )
     {
-        newOption->add_menu_option("Build OSX GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/apple.png"),-1,NULL,false,true );
-        newOption->add_menu_option("Build LINUX GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/linux.png"),-1,NULL,true,true );
-        newOption->add_menu_option("Build WINDOWS GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/windows.png"),-1,NULL,false,true );
+        newOption->add_menu_option("Build OSX GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/apple.png"),-1,nullptr,false,true );
+        newOption->add_menu_option("Build LINUX GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/linux.png"),-1,nullptr,true,true );
+        newOption->add_menu_option("Build WINDOWS GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/windows.png"),-1,nullptr,false,true );
     }
     else
     {
-        newOption->add_menu_option("ExpBuildort LINUX GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/linux.png"),-1,NULL,true,true );
-        newOption->add_menu_option("Build WINDOWS GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/windows.png"),-1,NULL,false,true );
-        newOption->add_menu_option("Build OSX GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/apple.png"),-1,NULL,false,true );
+        newOption->add_menu_option("ExpBuildort LINUX GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/linux.png"),-1,nullptr,true,true );
+        newOption->add_menu_option("Build WINDOWS GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/windows.png"),-1,nullptr,false,true );
+        newOption->add_menu_option("Build OSX GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/apple.png"),-1,nullptr,false,true );
     }
     /*
     newOption->add_menu_option("Compile Current Tab",-1);
@@ -343,7 +343,7 @@ void gpe_editor_state::start_state()
 
     //console platforms
     /*
-    newOptionLayer2 =newOption->add_menu_option("Build Nintendo Switch GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/animations/nintendo_switch_logo.png"),-1,NULL,true,true);
+    newOptionLayer2 =newOption->add_menu_option("Build Nintendo Switch GAME",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/animations/nintendo_switch_logo.png"),-1,nullptr,true,true);
     newOptionLayer2->renderWhite = true;*/
     /*
     newOption->add_menu_option("Build Xbox One GAME",-1,3,mainExportOptionsanimation,true,false);
@@ -359,12 +359,12 @@ void gpe_editor_state::start_state()
 
     //mobile platforms
     newOptionLayer2 = newOption->add_menu_option("Mobile Platforms(Coming Soon)",-1);
-    newOptionLayer2->add_menu_option("Android - P4",-1,11,NULL,false,false);
-    newOptionLayer2->add_menu_option("Blackberry - P5",-1,11,NULL,false,false);
-    newOptionLayer2->add_menu_option("iPhones - P5",-1,11,NULL,false,false);
-    newOptionLayer2->add_menu_option("Tizen Phones - P6",-1,11,NULL,false,false);
-    newOptionLayer2->add_menu_option("Ubuntu Phones - P6",-1,11,NULL,false,false);
-    newOptionLayer2->add_menu_option("Windows Phones - P4",-1,11,NULL,false,false);
+    newOptionLayer2->add_menu_option("Android - P4",-1,11,nullptr,false,false);
+    newOptionLayer2->add_menu_option("Blackberry - P5",-1,11,nullptr,false,false);
+    newOptionLayer2->add_menu_option("iPhones - P5",-1,11,nullptr,false,false);
+    newOptionLayer2->add_menu_option("Tizen Phones - P6",-1,11,nullptr,false,false);
+    newOptionLayer2->add_menu_option("Ubuntu Phones - P6",-1,11,nullptr,false,false);
+    newOptionLayer2->add_menu_option("Windows Phones - P4",-1,11,nullptr,false,false);
     */
 
     newOptionLayer2 = newOption->add_menu_option("Clean Build Folder",-1);
@@ -375,41 +375,41 @@ void gpe_editor_state::start_state()
     //newOptionLayer2->add_menu_option("Clean [HTML5] Build Folder",-1,-1,mainExportOptionsanimation,false);
 
     newOption = main_toolbar->add_menu_option("Tools");
-    newOption->add_menu_option("Game Controller Tester",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/gamecontroller.png"),-1,NULL,false,true,false);
-    newOption->add_menu_option("Extra Tools",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/briefcase.png"),-1,NULL,false,true,false);
+    newOption->add_menu_option("Game Controller Tester",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/gamepad.png"),-1,nullptr,false,true,false);
+    newOption->add_menu_option("Extra Tools",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/briefcase.png"),-1,nullptr,false,true,false);
 
     newOption = main_toolbar->add_menu_option("Settings");
-    newOption->add_menu_option("User Settings",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cog.png"),-1, NULL,false,true,false,kb_f2);
-    newOption->add_menu_option("JS Compiler Settings",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/code.png"),-1,NULL,false,true,false);
+    newOption->add_menu_option("User Settings",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cog.png"),-1, nullptr,false,true,false,kb_f2);
+    newOption->add_menu_option("JS Compiler Settings",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/code.png"),-1,nullptr,false,true,false);
     //C++ _settings
-    newOption->add_menu_option("C++ Builder Settings",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/code.png"),-1,NULL,false,true,false);
+    newOption->add_menu_option("C++ Builder Settings",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/code.png"),-1,nullptr,false,true,false);
 
     newOption = main_toolbar->add_menu_option("Help" );
     //newOption->add_menu_option("Online Documentation",-1,17,mainMenuanimation,false);
     //newOption->add_menu_option("Tips",-1,20,mainMenuanimation,false);
     //newOption->add_menu_option("Forums",-1);
 
-    newOption->add_menu_option("Online Documentation",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/book.png"),-1,NULL,false);
-    newOption->add_menu_option("Online Forums",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/group.png"),-1,NULL,false);
-    newOption->add_menu_option("Community Chat",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/comments.png"),-1,NULL,false);
-    newOption->add_menu_option("Tip of the Day",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/infO.png"),-1,NULL,false);
-    newOption->add_menu_option("Report Issue",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/bug.png"),-1,NULL,false);
-    newOption->add_menu_option("Check Updates",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/question-circle.png"),-1,NULL,false);
-    newOption->add_menu_option("About Game Pencil Engine",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/pencil.png"),-1,NULL,false,true,false, kb_f1 );
+    newOption->add_menu_option("Online Documentation",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/book.png"),-1,nullptr,false);
+    newOption->add_menu_option("Online Forums",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/group.png"),-1,nullptr,false);
+    newOption->add_menu_option("Community Chat",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/comments.png"),-1,nullptr,false);
+    newOption->add_menu_option("Tip of the Day",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/infO.png"),-1,nullptr,false);
+    newOption->add_menu_option("Report Issue",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/bug.png"),-1,nullptr,false);
+    newOption->add_menu_option("Check Updates",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/question-circle.png"),-1,nullptr,false);
+    newOption->add_menu_option("About Game Pencil Engine",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/pencil.png"),-1,nullptr,false,true,false, kb_f1 );
     //newOption->add_menu_option("Licenses",-1,27,mainMenuanimation,false);
     pawgui::main_tab_resource_bar->set_coords(-1,main_buttonbar->get_y2()+pawgui::padding_default );
     editor_gui_main->init_resourcebar();
     //main resource bar elements
 
     country_language_image = gpe::rph->get_new_texture();
-    if(country_language_image!=NULL)
+    if(country_language_image!=nullptr)
     {
         //country_language_image->load_new_texture( renderer_main, gpe::app_directory_name+"resources/gfx/flags/24/us.png",-1,true);
     }
 
     //Render the intro message
-    message = NULL;
-    if( editor_gui_main!=NULL)
+    message = nullptr;
+    if( editor_gui_main!=nullptr)
     {
         editor_gui_main->load_settings();
         if( editor_gui_main->showStartPageAtStartUp)
@@ -441,13 +441,13 @@ void gpe_editor_state::start_state()
         */
     }
 
-    if( main_gpe_splash_page != NULL )
+    if( main_gpe_splash_page != nullptr )
     {
         main_gpe_splash_page->update_submessages( "Loading Editor Settings", "Please wait..." );
     }
 
 
-    if( gpe_dock != NULL )
+    if( gpe_dock != nullptr )
     {
         gpe::error_log->report("Loading in dock settings..");
 
@@ -465,12 +465,12 @@ void gpe_editor_state::start_state()
         pawgui::widget_dock_panel * found_main_panel = gpe_dock->contains_panel("Main");
         pawgui::widget_dock_panel * found_editor_panel = gpe_dock->contains_panel("Editor");
         pawgui::widget_dock_panel * found_resources_panel = gpe_dock->contains_panel("Resources");
-        if( found_editor_panel == NULL || found_resources_panel == NULL || found_main_panel == NULL )
+        if( found_editor_panel == nullptr || found_resources_panel == nullptr || found_main_panel == nullptr )
         {
             gpe::error_log->report( "Unable to detect panels");
 
             //if not we reset the dock ( Typically for 1st time users or glitches)
-            if( editor_gui_main!=NULL )
+            if( editor_gui_main!=nullptr )
             {
                 gpe::error_log->report( "Resetting dock thru editor_gui_main");
 
@@ -492,7 +492,7 @@ void gpe_editor_state::start_state()
         gpe::error_log->report("[gpe_dock] is not declared, so can not load...");
     }
 
-    if( main_gpe_splash_page!=NULL )
+    if( main_gpe_splash_page!=nullptr )
     {
         main_gpe_splash_page->in_startup_mode = false;
     }
@@ -505,6 +505,7 @@ bool init_gpe_editor( int argc, char* args[] )
 
     gpe::window_controller_main->set_window_size( 720, 480 );
     gpe::window_controller_main->set_window_position( -1 , -1  );
+    gpe::window_controller_main->disable_scaling();
     gpe::error_log->report("Starting GPE Editor...");
     init_gpe_editor_globals();
 
@@ -608,7 +609,7 @@ bool init_gpe_editor( int argc, char* args[] )
             gpe::error_log->report( args[iArgc] );
         }
     }
-    else if( main_editor_settings!=NULL && main_editor_settings->launchLastProjectBox!=NULL )
+    else if( main_editor_settings!=nullptr && main_editor_settings->launchLastProjectBox!=nullptr )
     {
         if( main_editor_settings->launchLastProjectBox->is_clicked() )
         {
@@ -624,7 +625,7 @@ bool init_gpe_editor( int argc, char* args[] )
         }
     }
 
-    if( main_editor_settings!=NULL && main_editor_settings->ide_settingsFPSRate!=NULL )
+    if( main_editor_settings!=nullptr && main_editor_settings->ide_settingsFPSRate!=nullptr )
     {
         gpe::time_keeper->set_fps( main_editor_settings->ide_settingsFPSRate->get_selected_value() );
     }
@@ -634,67 +635,73 @@ bool init_gpe_editor( int argc, char* args[] )
 
 bool quit_gpe_editor()
 {
-    if( pawgui::main_tab_resource_bar!=NULL)
+    if( pawgui::main_tab_resource_bar!=nullptr)
     {
         gpe::error_log->report("Closing all tabs....");
         pawgui::main_tab_resource_bar->close_all_tabs();
     }
-    if( main_editor_settings!=NULL)
+    if( main_editor_settings!=nullptr)
     {
         gpe::error_log->report("Deleting _settings....");
         main_editor_settings->save_resource();
         delete main_editor_settings;
-        main_editor_settings = NULL;
+        main_editor_settings = nullptr;
     }
-    if( main_about_page!=NULL)
+    if( main_about_page!=nullptr)
     {
         gpe::error_log->report("Deleting about page....");
         delete main_about_page;
-        main_about_page = NULL;
+        main_about_page = nullptr;
     }
-    if( main_START_PAGE!=NULL)
+    if( main_START_PAGE!=nullptr)
     {
         gpe::error_log->report("Deleting start page....");
         delete main_START_PAGE;
-        main_START_PAGE = NULL;
+        main_START_PAGE = nullptr;
     }
-    if( main_EXTRA_TOOLS!=NULL)
+    if( main_EXTRA_TOOLS!=nullptr)
     {
         gpe::error_log->report("Deleting extra tools....");
         delete main_EXTRA_TOOLS;
-        main_EXTRA_TOOLS = NULL;
+        main_EXTRA_TOOLS = nullptr;
     }
-    if( pawgui::main_context_menu!=NULL)
+    if( pawgui::main_context_menu!=nullptr)
     {
         gpe::error_log->report("Deleting context menu....");
         delete pawgui::main_context_menu;
-        pawgui::main_context_menu = NULL;
+        pawgui::main_context_menu = nullptr;
     }
-    if( main_TOOLBAR_RECENT_PROJECTS!=NULL)
+    if( main_TOOLBAR_RECENT_PROJECTS!=nullptr)
     {
         gpe::error_log->report("Deleting toolbar recent projects....");
         delete main_TOOLBAR_RECENT_PROJECTS;
-        main_TOOLBAR_RECENT_PROJECTS = NULL;
+        main_TOOLBAR_RECENT_PROJECTS = nullptr;
     }
 
-    if( gpe_dock!=NULL )
+    if( gpe_dock!=nullptr )
     {
         gpe_dock->save_dock_setings( gpe::main_file_url_manager->get_user_settings_folder()+"dock_settings.gpf");
         delete gpe_dock;
-        gpe_dock = NULL;
+        gpe_dock = nullptr;
     }
 
-    if( editor_gui_main!=NULL)
+    if( editor_gui_main!=nullptr)
     {
-        gpe::error_log->report("Deleting gui....");
+        gpe::error_log->report("Saving settings and deleting gui....");
         editor_gui_main->save_settings();
+        gpe::error_log->report("Now deleting editor_gui_main...");
+
         delete editor_gui_main;
-        editor_gui_main = NULL;
+        editor_gui_main = nullptr;
     }
 
-    if( main_gpe_splash_page !=NULL)
+    gpe::error_log->report("Deleting main_gpe_splash_page....");
+    if( main_gpe_splash_page !=nullptr)
     {
         delete main_gpe_splash_page;
-        main_gpe_splash_page = NULL;
+        main_gpe_splash_page = nullptr;
     }
+    gpe::error_log->report("Editor now quit...");
+    return true;
+
 }

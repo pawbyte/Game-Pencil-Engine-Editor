@@ -36,14 +36,14 @@ GPE_SceneParticleEmitter::GPE_SceneParticleEmitter( pawgui::widget_resource_cont
 {
     iconTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png") ;
     branch_type_id = gpe::branch_type::PARTIClE_EMITTER;
-    if( projectParentFolder!=NULL)
+    if( projectParentFolder!=nullptr)
     {
         emmitterInEditor = new pawgui::widget_drop_down_resource_menu( "Particle Emitter",projectParentFolder->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_emitter]),-1,true);
         emmitterInEditor->set_width(192);
     }
     else
     {
-        emmitterInEditor = NULL;
+        emmitterInEditor = nullptr;
     }
 }
 
@@ -54,7 +54,7 @@ GPE_SceneParticleEmitter::~GPE_SceneParticleEmitter()
 
 void GPE_SceneParticleEmitter::add_typed_elements()
 {
-    if( panel_inspector!=NULL )
+    if( panel_inspector!=nullptr )
     {
         //panel_inspector->add_gui_element( light_is_active, true );
     }
@@ -78,11 +78,11 @@ void GPE_SceneParticleEmitter::render_branch()
 
 bool GPE_SceneParticleEmitter::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn )
 {
-    if( fileTarget!=NULL && fileTarget->is_open() )
+    if( fileTarget!=nullptr && fileTarget->is_open() )
     {
         std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"   GPE_AmbientLight=";
-        if( x_posField!=NULL)
+        if( x_posField!=nullptr)
         {
             x_posField->make_valid_number(0);
             *fileTarget <<  x_posField->get_held_number() << ",";
@@ -91,7 +91,7 @@ bool GPE_SceneParticleEmitter::save_branch_data(std::ofstream * fileTarget, int 
         {
             *fileTarget << "-0,";
         }
-        if( y_posField!=NULL)
+        if( y_posField!=nullptr)
         {
             y_posField->make_valid_number(0);
             *fileTarget << y_posField->get_held_number() << ",";
@@ -100,7 +100,7 @@ bool GPE_SceneParticleEmitter::save_branch_data(std::ofstream * fileTarget, int 
         {
             *fileTarget << "-0,";
         }
-        if( branchColor!=NULL)
+        if( branchColor!=nullptr)
         {
             *fileTarget << branchColor->get_hex_string() << ",";
         }
@@ -108,7 +108,7 @@ bool GPE_SceneParticleEmitter::save_branch_data(std::ofstream * fileTarget, int 
         {
             *fileTarget << "#FFFF00,";
         }
-        if( branchAlpha!=NULL)
+        if( branchAlpha!=nullptr)
         {
             *fileTarget << stg_ex::int_to_string( branchAlpha->get_value() )<< ",";
         }

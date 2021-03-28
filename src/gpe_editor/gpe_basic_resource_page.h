@@ -82,14 +82,14 @@ public:
     int common_buttonAlignment;
     std::vector < GPE_ObjectComponent * > customComponentRealList;
     pawgui::widget_resource_container * projectParentFolder;
-    standardEditableGameResource(pawgui::widget_resource_container * ppFolder = NULL);
+    standardEditableGameResource(pawgui::widget_resource_container * ppFolder = nullptr);
     virtual ~standardEditableGameResource() = 0;
     std::string get_current_name();
     pawgui::widget_basic * add_gui_component(std::string componentData);
     virtual bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     virtual bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     virtual void compile_cpp();
-    virtual bool get_mouse_coords( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    virtual bool get_mouse_coords( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
 
     virtual bool include_local_files( std::string pBuildDir , int buildType );
     virtual void integrate_into_syntax();
@@ -98,9 +98,9 @@ public:
     virtual void load_resource(std::string file_path = "" );
     virtual void prerender_self( );
     void process_export();
-    virtual void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-    virtual void process_resource( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-    virtual void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    virtual void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+    virtual void process_resource( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+    virtual void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void seek_parent_name();
     void set_name(std::string new_name);
     void set_parent_name(std::string new_name);

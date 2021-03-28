@@ -163,26 +163,26 @@ std::string setup_js_folder(std::string buildDirectory,int buildType, int buildB
         {
             if( buildType == gpe::system_os_windows)
             {
-                if( main_gpe_splash_page != NULL )
+                if( main_gpe_splash_page != nullptr )
                 {
                     main_gpe_splash_page->update_messages( "Copying Electron-Windows Files", "Please wait","Do NOT CLOSE" );
                 }
                 if( buildBits==64)
                 {
-                    if( main_gpe_splash_page!=NULL )
+                    if( main_gpe_splash_page!=nullptr )
                     {
                         main_gpe_splash_page->update_submessages( "Copying [game.exe and dlls] folder", "Please Wait..." );
                     }
                     gpe::main_file_url_manager->folder_copy( gpe::app_directory_name+"build_files/win64build_electron",buildDirectory);
 
-                    if( main_gpe_splash_page!=NULL )
+                    if( main_gpe_splash_page!=nullptr )
                     {
                         main_gpe_splash_page->update_submessages( "Copying [game.exe and dlls] folder", "Please Wait..." );
                     }
                     gpe::main_file_url_manager->folder_copy( gpe::app_directory_name+"build_files/win64build_electron/locales",buildDirectory+"/locales");
 
 
-                    if( main_gpe_splash_page!=NULL )
+                    if( main_gpe_splash_page!=nullptr )
                     {
                         main_gpe_splash_page->update_submessages( "Copying [resources] folder", "Please Wait..." );
                     }
@@ -190,19 +190,19 @@ std::string setup_js_folder(std::string buildDirectory,int buildType, int buildB
                 }
                 else
                 {
-                    if( main_gpe_splash_page!=NULL )
+                    if( main_gpe_splash_page!=nullptr )
                     {
                         main_gpe_splash_page->update_submessages( "Copying [game.exe and dlls] folder", "Please Wait..." );
                     }
                     gpe::main_file_url_manager->folder_copy( gpe::app_directory_name+"build_files/win32build_electron",buildDirectory);
 
-                    if( main_gpe_splash_page!=NULL )
+                    if( main_gpe_splash_page!=nullptr )
                     {
                         main_gpe_splash_page->update_submessages( "Copying [locales] folder", "Please Wait..." );
                     }
                     gpe::main_file_url_manager->folder_copy( gpe::app_directory_name+"build_files/win32build_electron/locales",buildDirectory+"/locales");
 
-                    if( main_gpe_splash_page!=NULL )
+                    if( main_gpe_splash_page!=nullptr )
                     {
                         main_gpe_splash_page->update_submessages( "Copying [resources] folder", "Please Wait..." );
                     }
@@ -211,27 +211,27 @@ std::string setup_js_folder(std::string buildDirectory,int buildType, int buildB
             }
             else if( buildType == gpe::system_os_linux)
             {
-                if( main_gpe_splash_page != NULL )
+                if( main_gpe_splash_page != nullptr )
                 {
                     main_gpe_splash_page->update_messages( "Copying Electron-Linux Files", "Please wait","Do NOT CLOSE" );
                 }
 
                 if( buildBits==64)
                 {
-                    if( main_gpe_splash_page != NULL )
+                    if( main_gpe_splash_page != nullptr )
                     {
                         main_gpe_splash_page->update_submessages( "Copying [game and SO files] folder", "Please Wait..." );
                     }
                     gpe::main_file_url_manager->folder_copy( gpe::app_directory_name+"build_files/linux64build_electron",buildDirectory);
 
-                    if( main_gpe_splash_page != NULL )
+                    if( main_gpe_splash_page != nullptr )
                     {
                         main_gpe_splash_page->update_submessages( "Copying [locales] folder", "Please Wait..." );
                     }
                     gpe::main_file_url_manager->folder_copy( gpe::app_directory_name+"build_files/linux64build_electron/locales",buildDirectory+"/locales");
 
 
-                    if( main_gpe_splash_page != NULL )
+                    if( main_gpe_splash_page != nullptr )
                     {
                         main_gpe_splash_page->update_submessages( "Copying [resources] folder", "Please Wait..." );
                     }
@@ -239,19 +239,19 @@ std::string setup_js_folder(std::string buildDirectory,int buildType, int buildB
                 }
                 else
                 {
-                    if( main_gpe_splash_page != NULL )
+                    if( main_gpe_splash_page != nullptr )
                     {
                         main_gpe_splash_page->update_submessages( "Copying [game and SO files] folder", "Please Wait..." );
                     }
                     gpe::main_file_url_manager->folder_copy( gpe::app_directory_name+"build_files/linux32build_electron",buildDirectory);
 
-                    if( main_gpe_splash_page != NULL )
+                    if( main_gpe_splash_page != nullptr )
                     {
                         main_gpe_splash_page->update_submessages( "Copying [locales] folder", "Please Wait..." );
                     }
                     gpe::main_file_url_manager->folder_copy( gpe::app_directory_name+"build_files/linux32build_electron/locales",buildDirectory+"/locales");
 
-                    if( main_gpe_splash_page != NULL )
+                    if( main_gpe_splash_page != nullptr )
                     {
                         main_gpe_splash_page->update_submessages( "Copying [resources] folder", "Please Wait..." );
                     }

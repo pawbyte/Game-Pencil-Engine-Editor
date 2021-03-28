@@ -56,7 +56,7 @@ public:
     pawgui::widget_input_number * defaultVolume;
     pawgui::widget_slide_xaxis * volumeSlider;
     pawgui::widget_label_text  * audioEditorMainNote;
-    audioResource(pawgui::widget_resource_container * pFolder = NULL);
+    audioResource(pawgui::widget_resource_container * pFolder = nullptr);
     ~audioResource();
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
@@ -67,8 +67,8 @@ public:
     void load_audio(std::string new_file_name);
     void load_resource(std::string file_path = "");
     void prerender_self( );
-    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+    void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void save_resource(std::string file_path = "", int backupId = -1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };

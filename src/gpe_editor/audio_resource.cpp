@@ -45,8 +45,8 @@ audioResource::audioResource(pawgui::widget_resource_container * pFolder)
     }
     audioId = -1;
     audioType = 0;
-    musicVal = NULL;
-    soundVal = NULL;
+    musicVal = nullptr;
+    soundVal = nullptr;
     audioEditorMainNote = new pawgui::widget_label_text ("MP3 file type not supported.","Please Note MP3 files are not supported or licensed with usage of the Game Pencil Engine.");
     audioGroupName = new pawgui::widget_input_text("","default=blank");
     audioGroupName->set_name("Audio Group");
@@ -55,7 +55,7 @@ audioResource::audioResource(pawgui::widget_resource_container * pFolder)
     audioType_buttonController->add_opton("Normal Audio");
     audioType_buttonController->add_opton("Voice");
     audioType_buttonController->add_opton("Background Music");
-    if( saveResource_button!=NULL)
+    if( saveResource_button!=nullptr)
     {
         audioType_buttonController->set_coords(-1,saveResource_button->get_ypos()+saveResource_button->get_height()+pawgui::padding_default);
     }
@@ -74,70 +74,70 @@ audioResource::audioResource(pawgui::widget_resource_container * pFolder)
 
 audioResource::~audioResource()
 {
-    if(audioEditorMainNote!=NULL)
+    if(audioEditorMainNote!=nullptr)
     {
         delete audioEditorMainNote;
-        audioEditorMainNote = NULL;
+        audioEditorMainNote = nullptr;
     }
-    if(volumeLabel!=NULL)
+    if(volumeLabel!=nullptr)
     {
         delete volumeLabel;
-        volumeLabel = NULL;
+        volumeLabel = nullptr;
     }
-    if(volumeSlider!=NULL)
+    if(volumeSlider!=nullptr)
     {
         delete volumeSlider;
-        volumeSlider = NULL;
+        volumeSlider = nullptr;
     }
 
-    if(musicVal!=NULL)
+    if(musicVal!=nullptr)
     {
         delete musicVal;
-        musicVal = NULL;
+        musicVal = nullptr;
         gpe::error_log->report("Removing Audio file...");
     }
-    if(soundVal!=NULL)
+    if(soundVal!=nullptr)
     {
         delete soundVal;
-        soundVal = NULL;
+        soundVal = nullptr;
         gpe::error_log->report("Removing Audio file...");
     }
 
-    if( audioType_buttonController!=NULL)
+    if( audioType_buttonController!=nullptr)
     {
         delete audioType_buttonController;
-        audioType_buttonController = NULL;
+        audioType_buttonController = nullptr;
     }
-    if( defaultVolume!=NULL)
+    if( defaultVolume!=nullptr)
     {
         delete defaultVolume;
-        defaultVolume = NULL;
+        defaultVolume = nullptr;
     }
-    if( audioGroupName!=NULL)
+    if( audioGroupName!=nullptr)
     {
         delete audioGroupName;
-        audioGroupName = NULL;
+        audioGroupName = nullptr;
     }
-    if( audioGroupName!=NULL)
+    if( audioGroupName!=nullptr)
     {
         delete audioGroupName;
-        audioGroupName = NULL;
+        audioGroupName = nullptr;
     }
-    if( play_button!=NULL)
+    if( play_button!=nullptr)
     {
         delete play_button;
-        play_button = NULL;
+        play_button = nullptr;
     }
-    if( refreshResourceData_button!=NULL)
+    if( refreshResourceData_button!=nullptr)
     {
         delete refreshResourceData_button;
-        refreshResourceData_button = NULL;
+        refreshResourceData_button = nullptr;
     }
 }
 
 bool audioResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount)
 {
-    if( fileTarget!=NULL && fileTarget->is_open() )
+    if( fileTarget!=nullptr && fileTarget->is_open() )
     {
         std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
         std::string nestedTabsStrObjFunc = pawgui::generate_tabs( leftTabAmount +1 );
@@ -157,7 +157,7 @@ bool audioResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTab
                 *fileTarget << "'',";
             }
         }
-        if( audioType_buttonController!=NULL)
+        if( audioType_buttonController!=nullptr)
         {
             *fileTarget << audioType_buttonController->get_selected_id() << ",";
         }
@@ -165,7 +165,7 @@ bool audioResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTab
         {
             *fileTarget << "0,";
         }
-        if( audioGroupName!=NULL)
+        if( audioGroupName!=nullptr)
         {
             *fileTarget << "'"+audioGroupName->get_string()+"',";
         }
@@ -173,7 +173,7 @@ bool audioResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTab
         {
             *fileTarget << "'',";
         }
-        if( preloadCheckBox!=NULL)
+        if( preloadCheckBox!=nullptr)
         {
             *fileTarget << preloadCheckBox->is_clicked() << ",";
         }
@@ -182,7 +182,7 @@ bool audioResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTab
             *fileTarget << "0,";
         }
 
-        if( defaultVolume!=NULL)
+        if( defaultVolume!=nullptr)
         {
             *fileTarget << defaultVolume->get_held_number() << "";
         }
@@ -271,7 +271,7 @@ void audioResource::load_audio(std::string new_file_name)
         }
         if( loadableAudio )
         {
-            if( soundVal!=NULL)
+            if( soundVal!=nullptr)
             {
                 soundVal->load( new_file_name );
             }
@@ -279,7 +279,7 @@ void audioResource::load_audio(std::string new_file_name)
             {
                 soundVal = gpe::standard_sound_object->create_new( resource_name, new_file_name );
             }
-            if( soundVal==NULL)
+            if( soundVal==nullptr)
             {
                 pawgui::update_action_message("Failed to Load Audio file "+new_file_name+"." );
             }
@@ -298,7 +298,7 @@ void audioResource::load_audio(std::string new_file_name)
 void audioResource::load_resource(std::string file_path )
 {
 
-    if( main_gpe_splash_page != NULL )
+    if( main_gpe_splash_page != nullptr )
     {
         main_gpe_splash_page->update_submessages( "Processing Audio", resource_name );
     }
@@ -434,19 +434,19 @@ void audioResource::load_resource(std::string file_path )
 void audioResource::prerender_self( )
 {
     standardEditableGameResource::prerender_self( );
-    if( play_button!=NULL)
+    if( play_button!=nullptr)
     {
         play_button->prerender_self( );
     }
-    if( openExternalEditor_button!=NULL)
+    if( openExternalEditor_button!=nullptr)
     {
         openExternalEditor_button->prerender_self( );
     }
-    if( preloadCheckBox!=NULL)
+    if( preloadCheckBox!=nullptr)
     {
         preloadCheckBox->prerender_self( );
     }
-    if( audioType_buttonController!=NULL)
+    if( audioType_buttonController!=nullptr)
     {
         audioType_buttonController->prerender_self( );
     }
@@ -457,12 +457,12 @@ void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && view_space!=NULL )
+    if(cam!=nullptr && view_space!=nullptr )
     {
         int prevVolumeSliderVal = volumeSlider->get_value();
         int prevVolumeTypedVal = defaultVolume->get_held_number();
 
-        if( panel_main_editor!=NULL )
+        if( panel_main_editor!=nullptr )
         {
             panel_main_editor->clear_panel();
 
@@ -484,9 +484,9 @@ void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
 
             panel_main_editor->add_gui_auto(confirmResource_button);
             panel_main_editor->add_gui_auto(cancelResource_button);
-            panel_main_editor->process_self( NULL, NULL );
+            panel_main_editor->process_self( nullptr, nullptr );
 
-            if( confirmResource_button!=NULL && confirmResource_button->is_clicked() )
+            if( confirmResource_button!=nullptr && confirmResource_button->is_clicked() )
             {
                 save_resource();
             }
@@ -495,18 +495,18 @@ void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
                 resourcePostProcessed = false;
                 load_resource();
             }
-            if(audioType_buttonController!=NULL)
+            if(audioType_buttonController!=nullptr)
             {
                 audioType = audioType_buttonController->get_selected_id();
             }
             //plays or pauses the sound
-            if( play_button!=NULL)
+            if( play_button!=nullptr)
             {
                 if( play_button->is_clicked() )
                 {
                     if( play_button->get_name()=="Play")
                     {
-                        if( soundVal!=NULL)
+                        if( soundVal!=nullptr)
                         {
                             soundVal->play();
                             play_button->set_name("Stop");
@@ -516,7 +516,7 @@ void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
                     }
                     else if( play_button->get_name()=="Stop")
                     {
-                        if( soundVal != NULL )
+                        if( soundVal != nullptr )
                         {
                             soundVal->stop();
                         }
@@ -537,7 +537,7 @@ void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
                     }*/
                 }
             }
-            if( loadResource_button!=NULL)
+            if( loadResource_button!=nullptr)
             {
                 if( loadResource_button->is_clicked() )
                 {
@@ -548,7 +548,7 @@ void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
                     }
                 }
             }
-            if( openExternalEditor_button!=NULL)
+            if( openExternalEditor_button!=nullptr)
             {
                 if( openExternalEditor_button->is_clicked() )
                 {
@@ -570,7 +570,7 @@ void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
                         {
                             if( (int)audioFileName[ii].size() > 0)
                             {
-                                pawgui::main_context_menu->add_menu_option("Edit "+ gpe::sound_type_names[ii],ii,NULL,-1,NULL,true,true);
+                                pawgui::main_context_menu->add_menu_option("Edit "+ gpe::sound_type_names[ii],ii,nullptr,-1,nullptr,true,true);
                             }
                         }
                         int menuSelection = pawgui::context_menu_process();
@@ -578,7 +578,7 @@ void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
                         {
                             std::string fileToEdit = audioFileName[menuSelection];
 
-                            if( main_editor_settings!=NULL && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_AUD]!=NULL)
+                            if( main_editor_settings!=nullptr && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_AUD]!=nullptr)
                             {
                                 gpe::main_file_url_manager->external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_AUD]->get_string(),fileToEdit, true );
                             }
@@ -595,7 +595,7 @@ void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
                 }
             }
 
-            if( refreshResourceData_button!=NULL )
+            if( refreshResourceData_button!=nullptr )
             {
                 if( refreshResourceData_button->is_clicked() )
                 {
@@ -619,7 +619,7 @@ void audioResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && view_space!=NULL)
+    if(cam!=nullptr && view_space!=nullptr)
     {
         std::string support_string = "";
 
@@ -665,7 +665,7 @@ void audioResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *
 
 void audioResource::save_resource(std::string file_path, int backupId)
 {
-    if( main_gpe_splash_page != NULL )
+    if( main_gpe_splash_page != nullptr )
     {
         main_gpe_splash_page->update_submessages( "Saving Audio", resource_name );
     }
@@ -720,20 +720,20 @@ void audioResource::save_resource(std::string file_path, int backupId)
 
                 }
             }
-            if( preloadCheckBox!=NULL)
+            if( preloadCheckBox!=nullptr)
             {
                 newSaveDataFile << "Preload="+ stg_ex::int_to_string(preloadCheckBox->is_clicked() )+"\n";
             }
-            if( defaultVolume!=NULL)
+            if( defaultVolume!=nullptr)
             {
                 newSaveDataFile << "DefaultVolume="+ stg_ex::int_to_string(defaultVolume->get_held_number() )+"\n";
             }
-            if( audioGroupName!=NULL)
+            if( audioGroupName!=nullptr)
             {
                 newSaveDataFile << "AudioGroup="+audioGroupName->get_string()+"\n";
 
             }
-            if( audioType_buttonController!=NULL)
+            if( audioType_buttonController!=nullptr)
             {
                 newSaveDataFile << "AudioType="+ stg_ex::int_to_string(audioType_buttonController->get_selected_id() )+"\n";
             }
@@ -757,7 +757,7 @@ void audioResource::save_resource(std::string file_path, int backupId)
 
 bool audioResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn)
 {
-    if( fileTarget!=NULL)
+    if( fileTarget!=nullptr)
     {
         if( fileTarget->is_open() )
         {

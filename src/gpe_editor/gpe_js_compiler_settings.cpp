@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include "gpe_js_compiler_settings.h"
 
-gameJSCompiler_settingsResource * GPE_JS_COMPILER_SETTINGS = NULL;
+gameJSCompiler_settingsResource * GPE_JS_COMPILER_SETTINGS = nullptr;
 
 gameJSCompiler_settingsResource::gameJSCompiler_settingsResource(pawgui::widget_resource_container * pFolder)
 {
@@ -46,8 +46,8 @@ gameJSCompiler_settingsResource::gameJSCompiler_settingsResource(pawgui::widget_
     sideAreaPanel = new pawgui::widget_selectbox("Mode");
     sideAreaPanel->set_width(160);
     sideAreaPanel->set_option_height(64);
-    sideAreaPanel->add_option("General",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),NULL,2, false, false);
-    sideAreaPanel->add_option("Obfuscation",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/crosshairs.png"),NULL,2, false, false);
+    sideAreaPanel->add_option("General",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),nullptr,2, false, false);
+    sideAreaPanel->add_option("Obfuscation",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/crosshairs.png"),nullptr,2, false, false);
 
     sidePanelRect = new gpe::shape_rect();
 
@@ -88,58 +88,58 @@ gameJSCompiler_settingsResource::gameJSCompiler_settingsResource(pawgui::widget_
 
 gameJSCompiler_settingsResource::~gameJSCompiler_settingsResource()
 {
-    if( editorPageList!=NULL)
+    if( editorPageList!=nullptr)
     {
         editorPageList->clear_list();
         delete editorPageList;
-        editorPageList = NULL;
+        editorPageList = nullptr;
     }
 
-    if( editorPageTabBar!=NULL)
+    if( editorPageTabBar!=nullptr)
     {
         delete editorPageTabBar;
-        editorPageTabBar = NULL;
+        editorPageTabBar = nullptr;
     }
 
 
-    if( minifyCode!=NULL)
+    if( minifyCode!=nullptr)
     {
         delete minifyCode;
-        minifyCode = NULL;
+        minifyCode = nullptr;
     }
-    if( pluginConstantValues!=NULL)
+    if( pluginConstantValues!=nullptr)
     {
         delete pluginConstantValues;
-        pluginConstantValues = NULL;
+        pluginConstantValues = nullptr;
     }
-    if( obfuscateCode!=NULL)
+    if( obfuscateCode!=nullptr)
     {
         delete obfuscateCode;
-        obfuscateCode = NULL;
+        obfuscateCode = nullptr;
     }
 
-    if( obfuscatorDirectoryField!=NULL)
+    if( obfuscatorDirectoryField!=nullptr)
     {
         delete obfuscatorDirectoryField;
-        obfuscatorDirectoryField = NULL;
+        obfuscatorDirectoryField = nullptr;
     }
 
-    if( obfuscatorDirectoryLoad_button!=NULL)
+    if( obfuscatorDirectoryLoad_button!=nullptr)
     {
         delete obfuscatorDirectoryLoad_button;
-        obfuscatorDirectoryLoad_button = NULL;
+        obfuscatorDirectoryLoad_button = nullptr;
     }
 
-    if( googleClosureCompilerFile!=NULL)
+    if( googleClosureCompilerFile!=nullptr)
     {
         delete googleClosureCompilerFile;
-        googleClosureCompilerFile = NULL;
+        googleClosureCompilerFile = nullptr;
     }
 
-    if( googleClosureCompilerLoad_button!=NULL)
+    if( googleClosureCompilerLoad_button!=nullptr)
     {
         delete googleClosureCompilerLoad_button;
-        googleClosureCompilerLoad_button = NULL;
+        googleClosureCompilerLoad_button = nullptr;
     }
 }
 
@@ -156,7 +156,7 @@ void gameJSCompiler_settingsResource::prerender_self( )
 void gameJSCompiler_settingsResource::load_resource(std::string file_path)
 {
     //showStatupTipsBox->set_clicked( editor_gui_main->showTipsAtStartUp );
-    if( main_gpe_splash_page != NULL )
+    if( main_gpe_splash_page != nullptr )
     {
         main_gpe_splash_page->update_submessages( "Loading JS Compiler Settings","Please Wait..." );
     }
@@ -239,10 +239,10 @@ void gameJSCompiler_settingsResource::process_self( gpe::shape_rect * view_space
 {
     cam = gpe::camera_find(cam);
     view_space = gpe::camera_find(view_space);
-    if( cam!=NULL && editorPageList!=NULL && editorPageTabBar!=NULL && view_space!=NULL)
+    if( cam!=nullptr && editorPageList!=nullptr && editorPageTabBar!=nullptr && view_space!=nullptr)
     {
         int prevTab = sideAreaPanel->get_selection();
-        if( panel_main_editor!=NULL )
+        if( panel_main_editor!=nullptr )
         {
             subViewedSpace.x = 0;
             subViewedSpace.y = 0;
@@ -310,13 +310,13 @@ void gameJSCompiler_settingsResource::render_self( gpe::shape_rect * view_space,
 {
     cam = gpe::camera_find(cam);
     view_space = gpe::camera_find(view_space);
-    if( cam!=NULL && view_space!=NULL)
+    if( cam!=nullptr && view_space!=nullptr)
     {
-        if( sideAreaPanel!=NULL && panel_main_editor==NULL )
+        if( sideAreaPanel!=nullptr && panel_main_editor==nullptr )
         {
             sideAreaPanel->render_self( view_space,cam);
         }
-        if( editorPageList!=NULL )
+        if( editorPageList!=nullptr )
         {
             editorPageList->render_self( view_space,cam);
         }

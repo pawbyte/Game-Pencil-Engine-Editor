@@ -34,12 +34,12 @@ SOFTWARE.
 #include "gpe_log_manager.h"
 #include "gpe_editor.h"
 
-log_manager * main_editor_log = NULL;
+log_manager * main_editor_log = nullptr;
 
 log_manager::log_manager()
 {
     tabsAtBottom = true;
-    /*if( gpe::game_runtime!=NULL )
+    /*if( gpe::game_runtime!=nullptr )
     {
         int foundLineCount = gpe::game_runtime->system_log.size();
         if( foundLineCount > 0 )
@@ -48,7 +48,7 @@ log_manager::log_manager()
         }
     }*/
 
-    if( pawgui::main_anchor_controller==NULL  )
+    if( pawgui::main_anchor_controller==nullptr  )
     {
         pawgui::main_anchor_controller = new pawgui::widget_text_anchor_controller();
     }
@@ -87,7 +87,7 @@ log_manager::log_manager()
     otherLog->clear_all_lines();
     handle_error_log();
 
-    logToView = NULL;
+    logToView = nullptr;
     bottomInfoList = new pawgui::widget_panel_list();
     emptyResultsLabel = new pawgui::widget_label_text ("No results found","No results found");
     previousHeight = widget_box.h;
@@ -95,39 +95,39 @@ log_manager::log_manager()
 
 log_manager::~log_manager()
 {
-    if( bottomInfoList!=NULL)
+    if( bottomInfoList!=nullptr)
     {
         bottomInfoList->clear_list();
         delete bottomInfoList;
-        bottomInfoList = NULL;
+        bottomInfoList = nullptr;
     }
-    if( logTabs!=NULL)
+    if( logTabs!=nullptr)
     {
         delete logTabs;
-        logTabs = NULL;
+        logTabs = nullptr;
     }
 
-    if( generalTextLog!=NULL)
+    if( generalTextLog!=nullptr)
     {
         delete generalTextLog;
-        generalTextLog = NULL;
+        generalTextLog = nullptr;
     }
 
-    if( debugTextLog!=NULL)
+    if( debugTextLog!=nullptr)
     {
         delete debugTextLog;
-        debugTextLog = NULL;
+        debugTextLog = nullptr;
     }
 
-    if( buildTextLog!=NULL)
+    if( buildTextLog!=nullptr)
     {
         delete buildTextLog;
-        buildTextLog = NULL;
+        buildTextLog = nullptr;
     }
-    if( emptyResultsLabel!=NULL)
+    if( emptyResultsLabel!=nullptr)
     {
         delete emptyResultsLabel;
-        emptyResultsLabel = NULL;
+        emptyResultsLabel = nullptr;
     }
 }
 
@@ -144,14 +144,14 @@ void log_manager::add_default_tab(  std::string name,  bool open )
 
 void log_manager::clear_defaults()
 {
-    gpe::key_pair * tempPair = NULL;
+    gpe::key_pair * tempPair = nullptr;
     for( int i = (int)defaultTabs.size()-1; i >=0; i--)
     {
         tempPair = defaultTabs[i];
-        if( tempPair !=NULL)
+        if( tempPair !=nullptr)
         {
             delete tempPair;
-            tempPair = NULL;
+            tempPair = nullptr;
         }
     }
     defaultTabs.clear();
@@ -159,7 +159,7 @@ void log_manager::clear_defaults()
 
 void log_manager::handle_error_log()
 {
-    if( gpe::error_log!=NULL )
+    if( gpe::error_log!=nullptr )
     {
         int foundLineCount = gpe::error_log->get_size();
         if( foundLineCount > 0 )
@@ -178,16 +178,16 @@ void log_manager::clear_search_anchors()
 {
     if( (int)searchAnchors.size() > 0)
     {
-        pawgui::widget_text_anchor * tAnchor = NULL;
+        pawgui::widget_text_anchor * tAnchor = nullptr;
         for( int i = (int)searchAnchors.size()-1; i >=0; i--)
         {
             tAnchor = searchAnchors[i];
             delete tAnchor;
-            tAnchor = NULL;
+            tAnchor = nullptr;
         }
         searchAnchors.clear();
     }
-    if( pawgui::FONT_LABEL_ANCHOR!=NULL)
+    if( pawgui::FONT_LABEL_ANCHOR!=nullptr)
     {
         pawgui::FONT_LABEL_ANCHOR->clear_cache();
     }
@@ -207,16 +207,16 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
     previousHeight = widget_box.h;
     //Robs the GC of text anchors
     //This is just to leave less to be depended on by text editor class
-    if( pawgui::main_anchor_controller!=NULL  )
+    if( pawgui::main_anchor_controller!=nullptr  )
     {
         int gcSize = pawgui::main_anchor_controller->loggedAnchors.size();
         if( gcSize > 0 )
         {
-            pawgui::widget_text_anchor * tempAnchor = NULL;
+            pawgui::widget_text_anchor * tempAnchor = nullptr;
             for( int gcItr = 0; gcItr < gcSize; gcItr++ )
             {
                 tempAnchor = pawgui::main_anchor_controller->loggedAnchors.at( gcItr );
-                if( tempAnchor !=NULL )
+                if( tempAnchor !=nullptr )
                 {
                     searchAnchors.push_back( tempAnchor );
                 }
@@ -226,23 +226,23 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
     }
     else
     {
-        log_general_comment("pawgui::main_anchor_controller = NULL; //....");
+        log_general_comment("pawgui::main_anchor_controller = nullptr; //....");
     }
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if( widget_box.h < 32 && pawgui::main_search_controller!=NULL )
+    if( widget_box.h < 32 && pawgui::main_search_controller!=nullptr )
     {
         pawgui::main_search_controller->close_finder();
     }
 
     //exits if it's not in use or view
-    if( !isEnabled || !is_visible || view_space==NULL || cam==NULL || widget_box.h <= 8 )
+    if( !isEnabled || !is_visible || view_space==nullptr || cam==nullptr || widget_box.h <= 8 )
     {
         return;
     }
 
     std::string pastTab = logTabs->get_selected_name();
-    if( pastTab!="Search" && pawgui::main_search_controller!=NULL )
+    if( pastTab!="Search" && pawgui::main_search_controller!=nullptr )
     {
         pawgui::main_search_controller->close_finder();
     }
@@ -254,7 +254,7 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
             //widget_box.h = screen_height-pawgui::main_statusbar->get_height()-96;
         }
 
-        if( logTabs!=NULL )
+        if( logTabs!=nullptr )
         {
             pawgui::widget_basic::process_self(view_space,cam);
 
@@ -279,20 +279,20 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                 pawgui::main_context_menu->add_menu_option("Clear Search Results",3);
                 pawgui::popup_menu_option * toggleMenuOption = pawgui::main_context_menu->add_menu_option("Toggle",-1);
 
-                gpe::key_pair * tempPair = NULL;
+                gpe::key_pair * tempPair = nullptr;
                 int iTab = 0;
                 for( int iTab = 0; iTab < (int)defaultTabs.size(); iTab++)
                 {
                     tempPair = defaultTabs[iTab];
-                    if( tempPair !=NULL)
+                    if( tempPair !=nullptr)
                     {
                         if( logTabs->contains_tab( tempPair->key_string))
                         {
-                            toggleMenuOption->add_menu_option("Toggle "+tempPair->key_string,1000+iTab,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/check-square.png"),-1,NULL,false);
+                            toggleMenuOption->add_menu_option("Toggle "+tempPair->key_string,1000+iTab,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/check-square.png"),-1,nullptr,false);
                         }
                         else
                         {
-                            toggleMenuOption->add_menu_option("Toggle "+tempPair->key_string,1000+iTab,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,NULL,false);
+                            toggleMenuOption->add_menu_option("Toggle "+tempPair->key_string,1000+iTab,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/toggle-on.png"),-1,nullptr,false);
                         }
                     }
                 }
@@ -310,14 +310,14 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                 switch(foundResult)
                 {
                 case 0:
-                    if( logToView!=NULL )
+                    if( logToView!=nullptr )
                     {
                         logToView->copy_all();
                     }
                 break;
 
                 case 1:
-                    if( logToView!=NULL )
+                    if( logToView!=nullptr )
                     {
                         logToView->clear_all_lines();
                     }
@@ -337,7 +337,7 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                     toggle_manager();
                 break;
                 default:
-                    logToView = NULL;
+                    logToView = nullptr;
                 break;
                 }
             }
@@ -348,9 +348,9 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
             }
 
             //Processes logToView
-            logToView = NULL;
+            logToView = nullptr;
 
-            //if( widget_box.h >= 64 && font_textinput!=NULL )
+            //if( widget_box.h >= 64 && font_textinput!=nullptr )
             {
                 if( logTabs->get_selected_name()=="Game Pencil Log")
                 {
@@ -374,8 +374,8 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                 }
                 else
                 {
-                    logToView= NULL;
-                    if( logTabs->get_selected_name()=="Search" && bottomInfoList!=NULL )
+                    logToView= nullptr;
+                    if( logTabs->get_selected_name()=="Search" && bottomInfoList!=nullptr )
                     {
                         if( pastTab != "Search" )
                         {
@@ -484,17 +484,17 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                             {
                                 if( (int)pawgui::main_search_controller->findTextstringBox->get_string().size() > 0 )
                                 {
-                                    if( pawgui::main_search_controller->findScope!=NULL)
+                                    if( pawgui::main_search_controller->findScope!=nullptr)
                                     {
                                         clear_search_anchors();
-                                        if( pawgui::main_search_controller->findScope->get_selected_tag()=="Open Tabs" && pawgui::main_tab_resource_bar!=NULL )
+                                        if( pawgui::main_search_controller->findScope->get_selected_tag()=="Open Tabs" && pawgui::main_tab_resource_bar!=nullptr )
                                         {
                                             log_general_comment("Searching Tabs for ["+pawgui::main_search_controller->findTextstringBox->get_string()+"]...");
                                             pawgui::main_tab_resource_bar->search_for_string(pawgui::main_search_controller->findTextstringBox->get_string() );
                                         }
-                                        else if( pawgui::main_search_controller->findScope->get_selected_tag()=="Project Resources" && current_project!=NULL )
+                                        else if( pawgui::main_search_controller->findScope->get_selected_tag()=="Project Resources" && current_project!=nullptr )
                                         {
-                                            if( current_project->RESC_project_FOLDER!=NULL)
+                                            if( current_project->RESC_project_FOLDER!=nullptr)
                                             {
                                                 log_general_comment("Searching Project for ["+pawgui::main_search_controller->findTextstringBox->get_string()+"]...");
                                                 current_project->RESC_project_FOLDER->search_for_string(pawgui::main_search_controller->findTextstringBox->get_string() );
@@ -511,10 +511,10 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                             }
                         }
                     }
-                    else if( logTabs->get_selected_name()=="Search Results" && bottomInfoList!=NULL)
+                    else if( logTabs->get_selected_name()=="Search Results" && bottomInfoList!=nullptr)
                     {
                         pawgui::main_search_controller->close_finder();
-                        pawgui::widget_text_anchor * fAnchor = NULL;
+                        pawgui::widget_text_anchor * fAnchor = nullptr;
 
                         if( tabsAtBottom)
                         {
@@ -539,7 +539,7 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                             {
                                 fAnchor = searchAnchors[iAnchor];
                                 fAnchor->set_width( widget_box.w );
-                                if( fAnchor!=NULL)
+                                if( fAnchor!=nullptr)
                                 {
                                     bottomInfoList->add_gui_element(fAnchor,true);
                                 }
@@ -556,7 +556,7 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                     }
                 }
 
-                if( logToView!=NULL)
+                if( logToView!=nullptr)
                 {
                     if( tabsAtBottom )
                     {
@@ -585,15 +585,15 @@ void log_manager::render_self( gpe::shape_rect * view_space, gpe::shape_rect *ca
     if( isEnabled && widget_box.h >8 )
     {
         //gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->text_box_color,false);
-        if( widget_box.h > 32 && logTabs!=NULL )
+        if( widget_box.h > 32 && logTabs!=nullptr )
         {
-            //if( widget_box.h >= 64 && font_textinput!=NULL)
+            //if( widget_box.h >= 64 && font_textinput!=nullptr)
             {
-                if( logToView!=NULL)
+                if( logToView!=nullptr)
                 {
                     logToView->render_self( view_space,cam);
                 }
-                else if( bottomInfoList!=NULL)
+                else if( bottomInfoList!=nullptr)
                 {
                     //bottomInfoList->render_self( view_space,cam);
                 }
@@ -615,18 +615,18 @@ void log_manager::clear_all_logs()
 
 void log_manager::clear_debug_log()
 {
-    pawgui::log_entry * tempLogEntry = NULL;
+    pawgui::log_entry * tempLogEntry = nullptr;
     for( int i = (int)debugLog.size()-1; i >=0; i--)
     {
         tempLogEntry = debugLog[i];
-        if( tempLogEntry!=NULL)
+        if( tempLogEntry!=nullptr)
         {
             delete tempLogEntry;
-            tempLogEntry = NULL;
+            tempLogEntry = nullptr;
         }
     }
     debugLog.clear();
-    if( debugTextLog!=NULL)
+    if( debugTextLog!=nullptr)
     {
         debugTextLog->clear_all_lines();
     }
@@ -634,18 +634,18 @@ void log_manager::clear_debug_log()
 
 void log_manager::clear_build_log()
 {
-    pawgui::log_entry * tempLogEntry = NULL;
+    pawgui::log_entry * tempLogEntry = nullptr;
     for( int i = (int)buildLog.size()-1; i >=0; i--)
     {
         tempLogEntry = buildLog[i];
-        if( tempLogEntry!=NULL)
+        if( tempLogEntry!=nullptr)
         {
             delete tempLogEntry;
-            tempLogEntry = NULL;
+            tempLogEntry = nullptr;
         }
     }
     buildLog.clear();
-    if( buildTextLog!=NULL)
+    if( buildTextLog!=nullptr)
     {
         buildTextLog->clear_all_lines();
     }
@@ -653,18 +653,18 @@ void log_manager::clear_build_log()
 
 void log_manager::clear_general_log()
 {
-    pawgui::log_entry * tempLogEntry = NULL;
+    pawgui::log_entry * tempLogEntry = nullptr;
     for( int i = (int)generalLog.size()-1; i >=0; i--)
     {
         tempLogEntry = generalLog[i];
-        if( tempLogEntry!=NULL)
+        if( tempLogEntry!=nullptr)
         {
             delete tempLogEntry;
-            tempLogEntry = NULL;
+            tempLogEntry = nullptr;
         }
     }
     generalLog.clear();
-    if( generalTextLog!=NULL)
+    if( generalTextLog!=nullptr)
     {
         generalTextLog->clear_all_lines();
     }
@@ -672,7 +672,7 @@ void log_manager::clear_general_log()
 
 void log_manager::log_general_line(std::string newLogLine)
 {
-    if( generalTextLog!=NULL)
+    if( generalTextLog!=nullptr)
     {
         generalTextLog->add_line(newLogLine, true );
         open_general_log();
@@ -681,7 +681,7 @@ void log_manager::log_general_line(std::string newLogLine)
 
 void log_manager::log_general_comment(std::string newLogLine)
 {
-    if( generalTextLog!=NULL)
+    if( generalTextLog!=nullptr)
     {
         generalTextLog->add_line("Comment: "+newLogLine, true );
         open_general_log();
@@ -691,7 +691,7 @@ void log_manager::log_general_comment(std::string newLogLine)
 
 void log_manager::log_general_error(std::string newLogLine)
 {
-    if( generalTextLog!=NULL)
+    if( generalTextLog!=nullptr)
     {
         generalTextLog->add_line("Error: "+newLogLine, true );
         open_general_log();
@@ -700,7 +700,7 @@ void log_manager::log_general_error(std::string newLogLine)
 
 void log_manager::log_general_warning(std::string newLogLine)
 {
-    if( generalTextLog!=NULL)
+    if( generalTextLog!=nullptr)
     {
         generalTextLog->add_line("Warning: "+newLogLine, true );
         open_general_log();
@@ -709,7 +709,7 @@ void log_manager::log_general_warning(std::string newLogLine)
 
 void log_manager::log_debug_line(std::string newLogLine)
 {
-    if( generalTextLog!=NULL)
+    if( generalTextLog!=nullptr)
     {
         generalTextLog->add_line("Error: "+newLogLine, true );
         open_general_log();
@@ -719,7 +719,7 @@ void log_manager::log_debug_line(std::string newLogLine)
 
 void log_manager::log_build_line(std::string newLogLine)
 {
-    if( buildTextLog!=NULL)
+    if( buildTextLog!=nullptr)
     {
         buildTextLog->add_line(newLogLine, true );
         open_build_log();
@@ -728,7 +728,7 @@ void log_manager::log_build_line(std::string newLogLine)
 
 void log_manager::log_build_comment(std::string newLogLine)
 {
-    if( buildTextLog!=NULL)
+    if( buildTextLog!=nullptr)
     {
         buildTextLog->add_line("Comment: "+newLogLine, true );
         open_build_log();
@@ -737,7 +737,7 @@ void log_manager::log_build_comment(std::string newLogLine)
 
 void log_manager::log_build_error(std::string newLogLine)
 {
-    if( buildTextLog!=NULL)
+    if( buildTextLog!=nullptr)
     {
         buildTextLog->add_line("Error: "+newLogLine, true );
         open_build_log();
@@ -746,7 +746,7 @@ void log_manager::log_build_error(std::string newLogLine)
 
 void log_manager::log_build_warning(std::string newLogLine)
 {
-    if( buildTextLog!=NULL)
+    if( buildTextLog!=nullptr)
     {
         buildTextLog->add_line("Warning: "+newLogLine, true );
         open_build_log();
@@ -757,7 +757,7 @@ void log_manager::log_build_warning(std::string newLogLine)
 void log_manager::log_other_line(std::string newLogLine)
 {
     gpe::error_log->report(newLogLine);
-    if( otherLog!=NULL)
+    if( otherLog!=nullptr)
     {
         otherLog->add_line(newLogLine, true );
         //open_other_log();
@@ -770,7 +770,7 @@ void log_manager::open_general_log()
     {
         widget_box.h = minLogHeight;
     }
-    if( logTabs!=NULL)
+    if( logTabs!=nullptr)
     {
         logTabs->open_tab("Game Pencil Log");
     }
@@ -782,7 +782,7 @@ void log_manager::open_build_log()
     {
         widget_box.h = minLogHeight ;
     }
-    if( logTabs!=NULL)
+    if( logTabs!=nullptr)
     {
         logTabs->open_tab("Build Log");
     }
@@ -794,7 +794,7 @@ void log_manager::open_other_log()
     {
         widget_box.h = minLogHeight;
     }
-    if( logTabs!=NULL)
+    if( logTabs!=nullptr)
     {
         logTabs->open_tab("Other Log");
     }
@@ -807,7 +807,7 @@ void log_manager::open_replace_mode()
         widget_box.h = 128;
     }
     bottomInfoList->reset_self();
-    if( logTabs!=NULL)
+    if( logTabs!=nullptr)
     {
         logTabs->open_tab("Search");
     }
@@ -820,7 +820,7 @@ void log_manager::open_search_mode()
         widget_box.h = 96;
     }
     bottomInfoList->reset_self();
-    if( logTabs!=NULL)
+    if( logTabs!=nullptr)
     {
         logTabs->open_tab("Search");
     }
@@ -832,12 +832,12 @@ void log_manager::open_search_results()
     {
         widget_box.h = 128;
     }
-    if( logTabs!=NULL)
+    if( logTabs!=nullptr)
     {
         logTabs->open_tab("Search Results");
     }
     bottomInfoList->reset_self();
-    if( pawgui::main_settings!=NULL)
+    if( pawgui::main_settings!=nullptr)
     {
         pawgui::main_search_controller->close_finder();
     }
@@ -846,22 +846,22 @@ void log_manager::open_search_results()
 void log_manager::process_anchors()
 {
     int anchorCount = (int)searchAnchors.size();
-    if(anchorCount ==  0  || pawgui::main_anchor_controller== NULL )
+    if(anchorCount ==  0  || pawgui::main_anchor_controller== nullptr )
     {
         return;
     }
-    pawgui::widget_text_anchor * tAnchor = NULL;
+    pawgui::widget_text_anchor * tAnchor = nullptr;
     for( int i = 0; i < anchorCount; i++)
     {
         tAnchor = searchAnchors[i];
-        if( tAnchor!=NULL && tAnchor->is_clicked() )
+        if( tAnchor!=nullptr && tAnchor->is_clicked() )
         {
             if( (int) tAnchor->anchorProjectName.size() > 0 )
             {
                 GPE_ProjectFolder * foundProject = editor_gui_main->find_project_from_filename( tAnchor->anchorProjectName);
-                pawgui::widget_resource_container * foundResContainer = NULL;
-                pawgui::general_resource * foundGameResource = NULL;
-                if( foundProject!=NULL && foundProject->RESC_project_FOLDER!=NULL )
+                pawgui::widget_resource_container * foundResContainer = nullptr;
+                pawgui::general_resource * foundGameResource = nullptr;
+                if( foundProject!=nullptr && foundProject->RESC_project_FOLDER!=nullptr )
                 {
                     if( tAnchor->anchorProjectResourceId >=0 )
                     {
@@ -873,14 +873,14 @@ void log_manager::process_anchors()
                     }
                 }
 
-                if( foundResContainer!=NULL)
+                if( foundResContainer!=nullptr)
                 {
                     foundGameResource = foundResContainer->get_held_resource();
                 }
-                if( foundGameResource!=NULL)
+                if( foundGameResource!=nullptr)
                 {
                     foundGameResource->open_code( tAnchor->lineNumber, tAnchor->characterNumber, tAnchor->lineMessage );
-                    if( pawgui::main_tab_resource_bar!=NULL)
+                    if( pawgui::main_tab_resource_bar!=nullptr)
                     {
                         pawgui::main_tab_resource_bar->add_new_tab(foundGameResource);
                     }

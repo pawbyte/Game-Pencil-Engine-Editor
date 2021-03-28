@@ -33,7 +33,7 @@ SOFTWARE.
 #include "gpe_editor.h"
 #include "gpe_scene_helper_class.h"
 
-GPE_SceneEditorHelper * spm = NULL;
+GPE_SceneEditorHelper * spm = nullptr;
 
 gameScenePopupCategories::gameScenePopupCategories( std::string cName )
 {
@@ -44,21 +44,21 @@ gameScenePopupCategories::gameScenePopupCategories( std::string cName )
 
 gameScenePopupCategories::~gameScenePopupCategories()
 {
-    pawgui::widget_button_card_vertical * tempButon = NULL;
+    pawgui::widget_button_card_vertical * tempButon = nullptr;
     for( int i = (int)elements.size()-1; i >=0; i-- )
     {
         tempButon = elements[i];
-        if( tempButon!=NULL)
+        if( tempButon!=nullptr)
         {
             delete tempButon;
-            tempButon = NULL;
+            tempButon = nullptr;
         }
     }
     elements.clear();
-    if( categoryLabel!=NULL)
+    if( categoryLabel!=nullptr)
     {
         delete categoryLabel;
-        categoryLabel = NULL;
+        categoryLabel = nullptr;
     }
 }
 
@@ -73,7 +73,7 @@ pawgui::widget_button_card_vertical * gameScenePopupCategories::add_button(  std
 
 void gameScenePopupCategories::add_if_available( pawgui::widget_panel_list *  cList, std::string str )
 {
-    if( cList !=NULL )
+    if( cList !=nullptr )
     {
         int i = 0;
         if( (int)str.size() > 0 )
@@ -86,7 +86,7 @@ void gameScenePopupCategories::add_if_available( pawgui::widget_panel_list *  cL
             }
             for( i = 0; i < (int)elements.size(); i++ )
             {
-                if( elements[i]!=NULL && stg_ex::string_contains( stg_ex::string_lower( elements[i]->get_name() ), stg_ex::string_lower (str ) ) )
+                if( elements[i]!=nullptr && stg_ex::string_contains( stg_ex::string_lower( elements[i]->get_name() ), stg_ex::string_lower (str ) ) )
                 {
                     if( !categoryAdded )
                     {
@@ -116,10 +116,10 @@ GPE_SceneEditorHelper::GPE_SceneEditorHelper()
     mouseYPos = 0;
     sWidth = 0;
     sHeight = 0;
-    cSceneAnimtList = NULL;
-    cSceneObjList = NULL;
-    cSceneTexList = NULL;
-    cSceneTstList = NULL;
+    cSceneAnimtList = nullptr;
+    cSceneObjList = nullptr;
+    cSceneTexList = nullptr;
+    cSceneTstList = nullptr;
 
     zoomValue = 1.0;
     currentCamera = new gpe::shape_rect();
@@ -163,42 +163,42 @@ GPE_SceneEditorHelper::GPE_SceneEditorHelper()
 
 GPE_SceneEditorHelper::~GPE_SceneEditorHelper()
 {
-    if( eraserAnimation!=NULL)
+    if( eraserAnimation!=nullptr)
     {
         pawgui::rsm_gui->remove_animation( eraserAnimation->get_name() );
-        eraserAnimation = NULL;
+        eraserAnimation = nullptr;
     }
 
-    if( highlightRect!=NULL )
+    if( highlightRect!=nullptr )
     {
         delete highlightRect;
-        highlightRect = NULL;
+        highlightRect = nullptr;
     }
 
-    if( topList!=NULL )
+    if( topList!=nullptr )
     {
         topList->clear_list();
         delete topList;
-        topList = NULL;
+        topList = nullptr;
     }
 
-    if( middleList!=NULL )
+    if( middleList!=nullptr )
     {
         middleList->clear_list();
         delete middleList;
-        middleList = NULL;
+        middleList = nullptr;
     }
 
-    if( bottomList!=NULL )
+    if( bottomList!=nullptr )
     {
         bottomList->clear_list();
         delete bottomList;
-        bottomList = NULL;
+        bottomList = nullptr;
     }
-    if( highlightRect!=NULL )
+    if( highlightRect!=nullptr )
     {
         delete highlightRect;
-        highlightRect = NULL;
+        highlightRect = nullptr;
     }
 }
 
@@ -212,11 +212,11 @@ gameScenePopupCategories *  GPE_SceneEditorHelper::add_category( std::string nam
 int GPE_SceneEditorHelper::get_new_resource(std::string title )
 {
     reset_meta();
-    if( editor_gui_main!=NULL && gpe::renderer_main!=NULL )
+    if( editor_gui_main!=nullptr && gpe::renderer_main!=nullptr )
     {
         gpe::game_runtime->end_loop();
         currentLabel->set_name("Select an option below for a new type in your scene");
-        pawgui::resource_dragged = NULL;
+        pawgui::resource_dragged = nullptr;
         gpe::cursor_main_controller->cursor_change( gpe::cursor_main_controller->cursor_system_name( gpe::cursor_default_type::arrow) );
         editor_gui_main->reset_gui_info();
         pawgui::main_overlay_system->take_frozen_screenshot( );
@@ -240,7 +240,7 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
         //pawgui::main_overlay_system->render_frozen_screenshot( );
         int selectedOptionId = (int)gpe::branch_type::BASIC_SCENE_ELEMENT;
         std::string selectedOptionStr = "";
-        pawgui::widget_button_card_vertical * selected_button = NULL;
+        pawgui::widget_button_card_vertical * selected_button = nullptr;
         while(exitOperation==false)
         {
             gpe::cursor_main_controller->cursor_change( gpe::cursor_main_controller->cursor_system_name( gpe::cursor_default_type::arrow) );
@@ -279,14 +279,14 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
             middleList->clear_list();
             for( int i = 0; i < (int)popupCategories.size(); i++ )
             {
-                if( popupCategories[i]!=NULL )
+                if( popupCategories[i]!=nullptr )
                 {
                     popupCategories[i]->add_if_available( middleList, searchField->get_string() );
                 }
             }
 
-            middleList->process_self( NULL, NULL );
-            if( middleList->selectedElement !=NULL && middleList->selectedElement->get_element_type()=="vertical_button" )
+            middleList->process_self( nullptr, nullptr );
+            if( middleList->selectedElement !=nullptr && middleList->selectedElement->get_element_type()=="vertical_button" )
             {
                 selectedOptionStr = middleList->selectedElement->descriptionText;
                 if( descriptionText!= selectedOptionStr)
@@ -319,7 +319,7 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
             }
             bottomList->add_gui_auto(confirm_button );
             bottomList->add_gui_auto(cancel_button );
-            bottomList->process_self( NULL, NULL );
+            bottomList->process_self( nullptr, nullptr );
 
             if( gpe::input->check_kb_released(kb_esc) || cancel_button->is_clicked() || gpe::window_controller_main->is_resized()  )
             {
@@ -347,13 +347,13 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
                 gpe::gcanvas->render_rectangle( widget_box.x,widget_box.y,widget_box.x+widget_box.w,widget_box.y+32,pawgui::theme_main->popup_box_color,false);
                 gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->popup_box_highlight_color,true);
                 gpe::gfs->render_text( widget_box.x+widget_box.w/2,widget_box.y+pawgui::padding_default,title,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_top);
-                topList->render_self( NULL, NULL );
-                middleList->render_self( NULL, NULL );
-                bottomList->render_self( NULL, NULL );
+                topList->render_self( nullptr, nullptr );
+                middleList->render_self( nullptr, nullptr );
+                bottomList->render_self( nullptr, nullptr );
                 //editor_gui_main-render_gui_info(  true);
 
                 gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->popup_box_border_color,true);
-                if( editor_gui_main!= NULL )
+                if( editor_gui_main!= nullptr )
                 {
                     editor_gui_main->render_gui_info();
                 }

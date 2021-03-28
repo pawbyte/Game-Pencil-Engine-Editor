@@ -82,16 +82,16 @@ void sceneLayer::render_branch()
 
 bool sceneLayer::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn  )
 {
-    if( fileTarget!=NULL && fileTarget->is_open() )
+    if( fileTarget!=nullptr && fileTarget->is_open() )
     {
         std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"[scene_layerContainer="+ stg_ex::int_to_string( projectLayerId )+",]" << "\n";
         GPE_SceneBasicClass::save_branch_data( fileTarget, nestedFoldersIn+1 );
-        pawgui::widget_branch * current_branch = NULL;
+        pawgui::widget_branch * current_branch = nullptr;
         for( int i = 0; i < (int)sub_elements.size(); i++)
         {
             current_branch = sub_elements[i];
-            if( current_branch!=NULL )
+            if( current_branch!=nullptr )
             {
                 current_branch->save_branch_data( fileTarget, nestedFoldersIn+1 );
             }

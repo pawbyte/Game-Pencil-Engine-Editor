@@ -43,7 +43,7 @@ GPE_SceneGameObject::GPE_SceneGameObject( std::string nName)
     isBeingMoved = false;
     objTypeId = -1;
     customObjId = -1;
-    objBeingPlaced = NULL;
+    objBeingPlaced = nullptr;
 
     width = 32;
     height = 32;
@@ -60,7 +60,7 @@ GPE_SceneGameObject::~GPE_SceneGameObject()
 
 void GPE_SceneGameObject::add_typed_elements()
 {
-    if( panel_inspector!=NULL )
+    if( panel_inspector!=nullptr )
     {
         //panel_inspector->add_gui_element( objBeingPlaced, true );
     }
@@ -70,11 +70,11 @@ bool GPE_SceneGameObject::build_intohtml5_file(std::ofstream * fileTarget, int l
 {
 
     pawgui::widget_resource_container * allEntitiesFolder = localResTypeController->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_object]);
-    pawgui::widget_resource_container * fObjToPlace = NULL;
+    pawgui::widget_resource_container * fObjToPlace = nullptr;
 
     fObjToPlace = allEntitiesFolder->find_resource_from_id( objTypeId);
     std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
-    if( fObjToPlace!=NULL)
+    if( fObjToPlace!=nullptr)
     {
         *fileTarget << nestedTabsStr << "newBranch = scn_temp_layer.scnStartObjects.push( {objId:" <<stg_ex::int_to_string(fObjToPlace->exportBuildGlobalId) << "} ); \n";
     }
@@ -104,31 +104,31 @@ void GPE_SceneGameObject::render_branch()
     height = 32;
     spm->tempRect->x = ceil( (x_pos*spm->zoomValue-spm->currentCamera->x*spm->zoomValue) );
     spm->tempRect->y = ceil( (y_pos*spm->zoomValue-spm->currentCamera->y*spm->zoomValue) );
-    if( objTypeId > 0 && spm->cSceneObjList!=NULL )
+    if( objTypeId > 0 && spm->cSceneObjList!=nullptr )
     {
         //renders the object's animation
         pawgui::widget_resource_container * objTypeContainer = spm->cSceneObjList->find_resource_from_id(objTypeId);
-        if( objTypeContainer!=NULL && objTypeContainer->get_held_resource()!=NULL )
+        if( objTypeContainer!=nullptr && objTypeContainer->get_held_resource()!=nullptr )
         {
             bool objectanimationRender = false;
             gameEntityResource*tempGameObj = (gameEntityResource*) objTypeContainer->get_held_resource();
-            if( tempGameObj!=NULL)
+            if( tempGameObj!=nullptr)
             {
                 //fangle = angleField->get_held_number();
                 //if( fangle!=0 && fangle!=360 && fangle!=720)
                 {
                     pawgui::widget_resource_container * sprTypeContainer = tempGameObj->animationField->get_selected_container();
-                    if( sprTypeContainer!=NULL)
+                    if( sprTypeContainer!=nullptr)
                     {
                         animationResource*animRes = (animationResource*) sprTypeContainer->get_held_resource();
-                        if( animRes!=NULL && animRes->animInEditor!=NULL)
+                        if( animRes!=nullptr && animRes->animInEditor!=nullptr)
                         {
                             xPivot = animRes->animInEditor->collision_box->get_center();
                             yPivot = animRes->animInEditor->collision_box->get_middle();
                             width = animRes->animInEditor->get_width();
                             height = animRes->animInEditor->get_height();
-                            //animRes->animInEditor->render_rotated( animRes->get_preview_frame(),spm->tempRect->x,spm->tempRect->y, angle, x_scale*spm->zoomValue,y_scale*spm->zoomValue, NULL );
-                            animRes->animInEditor->render_special( animRes->get_preview_frame(),spm->tempRect->x,spm->tempRect->y, x_scale*spm->zoomValue,y_scale*spm->zoomValue,angle, branchColor->get_color(),branchAlpha->get_value(), NULL );
+                            //animRes->animInEditor->render_rotated( animRes->get_preview_frame(),spm->tempRect->x,spm->tempRect->y, angle, x_scale*spm->zoomValue,y_scale*spm->zoomValue, nullptr );
+                            animRes->animInEditor->render_special( animRes->get_preview_frame(),spm->tempRect->x,spm->tempRect->y, x_scale*spm->zoomValue,y_scale*spm->zoomValue,angle, branchColor->get_color(),branchAlpha->get_value(), nullptr );
                             //gpe::gfs->render_text( spm->tempRect->x, spm->tempRect->y-48, "XOff:"+ stg_ex::int_to_string(xOffset)+",YOff:"+ stg_ex::int_to_string(yOffset),c_red,gpe::font_default,gpe::fa_center,gpe::fa_bottom, 255 );
                             //gpe::gfs->render_text( spm->tempRect->x, spm->tempRect->y-16, "W:"+ stg_ex::int_to_string(width)+",H:"+ stg_ex::int_to_string(height),c_red,gpe::font_default,gpe::fa_center,gpe::fa_bottom, 255 );
                             objectanimationRender = true;
@@ -162,7 +162,7 @@ void GPE_SceneGameObject::render_branch()
 
 bool GPE_SceneGameObject::save_branch_data(std::ofstream * fileTarget, int nestedFoldersIn )
 {
-    if( fileTarget!=NULL && fileTarget->is_open() )
+    if( fileTarget!=nullptr && fileTarget->is_open() )
     {
         std::string nestedTabsStr = pawgui::generate_tabs( nestedFoldersIn );
         *fileTarget << nestedTabsStr+"GPE_SceneObject=";
@@ -176,7 +176,7 @@ bool GPE_SceneGameObject::save_branch_data(std::ofstream * fileTarget, int neste
         }
         *fileTarget << x_pos << "," <<y_pos<< "," ;
         *fileTarget <<  angle << "," << x_scale << "," << y_scale << "," ;
-        if( branchColor!=NULL)
+        if( branchColor!=nullptr)
         {
             *fileTarget << branchColor->get_hex_string() +",";
         }

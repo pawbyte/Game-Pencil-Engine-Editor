@@ -42,7 +42,7 @@ particleResource::particleResource(pawgui::widget_resource_container * pFolder)
     myEmitter = new gpe::particle_emitter(0, 0,true, 500 );
     myEmitter->showBox = true;
     myEmitter->set_emission_rate( 60 );
-    emitterTexture = NULL;
+    emitterTexture = nullptr;
     //emitterTexture->load_new_texture( renderer_main, gpe::app_directory_name+"resources/gfx/animations/c_snow.png",-1,true );
     myEmitter->change_texture( emitterTexture, gpe::blend_mode_blend );
     transformResource_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png","Transform the Image",-1);
@@ -146,10 +146,10 @@ particleResource::particleResource(pawgui::widget_resource_container * pFolder)
 
 particleResource::~particleResource()
 {
-    if( myEmitter!=NULL )
+    if( myEmitter!=nullptr )
     {
         delete myEmitter;
-        myEmitter = NULL;
+        myEmitter = nullptr;
     }
 }
 
@@ -200,9 +200,14 @@ void particleResource::load_image(std::string new_file_name, bool autoProcess )
     {
         textureLocationField->set_string( new_file_name );
         emitterTexture = gpe::rsm->texture_add_filename( new_file_name );
-        if( emitterTexture!=NULL && emitterTexture->get_width() > 512 || emitterTexture->get_height() > 512 )
+
+        if( emitterTexture == nullptr )
         {
-            if( main_editor_log!=NULL )
+            return;
+        }
+        if( emitterTexture->get_width() > 512 || emitterTexture->get_height() > 512 )
+        {
+            if( main_editor_log!=nullptr )
             {
                 main_editor_log->log_general_error("Particle Emitter is too large. Texture must be 512x512px or smaller." );
             }
@@ -232,7 +237,7 @@ void particleResource::load_resource(std::string file_path )
 {
     if( resourcePostProcessed ==false || gpe::main_file_url_manager->file_exists(file_path))
     {
-        if( main_gpe_splash_page != NULL )
+        if( main_gpe_splash_page != nullptr )
         {
             main_gpe_splash_page->update_submessages( "Loading Particle Emitter", resource_name );
         }
@@ -269,7 +274,6 @@ void particleResource::load_resource(std::string file_path )
                 std::string currLine="";
                 std::string currLineToBeProcessed;
 
-                int i = 0;
                 while ( gameResourceFileIn.good() )
                 {
                     getline (gameResourceFileIn,currLine); //gets the next line of the file
@@ -299,7 +303,7 @@ void particleResource::load_resource(std::string file_path )
                             }
                         }
                     }
-                    else if( foundFileVersion <= 2)
+                    else if( foundFileVersion <= 2.f )
                     {
                         //Begin processing the file.
                         if(!currLineToBeProcessed.empty() )
@@ -439,7 +443,7 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
     view_space = gpe::camera_find( view_space);
     cam = gpe::camera_find( cam );
 
-    if( panel_main_editor!=NULL )
+    if( panel_main_editor!=nullptr )
     {
         int previousBlendMode = blendTypeMenu->get_selected_value();
         myEmitter->set_fallback_shape( emitterBackupTextureMenu->get_selected_value() );
@@ -501,7 +505,7 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
         panel_main_editor->add_gui_element(cancelResource_button,true);
         panel_main_editor->process_self();
 
-        if( loadResource_button!=NULL && loadResource_button->is_clicked() )
+        if( loadResource_button!=nullptr && loadResource_button->is_clicked() )
         {
             std::string newTextureLocation = pawgui::get_filename_open_from_popup("Choose Particle Texture","Images",pawgui::main_settings->fileOpenTextureDir);
             if( gpe::main_file_url_manager->file_exists( newTextureLocation) && stg_ex::file_is_image(newTextureLocation) )
@@ -509,29 +513,29 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
                 load_image( newTextureLocation);
             }
         }
-        else if( refreshResourceData_button!=NULL && refreshResourceData_button->is_clicked() )
+        else if( refreshResourceData_button!=nullptr && refreshResourceData_button->is_clicked() )
         {
-            if(  emitterTexture!=NULL )
+            if(  emitterTexture!=nullptr )
             {
                 std::string currentFileToRefresh = stg_ex::get_short_filename (emitterTexture->get_filename(),true );
                 currentFileToRefresh = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/textures/"+currentFileToRefresh;
                 load_image(currentFileToRefresh);
             }
         }
-        else if( clearTexture_button!=NULL && clearTexture_button->is_clicked() )
+        else if( clearTexture_button!=nullptr && clearTexture_button->is_clicked() )
         {
-            emitterTexture = NULL;
+            emitterTexture = nullptr;
             textureLocationField->set_string( "" );
-            myEmitter->change_texture( NULL, blendTypeMenu->get_selected_value() );
+            myEmitter->change_texture( nullptr, blendTypeMenu->get_selected_value() );
             myEmitter->set_fallback_shape( emitterBackupTextureMenu->get_selected_value() );
-            texturePreviewImgLabel->change_texture( NULL );
+            texturePreviewImgLabel->change_texture( nullptr );
             texturePreviewImgLabel->set_width( 16 );
             texturePreviewImgLabel->set_height( 16 );
         }
 
-        else if( transformResource_button!=NULL && transformResource_button->is_clicked())
+        else if( transformResource_button!=nullptr && transformResource_button->is_clicked())
         {
-            if (emitterTexture!=NULL && emitterTexture->get_width() > 0 && emitterTexture->get_height() > 0)
+            if (emitterTexture!=nullptr && emitterTexture->get_width() > 0 && emitterTexture->get_height() > 0)
             {
                 pawgui::context_menu_open(-1,-1,256);
                 pawgui::main_context_menu->add_menu_option("Erase BG Color",0);
@@ -555,7 +559,7 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
                             }
                         }
                         delete foundBGColor;
-                        foundBGColor = NULL;
+                        foundBGColor = nullptr;
 
                     }
                     else if( menuSelection==1 )
@@ -577,13 +581,13 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
 
             }
         }
-        else if( openExternalEditor_button!=NULL && openExternalEditor_button->is_clicked() )
+        else if( openExternalEditor_button!=nullptr && openExternalEditor_button->is_clicked() )
         {
-            if(  emitterTexture!=NULL )
+            if(  emitterTexture!=nullptr )
             {
                 if( gpe::main_file_url_manager->file_exists(emitterTexture->get_filename() ) )
                 {
-                    if( main_editor_settings!=NULL && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]!=NULL)
+                    if( main_editor_settings!=nullptr && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]!=nullptr)
                     {
                         gpe::main_file_url_manager->external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]->get_string(),emitterTexture->get_filename(), true );
                     }
@@ -610,7 +614,7 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
 
         if( previousBlendMode != blendTypeMenu->get_selected_value() )
         {
-            if( emitterTexture!=NULL )
+            if( emitterTexture!=nullptr )
             {
                 emitterTexture->set_blend_mode( blendTypeMenu->get_selected_value() );
             }
@@ -618,7 +622,7 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
         }
     }
 
-    if( myEmitter!=NULL )
+    if( myEmitter!=nullptr )
     {
         if( get_mouse_coords( view_space, cam ) )
         {
@@ -680,7 +684,7 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
         {
             myEmitter->burst_emit();
         }
-        if( textureIsRotated!=NULL )
+        if( textureIsRotated!=nullptr )
         {
             myEmitter->rotateTexture = textureIsRotated->is_clicked();
         }
@@ -693,11 +697,10 @@ void particleResource::render_self( gpe::shape_rect * view_space, gpe::shape_rec
     view_space = gpe::camera_find( view_space);
     cam = gpe::camera_find( cam );
     gpe::gcanvas->render_rectangle( 0,0,view_space->w, view_space->h, pawgui::theme_main->program_color, false, 255 );
-    //if( myEmitter!=NULL )
+    if( myEmitter!=nullptr )
     {
         myEmitter->render( );
     }
-    //gpe::gfs->render_text( view_space->w/2, view_space->h-32, "C++ Feature. Currently not supported in HTML5 runtime",pawgui::theme_main->main_box_font_color,gpe::font_default, gpe::fa_center, gpe::fa_bottom, 255);
 }
 
 void particleResource::revert_data_fields()
@@ -707,7 +710,7 @@ void particleResource::revert_data_fields()
 
 void particleResource::save_resource(std::string file_path, int backupId )
 {
-    if( main_gpe_splash_page != NULL )
+    if( main_gpe_splash_page != nullptr )
     {
         main_gpe_splash_page->update_submessages( "Saving Particle", resource_name );
     }
@@ -733,7 +736,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
         if (newSaveDataFile.is_open())
         {
             write_header_on_file(&newSaveDataFile);
-            if( particleCountField!=NULL )
+            if( particleCountField!=nullptr )
             {
                 newSaveDataFile << "MaxParticles=" + stg_ex::int_to_string(particleCountField->get_held_int() )+"\n";
             }
@@ -741,7 +744,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "MaxParticles=100\n";
             }
-            if( emissionRateField!=NULL )
+            if( emissionRateField!=nullptr )
             {
                 newSaveDataFile << "EmissionRate=" + stg_ex::int_to_string(emissionRateField->get_held_int() )+"\n";
             }
@@ -750,7 +753,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "EmissionRate=100\n";
             }
 
-            if( lifeMinField!=NULL )
+            if( lifeMinField!=nullptr )
             {
                 newSaveDataFile << "LifeMin=" + stg_ex::float_to_string( lifeMinField->get_held_number() )+"\n";
             }
@@ -759,7 +762,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "LifeMin=100\n";
             }
 
-            if( lifeMaxField!=NULL )
+            if( lifeMaxField!=nullptr )
             {
                 newSaveDataFile << "LifeMax=" + stg_ex::float_to_string(lifeMaxField->get_held_number() )+"\n";
             }
@@ -768,7 +771,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "LifeMax=100\n";
             }
 
-            if( sColorField!=NULL )
+            if( sColorField!=nullptr )
             {
                 newSaveDataFile << "StartColor=" + sColorField->get_hex_string() +"\n";
             }
@@ -777,7 +780,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "StartColor=#FFF\n";
             }
 
-            if( sVColorField!=NULL )
+            if( sVColorField!=nullptr )
             {
                 newSaveDataFile << "StartColorVar=" + sVColorField->get_hex_string() +"\n";
             }
@@ -786,7 +789,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "StartColorVar=#000\n";
             }
 
-            if( eColorField!=NULL )
+            if( eColorField!=nullptr )
             {
                 newSaveDataFile << "EndColor=" + eColorField->get_hex_string() +"\n";
             }
@@ -795,7 +798,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "EndColor=#333\n";
             }
 
-            if( eVColorField!=NULL )
+            if( eVColorField!=nullptr )
             {
                 newSaveDataFile << "EndColorVar=" + eVColorField->get_hex_string() +"\n";
             }
@@ -804,7 +807,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "EndColorVar=#000\n";
             }
 
-            if( xStartPosField!=NULL )
+            if( xStartPosField!=nullptr )
             {
                 newSaveDataFile << "XStart=" + stg_ex::int_to_string(xStartPosField->get_held_int() )+"\n";
             }
@@ -812,7 +815,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "XStart=0\n";
             }
-            if( yStartPosField!=NULL )
+            if( yStartPosField!=nullptr )
             {
                 newSaveDataFile << "YStart=" + stg_ex::int_to_string(yStartPosField->get_held_int() )+"\n";
             }
@@ -821,7 +824,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "YStart=0\n";
             }
 
-            if( xRandomField!=NULL )
+            if( xRandomField!=nullptr )
             {
                 newSaveDataFile << "XRandom=" + stg_ex::int_to_string(xRandomField->get_held_int() )+"\n";
             }
@@ -830,7 +833,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "XRandom=32\n";
             }
 
-            if( yRandomField!=NULL )
+            if( yRandomField!=nullptr )
             {
                 newSaveDataFile << "YRandom=" + stg_ex::int_to_string(yRandomField->get_held_int() )+"\n";
             }
@@ -839,7 +842,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "YRandom=32\n";
             }
 
-            if( directionMin!=NULL )
+            if( directionMin!=nullptr )
             {
                 newSaveDataFile << "DirectionMin=" + stg_ex::float_to_string(directionMin->get_held_number() )+"\n";
             }
@@ -848,7 +851,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "DirectionMin=0\n";
             }
 
-            if( directionMax!=NULL )
+            if( directionMax!=nullptr )
             {
                 newSaveDataFile << "DirectionMax=" + stg_ex::float_to_string(directionMax->get_held_number() )+"\n";
             }
@@ -857,7 +860,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "DirectionMax=360\n";
             }
 
-            if( speedMin!=NULL )
+            if( speedMin!=nullptr )
             {
                 newSaveDataFile << "SpeedMin=" + stg_ex::int_to_string(speedMin->get_held_int() )+"\n";
             }
@@ -866,7 +869,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "SpeedMin=3\n";
             }
 
-            if( speedMax!=NULL )
+            if( speedMax!=nullptr )
             {
                 newSaveDataFile << "SpeedMax=" + stg_ex::int_to_string(speedMax->get_held_int() )+"\n";
             }
@@ -875,7 +878,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "SpeedMax=5\n";
             }
 
-            if( gravityXValue!=NULL )
+            if( gravityXValue!=nullptr )
             {
                 newSaveDataFile << "GravityXValue=" + stg_ex::float_to_string(gravityXValue->get_held_number() )+"\n";
             }
@@ -885,7 +888,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
             }
 
 
-            if( gravityYValue!=NULL )
+            if( gravityYValue!=nullptr )
             {
                 newSaveDataFile << "GravityYValue=" + stg_ex::float_to_string(gravityYValue->get_held_number() )+"\n";
             }
@@ -894,7 +897,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "GravityYValue=0\n";
             }
 
-            if( blendTypeMenu!=NULL )
+            if( blendTypeMenu!=nullptr )
             {
                 newSaveDataFile << "BlendType=" + stg_ex::int_to_string(blendTypeMenu->get_selected_value() )+"\n";
             }
@@ -902,7 +905,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "BlendType=0\n";
             }
-            if( shapeMenu!=NULL )
+            if( shapeMenu!=nullptr )
             {
                 newSaveDataFile << "EmitterShape=" + stg_ex::int_to_string(shapeMenu->get_selected_value() )+"\n";
             }
@@ -910,7 +913,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "EmitterShape=0\n";
             }
-            if( showDebugInfo!=NULL )
+            if( showDebugInfo!=nullptr )
             {
                 newSaveDataFile << "ShowDebugInfo=" + stg_ex::int_to_string(showDebugInfo->is_clicked() )+"\n";
             }
@@ -919,12 +922,12 @@ void particleResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "ShowDebugInfo=0\n";
             }
 
-            if( textureLocationField!=NULL )
+            if( textureLocationField!=nullptr )
             {
                 newSaveDataFile << "Texture=" + stg_ex::get_local_from_global_file( textureLocationField->get_string() )+"\n";
             }
 
-            if( emitterBackupTextureMenu!=NULL )
+            if( emitterBackupTextureMenu!=nullptr )
             {
                 newSaveDataFile << "FallbackShape=" + stg_ex::int_to_string( emitterBackupTextureMenu->get_selected_value() )+"\n";
             }
@@ -932,7 +935,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "FallbackShape=0\n";
             }
-            if( shapeWField!=NULL )
+            if( shapeWField!=nullptr )
             {
                 newSaveDataFile << "ShapeW=" + stg_ex::int_to_string( shapeWField->get_held_int() )+"\n";
             }
@@ -940,7 +943,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "ShapeW=16\n";
             }
-            if( shapeHField!=NULL )
+            if( shapeHField!=nullptr )
             {
                 newSaveDataFile << "ShapeH=" + stg_ex::int_to_string( shapeHField->get_held_int() )+"\n";
             }
@@ -975,7 +978,7 @@ void particleResource::update_box(int x_new, int y_new, int newW, int newH )
 bool particleResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn  )
 {
     //resource_nameLabel->set_name(renameBox->get_string() );
-    if( fileTarget!=NULL)
+    if( fileTarget!=nullptr)
     {
         if( fileTarget->is_open() )
         {

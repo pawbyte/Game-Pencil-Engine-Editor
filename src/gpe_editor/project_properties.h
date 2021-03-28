@@ -155,7 +155,7 @@ public:
     pawgui::widget_button_label * selectAllCollisionBoxes;
     pawgui::widget_button_label * unselectAllCollisionBoxes;
 
-    projectPropertiesResource(pawgui::widget_resource_container * pFolder = NULL);
+    projectPropertiesResource(pawgui::widget_resource_container * pFolder = nullptr);
     ~projectPropertiesResource();
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
@@ -166,9 +166,9 @@ public:
     void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
     void prerender_self( );
     void load_resource(std::string file_path = "");
-    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void refresh_build_to_source_targets();
-    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void save_resource(std::string file_path = "", int backupId = -1);
     int search_for_string(std::string needle);
     int search_and_replace_string(std::string needle, std::string newStr = "");

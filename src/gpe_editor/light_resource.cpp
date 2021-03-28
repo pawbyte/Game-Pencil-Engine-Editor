@@ -95,25 +95,25 @@ lightResource::lightResource(pawgui::widget_resource_container * pFolder)
     light_directionField = new pawgui::widget_input_number("Direction (degrees)", false, -360, 360 );
     light_directionField->set_number( 270 );
 
-    directionLightTexture = NULL;
+    directionLightTexture = nullptr;
 }
 
 lightResource::~lightResource()
 {
-    if( myAmbientLight!=NULL )
+    if( myAmbientLight!=nullptr )
     {
         delete myAmbientLight;
-        myAmbientLight = NULL;
+        myAmbientLight = nullptr;
     }
-    if( myPointLight!=NULL )
+    if( myPointLight!=nullptr )
     {
         delete myPointLight;
-        myPointLight = NULL;
+        myPointLight = nullptr;
     }
-    if( myDirectionLight!=NULL )
+    if( myDirectionLight!=nullptr )
     {
         delete myDirectionLight;
-        myDirectionLight = NULL;
+        myDirectionLight = nullptr;
     }
 }
 
@@ -157,7 +157,7 @@ void lightResource::load_image(std::string new_file_name, bool autoProcess )
         return;
     }
     textureLocationField->set_string( new_file_name );
-    if( directionLightTexture==NULL )
+    if( directionLightTexture==nullptr )
     {
         directionLightTexture = gpe::rph->get_new_texture();
     }
@@ -177,7 +177,7 @@ void lightResource::load_resource(std::string file_path )
 {
     if( resourcePostProcessed ==false || gpe::main_file_url_manager->file_exists(file_path))
     {
-        if( main_gpe_splash_page != NULL )
+        if( main_gpe_splash_page != nullptr )
         {
             main_gpe_splash_page->update_submessages( "Loading Light", resource_name );
         }
@@ -288,7 +288,7 @@ void lightResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
     view_space = gpe::camera_find( view_space);
     cam = gpe::camera_find( cam );
 
-    if( panel_main_editor!=NULL )
+    if( panel_main_editor!=nullptr )
     {
         panel_main_editor->clear_panel();
 
@@ -333,7 +333,7 @@ void lightResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
 
         if( lightType->get_selected_value() == gpe::light_type_direction2d )
         {
-            if( browseTexture_button!=NULL && browseTexture_button->is_clicked() )
+            if( browseTexture_button!=nullptr && browseTexture_button->is_clicked() )
             {
                 std::string newTextureLocation = pawgui::get_filename_open_from_popup("Choose Light Texture","Images",pawgui::main_settings->fileOpenTextureDir);
                 if( gpe::main_file_url_manager->file_exists( newTextureLocation) && stg_ex::file_is_image(newTextureLocation) )
@@ -341,16 +341,16 @@ void lightResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
                     load_image( newTextureLocation, true);
                 }
             }
-            else if( clearTexture_button!=NULL && clearTexture_button->is_clicked() )
+            else if( clearTexture_button!=nullptr && clearTexture_button->is_clicked() )
             {
-                if( directionLightTexture!=NULL )
+                if( directionLightTexture!=nullptr )
                 {
                     delete directionLightTexture;
-                    directionLightTexture = NULL;
+                    directionLightTexture = nullptr;
                 }
                 textureLocationField->set_string( "" );
-                myDirectionLight->light_texture = NULL;
-                texturePreviewImgLabel->change_texture( NULL );
+                myDirectionLight->light_texture = nullptr;
+                texturePreviewImgLabel->change_texture( nullptr );
                 texturePreviewImgLabel->set_width( 16 );
                 texturePreviewImgLabel->set_height( 16 );
             }
@@ -381,13 +381,13 @@ void lightResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
         tempAngleExtra -= 360.f;
     }
 
-    if( myAmbientLight!=NULL )
+    if( myAmbientLight!=nullptr )
     {
         myAmbientLight->light_color->change_and_verify_rgba( light_colorField->get_r(), light_colorField->get_g(), light_colorField->get_b(), 255 );
         myAmbientLight->light_intensity = light_intensityField->get_held_int();
     }
 
-    if( myDirectionLight!=NULL )
+    if( myDirectionLight!=nullptr )
     {
         myDirectionLight->light_color->change_and_verify_rgba( light_colorField->get_r(), light_colorField->get_g(), light_colorField->get_b(), 255 );
         myDirectionLight->light_intensity = light_intensityField->get_held_int();
@@ -403,7 +403,7 @@ void lightResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
         myDirectionLight->light_length = light_lengthField->get_held_int();
     }
 
-    if( myPointLight!=NULL )
+    if( myPointLight!=nullptr )
     {
         myPointLight->light_color->change_and_verify_rgba( light_colorField->get_r(), light_colorField->get_g(), light_colorField->get_b(), 255 );
         myPointLight->light_intensity = light_intensityField->get_held_int();
@@ -411,7 +411,7 @@ void lightResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
         myPointLight->light_radius_second = lightSecondRadiusField->get_held_int();
         myPointLight->light_radius_second_intensity = lightSecondIntensityField->get_held_int();
 
-        if( lightUseFlicker!=NULL && lightUseFlicker->is_clicked() )
+        if( lightUseFlicker!=nullptr && lightUseFlicker->is_clicked() )
         {
             myPointLight->setup_flicker( light_flicker_timeField->get_held_int(), lightFlickerAmountField->get_held_int() );
             myPointLight->update_light( gpe::time_keeper->get_delta_ticks() );
@@ -430,7 +430,7 @@ void lightResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *
     cam = gpe::camera_find( cam );
     gpe::gcanvas->render_rectangle( 0,0,view_space->w, view_space->h, pawgui::theme_main->program_color, false, 255 );
 
-    texture_gpe_logo->render_align( view_space->w/2, view_space->h/2,gpe::fa_center, gpe::fa_middle, NULL, NULL, 255 );
+    texture_gpe_logo->render_align( view_space->w/2, view_space->h/2,gpe::fa_center, gpe::fa_middle, nullptr, nullptr, 255 );
     gpe::gcanvas->resize_ligting_overlay( view_space->w, view_space->h );
     gpe::gcanvas->switch_ligting_overlay( true );
     gpe::renderer_main->reset_viewpoint( );
@@ -460,7 +460,7 @@ void lightResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *
             myPointLight->render_light_at( view_space->w/2, view_space->h/2, 1 );
         }
     }
-    else if( myAmbientLight!=NULL )
+    else if( myAmbientLight!=nullptr )
     {
         myAmbientLight->render_light( 1, view_space );
     }
@@ -479,7 +479,7 @@ void lightResource::revert_data_fields()
 
 void lightResource::save_resource(std::string file_path, int backupId )
 {
-    if( main_gpe_splash_page != NULL )
+    if( main_gpe_splash_page != nullptr )
     {
         main_gpe_splash_page->update_submessages( "Saving Light", resource_name );
     }
@@ -506,7 +506,7 @@ void lightResource::save_resource(std::string file_path, int backupId )
         {
             write_header_on_file(&newSaveDataFile);
 
-            if( lightType!=NULL )
+            if( lightType!=nullptr )
             {
                 newSaveDataFile << "LightType=" + stg_ex::int_to_string(lightType->get_selected_value() )+"\n";
             }
@@ -514,7 +514,7 @@ void lightResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "LightType="+ stg_ex::int_to_string( gpe::light_type_point2d )+"\n";
             }
-            if( light_colorField!=NULL )
+            if( light_colorField!=nullptr )
             {
                 newSaveDataFile << "LightColor=" + light_colorField->get_hex_string() +"\n";
             }
@@ -522,7 +522,7 @@ void lightResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "LightColor=#FFF\n";
             }
-            if( light_intensityField!=NULL )
+            if( light_intensityField!=nullptr )
             {
                 newSaveDataFile << "LightIntensity[0]=" + stg_ex::int_to_string( light_intensityField->get_held_int() ) +"\n";
             }
@@ -530,7 +530,7 @@ void lightResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "LightIntensity[0]=255\n";
             }
-            if( lightSecondIntensityField!=NULL )
+            if( lightSecondIntensityField!=nullptr )
             {
                 newSaveDataFile << "LightIntensity[1]=" + stg_ex::int_to_string( lightSecondIntensityField->get_held_int() ) +"\n";
             }
@@ -538,7 +538,7 @@ void lightResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "LightIntensity[1]=192\n";
             }
-            if( lightThirdIntensityField!=NULL )
+            if( lightThirdIntensityField!=nullptr )
             {
                 newSaveDataFile << "LightIntensity[2]=" + stg_ex::int_to_string( lightThirdIntensityField->get_held_int() ) +"\n";
             }
@@ -546,7 +546,7 @@ void lightResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "LightIntensity[2]=128\n";
             }
-            if( light_radiusField!=NULL )
+            if( light_radiusField!=nullptr )
             {
                 newSaveDataFile << "PointLightRadius[0]=" + stg_ex::int_to_string( light_radiusField->get_held_int() ) +"\n";
             }
@@ -554,7 +554,7 @@ void lightResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "PointLightRadius[0]=128\n";
             }
-            if( lightSecondRadiusField!=NULL )
+            if( lightSecondRadiusField!=nullptr )
             {
                 newSaveDataFile << "PointLightRadius[1]=" + stg_ex::int_to_string( lightSecondRadiusField->get_held_int() ) +"\n";
             }
@@ -563,7 +563,7 @@ void lightResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "PointLightRadius[1]=128\n";
             }
 
-            if( lightThirdRadiusField!=NULL )
+            if( lightThirdRadiusField!=nullptr )
             {
                 newSaveDataFile << "PointLightRadius[2]=" + stg_ex::int_to_string( lightThirdRadiusField->get_held_int() ) +"\n";
             }
@@ -572,7 +572,7 @@ void lightResource::save_resource(std::string file_path, int backupId )
                 newSaveDataFile << "PointLightRadius[2]=128\n";
             }
 
-            if( light_lengthField!=NULL )
+            if( light_lengthField!=nullptr )
             {
                 newSaveDataFile << "DirectionLightLength=" + stg_ex::int_to_string( light_lengthField->get_held_int() ) +"\n";
             }
@@ -580,7 +580,7 @@ void lightResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "DirectionLightLength=128\n";
             }
-            if( light_widthField!=NULL )
+            if( light_widthField!=nullptr )
             {
                 newSaveDataFile << "DirectionLightWidth=" + stg_ex::int_to_string( light_widthField->get_held_int() ) +"\n";
             }
@@ -588,7 +588,7 @@ void lightResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "DirectionLightWidth=64\n";
             }
-            if( light_directionField!=NULL )
+            if( light_directionField!=nullptr )
             {
                 newSaveDataFile << "DirectionLightAngle=" + stg_ex::int_to_string( light_directionField->get_held_int() ) +"\n";
             }
@@ -596,23 +596,23 @@ void lightResource::save_resource(std::string file_path, int backupId )
             {
                 newSaveDataFile << "DirectionLightAngle=270\n";
             }
-            if( textureLocationField!=NULL )
+            if( textureLocationField!=nullptr )
             {
                 newSaveDataFile << "DirectionLightTexture=" + stg_ex::get_local_from_global_file( textureLocationField->get_string() )+"\n";
             }
-            if( lightUseFlicker!=NULL )
+            if( lightUseFlicker!=nullptr )
             {
                 newSaveDataFile << "LightFlicker=" + stg_ex::int_to_string( lightUseFlicker->is_clicked() )+"\n";
             }
-            if( light_flicker_timeField!=NULL )
+            if( light_flicker_timeField!=nullptr )
             {
                 newSaveDataFile << "LightFlickerTime=" + stg_ex::int_to_string( light_flicker_timeField->get_held_int() )+"\n";
             }
-            if( lightFlickerAmountField!=NULL )
+            if( lightFlickerAmountField!=nullptr )
             {
                 newSaveDataFile << "LightFlickerAmount=" + stg_ex::int_to_string( lightFlickerAmountField->get_held_int() )+"\n";
             }
-            if( autorotateAngle!=NULL )
+            if( autorotateAngle!=nullptr )
             {
                 newSaveDataFile << "RotateInEditor=" + stg_ex::int_to_string( autorotateAngle->is_clicked() )+"\n";
             }
@@ -643,7 +643,7 @@ void lightResource::update_box(int x_new, int y_new, int newW, int newH )
 bool lightResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn  )
 {
     //resource_nameLabel->set_name(renameBox->get_string() );
-    if( fileTarget!=NULL)
+    if( fileTarget!=nullptr)
     {
         if( fileTarget->is_open() )
         {

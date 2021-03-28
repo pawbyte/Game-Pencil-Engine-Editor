@@ -46,7 +46,7 @@ public:
     pawgui::widget_button_icon * transformResource_button;
     pawgui::widget_button_icon * openExternalEditor_button;
     pawgui::widget_button_icon * refreshResourceData_button;
-    textureResource(pawgui::widget_resource_container * pFolder = NULL);
+    textureResource(pawgui::widget_resource_container * pFolder = nullptr);
     ~textureResource();
     pawgui::widget_label_text  * labelInfoMaxTextureSize;
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
@@ -58,8 +58,8 @@ public:
     int load_image(std::string new_file_name);
     void load_resource(std::string file_path = "");
     void prerender_self( );
-    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+    void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void save_resource(std::string file_path = "", int backupId = -1);
     void update_box(int x_new=-1, int y_new=-1, int newW=-1, int newH=-1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);

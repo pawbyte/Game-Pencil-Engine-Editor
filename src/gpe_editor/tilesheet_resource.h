@@ -68,11 +68,11 @@ public:
     tilesheetPreviewer();
     ~tilesheetPreviewer();
     pawgui::widget_label_text  * labelInfoMaxTextureSize;
-    bool get_mouse_coords( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    bool get_mouse_coords( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void handle_scrolling();
-    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-    void render_selection( int x_pos = 0, int y_pos = 0, gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL, float scale_size = 1, gpe::color * fColor = NULL);
+    void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+    void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+    void render_selection( int x_pos = 0, int y_pos = 0, gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr, float scale_size = 1, gpe::color * fColor = nullptr);
     void reset_preview(bool moveCamera);
 };
 
@@ -89,7 +89,7 @@ public:
     pawgui::widget_button_icon * refreshResourceData_button;
     pawgui::widget_input_number * tsDataFields[TILESHEET_DATA_FIELD_COUNT];
     pawgui::widget_label_text  * labelInfoMaxTextureSize;
-    tilesheetResource(pawgui::widget_resource_container * pFolder = NULL);
+    tilesheetResource(pawgui::widget_resource_container * pFolder = nullptr);
     ~tilesheetResource();
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
@@ -101,8 +101,8 @@ public:
     void load_resource(std::string file_path = "");
     void prerender_self( );
     void process_data_fields();
-    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+    void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void save_resource(std::string file_path = "", int backupId = -1);
     void update_box(int x_new=-1, int y_new=-1, int newW=-1, int newH=-1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);

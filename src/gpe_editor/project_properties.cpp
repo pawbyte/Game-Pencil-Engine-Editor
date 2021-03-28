@@ -79,15 +79,15 @@ projectPropertiesResource::projectPropertiesResource(pawgui::widget_resource_con
     //Adds all available languages to drop down menu
     projectLanguage = new pawgui::widget_dropdown_menu( "Project Language",true);
     int addedLanguages = 0;
-    if( pawgui::main_syntax_highlighter!=NULL )
+    if( pawgui::main_syntax_highlighter!=nullptr )
     {
         //short opertion so not "optimized"
-        pawgui::syntax_language * tLanguage  = NULL;
+        pawgui::syntax_language * tLanguage  = nullptr;
         int languageCount = (int)pawgui::main_syntax_highlighter->get_language_count();
         for( int cLanguage = 0; cLanguage < languageCount; cLanguage++ )
         {
             tLanguage = pawgui::main_syntax_highlighter->get_language_object(cLanguage);
-            if( tLanguage!=NULL && tLanguage->isCodingLanguage)
+            if( tLanguage!=nullptr && tLanguage->isCodingLanguage)
             {
                 projectLanguage->add_menu_option(tLanguage->languageName+" ("+tLanguage->languageShortName+")",tLanguage->languageShortName,cLanguage,true);
                 addedLanguages++;
@@ -235,11 +235,11 @@ projectPropertiesResource::projectPropertiesResource(pawgui::widget_resource_con
     project_settingsBar->set_width(160);
     project_settingsBar->set_option_height(32);
 
-    project_settingsBar->add_option("General",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),NULL,2, false, false);
-    project_settingsBar->add_option("Platforms",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/umbrella.png"),NULL,2, false, false);
-    project_settingsBar->add_option("Layers",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/map.png"),NULL,2, false, false);
-    project_settingsBar->add_option("Macros",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/tags.png"),NULL,2, false, false);
-    project_settingsBar->add_option("Notes",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/sticky-note.png"),NULL,2, false, false);
+    project_settingsBar->add_option("General",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),nullptr,2, false, false);
+    project_settingsBar->add_option("Platforms",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/umbrella.png"),nullptr,2, false, false);
+    project_settingsBar->add_option("Layers",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/map.png"),nullptr,2, false, false);
+    project_settingsBar->add_option("Macros",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/tags.png"),nullptr,2, false, false);
+    project_settingsBar->add_option("Notes",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/sticky-note.png"),nullptr,2, false, false);
 
     export_settingsBar = new pawgui::widget_selectbox( "Platforms");
     export_settingsBar->set_width(160);
@@ -356,219 +356,219 @@ projectPropertiesResource::~projectPropertiesResource()
     gpe::error_log->report("Project Propertries Deletion #1");
     for( int iLayerN = 31; iLayerN >=0; iLayerN--)
     {
-        /*projectLayerNamesColumnTitles[iLayerN] = NULL;
-        projectLayerNamesRowTitles[iLayerN] = NULL;*/
+        /*projectLayerNamesColumnTitles[iLayerN] = nullptr;
+        projectLayerNamesRowTitles[iLayerN] = nullptr;*/
     }
-    if( projectLayerEmptyTitle!=NULL)
+    if( projectLayerEmptyTitle!=nullptr)
     {
         delete projectLayerEmptyTitle;
-        projectLayerEmptyTitle = NULL;
+        projectLayerEmptyTitle = nullptr;
     }
     //Macros Tab
-    if( projectGameMacros!=NULL)
+    if( projectGameMacros!=nullptr)
     {
         delete projectGameMacros;
-        projectGameMacros = NULL;
+        projectGameMacros = nullptr;
     }
     //Game Notes Tab
-    if( projectGameNotes!=NULL)
+    if( projectGameNotes!=nullptr)
     {
         delete projectGameNotes;
-        projectGameNotes = NULL;
+        projectGameNotes = nullptr;
     }
     gpe::error_log->report("Project Propertries Deletion #2");
     //Publisher Tab
-    if( sectionTitleGame_settings!=NULL)
+    if( sectionTitleGame_settings!=nullptr)
     {
         delete sectionTitleGame_settings;
-        sectionTitleGame_settings = NULL;
+        sectionTitleGame_settings = nullptr;
     }
-    if( sectionTitlePublisher!=NULL)
+    if( sectionTitlePublisher!=nullptr)
     {
         delete sectionTitlePublisher;
-        sectionTitlePublisher = NULL;
+        sectionTitlePublisher = nullptr;
     }
-    if( projectGameTitleField!=NULL)
+    if( projectGameTitleField!=nullptr)
     {
         delete projectGameTitleField;
-        projectGameTitleField = NULL;
+        projectGameTitleField = nullptr;
     }
-    if( projectGameDateField!=NULL)
+    if( projectGameDateField!=nullptr)
     {
         delete projectGameDateField;
-        projectGameDateField = NULL;
+        projectGameDateField = nullptr;
     }
 
     gpe::error_log->report("Project Propertries Deletion #3");
-    if( projectGameDescriptionField!=NULL)
+    if( projectGameDescriptionField!=nullptr)
     {
         delete projectGameDescriptionField;
-        projectGameDescriptionField = NULL;
+        projectGameDescriptionField = nullptr;
     }
-    if( projectGamePublisherField!=NULL)
+    if( projectGamePublisherField!=nullptr)
     {
         delete projectGamePublisherField;
-        projectGamePublisherField = NULL;
+        projectGamePublisherField = nullptr;
     }
-    if( projectGameDeveloperField!=NULL)
+    if( projectGameDeveloperField!=nullptr)
     {
         delete projectGameDeveloperField;
-        projectGameDeveloperField = NULL;
+        projectGameDeveloperField = nullptr;
     }
     //_settings Tab
-    if( projectScreenWidthField!=NULL)
+    if( projectScreenWidthField!=nullptr)
     {
         delete projectScreenWidthField;
-        projectScreenWidthField = NULL;
+        projectScreenWidthField = nullptr;
     }
-    if( projectScreenHeightField!=NULL)
+    if( projectScreenHeightField!=nullptr)
     {
         delete projectScreenHeightField;
-        projectScreenHeightField = NULL;
+        projectScreenHeightField = nullptr;
     }
-    if( projectGameVersionField!=NULL)
+    if( projectGameVersionField!=nullptr)
     {
         delete projectGameVersionField;
-        projectGameVersionField = NULL;
+        projectGameVersionField = nullptr;
     }
-    if( projectGameSubVersionField!=NULL)
+    if( projectGameSubVersionField!=nullptr)
     {
         delete projectGameSubVersionField;
-        projectGameSubVersionField = NULL;
+        projectGameSubVersionField = nullptr;
     }
     gpe::error_log->report("Project Propertries Deletion #4");
-    if( project_scale_settings!=NULL)
+    if( project_scale_settings!=nullptr)
     {
         delete project_scale_settings;
-        project_scale_settings = NULL;
+        project_scale_settings = nullptr;
     }
-    if( project_settingsFPSRateLabel!=NULL)
+    if( project_settingsFPSRateLabel!=nullptr)
     {
         delete project_settingsFPSRateLabel;
-        project_settingsFPSRateLabel = NULL;
+        project_settingsFPSRateLabel = nullptr;
     }
-    if( project_settingsFPSRate!=NULL)
+    if( project_settingsFPSRate!=nullptr)
     {
         delete project_settingsFPSRate;
-        project_settingsFPSRate = NULL;
+        project_settingsFPSRate = nullptr;
     }
-    if( projectGameCopyrightField!=NULL)
+    if( projectGameCopyrightField!=nullptr)
     {
         delete projectGameCopyrightField;
-        projectGameCopyrightField = NULL;
+        projectGameCopyrightField = nullptr;
     }
-    if( projectGameWebsiteField!=NULL)
+    if( projectGameWebsiteField!=nullptr)
     {
         delete projectGameWebsiteField;
-        projectGameWebsiteField = NULL;
+        projectGameWebsiteField = nullptr;
     }
-    if( projectGameEmailField!=NULL)
+    if( projectGameEmailField!=nullptr)
     {
         delete projectGameEmailField;
-        projectGameEmailField = NULL;
+        projectGameEmailField = nullptr;
     }
     gpe::error_log->report("Proect Propertries Deletion #5");
-    if( checkBoxShowPublisherInfo!=NULL)
+    if( checkBoxShowPublisherInfo!=nullptr)
     {
         delete checkBoxShowPublisherInfo;
-        checkBoxShowPublisherInfo = NULL;
+        checkBoxShowPublisherInfo = nullptr;
     }
 
 
     //Colors Tab
-    if( sectionWebColorsTitle!=NULL )
+    if( sectionWebColorsTitle!=nullptr )
     {
         delete sectionWebColorsTitle;
-        sectionWebColorsTitle = NULL;
+        sectionWebColorsTitle = nullptr;
     }
-    if(projectBorderColor!=NULL)
+    if(projectBorderColor!=nullptr)
     {
         delete projectBorderColor;
-        projectBorderColor = NULL;
+        projectBorderColor = nullptr;
     }
-    if( projectWebsiteBackgroundColor!=NULL)
+    if( projectWebsiteBackgroundColor!=nullptr)
     {
         delete projectWebsiteBackgroundColor;
-        projectWebsiteBackgroundColor = NULL;
+        projectWebsiteBackgroundColor = nullptr;
     }
-    if(projectGameBackgroundColor!=NULL)
+    if(projectGameBackgroundColor!=nullptr)
     {
         delete projectGameBackgroundColor;
-        projectGameBackgroundColor = NULL;
+        projectGameBackgroundColor = nullptr;
     }
-    if(projectTextHeaderColor!=NULL)
+    if(projectTextHeaderColor!=nullptr)
     {
         delete projectTextHeaderColor;
-        projectTextHeaderColor = NULL;
+        projectTextHeaderColor = nullptr;
     }
-    if(projectTextParagraphColor!=NULL)
+    if(projectTextParagraphColor!=nullptr)
     {
         delete projectTextParagraphColor;
-        projectTextParagraphColor = NULL;
+        projectTextParagraphColor = nullptr;
     }
     gpe::error_log->report("Project Propertries Deletion #6");
-    if(projectTextLinkColor!=NULL)
+    if(projectTextLinkColor!=nullptr)
     {
         delete projectTextLinkColor;
-        projectTextLinkColor = NULL;
+        projectTextLinkColor = nullptr;
     }
 
-    if(projectTextLinkActiveColor!=NULL)
+    if(projectTextLinkActiveColor!=nullptr)
     {
         delete projectTextLinkActiveColor;
-        projectTextLinkActiveColor = NULL;
+        projectTextLinkActiveColor = nullptr;
     }
 
-    if(projectTextLinkHoverColor!=NULL)
+    if(projectTextLinkHoverColor!=nullptr)
     {
         delete projectTextLinkHoverColor;
-        projectTextLinkHoverColor = NULL;
+        projectTextLinkHoverColor = nullptr;
     }
 
-    if(projectTextLinkVisitedColor!=NULL)
+    if(projectTextLinkVisitedColor!=nullptr)
     {
         delete projectTextLinkVisitedColor;
-        projectTextLinkVisitedColor = NULL;
+        projectTextLinkVisitedColor = nullptr;
     }
     gpe::error_log->report("Project Propertries Deletion #7");
     //Platforms tab
     //HTML5 Platforms
-    if( warnOnCloseCheckbox!=NULL)
+    if( warnOnCloseCheckbox!=nullptr)
     {
         delete warnOnCloseCheckbox;
-        warnOnCloseCheckbox = NULL;
+        warnOnCloseCheckbox = nullptr;
     }
 
-    if( windowsNativeBuildTypeOptions!=NULL)
+    if( windowsNativeBuildTypeOptions!=nullptr)
     {
         delete windowsNativeBuildTypeOptions;
-        windowsNativeBuildTypeOptions = NULL;
+        windowsNativeBuildTypeOptions = nullptr;
     }
 
-    if( osxNativeBuildTypeOptions!=NULL)
+    if( osxNativeBuildTypeOptions!=nullptr)
     {
         delete osxNativeBuildTypeOptions;
-        osxNativeBuildTypeOptions = NULL;
+        osxNativeBuildTypeOptions = nullptr;
     }
 
-    if( linuxNativeBuildTypeOptions!=NULL)
+    if( linuxNativeBuildTypeOptions!=nullptr)
     {
         delete linuxNativeBuildTypeOptions;
-        linuxNativeBuildTypeOptions = NULL;
+        linuxNativeBuildTypeOptions = nullptr;
     }
 
-    if( switchNativeBuildTypeOptions!=NULL)
+    if( switchNativeBuildTypeOptions!=nullptr)
     {
         delete switchNativeBuildTypeOptions;
-        switchNativeBuildTypeOptions = NULL;
+        switchNativeBuildTypeOptions = nullptr;
     }
     gpe::error_log->report("Project Propertries Deletion #8");
 
     //Other variables
-    if( project_settingsList!=NULL)
+    if( project_settingsList!=nullptr)
     {
         delete project_settingsList;
-        project_settingsList = NULL;
+        project_settingsList = nullptr;
     }
 }
 
@@ -585,7 +585,7 @@ void projectPropertiesResource::compile_cpp()
 bool projectPropertiesResource::export_and_play_native(bool launchProgram)
 {
     bool buildAndRunSuccessful = false;
-    if( current_project!=NULL)
+    if( current_project!=nullptr)
     {
         int buildBits = 32;
         if( gpe::system_found_os= gpe::system_os_windows )
@@ -612,7 +612,7 @@ bool projectPropertiesResource::export_and_play_native(bool launchProgram)
             current_project->save_project();
             buildAndRunSuccessful = current_project->export_project_osx("", buildPlatformdropdown->get_selected_name(),buildBits,launchProgram, osxDebugModeCheckbox->is_clicked(), osxNativeBuildTypeOptions->get_selected_value()  );
         }
-        else if( pawgui::main_tab_resource_bar!=NULL )
+        else if( pawgui::main_tab_resource_bar!=nullptr )
         {
             pawgui::main_tab_resource_bar->add_new_tab(this );
             project_settingsBar->set_selected_option("Platforms");
@@ -624,7 +624,7 @@ bool projectPropertiesResource::export_and_play_native(bool launchProgram)
 void projectPropertiesResource::integrate_into_syntax()
 {
     //parses the macros text editor for joy...
-    if( projectGameMacros!=NULL && current_project!=NULL)
+    if( projectGameMacros!=nullptr && current_project!=nullptr)
     {
         std::string currentLineToRead = "";
         std::string foundVariable = "";
@@ -859,7 +859,7 @@ void projectPropertiesResource::open_code(int lineNumb, int colNumb, std::string
 {
     if( (int)codeTitle.size() > 0 )
     {
-        pawgui::widget_text_editor * foundTextArea = NULL;
+        pawgui::widget_text_editor * foundTextArea = nullptr;
 
         if( codeTitle == "Macros")
         {
@@ -873,7 +873,7 @@ void projectPropertiesResource::open_code(int lineNumb, int colNumb, std::string
 
         }
 
-        if( foundTextArea!=NULL && foundTextArea->has_content() )
+        if( foundTextArea!=nullptr && foundTextArea->has_content() )
         {
             foundTextArea->scroll_to_pos(lineNumb, colNumb);
         }
@@ -883,7 +883,7 @@ void projectPropertiesResource::open_code(int lineNumb, int colNumb, std::string
 void projectPropertiesResource::prerender_self(  )
 {
     standardEditableGameResource::prerender_self();
-    if( checkBoxShowPublisherInfo!=NULL)
+    if( checkBoxShowPublisherInfo!=nullptr)
     {
         checkBoxShowPublisherInfo->prerender_self( );
     }
@@ -893,7 +893,7 @@ void projectPropertiesResource::load_resource(std::string file_path)
 {
     if( resourcePostProcessed ==false  || gpe::main_file_url_manager->file_exists(file_path) )
     {
-        if( main_gpe_splash_page != NULL )
+        if( main_gpe_splash_page != nullptr )
         {
             main_gpe_splash_page->update_submessages( "Processing Project Properties","Please wait..." );
         }
@@ -990,13 +990,13 @@ void projectPropertiesResource::load_resource(std::string file_path)
                                 else if( key_string=="ProjectIcon")
                                 {
                                     iconFileName = stg_ex::file_to_dir(parentProjectName)+"/"+valstring;
-                                    if( current_project!=NULL )
+                                    if( current_project!=nullptr )
                                     {
                                         current_project->projectIconName =  stg_ex::get_local_from_global_file( iconFileName);
                                     }
                                     if( gpe::main_file_url_manager->file_exists(iconFileName) && stg_ex::file_is_image(iconFileName) )
                                     {
-                                        if( projectIconImg!=NULL)
+                                        if( projectIconImg!=nullptr)
                                         {
                                             projectIconImg->load_label_image(iconFileName);
                                             projectIconImg->set_height(128);
@@ -1104,7 +1104,7 @@ void projectPropertiesResource::load_resource(std::string file_path)
             }
         }
 
-        if( current_project!=NULL)
+        if( current_project!=nullptr)
         {
             for( int iLayerN = 0; iLayerN < 32; iLayerN++)
             {
@@ -1160,11 +1160,11 @@ void projectPropertiesResource::load_resource(std::string file_path)
         }
     }
     //Project TextAreas
-    if( projectGameMacros!=NULL)
+    if( projectGameMacros!=nullptr)
     {
         projectGameMacros->import_text(projectParentFolder->parentProjectDirectory+"/gpe_project/project_macros.gpf");
     }
-    if( projectGameNotes!=NULL)
+    if( projectGameNotes!=nullptr)
     {
         projectGameNotes->import_text(projectParentFolder->parentProjectDirectory+"/gpe_project/project_notes.gpf");
     }
@@ -1175,7 +1175,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
     cam = gpe::camera_find(cam);
     view_space = gpe::camera_find(view_space);
     bool isJSProject = true;
-    if( current_project !=NULL )
+    if( current_project !=nullptr )
     {
         if( current_project->get_project_language_id() != pawgui::program_language_js )
         {
@@ -1183,7 +1183,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
         }
     }
 
-    if ( export_settingsBar!=NULL )
+    if ( export_settingsBar!=nullptr )
     {
         int html5OptionId = export_settingsBar->get_option_id("HTML5");
 
@@ -1201,18 +1201,18 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
         }
     }
 
-    if( collisionLayerMatrixList != NULL )
+    if( collisionLayerMatrixList != nullptr )
     {
         collisionLayerMatrixList->clear_list();
     }
-    if( cam!=NULL && project_settingsList!=NULL && project_settingsBar!=NULL && view_space!=NULL)
+    if( cam!=nullptr && project_settingsList!=nullptr && project_settingsBar!=nullptr && view_space!=nullptr)
     {
         std::string nExportOptionName = export_settingsBar->get_selected_name();
 
         std::string nExportDesktopOS = desktop_settingsTabBar->get_selected_name();
 
         int prevTab = project_settingsBar->get_selection();
-        if( panel_main_editor!=NULL )
+        if( panel_main_editor!=nullptr )
         {
             subViewedSpace.x = 0;
             subViewedSpace.y = 0;
@@ -1287,7 +1287,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
 
             if( browseIcon_button->is_clicked() )
             {
-                if( (int)editor_gui_main->fileOpenProjectIconDir.size()==0 && current_project!=NULL )
+                if( (int)editor_gui_main->fileOpenProjectIconDir.size()==0 && current_project!=nullptr )
                 {
                     editor_gui_main->fileOpenProjectIconDir = current_project->get_project_directory();
                 }
@@ -1296,12 +1296,12 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                 {
                     if( stg_ex::file_is_image(newProjectIconName) )
                     {
-                        if( projectIconImg!=NULL)
+                        if( projectIconImg!=nullptr)
                         {
                             projectIconImg->load_label_image( newProjectIconName );
                             projectIconImg->set_height(128);
                         }
-                        if( current_project!=NULL )
+                        if( current_project!=nullptr )
                         {
                             iconFileName = current_project->projectIconName = stg_ex::get_local_from_global_file(newProjectIconName );
                             gpe::main_file_url_manager->file_copy(newProjectIconName, current_project->get_project_directory()+"/"+current_project->projectIconName  );
@@ -1343,7 +1343,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                 project_settingsList->add_gui_element(playProgramPush_button, true);
                 project_settingsList->process_self( view_space,cam);
 
-                if( current_project!=NULL )
+                if( current_project!=nullptr )
                 {
                     if( exportPush_button->is_clicked() )
                     {
@@ -1401,7 +1401,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                         refresh_build_to_source_targets();
                     }
 
-                    if( buildToSource_button->is_clicked() && current_project!=NULL && buildPlatformdropdown!=NULL )
+                    if( buildToSource_button->is_clicked() && current_project!=nullptr && buildPlatformdropdown!=nullptr )
                     {
                         if( buildPlatformdropdown->get_selected_id() >= 0 && buildPlatformdropdown->get_menu_size() > 0 )
                         {
@@ -1419,13 +1419,13 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                     {
                         buildBits = 64;
                     }
-                    if( exportPush_button->is_clicked() && current_project!=NULL)
+                    if( exportPush_button->is_clicked() && current_project!=nullptr)
                     {
                         current_project->save_project();
                         current_project->export_project_windows("",buildPlatformdropdown->get_selected_name(),buildBits,false, winDebugModeCheckbox->is_clicked(), windowsNativeBuildTypeOptions->get_selected_value() );
                         //winnativeBuildTypeOptions->set_checked(false);
                     }
-                    else if( gpe::system_found_os== gpe::system_os_windows && current_project!=NULL )
+                    else if( gpe::system_found_os== gpe::system_os_windows && current_project!=nullptr )
                     {
                         if( exportAndPlayPush_button->is_clicked() )
                         {
@@ -1476,7 +1476,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                         refresh_build_to_source_targets();
                     }
 
-                    if( buildToSource_button->is_clicked() && current_project!=NULL && buildPlatformdropdown!=NULL )
+                    if( buildToSource_button->is_clicked() && current_project!=nullptr && buildPlatformdropdown!=nullptr )
                     {
                         if( buildPlatformdropdown->get_selected_id() >= 0 && buildPlatformdropdown->get_menu_size() > 0 )
                         {
@@ -1493,13 +1493,13 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                     {
                         buildBits = 64;
                     }
-                    if( exportPush_button->is_clicked() && current_project!=NULL)
+                    if( exportPush_button->is_clicked() && current_project!=nullptr)
                     {
                         current_project->save_project();
                         current_project->export_project_linux("","", buildBits,false, linuxDebugModeCheckbox->is_clicked(), linuxNativeBuildTypeOptions->get_selected_value() );
                         //linuxnativeBuildTypeOptions->set_checked(false);
                     }
-                    else if( gpe::system_found_os == gpe::system_os_linux && current_project!=NULL )
+                    else if( gpe::system_found_os == gpe::system_os_linux && current_project!=nullptr )
                     {
                         if( exportAndPlayPush_button->is_clicked() )
                         {
@@ -1550,7 +1550,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                         refresh_build_to_source_targets();
                     }
 
-                    if( buildToSource_button->is_clicked() && current_project!=NULL && buildPlatformdropdown!=NULL )
+                    if( buildToSource_button->is_clicked() && current_project!=nullptr && buildPlatformdropdown!=nullptr )
                     {
                         if( buildPlatformdropdown->get_selected_id() >= 0 && buildPlatformdropdown->get_menu_size() > 0 )
                         {
@@ -1569,13 +1569,13 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                         buildBits = 64;
                     }
 
-                    if( exportPush_button->is_clicked() && current_project!=NULL)
+                    if( exportPush_button->is_clicked() && current_project!=nullptr)
                     {
                         current_project->save_project();
                         current_project->export_project_osx("","",buildBits,false, osxDebugModeCheckbox->is_clicked(), osxNativeBuildTypeOptions->get_selected_value()  );
                         //osxnativeBuildTypeOptions->set_checked(false);
                     }
-                    else if( gpe::system_found_os == gpe::system_os_mac && current_project!=NULL )
+                    else if( gpe::system_found_os == gpe::system_os_mac && current_project!=nullptr )
                     {
                         if( exportAndPlayPush_button->is_clicked() )
                         {
@@ -1641,6 +1641,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
             {
                 projectLayerNamesColumnTitles[iLayerN]->set_height(widestTitle);
                 //projectLayerNamesColumnTitles[iLayerN]->set_width(16);
+                projectLayerNamesColumnTitles[iLayerN]->set_width( projectCollisionLayerMatrix[0]->get_width() );
                 collisionLayerMatrixList->add_gui_element(projectLayerNamesColumnTitles[iLayerN],(iLayerN==maxCollisionLayerCount-1) );
             }
             for( iLayerN = 0; iLayerN < maxCollisionLayerCount; iLayerN++)
@@ -1660,11 +1661,11 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
             bool renameLayer = false;
             for( int iLayerVal = 0; iLayerVal < 32 && renameLayer==false; iLayerVal++)
             {
-                if( projectLayerNamesRowTitles[iLayerVal]!=NULL && ( projectLayerNamesRowTitles[iLayerVal]->is_clicked() || projectLayerNamesRowTitles[iLayerVal]->is_rightclicked() ) )
+                if( projectLayerNamesRowTitles[iLayerVal]!=nullptr && ( projectLayerNamesRowTitles[iLayerVal]->is_clicked() || projectLayerNamesRowTitles[iLayerVal]->is_rightclicked() ) )
                 {
                     renameLayer = true;
                 }
-                else if( projectLayerNamesColumnTitles[iLayerVal]!=NULL && ( projectLayerNamesColumnTitles[iLayerVal]->is_clicked() || projectLayerNamesColumnTitles[iLayerVal]->is_rightclicked() ) )
+                else if( projectLayerNamesColumnTitles[iLayerVal]!=nullptr && ( projectLayerNamesColumnTitles[iLayerVal]->is_clicked() || projectLayerNamesColumnTitles[iLayerVal]->is_rightclicked() ) )
                 {
                     renameLayer = true;
                 }
@@ -1707,14 +1708,14 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
 
             if( !renameLayer )
             {
-                if(selectAllCollisionBoxes!=NULL && selectAllCollisionBoxes->is_clicked() )
+                if(selectAllCollisionBoxes!=nullptr && selectAllCollisionBoxes->is_clicked() )
                 {
                     for( int iMatrix = 0; iMatrix < 1024; iMatrix++)
                     {
                         projectCollisionLayerMatrix[iMatrix]->set_checked(true);
                     }
                 }
-                else if( unselectAllCollisionBoxes!=NULL && unselectAllCollisionBoxes->is_clicked() )
+                else if( unselectAllCollisionBoxes!=nullptr && unselectAllCollisionBoxes->is_clicked() )
                 {
                     for( int iMatrix = 0; iMatrix < 1024; iMatrix++)
                     {
@@ -1739,7 +1740,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
 
 void projectPropertiesResource::refresh_build_to_source_targets()
 {
-    if( main_editor_log==NULL)
+    if( main_editor_log==nullptr)
     {
         gpe::error_log->report("Unable to detect [main_editor_log].");
         return;
@@ -1747,13 +1748,13 @@ void projectPropertiesResource::refresh_build_to_source_targets()
     main_editor_log->log_build_line("Attempting to refresh build platforms");
     main_editor_log->log_build_line("Build platforms refreshed!");
 
-    if( buildPlatformdropdown==NULL )
+    if( buildPlatformdropdown==nullptr )
     {
         main_editor_log->log_build_error("Error finding [buildPlatformdropdown] object!");
         return;
     }
 
-    if( GPE_CPP_BUILDER_SETTINGS==NULL )
+    if( GPE_CPP_BUILDER_SETTINGS==nullptr )
     {
         main_editor_log->log_build_error("Error finding [GPE_CPP_BUILDER_SETTINGS] global object!");
         return;
@@ -1762,12 +1763,12 @@ void projectPropertiesResource::refresh_build_to_source_targets()
     int currentDropDownPos = buildPlatformdropdown->get_selected_id();
     buildPlatformdropdown->clear_dropdown();
 
-    gpeCPPBuildHolder * tempCBS = NULL;
+    gpeCPPBuildHolder * tempCBS = nullptr;
     int builderSystems = GPE_CPP_BUILDER_SETTINGS->cppBuildSystems.size();
     for( int i = 0; i <builderSystems ; i++)
     {
         tempCBS = GPE_CPP_BUILDER_SETTINGS->cppBuildSystems[i];
-        if( tempCBS!=NULL )
+        if( tempCBS!=nullptr )
         {
             buildPlatformdropdown->add_menu_option(tempCBS->builderName,tempCBS->builderName, -1, false );
         }
@@ -1779,13 +1780,13 @@ void projectPropertiesResource::render_self( gpe::shape_rect * view_space, gpe::
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if( cam!=NULL && view_space!=NULL)
+    if( cam!=nullptr && view_space!=nullptr)
     {
-        if(  project_settingsBar!=NULL && panel_main_editor==NULL )
+        if(  project_settingsBar!=nullptr && panel_main_editor==nullptr )
         {
             project_settingsBar->render_self( view_space,cam);
         }
-        if(  export_settingsBar!=NULL && project_settingsBar!=NULL  && project_settingsBar->get_selected_name()=="Platforms" )
+        if(  export_settingsBar!=nullptr && project_settingsBar!=nullptr  && project_settingsBar->get_selected_name()=="Platforms" )
         {
             export_settingsBar->render_self( view_space,cam);
         }
@@ -1795,7 +1796,7 @@ void projectPropertiesResource::render_self( gpe::shape_rect * view_space, gpe::
         {
             collisionLayerMatrixList->render_self( view_space,cam );
         }
-        else if( project_settingsList!=NULL )
+        else if( project_settingsList!=nullptr )
         {
             project_settingsList->render_self( view_space,cam);
         }
@@ -1806,7 +1807,7 @@ void projectPropertiesResource::save_resource(std::string file_path, int backupI
 {
     bool usingAltSaveSource = false;
     isModified = false;
-    if( projectParentFolder!=NULL)
+    if( projectParentFolder!=nullptr)
     {
         std::string project_settingsFileName = projectParentFolder->parentProjectDirectory+"/gpe_project/project_settings.gpf";
         gpe::error_log->report("Saving project settings to "+project_settingsFileName);
@@ -1817,132 +1818,132 @@ void projectPropertiesResource::save_resource(std::string file_path, int backupI
             //newSaveDataFile << "ResourceName=" << resource_name << "\n";
             newSaveDataFile << "#Project _settings     \n";
             newSaveDataFile << "ProjectIcon=" << stg_ex::get_local_from_global_file(iconFileName) << "\n";
-            if( projectScreenWidthField!=NULL)
+            if( projectScreenWidthField!=nullptr)
             {
                 newSaveDataFile << "ScreenWidth=" << projectScreenWidthField->get_held_number() << "\n";
             }
-            if( projectScreenHeightField!=NULL)
+            if( projectScreenHeightField!=nullptr)
             {
                 newSaveDataFile << "ScreenHeight=" << projectScreenHeightField->get_held_number() << "\n";
             }
 
-            if( projectGameVersionField!=NULL)
+            if( projectGameVersionField!=nullptr)
             {
                 newSaveDataFile << "ProjectVersion=" << projectGameVersionField->get_held_number() << "\n";
             }
-            if( projectGameSubVersionField!=NULL)
+            if( projectGameSubVersionField!=nullptr)
             {
                 newSaveDataFile << "ProjectSubVersion=" << projectGameSubVersionField->get_string() << "\n";
             }
-            if( project_scale_settings!=NULL)
+            if( project_scale_settings!=nullptr)
             {
                 newSaveDataFile << "Project_scale_settings=" << project_scale_settings->get_selected_id() << "\n";
             }
 
-            if( project_settingsFPSRate!=NULL)
+            if( project_settingsFPSRate!=nullptr)
             {
                 newSaveDataFile << "ProjectFPSCap=" << project_settingsFPSRate->get_selected_id() << "\n";
             }
 
             newSaveDataFile << "#Project Publishing MetaData     \n";
-            if( projectGameTitleField!=NULL)
+            if( projectGameTitleField!=nullptr)
             {
                 newSaveDataFile << "ProjectTitle=" << projectGameTitleField->get_string() << "\n";
             }
-            if( projectGameShortTitleField!=NULL)
+            if( projectGameShortTitleField!=nullptr)
             {
                 newSaveDataFile << "ProjectShortTitle=" << projectGameShortTitleField->get_string() << "\n";
             }
 
             //Saves the project language
-            if( projectLanguage!=NULL )
+            if( projectLanguage!=nullptr )
             {
                 newSaveDataFile << "ProjectLanguage=" << projectLanguage->get_selected_tag() << "\n";
-                if( current_project!=NULL )
+                if( current_project!=nullptr )
                 {
                     current_project->set_project_language( projectLanguage->get_selected_tag() );
                 }
             }
 
-            if( projectGameDateField!=NULL)
+            if( projectGameDateField!=nullptr)
             {
                 newSaveDataFile << "ProjectDate=" << projectGameDateField->get_string() << "\n";
             }
-            if( projectGameDescriptionField!=NULL)
+            if( projectGameDescriptionField!=nullptr)
             {
                 newSaveDataFile << "ProjectDescription=" << projectGameDescriptionField->get_string() << "\n";
             }
-            if( projectGamePublisherField!=NULL)
+            if( projectGamePublisherField!=nullptr)
             {
                 newSaveDataFile << "ProjectPublisher=" << projectGamePublisherField->get_string() << "\n";
             }
-            if( projectGameDeveloperField!=NULL)
+            if( projectGameDeveloperField!=nullptr)
             {
                 newSaveDataFile << "ProjectDeveloper=" << projectGameDeveloperField->get_string() << "\n";
             }
-            if( projectGameCopyrightField!=NULL)
+            if( projectGameCopyrightField!=nullptr)
             {
                 newSaveDataFile << "ProjectCopyright=" << projectGameCopyrightField->get_string() << "\n";
             }
-            if( projectGameWebsiteField!=NULL)
+            if( projectGameWebsiteField!=nullptr)
             {
                 newSaveDataFile << "ProjectWebsite=" << projectGameWebsiteField->get_string() << "\n";
             }
-            if( projectGameEmailField!=NULL )
+            if( projectGameEmailField!=nullptr )
             {
                 newSaveDataFile << "ProjectEmail=" << projectGameEmailField->get_string() << "\n";
             }
 
             //Colors
             newSaveDataFile << "#Project Colors     \n";
-            if( projectBorderColor!=NULL)
+            if( projectBorderColor!=nullptr)
             {
                 newSaveDataFile << "BorderColor=" << projectBorderColor->get_rgb_string() << "\n";
             }
-            if( projectGameBackgroundColor!=NULL)
+            if( projectGameBackgroundColor!=nullptr)
             {
                 newSaveDataFile << "GameBackgroundColor=" << projectGameBackgroundColor->get_rgb_string() << "\n";
             }
-            if( projectWebsiteBackgroundColor!=NULL)
+            if( projectWebsiteBackgroundColor!=nullptr)
             {
                 newSaveDataFile << "WebsiteBackgroundColor=" << projectWebsiteBackgroundColor->get_rgb_string() << "\n";
             }
-            if( projectTextHeaderColor!=NULL)
+            if( projectTextHeaderColor!=nullptr)
             {
                 newSaveDataFile << "HeaderColor=" << projectTextHeaderColor->get_rgb_string() << "\n";
             }
-            if( projectTextParagraphColor!=NULL)
+            if( projectTextParagraphColor!=nullptr)
             {
                 newSaveDataFile << "ParagraphColor=" << projectTextParagraphColor->get_rgb_string() << "\n";
             }
-            if( projectTextLinkColor!=NULL)
+            if( projectTextLinkColor!=nullptr)
             {
                 newSaveDataFile << "LinkColor=" << projectTextLinkColor->get_rgb_string() << "\n";
             }
 
-            if( projectTextLinkColor!=NULL)
+            if( projectTextLinkColor!=nullptr)
             {
                 newSaveDataFile << "LinkActiveColor=" << projectTextLinkActiveColor->get_rgb_string() << "\n";
             }
-            if( projectTextLinkColor!=NULL)
+            if( projectTextLinkColor!=nullptr)
             {
                 newSaveDataFile << "LinkHoverColor=" << projectTextLinkHoverColor->get_rgb_string() << "\n";
             }
-            if( projectTextLinkColor!=NULL)
+            if( projectTextLinkColor!=nullptr)
             {
                 newSaveDataFile << "LinkVisitedColor=" << projectTextLinkVisitedColor->get_rgb_string() << "\n";
             }
-            if( warnOnCloseCheckbox!=NULL)
+            if( warnOnCloseCheckbox!=nullptr)
             {
                 newSaveDataFile << "HTML5WarnOnClose=" << warnOnCloseCheckbox->is_clicked() << "\n";
             }
 
             //Project TextAreas
-            if( projectGameMacros!=NULL)
+            if( projectGameMacros!=nullptr)
             {
                 projectGameMacros->export_text(projectParentFolder->parentProjectDirectory+"/gpe_project/project_macros.gpf");
             }
-            if( projectGameNotes!=NULL)
+            if( projectGameNotes!=nullptr)
             {
                 projectGameNotes->export_text(projectParentFolder->parentProjectDirectory+"/gpe_project/project_notes.gpf");
             }
@@ -1979,17 +1980,17 @@ int projectPropertiesResource::search_for_string(std::string needle)
 {
     int foundstrings = 0;
     main_editor_log->log_general_comment("Searching [Project _settings]..");
-    if( pawgui::main_anchor_controller!=NULL)
+    if( pawgui::main_anchor_controller!=nullptr)
     {
         pawgui::main_anchor_controller->searchResultProjectName = parentProjectName;
         pawgui::main_anchor_controller->searchResultResourceId = globalResouceIdNumber;
         pawgui::main_anchor_controller->searchResultResourceName = resource_name;
-        if( projectGameMacros!=NULL && projectGameMacros->has_content() )
+        if( projectGameMacros!=nullptr && projectGameMacros->has_content() )
         {
             foundstrings+=projectGameMacros->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true,"Macros");
         }
 
-        if( projectGameNotes!=NULL && projectGameNotes->has_content() )
+        if( projectGameNotes!=nullptr && projectGameNotes->has_content() )
         {
             foundstrings+=projectGameNotes->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true,"Notes");
         }
@@ -2003,12 +2004,12 @@ int projectPropertiesResource::search_and_replace_string(std::string needle, std
     int tempFoundCount = 0;
 
     main_editor_log->log_general_comment("Searching [Project _settings]..");
-    if( pawgui::main_anchor_controller!=NULL)
+    if( pawgui::main_anchor_controller!=nullptr)
     {
         pawgui::main_anchor_controller->searchResultProjectName = parentProjectName;
         pawgui::main_anchor_controller->searchResultResourceId = globalResouceIdNumber;
         pawgui::main_anchor_controller->searchResultResourceName = resource_name;
-        if( projectGameMacros!=NULL && projectGameMacros->has_content() )
+        if( projectGameMacros!=nullptr && projectGameMacros->has_content() )
         {
             tempFoundCount = projectGameMacros->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true,"Macros");
             if( tempFoundCount > 0)
@@ -2018,7 +2019,7 @@ int projectPropertiesResource::search_and_replace_string(std::string needle, std
             }
         }
 
-        if( projectGameNotes!=NULL && projectGameNotes->has_content() )
+        if( projectGameNotes!=nullptr && projectGameNotes->has_content() )
         {
             tempFoundCount = projectGameNotes->find_all_strings(needle,pawgui::main_search_controller->findMatchCase->is_clicked(),true,"Notes");
             if( tempFoundCount > 0)
@@ -2034,16 +2035,16 @@ int projectPropertiesResource::search_and_replace_string(std::string needle, std
 
 void projectPropertiesResource::update_project_layers()
 {
-    if( current_project!=NULL & current_project->RESC_SCENES!=NULL)
+    if( current_project!=nullptr & current_project->RESC_SCENES!=nullptr)
     {
         int iLN = 0;
         for(  iLN = 0; iLN < 32; iLN++)
         {
-            if( projectLayerNamesRowTitles[iLN]!=NULL)
+            if( projectLayerNamesRowTitles[iLN]!=nullptr)
             {
                 projectLayerNamesRowTitles[iLN]->set_name( current_project->projectLayerNames[iLN] );
             }
-            if( projectLayerNamesColumnTitles[iLN]!=NULL)
+            if( projectLayerNamesColumnTitles[iLN]!=nullptr)
             {
                 projectLayerNamesColumnTitles[iLN]->set_name( current_project->projectLayerNames[iLN] );
             }
@@ -2059,18 +2060,18 @@ void projectPropertiesResource::update_project_layers()
         }
 
         std::vector <pawgui::widget_resource_container *> projectScenes;
-        pawgui::widget_resource_container * tempContainer = NULL;
-        gameSceneResource * tempScnRes = NULL;
+        pawgui::widget_resource_container * tempContainer = nullptr;
+        gameSceneResource * tempScnRes = nullptr;
         current_project->RESC_SCENES->grab_useable_resources(projectScenes);
         for( int iRes = (int)projectScenes.size()-1; iRes >=0; iRes--)
         {
             tempContainer = projectScenes[iRes];
-            if( tempContainer!=NULL)
+            if( tempContainer!=nullptr)
             {
-                if( tempContainer!=NULL && tempContainer->get_held_resource()!=NULL)
+                if( tempContainer!=nullptr && tempContainer->get_held_resource()!=nullptr)
                 {
                     tempScnRes = (gameSceneResource * ) tempContainer->get_held_resource();
-                    if( tempScnRes!=NULL)
+                    if( tempScnRes!=nullptr)
                     {
                         tempScnRes->update_project_layers();
                     }
@@ -2082,7 +2083,7 @@ void projectPropertiesResource::update_project_layers()
 
 bool projectPropertiesResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn)
 {
-    if( fileTarget!=NULL)
+    if( fileTarget!=nullptr)
     {
         if( fileTarget->is_open() )
         {

@@ -35,11 +35,11 @@ SOFTWARE.
 #include "gpe_editor_globals.h"
 
 int release_current_mode = release_type_alpha;
-pawgui::themes_controller * editor_theme_controller = NULL;
+pawgui::themes_controller * editor_theme_controller = nullptr;
 
-pawgui::widget_dock * gpe_dock = NULL;
-pawgui::widget_dock_panel * panel_center_area = NULL;
-pawgui::widget_dock_panel * panel_resource_tree = NULL;
-pawgui::widget_dock_panel * panel_main_editor = NULL;
-pawgui::widget_dock_panel * panel_inspector = NULL;
-pawgui::widget_dock_panel * panel_meta = NULL;
+pawgui::widget_dock * gpe_dock = nullptr;
+pawgui::widget_dock_panel * panel_center_area = nullptr;
+pawgui::widget_dock_panel * panel_resource_tree = nullptr;
+pawgui::widget_dock_panel * panel_main_editor = nullptr;
+pawgui::widget_dock_panel * panel_inspector = nullptr;
+pawgui::widget_dock_panel * panel_meta = nullptr;

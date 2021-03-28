@@ -32,7 +32,7 @@ SOFTWARE.
 */
 #include "gpe_gamepad_tester.h"
 
-gamePencilgamepadTesterResource * main_gamepad_tester = NULL;
+gamePencilgamepadTesterResource * main_gamepad_tester = nullptr;
 
 
 gamePencilgamepadTesterResource::gamePencilgamepadTesterResource()
@@ -76,39 +76,39 @@ gamePencilgamepadTesterResource::gamePencilgamepadTesterResource()
 
 gamePencilgamepadTesterResource::~gamePencilgamepadTesterResource()
 {
-    if( detectControllers_button != NULL)
+    if( detectControllers_button != nullptr)
     {
         delete detectControllers_button;
-        detectControllers_button = NULL;
+        detectControllers_button = nullptr;
     }
 
-    if( vibrateController_button != NULL)
+    if( vibrateController_button != nullptr)
     {
         delete vibrateController_button;
-        vibrateController_button = NULL;
+        vibrateController_button = nullptr;
     }
 
-    if( previousController_button != NULL)
+    if( previousController_button != nullptr)
     {
         delete previousController_button;
-        previousController_button = NULL;
+        previousController_button = nullptr;
     }
 
-    if( nextController_button != NULL)
+    if( nextController_button != nullptr)
     {
         delete nextController_button;
-        nextController_button = NULL;
+        nextController_button = nullptr;
     }
 
-    if( controllerViewTitleLabel != NULL)
+    if( controllerViewTitleLabel != nullptr)
     {
         delete controllerViewTitleLabel;
-        controllerViewTitleLabel = NULL;
+        controllerViewTitleLabel = nullptr;
     }
-    if( controllerNameLabel != NULL)
+    if( controllerNameLabel != nullptr)
     {
         delete controllerNameLabel;
-        controllerNameLabel = NULL;
+        controllerNameLabel = nullptr;
     }
 }
 
@@ -133,7 +133,7 @@ void gamePencilgamepadTesterResource::process_self( gpe::shape_rect * view_space
     cam = gpe::camera_find( cam );
 
     controllerNameLabel->set_name( gpe::input->gamepad_detected_name( controllerInView ) );
-    if( panel_main_editor!=NULL )
+    if( panel_main_editor!=nullptr )
     {
         panel_main_editor->clear_panel();
 
@@ -252,7 +252,7 @@ void gamePencilgamepadTesterResource::render_self( gpe::shape_rect * view_space,
         }
     }
 
-    if( showControllerInfo!=NULL && showControllerInfo->is_clicked() )
+    if( showControllerInfo!=nullptr && showControllerInfo->is_clicked() )
     {
         std::string controllerOutputstring = "Controller ["+ stg_ex::int_to_string( controllerInView)+"]";
 

@@ -51,7 +51,7 @@ public:
     pawgui::widget_input_text * textSection; //Section found in localization
     pawgui::widget_input_text * textKey; //The Key found in localization;
 
-    GPE_SceneText(  pawgui::widget_resource_container *pFolder = NULL );
+    GPE_SceneText(  pawgui::widget_resource_container *pFolder = nullptr );
     ~GPE_SceneText();
     void add_typed_elements();
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
@@ -75,7 +75,7 @@ public:
     pawgui::widget_text_editor * customTextElement;//Default if not localized
     pawgui::widget_input_text * textSection; //Section found in localization
     pawgui::widget_input_text * textKey; //The Key found in localization;
-    GPE_SceneMultilineText(  pawgui::widget_resource_container *pFolder = NULL );
+    GPE_SceneMultilineText(  pawgui::widget_resource_container *pFolder = nullptr );
     ~GPE_SceneMultilineText();
     void add_typed_elements();
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );

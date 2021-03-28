@@ -122,7 +122,7 @@ public:
 
 extern GPE_Gui_Engine * editor_gui_main;
 
-bool set_current_gpe_project( GPE_ProjectFolder * newMainProject = NULL);
+bool set_current_gpe_project( GPE_ProjectFolder * newMainProject = nullptr);
 bool set_current_gpe_project_from_name( std::string newMainProjectName );
 
 void GPE_Show_Tip_Of_Day();

@@ -44,7 +44,7 @@ public:
     pawgui::widget_tabbar * codeCategoryTabs;
     pawgui::widget_button_icon * save_button;
     pawgui::widget_panel_list * classEditorList;
-    classResource(pawgui::widget_resource_container * pFolder = NULL);
+    classResource(pawgui::widget_resource_container * pFolder = nullptr);
     ~classResource();
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
@@ -55,8 +55,8 @@ public:
     void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
     void load_resource(std::string file_path = "");
     void prerender_self( );
-    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+    void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void save_resource(std::string file_path = "", int backupId = -1);
     int search_for_string(std::string needle);
     int search_and_replace_string(std::string needle, std::string newStr = "");

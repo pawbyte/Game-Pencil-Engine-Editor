@@ -39,7 +39,7 @@ classResource::classResource(pawgui::widget_resource_container * pFolder)
     codeCategoryTabs->set_coords(16,16);
     codeCategoryTabs->add_new_tab("Header",false);
     codeCategoryTabs->add_new_tab("Source",true);
-    classHeaderCode = NULL;
+    classHeaderCode = nullptr;
     classHeaderCode = new pawgui::widget_text_editor(false);
     classHeaderCode->set_placeholder("Header Code...");
 
@@ -62,38 +62,38 @@ classResource::classResource(pawgui::widget_resource_container * pFolder)
 
 classResource::~classResource()
 {
-    if(classHeaderCode!=NULL)
+    if(classHeaderCode!=nullptr)
     {
         delete classHeaderCode;
-        classHeaderCode = NULL;
+        classHeaderCode = nullptr;
     }
-    if(classSourceCode!=NULL)
+    if(classSourceCode!=nullptr)
     {
         delete classSourceCode;
-        classSourceCode = NULL;
+        classSourceCode = nullptr;
     }
-    if(codeCategoryTabs!=NULL)
+    if(codeCategoryTabs!=nullptr)
     {
         delete codeCategoryTabs;
-        codeCategoryTabs = NULL;
+        codeCategoryTabs = nullptr;
     }
 
-    if(renameBox!=NULL)
+    if(renameBox!=nullptr)
     {
         delete renameBox;
-        renameBox = NULL;
+        renameBox = nullptr;
     }
 
-    if( save_button!=NULL)
+    if( save_button!=nullptr)
     {
         delete save_button;
-        save_button = NULL;
+        save_button = nullptr;
     }
 
-    if( classEditorList!=NULL)
+    if( classEditorList!=nullptr)
     {
         delete classEditorList;
-        classEditorList = NULL;
+        classEditorList = nullptr;
     }
 
 }
@@ -125,12 +125,12 @@ bool classResource::is_build_ready()
 
 void classResource::integrate_into_syntax()
 {
-    if( current_project!=NULL)
+    if( current_project!=nullptr)
     {
         std::string fReturnType = "unknown_void";
         std::string functionDescription = "User defined function...";
         /*
-        if( parametersField !=NULL )
+        if( parametersField !=nullptr )
         {
             current_project->add_project_function(resource_name,functionDescription,parametersField->get_string(),fReturnType,"User Defined Global Function");
         }
@@ -140,11 +140,11 @@ void classResource::integrate_into_syntax()
 
 void classResource::open_code( int lineNumb, int colNumb,std::string codeTitle)
 {
-    if( classHeaderCode!=NULL && classHeaderCode->has_content() && codeTitle=="header" )
+    if( classHeaderCode!=nullptr && classHeaderCode->has_content() && codeTitle=="header" )
     {
         classHeaderCode->scroll_to_pos(lineNumb, colNumb);
     }
-    else  if( classSourceCode!=NULL && classSourceCode->has_content() )
+    else  if( classSourceCode!=nullptr && classSourceCode->has_content() )
     {
         classSourceCode->scroll_to_pos(lineNumb, colNumb);
     }
@@ -154,7 +154,7 @@ void classResource::load_resource(std::string file_path)
 {
     if( resourcePostProcessed ==false  || gpe::main_file_url_manager->file_exists(file_path) )
     {
-        if( main_gpe_splash_page != NULL )
+        if( main_gpe_splash_page != nullptr )
         {
             main_gpe_splash_page->update_submessages( "Processing Class", resource_name );
         }
@@ -174,13 +174,13 @@ void classResource::load_resource(std::string file_path)
         }
 
 
-        if( classSourceCode!=NULL)
+        if( classSourceCode!=nullptr)
         {
             std::string  classSrcCodeLoadLocation = "";
             //if( )
             classSrcCodeLoadLocation = soughtDir + "class_" + resource_name+".js";
 
-            if( current_project !=NULL )
+            if( current_project !=nullptr )
             {
                 if( current_project->get_project_language_id() ==
                    pawgui::program_language_cpp )
@@ -195,7 +195,7 @@ void classResource::load_resource(std::string file_path)
         }
 
 
-        if( classHeaderCode!=NULL)
+        if( classHeaderCode!=nullptr)
         {
             std::string classHeaderCodeLoadLocation = soughtDir+ "class_" + resource_name + ".h";
             classHeaderCode->import_text(classHeaderCodeLoadLocation);
@@ -269,14 +269,14 @@ void classResource::load_resource(std::string file_path)
                                 {
                                     renameBox->set_string(valstring);
                                 }
-                                else if( key_string=="Header_Cursor" && classHeaderCode!=NULL)
+                                else if( key_string=="Header_Cursor" && classHeaderCode!=nullptr)
                                 {
                                     fCursorY = stg_ex::split_first_int(valstring,',');
                                     fCursorX = stg_ex::string_to_int(valstring,0);
                                     classHeaderCode->set_ycursor(fCursorY);
                                     classHeaderCode->set_xcursor(fCursorX);
                                 }
-                                else if( (key_string=="Source_Cursor") && classSourceCode!=NULL)
+                                else if( (key_string=="Source_Cursor") && classSourceCode!=nullptr)
                                 {
                                     fCursorY = stg_ex::split_first_int(valstring,',');
                                     fCursorX = stg_ex::string_to_int(valstring,0);
@@ -306,7 +306,7 @@ void classResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
     pawgui::widget_dock_panel * fEditorPanel = gpe_dock->find_panel("Editor");
-    if( classEditorList!=NULL && cam!=NULL && view_space!=NULL && codeCategoryTabs!=NULL &&  save_button!=NULL && renameBox!=NULL && classSourceCode!=NULL )
+    if( classEditorList!=nullptr && cam!=nullptr && view_space!=nullptr && codeCategoryTabs!=nullptr &&  save_button!=nullptr && renameBox!=nullptr && classSourceCode!=nullptr )
     {
         classEditorList->set_coords( 0, 0 );
         classEditorList->set_width(view_space->w );
@@ -324,7 +324,7 @@ void classResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
         classEditorList->set_height( view_space->h);
         classEditorList->clear_list();
 
-        if( fEditorPanel!=NULL )
+        if( fEditorPanel!=nullptr )
         {
             fEditorPanel->add_gui_element(renameBox,true);
             fEditorPanel->add_gui_element(confirmResource_button,true);
@@ -340,7 +340,7 @@ void classResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
         //CPP is the only language that does header files so...
         if( current_project->get_project_language_id() == pawgui::program_language_cpp)
         {
-            if( codeCategoryTabs->get_selected_name()=="Header" && classHeaderCode!=NULL)
+            if( codeCategoryTabs->get_selected_name()=="Header" && classHeaderCode!=nullptr)
             {
                 classEditorList->add_gui_element(classHeaderCode,true);
             }
@@ -360,7 +360,7 @@ void classResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
         {
             save_resource();
         }
-        else if( panel_main_editor!=NULL )
+        else if( panel_main_editor!=nullptr )
         {
             if( confirmResource_button->is_clicked() )
             {
@@ -374,7 +374,7 @@ void classResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if(cam!=NULL && view_space!=NULL)
+    if(cam!=nullptr && view_space!=nullptr)
     {
         classEditorList->render_self( view_space,cam );
     }
@@ -382,7 +382,7 @@ void classResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *
 
 void classResource::save_resource(std::string file_path, int backupId)
 {
-    if( main_gpe_splash_page != NULL )
+    if( main_gpe_splash_page != nullptr )
     {
         main_gpe_splash_page->update_submessages( "Saving Class", resource_name );
     }
@@ -409,7 +409,7 @@ void classResource::save_resource(std::string file_path, int backupId)
         {
             write_header_on_file(&newSaveDataFile);
 
-            if( classSourceCode!=NULL)
+            if( classSourceCode!=nullptr)
             {
                 //    *fileTarget << classSourceCode->get_xcursor() << "," << classSourceCode->get_ycursor() << ",";
                 //std::string headerCodeSaveLocation = soughtDir+resource_name+".h"; // CPP headers
@@ -460,7 +460,7 @@ int classResource::search_for_string(std::string needle)
 {
     int foundstrings = 0;
     main_editor_log->log_general_comment("Searching ["+resource_name+"] class..");
-    if( classSourceCode!=NULL && pawgui::main_anchor_controller!=NULL && classSourceCode->has_content() )
+    if( classSourceCode!=nullptr && pawgui::main_anchor_controller!=nullptr && classSourceCode->has_content() )
     {
         pawgui::main_anchor_controller->searchResultProjectName = parentProjectName;
         pawgui::main_anchor_controller->searchResultResourceId = globalResouceIdNumber;
@@ -473,9 +473,9 @@ int classResource::search_for_string(std::string needle)
 int classResource::search_and_replace_string(std::string needle, std::string newStr )
 {
     int foundstrings = 0;
-    if( classSourceCode!=NULL && pawgui::main_search_controller!=NULL && classSourceCode->has_content() )
+    if( classSourceCode!=nullptr && pawgui::main_search_controller!=nullptr && classSourceCode->has_content() )
     {
-        if( main_gpe_splash_page != NULL )
+        if( main_gpe_splash_page != nullptr )
         {
             main_gpe_splash_page->update_messages( "Replacing Substring", needle, "with ["+newStr+"]" );
         }
@@ -484,7 +484,7 @@ int classResource::search_and_replace_string(std::string needle, std::string new
         if( foundstrings > 0)
         {
             int replaceCount = classSourceCode->replace_all_found(needle, newStr );
-            if( main_gpe_splash_page != NULL )
+            if( main_gpe_splash_page != nullptr )
             {
                 main_gpe_splash_page->update_messages( "Replaced", needle, stg_ex::int_to_string(replaceCount)+" times");
             }
@@ -502,7 +502,7 @@ int classResource::search_and_replace_string(std::string needle, std::string new
 
 bool classResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn)
 {
-    if( fileTarget!=NULL)
+    if( fileTarget!=nullptr)
     {
         if( fileTarget->is_open() )
         {

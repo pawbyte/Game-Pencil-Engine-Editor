@@ -33,7 +33,7 @@ SOFTWARE.
 #include "gpe_editor_splash_page.h"
 
 
-gpe_splash_page * main_gpe_splash_page = NULL;
+gpe_splash_page * main_gpe_splash_page = nullptr;
 
 gpe_splash_page::gpe_splash_page()
 {
@@ -89,6 +89,9 @@ void gpe_splash_page::render_loader()
         //Update screen
         gpe::game_runtime->end_loop( );
         gpe::game_runtime->start_loop();
+
+        gpe::cursor_main_controller->cursor_change( gpe::cursor_main_controller->cursor_system_name( gpe::cursor_default_type::wait) );
+
         gpe::renderer_main->reset_viewpoint();
 
         if( in_startup_mode )
@@ -98,7 +101,7 @@ void gpe_splash_page::render_loader()
             int x_padding = 16, y_padding = 16;
             float current_y_pos = y_padding;
             int line_height_with_padding = gpe::font_default->get_mono_height() + y_padding;
-            if( gpe_logo!=NULL && gpe_logo->get_width() > 0 )
+            if( gpe_logo!=nullptr && gpe_logo->get_width() > 0 )
             {
                 //gpe_logo->RENDER
                 float logo_width = (float) gpe_logo->get_width();

@@ -49,7 +49,7 @@ public:
     //Lights [ BEGIN ]
     std::vector< GPE_SceneBasicLight * > layerLights;
     //Lights [ END ]
-    sceneLayer( int foundProjectLayerId, pawgui::widget_resource_container *pFolder = NULL);
+    sceneLayer( int foundProjectLayerId, pawgui::widget_resource_container *pFolder = nullptr);
     ~sceneLayer();
     void add_typed_elements();
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );

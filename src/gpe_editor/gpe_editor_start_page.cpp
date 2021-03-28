@@ -34,7 +34,7 @@ SOFTWARE.
 #include "gpe_editor_start_page.h"
 #include "gpe_editor_settings.h"
 
-gamePencilStartPageResource * main_START_PAGE = NULL;
+gamePencilStartPageResource * main_START_PAGE = nullptr;
 
 
 quickProjectReader::quickProjectReader()
@@ -227,8 +227,8 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
 
     labelHelpfulLinks = new pawgui::widget_label_title("Helpful Links","Helpful Links");
 
-    pawgui::widget_text_url * tTempUrl = NULL;
-    tTempUrl = new pawgui::widget_text_url("Game Pencil Home Page","","http://gamepencil.pawbyte.com");
+    pawgui::widget_text_url * tTempUrl = nullptr;
+    tTempUrl = new pawgui::widget_text_url("Game Pencil Home Page","","http://gamepencil.net");
     tTempUrl->hasLineBreak = true;
     helpfulWebLinks.push_back(tTempUrl);
     tTempUrl = new pawgui::widget_text_url("Documentation","","http://docs.pawbyte.com");
@@ -247,7 +247,7 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
     tTempUrl->hasLineBreak = true;
     helpfulWebLinks.push_back(tTempUrl);
 
-    tTempUrl = new pawgui::widget_text_url("Official News","","http://gamepencil.pawbyte.com/category/news/");
+    tTempUrl = new pawgui::widget_text_url("Official News","","http://gamepencil.net/category/news/");
     tTempUrl->hasLineBreak = true;
     helpfulWebLinks.push_back(tTempUrl);
 
@@ -272,7 +272,7 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
 
     //Community
     communityLinksTitle = new pawgui::widget_label_title("Community","Community links to stay connected");
-    pawgui::widget_button_icon * tSocial_button = NULL;
+    pawgui::widget_button_icon * tSocial_button = nullptr;
 
     tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/facebook.png","Facebook" );
     tSocial_button->set_website("https://facebook.com/pawbyte");
@@ -298,7 +298,7 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
     tSocial_button->set_website("https://www.youtube.com/user/PawByte");
     add_communitylink(tSocial_button);
 
-    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/gamecontroller.png","IndieDB" );
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/gamepad.png","IndieDB" );
     tSocial_button->set_website("http://www.indiedb.com/engines/game-pencil-engine");
     add_communitylink(tSocial_button);
 
@@ -344,7 +344,7 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
     refresh_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refresh","Refresh Project Lists");
 
     quickProjectReader * qpr = new quickProjectReader();
-    pawgui::widget_button_card_vertical * tRecentList_button = NULL;
+    pawgui::widget_button_card_vertical * tRecentList_button = nullptr;
     std::string tempProjectName = "";
     std::string newMultiLine = "";
     int  rProjectListSize = (int)recentProjectsList.size();
@@ -377,11 +377,11 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
         }
     }
     delete qpr;
-    qpr = NULL;
+    qpr = nullptr;
 
     gpe::error_log->report("Loading Favorite Projects Folder...");
     std::string favFolder = "";
-    if( main_editor_settings!=NULL)
+    if( main_editor_settings!=nullptr)
     {
         favFolder = main_editor_settings->projectFolderListLocation;
     }
@@ -404,93 +404,93 @@ gamePencilStartPageResource::~gamePencilStartPageResource()
     subResouceId = -2;
     parentProjectName = "";
     gpe::error_log->report("Deleting recent project lists...");
-    pawgui::widget_text_url * tUrlHolder = NULL;
+    pawgui::widget_text_url * tUrlHolder = nullptr;
     int i = 0;
 
     gpe::error_log->report("Deleting helpful website links..");
     for( i = 0; i <(int)helpfulWebLinks.size(); i++)
     {
         tUrlHolder = helpfulWebLinks[i];
-        if( tUrlHolder!=NULL)
+        if( tUrlHolder!=nullptr)
         {
             delete tUrlHolder;
-            tUrlHolder = NULL;
-            helpfulWebLinks[i] = NULL;
+            tUrlHolder = nullptr;
+            helpfulWebLinks[i] = nullptr;
         }
     }
     helpfulWebLinks.clear();
-    if( startPageList!=NULL)
+    if( startPageList!=nullptr)
     {
         delete startPageList;
-        startPageList = NULL;
+        startPageList = nullptr;
     }
     gpe::error_log->report("Deleting editor shortcuts....");
-    if( labelEditorShortcuts!=NULL)
+    if( labelEditorShortcuts!=nullptr)
     {
         delete labelEditorShortcuts;
-        labelEditorShortcuts = NULL;
+        labelEditorShortcuts = nullptr;
     }
     gpe::error_log->report("Deleting helpful links....");
-    if( labelHelpfulLinks!=NULL)
+    if( labelHelpfulLinks!=nullptr)
     {
         delete labelHelpfulLinks;
-        labelHelpfulLinks = NULL;
+        labelHelpfulLinks = nullptr;
     }
     gpe::error_log->report("Deleting copyright info....");
-    if( labelCopyrightInfo!=NULL)
+    if( labelCopyrightInfo!=nullptr)
     {
         delete labelCopyrightInfo;
-        labelCopyrightInfo = NULL;
+        labelCopyrightInfo = nullptr;
     }
 
     gpe::error_log->report("Deleting gpe img logo....");
-    if( labelImgGPELogo!=NULL)
+    if( labelImgGPELogo!=nullptr)
     {
         delete labelImgGPELogo;
-        labelImgGPELogo = NULL;
+        labelImgGPELogo = nullptr;
     }
 
     gpe::error_log->report("Deleting start page list...");
-    if( startPageList!=NULL)
+    if( startPageList!=nullptr)
     {
         startPageList->clear_list();
         delete startPageList;
-        startPageList = NULL;
+        startPageList = nullptr;
     }
     gpe::error_log->report("Deleting project categories....");
-    if( projectsCategoryTabs!=NULL)
+    if( projectsCategoryTabs!=nullptr)
     {
         delete projectsCategoryTabs;
-        projectsCategoryTabs = NULL;
+        projectsCategoryTabs = nullptr;
     }
     gpe::error_log->report("Deleting start page buttons....");
-    if( projectFolderLocationLabel!=NULL)
+    if( projectFolderLocationLabel!=nullptr)
     {
         delete projectFolderLocationLabel;
-        projectFolderLocationLabel = NULL;
+        projectFolderLocationLabel = nullptr;
     }
-    if( scanProjectFolder_button!=NULL)
+    if( scanProjectFolder_button!=nullptr)
     {
         delete scanProjectFolder_button;
-        scanProjectFolder_button = NULL;
+        scanProjectFolder_button = nullptr;
     }
-    if( newProject_button!=NULL)
+    if( newProject_button!=nullptr)
     {
         delete newProject_button;
-        newProject_button = NULL;
+        newProject_button = nullptr;
     }
 
-    if( loadProject_button!=NULL)
+    if( loadProject_button!=nullptr)
     {
         delete loadProject_button;
-        loadProject_button = NULL;
+        loadProject_button = nullptr;
     }
     gpe::error_log->report("Startpage successfully deleted....");
 }
 
 void gamePencilStartPageResource::add_communitylink( pawgui::widget_button_icon * newLink)
 {
-    if( newLink!=NULL)
+    if( newLink!=nullptr)
     {
         newLink->scale_object( 2 );
         community_buttons.push_back(newLink);
@@ -504,7 +504,7 @@ bool gamePencilStartPageResource::include_local_files( std::string pBuildDir , i
 
 void gamePencilStartPageResource::load_example_projects_folder( )
 {
-    pawgui::widget_button_card_vertical * tempProject_button = NULL;
+    pawgui::widget_button_card_vertical * tempProject_button = nullptr;
 
     int i = 0;
     int j = 0;
@@ -513,10 +513,10 @@ void gamePencilStartPageResource::load_example_projects_folder( )
     for( i = (int)examplesProjectsList.size()-1; i>=0; i--)
     {
         tempProject_button = examplesProjectsList[i];
-        if( tempProject_button!=NULL)
+        if( tempProject_button!=nullptr)
         {
             delete tempProject_button;
-            tempProject_button = NULL;
+            tempProject_button = nullptr;
         }
     }
     examplesProjectsList.clear();
@@ -531,7 +531,7 @@ void gamePencilStartPageResource::load_example_projects_folder( )
 
         exampleFolderDirectory->open_directory( exampleProjectsLocation );
 
-        gpe::file_object * tempFile = NULL;
+        gpe::file_object * tempFile = nullptr;
         std::vector<std::string > fileFilterTypes;
         fileFilterTypes.push_back("gppf");
 
@@ -546,7 +546,7 @@ void gamePencilStartPageResource::load_example_projects_folder( )
             for( i = 0; i < exampleFolderDirectory->get_count(); i++)
             {
                 tempFile = exampleFolderDirectory->get_file(i);
-                if( tempFile!=NULL)
+                if( tempFile!=nullptr)
                 {
                     tempProjectName = exampleProjectsLocation+"/"+tempFile->get_name();
 
@@ -556,7 +556,7 @@ void gamePencilStartPageResource::load_example_projects_folder( )
                         /*for( j = (int)recentProjectsList.size()-1; j>=0; j--)
                         {
                             tempProject_button = recentProjectsList[j];
-                            if( tempProject_button!=NULL && tempProject_button->descriptionText==tempProjectName )
+                            if( tempProject_button!=nullptr && tempProject_button->descriptionText==tempProjectName )
                             {
                                 projectLoadedAlready = true;
                                 break;
@@ -587,16 +587,16 @@ void gamePencilStartPageResource::load_example_projects_folder( )
             }
         }
         delete exampleFolderDirectory;
-        exampleFolderDirectory = NULL;
+        exampleFolderDirectory = nullptr;
 
         delete qpr;
-        qpr = NULL;
+        qpr = nullptr;
     }
 }
 
 void gamePencilStartPageResource::load_projecs_folder( std::string projectsDirectory)
 {
-    pawgui::widget_button_card_vertical * tempProject_button = NULL;
+    pawgui::widget_button_card_vertical * tempProject_button = nullptr;
 
     int i = 0;
     int j = 0;
@@ -606,10 +606,10 @@ void gamePencilStartPageResource::load_projecs_folder( std::string projectsDirec
     for( i = (int)foundProjectsList.size()-1; i>=0; i--)
     {
         tempProject_button = foundProjectsList[i];
-        if( tempProject_button!=NULL)
+        if( tempProject_button!=nullptr)
         {
             delete tempProject_button;
-            tempProject_button = NULL;
+            tempProject_button = nullptr;
         }
     }
     foundProjectsList.clear();
@@ -623,7 +623,7 @@ void gamePencilStartPageResource::load_projecs_folder( std::string projectsDirec
 
         favFolderDirectory->open_directory(projectsDirectory);
 
-        gpe::file_object * tempFile = NULL;
+        gpe::file_object * tempFile = nullptr;
         std::vector<std::string > fileFilterTypes;
         fileFilterTypes.push_back("gppf");
 
@@ -634,14 +634,14 @@ void gamePencilStartPageResource::load_projecs_folder( std::string projectsDirec
         {
             projectFolderLocationLabel->set_name(projectsDirectory);
             projectFolderLocationLabel->descriptionText = projectsDirectory;
-            if( main_editor_settings!=NULL )
+            if( main_editor_settings!=nullptr )
             {
                 main_editor_settings->projectFolderListLocation = projectsDirectory;
             }
             for( i = 0; i < favFolderDirectory->get_count(); i++)
             {
                 tempFile = favFolderDirectory->get_file(i);
-                if( tempFile!=NULL)
+                if( tempFile!=nullptr)
                 {
                     tempProjectName = projectsDirectory+"/"+tempFile->get_name();
 
@@ -651,7 +651,7 @@ void gamePencilStartPageResource::load_projecs_folder( std::string projectsDirec
                         for( j = (int)recentProjectsList.size()-1; j>=0; j--)
                         {
                             tempProject_button = recentProjectsList[j];
-                            if( tempProject_button!=NULL && tempProject_button->descriptionText==tempProjectName )
+                            if( tempProject_button!=nullptr && tempProject_button->descriptionText==tempProjectName )
                             {
                                 projectLoadedAlready = true;
                                 break;
@@ -682,10 +682,10 @@ void gamePencilStartPageResource::load_projecs_folder( std::string projectsDirec
             }
         }
         delete favFolderDirectory;
-        favFolderDirectory = NULL;
+        favFolderDirectory = nullptr;
 
         delete qpr;
-        qpr = NULL;
+        qpr = nullptr;
     }
 }
 
@@ -706,19 +706,19 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
 
     if( !processedFirst )
     {
-        if( main_editor_settings!=NULL)
+        if( main_editor_settings!=nullptr)
         {
             load_projecs_folder(main_editor_settings->projectFolderListLocation);
             processedFirst = true;
         }
     }
 
-    if( view_space!=NULL && cam!=NULL && startPageList!=NULL)
+    if( view_space!=nullptr && cam!=nullptr && startPageList!=nullptr)
     {
         headerSpaceHeight = 100;
 
 
-        if( panel_main_editor!=NULL )
+        if( panel_main_editor!=nullptr )
         {
             headerViewedSpace->x = 0;
             headerViewedSpace->y = 0;
@@ -781,7 +781,7 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
         startPageList->set_horizontal_align( gpe::fa_left );
         startPageList->yScroll->documentActions = true;
         //Recent Projects
-        pawgui::widget_text_url * tTUrl = NULL;
+        pawgui::widget_text_url * tTUrl = nullptr;
         int i = 0;
         int  rProjectListSize = 0;
         int favProjectListSize = 0;
@@ -794,7 +794,7 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
             {
                 for( i = 0; i <  rProjectListSize; i++)
                 {
-                    if( recentProjectsList[i]!=NULL)
+                    if( recentProjectsList[i]!=nullptr)
                     {
                         //recentProjectsList[i]->set_height(64);
                         startPageList->add_gui_auto(recentProjectsList[i]);
@@ -814,7 +814,7 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
             {
                 for( i = 0; i <  exProjectListSize; i++)
                 {
-                    if( examplesProjectsList[i]!=NULL)
+                    if( examplesProjectsList[i]!=nullptr)
                     {
                         //examplesProjectsList[i]->set_height(64);
                         startPageList->add_gui_auto(examplesProjectsList[i] );
@@ -836,7 +836,7 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
                 startPageList->add_gui_element(projectFolderLocationLabel,true);
                 for( i = 0; i <  favProjectListSize; i++)
                 {
-                    if( foundProjectsList[i]!=NULL)
+                    if( foundProjectsList[i]!=nullptr)
                     {
                         //foundProjectsList[i]->set_height(64);
                         startPageList->add_gui_auto(foundProjectsList[i] );
@@ -852,39 +852,39 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
         startPageList->add_gui_element(urlPatreonPage,true);
 
         startPageList->add_gui_element(communityLinksTitle,true);
-        pawgui::widget_button_icon * tCommunity_button = NULL;
+        pawgui::widget_button_icon * tCommunity_button = nullptr;
         int menuLinksTotal = (int)community_buttons.size();
         for( int subMenuI= 0; subMenuI < menuLinksTotal; subMenuI++)
         {
             tCommunity_button = community_buttons.at(subMenuI);
-            if( tCommunity_button!=NULL)
+            if( tCommunity_button!=nullptr)
             {
                 startPageList->add_gui_element( tCommunity_button, subMenuI == menuLinksTotal-1 );
             }
         }
         startPageList->process_self(view_space,cam);
 
-        if( refresh_button!=NULL && refresh_button->is_clicked() )
+        if( refresh_button!=nullptr && refresh_button->is_clicked() )
         {
             rProjectListSize = (int)recentProjectsList.size();
             i = 0;
-            pawgui::widget_button_card_vertical * tRecentList_button = NULL;
+            pawgui::widget_button_card_vertical * tRecentList_button = nullptr;
             if( rProjectListSize > 0)
             {
                 for( i = rProjectListSize-1; i >=0; i--)
                 {
                     tRecentList_button = recentProjectsList[i];
-                    if( tRecentList_button!=NULL)
+                    if( tRecentList_button!=nullptr)
                     {
                         delete tRecentList_button;
-                        tRecentList_button = NULL;
+                        tRecentList_button = nullptr;
                     }
                 }
                 recentProjectsList.clear();
             }
 
             quickProjectReader * qpr = new quickProjectReader();
-            tRecentList_button = NULL;
+            tRecentList_button = nullptr;
             std::string tempProjectName = "";
             std::string newMultiLine = "";
             for( i = 0; i < recent_project_list_size; i++)
@@ -914,8 +914,8 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
                 }
             }
             delete qpr;
-            qpr = NULL;
-            if( main_editor_settings!=NULL)
+            qpr = nullptr;
+            if( main_editor_settings!=nullptr)
             {
                 load_projecs_folder(main_editor_settings->projectFolderListLocation );
                 processedFirst = true;
@@ -930,15 +930,15 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
             load_example_projects_folder();
             process_self(view_space,cam);
         }
-        else if( newProject_button!=NULL && newProject_button->is_clicked() )
+        else if( newProject_button!=nullptr && newProject_button->is_clicked() )
         {
             editor_gui_main->launch_new_project();
         }
-        else if( loadProject_button!=NULL && loadProject_button->is_clicked() )
+        else if( loadProject_button!=nullptr && loadProject_button->is_clicked() )
         {
             editor_gui_main->open_new_project();
         }
-        else if( scanProjectFolder_button!=NULL && scanProjectFolder_button->is_clicked() )
+        else if( scanProjectFolder_button!=nullptr && scanProjectFolder_button->is_clicked() )
         {
             std::string lastDirectory = "";
             std::string newPathToScan = pawgui::get_directory_name_from_popup("Scan Folder for Projects", lastDirectory,false);
@@ -959,7 +959,7 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
             {
                 for( i = 0; i <  rProjectListSize && !projectOpened; i++)
                 {
-                    if( recentProjectsList[i]!=NULL)
+                    if( recentProjectsList[i]!=nullptr)
                     {
                         if( recentProjectsList[i]->is_clicked() )
                         {
@@ -973,7 +973,7 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
             {
                 for( i = 0; i <  exampleProjectListSize && !projectOpened; i++)
                 {
-                    if( examplesProjectsList[i]!=NULL)
+                    if( examplesProjectsList[i]!=nullptr)
                     {
                         if( examplesProjectsList[i]->is_clicked() )
                         {
@@ -987,7 +987,7 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
             {
                 for( i = 0; i <  favProjectListSize && !projectOpened; i++)
                 {
-                    if( foundProjectsList[i]!=NULL)
+                    if( foundProjectsList[i]!=nullptr)
                     {
                         if( foundProjectsList[i]->is_clicked() )
                         {
@@ -1000,7 +1000,7 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
         }
         processedFirst = true;
 
-        if( panel_main_editor!=NULL )
+        if( panel_main_editor!=nullptr )
         {
             panel_main_editor->clear_panel();
             panel_main_editor->panelGuiList->set_horizontal_align( gpe::fa_center );
@@ -1015,7 +1015,7 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
 
             panel_main_editor->process_self();
         }
-        else if( sidePanelList !=NULL )
+        else if( sidePanelList !=nullptr )
         {
             sidePanelList->set_horizontal_align( gpe::fa_center );
             sidePanelList->set_coords(sidePanelRect->x,sidePanelRect->y);
@@ -1055,19 +1055,19 @@ void gamePencilStartPageResource::render_self( gpe::shape_rect * view_space, gpe
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if( view_space!=NULL && cam!=NULL )
+    if( view_space!=nullptr && cam!=nullptr )
     {
-        if( startPageList!=NULL)
+        if( startPageList!=nullptr)
         {
             startPageList->render_self( view_space,cam);
         }
 
-        if( sidePanelList!=NULL && panel_main_editor==NULL )
+        if( sidePanelList!=nullptr && panel_main_editor==nullptr )
         {
             sidePanelList->render_self( view_space,cam );
         }
 
-        if( headerPageList!=NULL)
+        if( headerPageList!=nullptr)
         {
             headerPageList->render_self( view_space,cam);
         }

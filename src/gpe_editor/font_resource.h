@@ -62,7 +62,7 @@ public:
     pawgui::widget_input_number * font_sizeField;
     pawgui::widget_input_text * fontPreviewTextField;
     std::string storedFontFileNames[FONT_FILE_TYPES];
-    fontResource(pawgui::widget_resource_container * pFolder = NULL);
+    fontResource(pawgui::widget_resource_container * pFolder = nullptr);
     ~fontResource();
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_css3_file(std::ofstream * fileTarget, int leftTabAmount);
@@ -73,9 +73,9 @@ public:
     void load_font(std::string new_file_name, int newfont_size = 12);
     void load_resource(std::string file_path = "");
     void prerender_self( );
-    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
-    bool render_held_font( int x_pos, int y_pos, std::string text_to_render, gpe::color * text_color = NULL,int alignment_h = gpe::fa_left,int alignment_v = gpe::fa_top, float render_angle = 0.f, float render_scale = 1, int render_alpha = 255 );
-    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+    bool render_held_font( int x_pos, int y_pos, std::string text_to_render, gpe::color * text_color = nullptr,int alignment_h = gpe::fa_left,int alignment_v = gpe::fa_top, float render_angle = 0.f, float render_scale = 1, int render_alpha = 255 );
+    void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void save_resource(std::string file_path = "", int backupId = -1);
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };

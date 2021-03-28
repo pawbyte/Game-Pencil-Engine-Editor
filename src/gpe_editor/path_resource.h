@@ -70,7 +70,7 @@ public:
     pawgui::widget_scrollbar_yaxis * sceneYScroll;
     bool areaIsScrollable;
     pawgui::widget_panel_list * bottomPaneList;
-    gamePathResource(pawgui::widget_resource_container * pFolder = NULL);
+    gamePathResource(pawgui::widget_resource_container * pFolder = nullptr);
     ~gamePathResource();
     gpe::game_path_point2d * add_point( int point_x, int point_y, float pointSpeed = 1);
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
@@ -78,7 +78,7 @@ public:
     void clear_points();
     void compile_cpp();
     bool export_and_play_native( bool launchProgram = true);
-    bool get_mouse_coords( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    bool get_mouse_coords( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void handle_scrolling();
     bool is_build_ready();
     void integrate_into_syntax();
@@ -86,9 +86,9 @@ public:
     void open_code(int lineNumb, int colNumb, std::string codeTitle = "" );
     void prerender_self( );
     void load_resource(std::string file_path = "");
-    void process_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     bool remove_point( int pointId );
-    void render_self( gpe::shape_rect * view_space = NULL, gpe::shape_rect * cam = NULL);
+    void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void save_resource(std::string file_path = "", int backupId = -1);
     int search_for_string(std::string needle);
     int search_and_replace_string(std::string needle, std::string newStr = "");

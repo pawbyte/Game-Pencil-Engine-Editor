@@ -1,10 +1,10 @@
 #include "gpe_extra_tools.h"
 
-gamePencilExtraTools * main_EXTRA_TOOLS = NULL;
+gamePencilExtraTools * main_EXTRA_TOOLS = nullptr;
 
 atlas_data_viewer::atlas_data_viewer( gpe::asset_manager * manager )
 {
-    if( manager != NULL )
+    if( manager != nullptr )
     {
         gpe::error_log->report("Atlas data viewer...");
         atlas_title = new pawgui::widget_label_title( manager->get_name(), manager->get_name() );
@@ -27,56 +27,56 @@ atlas_data_viewer::atlas_data_viewer( gpe::asset_manager * manager )
     }
     else
     {
-        atlas_title = NULL;
-        atlas_text_animation = NULL;
-        atlas_text_music = NULL;
-        atlas_text_sounds = NULL;
-        atlas_text_textures = NULL;
-        atlas_text_tilesheets = NULL;
+        atlas_title = nullptr;
+        atlas_text_animation = nullptr;
+        atlas_text_music = nullptr;
+        atlas_text_sounds = nullptr;
+        atlas_text_textures = nullptr;
+        atlas_text_tilesheets = nullptr;
     }
 }
 
 atlas_data_viewer::~atlas_data_viewer()
 {
-    if( atlas_title != NULL )
+    if( atlas_title != nullptr )
     {
         delete atlas_title;
-        atlas_title = NULL;
+        atlas_title = nullptr;
     }
 
-    if( atlas_text_animation != NULL )
+    if( atlas_text_animation != nullptr )
     {
         delete atlas_text_animation;
-        atlas_text_animation = NULL;
+        atlas_text_animation = nullptr;
     }
-    if( atlas_text_music != NULL )
+    if( atlas_text_music != nullptr )
     {
         delete atlas_text_music;
-        atlas_text_music = NULL;
+        atlas_text_music = nullptr;
     }
-    if( atlas_text_sounds != NULL )
+    if( atlas_text_sounds != nullptr )
     {
         delete atlas_text_sounds;
-        atlas_text_sounds = NULL;
+        atlas_text_sounds = nullptr;
     }
 
-    if( atlas_text_textures != NULL )
+    if( atlas_text_textures != nullptr )
     {
         delete atlas_text_textures;
-        atlas_text_textures = NULL;
+        atlas_text_textures = nullptr;
     }
 
-    if( atlas_text_tilesheets != NULL )
+    if( atlas_text_tilesheets != nullptr )
     {
         delete atlas_text_tilesheets;
-        atlas_text_tilesheets = NULL;
+        atlas_text_tilesheets = nullptr;
     }
 
 }
 
 void atlas_data_viewer::add_to_list( pawgui::widget_panel_list * element_list )
 {
-    if( element_list == NULL )
+    if( element_list == nullptr )
     {
         return;
     }
@@ -100,9 +100,9 @@ gamePencilExtraTools::gamePencilExtraTools()
     sideAreaPanel = new pawgui::widget_selectbox("Mode");
     sideAreaPanel->set_width(160);
     sideAreaPanel->set_option_height(64);
-    //sideAreaPanel->add_option("General",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),NULL,2, false, false);
-    sideAreaPanel->add_option("Image Editing",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/image.png"),NULL,2, false, false);
-    sideAreaPanel->add_option("Data Info",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/question-circle.png"),NULL,2, false, false);
+    //sideAreaPanel->add_option("General",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),nullptr,2, false, false);
+    sideAreaPanel->add_option("Image Editing",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/image.png"),nullptr,2, false, false);
+    sideAreaPanel->add_option("Data Info",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/question-circle.png"),nullptr,2, false, false);
 
     sidePanelRect = new gpe::shape_rect();
 
@@ -119,16 +119,16 @@ gamePencilExtraTools::gamePencilExtraTools()
 
 gamePencilExtraTools::~gamePencilExtraTools()
 {
-    if( sectionTitleExtras!=NULL )
+    if( sectionTitleExtras!=nullptr )
     {
         delete sectionTitleExtras;
-        sectionTitleExtras = NULL;
+        sectionTitleExtras = nullptr;
     }
 
-    if( transformImageDirectory_button!=NULL )
+    if( transformImageDirectory_button!=nullptr )
     {
         delete transformImageDirectory_button;
-        transformImageDirectory_button = NULL;
+        transformImageDirectory_button = nullptr;
     }
 }
 
@@ -182,18 +182,18 @@ int gamePencilExtraTools::modify_folder_images(std::string folderLocation, int m
             if( continueWithAction)
             {
                 std::string newImageName = "";
-                gpe::file_object * tempFile = NULL;
+                gpe::file_object * tempFile = nullptr;
                 for( int i = 0; i < foundFolder->get_count(); i++)
                 {
                     tempFile = foundFolder->get_file(i);
-                    if( tempFile!=NULL)
+                    if( tempFile!=nullptr)
                     {
                         if( tempFile->get_type()=="bmp" || tempFile->get_type()=="png")
                         {
                             newImageName = folderLocation+"/"+tempFile->get_name();
                             gpe::error_log->report("Modifying image at: "+newImageName+".");
 
-                            if( main_gpe_splash_page != NULL )
+                            if( main_gpe_splash_page != nullptr )
                             {
                                 main_gpe_splash_page->update_messages( "Modifying Image", tempFile->get_name(),"Please wait..." );
                             }
@@ -224,10 +224,10 @@ int gamePencilExtraTools::modify_folder_images(std::string folderLocation, int m
         }
         foundFolder->close_directory();
         delete foundFolder;
-        if( colorToRemove!=NULL)
+        if( colorToRemove!=nullptr)
         {
             delete colorToRemove;
-            colorToRemove = NULL;
+            colorToRemove = nullptr;
         }
     }
     return imagesModifiedCount;
@@ -242,10 +242,10 @@ void gamePencilExtraTools::process_self( gpe::shape_rect * view_space, gpe::shap
 {
     cam = gpe::camera_find(cam);
     view_space = gpe::camera_find(view_space);
-    if( cam!=NULL && editorPageList!=NULL && view_space!=NULL)
+    if( cam!=nullptr && editorPageList!=nullptr && view_space!=nullptr)
     {
         int prevTab = sideAreaPanel->get_selection();
-        if( panel_main_editor!=NULL )
+        if( panel_main_editor!=nullptr )
         {
             subViewedSpace.x = 0;
             subViewedSpace.y = 0;
@@ -304,11 +304,11 @@ void gamePencilExtraTools::process_self( gpe::shape_rect * view_space, gpe::shap
         }
         else if( sideAreaPanel->get_selected_name() == "Data Info" )
         {
-            atlas_data_viewer * current_atlas = NULL;
+            atlas_data_viewer * current_atlas = nullptr;
             for( int iAtlas = 0; iAtlas < (int)atlas_list.size(); iAtlas++ )
             {
                 current_atlas = atlas_list[iAtlas];
-                if( current_atlas!=NULL )
+                if( current_atlas!=nullptr )
                 {
                     current_atlas->add_to_list( editorPageList );
                 }
@@ -316,7 +316,7 @@ void gamePencilExtraTools::process_self( gpe::shape_rect * view_space, gpe::shap
             editorPageList->add_gui_element( refreshAtlasRefresh_button, true );
             editorPageList->process_self( view_space,cam);
 
-            if( refreshAtlasRefresh_button!=NULL && refreshAtlasRefresh_button->is_clicked() )
+            if( refreshAtlasRefresh_button!=nullptr && refreshAtlasRefresh_button->is_clicked() )
             {
                 refresh_atlas_info();
             }
@@ -327,21 +327,21 @@ void gamePencilExtraTools::process_self( gpe::shape_rect * view_space, gpe::shap
 void gamePencilExtraTools::refresh_atlas_info()
 {
     gpe::error_log->report("Refreshing atlas info...");
-    if( editorPageList != NULL )
+    if( editorPageList != nullptr )
     {
         editorPageList->clear_list();
     }
     gpe::error_log->report("Page list cleared...");
 
     int iAtlasCount = (int)atlas_list.size();
-    atlas_data_viewer * current_atlas = NULL;
+    atlas_data_viewer * current_atlas = nullptr;
     for( int iAtlas = iAtlasCount -1; iAtlas >=0; iAtlas-- )
     {
         current_atlas = atlas_list[iAtlas ];
-        if( current_atlas != NULL )
+        if( current_atlas != nullptr )
         {
             delete current_atlas;
-            current_atlas = NULL;
+            current_atlas = nullptr;
         }
     }
     atlas_list.clear();
@@ -360,13 +360,13 @@ void gamePencilExtraTools::render_self( gpe::shape_rect * view_space, gpe::shape
 {
     cam = gpe::camera_find(cam);
     view_space = gpe::camera_find(view_space);
-    if( cam!=NULL && view_space!=NULL)
+    if( cam!=nullptr && view_space!=nullptr)
     {
-        if( sideAreaPanel!=NULL && panel_main_editor==NULL )
+        if( sideAreaPanel!=nullptr && panel_main_editor==nullptr )
         {
             sideAreaPanel->render_self( view_space,cam);
         }
-        if( editorPageList!=NULL )
+        if( editorPageList!=nullptr )
         {
             editorPageList->render_self( view_space,cam);
         }

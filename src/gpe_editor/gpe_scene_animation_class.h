@@ -51,7 +51,7 @@ public:
     float framePosition;
     animationResource * animRes;
     int animSpeed;
-    GPE_SceneAnimation( pawgui::widget_resource_container *pFolder = NULL );
+    GPE_SceneAnimation( pawgui::widget_resource_container *pFolder = nullptr );
     ~GPE_SceneAnimation();
     void add_typed_elements();
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );

@@ -41,7 +41,7 @@ class GPE_SceneParticleEmitter: public GPE_SceneBasicClass
 public:
     pawgui::widget_drop_down_resource_menu * emmitterInEditor;
 
-    GPE_SceneParticleEmitter( pawgui::widget_resource_container *pFolder = NULL);
+    GPE_SceneParticleEmitter( pawgui::widget_resource_container *pFolder = nullptr);
     ~GPE_SceneParticleEmitter();
     void add_typed_elements();
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );

@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include "gpe_editor_aboutpage.h"
 
-gamePencilAboutPageResource * main_about_page = NULL;
+gamePencilAboutPageResource * main_about_page = nullptr;
 
 gamePencilAboutPageResource::gamePencilAboutPageResource()
 {
@@ -47,13 +47,13 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
     sideAreaPanel->set_width(256);
     sideAreaPanel->set_option_height(32);
 
-    sideAreaPanel->add_option("General Help",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/question.png"),NULL,2, false, false);
-    sideAreaPanel->add_option("Version Info",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/info.png"),NULL,2, false, false);
-    sideAreaPanel->add_option("Changelog",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file-text.png"),NULL,2, false, false);
-    sideAreaPanel->add_option("Shortkeys",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/keyboard-o.png"),NULL,2, false, false);
-    sideAreaPanel->add_option("Credits",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/heart.png"),NULL,2, false, false);
-    sideAreaPanel->add_option("License",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file-text.png"),NULL,2, false, false);
-    sideAreaPanel->add_option("3rd Party Licenses",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/group.png"),NULL,2, false, false);
+    sideAreaPanel->add_option("General Help",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/question.png"),nullptr,2, false, false);
+    sideAreaPanel->add_option("Version Info",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/info.png"),nullptr,2, false, false);
+    sideAreaPanel->add_option("Changelog",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file-text.png"),nullptr,2, false, false);
+    sideAreaPanel->add_option("Shortkeys",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/keyboard-o.png"),nullptr,2, false, false);
+    sideAreaPanel->add_option("Credits",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/heart.png"),nullptr,2, false, false);
+    sideAreaPanel->add_option("License",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/file-text.png"),nullptr,2, false, false);
+    sideAreaPanel->add_option("3rd Party Licenses",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/group.png"),nullptr,2, false, false);
 
     sidePanelRect = new gpe::shape_rect();
 
@@ -104,19 +104,27 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
 
     pencilInformation->add_line( versionInfoLine+"." );
     pencilInformation->add_line("Renderer:                      "+ gpe::renderer_main->get_renderer_name() + " - " + gpe::renderer_main->get_renderer_type() + "." );
-    pencilInformation->add_line("PAWGUI Version:                  "+ stg_ex::int_to_string(pawgui::version_major)+"."+ stg_ex::int_to_string(pawgui::version_minor)+"."+ stg_ex::int_to_string( pawgui::version_patch_level)+"." );
-    pencilInformation->add_line("GPE(editor) Version:          "+ stg_ex::int_to_string(editor_version_number_major)+"."+ stg_ex::int_to_string(editor_version_number_minor)+"."+ stg_ex::int_to_string( editor_version_number_update)+"." );
+    if( gpe::sound_is_working )
+    {
+        pencilInformation->add_line("Audio:                         "+ gpe::sound_system_name + "(Working)." );
+    }
+    else
+    {
+        pencilInformation->add_line("Audio:                         "+ gpe::sound_system_name + "(Not working)." );
+    }
+    pencilInformation->add_line("PAWGUI Version:                "+ stg_ex::int_to_string(pawgui::version_major)+"."+ stg_ex::int_to_string(pawgui::version_minor)+"."+ stg_ex::int_to_string( pawgui::version_patch_level)+"." );
+    pencilInformation->add_line("GPE(editor) Version:           "+ stg_ex::int_to_string(editor_version_number_major)+"."+ stg_ex::int_to_string(editor_version_number_minor)+"."+ stg_ex::int_to_string( editor_version_number_update)+"." );
     pencilInformation->add_line("GPE(runtime) Version:          "+ stg_ex::int_to_string(gpe::version_number_major)+"."+ stg_ex::int_to_string(gpe::version_number_minor)+"."+ stg_ex::int_to_string(gpe::version_number_update)+"." );
 
-    pencilInformation->add_line("Release Date:                  03-18-2021");
+    pencilInformation->add_line("Release Date:                  03-16-2021");
     pencilInformation->add_line("Author:                        PawByte");
     pencilInformation->add_line("Lead Developer:                Nathan Hurde aka theweirdn8");
     pencilInformation->add_line("Email:                         help@pawbyte.com");
-    pencilInformation->add_line("Website:                       gamepencil.pawbyte.com");
+    pencilInformation->add_line("Website:                       www.gamepencil.net");
     pencilInformation->isCodeEditor = false;
 
     updateChecker_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/download.png","Download new updates...","Compares latest version to your copy");
-    updateChecker_button->set_website("http://gamepencil.pawbyte.com/get-game-pencil-engine/");
+    updateChecker_button->set_website("http://gamepencil.net/get-game-pencil-engine/");
 
     pencilCredits = new pawgui::widget_text_editor();
     pencilCredits->isCodeEditor = false;
@@ -187,9 +195,9 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
 
     helpfulLinksTitle = new pawgui::widget_label_title("Helpful Links","Some links you might find useful while using GPE.");
 
-    pawgui::widget_text_url * tHelpfulLink = NULL;
+    pawgui::widget_text_url * tHelpfulLink = nullptr;
 
-    tHelpfulLink = new pawgui::widget_text_url("Introduction","Introduction","http://gamepencil.pawbyte.com/introduction");
+    tHelpfulLink = new pawgui::widget_text_url("Introduction","Introduction","http://gamepencil.net/introduction");
     add_helpfullink(tHelpfulLink);
 
     tHelpfulLink = new pawgui::widget_text_url("Community","Community","http://community.pawbyte.com/");
@@ -198,13 +206,13 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
     tHelpfulLink = new pawgui::widget_text_url("Documentation","Documentation","http://docs.pawbyte.com/");
     add_helpfullink(tHelpfulLink);
 
-    tHelpfulLink = new pawgui::widget_text_url("Tutorials","Tutorials","http://gamepencil.pawbyte.com/category/tutorials/");
+    tHelpfulLink = new pawgui::widget_text_url("Tutorials","Tutorials","http://gamepencil.net/category/tutorials/");
     add_helpfullink(tHelpfulLink);
 
-    tHelpfulLink = new pawgui::widget_text_url("Examples","Examples","http://gamepencil.pawbyte.com/examples");
+    tHelpfulLink = new pawgui::widget_text_url("Examples","Examples","http://gamepencil.net/examples");
     add_helpfullink(tHelpfulLink);
 
-    tHelpfulLink = new pawgui::widget_text_url("Demos","Demos","http://gamepencil.pawbyte.com/demos");
+    tHelpfulLink = new pawgui::widget_text_url("Demos","Demos","http://gamepencil.net/demos");
     add_helpfullink(tHelpfulLink);
 
     tHelpfulLink = new pawgui::widget_text_url("itch.io Page","itch.io Page","https://pawbyte.itch.io/game-pencil-engine");
@@ -215,7 +223,7 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
 
     //Community
     communityLinksTitle = new pawgui::widget_label_title("Community","Community links to stay connected");
-    pawgui::widget_button_icon * tSocial_button = NULL;
+    pawgui::widget_button_icon * tSocial_button = nullptr;
 
     tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/facebook.png","Facebook" );
     tSocial_button->set_website("https://facebook.com/pawbyte");
@@ -241,7 +249,7 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
     tSocial_button->set_website("https://www.youtube.com/user/PawByte");
     add_communitylink(tSocial_button);
 
-    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/gamecontroller.png","IndieDB" );
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/gamepad.png","IndieDB" );
     tSocial_button->set_website("http://www.indiedb.com/engines/game-pencil-engine");
     add_communitylink(tSocial_button);
 
@@ -259,68 +267,68 @@ gamePencilAboutPageResource::~gamePencilAboutPageResource()
     subResouceId = -2;
     parentProjectName = "";
 
-    if( aboutPageList!=NULL)
+    if( aboutPageList!=nullptr)
     {
         delete aboutPageList;
-        aboutPageList = NULL;
+        aboutPageList = nullptr;
     }
-    if( pencilCredits!=NULL)
+    if( pencilCredits!=nullptr)
     {
         delete pencilCredits;
-        pencilCredits = NULL;
+        pencilCredits = nullptr;
     }
-    if( pencilDescription!=NULL)
+    if( pencilDescription!=nullptr)
     {
         delete pencilDescription;
-        pencilDescription = NULL;
+        pencilDescription = nullptr;
     }
-    if( pencilLicense!=NULL)
+    if( pencilLicense!=nullptr)
     {
         delete pencilLicense;
-        pencilLicense = NULL;
+        pencilLicense = nullptr;
     }
-    if( thirdPartyLicenses!=NULL)
+    if( thirdPartyLicenses!=nullptr)
     {
         delete thirdPartyLicenses;
-        thirdPartyLicenses = NULL;
+        thirdPartyLicenses = nullptr;
     }
-    if( pencilMissionStatement!=NULL)
+    if( pencilMissionStatement!=nullptr)
     {
         delete pencilMissionStatement;
-        pencilMissionStatement = NULL;
+        pencilMissionStatement = nullptr;
     }
-       if( aboutPageList!=NULL)
+       if( aboutPageList!=nullptr)
     {
         delete aboutPageList;
-        aboutPageList = NULL;
+        aboutPageList = nullptr;
     }
-    if( engineLogo!=NULL)
+    if( engineLogo!=nullptr)
     {
         delete engineLogo;
-        engineLogo = NULL;
+        engineLogo = nullptr;
     }
-    if( updateChecker_button!=NULL)
+    if( updateChecker_button!=nullptr)
     {
         delete updateChecker_button;
-        updateChecker_button = NULL;
+        updateChecker_button = nullptr;
     }
 
-    if( helpfulLinksTitle!=NULL)
+    if( helpfulLinksTitle!=nullptr)
     {
         delete helpfulLinksTitle;
-        helpfulLinksTitle = NULL;
+        helpfulLinksTitle = nullptr;
     }
 
-    if( communityLinksTitle!=NULL)
+    if( communityLinksTitle!=nullptr)
     {
         delete communityLinksTitle;
-        communityLinksTitle = NULL;
+        communityLinksTitle = nullptr;
     }
 }
 
 void gamePencilAboutPageResource::add_helpfulbutton(pawgui::widget_button_push * new_button)
 {
-    if( new_button!=NULL)
+    if( new_button!=nullptr)
     {
         new_button->scale_object( 2 );
         helpful_buttons.push_back(new_button);
@@ -329,7 +337,7 @@ void gamePencilAboutPageResource::add_helpfulbutton(pawgui::widget_button_push *
 
 void gamePencilAboutPageResource::add_helpfullink(pawgui::widget_text_url * newLink)
 {
-    if( newLink!=NULL)
+    if( newLink!=nullptr)
     {
         helpfulLinks.push_back(newLink);
     }
@@ -337,7 +345,7 @@ void gamePencilAboutPageResource::add_helpfullink(pawgui::widget_text_url * newL
 
 void gamePencilAboutPageResource::add_communitylink( pawgui::widget_button_icon * newLink)
 {
-    if( newLink!=NULL)
+    if( newLink!=nullptr)
     {
         newLink->scale_object( 2 );
         community_buttons.push_back(newLink);
@@ -363,10 +371,10 @@ void gamePencilAboutPageResource::process_self( gpe::shape_rect * view_space, gp
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if( view_space!=NULL && aboutPageList!=NULL)
+    if( view_space!=nullptr && aboutPageList!=nullptr)
     {
         int prevTab = sideAreaPanel->get_selection();
-        if( panel_main_editor!=NULL )
+        if( panel_main_editor!=nullptr )
         {
             subViewedSpace.x = 0;
             subViewedSpace.y = 0;
@@ -402,24 +410,24 @@ void gamePencilAboutPageResource::process_self( gpe::shape_rect * view_space, gp
         if( sideAreaPanel->get_selected_name()=="General Help" || sideAreaPanel->get_selected_name()=="General")
         {
             int subMenuI = 0;
-            pawgui::widget_text_url * tempTextUrl = NULL;
+            pawgui::widget_text_url * tempTextUrl = nullptr;
             aboutPageList->add_gui_element(engineLogo, true );
             aboutPageList->add_gui_element(helpfulLinksTitle,true);
             for( subMenuI= 0; subMenuI <(int)helpfulLinks.size(); subMenuI++)
             {
                 tempTextUrl = helpfulLinks.at(subMenuI);
-                if( tempTextUrl!=NULL)
+                if( tempTextUrl!=nullptr)
                 {
                     aboutPageList->add_gui_element(tempTextUrl, true);
                 }
             }
             aboutPageList->add_gui_element(communityLinksTitle,true);
-            pawgui::widget_button_icon * tCommunity_button = NULL;
+            pawgui::widget_button_icon * tCommunity_button = nullptr;
             int menuLinksTotal = (int)community_buttons.size();
             for( subMenuI= 0; subMenuI < menuLinksTotal; subMenuI++)
             {
                 tCommunity_button = community_buttons.at(subMenuI);
-                if( tCommunity_button!=NULL)
+                if( tCommunity_button!=nullptr)
                 {
                     aboutPageList->add_gui_element( tCommunity_button, subMenuI == menuLinksTotal-1 );
                 }
@@ -463,13 +471,13 @@ void gamePencilAboutPageResource::render_self( gpe::shape_rect * view_space, gpe
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
-    if( cam!=NULL && view_space!=NULL)
+    if( cam!=nullptr && view_space!=nullptr)
     {
-        if( sideAreaPanel!=NULL && panel_main_editor==NULL )
+        if( sideAreaPanel!=nullptr && panel_main_editor==nullptr )
         {
             sideAreaPanel->render_self( view_space,cam);
         }
-        if( aboutPageList!=NULL )
+        if( aboutPageList!=nullptr )
         {
             aboutPageList->render_self( view_space,cam);
         }

@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include "gpe_cpp_builder_settings.h"
 
-gameCPPBuilder_settingsResource * GPE_CPP_BUILDER_SETTINGS = NULL;
+gameCPPBuilder_settingsResource * GPE_CPP_BUILDER_SETTINGS = nullptr;
 
 gpeCPPSubsytemHolder::gpeCPPSubsytemHolder( std::string gpeSubSystemName )
 {
@@ -58,7 +58,7 @@ gpeCPPSubsytemHolder::~gpeCPPSubsytemHolder()
 
 bool gpeCPPSubsytemHolder::add_to_list(pawgui::widget_panel_list * listIn)
 {
-    if( listIn ==NULL)
+    if( listIn ==nullptr)
     return false;
     listIn->add_gui_element( systemNameLabel , false );
     listIn->add_gui_element( systemNameField , true );
@@ -89,21 +89,21 @@ gpeCPPBuildHolder::gpeCPPBuildHolder(std::string buildSystemName)
 
 gpeCPPBuildHolder::~gpeCPPBuildHolder()
 {
-    if( builderNameField!=NULL)
+    if( builderNameField!=nullptr)
     {
         delete builderNameField;
-        builderNameField = NULL;
+        builderNameField = nullptr;
     }
 
-    if( builderNameLabel!=NULL)
+    if( builderNameLabel!=nullptr)
     {
         delete builderNameLabel;
-        builderNameLabel = NULL;
+        builderNameLabel = nullptr;
     }
-    if( buildSystemOS!=NULL)
+    if( buildSystemOS!=nullptr)
     {
         delete buildSystemOS;
-        buildSystemOS = NULL;
+        buildSystemOS = nullptr;
     }
 
     clear_subsystems();
@@ -117,7 +117,7 @@ bool gpeCPPBuildHolder::add_to_list(pawgui::widget_panel_list * listIn)
         //removes subsystem from pending remove request before adding to list
         remove_subsystem_indexed( subSystemToRemove, true );
     }
-    if( listIn ==NULL)
+    if( listIn ==nullptr)
     return false;
     listIn->add_gui_element( builderNameLabel, true);
     listIn->add_gui_element( builderNameField, true);
@@ -127,7 +127,7 @@ bool gpeCPPBuildHolder::add_to_list(pawgui::widget_panel_list * listIn)
     int subSystemCount = (int)mySubsystems.size();
     if( subSystemCount > 0 )
     {
-        gpeCPPSubsytemHolder * tempSubSystem = NULL;
+        gpeCPPSubsytemHolder * tempSubSystem = nullptr;
         for( int i = 0; i < subSystemCount; i++ )
         {
             tempSubSystem = mySubsystems[i];
@@ -143,13 +143,13 @@ gpeCPPSubsytemHolder * gpeCPPBuildHolder::add_subsystem( std::string newSysName 
     //Checks if subsystem already exists with name.
     if( (int)mySubsystems.size() > 0  && (int)newSysName.size() > 0 )
     {
-        if( find_sub_system( newSysName) !=NULL )
+        if( find_sub_system( newSysName) !=nullptr )
         {
-            if( main_editor_log!=NULL)
+            if( main_editor_log!=nullptr)
             {
                 main_editor_log->log_general_error("Subsystem["+newSysName+"] name already used for ["+builderName+"] build system.");
             }
-            return NULL;
+            return nullptr;
         }
     }
     gpeCPPSubsytemHolder * tempSys = new gpeCPPSubsytemHolder(newSysName);
@@ -161,14 +161,14 @@ bool gpeCPPBuildHolder::clear_subsystems()
 {
     if( (int)mySubsystems.size() > 0 )
     {
-        gpeCPPSubsytemHolder * tempSys = NULL;
+        gpeCPPSubsytemHolder * tempSys = nullptr;
         for( int i = (int)mySubsystems.size()-1; i >=0; i-- )
         {
             tempSys = mySubsystems[i];
-            if(tempSys !=NULL)
+            if(tempSys !=nullptr)
             {
                 delete tempSys;
-                tempSys = NULL;
+                tempSys = nullptr;
             }
         }
         mySubsystems.clear();
@@ -179,11 +179,11 @@ bool gpeCPPBuildHolder::clear_subsystems()
 
 gpeCPPSubsytemHolder * gpeCPPBuildHolder::find_sub_system( std::string sysName )
 {
-    gpeCPPSubsytemHolder * tempSys = NULL;
+    gpeCPPSubsytemHolder * tempSys = nullptr;
     for( int i = (int)mySubsystems.size()-1; i >=0; i-- )
     {
         tempSys = mySubsystems[i];
-        if( tempSys!=NULL )
+        if( tempSys!=nullptr )
         {
             if( tempSys->subsystemName == sysName )
             {
@@ -191,7 +191,7 @@ gpeCPPSubsytemHolder * gpeCPPBuildHolder::find_sub_system( std::string sysName )
             }
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 void gpeCPPBuildHolder::process_self()
@@ -203,7 +203,7 @@ void gpeCPPBuildHolder::process_self()
         {
             add_subsystem( newSubSystemName );
         }
-        else if( main_editor_log!=NULL)
+        else if( main_editor_log!=nullptr)
         {
             main_editor_log->log_general_error("["+builderName+"] build system add_subsystem exited, (Name not entered).");
         }
@@ -213,13 +213,13 @@ void gpeCPPBuildHolder::process_self()
     int subSystemCount = (int)mySubsystems.size();
     if( subSystemCount > 0 )
     {
-        gpeCPPSubsytemHolder * tempSubSystem = NULL;
+        gpeCPPSubsytemHolder * tempSubSystem = nullptr;
         for( int i = subSystemCount -1; i >=0; i-- )
         {
             tempSubSystem = mySubsystems[i];
-            if( tempSubSystem!=NULL )
+            if( tempSubSystem!=nullptr )
             {
-                if( tempSubSystem->removeSystem_button!=NULL && tempSubSystem->removeSystem_button->is_clicked()  )
+                if( tempSubSystem->removeSystem_button!=nullptr && tempSubSystem->removeSystem_button->is_clicked()  )
                 {
                     if( pawgui::display_prompt_message("Are you sure you want to delete Subsystem["+tempSubSystem->subsystemName+"]?","Scripts/Templates won't be deleted",true) == pawgui::display_query_yes )
                     {
@@ -228,25 +228,25 @@ void gpeCPPBuildHolder::process_self()
                     }
                     else
                     {
-                        if( main_editor_log!=NULL )
+                        if( main_editor_log!=nullptr )
                         {
                             main_editor_log->log_build_comment("Subsystem removal process averted by user.");
                         }
                         subSystemToRemove = -1;
                     }
                 }
-                else if( tempSubSystem->mainProgramFileScript_button!=NULL && tempSubSystem->mainProgramFileScript_button->is_clicked()  )
+                else if( tempSubSystem->mainProgramFileScript_button!=nullptr && tempSubSystem->mainProgramFileScript_button->is_clicked()  )
                 {
                     std::string newGPEScriptFilename = pawgui::get_filename_open_from_popup("Browse for a GPE Build Script File...","",GPE_CPP_BUILDER_SETTINGS->fileOpenDefaultScriptDir);
-                    if( (int)newGPEScriptFilename.size() > 0  && tempSubSystem->mainProgramFileScript!=NULL )
+                    if( (int)newGPEScriptFilename.size() > 0  && tempSubSystem->mainProgramFileScript!=nullptr )
                     {
                         tempSubSystem->mainProgramFileScript->set_string( newGPEScriptFilename );
                     }
                 }
-                else if( tempSubSystem->systemProgramTemplateFile_button!=NULL && tempSubSystem->systemProgramTemplateFile_button->is_clicked()  )
+                else if( tempSubSystem->systemProgramTemplateFile_button!=nullptr && tempSubSystem->systemProgramTemplateFile_button->is_clicked()  )
                 {
                     std::string newGPETemplateFilename = pawgui::get_filename_open_from_popup("Browse for a GPE Build Template File...","",GPE_CPP_BUILDER_SETTINGS->fileOpenDefaultTemplateDir);
-                    if( (int)newGPETemplateFilename.size() > 0  && tempSubSystem->systemProgramTemplateFile!=NULL )
+                    if( (int)newGPETemplateFilename.size() > 0  && tempSubSystem->systemProgramTemplateFile!=nullptr )
                     {
                         tempSubSystem->systemProgramTemplateFile->set_string( newGPETemplateFilename );
                     }
@@ -267,11 +267,11 @@ bool gpeCPPBuildHolder::remove_subsystem_indexed(int subsystemPos, bool resetIdT
     {
         gpeCPPSubsytemHolder * tempSubSystem = mySubsystems[subsystemPos];
 
-        if( tempSubSystem!=NULL)
+        if( tempSubSystem!=nullptr)
         {
             mySubsystems.erase( mySubsystems.begin()+ subsystemPos );
             delete tempSubSystem;
-            tempSubSystem = NULL;
+            tempSubSystem = nullptr;
             return true;
         }
     }
@@ -294,7 +294,7 @@ gameCPPBuilder_settingsResource::gameCPPBuilder_settingsResource(pawgui::widget_
     sideAreaPanel = new pawgui::widget_selectbox("Mode");
     sideAreaPanel->set_width(160);
     sideAreaPanel->set_option_height(64);
-    sideAreaPanel->add_option("Builder Settings",-1,pawgui::rsm_gui->texture_add( "wrench", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),NULL,2, false, false);
+    sideAreaPanel->add_option("Builder Settings",-1,pawgui::rsm_gui->texture_add( "wrench", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),nullptr,2, false, false);
 
     sidePanelRect = new gpe::shape_rect();
 
@@ -320,13 +320,13 @@ gpeCPPBuildHolder * gameCPPBuilder_settingsResource::add_cpp_build_system( std::
     //Checks if subsystem already exists with name.
     if( (int)cppBuildSystems.size() > 0  && (int)newSysName.size() > 0 )
     {
-        if( find_build_system( newSysName) !=NULL )
+        if( find_build_system( newSysName) !=nullptr )
         {
-            if( main_editor_log!=NULL)
+            if( main_editor_log!=nullptr)
             {
                 main_editor_log->log_general_error("CPP Build System["+newSysName+"] name already exists.");
             }
-            return NULL;
+            return nullptr;
         }
     }
     gpeCPPBuildHolder * newCPPBuildSystem = new gpeCPPBuildHolder( newSysName );
@@ -337,25 +337,25 @@ gpeCPPBuildHolder * gameCPPBuilder_settingsResource::add_cpp_build_system( std::
 
 void gameCPPBuilder_settingsResource::clear_build_systems()
 {
-    if( editorPageList!=NULL)
+    if( editorPageList!=nullptr)
     {
         editorPageList->clear_list();
     }
-    if( cppBuildSystemsDropDown!=NULL)
+    if( cppBuildSystemsDropDown!=nullptr)
     {
         cppBuildSystemsDropDown->clear_dropdown();
     }
-    gpeCPPBuildHolder * tempSys = NULL;
+    gpeCPPBuildHolder * tempSys = nullptr;
     if( (int)cppBuildSystems.size() > 0 )
     {
-        gpeCPPBuildHolder * tempSys = NULL;
+        gpeCPPBuildHolder * tempSys = nullptr;
         for( int i = (int)cppBuildSystems.size()-1; i >=0; i-- )
         {
             tempSys = cppBuildSystems[i];
-            if(tempSys !=NULL)
+            if(tempSys !=nullptr)
             {
                 delete tempSys;
-                tempSys = NULL;
+                tempSys = nullptr;
             }
         }
         cppBuildSystems.clear();
@@ -366,19 +366,19 @@ gpeCPPBuildHolder * gameCPPBuilder_settingsResource::find_build_system( std::str
 {
     if( (int)sysName.size() <=0 )
     {
-        return NULL;
+        return nullptr;
     }
 
-    gpeCPPBuildHolder * tempSys = NULL;
+    gpeCPPBuildHolder * tempSys = nullptr;
     for( int i = (int)cppBuildSystems.size()-1; i >=0; i-- )
     {
         tempSys = cppBuildSystems[i];
-        if( tempSys!=NULL && tempSys->builderName == sysName )
+        if( tempSys!=nullptr && tempSys->builderName == sysName )
         {
             return tempSys;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 bool gameCPPBuilder_settingsResource::include_local_files( std::string pBuildDir , int buildType )
@@ -398,11 +398,11 @@ void gameCPPBuilder_settingsResource::load_resource(std::string file_path)
         return;
     }
     resourcePostProcessed = true;
-    if( main_editor_log!=NULL )
+    if( main_editor_log!=nullptr )
     {
         main_editor_log->log_general_line("Loading CPP Builder _settings...");
     }
-    if( main_gpe_splash_page != NULL )
+    if( main_gpe_splash_page != nullptr )
     {
         main_gpe_splash_page->update_submessages( "Processing C++ Builder","Loading systems" );
     }
@@ -445,8 +445,8 @@ void gameCPPBuilder_settingsResource::load_resource(std::string file_path)
     std::string tsDataStr = "";
     float foundFileVersion = 0;
 
-    gpeCPPBuildHolder *cHolder = NULL;
-    gpeCPPSubsytemHolder * cSubsystemHolder = NULL;
+    gpeCPPBuildHolder *cHolder = nullptr;
+    gpeCPPSubsytemHolder * cSubsystemHolder = nullptr;
     int iSys = 0;
     int iSysMax = (int)cppBuildSystems.size();
     int jSubsys = 0;
@@ -495,25 +495,25 @@ void gameCPPBuilder_settingsResource::load_resource(std::string file_path)
                     if( key_string=="BuildSystem")
                     {
                         cHolder = add_cpp_build_system( valstring);
-                        cSubsystemHolder = NULL;
+                        cSubsystemHolder = nullptr;
                     }
                     else if( key_string=="BuildSubsystem")
                     {
-                        if( cHolder!=NULL)
+                        if( cHolder!=nullptr)
                         {
                             cSubsystemHolder = cHolder->add_subsystem( valstring);
                         }
                     }
                     else if( key_string=="BuildSubSystemScript")
                     {
-                        if( cSubsystemHolder!=NULL && cSubsystemHolder->mainProgramFileScript!=NULL )
+                        if( cSubsystemHolder!=nullptr && cSubsystemHolder->mainProgramFileScript!=nullptr )
                         {
                             cSubsystemHolder->mainProgramFileScript->set_string( valstring);
                         }
                     }
                     else if( key_string=="BuildSubSystemTemplate")
                     {
-                        if( cSubsystemHolder!=NULL && cSubsystemHolder->systemProgramTemplateFile!=NULL )
+                        if( cSubsystemHolder!=nullptr && cSubsystemHolder->systemProgramTemplateFile!=nullptr )
                         {
                             cSubsystemHolder->systemProgramTemplateFile->set_string( valstring);
                         }
@@ -528,7 +528,7 @@ void gameCPPBuilder_settingsResource::load_resource(std::string file_path)
     }
     gameResourceFileIn.close();
     resourcePostProcessed = true;
-    if( main_editor_log!=NULL )
+    if( main_editor_log!=nullptr )
     {
         main_editor_log->log_general_line("CPP Builder _settings loaded ("+ stg_ex::int_to_string( (int)cppBuildSystems.size() )+") subsystems...");
     }
@@ -538,10 +538,10 @@ void gameCPPBuilder_settingsResource::process_self( gpe::shape_rect * view_space
 {
     cam = gpe::camera_find(cam);
     view_space = gpe::camera_find(view_space);
-    if( cam!=NULL && editorPageList!=NULL && sideAreaPanel!=NULL && view_space!=NULL)
+    if( cam!=nullptr && editorPageList!=nullptr && sideAreaPanel!=nullptr && view_space!=nullptr)
     {
         int prevTab = sideAreaPanel->get_selection();
-        if( panel_main_editor!=NULL )
+        if( panel_main_editor!=nullptr )
         {
             subViewedSpace.x = 0;
             subViewedSpace.y = 0;
@@ -572,7 +572,7 @@ void gameCPPBuilder_settingsResource::process_self( gpe::shape_rect * view_space
         editorPageList->set_height(subViewedSpace.h );
         editorPageList->barXPadding = pawgui::padding_default;
         editorPageList->barXMargin = pawgui::padding_default;
-        gpeCPPBuildHolder *cTempHolder = NULL;
+        gpeCPPBuildHolder *cTempHolder = nullptr;
 
         editorPageList->add_gui_element(cppbuildSystemsLabel,true );
 
@@ -584,7 +584,7 @@ void gameCPPBuilder_settingsResource::process_self( gpe::shape_rect * view_space
             editorPageList->add_gui_element(addCPPBuildSystem_button,false );
             editorPageList->add_gui_element(cppBuildSystemsDropDown,true);
 
-            if( cTempHolder !=NULL )
+            if( cTempHolder !=nullptr )
             {
                 cTempHolder->add_to_list( editorPageList );
             }
@@ -592,11 +592,11 @@ void gameCPPBuilder_settingsResource::process_self( gpe::shape_rect * view_space
             editorPageList->add_gui_element(cancelResource_button,true );
             editorPageList->process_self( view_space,cam);
 
-            if( cTempHolder!=NULL)
+            if( cTempHolder!=nullptr)
             {
                 cTempHolder->process_self();
             }
-            if( addCPPBuildSystem_button!=NULL && addCPPBuildSystem_button->is_clicked() )
+            if( addCPPBuildSystem_button!=nullptr && addCPPBuildSystem_button->is_clicked() )
             {
                 std::string newCPPBuildSystemName = pawgui::get_string_from_popup("Name your new C++ build system","","");
                 if( (int)newCPPBuildSystemName.size() > 0 )
@@ -628,13 +628,13 @@ void gameCPPBuilder_settingsResource::render_self( gpe::shape_rect * view_space,
 {
     cam = gpe::camera_find(cam);
     view_space = gpe::camera_find(view_space);
-    if( cam!=NULL && view_space!=NULL)
+    if( cam!=nullptr && view_space!=nullptr)
     {
-        if( sideAreaPanel!=NULL && panel_main_editor==NULL )
+        if( sideAreaPanel!=nullptr && panel_main_editor==nullptr )
         {
             sideAreaPanel->render_self( view_space,cam);
         }
-        if( editorPageList!=NULL )
+        if( editorPageList!=nullptr )
         {
             editorPageList->render_self( view_space,cam);
         }
@@ -643,7 +643,7 @@ void gameCPPBuilder_settingsResource::render_self( gpe::shape_rect * view_space,
 
 void gameCPPBuilder_settingsResource::save_resource(std::string file_path, int backupId )
 {
-    if( main_gpe_splash_page != NULL )
+    if( main_gpe_splash_page != nullptr )
     {
         main_gpe_splash_page->update_submessages( "Saving C++ Settings", "Builder Systems" );
     }
@@ -678,8 +678,8 @@ void gameCPPBuilder_settingsResource::save_resource(std::string file_path, int b
     }
 
     write_header_on_file(&newSaveDataFile);
-    gpeCPPBuildHolder *cHolder = NULL;
-    gpeCPPSubsytemHolder * cSubsystemHolder = NULL;
+    gpeCPPBuildHolder *cHolder = nullptr;
+    gpeCPPSubsytemHolder * cSubsystemHolder = nullptr;
     int iSys = 0;
     int iSysMax = (int)cppBuildSystems.size();
     int jSubsys = 0;
@@ -691,9 +691,9 @@ void gameCPPBuilder_settingsResource::save_resource(std::string file_path, int b
     for( iSys = 0; iSys < iSysMax; iSys++)
     {
         cHolder = cppBuildSystems[iSys];
-        if( cHolder !=NULL )
+        if( cHolder !=nullptr )
         {
-            if( cHolder->builderNameField!=NULL )
+            if( cHolder->builderNameField!=nullptr )
             {
                 cSystemName = cHolder->builderNameField->get_string();
                 if( (int)cSystemName.size() > 0 )
@@ -712,9 +712,9 @@ void gameCPPBuilder_settingsResource::save_resource(std::string file_path, int b
             for( jSubsys = 0; jSubsys < jSubsysMax; jSubsys++)
             {
                 cSubsystemHolder = cHolder->mySubsystems[ jSubsys];
-                if( cSubsystemHolder !=NULL )
+                if( cSubsystemHolder !=nullptr )
                 {
-                    if( cSubsystemHolder->systemNameField!=NULL )
+                    if( cSubsystemHolder->systemNameField!=nullptr )
                     {
                         cSubsystemName = cSubsystemHolder->systemNameField->get_string();
                         if( (int)cSubsystemName.size() > 0 )
@@ -729,12 +729,12 @@ void gameCPPBuilder_settingsResource::save_resource(std::string file_path, int b
                     }
                     validSubSystemName = false;
 
-                    if( cSubsystemHolder->mainProgramFileScript!=NULL)
+                    if( cSubsystemHolder->mainProgramFileScript!=nullptr)
                     {
                         newSaveDataFile << "BuildSubSystemScript=" << cSubsystemHolder->mainProgramFileScript->get_string() << "\n";
 
                     }
-                    if( cSubsystemHolder->systemProgramTemplateFile!=NULL)
+                    if( cSubsystemHolder->systemProgramTemplateFile!=nullptr)
                     {
                         newSaveDataFile << "BuildSubSystemTemplate=" << cSubsystemHolder->systemProgramTemplateFile->get_string() << "\n";
                     }
@@ -747,7 +747,7 @@ void gameCPPBuilder_settingsResource::save_resource(std::string file_path, int b
 
 bool gameCPPBuilder_settingsResource::write_cpp_header_file(std::ofstream * fileTarget,std::string f_name)
 {
-    if( fileTarget==NULL)
+    if( fileTarget==nullptr)
     {
         return false;
     }
