@@ -56,12 +56,14 @@ namespace gpe
 
     void quit_raylib_window_system()
     {
+        error_log->report("Closing raylib window..");
         if( window_controller_main_raylib != nullptr )
         {
             delete window_controller_main_raylib;
             window_controller_main_raylib = nullptr;
         }
         window_controller_main = nullptr;
+        error_log->report("Raylib window successfully closed");
     }
 
     window_controller_raylib::window_controller_raylib(std::string windowTitle, int wWidth, int wHeight,bool showBorder, bool fullScreen, bool maximized, bool isResizable )
@@ -134,7 +136,10 @@ namespace gpe
     window_controller_raylib::~window_controller_raylib()
     {
         UnloadImage( window_icon ); //Unloads the window icon if one was found
-        CloseWindow(); // Not much to do here, but close the window
+        if( IsWindowReady() )
+        {
+            CloseWindow(); // Not much to do here, but close the window
+        }
     }
 
     bool window_controller_raylib::disable_scaling()
@@ -451,7 +456,7 @@ namespace gpe
         {
             resized = false;
         }
-        window_has_mouse = IsWindowFocused();
+        window_has_mouse = IsCursorOnScreen();
         window_has_focus = IsWindowFocused();
         window_closed = WindowShouldClose();
         minimized = IsWindowMinimized();

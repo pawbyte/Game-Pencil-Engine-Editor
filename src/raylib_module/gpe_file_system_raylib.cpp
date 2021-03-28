@@ -95,17 +95,25 @@ namespace gpe
 
     bool file_manager_raylib::file_copy(std::string source_file_name, std::string destination_file_name, bool overwrite_existing )
     {
-        return false;
+        return file_and_url_manager::file_copy( source_file_name, destination_file_name, overwrite_existing );
     }
 
     bool file_manager_raylib::file_delete( std::string f_name)
     {
-        return false;
+        return file_and_url_manager::file_delete( f_name );
     }
 
     bool file_manager_raylib::file_exists(std::string new_file_name)
     {
-        return FileExists( new_file_name.c_str() );
+        if( FileExists( new_file_name.c_str() ) )
+        {
+            if(  file_and_url_manager::folder_exists( new_file_name) == false )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     int file_manager_raylib::file_get_size_bytes(const std::string &file_name)
@@ -130,7 +138,7 @@ namespace gpe
 
     int file_manager_raylib::folder_create( std::string new_path_name)
     {
-        return 0;
+        return file_and_url_manager::folder_create( new_path_name );
     }
 
     bool file_manager_raylib::folder_exists(std::string path_name)
@@ -163,6 +171,5 @@ namespace gpe
     {
         return DirectoryExists( path_name.c_str() );
     }
-
 }
 

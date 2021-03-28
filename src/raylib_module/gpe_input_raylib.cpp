@@ -113,6 +113,8 @@ namespace gpe
     input_manager_raylib::input_manager_raylib()
     {
         manager_type = "raylib";
+        handles_double_clicks = true;
+        double_clicked_ms_rest = 600; //600 ms
         for( int i_gamepad = 0; i_gamepad < gp_max_devices; i_gamepad++ )
         {
             game_pads_raylib[i_gamepad] = new gamepad_raylib();
@@ -374,6 +376,16 @@ namespace gpe
 
         for( int i_mouse_button = MOUSE_LEFT_BUTTON; i_mouse_button <= MOUSE_MIDDLE_BUTTON; i_mouse_button++ )
         {
+            if( handles_double_clicks )
+            {
+                mouse_double_clicked_time[i_mouse_button] -= time_keeper->get_delta_ticks();
+                if( mouse_double_clicked_time[i_mouse_button] <= 0 )
+                {
+                    mouse_clicked_button[ i_mouse_button] = 0;
+                    mouse_double_clicked_time[i_mouse_button] = 0;
+                }
+            }
+
             if( IsMouseButtonPressed( i_mouse_button) )
             {
                 input_received = true;
@@ -383,7 +395,25 @@ namespace gpe
                 mouse_released_button[i_mouse_button] = false;
 
             }
-            if( IsMouseButtonUp( i_mouse_button) )
+            else if( IsMouseButtonReleased( i_mouse_button) )
+            {
+                mouse_down_button[ i_mouse_button ] = false;
+                mouse_pressed_button[ i_mouse_button] = false;
+                if( handles_double_clicks )
+                {
+                    mouse_clicked_button[ i_mouse_button] += 1;
+                    if( mouse_double_clicked_time[i_mouse_button] <= 0 )
+                    {
+                        mouse_double_clicked_time[i_mouse_button] = double_clicked_ms_rest;
+                    }
+
+                }
+                else
+                {
+                    mouse_clicked_button[ i_mouse_button] = 1;
+                }
+            }
+            else if( IsMouseButtonUp( i_mouse_button) )
             {
                 mouse_down_button[ i_mouse_button ] = false;
                 mouse_pressed_button[ i_mouse_button] = false;

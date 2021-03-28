@@ -48,7 +48,7 @@ namespace gpe
             //Render text surface
             Image font_img_pair = ImageTextEx( fontIn, str_in.c_str(), fontIn.baseSize, fontIn.charsPadding, WHITE );
             Texture2D font_pair_texture = LoadTextureFromImage( font_img_pair );
-            UnloadImage( font_img_pair );
+            //UnloadImage( font_img_pair );
 
             text_width = font_pair_texture.width;
             text_height = font_pair_texture.height;
@@ -236,8 +236,8 @@ namespace gpe
             else
             {
                 Vector2 raylib_text_sizes = MeasureTextEx(raylib_held_font, text_to_render.c_str(),font_size,0 );
-                *width_value = raylib_text_sizes.x + raylib_held_font.charsPadding;
-                *height_value = raylib_text_sizes.y + raylib_held_font.charsPadding;
+                *width_value = raylib_text_sizes.x;
+                *height_value = raylib_text_sizes.y;
 
                 /*
                 font_pair_raylib *  newFoundPair = find_texture_raylib( text_to_render);
@@ -557,7 +557,7 @@ namespace gpe
 
         if( render_width <= 0 )
         {
-            render_width = texWid;
+            render_width = texWid + mono_width;
         }
 
         if( render_height <= 0 )
@@ -647,88 +647,76 @@ namespace gpe
 
     void font_raylib_tff::render_text_boxed( int x_pos, int y_pos, std::string text_to_render, color * text_color,color * boxColor,int alignment_h,int alignment_v, int render_alpha )
     {
-        if( render_alpha > 0)
+        if( render_alpha < 1 || text_color==nullptr || boxColor == nullptr )
         {
-            font_pair_raylib * strTex = find_texture_raylib(text_to_render);
-            texture_raylib * fPairTex=  nullptr;
-            if( strTex!=nullptr)
-            {
-                fPairTex = strTex->get_texture();
-                if( render_alpha > 255)
-                {
-                    render_alpha = 255;
-                }
-                if( fPairTex!=nullptr && render_alpha >0)
-                {
-                    int texWid = 0;
-                    int texHeight =0;
-                    //raylib_SetTextureColorMod( fPairTex, text_color->get_r(), text_color->get_g(), text_color->get_b() );
-
-                    if( strTex->lastAlphaRendered!=render_alpha )
-                    {
-                        //raylib_SetTextureAlphaMod(fPairTex,render_alpha);
-                        strTex->lastAlphaRendered = render_alpha;
-                    }
-                    //Get image dimensions
-                    texWid = strTex->get_width();
-                    texHeight = strTex->get_height();
-
-                    if(alignment_h<gpe::fa_left || alignment_h > gpe::fa_right )
-                    {
-                        alignment_h=last_used_halign;
-                    }
-
-                    if(alignment_v < gpe::fa_top || alignment_v > gpe::fa_bottom )
-                    {
-                        alignment_v=last_used_valign;
-                    }
-                    switch(alignment_h)
-                    {
-                    case gpe::fa_center:
-                        x_pos=x_pos-texWid/2;
-                        //last_used_halign=gpe::fa_center;
-                        break;
-
-                    case gpe::fa_right:
-                        x_pos=x_pos-texWid;
-                        // last_used_halign=gpe::fa_right;
-                        break;
-
-                    //rendering left will be the default
-                    default:
-                        // last_used_halign=gpe::fa_left;
-                        break;
-                    }
-                    switch(alignment_v)
-                    {
-                    case gpe::fa_middle:
-                        y_pos=y_pos-texHeight/2;
-                        // last_used_valign=gpe::fa_middle;
-                        break;
-
-                    case gpe::fa_bottom:
-                        y_pos=y_pos-texHeight;
-                        // last_used_valign=gpe::fa_middle;
-                        break;
-
-                    //rendering left will be the default
-                    default:
-                        //last_used_valign=gpe::fa_top;
-                        break;
-                    }
-                    gpe::shape_rect gpeClip;
-                    gpeClip.x = x_pos  + renderer_main_raylib->scissor_mode_offset.x;
-                    gpeClip.y = y_pos + renderer_main_raylib->scissor_mode_offset.y;
-                    gpeClip.w = texWid;
-                    gpeClip.h = texHeight;
-                    //raylib_Rect raylibClip = {x_pos, y_pos, texWid,texHeight};
-                    gpe::gcanvas->render_rect(  &gpeClip,boxColor,false,render_alpha );
-                    //raylib_RenderCopy( renderer_main_raylib->get_gpe_renderer_raylib(),fPairTex, nullptr, &raylibClip);
-                    //raylib_SetTextureColorMod( fPairTex, c_white->get_r(), c_white->get_g(), c_white->get_b() );
-                    //Incompleted
-                }
-            }
+            return;
         }
+        if( (int)text_to_render.size() == 0 )
+        {
+            return;
+        }
+
+        current_box_color.r = boxColor->get_r();
+        current_box_color.g = boxColor->get_g();
+        current_box_color.b = boxColor->get_b();
+        current_box_color.a = render_alpha;
+
+        current_font_color.r = text_color->get_r();
+        current_font_color.g = text_color->get_g();
+        current_font_color.b = text_color->get_b();
+        current_font_color.a = render_alpha;
+
+        int texWid = 0, texHeight = 0;
+        get_metrics( text_to_render, &texWid, &texHeight ); //Get font render dimensions
+
+        if(alignment_h<gpe::fa_left || alignment_h > gpe::fa_right )
+        {
+            alignment_h=last_used_halign;
+        }
+
+        if(alignment_v < gpe::fa_top || alignment_v > gpe::fa_bottom )
+        {
+            alignment_v=last_used_valign;
+        }
+        switch(alignment_h)
+        {
+            case gpe::fa_center:
+                x_pos=x_pos-texWid/2;
+                //last_used_halign=gpe::fa_center;
+                break;
+
+            case gpe::fa_right:
+                x_pos=x_pos-texWid;
+                // last_used_halign=gpe::fa_right;
+                break;
+
+            //rendering left will be the default
+            default:
+                // last_used_halign=gpe::fa_left;
+                break;
+        }
+        switch(alignment_v)
+        {
+            case gpe::fa_middle:
+                y_pos=y_pos-texHeight/2;
+                // last_used_valign=gpe::fa_middle;
+                break;
+
+            case gpe::fa_bottom:
+                y_pos=y_pos-texHeight;
+                // last_used_valign=gpe::fa_middle;
+                break;
+
+            //rendering left will be the default
+            default:
+                //last_used_valign=gpe::fa_top;
+                break;
+        }
+
+        current_font_position.x = x_pos;
+        current_font_position.y = y_pos;
+        DrawRectangle(current_font_position.x - raylib_held_font.charsPadding*2, current_font_position.y - raylib_held_font.charsPadding*2, texWid + raylib_held_font.charsPadding*4, texHeight + raylib_held_font.charsPadding*4, current_box_color );
+        DrawTextEx( raylib_held_font, text_to_render.c_str(), current_font_position, font_size, 0, current_font_color );
     }
 
     void font_raylib_tff::render_text_rotated( int x_pos, int y_pos, std::string text_to_render, color * text_color, float textAngle, int render_alpha )

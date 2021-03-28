@@ -38,16 +38,22 @@ namespace gpe
     texture_target_raylib::texture_target_raylib()
     {
         textureType = "target-raylib";
+        raylib_texture_target = LoadRenderTexture( screen_width, screen_height );
+        texWid = screen_width;
+        texHeight = screen_height;
     }
 
     texture_target_raylib::~texture_target_raylib()
     {
-        UnloadRenderTexture( raylib_texture_target );
+        if( raylib_texture_target.texture.id >= 0 || raylib_texture_target.texture.id != GetTextureDefault().id )
+        {
+            UnloadRenderTexture( raylib_texture_target );
+        }
     }
 
     void texture_target_raylib::change_alpha( uint8_t alpha  )
     {
-
+        lastAlphaRendered = alpha;
     }
 
     void texture_target_raylib::change_color( color * color_new)
@@ -117,7 +123,6 @@ namespace gpe
         {
             return;
         }
-        //raylib_Rect render_rect = { x, y, texWid, texHeight };
 
         change_color( 255,255,255 );
         set_alpha( alpha );
@@ -130,6 +135,15 @@ namespace gpe
         {
 
         }
+
+        int temp_blend = renderer_main->get_blend_mode();
+
+        renderer_main->set_render_blend_mode( currentBlendMode );
+
+        DrawTextureRec(raylib_texture_target.texture, (Rectangle) { 0, 0, (float)raylib_texture_target.texture.width, (float)-raylib_texture_target.texture.height }, (Vector2) { x, y }, WHITE);
+        EndBlendMode();
+
+        renderer_main->set_render_blend_mode( temp_blend );
     }
 
     void texture_target_raylib::render_overlay_scaled( renderer_base * renderer, int x, int y,float x_scale, float y_scale, gpe::shape_rect* clip, color * render_color, int alpha )
@@ -163,7 +177,13 @@ namespace gpe
 
     void texture_target_raylib::resize_target(renderer_base * renderer, int w, int h, int id, bool useLinearScaling  )
     {
-
+        if( w > 0 &&  h > 0)
+        {
+            UnloadRenderTexture( raylib_texture_target );
+            raylib_texture_target = LoadRenderTexture( w, h);
+            texWid = raylib_texture_target.texture.width;
+            texHeight = raylib_texture_target.texture.height;
+        }
     }
 
 

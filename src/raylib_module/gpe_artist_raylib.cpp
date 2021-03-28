@@ -46,7 +46,6 @@ namespace gpe
         artist_renderer = aRenderer;
 
         raylibRenderer = aRenderer;
-        lightingOverlayTexture = nullptr;
 
     }
 
@@ -591,20 +590,29 @@ namespace gpe
             DrawLine( x1 + renderer_main_raylib->scissor_mode_offset.x, y1 + renderer_main_raylib->scissor_mode_offset.y, x2 + renderer_main_raylib->scissor_mode_offset.x, y2 + renderer_main_raylib->scissor_mode_offset.y, raylib_paint_color );
             return;
         }
+
         if( line_width < 0 )
         {
             return;
         }
-        float lineAngle = semath::get_direction(x1, y1, x2, y2 );
-        int lineSize  = ceil( semath::get_distance(x1, y1, x2, y2 ) );
-        if( lineSize <= 0)
+
+
+        if( render_color != nullptr )
         {
-            return;
+            raylib_temp_color.r = render_color->get_r();
+            raylib_temp_color.g = render_color->get_g();
+            raylib_temp_color.b = render_color->get_b();
         }
 
+        raylib_temp_color.a = alpha_channel;
 
-        x1  = x1 + semath::lengthdir_x( lineSize/2, lineAngle );
-        y1  = y1 + semath::lengthdir_y( lineSize/2, lineAngle );
+       triangle_pt1.x = x1;
+       triangle_pt1.y = y1;
+
+       triangle_pt2.x = x2;
+       triangle_pt2.y = y2;
+
+       DrawLineEx( triangle_pt1, triangle_pt2, line_width, raylib_temp_color );
     }
 
     void artist_raylib::render_horizontal_line(int y, int x1, int x2)
@@ -698,7 +706,7 @@ namespace gpe
     {
         if( lightingOverlayTexture!=nullptr )
         {
-            lightingOverlayTexture->render_overlay(artist_renderer,-x, -y );
+            lightingOverlayTexture->render_overlay(artist_renderer,x, y );
         }
     }
 
@@ -706,7 +714,7 @@ namespace gpe
     {
         if( lightingOverlayTexture!=nullptr )
         {
-            lightingOverlayTexture->render_overlay_scaled( artist_renderer,-x, -y, scale_size, scale_size );
+            lightingOverlayTexture->render_overlay_scaled( artist_renderer,x, y, scale_size, scale_size );
         }
     }
 
@@ -736,6 +744,10 @@ namespace gpe
                     BeginTextureMode( raylibTextureTarget->get_raylib_render_texture() );
                     renderer_main_raylib->reset_viewpoint();
                     set_color( 0, 0, 0 );
+                    raylib_paint_color.r = 0;
+                    raylib_paint_color.g = 0;
+                    raylib_paint_color.b = 0;
+                    raylib_paint_color.a = 255;
                     ClearBackground( raylib_paint_color );
                     return;
                 }

@@ -36,7 +36,9 @@ SOFTWARE.
 
 //The headers
 
+#include "../gpe/gpe_camera.h"
 #include "../gpe/gpe_common_includes.h"
+#include "../gpe/gpe_cursor_base.h"
 #include "../gpe/gpe_shapes.h"
 #include "../gpe/gpe_renderer_base.h"
 #include "../gpe/gpe_timer_base.h"
@@ -57,7 +59,9 @@ namespace gpe
     //Our Renderer raylib wrapper
     class renderer_system_raylib: public renderer_base
     {
-        private:
+        protected:
+            Camera2D raylib_2d_cameras[ max_cameras_allowed ];
+            Camera raylib_3d_cameras[ max_cameras_allowed ];
             Color render_current_color;
             bool in_scissor_mode;
             RenderTexture2D  scissor_mode_target;
@@ -70,10 +74,20 @@ namespace gpe
             renderer_system_raylib(int rId, int wWidth, int wHeight );
             ~renderer_system_raylib();
 
+            bool begin_mode_2d();
+            bool begin_mode_25d();
+            bool begin_mode_3d();
+            bool begin_mode_vr();
+
             void clear_renderer( bool windowIsMinimized = false );
 
             bool disable_scaling();
             bool enable_scaling();
+
+            bool end_mode_2d();
+            bool end_mode_25d();
+            bool end_mode_3d();
+            bool end_mode_vr();
 
             //Check if anything's wrong with the window
             bool error_check();

@@ -68,6 +68,7 @@ namespace gpe
             std::map < const std::string, font_pair_raylib * > font_text_pairs;
             std::map <const std::string, font_pair_raylib * > font_character_pairs;
             Font raylib_held_font;
+            Color current_box_color;
             Color current_font_color;
             Vector2 current_font_position;
             Rectangle current_font_box;

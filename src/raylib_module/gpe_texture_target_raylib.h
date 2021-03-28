@@ -37,6 +37,7 @@ SOFTWARE.
 
 #include "gpe_renderer_raylib.h"
 #include "../gpe/gpe_texture_target_base.h"
+#include "../gpe/gpe.h"
 
 namespace gpe
 {

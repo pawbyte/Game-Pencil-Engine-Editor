@@ -126,19 +126,29 @@ namespace gpe
         }
         sound_music_object = new music_base("","",-1, -1 );
 
+        error_log->report("Deleting standard soundobject...");
+
         if( standard_sound_object != nullptr )
         {
             delete standard_sound_object;
             standard_sound_object = nullptr;
         }
         standard_sound_object = new sound_base("","",-1, -1 );
+
+        error_log->report("Resettting sound formats");
+
         for( int  i_format = 0; i_format < sound_format_max; i_format++ )
         {
             sound_is_format_supported[ i_format ] = false;
         }
+
+        error_log->report("Closing AudioDevice....");
+
         CloseAudioDevice();
         sound_is_working = false;
         sound_system_name = "undefined";
+
+        error_log->report("Quitted audio_raylib_system successfully...");
     }
 
     sound_raylib::sound_raylib( std::string s_name, std::string s_file , int group_id_number, int s_id )
@@ -215,6 +225,7 @@ namespace gpe
 
     void sound_raylib::unload()
     {
+        if( sound_loaded )
         UnloadSound( raylib_sound );
     }
 
@@ -281,6 +292,7 @@ namespace gpe
 
     void music_raylib::unload()
     {
+        if( sound_loaded )
         UnloadMusicStream( raylib_music );
     }
 }

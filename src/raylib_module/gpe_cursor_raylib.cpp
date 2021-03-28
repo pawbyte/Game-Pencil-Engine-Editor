@@ -81,6 +81,8 @@ namespace gpe
 
     cursor_controller_raylib::cursor_controller_raylib(  int window_id  )
     {
+        mouse_vector.x = 0;
+        mouse_vector.y = 0;
         cursor_controller_type = "raylib";
         cursor_window_id = 0;
         EnableCursor();
@@ -89,9 +91,9 @@ namespace gpe
 
         cursor_raylib_map[ cursor_default_names[ cursor_default_type::arrow ] ] =  MOUSE_CURSOR_ARROW;
         cursor_raylib_map[ cursor_default_names[cursor_default_type::ibeam ] ] =  MOUSE_CURSOR_IBEAM;
-        cursor_raylib_map[ cursor_default_names[cursor_default_type::wait ] ] =  MOUSE_CURSOR_NOT_ALLOWED;
+        cursor_raylib_map[ cursor_default_names[cursor_default_type::wait ] ] =  -1;
         cursor_raylib_map[ cursor_default_names[cursor_default_type::crosshair ] ] =  MOUSE_CURSOR_CROSSHAIR;
-        cursor_raylib_map[ cursor_default_names[cursor_default_type::wait_arrow ] ] =  MOUSE_CURSOR_NOT_ALLOWED;
+        cursor_raylib_map[ cursor_default_names[cursor_default_type::wait_arrow ] ] =  -2;
         cursor_raylib_map[ cursor_default_names[cursor_default_type::sizenwse ] ] =   MOUSE_CURSOR_RESIZE_NWSE;
         cursor_raylib_map[ cursor_default_names[cursor_default_type::sizenesw ] ] =   MOUSE_CURSOR_RESIZE_NESW;
         cursor_raylib_map[ cursor_default_names[cursor_default_type::sizewe ] ] =  MOUSE_CURSOR_RESIZE_EW;
@@ -100,6 +102,12 @@ namespace gpe
         cursor_raylib_map[ cursor_default_names[cursor_default_type::no ] ] =  MOUSE_CURSOR_NOT_ALLOWED;
         cursor_raylib_map[ cursor_default_names[cursor_default_type::hand ] ] =  MOUSE_CURSOR_POINTING_HAND ;
 
+        wait_cursor_frame = 0;
+        wait_cursor_frame_inc = 0.3;
+        wait_cursor_frame_max = 390;
+        wait_arrow_cursor_frame = 0;
+        wait_arrow_cursor_frame_inc = 0.4;
+        wait_arrow_cursor_frame_max = 390;
     }
 
     cursor_controller_raylib::~cursor_controller_raylib()
@@ -162,6 +170,12 @@ namespace gpe
         return "";
     }
 
+    void cursor_controller_raylib::hide_cursor()
+    {
+        cursor_is_hidden  = true;
+        HideCursor();
+    }
+
     void cursor_controller_raylib::name_default_cursors()
     {
         cursor_default_names.clear();
@@ -190,12 +204,75 @@ namespace gpe
     {
         if( cursor_current!=cursor_previous )
         {
+            cursor_previous = cursor_current;
             if( cursor_contains( cursor_current ) )
             {
                 cursor_raylib_id = cursor_raylib_map[cursor_current];
-                SetMouseCursor( cursor_raylib_id );
+
+                if( cursor_raylib_id >=0 )
+                {
+                    show_cusor();
+                    SetMouseCursor( cursor_raylib_id );
+                }
+                else
+                {
+                    if( cursor_previous == cursor_default_names[cursor_default_type::wait] )
+                    {
+                        hide_cursor();
+                        wait_cursor_frame = 0;
+                    }
+                    else if( cursor_previous == cursor_default_names[cursor_default_type::wait_arrow] )
+                    {
+                        hide_cursor();
+                        wait_arrow_cursor_frame = 0;
+                    }
+                }
             }
         }
-        cursor_previous = cursor_current;
+    }
+
+    void cursor_controller_raylib::render()
+    {
+        if( !IsWindowFocused() )
+        {
+            return;
+        }
+
+        if( !IsCursorOnScreen() )
+        {
+            return;
+        }
+        mouse_vector.x = GetMouseX();
+        mouse_vector.y = GetMouseY();
+
+
+        if( cursor_previous == cursor_default_names[cursor_default_type::wait] )
+        {
+            wait_cursor_frame += wait_cursor_frame_inc * time_keeper->get_delta_ticks();
+
+            if( wait_cursor_frame > wait_cursor_frame_max )
+            {
+                wait_cursor_frame = 0;
+            }
+            DrawRing( mouse_vector, 8,6, 0, 360, 0, BLACK );
+            DrawRing( mouse_vector, 8, 6, wait_cursor_frame,360, 0, SKYBLUE );
+        }
+        else if( cursor_previous == cursor_default_names[cursor_default_type::wait_arrow] )
+        {
+            wait_arrow_cursor_frame += wait_arrow_cursor_frame_inc * time_keeper->get_delta_ticks();
+            if( wait_arrow_cursor_frame > wait_arrow_cursor_frame_max )
+            {
+                wait_arrow_cursor_frame = 0;
+            }
+
+            DrawRing( mouse_vector, 8,6, 0, 360, 0, BLACK );
+            DrawRing( mouse_vector, 8,6, wait_arrow_cursor_frame, 360, 0, MAROON );
+        }
+    }
+
+    void cursor_controller_raylib::show_cusor( )
+    {
+        ShowCursor();
+        cursor_is_hidden = false;
     }
 }

@@ -40,6 +40,7 @@ SOFTWARE.
 #include "../gpe/gpe_cursor_base.h"
 #include "../gpe/gpe_error_logger.h"
 #include "../gpe/gpe_file_system.h"
+#include "../gpe/gpe_timer_base.h"
 #include "../other_libs/stg_ex.h"
 #include "raylib.h"
 
@@ -50,6 +51,18 @@ namespace gpe
         protected:
             int cursor_raylib_id;
            std::map <std::string, int> cursor_raylib_map;
+
+           //custom wait animation
+           float wait_cursor_frame;
+           float wait_cursor_frame_inc;
+           float wait_cursor_frame_max;
+
+           //Custom wait arrow animation
+           float wait_arrow_cursor_frame;
+           float wait_arrow_cursor_frame_inc;
+           float wait_arrow_cursor_frame_max;
+
+           Vector2 mouse_vector;
         public:
             cursor_controller_raylib( int window_id = -1 );
             virtual ~cursor_controller_raylib();
@@ -61,8 +74,11 @@ namespace gpe
             bool cursor_create_from_image(std::string f_name );
             int cursor_map_size();
             std::string cursor_system_name( int cId );
+            void hide_cursor();
             void name_default_cursors();
             void process_cursors();
+            void render();
+            void show_cusor( );
     };
 
     extern cursor_controller_raylib * cursor_main_raylib_controller;

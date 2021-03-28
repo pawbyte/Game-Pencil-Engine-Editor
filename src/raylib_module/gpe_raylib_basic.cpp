@@ -58,7 +58,10 @@ namespace gpe
 
     void quit_raylib_main_system()
     {
-        CloseWindow();  //Should be done from window class, but if somehow forgotten, we do it again since its over :-)
+        error_log->report("Exiting raylib module...");
+
         using_raylib_system_underneath = false;
+        error_log->report("Exited raylib module successfully...");
+
     }
 }

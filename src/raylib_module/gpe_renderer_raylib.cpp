@@ -44,9 +44,16 @@ namespace gpe
 
     renderer_system_raylib::renderer_system_raylib( int rId, int wWidth, int wHeight )
     {
+        for( int i_cam = 0; i_cam < max_cameras_allowed; i_cam++ )
+        {
+            raylib_2d_cameras[ i_cam] = { 0 };
+
+            raylib_3d_cameras[ i_cam] = { 0 };
+        }
         r_name = RAYLIB_VERSION;
         r_name = "raylib_renderer " + r_name;
-        r_type = "Opengl V" + stg_ex::int_to_string( rlGetVersion() );
+        r_name += "Opengl V" + stg_ex::int_to_string( rlGetVersion() );
+        r_type = "raylib";
 
         render_blend_mode = blend_mode_blend;
         last_rendered_width = 0;
@@ -74,6 +81,29 @@ namespace gpe
 
     }
 
+    bool renderer_system_raylib::begin_mode_2d()
+    {
+        EndMode3D();
+        return true;
+    }
+
+    bool renderer_system_raylib::begin_mode_25d()
+    {
+        BeginMode3D( raylib_3d_cameras[0] );
+        return true;
+    }
+
+    bool renderer_system_raylib::begin_mode_3d()
+    {
+        BeginMode3D( raylib_3d_cameras[0] );
+        return true;
+    }
+
+    bool renderer_system_raylib::begin_mode_vr()
+    {
+        return IsVrSimulatorReady();
+    }
+
     bool renderer_system_raylib::disable_scaling()
     {
         renderer_scaling = false;
@@ -83,6 +113,32 @@ namespace gpe
     bool renderer_system_raylib::enable_scaling()
     {
         return true;
+    }
+
+
+    bool renderer_system_raylib::end_mode_2d()
+    {
+        //To us this means we jump back into 3D mode....
+        BeginMode3D( raylib_3d_cameras[0] );
+        return true;
+    }
+
+    bool renderer_system_raylib::end_mode_25d()
+    {
+        //2.5D to us is 3D
+        EndMode3D();
+        return true;
+    }
+
+    bool renderer_system_raylib::end_mode_3d()
+    {
+        EndMode3D();
+        return true;
+    }
+
+    bool renderer_system_raylib::end_mode_vr()
+    {
+        return false; //We'll get to this later
     }
 
     int renderer_system_raylib::get_blend_mode()
@@ -124,7 +180,10 @@ namespace gpe
 
         if( r_width != scissor_mode_target.texture.width || r_height != scissor_mode_target.texture.height )
         {
-            UnloadRenderTexture( scissor_mode_target );
+            if( scissor_mode_target.texture.id >= 0 || scissor_mode_target.texture.id != GetTextureDefault().id )
+            {
+                //UnloadRenderTexture( scissor_mode_target );
+            }
             scissor_mode_target = LoadRenderTexture( r_width, r_height );
             error_log->report("Updating RenderTexture to "+stg_ex::int_to_string(r_width)+","+stg_ex::int_to_string(r_height)+"....");
             in_scissor_mode = false;
@@ -275,6 +334,7 @@ namespace gpe
                     render_blend_mode = blend_mode_blend;
                 break;
             }
+
         }
     }
 
@@ -288,6 +348,8 @@ namespace gpe
             set_render_blend_mode( blend_mode_blend );
 
             reset_viewpoint();
+
+            cursor_main_controller->render();
             EndDrawing();
 
             cleared_this_frame = false;

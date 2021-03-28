@@ -144,6 +144,7 @@ namespace gpe
         gpe::quit_raylib_file_system();
         gpe::quit_raylib_window_system();
         gpe::quit_raylib_main_system();
+        error_log->report( "Raylib module removal is complete! \n" );
     }
 
 }

@@ -41,6 +41,7 @@ SOFTWARE.
 #include "../gpe/gpe_constants.h"
 #include "../gpe/gpe_error_logger.h"
 #include "../gpe/gpe_globals.h"
+#include "../gpe/gpe_runtime.h"
 #include "../gpe/gpe_texture_base.h"
 #include "../other_libs/semath.h"
 #include "../other_libs/stg_ex.h"
