@@ -3,10 +3,10 @@ main.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -28,10 +28,10 @@ SOFTWARE.
 
 -Game Pencil Engine <https://www.pawbyte.com/gamepencilengine>
 
- ____                ____        _
-|  _ \ __ ___      _| __ ) _   _| |_ ___
-| |_) / _` \ \ /\ / /  _ \| | | | __/ _ \
-|  __/ (_| |\ V  V /| |_) | |_| | ||  __/
+ ___                ___
+|   \ _ __      | _ )    | |_ __
+| |_) / ` \ \ /\ / /   \| | | | _/  \
+|  _/ (_| |\ V  V /| |_) | |_| | ||  _/
 |_|   \__,_| \_/\_/ |____/ \__, |\__\___|
                            |___/
 Created By PawByte
@@ -47,7 +47,7 @@ SDL 2.0.9 used for this version...
 #include "game_state_master.h"
 #include "game_state_splash.h"
 #include "gpe_editor/gpe_game_master_itenary.h"
-#include "game_state_triangle_test.h"
+#include "game_state_shape_test.h"
 
 int main( int argc, char* args[] )
 {
@@ -77,7 +77,7 @@ int main( int argc, char* args[] )
         gameFailed = 1;
     }
 
-    gpe::time_keeper->set_fps( 30 );
+    gpe::time_keeper->set_fps( 60 );
 
     //gpe::time_keeper->set_fps( gpe::settings->defaultFPS );
 
@@ -87,16 +87,14 @@ int main( int argc, char* args[] )
     game_loader  * game_load_screen = new game_loader("game_loading");
     game_master * game_main_master = new game_master( "gpe_master");
     splash_screen * game_splash_screen = new splash_screen( "game_splash" );
-    triangle_test_state * triangle_tester = new triangle_test_state("triangle_tester");
+    shape_test_state * shape_tester = new shape_test_state("shape_tester");
 
     gpe::game_runtime->state_add( game_load_screen );
     gpe::game_runtime->state_add( game_credits );
     gpe::game_runtime->state_add( game_main_menu );
     gpe::game_runtime->state_add( game_main_master );
     gpe::game_runtime->state_add( game_splash_screen );
-    gpe::game_runtime->state_add( triangle_tester );
-
-    gpe::window_controller_main->scale_window(gpe::screen_width, gpe::screen_height , true );
+    gpe::game_runtime->state_add( shape_tester );
 
     game_splash_screen->set_state_name_next( game_load_screen->get_state_name() );
     game_load_screen->set_state_name_next( game_main_menu->get_state_name() );
@@ -104,14 +102,16 @@ int main( int argc, char* args[] )
     game_credits->set_state_name_next( game_main_menu->get_state_name() );
     game_main_master->set_state_name_next( game_splash_screen->get_state_name() );
 
-    gpe::game_runtime->state_set( game_splash_screen->get_state_name() );
+    gpe::game_runtime->state_set( shape_tester->get_state_name() );
 
 
-    if( init_gpe_master_itenary( argc, args ) == false )
+    /*if( init_gpe_master_itenary( argc, args ) == false )
     {
         gameFailed = -2000;
     }
+    */
 
+    gpe::time_keeper->set_fps( 60 );
 
     if(gameFailed !=0 )
     {
