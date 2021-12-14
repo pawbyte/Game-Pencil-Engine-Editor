@@ -3,10 +3,10 @@ GPE_Texture.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -56,33 +56,33 @@ namespace gpe
             texture_sdl();
             ~texture_sdl();
             void change_alpha( Uint8 alpha );
-            void change_color( color * newColor);
+            void change_color( color * color_new);
             void change_color( Uint8 red, Uint8 green, Uint8 blue );
             void change_texture(SDL_Texture * newTexture);
-            bool copy_image_source(std::string outDirectoryName);
+            bool copy_image_source(std::string directory_output_name);
             texture_base * create_new();
 
             renderer_system_sdl * get_gpe_renderer_sdl(renderer_base * renderer);
             SDL_Renderer * get_sdl_renderer(renderer_base * renderer);
             SDL_Texture * get_sdl_texture();
-            void load_new_texture( renderer_base * renderer, std::string fileName, int id = -1, bool transparent = true, bool useLinearScaling = false );
+            void load_new_texture( renderer_base * renderer, std::string file_name, int id = -1, bool transparent = true, bool useLinearScaling = false );
             void prerender_circle( renderer_base * renderer, int rad, color * circleColor,  Uint8 alpha = 255,int id = -1, bool transparent = true, bool useLinearScaling = true , bool isOutline = false );
             void prerender_triangle( renderer_base * renderer, shape_triangle2d,  color * circleColor,  uint8_t alpha = 255 );
-            void prerender_rectangle( renderer_base * renderer, int w, int h, color * newColor, int id = -1, bool transparent = true, bool useLinearScaling = true  , bool isOutline = false);
+            void prerender_rectangle( renderer_base * renderer, int w, int h, color * color_new, int id = -1, bool transparent = true, bool useLinearScaling = true  , bool isOutline = false);
 
-            void render_align(  int x, int y, int hAlign, int vAlign, gpe::shape_rect* clip = NULL, color * rendColor = NULL, int alpha = 255  );
-            void render_align_resized(  int x, int y,int newWidth, int newHeight, int hAlign, int vAlign, gpe::shape_rect* clip = NULL, color * rendColor = NULL, int alpha = 255 );
+            void render_align(  int x, int y, int alignment_h, int alignment_v, gpe::shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255  );
+            void render_align_resized(  int x, int y,int new_width, int new_height, int alignment_h, int alignment_v, gpe::shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
             void render_tex(  int x, int y, gpe::shape_rect* clip = NULL, int alpha = 255  );
-            void render_tex_colored(  int x, int y, color * rendColor, int alpha = 255, gpe::shape_rect* clip = NULL  );
-            void render_tex_resized(  int x, int y,float newWidth, float newHeight, gpe::shape_rect* clip = NULL, color * rendColor = NULL, int alpha = 255 );
-            void render_tex_scaled(  int x, int y,float xScale, float yScale, gpe::shape_rect* clip = NULL, color * rendColor = NULL, int alpha = 255 );
-            void render_tex_rotated(  int x, int y, float renderAngle,  color * renderColor = NULL, gpe::shape_rect* clip = NULL , int alpha = 255 );
-            void render_tex_rotated_at_point(  int x, int y, float renderAngle, int pointX, int pointY, color * renderColor = NULL, gpe::shape_rect* clip = NULL , int alpha = 255 );
-            void render_tex_special(  int x, int y, float renderAngle, int newWidth = -1, int newHeight = -1, color * renderColor = NULL, gpe::shape_rect* clip = NULL , int alpha = 255 );
-            void render_tex_special_at_point(  int x, int y, float renderAngle, int pointX, int pointY,int newWidth = -1, int newHeight = -1, color * renderColor = NULL, gpe::shape_rect* clip = NULL , int alpha = 255 );
+            void render_tex_colored(  int x, int y, color * render_color, int alpha = 255, gpe::shape_rect* clip = NULL  );
+            void render_tex_resized(  int x, int y,float new_width, float new_height, gpe::shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
+            void render_tex_scaled(  int x, int y,float x_scale, float y_scale, gpe::shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
+            void render_tex_rotated(  int x, int y, float render_angle,  color * render_color = NULL, gpe::shape_rect* clip = NULL , int alpha = 255 );
+            void render_tex_rotated_at_point(  int x, int y, float render_angle, int point_x, int point_y, color * render_color = NULL, gpe::shape_rect* clip = NULL , int alpha = 255 );
+            void render_tex_special(  int x, int y, float render_angle, int new_width = -1, int new_height = -1, color * render_color = NULL, gpe::shape_rect* clip = NULL , int alpha = 255 );
+            void render_tex_special_at_point(  int x, int y, float render_angle, int point_x, int point_y,int new_width = -1, int new_height = -1, color * render_color = NULL, gpe::shape_rect* clip = NULL , int alpha = 255 );
 
             void set_alpha( int alpha);
-            void set_blend_mode( int newBlendMode);
+            void set_blend_mode( int blend_mode_new);
     };
 }
 #endif //GPE_TEXTURE_SDL_H

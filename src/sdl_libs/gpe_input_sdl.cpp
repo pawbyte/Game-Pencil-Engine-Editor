@@ -3,10 +3,10 @@ gpe_input_sdl.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -78,10 +78,10 @@ namespace gpe
         gamepad_base::reset_temp_input();
     }
 
-    void gamepad_sdl::setup_default_mapping( bool mapButtons, bool mapAxis)
+    void gamepad_sdl::setup_default_mapping( bool map_buttons, bool mapAxis)
     {
-        gamepad_base::setup_default_mapping( mapButtons, mapAxis );
-        if( mapButtons)
+        gamepad_base::setup_default_mapping( map_buttons, mapAxis );
+        if( map_buttons)
         {
             //Maps the default controller buttons
              button_map[gp_but0] = SDL_CONTROLLER_BUTTON_A;
@@ -157,10 +157,11 @@ namespace gpe
             error_log->report("Unable to convert event container, it's null!");
             return;
         }
-        event_container->reset_event();
 
         if( sdl_input_event.type == SDL_WINDOWEVENT )
         {
+            event_container->reset_event();
+
             event_container->event_time = sdl_input_event.window.timestamp;
             event_container->window_id = sdl_input_event.window.windowID;
 
@@ -427,7 +428,7 @@ namespace gpe
         unsigned tries = 3; /* use UINT_MAX for no effective limit */
         int fControllerInputId = 0;
         gamepad_sdl *  tempController = NULL;
-        float tempAxisValue = 0.0;
+        float  tempAxisValue  = 0.0;
 
         while (SDL_PollEvent( &sdl_input_event) )
         {
@@ -441,6 +442,7 @@ namespace gpe
                     {
                         convert_event_input();
                         rph->process_event( event_container );
+                        //reset_all_input();
                     }
                 break;
 
@@ -488,7 +490,7 @@ namespace gpe
                     fControllerInputId = sdl_input_event.cdevice.which;
                     if( debug_input )
                     {
-                        error_log->report("Button[" + stg_ex::int_to_string( sdl_input_event.cbutton.button) + "] on controller [" + stg_ex::int_to_string(fControllerInputId  )+"]  fired...");
+                        error_log->report("_button[" + stg_ex::int_to_string( sdl_input_event.cbutton.button) + "] on controller [" + stg_ex::int_to_string(fControllerInputId  )+"]  fired...");
                     }
                     if( fControllerInputId >= 0 && fControllerInputId < gp_max_devices )
                     {
@@ -512,7 +514,7 @@ namespace gpe
                     fControllerInputId = sdl_input_event.cdevice.which;
                     if( debug_input )
                     {
-                        error_log->report("Button[" + stg_ex::int_to_string( sdl_input_event.cbutton.button) + "] on controller [" + stg_ex::int_to_string( fControllerInputId )+"] released...");
+                        error_log->report("_button[" + stg_ex::int_to_string( sdl_input_event.cbutton.button) + "] on controller [" + stg_ex::int_to_string( fControllerInputId )+"] released...");
                     }
                     if( fControllerInputId >= 0 && fControllerInputId < gp_max_devices )
                     {

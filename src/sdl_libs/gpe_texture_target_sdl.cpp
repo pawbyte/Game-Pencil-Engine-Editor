@@ -3,10 +3,10 @@ gpe_texture_target_sdl.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -33,8 +33,6 @@ SOFTWARE.
 
 #include "gpe_texture_target_sdl.h"
 
-#define SDL_BLENDMODE_MUL (SDL_BlendMode)0x00000008
-
 namespace gpe
 {
     texture_target_sdl::texture_target_sdl()
@@ -60,20 +58,20 @@ namespace gpe
         }
     }
 
-    void texture_target_sdl::change_color( color * newColor)
+    void texture_target_sdl::change_color( color * color_new)
     {
-        if( sdlTargetTexture==NULL || newColor == NULL)
+        if( sdlTargetTexture==NULL || color_new == NULL)
         {
             return;
         }
-        if( newColor->get_r() == currentR && newColor->get_g() == currentG && newColor->get_b() == currentB )
+        if( color_new->get_r() == currentR && color_new->get_g() == currentG && color_new->get_b() == currentB )
         {
                 return;
         }
-        SDL_SetTextureColorMod( sdlTargetTexture, newColor->get_r(), newColor->get_g(), newColor->get_b() );
-        currentR = newColor->get_r();
-        currentG = newColor->get_g();
-        currentB = newColor->get_b();
+        SDL_SetTextureColorMod( sdlTargetTexture, color_new->get_r(), color_new->get_g(), color_new->get_b() );
+        currentR = color_new->get_r();
+        currentG = color_new->get_g();
+        currentB = color_new->get_b();
     }
 
     void texture_target_sdl::change_color( Uint8 red, Uint8 green, Uint8 blue )
@@ -139,7 +137,7 @@ namespace gpe
         {
             return;
         }
-        SDL_Rect renderRect = { x, y, texWid, texHeight };
+        SDL_Rect render_rect = { x, y, texWid, texHeight };
 
         change_color( 255,255,255 );
         set_alpha( alpha );
@@ -153,20 +151,20 @@ namespace gpe
             sdlClip.w = clip->w;
             sdlClip.h = clip->h;
 
-            renderRect.w = clip->w;
-            renderRect.h = clip->h;
+            render_rect.w = clip->w;
+            render_rect.h = clip->h;
 
-            SDL_RenderCopy( sdlRenderer,sdlTargetTexture,&sdlClip, &renderRect);
+            SDL_RenderCopy( sdlRenderer,sdlTargetTexture,&sdlClip, &render_rect);
         }
         else
         {
-            SDL_RenderCopy( sdlRenderer,sdlTargetTexture,NULL, &renderRect);
+            SDL_RenderCopy( sdlRenderer,sdlTargetTexture,NULL, &render_rect);
         }
     }
 
-    void texture_target_sdl::render_overlay_scaled( renderer_base * renderer, int x, int y,float xScale, float yScale, gpe::shape_rect* clip, color * rendColor, int alpha )
+    void texture_target_sdl::render_overlay_scaled( renderer_base * renderer, int x, int y,float x_scale, float y_scale, gpe::shape_rect* clip, color * render_color, int alpha )
     {
-        if( xScale <= 0 || yScale <= 0 || sdlTargetTexture == NULL || alpha == 0 || renderer == NULL)
+        if( x_scale <= 0 || y_scale <= 0 || sdlTargetTexture == NULL || alpha == 0 || renderer == NULL)
         {
             return;
         }
@@ -176,13 +174,13 @@ namespace gpe
         {
             return;
         }
-        SDL_Rect renderRect = { x, y, texWid, texHeight };
+        SDL_Rect render_rect = { x, y, texWid, texHeight };
 
-        change_color(rendColor);
+        change_color(render_color);
         set_alpha( alpha );
 
-        int newWidth = 0;
-        int newHeight = 0;
+        int new_width = 0;
+        int new_height = 0;
         bool flipHori = false,  flipVert = false;
         if( clip != NULL )
         {
@@ -223,87 +221,87 @@ namespace gpe
                 sdlClip.h = texHeight - sdlClip.y;
             }
 
-            if( xScale < 0 )
+            if( x_scale < 0 )
             {
-                newWidth = (float)sdlClip.w * -xScale;
+                new_width = (float)sdlClip.w * -x_scale;
                 flipHori = true;
             }
             else
             {
-                newWidth = (float)sdlClip.w * xScale;
+                new_width = (float)sdlClip.w * x_scale;
             }
 
-            if( yScale < 0 )
+            if( y_scale < 0 )
             {
-                newHeight = (float)sdlClip.h * -yScale;
+                new_height = (float)sdlClip.h * -y_scale;
                 flipVert = true;
             }
             else
             {
-                newHeight = (float)sdlClip.h * yScale;
+                new_height = (float)sdlClip.h * y_scale;
             }
-            SDL_Rect renderRect = { x, y, newWidth, newHeight };
+            SDL_Rect render_rect = { x, y, new_width, new_height };
             if( flipHori )
             {
                 if( flipVert )
                 {
-                    SDL_RenderCopyEx( sdlRenderer, sdlTargetTexture, &sdlClip,&renderRect,0,NULL,renderer_main_sdl->bothFlip );
+                    SDL_RenderCopyEx( sdlRenderer, sdlTargetTexture, &sdlClip,&render_rect,0,NULL,renderer_main_sdl->bothFlip );
 
                 }
                 else
                 {
-                    SDL_RenderCopyEx( sdlRenderer, sdlTargetTexture, &sdlClip,&renderRect,0,NULL,renderer_main_sdl->horiFlip );
+                    SDL_RenderCopyEx( sdlRenderer, sdlTargetTexture, &sdlClip,&render_rect,0,NULL,renderer_main_sdl->horiFlip );
                 }
             }
             else if( flipVert)
             {
-                SDL_RenderCopyEx( sdlRenderer, sdlTargetTexture, &sdlClip,&renderRect,0,NULL, renderer_main_sdl->vertFlip );
+                SDL_RenderCopyEx( sdlRenderer, sdlTargetTexture, &sdlClip,&render_rect,0,NULL, renderer_main_sdl->vertFlip );
             }
             else
             {
-                SDL_RenderCopy( sdlRenderer,sdlTargetTexture,&sdlClip, &renderRect);
+                SDL_RenderCopy( sdlRenderer,sdlTargetTexture,&sdlClip, &render_rect);
             }
         }
         else
         {
-            if( xScale < 0 )
+            if( x_scale < 0 )
             {
                 flipHori = true;
-                newWidth = (float)texWid * -xScale;
+                new_width = (float)texWid * -x_scale;
             }
             else
             {
-                newWidth = (float)texWid * xScale;
+                new_width = (float)texWid * x_scale;
             }
 
-            if( yScale < 0 )
+            if( y_scale < 0 )
             {
                 flipVert = true;
-                newHeight = (float)texHeight * -yScale;
+                new_height = (float)texHeight * -y_scale;
             }
             else
             {
-                newHeight = (float)texHeight * yScale;
+                new_height = (float)texHeight * y_scale;
             }
-            SDL_Rect renderRect = { x, y, newWidth, newHeight };
+            SDL_Rect render_rect = { x, y, new_width, new_height };
             if( flipHori )
             {
                 if( flipVert )
                 {
-                    SDL_RenderCopyEx( sdlRenderer, sdlTargetTexture, NULL,&renderRect,0,NULL, renderer_main_sdl->bothFlip );
+                    SDL_RenderCopyEx( sdlRenderer, sdlTargetTexture, NULL,&render_rect,0,NULL, renderer_main_sdl->bothFlip );
                 }
                 else
                 {
-                    SDL_RenderCopyEx( sdlRenderer, sdlTargetTexture, NULL,&renderRect,0,NULL, renderer_main_sdl->horiFlip );
+                    SDL_RenderCopyEx( sdlRenderer, sdlTargetTexture, NULL,&render_rect,0,NULL, renderer_main_sdl->horiFlip );
                 }
             }
             else if( flipVert)
             {
-                SDL_RenderCopyEx( sdlRenderer, sdlTargetTexture, NULL,&renderRect,0,NULL, renderer_main_sdl->vertFlip );
+                SDL_RenderCopyEx( sdlRenderer, sdlTargetTexture, NULL,&render_rect,0,NULL, renderer_main_sdl->vertFlip );
             }
             else
             {
-                SDL_RenderCopy( sdlRenderer,sdlTargetTexture,NULL, &renderRect);
+                SDL_RenderCopy( sdlRenderer,sdlTargetTexture,NULL, &render_rect);
             }
         }
     }
@@ -333,7 +331,7 @@ namespace gpe
             {
                 texWid = 0;
                 texHeight = 0;
-                //error_log->report("[Bad] Unable to load file loacated at <"+fileName+">. Error: "+IMG_GetError()+".\n");
+                //error_log->report("[Bad] Unable to load file loacated at <"+file_name+">. Error: "+IMG_GetError()+".\n");
             }
             else
             {
@@ -342,19 +340,19 @@ namespace gpe
         }
         else
         {
-            //error_log->report("[Bad] Unable to load filed  <"+fileName+">. Error: FILE_NOT_FOUND.");
+            //error_log->report("[Bad] Unable to load filed  <"+file_name+">. Error: FILE_NOT_FOUND.");
         }
     }
 
 
-    void texture_target_sdl::set_blend_mode( int newBlendMode)
+    void texture_target_sdl::set_blend_mode( int blend_mode_new)
     {
-        if( sdlTargetTexture == NULL )//&& currentBlendMode!=newBlendMode)
+        if( sdlTargetTexture == NULL )//&& currentBlendMode!=blend_mode_new)
         {
             return;
         }
-        currentBlendMode = newBlendMode;
-        switch( newBlendMode)
+        currentBlendMode = blend_mode_new;
+        switch( blend_mode_new)
         {
             case blend_mode_add:
                 SDL_SetTextureBlendMode(sdlTargetTexture,SDL_BLENDMODE_ADD );

@@ -3,9 +3,9 @@ sdl_surface_ex.cpp
 This file is part of:
 SDL_SurfaceEx
 https://www.pawbyte.com/sdl_surface_ex
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2021 PawByte LLC.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -108,6 +108,9 @@ namespace sdl_surface_ex
             return NULL;
         }
         SDL_Surface * newSurface = SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, SDL_PIXELFORMAT_RGBA8888 );
+        SDL_SetSurfaceRLE( newSurface, 3 );
+        SDL_SetSurfaceBlendMode( newSurface, SDL_BLENDMODE_BLEND );
+
         if (newSurface == NULL)
         {
             return NULL;
@@ -128,7 +131,18 @@ namespace sdl_surface_ex
             for(  y = 0; y < newSurface->h; y++)
             {
                 //Get pixel
-                pixel = SDL_MapRGBA(newSurface->format, color_key_r,color_key_g,color_key_b, alpha );
+                pixel = SDL_MapRGBA(newSurface->format, 0,0,0, 0 );
+                put_pixel32( newSurface, x, y, pixel );
+            }
+        }
+
+        for(  x = 0; x < newSurface->w; x++)
+        {
+            //Go through rows
+            for(  y = 0; y < newSurface->h; y++)
+            {
+                //Get pixel
+                pixel = SDL_MapRGBA(newSurface->format, color_key_r,color_key_g,color_key_b, 255 );
                 put_pixel32( newSurface, x, y, pixel );
             }
         }
@@ -262,8 +276,8 @@ namespace sdl_surface_ex
                 {
                     ypcy = y + cy;
                     ymcy = y - cy;
-                    surface_render_horizontal_line_color_rgba( surface, ypcy,xmcx, xpcx, r, g, b, a );
-                    surface_render_horizontal_line_color_rgba( surface,  ymcy,xmcx, xpcx, r, g, b, a );
+                    surface_render_horizontal_line_color_rgba( surface, ypcy,xmcx, xpcx, r, g, b, 255 );
+                    surface_render_horizontal_line_color_rgba( surface,  ymcy,xmcx, xpcx, r, g, b, 255);
                 }
                 /*else
                 {
@@ -279,12 +293,12 @@ namespace sdl_surface_ex
                     {
                         ypcx = y + cx;
                         ymcx = y - cx;
-                        surface_render_horizontal_line_color_rgba( surface,  ymcx,xmcy, xpcy, r,g,b,a );
-                        surface_render_horizontal_line_color_rgba( surface,  ypcx,xmcy, xpcy, r,g,b,a );
+                        surface_render_horizontal_line_color_rgba( surface,  ymcx,xmcy, xpcy, r,g,b,255 );
+                        surface_render_horizontal_line_color_rgba( surface,  ypcx,xmcy, xpcy, r,g,b,255 );
                     }
                     else
                     {
-                        surface_render_horizontal_line_color_rgba( surface,  y,xmcy, xpcy, r,g,b,a );
+                        surface_render_horizontal_line_color_rgba( surface,  y,xmcy, xpcy, r,g,b,255 );
                     }
                 }
                 ocx = cx;
@@ -343,7 +357,8 @@ namespace sdl_surface_ex
                     Uint32 pixel = get_pixel32( surface, x, y );
                     SDL_GetRGBA(pixel,surface->format,&rr,&gg,&bb, &aa);
                     //if the color is a shade of white/black
-                    Uint8 grayedColor=(rr+gg+bb)/3;
+                    // Uint8 grayedColor=(rr+gg+bb)/3; //old method
+                    Uint8 grayedColor = (30 * rr + 59 * gg + 11 * bb) / 100;
                     pixel = SDL_MapRGBA(surface->format,grayedColor,grayedColor,grayedColor,aa);
                     put_pixel32( coloredSurface, x, y, pixel );
                 }

@@ -3,10 +3,10 @@ gpe_window_controller.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -71,7 +71,6 @@ namespace gpe
         window_closed = false;
         window_has_mouse= false;
         window_has_focus = false;
-        resize_happened = false;
         window_width = wWidth;
         window_height = wHeight;
         resized = false;
@@ -160,7 +159,7 @@ namespace gpe
 
     void window_controller_sdl::process_event( input_event_container * event_holder )
     {
-        resize_happened = false;
+        resized = false;
 
         if( event_holder == NULL )
         {
@@ -202,8 +201,10 @@ namespace gpe
                         gpe::error_log->report("Window resized with improper data");
                     }
                 }
+                window_base_renderer->update_renderer( minimized );
                 resized= true;
             break;
+
 
             case input_event_type::window_minimized_event:
                 //SDL_SetWindowFullscreen( gpeWindow, window_flags);
@@ -214,7 +215,6 @@ namespace gpe
                 window_height = 0;
                 resized = true;
                 gpe::error_log->report("Window minimized");
-                resize_happened = true;
             break;
 
             case input_event_type::window_entered_event:
@@ -238,22 +238,22 @@ namespace gpe
             break;
 
             case input_event_type::window_exposed_event:
-                if( minimized)
+                if( minimized )
                 {
                     minimized = false;
-                    resized = true;
+                    resized = false;
                     SDL_RestoreWindow(local_sdl_window);
                     SDL_MaximizeWindow(local_sdl_window);
                     SDL_GetWindowSize(local_sdl_window,&window_width,&window_height);
-                    SDL_RaiseWindow(local_sdl_window);
-                    resize_window();
+                    //SDL_RaiseWindow(local_sdl_window);
+                    //resize_window();
                     gpe::error_log->report("Window unminimized from being exposed!");
                 }
                 else
                 {
                     //gpe::error_log->report("Window exposed!!!!");
                 }
-                resize_happened= true;
+                window_base_renderer->update_renderer( minimized );
             break;
 
             case input_event_type::window_hidden_event:
@@ -278,8 +278,7 @@ namespace gpe
                     gpe::error_log->report("Window restored.");
                 }
                 resized = true;
-                resize_happened = true;
-                resize_window();
+                window_base_renderer->update_renderer( minimized );
             break;
 
             case input_event_type::window_maximized_event:
@@ -296,26 +295,26 @@ namespace gpe
 
     void window_controller_sdl::reset_input()
     {
+        //window_base_renderer::reset_input();
         resized = false;
         window_closed = false;
         if( local_sdl_window!=NULL && window_base_renderer!=NULL)
         {
             SDL_GetWindowSize( local_sdl_window, &window_width, &window_height );
-            //window_base_renderer->resize_renderer( window_width, window_height );
             window_base_renderer->reset_input();
         }
     }
 
     void window_controller_sdl::resize_window()
     {
+        if( window_base_renderer!=NULL )
+        {
+            window_base_renderer->resize_renderer( window_width, window_height );
+        }
         if( !window_scaling )
         {
             gpe::screen_width = window_width;
             gpe::screen_height = window_height;
-        }
-        if( window_base_renderer!=NULL )
-        {
-            window_base_renderer->resize_renderer( window_width, window_height );
         }
         minimized = false;
     }
@@ -368,6 +367,47 @@ namespace gpe
         new_renderer->resize_renderer( window_width, window_height );
     }
 
+    void window_controller_sdl::set_window_position( int new_x, int new_y )
+    {
+        if( local_sdl_window != NULL )
+        {
+            if( new_x < 0 )
+            {
+                new_x = SDL_WINDOWPOS_CENTERED;
+            }
+
+            if( new_y < 0 )
+            {
+                new_y = SDL_WINDOWPOS_CENTERED;
+            }
+            SDL_SetWindowPosition( local_sdl_window, new_x, new_y );
+        }
+    }
+
+    bool window_controller_sdl::set_window_size( int n_width, int n_height )
+    {
+        if( n_width > 0 && n_height > 0 )
+        {
+            if( local_sdl_window != NULL )
+            {
+                SDL_SetWindowSize( local_sdl_window, n_width, n_height );
+            }
+
+            window_width = n_width;
+            window_height = n_height;
+
+            if( window_base_renderer !=NULL )
+            {
+                window_base_renderer->resize_renderer(n_width, n_height );
+                window_width = gpe::screen_width = n_width;
+                window_height = gpe::screen_height = n_height;
+                return true;
+            }
+            return true;
+        }
+        return false;
+    }
+
     void window_controller_sdl::set_window_title(std::string new_title)
     {
         SDL_SetWindowTitle(local_sdl_window, new_title.c_str() );
@@ -403,7 +443,8 @@ namespace gpe
             windowed = true;
         }
         SDL_GetWindowSize(local_sdl_window,&window_width,&window_height);
-
+        gpe::screen_width = window_width;
+        gpe::screen_height = window_height;
         resized = true;
         gpe::error_log->report("Window Size: "+ stg_ex::int_to_string(window_width)+","+ stg_ex::int_to_string(window_height) );
         gpe::error_log->report("Window Flags: "+ stg_ex::int_to_string(window_flags) );

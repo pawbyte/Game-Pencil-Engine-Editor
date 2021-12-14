@@ -3,10 +3,10 @@ gpe_renderer_sdl.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -48,17 +48,7 @@ namespace gpe
     class renderer_system_sdl: public renderer_base
     {
         private:
-            int render_count;
-            int render_id;
-            //Whether the window is windowed or not
-            bool cleared_this_frame;
-            int last_rendered_width, last_rendered_height;
-            int r_width, r_height;
-            int last_screenshot_id;
-
             //SDL_SysWMinfo sdl_sys;
-            bool rendered_once;
-            int render_blend_mode;
             SDL_Renderer * sdlRenderer;
             SDL_Texture * renderTexture;
         public:
@@ -66,7 +56,6 @@ namespace gpe
             SDL_RendererFlip horiFlip;
             SDL_RendererFlip vertFlip;
             SDL_Point  defaultPoint;
-            bool resize_happened;
             //SDL_SysWMinfo * get_sys_info();
             renderer_system_sdl(int rId, int wWidth, int wHeight, SDL_Window * window_ptr );
             ~renderer_system_sdl();
@@ -100,7 +89,7 @@ namespace gpe
             bool scale_renderer_factor( float s_width, float s_height, bool scale_int );
 
             bool screen_was_cleared();
-            void set_render_blend_mode( int newBlendMode );
+            void set_render_blend_mode( int blend_mode_new );
             void set_viewpoint( shape_rect * newViewPoint = NULL);
             void set_window_title(std::string new_title);
             void update_renderer( bool windowIsMinimized);

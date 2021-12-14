@@ -3,10 +3,10 @@ gpe_timer.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -169,6 +169,11 @@ namespace gpe
         return my_fps;
     }
 
+    float time_keeper_sdl::get_fps_cap()
+    {
+        return fps_cap;
+    }
+
     float time_keeper_sdl::get_needed_ticks()
     {
         return ticks_per_frame;
@@ -239,13 +244,13 @@ namespace gpe
         }
         else
         {
-            //defaults to 20 fps for out of range FPSs given.
-            fps_cap = 20;
+            //defaults to 15 fps for out of range FPSs given.
+            fps_cap = 15;
         }
         my_fps = fps_cap;
         ticks_per_frame = 1000.f / my_fps;
         seconds_per_frame = 1.f/my_fps;
-        fps_ratio = my_fps/20.f;
+        fps_ratio = my_fps/15.f;
         fps_current = my_fps;
         if( fps_ratio < 1.f)
         {

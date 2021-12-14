@@ -3,10 +3,10 @@ gpe_font_sdl.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,18 +36,18 @@ SOFTWARE.
 
 namespace gpe
 {
-    font_pair_sdl::font_pair_sdl(TTF_Font * fontIn,std::string strIn)
+    font_pair_sdl::font_pair_sdl(TTF_Font * fontIn,std::string str_in)
     {
         lastAlphaRendered = 255;
-        str = strIn;
+        str = str_in;
         strTexture = NULL;
         text_width = 0;
         text_height = 0;
-        if( fontIn!=NULL && (int)strIn.size() > 0)
+        if( fontIn!=NULL && (int)str_in.size() > 0)
         {
             //Render text surface
             SDL_Color sdl_color_white = {255, 255, 255,255};
-            SDL_Surface * textSurface = textSurface = TTF_RenderUTF8_Blended( fontIn, strIn.c_str(),sdl_color_white );
+            SDL_Surface * textSurface = textSurface = TTF_RenderUTF8_Blended( fontIn, str_in.c_str(),sdl_color_white );
             if( textSurface == NULL )
             {
                 std::string ttfError = TTF_GetError();
@@ -74,7 +74,7 @@ namespace gpe
         }
         else
         {
-            gpe::error_log->report("Unable to pre-render text [" + strIn +"]");
+            gpe::error_log->report("Unable to pre-render text [" + str_in +"]");
         }
     }
 
@@ -92,46 +92,46 @@ namespace gpe
         return strTexture;
     }
 
-    font_sdl_tff::font_sdl_tff(std::string fFileLocation, int fSize, bool isMonospaced, std::string fNickName,  int fontIdNumb )
+    font_sdl_tff::font_sdl_tff(std::string file_loc, int f_size, bool make_monospaced, std::string f_nickname,  int id_number )
     {
         font_system_type = "sdl_ttf";
         last_used_halign = fa_left;
         last_used_valign = fa_top;
-        customFontId = fontIdNumb;
-        monoWidth = 0;
-        monoHeight = 0;
-        numberWidth = 0;
-        numberHeight = 0;
-        fontIsMonoSpaced = isMonospaced;
+        font_id = id_number;
+        mono_width = 0;
+        mono_height = 0;
+        number_width = 0;
+        number_height = 0;
+        font_is_monospaced = make_monospaced;
         heldSDLFont = NULL;
-        fontFamilyName = "";
-        fontNickName = fNickName;
+        font_family_name = "";
+        font_nickname = f_nickname;
 
-        if( (int)fFileLocation.size() > 0 )
+        if( (int)file_loc.size() > 0 )
         {
-            if( !sff_ex::file_exists( fFileLocation) )
+            if( !sff_ex::file_exists( file_loc) )
             {
-                gpe::error_log->report("Font-Error: Unable to located [" + fFileLocation + "]!" );
+                gpe::error_log->report("Font-Error: Unable to located [" + file_loc + "]!" );
             }
             else
             {
-                gpe::error_log->report("Font-Update: Attempting to load font from ["+fFileLocation +"] file!" );
+                gpe::error_log->report("Font-Update: Attempting to load font from ["+file_loc +"] file!" );
             }
         }
-        heldSDLFont = TTF_OpenFontIndex(fFileLocation.c_str(), fSize,0);
+        heldSDLFont = TTF_OpenFontIndex(file_loc.c_str(), f_size,0);
 
         int i = 0;
         if( heldSDLFont!=NULL)
         {
-            fontFamilyName = TTF_FontFaceFamilyName(heldSDLFont);
-            fontFamilyName+=" "+ stg_ex::int_to_string(fSize)+"pt";
-            std::string longCharString = "";
+            font_family_name = TTF_FontFaceFamilyName(heldSDLFont);
+            font_family_name+=" "+ stg_ex::int_to_string(f_size)+"pt";
+            std::string longCharstring = "";
             for( i = 0; i < 256; i++)
             {
-                longCharString+=i;
+                longCharstring+=i;
             }
 
-            if( isMonospaced)
+            if( make_monospaced)
             {
                 TTF_SetFontHinting(heldSDLFont,TTF_HINTING_MONO);
             }
@@ -143,8 +143,8 @@ namespace gpe
             font_pair_sdl * monoSpacedPair = find_texture_sdl("W");
             if( monoSpacedPair!=NULL)
             {
-                numberWidth = monoWidth = monoSpacedPair->get_width();
-                numberHeight = monoHeight = monoSpacedPair->get_height();
+                number_width = mono_width = monoSpacedPair->get_width();
+                number_height = mono_height = monoSpacedPair->get_height();
             }
 
             for( i = 0; i < 10; i++)
@@ -156,7 +156,7 @@ namespace gpe
             characterPairs["-" ] =  new font_pair_sdl(heldSDLFont,"-" );
             characterPairs["(" ] =  new font_pair_sdl(heldSDLFont,"(" );
             characterPairs[")" ] = new font_pair_sdl(heldSDLFont,")" );
-            if( isMonospaced == false)
+            if( make_monospaced == false)
             {
                 std::map<std::string,font_pair_sdl *>::iterator foundIterator;
                 foundIterator = characterPairs.find("9");
@@ -165,21 +165,21 @@ namespace gpe
                     font_pair_sdl * tempfont_pair_sdl = foundIterator->second;
                     if( tempfont_pair_sdl!=NULL )
                     {
-                        if( tempfont_pair_sdl->get_width() > numberWidth)
+                        if( tempfont_pair_sdl->get_width() > number_width)
                         {
-                            numberWidth = tempfont_pair_sdl->get_width();
+                            number_width = tempfont_pair_sdl->get_width();
                         }
-                        if( tempfont_pair_sdl->get_height() > numberHeight)
+                        if( tempfont_pair_sdl->get_height() > number_height)
                         {
-                            numberHeight = tempfont_pair_sdl->get_height();
+                            number_height = tempfont_pair_sdl->get_height();
                         }
                     }
                 }
             }
         }
-        else if( (int)fFileLocation.size() > 0 )
+        else if( (int)file_loc.size() > 0 )
         {
-            gpe::error_log->report("Font-Error: Unable to load [" + fFileLocation + "]!" );
+            gpe::error_log->report("Font-Error: Unable to load [" + file_loc + "]!" );
         }
     }
 
@@ -220,9 +220,9 @@ namespace gpe
         textPairs.clear();
     }
 
-    font_base * font_sdl_tff::create_new(std::string fFileLocation, int fSize, bool isMonospaced , const std::string fNickName , int fontIdNumb )
+    font_base * font_sdl_tff::create_new(std::string file_loc, int f_size, bool make_monospaced , const std::string f_nickname , int id_number )
     {
-        return new font_sdl_tff( fFileLocation, fSize, isMonospaced, fNickName, fontIdNumb );
+        return new font_sdl_tff( file_loc, f_size, make_monospaced, f_nickname, id_number );
     }
 
     int font_sdl_tff::get_cache_count()
@@ -232,64 +232,64 @@ namespace gpe
 
     int font_sdl_tff::get_font_id()
     {
-        return customFontId;
+        return font_id;
     }
 
-    void font_sdl_tff::get_metrics(std::string textToRender, int * wVal, int * hVal)
+    void font_sdl_tff::get_metrics(std::string text_to_render, int * width_value, int * height_value)
     {
-        int tSize = (int)textToRender.size();
+        int tSize = (int)text_to_render.size();
         if( tSize > 0)
         {
-            if( fontIsMonoSpaced)
+            if( font_is_monospaced)
             {
-                *wVal = monoWidth*tSize;
-                *hVal = monoHeight;
+                *width_value = mono_width*tSize;
+                *height_value = mono_height;
             }
             else if(heldSDLFont!=NULL)
             {
-                font_pair_sdl *  newFoundPair = find_texture_sdl( textToRender);
+                font_pair_sdl *  newFoundPair = find_texture_sdl( text_to_render);
                 if( newFoundPair!=NULL)
                 {
-                    *wVal = newFoundPair->get_width();
-                    *hVal = newFoundPair->get_height();
+                    *width_value = newFoundPair->get_width();
+                    *height_value = newFoundPair->get_height();
                 }
 
             }
         }
         else
         {
-            *wVal = 0;
-            *hVal = 0;
+            *width_value = 0;
+            *height_value = 0;
         }
     }
 
-    void font_sdl_tff::get_numbered_metrics(std::string textToRender, int * wVal, int * hVal)
+    void font_sdl_tff::get_numbered_metrics(std::string text_to_render, int * width_value, int * height_value)
     {
-        int tSize = (int)textToRender.size();
+        int tSize = (int)text_to_render.size();
         if( tSize > 0)
         {
-            *wVal = numberWidth*tSize;
-            *hVal = numberHeight;
+            *width_value = number_width*tSize;
+            *height_value = number_height;
         }
         else
         {
-            *wVal = 0;
-            *hVal = 0;
+            *width_value = 0;
+            *height_value = 0;
         }
     }
 
-    void font_sdl_tff::get_wrapped_string_metrics( const std::string strIn, int lineWidth, int linePadding, int * wVal, int *hVal )
+    void font_sdl_tff::get_wrapped_string_metrics( const std::string str_in, int line_width, int linePadding, int * width_value, int *height_value )
     {
-        if( (int)strIn.size() == 0 || lineWidth <=0 )
+        if( (int)str_in.size() == 0 || line_width <=0 )
         {
             return;
         }
         std::vector < std::string > wrappedTextLine;
-        stg_ex::wrap_string( strIn, wrappedTextLine, lineWidth);
+        stg_ex::wrap_string( str_in, wrappedTextLine, line_width);
         if( (int)wrappedTextLine.size() == 0  )
         {
-            *wVal = 0;
-            *hVal = 0;
+            *width_value = 0;
+            *height_value = 0;
         }
         else if( (int)wrappedTextLine.size() == 1 )
         {
@@ -306,75 +306,75 @@ namespace gpe
         return heldSDLFont;
     }
 
-    font_pair_base * font_sdl_tff::find_character_texture( const std::string numbId )
+    font_pair_base * font_sdl_tff::find_character_texture( const std::string id_number )
     {
-        return find_character_texture_sdl( numbId );
+        return find_character_texture_sdl( id_number );
     }
 
-    font_pair_sdl * font_sdl_tff::find_character_texture_sdl( const std::string numbId )
+    font_pair_sdl * font_sdl_tff::find_character_texture_sdl( const std::string id_number )
     {
         font_pair_sdl * fPair = NULL;
         SDL_Texture * fSDLTexture = NULL;
         std::map<std::string,font_pair_sdl *>::iterator foundVal;
-        foundVal = characterPairs.find( numbId );
+        foundVal = characterPairs.find( id_number );
         if( foundVal !=  characterPairs.end() )
         {
             fPair = foundVal->second;
-            if( fPair!=NULL && fPair->texture_matches(numbId) )
+            if( fPair!=NULL && fPair->texture_matches(id_number) )
             {
                 return fPair;
             }
         }
         else
         {
-            if( numbId!=" ")
+            if( id_number!=" ")
             {
-                fPair = new font_pair_sdl(heldSDLFont,numbId);
-                characterPairs[numbId] = fPair;
+                fPair = new font_pair_sdl(heldSDLFont,id_number);
+                characterPairs[id_number] = fPair;
                 return fPair;
             }
         }
         return NULL;
     }
 
-    font_pair_base * font_sdl_tff::find_texture( const std::string textToRender)
+    font_pair_base * font_sdl_tff::find_texture( const std::string text_to_render)
     {
-        return find_texture_sdl( textToRender );
+        return find_texture_sdl( text_to_render );
     }
 
-    font_pair_sdl * font_sdl_tff::find_texture_sdl( const std::string textToRender)
+    font_pair_sdl * font_sdl_tff::find_texture_sdl( const std::string text_to_render)
     {
         font_pair_sdl * fPair = NULL;
         SDL_Texture * fSDLTexture = NULL;
         std::map< const std::string,font_pair_sdl *>::iterator foundVal;
-        foundVal = textPairs.find( textToRender );
+        foundVal = textPairs.find( text_to_render );
         if( foundVal !=  textPairs.end() )
         {
             return foundVal->second;
         }
-        else if( textToRender!=" ")
+        else if( text_to_render!=" ")
         {
-            fPair = new font_pair_sdl(heldSDLFont,textToRender);
-            textPairs[textToRender] = fPair;
+            fPair = new font_pair_sdl(heldSDLFont,text_to_render);
+            textPairs[text_to_render] = fPair;
             return fPair;
         }
         return NULL;
     }
 
-    void font_sdl_tff::render_bitmapped_text( int xPos, int yPos, std::string numberToRender, color * textColor, int hAlign,int vAlign, int renderAlpha )
+    void font_sdl_tff::render_bitmapped_text( int x_pos, int y_pos, std::string number_to_render, color * text_color, int alignment_h,int alignment_v, int render_alpha )
     {
-        int numberSize = (int)numberToRender.size();
-        if( renderAlpha > 0 && numberSize >0 )
+        int numberSize = (int)number_to_render.size();
+        if( render_alpha > 0 && numberSize >0 )
         {
-            switch(hAlign)
+            switch(alignment_h)
             {
             case gpe::fa_center:
-                xPos=xPos-(numberWidth*numberSize)/2;
+                x_pos=x_pos-(number_width*numberSize)/2;
                 //last_used_halign=gpe::fa_center;
                 break;
 
             case gpe::fa_right:
-                xPos=xPos-(numberWidth*numberSize);
+                x_pos=x_pos-(number_width*numberSize);
                 // last_used_halign=gpe::fa_right;
                 break;
 
@@ -383,15 +383,15 @@ namespace gpe
                 // last_used_halign=gpe::fa_left;
                 break;
             }
-            switch(vAlign)
+            switch(alignment_v)
             {
             case gpe::fa_middle:
-                yPos=yPos-numberHeight/2;
+                y_pos=y_pos-number_height/2;
                 // last_used_valign=gpe::fa_middle;
                 break;
 
             case gpe::fa_bottom:
-                yPos=yPos-numberHeight;
+                y_pos=y_pos-number_height;
                 // last_used_valign=gpe::fa_middle;
                 break;
 
@@ -406,96 +406,96 @@ namespace gpe
             std::string currCharacter = "";
             for( i = 0; i < numberSize; i++)
             {
-                currCharacter = stg_ex::get_substring(numberToRender,i,1);
+                currCharacter = stg_ex::get_substring(number_to_render,i,1);
                 strTex = find_character_texture_sdl( currCharacter );
                 if( strTex!=NULL)
                 {
                     fPairTex = strTex->get_texture();
-                    if( renderAlpha > 255)
+                    if( render_alpha > 255)
                     {
-                        renderAlpha = 255;
+                        render_alpha = 255;
                     }
-                    if( fPairTex!=NULL && renderAlpha >0)
+                    if( fPairTex!=NULL && render_alpha >0)
                     {
                         int texWid = 0;
                         int texHeight =0;
-                        SDL_SetTextureColorMod( fPairTex, textColor->get_r(), textColor->get_g(), textColor->get_b() );
+                        SDL_SetTextureColorMod( fPairTex, text_color->get_r(), text_color->get_g(), text_color->get_b() );
 
-                        if( strTex->lastAlphaRendered!=renderAlpha )
+                        if( strTex->lastAlphaRendered!=render_alpha )
                         {
-                            SDL_SetTextureAlphaMod(fPairTex,renderAlpha);
-                            strTex->lastAlphaRendered = renderAlpha;
+                            SDL_SetTextureAlphaMod(fPairTex,render_alpha);
+                            strTex->lastAlphaRendered = render_alpha;
                         }
                         //Get image dimensions
                         texWid = strTex->get_width();
                         texHeight = strTex->get_height();
 
-                        if(hAlign<gpe::fa_left || hAlign<0)
+                        if(alignment_h<gpe::fa_left || alignment_h<0)
                         {
-                            hAlign=last_used_halign;
+                            alignment_h=last_used_halign;
                         }
-                        if(vAlign <gpe::fa_top || vAlign<0)
+                        if(alignment_v <gpe::fa_top || alignment_v<0)
                         {
-                            vAlign=last_used_valign;
+                            alignment_v=last_used_valign;
                         }
-                        SDL_Rect clip = {xPos, yPos, texWid,texHeight};
+                        SDL_Rect clip = {x_pos, y_pos, texWid,texHeight};
                         SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),fPairTex, NULL, &clip);
                         SDL_SetTextureColorMod( fPairTex, c_white->get_r(), c_white->get_g(), c_white->get_b() );
                     }
                 }
-                xPos+=numberWidth;
+                x_pos+=number_width;
             }
         }
     }
 
-    void font_sdl_tff::render_text( int xPos, int yPos, std::string textureText, color * textColor, int hAlign,int vAlign,int renderAlpha )
+    void font_sdl_tff::render_text( int x_pos, int y_pos, std::string text_to_render, color * text_color, int alignment_h,int alignment_v,int render_alpha )
     {
-        if( renderAlpha > 0 && textColor!=NULL)
+        if( render_alpha > 0 && text_color!=NULL)
         {
-            //SDL_SetRenderDrawColor( renderer_main_sdl->get_sdl_renderer(), textColor->get_r(), textColor->get_g(), textColor->get_b(), 255 );
-            font_pair_sdl * strTex = find_texture_sdl(textureText);
+            //SDL_SetRenderDrawColor( renderer_main_sdl->get_sdl_renderer(), text_color->get_r(), text_color->get_g(), text_color->get_b(), 255 );
+            font_pair_sdl * strTex = find_texture_sdl(text_to_render);
             SDL_Texture * fPairTex=  NULL;
             if( strTex!=NULL)
             {
                 fPairTex = strTex->get_texture();
 
-                if( fPairTex!=NULL && renderAlpha >0)
+                if( fPairTex!=NULL && render_alpha >0)
                 {
-                    if( renderAlpha >= 255)
+                    if( render_alpha >= 255)
                     {
-                        renderAlpha = 255;
+                        render_alpha = 255;
                     }
                     int texWid = 0;
                     int texHeight =0;
-                    SDL_SetTextureColorMod( fPairTex, textColor->get_r(), textColor->get_g(), textColor->get_b() );
+                    SDL_SetTextureColorMod( fPairTex, text_color->get_r(), text_color->get_g(), text_color->get_b() );
 
-                    if( strTex->lastAlphaRendered!=renderAlpha )
+                    if( strTex->lastAlphaRendered!=render_alpha )
                     {
-                        SDL_SetTextureAlphaMod(fPairTex,renderAlpha);
-                        strTex->lastAlphaRendered = renderAlpha;
+                        SDL_SetTextureAlphaMod(fPairTex,render_alpha);
+                        strTex->lastAlphaRendered = render_alpha;
                     }
                     //Get image dimensions
                     texWid = strTex->get_width();
                     texHeight = strTex->get_height();
 
-                    if(hAlign<gpe::fa_left || hAlign > gpe::fa_right )
+                    if(alignment_h<gpe::fa_left || alignment_h > gpe::fa_right )
                     {
-                        hAlign=last_used_halign;
+                        alignment_h=last_used_halign;
                     }
 
-                    if(vAlign < gpe::fa_top || vAlign > gpe::fa_bottom )
+                    if(alignment_v < gpe::fa_top || alignment_v > gpe::fa_bottom )
                     {
-                        vAlign=last_used_valign;
+                        alignment_v=last_used_valign;
                     }
-                    switch(hAlign)
+                    switch(alignment_h)
                     {
                     case gpe::fa_center:
-                        xPos=xPos-texWid/2;
+                        x_pos=x_pos-texWid/2;
                         //last_used_halign=gpe::fa_center;
                         break;
 
                     case gpe::fa_right:
-                        xPos=xPos-texWid;
+                        x_pos=x_pos-texWid;
                         // last_used_halign=gpe::fa_right;
                         break;
 
@@ -504,15 +504,15 @@ namespace gpe
                         // last_used_halign=gpe::fa_left;
                         break;
                     }
-                    switch(vAlign)
+                    switch(alignment_v)
                     {
                         case gpe::fa_middle:
-                            yPos=yPos-texHeight/2;
+                            y_pos=y_pos-texHeight/2;
                             // last_used_valign=gpe::fa_middle;
                         break;
 
                         case gpe::fa_bottom:
-                            yPos=yPos-texHeight;
+                            y_pos=y_pos-texHeight;
                             // last_used_valign=gpe::fa_middle;
                         break;
 
@@ -521,36 +521,36 @@ namespace gpe
                             //last_used_valign=gpe::fa_top;
                         break;
                         }
-                    SDL_Rect clip = {xPos, yPos, texWid,texHeight};
+                    SDL_Rect clip = {x_pos, y_pos, texWid,texHeight};
                     SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),fPairTex, NULL, &clip);
                     SDL_SetTextureColorMod( fPairTex, c_white->get_r(), c_white->get_g(), c_white->get_b() );
                 }
                 else
                 {
-                    gpe::error_log->report("Unable to find sdl_text for ["+textureText+"]...");
+                    gpe::error_log->report("Unable to find sdl_text for ["+text_to_render+"]...");
                 }
             }
             else
             {
-                gpe::error_log->report("Unable to render ["+textureText+"]...");
+                gpe::error_log->report("Unable to render ["+text_to_render+"]...");
             }
         }
         else
         {
-            gpe::error_log->report("Unable to render text  ["+textureText+"]...");
+            gpe::error_log->report("Unable to render text  ["+text_to_render+"]...");
         }
     }
 
-    void font_sdl_tff::render_text_scaled( int xPos, int yPos, std::string textureText, color * textColor, float textScale, int hAlign,int vAlign, int renderAlpha )
+    void font_sdl_tff::render_text_scaled( int x_pos, int y_pos, std::string text_to_render, color * text_color, float text_scale, int alignment_h,int alignment_v, int render_alpha )
     {
 
     }
 
-    void font_sdl_tff::render_text_resized( int xPos, int yPos, std::string textureText, color * textColor, int hAlign,int vAlign, int rendWid, int rendHeight, int renderAlpha )
+    void font_sdl_tff::render_text_resized( int x_pos, int y_pos, std::string text_to_render, color * text_color, int alignment_h,int alignment_v, int render_width, int render_height, int render_alpha )
     {
-        if( renderAlpha > 0)
+        if( render_alpha > 0)
         {
-            font_pair_sdl * strTex = find_texture_sdl(textureText);
+            font_pair_sdl * strTex = find_texture_sdl(text_to_render);
             if( strTex!=NULL)
             {
                 SDL_Texture * fPairTex = strTex->get_texture();
@@ -558,53 +558,53 @@ namespace gpe
                 {
                     int texWid = 0;
                     int texHeight =0;
-                    SDL_SetTextureColorMod( fPairTex, textColor->get_r(), textColor->get_g(), textColor->get_b() );
-                    if( strTex->lastAlphaRendered!=renderAlpha )
+                    SDL_SetTextureColorMod( fPairTex, text_color->get_r(), text_color->get_g(), text_color->get_b() );
+                    if( strTex->lastAlphaRendered!=render_alpha )
                     {
-                        SDL_SetTextureAlphaMod(fPairTex,renderAlpha);
-                        strTex->lastAlphaRendered = renderAlpha;
+                        SDL_SetTextureAlphaMod(fPairTex,render_alpha);
+                        strTex->lastAlphaRendered = render_alpha;
                     }
                     //Get image dimensions
                     texWid = strTex->get_width();
                     texHeight = strTex->get_height();
 
                     //Get image dimensions
-                    if( rendWid<=0 || rendWid > strTex->get_width())
+                    if( render_width<=0 || render_width > strTex->get_width())
                     {
                         texWid = strTex->get_width();
                     }
                     else
                     {
-                        texWid = rendWid;
+                        texWid = render_width;
                     }
 
-                    if( rendHeight<=0 || rendHeight > strTex->get_height() )
+                    if( render_height<=0 || render_height > strTex->get_height() )
                     {
                         texHeight = strTex->get_height();
                     }
                     else
                     {
-                        texHeight = rendHeight;
+                        texHeight = render_height;
                     }
 
-                    if(hAlign<gpe::fa_left || hAlign > gpe::fa_right )
+                    if(alignment_h<gpe::fa_left || alignment_h > gpe::fa_right )
                     {
-                        hAlign=last_used_halign;
+                        alignment_h=last_used_halign;
                     }
 
-                    if(vAlign < gpe::fa_top || vAlign > gpe::fa_bottom )
+                    if(alignment_v < gpe::fa_top || alignment_v > gpe::fa_bottom )
                     {
-                        vAlign=last_used_valign;
+                        alignment_v=last_used_valign;
                     }
-                    switch(hAlign)
+                    switch(alignment_h)
                     {
                     case gpe::fa_center:
-                        xPos=xPos-texWid/2;
+                        x_pos=x_pos-texWid/2;
                         //last_used_halign=gpe::fa_center;
                         break;
 
                     case gpe::fa_right:
-                        xPos=xPos-texWid;
+                        x_pos=x_pos-texWid;
                         // last_used_halign=gpe::fa_right;
                         break;
 
@@ -613,15 +613,15 @@ namespace gpe
                         // last_used_halign=gpe::fa_left;
                         break;
                     }
-                    switch(vAlign)
+                    switch(alignment_v)
                     {
                     case gpe::fa_middle:
-                        yPos=yPos-texHeight/2;
+                        y_pos=y_pos-texHeight/2;
                         // last_used_valign=gpe::fa_middle;
                         break;
 
                     case gpe::fa_bottom:
-                        yPos=yPos-texHeight;
+                        y_pos=y_pos-texHeight;
                         // last_used_valign=gpe::fa_middle;
                         break;
 
@@ -631,61 +631,61 @@ namespace gpe
                         break;
                     }
 
-                    SDL_Rect clip = {xPos, yPos, texWid,texHeight};
-                    SDL_Rect renderRect = {0, 0, texWid, texHeight};
-                    SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),fPairTex, &renderRect, &clip);
+                    SDL_Rect clip = {x_pos, y_pos, texWid,texHeight};
+                    SDL_Rect render_rect = {0, 0, texWid, texHeight};
+                    SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),fPairTex, &render_rect, &clip);
                     SDL_SetTextureColorMod( fPairTex, c_white->get_r(), c_white->get_g(), c_white->get_b() );
                 }
             }
         }
     }
 
-    void font_sdl_tff::render_text_boxed( int xPos, int yPos, std::string textureText, color * textColor,color * boxColor,int hAlign,int vAlign, int renderAlpha )
+    void font_sdl_tff::render_text_boxed( int x_pos, int y_pos, std::string text_to_render, color * text_color,color * boxColor,int alignment_h,int alignment_v, int render_alpha )
     {
-        if( renderAlpha > 0)
+        if( render_alpha > 0)
         {
-            font_pair_sdl * strTex = find_texture_sdl(textureText);
+            font_pair_sdl * strTex = find_texture_sdl(text_to_render);
             SDL_Texture * fPairTex=  NULL;
             if( strTex!=NULL)
             {
                 fPairTex = strTex->get_texture();
-                if( renderAlpha > 255)
+                if( render_alpha > 255)
                 {
-                    renderAlpha = 255;
+                    render_alpha = 255;
                 }
-                if( fPairTex!=NULL && renderAlpha >0)
+                if( fPairTex!=NULL && render_alpha >0)
                 {
                     int texWid = 0;
                     int texHeight =0;
-                    SDL_SetTextureColorMod( fPairTex, textColor->get_r(), textColor->get_g(), textColor->get_b() );
+                    SDL_SetTextureColorMod( fPairTex, text_color->get_r(), text_color->get_g(), text_color->get_b() );
 
-                    if( strTex->lastAlphaRendered!=renderAlpha )
+                    if( strTex->lastAlphaRendered!=render_alpha )
                     {
-                        SDL_SetTextureAlphaMod(fPairTex,renderAlpha);
-                        strTex->lastAlphaRendered = renderAlpha;
+                        SDL_SetTextureAlphaMod(fPairTex,render_alpha);
+                        strTex->lastAlphaRendered = render_alpha;
                     }
                     //Get image dimensions
                     texWid = strTex->get_width();
                     texHeight = strTex->get_height();
 
-                    if(hAlign<gpe::fa_left || hAlign > gpe::fa_right )
+                    if(alignment_h<gpe::fa_left || alignment_h > gpe::fa_right )
                     {
-                        hAlign=last_used_halign;
+                        alignment_h=last_used_halign;
                     }
 
-                    if(vAlign < gpe::fa_top || vAlign > gpe::fa_bottom )
+                    if(alignment_v < gpe::fa_top || alignment_v > gpe::fa_bottom )
                     {
-                        vAlign=last_used_valign;
+                        alignment_v=last_used_valign;
                     }
-                    switch(hAlign)
+                    switch(alignment_h)
                     {
                     case gpe::fa_center:
-                        xPos=xPos-texWid/2;
+                        x_pos=x_pos-texWid/2;
                         //last_used_halign=gpe::fa_center;
                         break;
 
                     case gpe::fa_right:
-                        xPos=xPos-texWid;
+                        x_pos=x_pos-texWid;
                         // last_used_halign=gpe::fa_right;
                         break;
 
@@ -694,15 +694,15 @@ namespace gpe
                         // last_used_halign=gpe::fa_left;
                         break;
                     }
-                    switch(vAlign)
+                    switch(alignment_v)
                     {
                     case gpe::fa_middle:
-                        yPos=yPos-texHeight/2;
+                        y_pos=y_pos-texHeight/2;
                         // last_used_valign=gpe::fa_middle;
                         break;
 
                     case gpe::fa_bottom:
-                        yPos=yPos-texHeight;
+                        y_pos=y_pos-texHeight;
                         // last_used_valign=gpe::fa_middle;
                         break;
 
@@ -712,12 +712,12 @@ namespace gpe
                         break;
                     }
                     gpe::shape_rect gpeClip;
-                    gpeClip.x = xPos;
-                    gpeClip.y = yPos;
+                    gpeClip.x = x_pos;
+                    gpeClip.y = y_pos;
                     gpeClip.w = texWid;
                     gpeClip.h = texHeight;
-                    SDL_Rect sdlClip = {xPos, yPos, texWid,texHeight};
-                    gpe::gcanvas->render_rect(  &gpeClip,boxColor,false,renderAlpha );
+                    SDL_Rect sdlClip = {x_pos, y_pos, texWid,texHeight};
+                    gpe::gcanvas->render_rect(  &gpeClip,boxColor,false,render_alpha );
                     SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),fPairTex, NULL, &sdlClip);
                     SDL_SetTextureColorMod( fPairTex, c_white->get_r(), c_white->get_g(), c_white->get_b() );
                 }
@@ -725,35 +725,35 @@ namespace gpe
         }
     }
 
-    void font_sdl_tff::render_text_rotated( int xPos, int yPos, std::string textureText, color * textColor, float textAngle, int renderAlpha )
+    void font_sdl_tff::render_text_rotated( int x_pos, int y_pos, std::string text_to_render, color * text_color, float textAngle, int render_alpha )
     {
-        if( renderAlpha > 0)
+        if( render_alpha > 0)
         {
-            font_pair_sdl * strTex = find_texture_sdl(textureText);
+            font_pair_sdl * strTex = find_texture_sdl(text_to_render);
             SDL_Texture * fPairTex=  NULL;
             if( strTex!=NULL)
             {
                 fPairTex = strTex->get_texture();
-                if( renderAlpha > 255)
+                if( render_alpha > 255)
                 {
-                    renderAlpha = 255;
+                    render_alpha = 255;
                 }
-                if( fPairTex!=NULL && renderAlpha >0)
+                if( fPairTex!=NULL && render_alpha >0)
                 {
                     int texWid = 0;
                     int texHeight =0;
-                    SDL_SetTextureColorMod( fPairTex, textColor->get_r(), textColor->get_g(), textColor->get_b() );
+                    SDL_SetTextureColorMod( fPairTex, text_color->get_r(), text_color->get_g(), text_color->get_b() );
 
-                    if( strTex->lastAlphaRendered!=renderAlpha )
+                    if( strTex->lastAlphaRendered!=render_alpha )
                     {
-                        SDL_SetTextureAlphaMod(fPairTex,renderAlpha);
-                        strTex->lastAlphaRendered = renderAlpha;
+                        SDL_SetTextureAlphaMod(fPairTex,render_alpha);
+                        strTex->lastAlphaRendered = render_alpha;
                     }
                     //Get image dimensions
                     texWid = strTex->get_width();
                     texHeight = strTex->get_height();
 
-                    SDL_Rect sdlDstrect = {xPos-texWid, yPos-texHeight, texWid,texHeight};
+                    SDL_Rect sdlDstrect = {x_pos-texWid, y_pos-texHeight, texWid,texHeight};
                     SDL_Point sdlCenterPoint = {texWid, texHeight};
                     SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),fPairTex, NULL,&sdlDstrect,textAngle,&sdlCenterPoint, SDL_FLIP_NONE );
                     SDL_SetTextureColorMod( fPairTex, c_white->get_r(), c_white->get_g(), c_white->get_b() );
@@ -762,11 +762,11 @@ namespace gpe
         }
     }
 
-    bool font_sdl_tff::render_text_special( int xPos, int yPos, std::string textureText, color * textColor, int hAlign,int vAlign, float renderAngle , float renderScale, int renderAlpha )
+    bool font_sdl_tff::render_text_special( int x_pos, int y_pos, std::string text_to_render, color * text_color, int alignment_h,int alignment_v, float render_angle , float render_scale, int render_alpha )
     {
-        if( renderAlpha > 0)
+        if( render_alpha > 0)
         {
-            font_pair_sdl * strTex = find_texture_sdl(textureText);
+            font_pair_sdl * strTex = find_texture_sdl(text_to_render);
             if( strTex!=NULL)
             {
                 SDL_Texture * fPairTex = strTex->get_texture();
@@ -774,47 +774,47 @@ namespace gpe
                 {
                     int texWid = 0;
                     int texHeight =0;
-                    SDL_SetTextureColorMod( fPairTex, textColor->get_r(), textColor->get_g(), textColor->get_b() );
-                    if( strTex->lastAlphaRendered!=renderAlpha )
+                    SDL_SetTextureColorMod( fPairTex, text_color->get_r(), text_color->get_g(), text_color->get_b() );
+                    if( strTex->lastAlphaRendered!=render_alpha )
                     {
-                        SDL_SetTextureAlphaMod(fPairTex,renderAlpha);
-                        strTex->lastAlphaRendered = renderAlpha;
+                        SDL_SetTextureAlphaMod(fPairTex,render_alpha);
+                        strTex->lastAlphaRendered = render_alpha;
                     }
                     //Get image dimensions
-                    texWid = (float)strTex->get_width() * renderScale;
-                    texHeight = (float)strTex->get_height() * renderScale;
+                    texWid = (float)strTex->get_width() * render_scale;
+                    texHeight = (float)strTex->get_height() * render_scale;
 
                     //Get image dimensions
                     if( texWid < 0)
                     {
                         texWid *=-1;
-                        renderAngle *=-1;
+                        render_angle *=-1;
                     }
 
                     if( texHeight<0 )
                     {
                         texHeight *=-1;
-                        renderAngle *=-1;
+                        render_angle *=-1;
                     }
 
-                    if(hAlign<gpe::fa_left || hAlign > gpe::fa_right )
+                    if(alignment_h<gpe::fa_left || alignment_h > gpe::fa_right )
                     {
-                        hAlign=last_used_halign;
+                        alignment_h=last_used_halign;
                     }
 
-                    if(vAlign < gpe::fa_top || vAlign > gpe::fa_bottom )
+                    if(alignment_v < gpe::fa_top || alignment_v > gpe::fa_bottom )
                     {
-                        vAlign=last_used_valign;
+                        alignment_v=last_used_valign;
                     }
-                    switch(hAlign)
+                    switch(alignment_h)
                     {
                     case gpe::fa_center:
-                        xPos=xPos-texWid/2;
+                        x_pos=x_pos-texWid/2;
                         //last_used_halign=gpe::fa_center;
                         break;
 
                     case gpe::fa_right:
-                        xPos=xPos-texWid;
+                        x_pos=x_pos-texWid;
                         // last_used_halign=gpe::fa_right;
                         break;
 
@@ -823,15 +823,15 @@ namespace gpe
                         // last_used_halign=gpe::fa_left;
                         break;
                     }
-                    switch(vAlign)
+                    switch(alignment_v)
                     {
                     case gpe::fa_middle:
-                        yPos=yPos-texHeight/2;
+                        y_pos=y_pos-texHeight/2;
                         // last_used_valign=gpe::fa_middle;
                         break;
 
                     case gpe::fa_bottom:
-                        yPos=yPos-texHeight;
+                        y_pos=y_pos-texHeight;
                         // last_used_valign=gpe::fa_middle;
                         break;
 
@@ -841,8 +841,8 @@ namespace gpe
                         break;
                     }
 
-                    SDL_Rect renderRect = {xPos, yPos, texWid,texHeight};
-                    SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),fPairTex, NULL,  &renderRect, -renderAngle,  NULL, SDL_FLIP_NONE );
+                    SDL_Rect render_rect = {x_pos, y_pos, texWid,texHeight};
+                    SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),fPairTex, NULL,  &render_rect, -render_angle,  NULL, SDL_FLIP_NONE );
                     SDL_SetTextureColorMod( fPairTex, c_white->get_r(), c_white->get_g(), c_white->get_b() );
                     return true;
                 }

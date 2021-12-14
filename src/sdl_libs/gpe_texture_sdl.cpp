@@ -3,10 +3,10 @@ gpe_texture_sdl.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -31,9 +31,8 @@ SOFTWARE.
 
 */
 
-#include "gpe_texture_sdl.h"
 
-#define SDL_BLENDMODE_MUL (SDL_BlendMode)0x00000008
+#include "gpe_texture_sdl.h"
 
 namespace gpe
 {
@@ -60,20 +59,20 @@ namespace gpe
         }
     }
 
-    void texture_sdl::change_color( color * newColor)
+    void texture_sdl::change_color( color * color_new)
     {
         if(texImg!=NULL)
         {
-            if( newColor!=NULL)
+            if( color_new!=NULL)
             {
-                if( newColor->get_r() == currentR && newColor->get_g() == currentG && newColor->get_b() == currentB )
+                if( color_new->get_r() == currentR && color_new->get_g() == currentG && color_new->get_b() == currentB )
                 {
                     return;
                 }
-                SDL_SetTextureColorMod( texImg, newColor->get_r(), newColor->get_g(), newColor->get_b() );
-                currentR = newColor->get_r();
-                currentG = newColor->get_g();
-                currentB = newColor->get_b();
+                SDL_SetTextureColorMod( texImg, color_new->get_r(), color_new->get_g(), color_new->get_b() );
+                currentR = color_new->get_r();
+                currentG = color_new->get_g();
+                currentB = color_new->get_b();
             }
             else if( currentR != 255 &&  currentG != 255 &&  currentB != 255 )
             {
@@ -117,11 +116,11 @@ namespace gpe
         }
     }
 
-    bool texture_sdl::copy_image_source(std::string outDirectoryName)
+    bool texture_sdl::copy_image_source(std::string directory_output_name)
     {
-        if( get_width()>0)
+        if( get_width()>0 )
         {
-            std::string copyDestinationStr = outDirectoryName+"/"+ stg_ex::get_short_filename(fileLocation,true);
+            std::string copyDestinationStr = directory_output_name+"/"+ stg_ex::get_short_filename(fileLocation,true);
             return sff_ex::file_copy(fileLocation,copyDestinationStr );
         }
         return false;
@@ -157,7 +156,7 @@ namespace gpe
         return sdlRenderer->get_sdl_renderer();
     }
 
-    void texture_sdl::load_new_texture( renderer_base * renderer,std::string fileName, int id, bool transparent, bool useLinearScaling )
+    void texture_sdl::load_new_texture( renderer_base * renderer,std::string file_name, int id, bool transparent, bool useLinearScaling )
     {
         if(texImg!=NULL)
         {
@@ -167,15 +166,15 @@ namespace gpe
         texId=id;
         isTransparent = transparent;
         //The image that's loaded
-        if( sff_ex::file_exists(fileName ) == false )
+        if( sff_ex::file_exists(file_name ) == false )
         {
-            error_log->report("[Bad] Unable to load filed  <"+fileName+">. Error: FILE_NOT_FOUND.");
+            error_log->report("[Bad] Unable to load filed  <"+file_name+">. Error: FILE_NOT_FOUND.");
             return;
         }
         currentBlendMode = blend_mode_blend;
 
         //Load the image
-        SDL_Surface * loadedImage = sdl_surface_ex::load_surface_image( fileName.c_str() );
+        SDL_Surface * loadedImage = sdl_surface_ex::load_surface_image( file_name.c_str() );
 
         //If the image loaded
         if( loadedImage == NULL )
@@ -183,7 +182,7 @@ namespace gpe
             texWid = 0;
             texHeight = 0;
             fileLocation ="notfound.png";
-            error_log->report("[Bad] Unable to load filed loacated at <"+fileName+">. Error: "+IMG_GetError()+".");
+            error_log->report("[Bad] Unable to load filed loacated at <"+file_name+">. Error: "+IMG_GetError()+".");
             return;
         }
 
@@ -194,12 +193,12 @@ namespace gpe
         }
         else
         {
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
         }
         texWid = loadedImage->w;
         texHeight = loadedImage->h;
         texImg = sdl_surface_ex::create_texture_from_surface( get_sdl_renderer( renderer ),loadedImage);
-        fileLocation = fileName;
+        fileLocation = file_name;
 
         texId = id;
         if(texImg==NULL)
@@ -207,7 +206,7 @@ namespace gpe
             texWid = 0;
             texHeight = 0;
             fileLocation ="notfound.png";
-            error_log->report("[Bad] Unable to load file loacated at <"+fileName+">. Error: "+IMG_GetError()+".\n");
+            error_log->report("[Bad] Unable to load file loacated at <"+file_name+">. Error: "+IMG_GetError()+".\n");
         }
     }
 
@@ -239,8 +238,9 @@ namespace gpe
         texHeight = rad*2;
 
         fileLocation = "circle:rad:"+ stg_ex::int_to_string(rad);
-        SDL_Surface * loadedImage = sdl_surface_ex::create_filled_surface_rgba( rad * 2,  rad * 2, c_gray->get_r(),c_gray->get_g(),c_gray->get_b(), 0 );
-        SDL_SetColorKey( loadedImage, SDL_TRUE, SDL_MapRGBA( loadedImage->format, c_gray->get_r(), c_gray->get_g(),c_gray->get_b(),0 ) );
+        SDL_Surface * loadedImage = sdl_surface_ex::create_filled_surface_rgba( rad * 2,  rad * 2, c_white->get_r(),c_white->get_g(),c_white->get_b() );
+        SDL_SetSurfaceRLE( loadedImage,3 );
+        SDL_SetColorKey( loadedImage, SDL_TRUE, SDL_MapRGB( loadedImage->format, c_white->get_r(), c_white->get_g(),c_white->get_b() ) );
         SDL_SetSurfaceBlendMode( loadedImage, SDL_BLENDMODE_BLEND );
 
         //If the image loaded
@@ -251,12 +251,11 @@ namespace gpe
             fileLocation ="notfound.png";
             return;
         }
-
-        sdl_surface_ex::surface_render_circle_color_rgba( loadedImage, rad, rad, rad, circleColor->get_r(), circleColor->get_g(),circleColor->get_b(), 255  );
         SDL_SetSurfaceBlendMode( loadedImage, SDL_BLENDMODE_BLEND );
+        sdl_surface_ex::surface_render_circle_color_rgba( loadedImage, rad, rad, rad, circleColor->get_r(), circleColor->get_g(),circleColor->get_b(), 255  );
         //If the image loaded
         //Create an optimized surface
-        texImg = sdl_surface_ex::create_texture_from_surface( sdlRenderer, loadedImage);
+        texImg = sdl_surface_ex::create_texture_from_surface( sdlRenderer, loadedImage, SDL_PIXELFORMAT_RGBA8888);
         if( texImg!=NULL )
         {
             texWid = rad*2;
@@ -276,7 +275,7 @@ namespace gpe
 
     }
 
-    void texture_sdl::prerender_rectangle( renderer_base * renderer, int w, int h, color * newColor, int id, bool transparent, bool useLinearScaling , bool isOutline)
+    void texture_sdl::prerender_rectangle( renderer_base * renderer, int w, int h, color * color_new, int id, bool transparent, bool useLinearScaling , bool isOutline)
     {
         if( renderer == NULL)
         {
@@ -299,9 +298,9 @@ namespace gpe
         {
             currentBlendMode = blend_mode_blend;
             SDL_Surface * loadedImage = NULL;
-            if( newColor!=NULL )
+            if( color_new!=NULL )
             {
-                loadedImage = sdl_surface_ex::create_filled_surface_rgba( w, h,newColor->get_r(),newColor->get_g(),newColor->get_b() );
+                loadedImage = sdl_surface_ex::create_filled_surface_rgba( w, h,color_new->get_r(),color_new->get_g(),color_new->get_b() );
             }
             else
             {
@@ -318,7 +317,7 @@ namespace gpe
                 }
                 else
                 {
-                    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+                    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
                 }
                 texWid = loadedImage->w;
                 texHeight = loadedImage->h;
@@ -331,11 +330,11 @@ namespace gpe
                     texWid = 0;
                     texHeight = 0;
                     fileLocation ="notfound.png";
-                    //error_log->report("[Bad] Unable to load file loacated at <"+fileName+">. Error: "+IMG_GetError()+".\n");
+                    //error_log->report("[Bad] Unable to load file loacated at <"+file_name+">. Error: "+IMG_GetError()+".\n");
                 }
                 else
                 {
-                    //error_log->report("[GOOD] Loaded filed loacated at <"+fileName+"> with <"+ stg_ex::int_to_string(texWid)+" , "+ stg_ex::int_to_string(texHeight)+"> dimensions.");
+                    //error_log->report("[GOOD] Loaded filed loacated at <"+file_name+"> with <"+ stg_ex::int_to_string(texWid)+" , "+ stg_ex::int_to_string(texHeight)+"> dimensions.");
                 }
             }
             else
@@ -343,64 +342,64 @@ namespace gpe
                 texWid = 0;
                 texHeight = 0;
                 fileLocation ="notfound.png";
-                //error_log->report("[Bad] Unable to load filed loacated at <"+fileName+">. Error: "+IMG_GetError()+".");
+                //error_log->report("[Bad] Unable to load filed loacated at <"+file_name+">. Error: "+IMG_GetError()+".");
             }
         }
         else
         {
-            //error_log->report("[Bad] Unable to load filed  <"+fileName+">. Error: FILE_NOT_FOUND.");
+            //error_log->report("[Bad] Unable to load filed  <"+file_name+">. Error: FILE_NOT_FOUND.");
         }
     }
 
-    void texture_sdl::render_align(  int x, int y, int hAlign, int vAlign, gpe::shape_rect* clip, color * rendColor, int alpha )
+    void texture_sdl::render_align(  int x, int y, int alignment_h, int alignment_v, gpe::shape_rect* clip, color * render_color, int alpha )
     {
-        if(hAlign==gpe::fa_center)
+        if(alignment_h==gpe::fa_center)
         {
             x-=get_width()/2;
         }
-        else if( hAlign==gpe::fa_right)
+        else if( alignment_h==gpe::fa_right)
         {
             x-= get_width();
         }
 
-        if(vAlign==gpe::fa_middle)
+        if(alignment_v==gpe::fa_middle)
         {
             y-= get_height()/2;
         }
-        else if( vAlign==gpe::fa_bottom)
+        else if( alignment_v==gpe::fa_bottom)
         {
             y-= get_height();
         }
-        render_tex_colored( x,y, rendColor, alpha, clip );
+        render_tex_colored( x,y, render_color, alpha, clip );
     }
 
-    void texture_sdl::render_align_resized( int x, int y, int newWidth, int newHeight,  int hAlign, int vAlign, gpe::shape_rect* clip,color * renderColor, int alpha )
+    void texture_sdl::render_align_resized( int x, int y, int new_width, int new_height,  int alignment_h, int alignment_v, gpe::shape_rect* clip,color * render_color, int alpha )
     {
-        if(hAlign==gpe::fa_center)
+        if(alignment_h==gpe::fa_center)
         {
-            x-=newWidth/2;
+            x-=new_width/2;
         }
-        else if( hAlign==gpe::fa_right)
+        else if( alignment_h==gpe::fa_right)
         {
-            x-= newWidth;
+            x-= new_width;
         }
 
-        if(vAlign==gpe::fa_middle)
+        if(alignment_v==gpe::fa_middle)
         {
-            y-= newHeight/2;
+            y-= new_height/2;
         }
-        else if( vAlign==gpe::fa_bottom)
+        else if( alignment_v==gpe::fa_bottom)
         {
-            y-= newHeight;
+            y-= new_height;
         }
-        render_tex_resized( x,y,newWidth, newHeight,clip, renderColor, alpha );
+        render_tex_resized( x,y,new_width, new_height,clip, render_color, alpha );
     }
 
     void texture_sdl::render_tex(  int x, int y, gpe::shape_rect* clip , int alpha)
     {
         if(texImg!=NULL && alpha > 0 )
         {
-            SDL_Rect renderRect = { x, y, texWid, texHeight };
+            SDL_Rect render_rect = { x, y, texWid, texHeight };
 
             change_color( 255,255,255 );
             set_alpha( alpha );
@@ -414,24 +413,24 @@ namespace gpe
                 sdlClip.w = clip->w;
                 sdlClip.h = clip->h;
 
-                renderRect.w = clip->w;
-                renderRect.h = clip->h;
+                render_rect.w = clip->w;
+                render_rect.h = clip->h;
 
-                SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &renderRect);
+                SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &render_rect);
             }
             else
             {
-                SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &renderRect);
+                SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &render_rect);
             }
         }
     }
 
-    void texture_sdl::render_tex_colored(  int x, int y, color * rendColor, int alpha , gpe::shape_rect* clip   )
+    void texture_sdl::render_tex_colored(  int x, int y, color * render_color, int alpha , gpe::shape_rect* clip   )
     {
         if(texImg!=NULL && alpha > 0 )
         {
-            SDL_Rect renderRect = { x, y, texWid, texHeight };
-            change_color(rendColor);
+            SDL_Rect render_rect = { x, y, texWid, texHeight };
+            change_color(render_color);
             set_alpha( alpha );
             //Set clip rendering dimensions
             if( clip != NULL )
@@ -443,19 +442,19 @@ namespace gpe
                 sdlClip.w = clip->w;
                 sdlClip.h = clip->h;
 
-                renderRect.w = clip->w;
-                renderRect.h = clip->h;
+                render_rect.w = clip->w;
+                render_rect.h = clip->h;
 
-                SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &renderRect);
+                SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &render_rect);
             }
             else
             {
-                SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &renderRect);
+                SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &render_rect);
             }
         }
     }
 
-    void texture_sdl::render_tex_resized(  int x, int y, float newWidth, float newHeight, gpe::shape_rect* clip, color * renderColor, int alpha )
+    void texture_sdl::render_tex_resized(  int x, int y, float new_width, float new_height, gpe::shape_rect* clip, color * render_color, int alpha )
     {
         if(texImg!=NULL && alpha > 0 )
         {
@@ -463,38 +462,38 @@ namespace gpe
             {
                 if( clip->w !=0 && clip->h!= 0 )
                 {
-                    float foundXScale = newWidth/clip->w;
-                    float foundYScale = newHeight/clip->h;
-                    render_tex_scaled( x, y, foundXScale, foundYScale,clip, renderColor,alpha);
+                    float foundX_scale = new_width/clip->w;
+                    float foundY_scale = new_height/clip->h;
+                    render_tex_scaled( x, y, foundX_scale, foundY_scale,clip, render_color,alpha);
                 }
             }
             else
             {
                 if( texWid !=0 && texHeight!= 0 )
                 {
-                    float foundXScale = newWidth/(float)texWid;
-                    float foundYScale = newHeight/(float)texHeight;
-                    render_tex_scaled( x, y, foundXScale, foundYScale,clip, renderColor,alpha);
+                    float foundX_scale = new_width/(float)texWid;
+                    float foundY_scale = new_height/(float)texHeight;
+                    render_tex_scaled( x, y, foundX_scale, foundY_scale,clip, render_color,alpha);
                 }
             }
             return;
         }
     }
 
-    void texture_sdl::render_tex_scaled(  int x, int y, float xScale, float yScale, gpe::shape_rect* clip, color * renderColor, int alpha )
+    void texture_sdl::render_tex_scaled(  int x, int y, float x_scale, float y_scale, gpe::shape_rect* clip, color * render_color, int alpha )
     {
-        if( xScale == 0 || yScale == 0 )
+        if( x_scale == 0 || y_scale == 0 )
         {
             return;
         }
 
         if(texImg!=NULL)
         {
-            change_color(renderColor);
+            change_color(render_color);
             set_alpha( alpha );
 
-            int newWidth = 0;
-            int newHeight = 0;
+            int new_width = 0;
+            int new_height = 0;
             bool flipHori = false,  flipVert = false;
             if( clip != NULL )
             {
@@ -535,98 +534,98 @@ namespace gpe
                     sdlClip.h = texHeight - sdlClip.y;
                 }
 
-                if( xScale < 0 )
+                if( x_scale < 0 )
                 {
-                    newWidth = (float)sdlClip.w * -xScale;
+                    new_width = (float)sdlClip.w * -x_scale;
                     flipHori = true;
                 }
                 else
                 {
-                    newWidth = (float)sdlClip.w * xScale;
+                    new_width = (float)sdlClip.w * x_scale;
                 }
 
-                if( yScale < 0 )
+                if( y_scale < 0 )
                 {
-                    newHeight = (float)sdlClip.h * -yScale;
+                    new_height = (float)sdlClip.h * -y_scale;
                     flipVert = true;
                 }
                 else
                 {
-                    newHeight = (float)sdlClip.h * yScale;
+                    new_height = (float)sdlClip.h * y_scale;
                 }
-                SDL_Rect renderRect = { x, y, newWidth, newHeight };
+                SDL_Rect render_rect = { x, y, new_width, new_height };
                 if( flipHori )
                 {
                     if( flipVert )
                     {
-                        SDL_RenderCopyEx(renderer_main_sdl->get_sdl_renderer(), texImg, &sdlClip,&renderRect,0,NULL,renderer_main_sdl->bothFlip );
+                        SDL_RenderCopyEx(renderer_main_sdl->get_sdl_renderer(), texImg, &sdlClip,&render_rect,0,NULL,renderer_main_sdl->bothFlip );
 
                     }
                     else
                     {
-                        SDL_RenderCopyEx(renderer_main_sdl->get_sdl_renderer(), texImg, &sdlClip,&renderRect,0,NULL,renderer_main_sdl->horiFlip );
+                        SDL_RenderCopyEx(renderer_main_sdl->get_sdl_renderer(), texImg, &sdlClip,&render_rect,0,NULL,renderer_main_sdl->horiFlip );
                     }
                 }
                 else if( flipVert)
                 {
-                    SDL_RenderCopyEx(renderer_main_sdl->get_sdl_renderer(), texImg, &sdlClip,&renderRect,0,NULL, renderer_main_sdl->vertFlip );
+                    SDL_RenderCopyEx(renderer_main_sdl->get_sdl_renderer(), texImg, &sdlClip,&render_rect,0,NULL, renderer_main_sdl->vertFlip );
                 }
                 else
                 {
-                    SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &renderRect);
+                    SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &render_rect);
                 }
             }
             else
             {
-                if( xScale < 0 )
+                if( x_scale < 0 )
                 {
                     flipHori = true;
-                    newWidth = (float)texWid * -xScale;
+                    new_width = (float)texWid * -x_scale;
                 }
                 else
                 {
-                    newWidth = (float)texWid * xScale;
+                    new_width = (float)texWid * x_scale;
                 }
 
-                if( yScale < 0 )
+                if( y_scale < 0 )
                 {
                     flipVert = true;
-                    newHeight = (float)texHeight * -yScale;
+                    new_height = (float)texHeight * -y_scale;
                 }
                 else
                 {
-                    newHeight = (float)texHeight * yScale;
+                    new_height = (float)texHeight * y_scale;
                 }
-                SDL_Rect renderRect = { x, y, newWidth, newHeight };
+                SDL_Rect render_rect = { x, y, new_width, new_height };
                 if( flipHori )
                 {
                     if( flipVert )
                     {
-                        SDL_RenderCopyEx(renderer_main_sdl->get_sdl_renderer(), texImg, NULL,&renderRect,0,NULL, renderer_main_sdl->bothFlip );
+                        SDL_RenderCopyEx(renderer_main_sdl->get_sdl_renderer(), texImg, NULL,&render_rect,0,NULL, renderer_main_sdl->bothFlip );
                     }
                     else
                     {
-                        SDL_RenderCopyEx(renderer_main_sdl->get_sdl_renderer(), texImg, NULL,&renderRect,0,NULL, renderer_main_sdl->horiFlip );
+                        SDL_RenderCopyEx(renderer_main_sdl->get_sdl_renderer(), texImg, NULL,&render_rect,0,NULL, renderer_main_sdl->horiFlip );
                     }
                 }
                 else if( flipVert)
                 {
-                    SDL_RenderCopyEx(renderer_main_sdl->get_sdl_renderer(), texImg, NULL,&renderRect,0,NULL, renderer_main_sdl->vertFlip );
+                    SDL_RenderCopyEx(renderer_main_sdl->get_sdl_renderer(), texImg, NULL,&render_rect,0,NULL, renderer_main_sdl->vertFlip );
                 }
                 else
                 {
-                    SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &renderRect);
+                    SDL_RenderCopy( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &render_rect);
                 }
             }
         }
     }
 
-    void texture_sdl::render_tex_rotated(  int x, int y, float renderAngle, color * renderColor, gpe::shape_rect* clip , int alpha )
+    void texture_sdl::render_tex_rotated(  int x, int y, float render_angle, color * render_color, gpe::shape_rect* clip , int alpha )
     {
         if(texImg!=NULL && alpha > 0 )
         {
-            SDL_Rect renderRect = { x-texWid/2, y-texHeight/2, texWid, texHeight };
-            change_color(renderColor);
+            SDL_Rect render_rect = { x-texWid/2, y-texHeight/2, texWid, texHeight };
+            change_color(render_color);
             set_alpha( alpha );
             if( clip != NULL )
             {
@@ -637,59 +636,59 @@ namespace gpe
                 sdlClip.w = clip->w;
                 sdlClip.h = clip->h;
 
-                SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &renderRect, -renderAngle,NULL,SDL_FLIP_NONE);
+                SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &render_rect, -render_angle,NULL,SDL_FLIP_NONE);
             }
             else
             {
-                SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &renderRect, -renderAngle,NULL,SDL_FLIP_NONE );
+                SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &render_rect, -render_angle,NULL,SDL_FLIP_NONE );
             }
         }
     }
 
-    void texture_sdl::render_tex_rotated_at_point(  int x, int y, float renderAngle, int pointX, int pointY, color * renderColor, gpe::shape_rect* clip , int alpha )
+    void texture_sdl::render_tex_rotated_at_point(  int x, int y, float render_angle, int point_x, int point_y, color * render_color, gpe::shape_rect* clip , int alpha )
     {
         if(texImg!=NULL && alpha > 0 )
         {
-            SDL_Rect renderRect = { x-texWid/2, y-texHeight/2, texWid, texHeight };
-            change_color(renderColor);
+            SDL_Rect render_rect = { x-texWid/2, y-texHeight/2, texWid, texHeight };
+            change_color(render_color);
             set_alpha( alpha );
 
-            if( pointX < 0 )
+            if( point_x < 0 )
             {
-                if( pointX == gpe::fa_center )
+                if( point_x == gpe::fa_center )
                 {
                     renderer_main_sdl->defaultPoint.y = -texWid/2;
                 }
-                else if( pointX== gpe::fa_right )
+                else if( point_x== gpe::fa_right )
                 {
                     renderer_main_sdl->defaultPoint.y = -texWid;
                 }
 
             }
-            else if( pointX < texWid )
+            else if( point_x < texWid )
             {
-                renderer_main_sdl->defaultPoint.y = pointX;
+                renderer_main_sdl->defaultPoint.y = point_x;
             }
             else
             {
                 renderer_main_sdl->defaultPoint.y = 0;
             }
 
-            if( pointY < 0 )
+            if( point_y < 0 )
             {
-                if( pointY == gpe::fa_middle )
+                if( point_y == gpe::fa_middle )
                 {
                     renderer_main_sdl->defaultPoint.y = texHeight/2;
                 }
-                else if( pointY== gpe::fa_bottom )
+                else if( point_y== gpe::fa_bottom )
                 {
                     renderer_main_sdl->defaultPoint.y = texHeight;
                 }
 
             }
-            else if( pointY < texHeight )
+            else if( point_y < texHeight )
             {
-                renderer_main_sdl->defaultPoint.y = pointY;
+                renderer_main_sdl->defaultPoint.y = point_y;
             }
             else
             {
@@ -705,34 +704,34 @@ namespace gpe
                 sdlClip.w = clip->w;
                 sdlClip.h = clip->h;
 
-                SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &renderRect, -renderAngle,&renderer_main_sdl->defaultPoint,SDL_FLIP_NONE);
+                SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &render_rect, -render_angle,&renderer_main_sdl->defaultPoint,SDL_FLIP_NONE);
             }
             else
             {
-                SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &renderRect, -renderAngle,&renderer_main_sdl->defaultPoint,SDL_FLIP_NONE);
+                SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &render_rect, -render_angle,&renderer_main_sdl->defaultPoint,SDL_FLIP_NONE);
             }
         }
     }
 
-    void texture_sdl::render_tex_special(  int x, int y, float renderAngle, int newWidth, int newHeight, color * renderColor, gpe::shape_rect* clip , int alpha )
+    void texture_sdl::render_tex_special(  int x, int y, float render_angle, int new_width, int new_height, color * render_color, gpe::shape_rect* clip , int alpha )
     {
         if( texImg==NULL || alpha <= 0 )
         {
             return;
         }
 
-        if( newWidth <=0.f)
+        if( new_width <=0.f)
         {
-            newWidth = texWid;
+            new_width = texWid;
         }
-        if( newHeight<=0.f)
+        if( new_height<=0.f)
         {
-            newHeight = texHeight;
+            new_height = texHeight;
         }
-        SDL_Rect renderRect = { x-newWidth/2,y-newHeight/2, newWidth, newHeight };
+        SDL_Rect render_rect = { x-new_width/2,y-new_height/2, new_width, new_height };
 
 
-        change_color(renderColor);
+        change_color(render_color);
         set_alpha( alpha );
 
         renderer_main_sdl->defaultPoint.x = 0;
@@ -747,7 +746,7 @@ namespace gpe
             sdlClip.w = clip->w;
             sdlClip.h = clip->h;
 
-            SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &renderRect, -renderAngle, NULL,SDL_FLIP_NONE);
+            SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &render_rect, -render_angle, NULL,SDL_FLIP_NONE);
         }
         else
         {
@@ -756,74 +755,74 @@ namespace gpe
             sdlClip.y = 0;
             sdlClip.w = texWid;
             sdlClip.h = texHeight;
-            SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &renderRect, -renderAngle, NULL,SDL_FLIP_NONE );
+            SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &render_rect, -render_angle, NULL,SDL_FLIP_NONE );
         }
     }
 
-    void texture_sdl::render_tex_special_at_point(  int x, int y, float renderAngle, int pointX, int pointY,int newWidth, int newHeight, color * renderColor, gpe::shape_rect* clip , int alpha )
+    void texture_sdl::render_tex_special_at_point(  int x, int y, float render_angle, int point_x, int point_y,int new_width, int new_height, color * render_color, gpe::shape_rect* clip , int alpha )
     {
         if(texImg!=NULL && alpha > 0 )
         {
             bool flipHori = false,  flipVert = false;
-            if( newWidth < 0)
+            if( new_width < 0)
             {
                 flipHori = true;
-                newWidth*=-1;
+                new_width*=-1;
             }
-            if( newHeight < 0)
+            if( new_height < 0)
             {
                 flipVert = true;
-                newHeight*=-1;
+                new_height*=-1;
             }
-            if( newWidth ==0)
+            if( new_width ==0)
             {
-                newWidth = texWid;
+                new_width = texWid;
             }
-            if( newHeight==0)
+            if( new_height==0)
             {
-                newHeight = texHeight;
+                new_height = texHeight;
             }
-            SDL_Rect renderRect = { x-newWidth, y-newHeight, newWidth, newHeight };
-            change_color(renderColor);
+            SDL_Rect render_rect = { x-new_width, y-new_height, new_width, new_height };
+            change_color(render_color);
             set_alpha( alpha );
-            if( pointX < 0 )
+            if( point_x < 0 )
             {
-                if( pointX == gpe::fa_center )
+                if( point_x == gpe::fa_center )
                 {
-                    renderer_main_sdl->defaultPoint.x = newWidth/2;
+                    renderer_main_sdl->defaultPoint.x = new_width/2;
                 }
-                else if( pointX == gpe::fa_right )
+                else if( point_x == gpe::fa_right )
                 {
-                    renderer_main_sdl->defaultPoint.x = newWidth;
+                    renderer_main_sdl->defaultPoint.x = new_width;
                 }
             }
-            else if( pointX < newWidth )
+            else if( point_x < new_width )
             {
-                renderer_main_sdl->defaultPoint.x = pointX;
+                renderer_main_sdl->defaultPoint.x = point_x;
             }
             else
             {
-                renderer_main_sdl->defaultPoint.x = newWidth / 2;
+                renderer_main_sdl->defaultPoint.x = new_width / 2;
             }
 
-            if( pointY < 0 )
+            if( point_y < 0 )
             {
-                if( pointY == gpe::fa_middle )
+                if( point_y == gpe::fa_middle )
                 {
-                    renderer_main_sdl->defaultPoint.y = newHeight/2;
+                    renderer_main_sdl->defaultPoint.y = new_height/2;
                 }
-                else if( pointY == gpe::fa_bottom )
+                else if( point_y == gpe::fa_bottom )
                 {
-                    renderer_main_sdl->defaultPoint.y = newHeight;
+                    renderer_main_sdl->defaultPoint.y = new_height;
                 }
             }
-            else if( pointY < newHeight )
+            else if( point_y < new_height )
             {
-                renderer_main_sdl->defaultPoint.y = pointY;
+                renderer_main_sdl->defaultPoint.y = point_y;
             }
             else
             {
-                renderer_main_sdl->defaultPoint.y = newHeight / 2;
+                renderer_main_sdl->defaultPoint.y = new_height / 2;
             }
 
             if( clip != NULL )
@@ -835,41 +834,41 @@ namespace gpe
                 sdlClip.w = clip->w;
                 sdlClip.h = clip->h;
                 /*
-                if( pointX < 0 )
+                if( point_x < 0 )
                 {
-                    if( pointX == gpe::fa_center )
+                    if( point_x == gpe::fa_center )
                     {
                         renderer_main_sdl->defaultPoint.x = sdlClip.w/2;
                     }
-                    else if( pointX== gpe::fa_right )
+                    else if( point_x== gpe::fa_right )
                     {
                         renderer_main_sdl->defaultPoint.x = sdlClip.w;
                     }
                 }
-                else if( pointX < sdlClip.w )
+                else if( point_x < sdlClip.w )
                 {
-                    renderer_main_sdl->defaultPoint.x = pointX;
+                    renderer_main_sdl->defaultPoint.x = point_x;
                 }
                 else
                 {
                     renderer_main_sdl->defaultPoint.x = 0;
                 }
 
-                if( pointY < 0 )
+                if( point_y < 0 )
                 {
-                    if( pointY == gpe::fa_middle )
+                    if( point_y == gpe::fa_middle )
                     {
                         renderer_main_sdl->defaultPoint.y = sdlClip.h /2;
                     }
-                    else if( pointY == gpe::fa_bottom )
+                    else if( point_y == gpe::fa_bottom )
                     {
                         renderer_main_sdl->defaultPoint.y = -sdlClip.h ;
                     }
 
                 }
-                else if( pointY < sdlClip.h  )
+                else if( point_y < sdlClip.h  )
                 {
-                    renderer_main_sdl->defaultPoint.y = pointY;
+                    renderer_main_sdl->defaultPoint.y = point_y;
                 }
                 else
                 {
@@ -880,41 +879,41 @@ namespace gpe
                 {
                     if( flipVert )
                     {
-                        SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &renderRect, -renderAngle,&renderer_main_sdl->defaultPoint,renderer_main_sdl->bothFlip);
+                        SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &render_rect, -render_angle,&renderer_main_sdl->defaultPoint,renderer_main_sdl->bothFlip);
                     }
                     else
                     {
-                        SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &renderRect, -renderAngle,&renderer_main_sdl->defaultPoint,renderer_main_sdl->horiFlip);
+                        SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &render_rect, -render_angle,&renderer_main_sdl->defaultPoint,renderer_main_sdl->horiFlip);
                     }
                 }
                 else if( flipVert)
                 {
-                    SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &renderRect, -renderAngle,&renderer_main_sdl->defaultPoint, renderer_main_sdl->vertFlip);
+                    SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &render_rect, -render_angle,&renderer_main_sdl->defaultPoint, renderer_main_sdl->vertFlip);
                 }
                 else
                 {
                     //&renderer_main_sdl->defaultPoint
-                    SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &renderRect, -renderAngle, NULL, SDL_FLIP_NONE);
+                    SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,&sdlClip, &render_rect, -render_angle, NULL, SDL_FLIP_NONE);
                 }
             }
             else if( flipHori )
             {
                 if( flipVert )
                 {
-                    SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &renderRect, -renderAngle,&renderer_main_sdl->defaultPoint,renderer_main_sdl->bothFlip);
+                    SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &render_rect, -render_angle,&renderer_main_sdl->defaultPoint,renderer_main_sdl->bothFlip);
                 }
                 else
                 {
-                    SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &renderRect, -renderAngle,&renderer_main_sdl->defaultPoint,renderer_main_sdl->horiFlip);
+                    SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &render_rect, -render_angle,&renderer_main_sdl->defaultPoint,renderer_main_sdl->horiFlip);
                 }
             }
             else if( flipVert)
             {
-                SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &renderRect, -renderAngle,&renderer_main_sdl->defaultPoint, renderer_main_sdl->vertFlip);
+                SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &render_rect, -render_angle,&renderer_main_sdl->defaultPoint, renderer_main_sdl->vertFlip);
             }
             else
             {
-                SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &renderRect, -renderAngle,&renderer_main_sdl->defaultPoint,SDL_FLIP_NONE  );
+                SDL_RenderCopyEx( renderer_main_sdl->get_sdl_renderer(),texImg,NULL, &render_rect, -render_angle,&renderer_main_sdl->defaultPoint,SDL_FLIP_NONE  );
             }
         }
     }
@@ -936,12 +935,12 @@ namespace gpe
         }
     }
 
-    void texture_sdl::set_blend_mode( int newBlendMode)
+    void texture_sdl::set_blend_mode( int blend_mode_new)
     {
-        if( texImg!=NULL )//&& currentBlendMode!=newBlendMode)
+        if( texImg!=NULL )//&& currentBlendMode!=blend_mode_new)
         {
-            currentBlendMode = newBlendMode;
-            switch( newBlendMode)
+            currentBlendMode = blend_mode_new;
+            switch( blend_mode_new)
             {
                 case blend_mode_add:
                     SDL_SetTextureBlendMode(texImg,SDL_BLENDMODE_ADD );

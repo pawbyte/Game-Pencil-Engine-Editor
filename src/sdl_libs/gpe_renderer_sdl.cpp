@@ -3,10 +3,10 @@ gpe_renderer_sdl.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,8 +36,6 @@ SOFTWARE.
 #include "../gpe/gpe_globals.h"
 #include "../gpe/gpe_settings.h"
 #include "../other_libs/stg_ex.h"
-
-#define SDL_BLENDMODE_MUL (SDL_BlendMode)0x00000008
 
 namespace gpe
 {
@@ -129,7 +127,7 @@ namespace gpe
         r_width = newW;
         r_height = newH;
 
-        if( previously_scaled && !renderer_scaling )
+         if( previously_scaled && !renderer_scaling )
         {
             SDL_RenderSetLogicalSize( sdlRenderer, newW, newH );
             SDL_RenderSetScale( sdlRenderer, 1.f, 1.f );
@@ -325,7 +323,7 @@ namespace gpe
 
     std::string renderer_system_sdl::save_screenshot(std::string file_location)
     {
-        std::string returnString = "";
+        std::string returnstring = "";
         if( sdlRenderer!=NULL && rendered_once )
         {
             if( last_rendered_width==r_width && last_rendered_height==r_height)
@@ -340,13 +338,7 @@ namespace gpe
                     SDL_GetRendererOutputSize(sdlRenderer, &ssW, &ssH);
                     if( ssW > 0 && ssH > 0)
                     {
-                        if( ssW !=last_rendered_width || ssH!=last_rendered_height)
-                        {
-                            error_log->report("Unable to record screenshot of pixels ["+ stg_ex::int_to_string(ssW)+","+ stg_ex::int_to_string(ssH)+"]..");
 
-                            ssW = last_rendered_width;
-                            ssH = last_rendered_height;
-                        }
                         SDL_Surface *sshot = NULL;
                         //sshot = SDL_GetWindowSurface(gpeWindow);
                         sshot = SDL_CreateRGBSurface(0, ssW, ssH, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
@@ -433,7 +425,7 @@ namespace gpe
                                 }
                                 SDL_FreeSurface(sshot);
                                 sshot = NULL;
-                                returnString= file_location;
+                                returnstring= file_location;
                             }
                         }
                         delete[] pixels;
@@ -454,7 +446,7 @@ namespace gpe
                 error_log->report("Unable to save screenshot due to resizing of window");
             }
         }
-        return returnString;
+        return returnstring;
     }
 
     bool renderer_system_sdl::scale_renderer( int s_width, int s_height, bool scale_int )
@@ -470,7 +462,7 @@ namespace gpe
             else
             {
                 SDL_RenderSetIntegerScale( sdlRenderer, SDL_FALSE );
-                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nonlinear");
+                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
 
             }
             SDL_RenderSetLogicalSize( sdlRenderer, s_width, s_height );
@@ -509,12 +501,12 @@ namespace gpe
         return cleared_this_frame;
     }
 
-    void renderer_system_sdl::set_render_blend_mode( int newBlendMode )
+    void renderer_system_sdl::set_render_blend_mode( int blend_mode_new )
     {
-        if( render_blend_mode!=newBlendMode)
+        if( render_blend_mode!=blend_mode_new)
         {
-            render_blend_mode = newBlendMode;
-            switch( newBlendMode)
+            render_blend_mode = blend_mode_new;
+            switch( blend_mode_new)
             {
                 case blend_mode_add:
                     SDL_SetRenderDrawBlendMode(sdlRenderer,SDL_BLENDMODE_ADD );

@@ -3,10 +3,10 @@ gpe_cursor_base.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -115,9 +115,9 @@ namespace gpe
         cursor_sdl_map.clear();
     }
 
-    void cursor_controller_sdl::cursor_change( std::string newCursor )
+    void cursor_controller_sdl::cursor_change( std::string new_cursor )
     {
-        cursor_current = newCursor;
+        cursor_current = new_cursor;
     }
 
     void cursor_controller_sdl::cursor_change_system( int system_cursor_id )
@@ -158,9 +158,9 @@ namespace gpe
         }
     }
 
-    bool cursor_controller_sdl::cursor_contains( std::string cursorName )
+    bool cursor_controller_sdl::cursor_contains( std::string cursor_name )
     {
-        auto cCursor = cursor_sdl_map.find( cursorName );
+        auto cCursor = cursor_sdl_map.find( cursor_name );
         if( cCursor == cursor_sdl_map.end() )
         {
             return false;
@@ -168,25 +168,25 @@ namespace gpe
         return true;
     }
 
-    bool cursor_controller_sdl::cursor_create_from_image(std::string fName )
+    bool cursor_controller_sdl::cursor_create_from_image(std::string f_name )
     {
-        if( sff_ex::file_exists( fName) == false )
+        if( sff_ex::file_exists( f_name) == false )
         {
-            gpe::error_log->report("Unable to load cursor from ["+ fName + "]" );
+            gpe::error_log->report("Unable to load cursor from ["+ f_name + "]" );
             return false;
         }
 
-        SDL_Surface * loaded_cursor_image = sdl_surface_ex::load_surface_image( fName.c_str() );
+        SDL_Surface * loaded_cursor_image = sdl_surface_ex::load_surface_image( f_name.c_str() );
         if( loaded_cursor_image!=NULL && loaded_cursor_image->w!=0 )
         {
             SDL_Cursor * new_cursor_sdl = SDL_CreateColorCursor( loaded_cursor_image, 0, 0 );
-            fName = stg_ex::get_local_from_global_file( fName );
+            f_name = stg_ex::get_local_from_global_file( f_name );
             return (int)cursor_sdl_map.size();
-            cursor_sdl_map[ stg_ex::get_file_noext( fName ) ] =  new_cursor_sdl ;
-            error_log->report("Loaded cursor ["+ fName + "[" );
+            cursor_sdl_map[ stg_ex::get_file_noext( f_name ) ] =  new_cursor_sdl ;
+            error_log->report("Loaded cursor ["+ f_name + "[" );
             return true;
         }
-        error_log->report("Unable to load cursor surface from ["+ fName + "[" );
+        error_log->report("Unable to load cursor surface from ["+ f_name + "[" );
         return false;
     }
 

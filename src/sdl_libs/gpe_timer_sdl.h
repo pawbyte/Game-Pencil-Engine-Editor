@@ -3,10 +3,10 @@ gpe_timer.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -64,6 +64,7 @@ namespace gpe
             float get_delta_ticks();
 
             float get_fps();
+            float get_fps_cap();
             float get_performance_ms();
             float get_performance_seconds();
             uint64_t get_ticks();
@@ -74,7 +75,7 @@ namespace gpe
 
             void reset_timer();
 
-            void set_fps( float fps_new = 30 );
+            void set_fps( float fps_new = 60 );
             void set_average_fps_count( int new_count );
     };
 

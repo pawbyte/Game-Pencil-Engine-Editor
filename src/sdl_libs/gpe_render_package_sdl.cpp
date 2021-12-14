@@ -3,10 +3,10 @@ gpe_renderer_package_sdl.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -56,20 +56,20 @@ namespace gpe
 
         }
 
-        render_package * defaultRenderPackage = rph->add_render_package( "sdl" );
+        render_package * defaultr_package = rph->add_render_package( "sdl" );
         if( gpe::rsm != NULL )
         {
             delete gpe::rsm;
             gpe::rsm = NULL;
-            gpe::rsm = new gpe::asset_manager( defaultRenderPackage, "gcm-rsm" );
+            gpe::rsm = new gpe::asset_manager( defaultr_package, "gcm-rsm" );
         }
 
         window_controller_main_sdl->set_renderer( renderer_main_sdl, false );
 
-        defaultRenderPackage->packageRenderer = renderer_main_sdl;
-        defaultRenderPackage->packageTexture = new texture_sdl();
-        defaultRenderPackage->packageWindow = window_controller_main_sdl;
-        rph->defaultRenderPackageName = defaultRenderPackage->get_package_name();
+        defaultr_package->packageRenderer = renderer_main_sdl;
+        defaultr_package->packageTexture = new texture_sdl();
+        defaultr_package->packageWindow = window_controller_main_sdl;
+        rph->defaultr_packageName = defaultr_package->get_package_name();
 
         error_log->report("-Starting GPE_SDL Artist...");
         gcanvas = new artist_sdl( renderer_main_sdl );

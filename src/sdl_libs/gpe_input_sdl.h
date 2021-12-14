@@ -3,10 +3,10 @@ gpe_input_sdl.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -57,7 +57,7 @@ namespace gpe
             void pure_reset();
             void reset_gamepad();
             void reset_temp_input();
-            void setup_default_mapping( bool mapButtons = true , bool mapAxis = true );
+            void setup_default_mapping( bool map_buttons = true , bool mapAxis = true );
     };
 
     /**
@@ -91,8 +91,8 @@ namespace gpe
             bool gamepad_setup(int gamepad_id );
             bool load_input_settings(std::string file_path = "");
             void handle_input(bool dump_event = false, bool is_embedded=false );
-            void reset_all_input();
-            void reset_temp_input();
+            //void reset_all_input();
+            //void reset_temp_input();
     };
 
     bool init_sdl_input_system();

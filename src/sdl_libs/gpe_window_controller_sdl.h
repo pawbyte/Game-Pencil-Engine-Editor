@@ -3,10 +3,10 @@ gpe_window_controller.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,6 +37,7 @@ SOFTWARE.
 //The headers
 
 #include "../gpe/gpe_globals.h"
+#include "../gpe/gpe_shared_resources.h"
 #include "../gpe/gpe_window_controller_base.h"
 #include "sdl_surface_ex.h"
 
@@ -70,6 +71,8 @@ namespace gpe
             bool scale_window_factor( float s_width, float s_height, bool scale_int );
 
             void set_renderer( renderer_base * new_renderer, bool remove_current );
+            void set_window_position( int new_x, int new_y );
+            bool set_window_size( int n_width, int n_height );
             //std::string save_screenshot(std::string file_location = "");
             void set_window_title(std::string new_title);
             bool show_window();

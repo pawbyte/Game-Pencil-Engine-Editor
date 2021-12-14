@@ -3,10 +3,10 @@ gpe_font_sdl.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -55,7 +55,7 @@ namespace gpe
             SDL_Texture * strTexture;
         public:
             int lastAlphaRendered;
-            font_pair_sdl(TTF_Font * fontIn, std::string strIn);
+            font_pair_sdl(TTF_Font * fontIn, std::string str_in);
             ~font_pair_sdl();
             SDL_Texture * get_texture();
     };
@@ -67,28 +67,28 @@ namespace gpe
             std::map <const std::string, font_pair_sdl * > characterPairs;
             TTF_Font * heldSDLFont;
         public:
-            font_sdl_tff( const std::string fFileLocation, int fSize, bool isMonospaced = false, const std::string fNickName = "", int fontIdNumb =-1);
+            font_sdl_tff( const std::string file_loc, int f_size, bool make_monospaced = false, const std::string f_nickname = "", int id_number =-1);
             ~font_sdl_tff();
             void clear_cache();
-            font_base * create_new(std::string fFileLocation, int fSize, bool isMonospaced = false, const std::string fNickName = "", int fontIdNumb =-1);
-            void get_metrics(std::string textToRender, int * wVal, int *hVal);
-            void get_numbered_metrics(std::string textToRender, int * wVal, int *hVal);
-            void get_wrapped_string_metrics( const std::string strIn, int lineWidth, int linePadding, int * wVal, int *hVal);
+            font_base * create_new(std::string file_loc, int f_size, bool make_monospaced = false, const std::string f_nickname = "", int id_number =-1);
+            void get_metrics(std::string text_to_render, int * width_value, int *height_value);
+            void get_numbered_metrics(std::string text_to_render, int * width_value, int *height_value);
+            void get_wrapped_string_metrics( const std::string str_in, int line_width, int linePadding, int * width_value, int *height_value);
             TTF_Font * get_sdl_font();
             int get_cache_count();
             int get_font_id();
-            font_pair_base * find_character_texture( const std::string numbId);
-            font_pair_sdl * find_character_texture_sdl( const std::string numbId);
+            font_pair_base * find_character_texture( const std::string id_number);
+            font_pair_sdl * find_character_texture_sdl( const std::string id_number);
 
-            font_pair_base * find_texture( const std::string textToRender);
-            font_pair_sdl * find_texture_sdl( const std::string textToRender);
-            void render_bitmapped_text( int xPos, int yPos, std::string numberToRender, color * textColor, int hAlign=gpe::fa_top,int vAlign=gpe::fa_top,int renderAlpha = 255);
-            void render_text( int xPos, int yPos, std::string textureText, color * textColor, int hAlign=gpe::fa_left,int vAlign=gpe::fa_top,int renderAlpha = 255);
-            void render_text_boxed( int xPos, int yPos, std::string textureText, color * textColor,color * boxColor,int hAlign=gpe::fa_left,int vAlign=gpe::fa_top,int renderAlpha = 255);
-            void render_text_scaled( int xPos, int yPos, std::string textureText, color * textColor, float textScale, int hAlign=gpe::fa_left,int vAlign=gpe::fa_top, int renderAlpha = 255);
-            void render_text_resized( int xPos, int yPos, std::string textureText, color * textColor, int hAlign=gpe::fa_left,int vAlign=gpe::fa_top, int rendWid = -1, int rendHeight = -1,int renderAlpha = 255);
-            void render_text_rotated( int xPos, int yPos, std::string textureText, color * textColor, float textAngle = 0,int renderAlpha = 255);
-            bool render_text_special( int xPos, int yPos, std::string textureText, color * textColor, int hAlign=gpe::fa_left,int vAlign=gpe::fa_top, float renderAngle = 0, float renderScale = 1.f, int renderAlpha = 255);
+            font_pair_base * find_texture( const std::string text_to_render);
+            font_pair_sdl * find_texture_sdl( const std::string text_to_render);
+            void render_bitmapped_text( int x_pos, int y_pos, std::string number_to_render, color * text_color, int alignment_h=gpe::fa_top,int alignment_v=gpe::fa_top,int render_alpha = 255);
+            void render_text( int x_pos, int y_pos, std::string text_to_render, color * text_color, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top,int render_alpha = 255);
+            void render_text_boxed( int x_pos, int y_pos, std::string text_to_render, color * text_color,color * boxColor,int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top,int render_alpha = 255);
+            void render_text_scaled( int x_pos, int y_pos, std::string text_to_render, color * text_color, float text_scale, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_alpha = 255);
+            void render_text_resized( int x_pos, int y_pos, std::string text_to_render, color * text_color, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, int render_width = -1, int render_height = -1,int render_alpha = 255);
+            void render_text_rotated( int x_pos, int y_pos, std::string text_to_render, color * text_color, float textAngle = 0,int render_alpha = 255);
+            bool render_text_special( int x_pos, int y_pos, std::string text_to_render, color * text_color, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top, float render_angle = 0, float render_scale = 1.f, int render_alpha = 255);
 
     };
 

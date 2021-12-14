@@ -3,10 +3,10 @@ gpe_cursor_sdl.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -55,11 +55,11 @@ namespace gpe
             cursor_controller_sdl( int window_id = -1 );
             virtual ~cursor_controller_sdl();
             //Cursor logic
-            void cursor_change( std::string newCursor );
+            void cursor_change( std::string new_cursor );
             void cursor_change_system( int system_cursor_id );
             void cursor_clear_dynamic();
-            bool cursor_contains( std::string cursorName );
-            bool cursor_create_from_image(std::string fName );
+            bool cursor_contains( std::string cursor_name );
+            bool cursor_create_from_image(std::string f_name );
             int cursor_map_size();
             std::string cursor_system_name( int cId );
             void name_default_cursors();
