@@ -49,10 +49,10 @@ namespace gpe
 
     light_basic_2d::~light_basic_2d()
     {
-        if( light_color!=nullptr )
+        if( light_color!=NULL )
         {
             delete light_color;
-            light_color = nullptr;
+            light_color = NULL;
         }
     }
 
@@ -83,7 +83,7 @@ namespace gpe
         light_width = 64;
         light_length = 128;
         light_direction = 0;
-        light_texture = nullptr;
+        light_texture = NULL;
     }
 
     light_direction2d::~light_direction2d()
@@ -104,9 +104,9 @@ namespace gpe
     void light_direction2d::render_light_at( float x, float y, float scale, gpe::shape_rect * cam )
     {
         cam = gpe::camera_find( cam );
-        if( light_texture!=nullptr )
+        if( light_texture!=NULL )
         {
-            light_texture->render_tex_rotated( x - cam->x, y - cam->y,light_direction, light_color, nullptr, light_intensity );
+            light_texture->render_tex_rotated( x - cam->x, y - cam->y,light_direction, light_color, NULL, light_intensity );
         }
         else
         {

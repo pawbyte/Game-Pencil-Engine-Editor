@@ -32,14 +32,12 @@ SOFTWARE.
 */
 
 #include "gpe_renderer_base.h"
-#include <iostream>
 
 namespace gpe
 {
-    renderer_base * renderer_main = nullptr;
+    renderer_base * renderer_main = NULL;
     renderer_base::renderer_base()
     {
-        render_sub_rectangle = new shape_rect(0,0,0,0 );
         previously_scaled = false;
         renderer_scaling = false;
         use_integer_scaling = false;
@@ -47,16 +45,10 @@ namespace gpe
         scale_percentage_y = 0;
         scale_source_width = 0;
         scale_source_height = 0;
-
-        for( int i_render_mode = 0; i_render_mode < render_mode::rmode_other; i_render_mode++ )
-        {
-            supports_render_mode[ i_render_mode] = false;
-        }
     }
 
     renderer_base::renderer_base(int rId, int widthStart, int heightStart )
     {
-        render_sub_rectangle = new shape_rect(0,0,0,0 );
         render_id = rId;
         r_width = widthStart;
         r_height = heightStart;
@@ -67,38 +59,11 @@ namespace gpe
         scale_percentage_y = 0;
         scale_source_width = 0;
         scale_source_height = 0;
-
-        for( int i_render_mode = 0; i_render_mode < render_mode::rmode_other; i_render_mode++ )
-        {
-            supports_render_mode[ i_render_mode] = false;
-        }
-
     }
-
 
     renderer_base::~renderer_base()
     {
 
-    }
-
-    bool renderer_base::begin_mode_2d()
-    {
-        return false;
-    }
-
-    bool renderer_base::begin_mode_25d()
-    {
-        return false;
-    }
-
-    bool renderer_base::begin_mode_3d()
-    {
-        return false;
-    }
-
-    bool renderer_base::begin_mode_vr()
-    {
-        return false;
     }
 
     void renderer_base::clean_up()
@@ -122,43 +87,8 @@ namespace gpe
     }
 
 
-    bool renderer_base::end_mode_2d()
-    {
-        return false;
-    }
-
-    bool renderer_base::end_mode_25d()
-    {
-        return false;
-    }
-
-    bool renderer_base::end_mode_3d()
-    {
-        return false;
-    }
-
-    bool renderer_base::end_mode_vr()
-    {
-        return false;
-    }
-
     //Check if anything's wrong with the window
     bool renderer_base::error_check()
-    {
-        return false;
-    }
-
-    bool renderer_base::file_perform_effect_color_erase( std::string file_location, color * color_to_erase )
-    {
-        return false;
-    }
-
-    bool renderer_base::file_perform_effect_color_invert( std::string file_location)
-    {
-        return false;
-    }
-
-    bool renderer_base::file_perform_effect_grayscale(std::string file_location )
     {
         return false;
     }
@@ -208,16 +138,6 @@ namespace gpe
         return use_integer_scaling;
     }
 
-
-    bool renderer_base::is_mode_supported( int checked_mode )
-    {
-        if( checked_mode < 0 || checked_mode > rmode_other )
-        {
-            return false;
-        }
-        return supports_render_mode[ checked_mode ];
-    }
-
     bool renderer_base::is_scaled()
     {
         return renderer_scaling;
@@ -236,7 +156,7 @@ namespace gpe
 
     bool renderer_base::render_circle_color( int x, int y, int rad, uint8_t r, uint8_t g, uint8_t b, uint8_t a )
     {
-        return false;
+
     }
 
     void renderer_base::reset_input()
@@ -287,6 +207,6 @@ namespace gpe
 
     void renderer_base::update_renderer( bool windowIsMinimized )
     {
-        std::cout << "Render base class rendered another frame...." << ").\n";
+
     }
 }

@@ -34,7 +34,6 @@ SOFTWARE.
 #ifndef renderer_base_h
 #define renderer_base_h
 
-#include "gpe_color.h"
 #include "gpe_shapes.h"
 #include <string>
 
@@ -46,38 +45,26 @@ namespace gpe
     const int blend_mode_mul = 4;
     const int blend_mode_none = 5;
 
-    enum class render_system
+    //Added for 1.4.0 [ BEGIN ]
+    enum class primitive_type
     {
-        render_sys_sdl1 = 0,
-        render_sys_sdl2 = 1,
-        render_sys_opengl = 2,
-        render_sys_directx = 3,
-        render_sys_vulkan = 4,
-        render_sys_metal = 5,
-        render_sys_raylib = 6,
-        render_sys_sfml = 7,
-        render_sys_irrlicht = 8,
-        render_sys_nanovg = 9,
-        render_sys_other = 10,
+        //Basic Scene Types
+        pr_point_list = 0,
+        pr_line_list = 1,
+        pr_line_strip = 2,
+        pr_line_strip_closed = 3,
+        pr_triangle_list = 4,
+        pr_triangle_strip = 5,
+        pr_triangle_fan = 6,
+        pr_none = 7,
     };
 
-    enum render_mode
-    {
-        rmode_1d = 0,
-        rmode_2d = 1,
-        rmode_25d = 2,
-        rmode_3d = 3,
-        rmode_vr = 4,
-        rmode_4d = 5,
-        rmode_other = 6,
-    };
+    //Added for 1.4.0 [ BEGIN ]
 
     //Our Renderer Wrapper base class
     class renderer_base
     {
         protected:
-            bool supports_render_mode[ render_mode::rmode_other ];
-
             bool previously_scaled;
             bool renderer_scaling;
             bool use_integer_scaling;
@@ -96,17 +83,12 @@ namespace gpe
             int render_blend_mode;
             std::string r_name;
             std::string r_type;
-            shape_rect * render_sub_rectangle;
         public:
             bool resized;
             renderer_base();
             renderer_base(int rId, int widthStart, int heightStart );
             virtual ~renderer_base();
 
-            virtual bool begin_mode_2d();
-            virtual bool begin_mode_25d();
-            virtual bool begin_mode_3d();
-            virtual bool begin_mode_vr();
 
             virtual void clean_up();
             virtual void clear_renderer( bool windowIsMinimized );
@@ -114,18 +96,8 @@ namespace gpe
             virtual bool disable_scaling();
             virtual bool enable_scaling();
 
-
-            virtual bool end_mode_2d();
-            virtual bool end_mode_25d();
-            virtual bool end_mode_3d();
-            virtual bool end_mode_vr();
-
             //Check if anything's wrong with the window
             bool error_check();
-
-            virtual bool file_perform_effect_color_erase( std::string file_location, color * color_to_erase );
-            virtual bool file_perform_effect_color_invert( std::string file_location);
-            virtual bool file_perform_effect_grayscale( std::string file_location );
 
             int get_blend_mode();
             virtual std::string get_renderer_name();
@@ -139,7 +111,6 @@ namespace gpe
             float get_scale_y();
 
             bool is_integer_scaling();
-            bool is_mode_supported( int checked_mode );
             bool is_scaled();
 
             //Some Shape Stuff
@@ -158,9 +129,8 @@ namespace gpe
 
             virtual bool screen_was_cleared();
             virtual void set_render_blend_mode( int blend_mode_new );
-            virtual void set_viewpoint( gpe::shape_rect * newViewPoint = nullptr);
+            virtual void set_viewpoint( gpe::shape_rect * newViewPoint = NULL);
             virtual void update_renderer( bool windowIsMinimized );
-
     };
     extern renderer_base * renderer_main;
 

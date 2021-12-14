@@ -36,7 +36,7 @@ SOFTWARE.
 
 #include <string>
 #include <vector>
-#include "gpe_file_system.h"
+#include "../other_libs/sff_ex.h"
 #include "../other_libs/stg_ex.h"
 
 namespace gpe

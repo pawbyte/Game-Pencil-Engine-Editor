@@ -47,9 +47,9 @@ namespace gpe
 
     gpe::key_pair * gpe_ini_file::add_section( std::string section_name)
     {
-        if( find_section( section_name ) !=nullptr)
+        if( find_section( section_name ) !=NULL)
         {
-            return nullptr;
+            return NULL;
         }
         gpe::key_pair * newSection = new gpe::key_pair(-1, section_name, section_name);
         ini_sections.push_back( newSection );
@@ -58,11 +58,11 @@ namespace gpe
 
     void gpe_ini_file::clear_all_sections()
     {
-        gpe::key_pair * curSection = nullptr;
+        gpe::key_pair * curSection = NULL;
         for( int i = (int)ini_sections.size()-1; i >=0; i--)
         {
             curSection = ini_sections[i];
-            if( curSection!=nullptr )
+            if( curSection!=NULL )
             {
                 curSection->remove_all();
             }
@@ -72,7 +72,7 @@ namespace gpe
     void gpe_ini_file::clear_section( std::string section_name )
     {
         gpe::key_pair * curSection = find_section( section_name);
-        if( curSection!=nullptr )
+        if( curSection!=NULL )
         {
             curSection->remove_all();
         }
@@ -81,13 +81,13 @@ namespace gpe
     float gpe_ini_file::find_float_keypair( std::string section_name,std::string section_key)
     {
         gpe::key_pair * curSection = find_section( section_name);
-        if( curSection!=nullptr )
+        if( curSection!=NULL )
         {
-            gpe::key_pair * curKey = nullptr;
+            gpe::key_pair * curKey = NULL;
             for( int i = (int)curSection->sub_options.size()-1; i >=0; i--)
             {
                 curKey = curSection->sub_options[i];
-                if( curKey!=nullptr)
+                if( curKey!=NULL)
                 {
                     if( curKey->key_string == section_key)
                     {
@@ -102,13 +102,13 @@ namespace gpe
     std::string gpe_ini_file::find_string_keypair( std::string section_name,std::string section_key)
     {
         gpe::key_pair * curSection = find_section( section_name);
-        if( curSection!=nullptr )
+        if( curSection!=NULL )
         {
-            gpe::key_pair * curKey = nullptr;
+            gpe::key_pair * curKey = NULL;
             for( int i = (int)curSection->sub_options.size()-1; i >=0; i--)
             {
                 curKey = curSection->sub_options[i];
-                if( curKey!=nullptr)
+                if( curKey!=NULL)
                 {
                     if( curKey->key_string == section_key)
                     {
@@ -122,48 +122,46 @@ namespace gpe
 
     gpe::key_pair * gpe_ini_file::find_section( std::string section_name)
     {
-        gpe::key_pair * curSection = nullptr;
+        gpe::key_pair * curSection = NULL;
         for( int i = (int)ini_sections.size()-1; i >=0; i--)
         {
             curSection = ini_sections[i];
-            if( curSection!=nullptr && curSection->key_string == section_name)
+            if( curSection!=NULL && curSection->key_string == section_name)
             {
                 return curSection;
             }
         }
-        return nullptr;
+        return NULL;
     }
 
     bool gpe_ini_file::map_key_pair( std::string section_name,std::string section_key, std::string section_value)
     {
-        gpe::key_pair * curSection = nullptr;
-        gpe::key_pair * curKey = nullptr;
-        bool pair_mapped = false;
+        gpe::key_pair * curSection = NULL;
+        gpe::key_pair * curKey = NULL;
+        int j = 0;
         for( int i = (int)ini_sections.size()-1; i >=0; i--)
         {
             curSection = ini_sections[i];
-            if( curSection!=nullptr && curSection->key_string == section_name)
+            if( curSection!=NULL && curSection->key_string == section_name)
             {
                 for( int j = (int)curSection->sub_options.size()-1; j >=0; j--)
                 {
                     curKey = curSection->sub_options[i];
-                    if( curKey!=nullptr)
+                    if( curKey!=NULL)
                     {
                         if( curKey->key_string == section_key)
                         {
-                            pair_mapped = true;
                         }
                     }
                 }
             }
         }
-        return pair_mapped;
     }
 
     bool gpe_ini_file::read_ini_file(std::string f_name, int lineTrimStyle )
     {
         remove_all_sections();
-        if( ! main_file_url_manager->file_exists( f_name) )
+        if( ! sff_ex::file_exists( f_name) )
         {
             return false;
         }
@@ -178,7 +176,7 @@ namespace gpe
         std::string valstring="";
         std::string subValstring="";
 
-        gpe::key_pair * currentSection = nullptr;
+        gpe::key_pair * currentSection = NULL;
         while ( iniFileIn.good() )
         {
             getline (iniFileIn,currInputLine); //gets the next line of the file
@@ -225,7 +223,7 @@ namespace gpe
                         //if the equalPos is present, then parse on through and carryon
                         key_string = currLineToBeProcessed.substr(0,equalPos);
                         valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
-                        if( currentSection!=nullptr)
+                        if( currentSection!=NULL)
                         {
                             currentSection->add_keypair( key_string,valstring, stg_ex::string_to_float( valstring) );
                         }
@@ -233,26 +231,25 @@ namespace gpe
                         {
                             currentSection = new gpe::key_pair( stg_ex::string_to_float(valstring), key_string,  valstring );
                             ini_sections.push_back( currentSection );
-                            currentSection = nullptr;
+                            currentSection = NULL;
                         }
                     }
                 }
             }
         }
         iniFileIn.close();
-        return true;
     }
 
     void gpe_ini_file::remove_all_sections()
     {
-        gpe::key_pair * curSection = nullptr;
+        gpe::key_pair * curSection = NULL;
         for( int i = (int)ini_sections.size()-1; i >=0; i--)
         {
             curSection = ini_sections[i];
-            if( curSection!=nullptr)
+            if( curSection!=NULL)
             {
                 delete curSection;
-                curSection = nullptr;
+                curSection = NULL;
             }
         }
         ini_sections.clear();
@@ -260,14 +257,14 @@ namespace gpe
 
     void gpe_ini_file::remove_section( std::string section_name )
     {
-        gpe::key_pair * curSection = nullptr;
+        gpe::key_pair * curSection = NULL;
         for( int i = (int)ini_sections.size()-1; i >=0; i--)
         {
             curSection = ini_sections[i];
-            if( curSection!=nullptr && curSection->key_string == section_name)
+            if( curSection!=NULL && curSection->key_string == section_name)
             {
                 delete curSection;
-                curSection = nullptr;
+                curSection = NULL;
                 ini_sections.erase( ini_sections.begin() + i );
             }
         }
@@ -275,6 +272,6 @@ namespace gpe
 
     bool gpe_ini_file::write_ini_file(std::string f_name)
     {
-        return false;
+
     }
 }

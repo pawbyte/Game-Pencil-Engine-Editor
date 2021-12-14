@@ -52,7 +52,7 @@ namespace gpe
         y_velocity = 0;
 
         p_speed = 0;
-        particle_texture = nullptr;
+        particle_texture = NULL;
         startColor = new color("startColor",255,255,0);
         myColor = new color("myColor",255,255,255,0);
         endColor = new color("endColor",0,0,0,0 );
@@ -77,9 +77,9 @@ namespace gpe
     {
         if( particleLife > 0 && myColor->get_a() > 0 )
         {
-            if( particle_texture!=nullptr )
+            if( particle_texture!=NULL )
             {
-                particle_texture->render_tex_scaled(x_pos-camera_current->x - (width*particle_scale)/2,y_pos-camera_current->y - (height*particle_scale)/2,particle_scale,particle_scale,nullptr, myColor, myColor->get_a() );
+                particle_texture->render_tex_scaled(x_pos-camera_current->x - (width*particle_scale)/2,y_pos-camera_current->y - (height*particle_scale)/2,particle_scale,particle_scale,NULL, myColor, myColor->get_a() );
             }
         }
     }
@@ -133,9 +133,9 @@ namespace gpe
     {
         if( particleLife > 0 && myColor->get_a() > 25 )
         {
-            if( particle_texture!=nullptr )
+            if( particle_texture!=NULL )
             {
-                particle_texture->render_tex_special(x_pos-camera_current->x,y_pos-camera_current->y,p_direction, abs(particle_scale * width),abs(particle_scale * height), myColor, nullptr,myColor->get_a() );
+                particle_texture->render_tex_special(x_pos-camera_current->x,y_pos-camera_current->y,p_direction, abs(particle_scale * width),abs(particle_scale * height), myColor, NULL,myColor->get_a() );
             }
         }
     }
@@ -207,7 +207,7 @@ namespace gpe
         emission_disabled = false;
         emission_paused = false;
         reverse_draw = false;
-        particle_texture = nullptr;
+        particle_texture = NULL;
 
         currentParticleCount = 0;
         texBlendMode = blend_mode_blend;
@@ -242,7 +242,7 @@ namespace gpe
         speedMax = 6.f / 1000.f;
 
         maxParticles = pMax;
-        particle * cParticle = nullptr;
+        particle * cParticle = NULL;
         for( int i = 0; i < maxParticles; i++ )
         {
             cParticle = new particle();
@@ -274,17 +274,17 @@ namespace gpe
     {
         texBlendMode = blend_mode_new;
         particle_texture = newTex;
-        if( newTex!=nullptr )
+        if( newTex!=NULL )
         {
             if( newTex->get_width() > 512 || newTex->get_height() > 512 )
             {
-                particle_texture = nullptr;
+                particle_texture = NULL;
             }
         }
         int maxI = (int)particles.size();
-        particle * cParticle = nullptr;
+        particle * cParticle = NULL;
 
-        if( particle_texture !=nullptr )
+        if( particle_texture !=NULL )
         {
             particle_texture->set_blend_mode( texBlendMode );
         }
@@ -292,7 +292,7 @@ namespace gpe
         for( int i = 0; i < maxI; i++)
         {
             cParticle = particles[i];
-            if( cParticle !=nullptr )
+            if( cParticle !=NULL )
             {
                 cParticle->particle_texture = particle_texture;
                 cParticle->shapeType = fallBackShapeType;
@@ -311,7 +311,7 @@ namespace gpe
         if( remainingParticles > 0 )
         {
             int particleGoalCount = std::min( currentParticleCount+particlesPerEmission +1 , (int)particles.size() );
-            particle * cParticle = nullptr;
+            particle * cParticle = NULL;
             while( currentParticleCount < particleGoalCount )
             {
                 cParticle = particles[currentParticleCount];
@@ -337,9 +337,11 @@ namespace gpe
         {
             return;
         }
-        particle * cParticle = nullptr;
-        particle * tempParticle = nullptr;
+        particle * cParticle = NULL;
+        particle * tempParticle = NULL;
         float delta = time_keeper->get_delta_ticks();
+
+        bool particleIsAlive = true;
 
         if( !emission_paused && !emission_disabled  )
         {
@@ -358,8 +360,9 @@ namespace gpe
 
         for( int i = 0; i <  currentParticleCount; i++ )
         {
+            particleIsAlive = true;
             cParticle = particles[i];
-            if( cParticle !=nullptr )
+            if( cParticle !=NULL )
             {
                 cParticle->update( delta );
                 if( cParticle->particleLife <= 0.1f  )
@@ -375,6 +378,7 @@ namespace gpe
                     {
                         respawn_particle( cParticle );
                     }
+                    particleIsAlive = false;
                 }
             }
         }
@@ -392,9 +396,9 @@ namespace gpe
 
         int particleCount = std::min( currentParticleCount, (int)particles.size() );
 
-        particle * cParticle = nullptr;
+        particle * cParticle = NULL;
         int i = 0;
-        if( particle_texture!=nullptr )
+        if( particle_texture!=NULL )
         {
             particle_texture->set_blend_mode( texBlendMode);
             if( rotateTexture)
@@ -404,7 +408,7 @@ namespace gpe
                     for( i = particleCount -1; i >= 0; i-- )
                     {
                         cParticle = particles[i];
-                        if( cParticle !=nullptr )
+                        if( cParticle !=NULL )
                         {
                             cParticle->render_particle_rotated();
                         }
@@ -415,7 +419,7 @@ namespace gpe
                     for( i = 0; i < particleCount; i++ )
                     {
                         cParticle = particles[i];
-                        if( cParticle !=nullptr )
+                        if( cParticle !=NULL )
                         {
                             cParticle->render_particle_rotated();
                         }
@@ -429,7 +433,7 @@ namespace gpe
                     for( i = particleCount -1; i >= 0; i-- )
                     {
                         cParticle = particles[i];
-                        if( cParticle !=nullptr )
+                        if( cParticle !=NULL )
                         {
                             cParticle->render_particle();
                         }
@@ -440,7 +444,7 @@ namespace gpe
                     for( i = 0; i < particleCount; i++ )
                     {
                         cParticle = particles[i];
-                        if( cParticle !=nullptr )
+                        if( cParticle !=NULL )
                         {
                             cParticle->render_particle();
                         }
@@ -458,7 +462,7 @@ namespace gpe
                 for( i = particleCount -1; i >= 0; i-- )
                 {
                     cParticle = particles[i];
-                    if( cParticle !=nullptr )
+                    if( cParticle !=NULL )
                     {
                         cParticle->render_particle_shape();
                     }
@@ -469,7 +473,7 @@ namespace gpe
                 for( i = 0; i < particleCount; i++ )
                 {
                     cParticle = particles[i];
-                    if( cParticle !=nullptr )
+                    if( cParticle !=NULL )
                     {
                         cParticle->render_particle_shape();
                     }
@@ -489,7 +493,7 @@ namespace gpe
 
     void particle_emitter::respawn_particle( particle * part )
     {
-        if( part !=nullptr )
+        if( part !=NULL )
         {
             part->set_position( emitterXPos+emitXPos+semath::random_float(-xRandom, xRandom), emitterYPos+emitYPos+semath::random_float(-yRandom, yRandom) );
             part->particleLife = part->startLife = semath::random_float( lifeMin, lifeMax ) * 1000; //* 10000ms
@@ -498,7 +502,7 @@ namespace gpe
             part->rotate_particle = rotateTexture;
             part->width = shapeW;
             part->height = shapeH;
-            if( particle_texture!=nullptr )
+            if( particle_texture!=NULL )
             {
                 part->width = particle_texture->get_width();
                 part->height = particle_texture->get_height();
@@ -530,7 +534,7 @@ namespace gpe
     void particle_emitter::set_blend_mode( int newMode )
     {
         texBlendMode = newMode;
-        if( particle_texture!=nullptr )
+        if( particle_texture!=NULL )
         {
             particle_texture->set_blend_mode( newMode );
         }
@@ -573,12 +577,12 @@ namespace gpe
         {
             fallBackShapeType = 0;
         }
-        particle * cParticle = nullptr;
+        particle * cParticle = NULL;
         int maxI = (int)particles.size();
         for( int i = 0; i < maxI; i++ )
         {
             cParticle = particles[i];
-            if( cParticle !=nullptr )
+            if( cParticle !=NULL )
             {
                 cParticle->shapeType = fallBackShapeType;
             }
@@ -590,7 +594,7 @@ namespace gpe
         newMax = std::max( 0, newMax );
         newMax = std::min( partical_max_per_emitter, newMax );
         int i = 0;
-        particle * cParticle = nullptr;
+        particle * cParticle = NULL;
         int currentSize = (int)particles.size();
         if( newMax > maxParticles )
         {
@@ -609,10 +613,10 @@ namespace gpe
                 for( i = currentSize -1; i >=newMax; i-- )
                 {
                     cParticle = particles[i];
-                    if( cParticle!=nullptr )
+                    if( cParticle!=NULL )
                     {
                         delete cParticle;
-                        cParticle = nullptr;
+                        cParticle = NULL;
                     }
                     particles.erase( particles.begin()+i );
                 }

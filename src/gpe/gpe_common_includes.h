@@ -45,15 +45,25 @@ SOFTWARE.
 
 #include "limits.h"
 
+#ifdef _WIN32
+
+#include <windows.h>
+//#undef _WIN32_LEAN_AND_MEAN
+#include <Commdlg.h>
+
+#endif
+
 #include <cerrno>
 #include <stdio.h>
 #include <dirent.h>
 #include <exception>
+#include "../other_libs/sff_ex.h"
 
 namespace gpe
 {
     //Operating Systems
     int seek_os();
+    //File Functions
 }
 
 #endif //gpe_common_includes_h

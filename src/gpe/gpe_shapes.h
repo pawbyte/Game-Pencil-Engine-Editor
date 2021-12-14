@@ -88,7 +88,7 @@ namespace gpe
             float get_y();
             float get_y2();
             //Limitations
-            void limit_space_to_rect(int * limitedX = nullptr, int * limitedY = nullptr);
+            void limit_space_to_rect(int * limitedX = NULL, int * limitedY = NULL);
             void set_x( float x_new );
             void set_y( float y_new );
             void set_w( float newW );

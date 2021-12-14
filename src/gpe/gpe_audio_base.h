@@ -43,11 +43,10 @@ namespace gpe
     extern float sound_global_volume;
 
     const int sound_format_acc = 0;
-    const int sound_format_mod = 1;
-    const int sound_format_mp3 = 2;
+    const int sound_format_mp3 = 1;
+    const int sound_format_mod = 2;
     const int sound_format_ogg = 3;
     const int sound_format_wav = 4;
-    const int sound_format_xm = 5;
 
     const int sound_format_max = 10; //Adding some extras for extensions...
 
@@ -69,7 +68,7 @@ namespace gpe
         public:
             sound_base();
             sound_base( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
-            virtual ~sound_base();
+            ~sound_base();
             virtual sound_base * create_new( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
             std::string get_error();
             std::string get_file_name();
@@ -96,7 +95,7 @@ namespace gpe
         public:
             music_base();
             music_base( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
-            virtual ~music_base();
+            ~music_base();
             virtual sound_base * create_new( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
             virtual music_base * create_new_music( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1);
             virtual bool is_playing();

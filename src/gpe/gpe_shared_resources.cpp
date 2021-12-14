@@ -35,7 +35,7 @@ SOFTWARE.
 
 namespace gpe
 {
-    texture_base * screen = nullptr;
-    input_manager_base * input = nullptr;
-    asset_manager * rsm = nullptr;
+    texture_base * screen = NULL;
+    input_manager_base * input = NULL;
+    asset_manager * rsm = NULL;
 }

@@ -70,7 +70,7 @@ namespace gpe
 
     void scene_layer::add_branch( branch * new_branch )
     {
-        if( new_branch == nullptr )
+        if( new_branch == NULL )
         {
             return;
         }
@@ -78,7 +78,7 @@ namespace gpe
 
     layer_tile_map *  scene_layer::add_tilemap( std::string name, int x,  int y, int w, int h  )
     {
-        return nullptr;
+
     }
 
     void scene_layer::add_collision_pair( game_object *objPairA, game_object *objPairB)
@@ -95,7 +95,7 @@ namespace gpe
 
         if( camera_scene_width>0 && camera_scene_height>0 )
         {
-            if( main_spatial_grid!=nullptr )
+            if( main_spatial_grid!=NULL )
             {
                 main_spatial_grid->init_system( camera_scene_width, camera_scene_height );
             }
@@ -109,7 +109,10 @@ namespace gpe
         render_list_regular_entities.clear();
         render_list_front_entities.clear();
         render_list_hud_entities.clear();
-        game_object *  foundGameObject = nullptr;
+        game_object *  foundGameObject = NULL;
+        int jObjectHolderParse = 0;
+        spatial_partition *  currentSpace = NULL;
+        int foundCollisionSpaceId = 0;
         int jLoop = 0;
         //Adds camera independent objects of this layer into render list
         for( jLoop = (int)independent_entities.size() -1; jLoop >=0; jLoop--)
@@ -130,7 +133,7 @@ namespace gpe
 
     void scene_layer::clear_spaces()
     {
-        if( main_spatial_grid !=nullptr )
+        if( main_spatial_grid !=NULL )
         {
             main_spatial_grid->deactivate_layer( layer_id );
         }
@@ -143,7 +146,7 @@ namespace gpe
 
     void scene_layer::remove_object ( game_object * objToRemove)
     {
-        game_object *  tObject = nullptr;
+        game_object *  tObject = NULL;
         for( int iItr = (int)layer_entities.size()-1; iItr >=0; iItr--)
         {
             tObject = layer_entities[iItr];
@@ -161,7 +164,7 @@ namespace gpe
 
     void scene_layer::render_objects()
     {
-        game_object * foundGameObject = nullptr;
+        game_object * foundGameObject = NULL;
         int iLoop = 0;
 
         gpe::gcanvas->set_render_alpha(255);
@@ -194,7 +197,7 @@ namespace gpe
     {
         for (int iTemp = (int)layer_backgrounds.size()-1; iTemp >=0; iTemp--)
         {
-            if( layer_backgrounds[iTemp]!= nullptr )
+            if( layer_backgrounds[iTemp]!= NULL )
                 layer_backgrounds[iTemp]->scroll_bg();
         }
     }

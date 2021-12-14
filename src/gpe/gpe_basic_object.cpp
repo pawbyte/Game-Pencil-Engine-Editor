@@ -130,7 +130,7 @@ namespace gpe
 
     void game_object::add_collision_object( game_object * other )
     {
-        if( other == nullptr )
+        if( other == NULL )
         {
             return;
         }
@@ -143,7 +143,7 @@ namespace gpe
 
     bool game_object::check_collison_with_object(  game_object * otherObj )
     {
-        if( otherObj == nullptr )
+        if( otherObj == NULL )
         {
             return false;
         }
@@ -268,7 +268,7 @@ namespace gpe
 
     void game_object::render()
     {
-        if( gcanvas!=nullptr )
+        if( gcanvas!=NULL )
         {
             gcanvas->render_rectangle( xpos, ypos, xpos + 32, ypos + 32, c_red, false );
         }

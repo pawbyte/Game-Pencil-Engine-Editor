@@ -35,7 +35,6 @@ SOFTWARE.
 #include "gpe_globals.h"
 #include "gpe_input_base.h"
 #include "../other_libs/stg_ex.h"
-#include "time.h"
 
 namespace gpe
 {
@@ -43,7 +42,6 @@ namespace gpe
 
     gamepad_base::gamepad_base()
     {
-        gamepad_id_number = 0;
         system_handler = "";
         gp_system_axes_count = 0;
         device_extension = "";
@@ -334,8 +332,6 @@ namespace gpe
 
     input_manager_base::input_manager_base()
     {
-        handles_double_clicks = false;
-        double_clicked_ms_rest = 600; //600 ms a 100 ms more than standard 500 ms
         event_container = new input_event_container();
         manager_id_number = input_manger_id_count;
         input_manger_id_count++;
@@ -348,6 +344,8 @@ namespace gpe
         kb_backspace_pressed = false;
         kb_shift_pressed = false;
         kb_last_button = -1;
+        scroll_up = false;
+        scroll_down = false;
         gamepad_current_count = 0;
 
         //Creates the gamepads
@@ -373,11 +371,10 @@ namespace gpe
             mouse_down_button[mb] = false;
             mouse_pressed_button[mb] = false;
             mouse_released_button[mb] = false;
-            mouse_double_clicked_time[mb] = -1;
         }
 
         mouse_position_x = mouse_previous_position_x = 0;
-        mouse_position_y = mouse_previous_position_y = 0;
+        mouse_position_x = mouse_previous_position_y = 0;
 
         mouse_scrolling_up = false;
         mouse_scrolling_down = false;
@@ -557,11 +554,11 @@ namespace gpe
         return false;
     }
 
-    bool input_manager_base::check_mouse_button_double_clicked(int button_id)
+    bool input_manager_base::check_mouse_button_clicked(int button_id)
     {
         if(button_id>=0 && button_id<mouse_button_count )
         {
-            if(mouse_clicked_button[button_id] > 1)
+            if(mouse_clicked_button[button_id]>1)
             {
                 return true;
             }
@@ -649,35 +646,6 @@ namespace gpe
     {
         //handled in child classes
         return "";
-    }
-
-    void input_manager_base::disable_double_click_checker()
-    {
-        handles_double_clicks = false;
-        for( int i_mb = mb_left; i_mb <= mb_middle; i_mb++ )
-        {
-            mouse_double_clicked_time[ i_mb] = -1;
-        }
-    }
-
-    void input_manager_base::enable_double_click_checker( int new_dc_ms_time)
-    {
-        handles_double_clicks = true;
-        double_clicked_ms_rest = new_dc_ms_time;
-        for( int i_mb = mb_left; i_mb <= mb_middle; i_mb++ )
-        {
-            mouse_double_clicked_time[ i_mb] = -1;
-        }
-    }
-
-    bool input_manager_base::double_click_checker_on()
-    {
-        return handles_double_clicks;
-    }
-
-    int input_manager_base::double_click_checker_time()
-    {
-        return double_clicked_ms_rest;
     }
 
     int input_manager_base::gamepad_check_button (int gamepad_id, int button_id)
@@ -829,7 +797,7 @@ namespace gpe
         {
             return game_pads[gamepad_id];
         }
-        return nullptr;
+        return NULL;
     };
 
     int input_manager_base::gamepad_get_axes_count ( int gamepad_id )
@@ -941,14 +909,13 @@ namespace gpe
         if( window_controller_main->is_resized() )
         {
             window_input_received = true;
-            screen_width = window_controller_main->get_window_width();
-            screen_height = window_controller_main->get_window_height();
+            //screen_width = window_controller_main->get_window_width();
+            //screen_height = window_controller_main->get_window_height();
             if(  window_controller_main->is_resized() )
             {
                 time(&last_screen_resize);
             }
-            error_log->report("Window resized to "+stg_ex::int_to_string(screen_width)+","+stg_ex::int_to_string(screen_height)+")" );
-            reset_all_input();
+            //reset_all_input();
         }
 
         if( window_controller_main->window_closed)
@@ -984,13 +951,14 @@ namespace gpe
         mouse_scrolling_up = false;
         mouse_scrolling_down = false;
 
-        if( window_controller_main !=nullptr )
+        if( window_controller_main !=NULL )
         {
             window_controller_main->reset_input();
-            window_controller_main->start_loop();
         }
 
-        for (int key = 0; key<kb_button_count; key++)
+        int key = 0;
+        int cbutton = 0;
+        for (key=0; key<kb_button_count; key++)
         {
             kb_button_previous[key] = kb_button_down[key];
             kb_button_pressed[key] = false;
@@ -1001,21 +969,13 @@ namespace gpe
             }
         }
 
-        for (int mb = 0; mb<mouse_button_count; mb++)
+        for (int mb=0; mb<mouse_button_count; mb++)
         {
             mouse_previous_button[mb] = mouse_down_button[mb];
             mouse_pressed_button[mb] = false;
             mouse_released_button[mb] = false;
-
-            //We only change this  if double clicking is handled by backend
-            if( handles_double_clicks == false )
-            {
-                mouse_clicked_button[mb] = 0;
-            }
+            mouse_clicked_button[mb] = 0;
         }
-        mouse_previous_position_x = mouse_position_x;
-        mouse_previous_position_y = mouse_position_y;
-
         renderer_main->reset_input();
         kb_backspace_pressed = false;
         exit_requested = false;
@@ -1069,24 +1029,14 @@ namespace gpe
         kb_binding_name[kb_f12] = "F12";
     }
 
-    void input_manager_base::key_bind_load()
-    {
-
-    }
-
-    void input_manager_base::key_bind_save()
-    {
-
-    }
-
     bool input_manager_base::load_input_settings(std::string file_path )
     {
         std::string input_settingsFile = app_directory_name + "gpe_input_settings.txt";
-        if( main_file_url_manager->file_exists(file_path) )
+        if( sff_ex::file_exists(file_path) )
         {
             input_settingsFile = input_settingsFile;
         }
-        if( main_file_url_manager->file_exists(input_settingsFile) )
+        if( sff_ex::file_exists(input_settingsFile) )
         {
             std::ifstream gameResourceFileIn( input_settingsFile.c_str() );
             if (gameResourceFileIn.is_open() )
@@ -1099,6 +1049,7 @@ namespace gpe
                 std::string currLine="";
                 std::string currLineToBeProcessed;
 
+                int i = 0;
                 float foundFileVersion = 0;
                 while ( gameResourceFileIn.good() )
                 {
@@ -1170,13 +1121,14 @@ namespace gpe
 
     void input_manager_base::reset_all_input()
     {
+        scroll_up = false;
+        scroll_down = false;
         mouse_scrolling_down = false;
         mouse_scrolling_up = false;
         mouse_scrolling_left = false;
         mouse_scrolling_right = false;
-        mouse_position_x = -1;
-        mouse_position_y = -1;
-
+        /*mouse_position_x = -1;
+        mouse_position_y = -1;*/
         for (int key=0; key<kb_button_count; key++)
         {
             kb_button_pressed[key] = false;
@@ -1190,25 +1142,24 @@ namespace gpe
             mouse_down_button[mb] = false;
             mouse_previous_button[mb] = false;
             mouse_released_button[mb] = false;
-            mouse_double_clicked_time[mb] = -1;
         }
         inputted_keys = "";
         kb_backspace_pressed= false;
         kb_shift_pressed = false;
-        input_received = false;
+        input_received = true;
     }
 
 
     void input_manager_base::reset_scroll_values()
     {
-        mouse_scrolling_down = false;
-        mouse_scrolling_up = false;
-        mouse_scrolling_right= false;
-        mouse_scrolling_left = false;
+        scroll_up = false;
+        scroll_down = false;
     }
 
     void input_manager_base::reset_temp_input()
     {
+        scroll_up = false;
+        scroll_down = false;
         mouse_scrolling_down = false;
         mouse_scrolling_up = false;
         mouse_scrolling_left = false;
@@ -1224,13 +1175,12 @@ namespace gpe
         {
             mouse_pressed_button[mb] = false;
             mouse_released_button[mb] = false;
-            mouse_double_clicked_time[mb] = -1;
         }
         inputted_keys = "";
-        kb_backspace_pressed = false;
+        kb_backspace_pressed= false;
         kb_shift_pressed = false;
 
-        gamepad_base * tempGC = nullptr;
+        gamepad_base * tempGC = NULL;
 
         for( int i = 0; i < gp_max_devices; i++ )
         {

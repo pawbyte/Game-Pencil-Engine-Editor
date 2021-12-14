@@ -41,7 +41,7 @@ namespace gpe
     float delta_current = 0;
     int time_keeper_count = 0;
 
-    time_keeper_base * time_keeper = nullptr;
+    time_keeper_base * time_keeper = NULL;
     //The frames per second cap timer
     time_keeper_base::time_keeper_base()
     {
@@ -155,7 +155,7 @@ namespace gpe
 
     int time_keeper_base::equals( time_keeper_base * other )
     {
-        if( other == nullptr )
+        if( other == NULL )
         {
             return -1;
         }
@@ -191,6 +191,11 @@ namespace gpe
     float time_keeper_base::get_fps()
     {
         return my_fps;
+    }
+
+    float time_keeper_base::get_fps_cap()
+    {
+        return fps_cap;
     }
 
     std::string time_keeper_base::get_name()
@@ -299,7 +304,7 @@ namespace gpe
     void time_keeper_base::start_timer()
     {
         ticks_start = get_ticks();
-        time_past = get_ticks();
+        time_past = get_performance_ms();
     }
 
     void time_keeper_base::stop_timer()

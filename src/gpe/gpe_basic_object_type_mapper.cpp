@@ -67,7 +67,7 @@ namespace gpe
         auto pairExists = objMap.find( object_name );
         if (pairExists == objMap.end() )
         {
-            return nullptr;
+            return NULL;
         }
         return objMap[object_name](x_pos_in, y_pos_in, object_layer_id);
     }

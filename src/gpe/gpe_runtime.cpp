@@ -37,14 +37,14 @@ SOFTWARE.
 
 namespace gpe
 {
-    runtime_master * game_runtime = nullptr;
+    runtime_master * game_runtime = NULL;
 
     runtime_master::runtime_master()
     {
         loading_data = false;
         loop_started = false;
 
-        state_current = nullptr;
+        state_current = NULL;
         state_seeked_name = "";
         state_current_name = "";
 
@@ -57,31 +57,31 @@ namespace gpe
     runtime_master::~runtime_master()
     {
         error_log->report("Removing program states...");
-        program_state *  cState = nullptr;
+        program_state *  cState = NULL;
         for( int i = (int)states_list.size() -1; i >=0; i-- )
         {
             cState = states_list[i];
-            if( cState!=nullptr )
+            if( cState!=NULL )
             {
                 error_log->report("Removing State["+cState->get_state_name()+"]...");
                 delete cState;
-                cState = nullptr;
+                cState = NULL;
             }
         }
         states_list.clear();
-        state_current = nullptr;
+        state_current = NULL;
 
         error_log->report("Removing cameras...");
-        scene_camera * tCamera = nullptr;
+        scene_camera * tCamera = NULL;
         for(int iV= max_cameras_allowed-1; iV >=0; iV-- )
         {
             tCamera = runtime_cameras[iV];
-            if( tCamera!=nullptr)
+            if( tCamera!=NULL)
             {
                 delete tCamera;
-                tCamera = nullptr;
+                tCamera = NULL;
             }
-            runtime_cameras[iV] = nullptr;
+            runtime_cameras[iV] = NULL;
         }
     }
 
@@ -107,6 +107,8 @@ namespace gpe
     //gameloop
     int runtime_master::game_loop()
     {
+        int neededTime = 0;
+
         state_handle_changes();
         //If the gameloop starts off on exit, we return false
         if( stg_ex::string_lower( state_seeked_name )== "exit" )
@@ -114,7 +116,7 @@ namespace gpe
             return -4;
         }
 
-        if( state_current == nullptr )
+        if( state_current == NULL )
         {
             return -3; //no state set on first go around so we exit
         }
@@ -134,7 +136,7 @@ namespace gpe
                 return true;
             }
 
-            if( state_current != nullptr )
+            if( state_current != NULL )
             {
                 sTicks = time_keeper->get_ticks();
                 state_current->process_input();
@@ -151,17 +153,17 @@ namespace gpe
             eTicks = time_keeper->get_ticks();
             error_log->log_ms_action("state_current->apply_logic",eTicks - sTicks, 20);
 
-            //if( window_controller_main->is_minimized() == false )
+            if( window_controller_main->is_minimized() == false )
             {
                 sTicks = time_keeper->get_ticks();
 
-                if( rph!=nullptr )
+                if( rph!=NULL )
                 {
                     rph->clear_render_packages();
                 }
                 //renderer_main->clear_renderer( false );
 
-                if( state_current!=nullptr )
+                if( state_current!=NULL )
                 {
                     state_current->render();
                 }
@@ -172,19 +174,17 @@ namespace gpe
                 //Updates the screen, calculates/caps fps and more.
                 end_loop();
             }
-            /*
             else
             {
-                if(input!=nullptr)
+                if(input!=NULL)
                 {
                     input->reset_temp_input();
                 }
-                if( time_keeper!=nullptr )
+                if( time_keeper!=NULL )
                 {
                     time_keeper->reset_timer();
                 }
             }
-            */
         }
         return true; //Otherwise return true that the gameloop ended properly
     }
@@ -197,7 +197,7 @@ namespace gpe
         input->handle_input(true, false );
         if(  window_controller_main->is_minimized() == false )
         {
-            if( cursor_main_controller !=nullptr )
+            if( cursor_main_controller !=NULL )
             {
                 cursor_main_controller->process_cursors();
             }
@@ -214,18 +214,14 @@ namespace gpe
         loop_started = false;
         if(  window_controller_main->is_minimized() )
         {
-            error_log->report("End loop resetting timer...");
-            time_keeper->reset_timer();
+            //error_log->report("End loop resetting timer...");
+            //time_keeper->reset_timer();
             return;
         }
 
-        if( rph != nullptr )
+        if( rph!=NULL )
         {
             rph->update_render_packages();
-        }
-        else
-        {
-            std::cout << "Render base class rendered another frame...." << ".\n";
         }
         time_keeper->cap_fps( window_controller_main->is_minimized() );
         time_keeper->calculate_avg_fps( window_controller_main->is_minimized() );
@@ -234,12 +230,8 @@ namespace gpe
 
     void runtime_master::finish_loop()
     {
-        if( loop_started )
-        {
-            end_loop();
-        }
+        end_loop();
     }
-
 
 
     void runtime_master::reset_loop()
@@ -249,9 +241,9 @@ namespace gpe
 
     bool runtime_master::state_add( program_state * newState )
     {
-        if( newState!=nullptr )
+        if( newState!=NULL )
         {
-            if( state_find( newState->get_state_name() ) == nullptr )
+            if( state_find( newState->get_state_name() ) == NULL )
             {
                 states_list.push_back( newState );
                 return true;
@@ -262,16 +254,16 @@ namespace gpe
 
     program_state * runtime_master::state_find( std::string state_name )
     {
-        program_state *  cState = nullptr;
+        program_state *  cState = NULL;
         for( int i = (int)states_list.size() -1; i >=0; i-- )
         {
             cState = states_list[i];
-            if( cState!=nullptr && cState->get_state_name() == state_name )
+            if( cState!=NULL && cState->get_state_name() == state_name )
             {
                 return cState;
             }
         }
-        return nullptr;
+        return NULL;
     }
 
     bool runtime_master::state_handle_changes()
@@ -279,14 +271,14 @@ namespace gpe
         //If the state needs to be changed
         if( (int)state_seeked_name.size() > 0 && state_current_name != state_seeked_name )
         {
-            if( state_current!=nullptr )
+            if( state_current!=NULL )
             {
                 state_current->end_state();
             }
-            state_current = nullptr;
+            state_current = NULL;
 
             program_state * cState  = state_find( state_seeked_name);
-            if( cState!=nullptr )
+            if( cState!=NULL )
             {
                 state_current = cState;
                 state_current->start_state();

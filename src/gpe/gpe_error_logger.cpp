@@ -35,7 +35,7 @@ SOFTWARE.
 
 namespace gpe
 {
-    error_log_system * error_log = nullptr;
+    error_log_system * error_log = NULL;
 
     error_log_system::error_log_system( std::string output_file_name)
     {
@@ -90,10 +90,7 @@ namespace gpe
     void error_log_system::report(std::string str_in)
     {
         system_log.push_back( str_in );
-        if( main_file_url_manager != nullptr)
-        {
-            main_file_url_manager->file_ammend_string( output_file, str_in );
-        }
+        sff_ex::append_to_file( output_file, str_in );
     }
 
     void error_log_system::set_output_file( std::string output_file_name )

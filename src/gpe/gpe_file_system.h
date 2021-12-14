@@ -103,47 +103,20 @@ namespace gpe
     const float byte_size_tb = byte_size_gb*1024;
     const float byte_size_pb = byte_size_tb*1024;
 
-    class file_and_url_manager
-    {
-        protected:
-            std::string manager_type;
-        public:
-            file_and_url_manager();
-            virtual ~file_and_url_manager();
+    void external_open_program(std::string program_location, std::string program_info="", bool show_program_info_on_fail = false);
+    void external_open_url(std::string url_string);
 
-            virtual void external_open_program(std::string program_location, std::string program_info="", bool show_program_info_on_fail = false);
-            virtual void external_open_url(std::string url_string);
+    int get_file_size_bytes(const std::string &file_name);
+    std::string get_file_size_string(const std::string &file_name);
 
-            virtual void file_ammend_string(std::string file_name, std::string str_in );
-            virtual bool file_copy(std::string source_file_name, std::string destination_file_name, bool overwrite_existing = true);
-            virtual bool file_delete( std::string f_name);
+    int clean_folder(std::string folder_name);
+    int copy_folder(std::string folder_name, std::string folder_target, bool copy_subfolders = false, bool overwrite_existing_files = false );
 
-            virtual bool file_exists(std::string new_file_name);
-
-
-            virtual int file_get_size_bytes(const std::string &file_name);
-            virtual std::string file_get_size_string(const std::string &file_name);
-
-            virtual int folder_clean(std::string folder_name);
-            virtual int folder_copy(std::string folder_name, std::string folder_target, bool copy_subfolders = false, bool overwrite_existing_files = false );
-            virtual int folder_create( std::string new_path_name);
-            virtual bool folder_exists(std::string path_name);
-
-
-            std::string get_user_settings_folder();
-            std::string get_user_temp_folder();
-            std::string get_user_screenshot_folder();
-
-            virtual int path_clean(std::string folder_name);
-            virtual int path_copy(std::string folder_name, std::string folder_target, bool copy_subfolders = false, bool overwrite_existing_files = false );
-            virtual int path_create( std::string new_path_name);
-            virtual bool path_exists(std::string path_name);
-
-            virtual bool seek_settings_folder();
-
-    };
-
-    extern file_and_url_manager * main_file_url_manager;
+    std::string  get_user_settings_folder();
+    bool seek_settings_folder();
+    std::string get_user_temp_folder();
+    std::string get_user_screenshot_folder();
+    bool delete_file( std::string f_name);
 
 }
 

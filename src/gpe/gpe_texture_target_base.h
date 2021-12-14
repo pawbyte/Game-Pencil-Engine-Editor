@@ -44,8 +44,8 @@ namespace gpe
             texture_target_base();
             virtual ~texture_target_base();
             texture_base * create_new();
-            virtual void render_overlay(  renderer_base * renderer,int x, int y, gpe::shape_rect* clip = nullptr, int alpha = 255  );
-            virtual void render_overlay_scaled(  renderer_base * renderer,int x, int y,float x_scale, float y_scale, gpe::shape_rect* clip = nullptr, color * render_color = nullptr, int alpha = 255 );
+            virtual void render_overlay(  renderer_base * renderer,int x, int y, gpe::shape_rect* clip = NULL, int alpha = 255  );
+            virtual void render_overlay_scaled(  renderer_base * renderer,int x, int y,float x_scale, float y_scale, gpe::shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
 
             virtual void resize_target( renderer_base * renderer,int w, int h, int id = -1,bool useLinearScaling = true  );
     };

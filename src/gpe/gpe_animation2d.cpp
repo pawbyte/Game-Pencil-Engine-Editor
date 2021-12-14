@@ -38,7 +38,7 @@ namespace gpe
     //adds a animation with only one row of subimages
     animaton2d::animaton2d(render_package * r_package,std::string anim_name, std::string anim_filename, bool transparent_image)
     {
-        animation_texture = nullptr;
+        animation_texture = NULL;
         name = anim_name;
         file_name = anim_filename;
         load_image( r_package, anim_filename, transparent_image );
@@ -72,7 +72,7 @@ namespace gpe
 
     bool animaton2d::copy_image_source(std::string directory_output_name)
     {
-        if( animation_texture!=nullptr )
+        if( animation_texture!=NULL )
         {
             return animation_texture->copy_image_source( directory_output_name );
         }
@@ -121,7 +121,7 @@ namespace gpe
 
     int animaton2d::get_texture_width()
     {
-        if( animation_texture!=nullptr)
+        if( animation_texture!=NULL)
         {
             return animation_texture->get_width();
         }
@@ -130,7 +130,7 @@ namespace gpe
 
     int animaton2d::get_texture_height()
     {
-        if( animation_texture!=nullptr)
+        if( animation_texture!=NULL)
         {
             return animation_texture->get_height();
         }
@@ -160,24 +160,24 @@ namespace gpe
 
     bool animaton2d::has_texture()
     {
-        return (animation_texture!=nullptr);
+        return (animation_texture!=NULL);
     }
 
     void animaton2d::load_image( render_package * r_package, std::string anim_filename, bool transparent )
     {
-        if( r_package == nullptr)
+        if( r_package == NULL)
         {
             return;
         }
         clean_up();
-        if( animation_texture != nullptr )
+        if( animation_texture != NULL )
         {
             delete animation_texture;
-            animation_texture = nullptr;
+            animation_texture = NULL;
         }
         animation_texture = r_package->create_texture();
         file_name = anim_filename;
-        if( main_file_url_manager->file_exists( anim_filename) )
+        if( sff_ex::file_exists( anim_filename) )
         {
             animation_texture->load_new_texture(r_package->packageRenderer,anim_filename, -1,transparent );
         }
@@ -185,11 +185,11 @@ namespace gpe
 
     void animaton2d::render(int sub_image_to_draw, int x_pos, int y_pos,  shape_rect *cam)
     {
-        if(animation_texture!=nullptr)
+        if(animation_texture!=NULL)
         {
             if( (sub_image_to_draw < (int)animation_frames.size() )&& (sub_image_to_draw>=0) )
             {
-                if( cam!=nullptr)
+                if( cam!=NULL)
                 {
     //                if(check_collision(*cam,(int)x_pos,(int)y_pos,(int)x_pos+width,y_pos+height) == true )
                     {
@@ -206,11 +206,11 @@ namespace gpe
 
     void animaton2d::render_colored(int sub_image_to_draw, int x_pos, int y_pos,color * render_color, int alpha ,  shape_rect *cam)
     {
-        if(animation_texture!=nullptr)
+        if(animation_texture!=NULL)
         {
             if( (sub_image_to_draw < (int)animation_frames.size() )&& (sub_image_to_draw>=0) )
             {
-                if( cam!=nullptr)
+                if( cam!=NULL)
                 {
     //                if(check_collision(*cam,(int)x_pos,(int)y_pos,(int)x_pos+width,y_pos+height) == true )
                     {
@@ -227,12 +227,12 @@ namespace gpe
 
     void animaton2d::render_piece( int x_pos, int y_pos, shape_rect * rect_piece, shape_rect * cam )
     {
-        if(animation_texture!=nullptr  )
+        if(animation_texture!=NULL  )
         {
             //if( animation_texture->get_width() < rect_piece->x + rect_piece->w && animation_texture->get_height() < rect_piece->y +rect_piece->h )
-            if( rect_piece!=nullptr )
+            if( rect_piece!=NULL )
             {
-                if( cam!=nullptr)
+                if( cam!=NULL)
                 {
     //                if(check_collision(*cam,(int)x_pos,(int)y_pos,(int)x_pos+width,y_pos+height) == true )
                     {
@@ -246,7 +246,7 @@ namespace gpe
             }
             else if( (int)animation_frames.size() > 0 )
             {
-                if( cam!=nullptr)
+                if( cam!=NULL)
                 {
     //                if(check_collision(*cam,(int)x_pos,(int)y_pos,(int)x_pos+width,y_pos+height) == true )
                     {
@@ -263,13 +263,13 @@ namespace gpe
 
     void animaton2d::render_piece_resized( int x_pos, int y_pos, int new_width, int new_height, shape_rect * rect_piece, shape_rect * cam )
     {
-        if(animation_texture!=nullptr )
+        if(animation_texture!=NULL )
         {
-            if( rect_piece!=nullptr )
+            if( rect_piece!=NULL )
             {
                 //if( animation_texture->get_width() < rect_piece->x + rect_piece->w && animation_texture->get_height() < rect_piece->y +rect_piece->h )
                 {
-                    if( cam!=nullptr)
+                    if( cam!=NULL)
                     {
         //                if(check_collision(*cam,(int)x_pos,(int)y_pos,(int)x_pos+width,y_pos+height) == true )
                         {
@@ -284,7 +284,7 @@ namespace gpe
             }
             else if( (int)animation_frames.size() > 0 )
             {
-                if( cam!=nullptr)
+                if( cam!=NULL)
                 {
     //                if(check_collision(*cam,(int)x_pos,(int)y_pos,(int)x_pos+width,y_pos+height) == true )
                     {
@@ -316,20 +316,20 @@ namespace gpe
             render_scaled(sub_image_to_draw, x_pos, y_pos, x_scale, y_scale, cam );
             return;
         }
-        else if(animation_texture!=nullptr && (sub_image_to_draw < (int)animation_frames.size() )&& (sub_image_to_draw>=0) )
+        else if(animation_texture!=NULL && (sub_image_to_draw < (int)animation_frames.size() )&& (sub_image_to_draw>=0) )
         {
             int new_width = (float)width * x_scale;
             int new_height = (float)height * y_scale;
-            if( cam!=nullptr)
+            if( cam!=NULL)
             {
                 //if(check_collision(*cam,(int)x_pos,(int)y_pos,(int)x_pos+animationToDraw->width,y_pos+animationToDraw->height) == true )
                 {
-                     animation_texture->render_tex_special_at_point( x_pos-cam->x,y_pos-cam->y, new_angle,abs(collision_box->get_center()*x_scale),abs(collision_box->get_middle()*y_scale), new_width, new_height, nullptr,animation_frames.at(sub_image_to_draw) );
+                     animation_texture->render_tex_special_at_point( x_pos-cam->x,y_pos-cam->y, new_angle,abs(collision_box->get_center()*x_scale),abs(collision_box->get_middle()*y_scale), new_width, new_height, NULL,animation_frames.at(sub_image_to_draw) );
                 }
             }
             else
             {
-                animation_texture->render_tex_special_at_point( x_pos,y_pos, new_angle, abs(collision_box->get_center()*x_scale),abs(collision_box->get_middle()*y_scale), new_width, new_height,nullptr,animation_frames.at(sub_image_to_draw) );
+                animation_texture->render_tex_special_at_point( x_pos,y_pos, new_angle, abs(collision_box->get_center()*x_scale),abs(collision_box->get_middle()*y_scale), new_width, new_height,NULL,animation_frames.at(sub_image_to_draw) );
             }
             //animation_texture->change_color(c_white);
         }
@@ -342,9 +342,9 @@ namespace gpe
             return;
         }
 
-        if(animation_texture!=nullptr && (sub_image_to_draw < (int)animation_frames.size() )&& (sub_image_to_draw>=0) )
+        if(animation_texture!=NULL && (sub_image_to_draw < (int)animation_frames.size() )&& (sub_image_to_draw>=0) )
         {
-            if( cam!=nullptr)
+            if( cam!=NULL)
             {
                 //if(check_collision(*cam,(int)x_pos,(int)y_pos,(int)x_pos+animationToDraw->width,y_pos+animationToDraw->height) == true )
                 animation_texture->render_tex_scaled( x_pos-cam->x-abs(collision_box->get_center()*x_scale),y_pos-cam->y-abs(collision_box->get_middle()*y_scale),x_scale, y_scale, animation_frames.at(sub_image_to_draw) );
@@ -363,13 +363,13 @@ namespace gpe
             return;
         }
 
-        if(animation_texture!=nullptr && (sub_image_to_draw < (int)animation_frames.size() )&& (sub_image_to_draw>=0) )
+        if(animation_texture!=NULL && (sub_image_to_draw < (int)animation_frames.size() )&& (sub_image_to_draw>=0) )
         {
             int new_width = (float)width * x_scale;
             int new_height = (float)height * y_scale;
             float xPivot = collision_box->get_center() * x_scale;
             float yPivot = collision_box->get_middle() * y_scale;
-            if( cam!=nullptr)
+            if( cam!=NULL)
             {
                 //if(check_collision(*cam,(int)x_pos,(int)y_pos,(int)x_pos+animationToDraw->width,y_pos+animationToDraw->height) == true )
                 {
@@ -386,14 +386,14 @@ namespace gpe
 
     void animaton2d::reset_frames()
     {
-        shape_rect * cRect = nullptr;
+        shape_rect * cRect = NULL;
         for( int i = (int)animation_frames.size()-1; i >=0; i-- )
         {
             cRect = animation_frames[i];
-            if( cRect!=nullptr )
+            if( cRect!=NULL )
             {
                 delete cRect;
-                cRect = nullptr;
+                cRect = NULL;
             }
         }
         animation_frames.clear();
@@ -411,12 +411,12 @@ namespace gpe
         vPadding = vPad;
 
         int animationsAdded = 0;
-        if( animation_texture==nullptr)
+        if( animation_texture==NULL)
         {
             frameCount = 0;
             return;
         }
-        shape_rect * newRect = nullptr;
+        shape_rect * newRect = NULL;
 
         int i = 0, j = 0;
         for( i  = yoffset; i < animation_texture->get_height();  i += height+vPadding)
@@ -453,12 +453,12 @@ namespace gpe
         hPadding = hPad;
         vPadding = vPad;
 
-        if( animation_texture==nullptr)
+        if( animation_texture==NULL)
         {
             return;
         }
 
-        shape_rect * newRect = nullptr;
+        shape_rect * newRect = NULL;
         int i = 0, j = 0;
         for( i  = yoffset; i < animation_texture->get_height();  i += height+vPadding)
         {

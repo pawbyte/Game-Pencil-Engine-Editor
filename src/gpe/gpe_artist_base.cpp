@@ -35,11 +35,12 @@ SOFTWARE.
 
 namespace gpe
 {
-    artist_base * gcanvas  = nullptr;
+    artist_base * gcanvas  = NULL;
 
     artist_base::artist_base()
     {
-        artist_renderer = nullptr;
+        use_simple_geometry_rendering = false;
+        artist_renderer = NULL;
 
         defaultLineWidth = 1;
         temp_clip_rect = new shape_rect();
@@ -48,11 +49,12 @@ namespace gpe
         color_temp = c_white->duplicate_color();
         alpha_current = 255;
 
-        lightingOverlayTexture = nullptr;
+        lightingOverlayTexture = NULL;
     }
 
     artist_base::artist_base( renderer_base * aRenderer )
     {
+        use_simple_geometry_rendering = false;
         artist_renderer = aRenderer;
 
         defaultLineWidth = 1;
@@ -62,39 +64,39 @@ namespace gpe
         color_temp = c_white->duplicate_color();
         alpha_current = 255;
 
-        lightingOverlayTexture = nullptr;
+        lightingOverlayTexture = NULL;
     }
 
     artist_base::~artist_base()
     {
-        if( temp_clip_rect!=nullptr )
+        if( temp_clip_rect!=NULL )
         {
             delete temp_clip_rect;
-            temp_clip_rect = nullptr;
+            temp_clip_rect = NULL;
         }
 
-        if( color_current!=nullptr )
+        if( color_current!=NULL )
         {
             delete color_current;
-            color_current = nullptr;
+            color_current = NULL;
         }
 
-        if( color_temp!=nullptr )
+        if( color_temp!=NULL )
         {
             delete color_temp;
-            color_temp = nullptr;
+            color_temp = NULL;
         }
 
-        if( lightingOverlayTexture!=nullptr )
+        if( lightingOverlayTexture!=NULL )
         {
             delete lightingOverlayTexture;
-            lightingOverlayTexture = nullptr;
+            lightingOverlayTexture = NULL;
         }
     }
 
     int artist_base::animation_get_number(animaton2d* animationIn)
     {
-        if(animationIn!=nullptr)
+        if(animationIn!=NULL)
         {
             return animationIn->get_frame_count();
         }
@@ -109,10 +111,15 @@ namespace gpe
         return blend_current_mode;
     }
 
+    bool artist_base::using_simple_geometry()
+    {
+        return use_simple_geometry_rendering;
+    }
+
     void artist_base::render_animation_named( std::string resource_name,  int sub_image_to_draw, int x_pos, int y_pos, shape_rect *cam)
     {
         animaton2d* animationToDraw = rsm->get_animation( resource_name );
-        if(animationToDraw!=nullptr)
+        if(animationToDraw!=NULL)
         {
             animationToDraw->render(sub_image_to_draw,x_pos,y_pos, cam );
         }
@@ -121,7 +128,7 @@ namespace gpe
     void artist_base::render_animation_named_resized( std::string resource_name,  int sub_image_to_draw, int x_pos, int y_pos, int new_width, int new_height, shape_rect * cam)
     {
         animaton2d * animationToDraw = rsm->get_animation( resource_name );
-        if(animationToDraw!=nullptr)
+        if(animationToDraw!=NULL)
         {
             animationToDraw->render_resized(sub_image_to_draw,x_pos,y_pos,new_width, new_height, cam );
         }
@@ -130,7 +137,7 @@ namespace gpe
     void artist_base::render_animation_named_special( std::string resource_name, int sub_image_to_draw, int x_pos, int y_pos,  int new_width, int new_height,float new_angle,color * render_color, int alpha, shape_rect * cam)
     {
         animaton2d * animationToDraw = rsm->get_animation( resource_name );
-        if(animationToDraw!=nullptr)
+        if(animationToDraw!=NULL)
         {
             animationToDraw->render_special(sub_image_to_draw,x_pos,y_pos, new_width, new_height, new_angle,render_color,alpha, cam );
         }
@@ -139,7 +146,7 @@ namespace gpe
     void artist_base::render_animation_named_rotated( std::string resource_name,  int sub_image_to_draw, int x_pos, int y_pos, float new_angle,int new_width, int new_height,  shape_rect *cam)
     {
         animaton2d * animationToDraw = rsm->get_animation( resource_name );
-        if(animationToDraw!=nullptr)
+        if(animationToDraw!=NULL)
         {
             animationToDraw->render_rotated( sub_image_to_draw, x_pos, y_pos, new_angle, new_width, new_height, cam );
         }
@@ -147,7 +154,7 @@ namespace gpe
 
     void artist_base::render_animation(animaton2d* animationToDraw, int sub_image_to_draw, int x_pos, int y_pos, shape_rect *cam)
     {
-        if(animationToDraw!=nullptr)
+        if(animationToDraw!=NULL)
         {
             animationToDraw->render(sub_image_to_draw,x_pos,y_pos, cam );
         }
@@ -156,7 +163,7 @@ namespace gpe
 
     void artist_base::render_animation_resized(animaton2d* animationToDraw, int sub_image_to_draw, int x_pos, int y_pos, int new_width, int new_height, shape_rect * cam)
     {
-        if(animationToDraw!=nullptr)
+        if(animationToDraw!=NULL)
         {
             animationToDraw->render_resized(sub_image_to_draw,x_pos,y_pos,new_width, new_height, cam );
         }
@@ -164,7 +171,7 @@ namespace gpe
 
     void artist_base::render_animation_special(animaton2d* animationToDraw, int sub_image_to_draw, int x_pos, int y_pos,  int new_width, int new_height,float new_angle,color * render_color, int alpha, shape_rect * cam)
     {
-        if(animationToDraw!=nullptr)
+        if(animationToDraw!=NULL)
         {
             animationToDraw->render_special(sub_image_to_draw,x_pos,y_pos, new_width, new_height, new_angle,render_color, alpha, cam );
         }
@@ -172,11 +179,11 @@ namespace gpe
 
     void artist_base::render_animation_rotated(animaton2d* animationToDraw, int sub_image_to_draw, int x_pos, int y_pos, float new_angle, int new_width, int new_height, shape_rect *cam)
     {
-        if( cam==nullptr)
+        if( cam==NULL)
         {
             cam = camera_default;
         }
-        if(animationToDraw!=nullptr)
+        if(animationToDraw!=NULL)
         {
             animationToDraw->render_rotated( sub_image_to_draw, x_pos, y_pos, new_angle, new_width, new_height, cam );
         }
@@ -209,12 +216,12 @@ namespace gpe
 
     }
 
-    void artist_base::render_arc_width( float arc_x, float arc_y, float arc_radius, int line_width, float start_angle, float end_angle, float arc_vertices  )
+    void artist_base::render_arc_width( float arc_x, float arc_y, float arc_radius, float line_width, float start_angle, float end_angle, float arc_vertices  )
     {
 
     }
 
-    void artist_base::render_arc_width_color( float arc_x, float arc_y,float arc_radius, int line_width, float start_angle, float end_angle, float arc_vertices,  color * render_color, int alpha_channel  )
+    void artist_base::render_arc_width_color( float arc_x, float arc_y,float arc_radius, float line_width, float start_angle, float end_angle, float arc_vertices,  color * render_color, int alpha_channel  )
     {
 
     }
@@ -262,20 +269,21 @@ namespace gpe
 
 
     //Gradients Rendering [ BEGIN ]
-    void artist_base::render_gradient_circle(  int radius, shape_rect * rendRect , color * render_color1, color * render_color2 )
+    void artist_base::render_gradient_circle(  int radius, shape_rect * rendRect , color * render_color )
     {
 
     }
 
-    void artist_base::render_gradient_horizontal(  shape_rect * rendRect, color * render_color1, color * render_color2 )
+    void artist_base::render_gradient_horizontal(  shape_rect * rendRect, color * render_color )
     {
 
     }
 
-    void artist_base::render_gradient_vertical(  shape_rect * rendRect, color * render_color1, color * render_color2 )
+    void artist_base::render_gradient_vertical(  shape_rect * rendRect, color * render_color )
     {
 
     }
+
     //Gradients Rendering [ END ]
 
     //Line Rendering [ BEGIN ]
@@ -475,6 +483,46 @@ namespace gpe
 
     }
 
+
+    bool artist_base::enable_simple_geometry()
+    {
+        return false;
+    }
+
+
+    bool artist_base::disable_simple_geometry()
+    {
+        return false;
+    }
+
+
+    bool artist_base::begin_geometric_shape()
+    {
+        return false;
+    }
+
+
+    bool artist_base::end_geometric_shape()
+    {
+        return false;
+    }
+
+
+
+    int artist_base::begin_primitive_render( primitive_type new_mode )
+    {
+        return -1;
+    }
+
+    void artist_base::end_primitive_render()
+    {
+
+    }
+
+    void artist_base::add_vertex( int new_x, int new_y )
+    {
+
+    }
 
     void artist_base::render_ligting_overlay( int x, int y)
     {

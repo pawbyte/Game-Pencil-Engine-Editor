@@ -35,27 +35,16 @@ SOFTWARE.
 #include "gpe_file_system.h"
 #include "gpe_globals.h"
 
-
-#include <sys/stat.h>
-
-#if defined(_WIN32)
-
-#include <windows.h>
-
-#endif // defined
-
 namespace gpe
 {
-    file_and_url_manager * main_file_url_manager = nullptr;
-
     std::string generate_filters(const std::vector<filetype_filter *> filters)
     {
         std::string result ="";
-        filetype_filter * tempFilter = nullptr;
+        filetype_filter * tempFilter = NULL;
         for(int i = 0; i < (int)filters.size(); i++)
         {
             tempFilter = filters[i];
-            if( tempFilter!=nullptr)
+            if( tempFilter!=NULL)
             {
                 result += tempFilter->desc;
                 result += '\0';
@@ -71,7 +60,7 @@ namespace gpe
         fileTypeVector.clear();
         std::string returnFileFilterstring = "All types(*.*)\0*.*\0";
         std::vector<filetype_filter *> filters;
-        filetype_filter * tempNewFilter = nullptr;
+        filetype_filter * tempNewFilter = NULL;
         if( (int)allowedFileTypes.size() > 0)
         {
             if( allowedFileTypes=="All types(*.*)" ||  allowedFileTypes=="All Files" || allowedFileTypes=="None" ||  allowedFileTypes=="All Files*")
@@ -160,10 +149,10 @@ namespace gpe
         for( int iDelete = (int)filters.size()-1; iDelete>=0; iDelete--)
         {
             tempNewFilter = filters.at(iDelete);
-            if( tempNewFilter!=nullptr)
+            if( tempNewFilter!=NULL)
             {
                 delete tempNewFilter;
-                tempNewFilter = nullptr;
+                tempNewFilter = NULL;
             }
         }
         filters.clear();
@@ -225,7 +214,7 @@ namespace gpe
             file_name = "";
             fileType = "";
         }
-        thumbnail_texture = nullptr;
+        thumbnail_texture = NULL;
         file_size_info = 0;
         date_creation_info = "";
         date_modified_info = "";
@@ -233,10 +222,10 @@ namespace gpe
 
     file_object::~file_object()
     {
-        if( thumbnail_texture!=nullptr)
+        if( thumbnail_texture!=NULL)
         {
             delete thumbnail_texture;
-            thumbnail_texture = nullptr;
+            thumbnail_texture = NULL;
         }
     }
 
@@ -275,14 +264,14 @@ namespace gpe
 
     void file_directory_class::close_directory()
     {
-        file_object * tFile = nullptr;
+        file_object * tFile = NULL;
         for( int i = (int)files_list.size()-1; i>=0; i--)
         {
             tFile = files_list[i];
-            if( tFile!=nullptr)
+            if( tFile!=NULL)
             {
                 delete tFile;
-                tFile = nullptr;
+                tFile = NULL;
             }
         }
         files_list.clear();
@@ -293,14 +282,14 @@ namespace gpe
 
     void file_directory_class::filter_directory(bool only_folders, std::vector <std::string> &file_types_to_use)
     {
-        file_object * tempFile = nullptr;
+        file_object * tempFile = NULL;
         file_position = 0;
         file_count = 0;
         sub_directory_count = 0;
         for( int i = (int)files_list.size() - 1; i >=0; i--)
         {
             tempFile = files_list[i];
-            if( tempFile!=nullptr)
+            if( tempFile!=NULL)
             {
                 if( only_folders)
                 {
@@ -320,7 +309,7 @@ namespace gpe
                 else
                 {
                     delete tempFile;
-                    tempFile = nullptr;
+                    tempFile = NULL;
                     files_list.erase(files_list.begin()+i);
                 }
             }
@@ -333,14 +322,14 @@ namespace gpe
 
     bool file_directory_class::open_directory_sorted(std::string directory_string)
     {
-        if( main_file_url_manager->folder_exists(directory_string) )
+        if( sff_ex::path_exists(directory_string) )
         {
             close_directory();
             std::string foundErrorMessage;
             DIR *dir;
             struct dirent *ent;
             dir = opendir( directory_string.c_str() );
-            if( dir==nullptr)
+            if( dir==NULL)
             {
                 foundErrorMessage = strerror(errno);
 
@@ -352,14 +341,14 @@ namespace gpe
             }
             else
             {
-                file_object * newFile = nullptr;
-                file_object * tFile = nullptr;
+                file_object * newFile = NULL;
+                file_object * tFile = NULL;
                 int i = 0;
                 int j = 0;
                 bool foundNewPosition = false;
                 bool newFileIsDirectory = false;
                 std::string new_file_name = "";
-                while ( (ent = readdir(dir)) != nullptr )
+                while ( (ent = readdir(dir)) != NULL )
                 {
                     std::string entry( ent->d_name );
                     //std::string lcEntry( std::strToLower(entry) );
@@ -377,11 +366,11 @@ namespace gpe
                         new_file_name = ent->d_name;
                         if(new_file_name!=".." && new_file_name!=".")
                         {
-                            newFileIsDirectory = main_file_url_manager->folder_exists(directory_string+"/"+ent->d_name);
-                            //if( ( main_editor_settings!=nullptr && main_editor_settings->showHiddenFilesInBrowser->is_clicked() ) || system_found_os!=GPE_IDE_LINUX || (system_found_os==GPE_IDE_LINUX && new_file_name.find_first_of(".",0)!=0) )
+                            newFileIsDirectory = sff_ex::path_exists(directory_string+"/"+ent->d_name);
+                            //if( ( main_editor_settings!=NULL && main_editor_settings->showHiddenFilesInBrowser->is_clicked() ) || system_found_os!=GPE_IDE_LINUX || (system_found_os==GPE_IDE_LINUX && new_file_name.find_first_of(".",0)!=0) )
                             {
                                 newFile = new file_object(new_file_name, newFileIsDirectory);
-                                if( newFile!=nullptr)
+                                if( newFile!=NULL)
                                 {
                                     newFile->file_directory_location = directory_string;
                                     foundNewPosition = false;
@@ -389,7 +378,7 @@ namespace gpe
                                     for( j = (int)files_list.size()-1; j >=0 && foundNewPosition==false; j--)
                                     {
                                         tFile = files_list[j];
-                                        if( tFile!=nullptr)
+                                        if( tFile!=NULL)
                                         {
                                             if( tFile->get_name() >= new_file_name )
                                             {
@@ -432,7 +421,7 @@ namespace gpe
         {
             return files_list.at(position);
         }
-        return nullptr;
+        return NULL;
     }
 
     int file_directory_class::get_count()
@@ -457,7 +446,7 @@ namespace gpe
             file_position++;
             return get_file(file_position);
         }
-        return nullptr;
+        return NULL;
     }
 
     bool file_directory_class::has_next_file()
@@ -478,93 +467,54 @@ namespace gpe
         return false;
     }
 
-    file_and_url_manager::file_and_url_manager()
+
+
+    void external_open_program(std::string program_location, std::string program_info, bool show_program_info_on_fail )
     {
-
-    }
-
-    file_and_url_manager::~file_and_url_manager()
-    {
-
-    }
-
-    void file_and_url_manager::external_open_program(std::string program_location, std::string program_info, bool show_program_info_on_fail )
-    {
-
-    }
-
-    void file_and_url_manager::external_open_url(std::string url_string)
-    {
-
-    }
-
-    void  file_and_url_manager::file_ammend_string(std::string file_name, std::string str_in )
-    {
-        std::ofstream filestr(file_name.c_str(), std::ios::out | std::ios::app);
-        filestr << str_in;
-        filestr << " \n";
-        filestr.close();
-    }
-
-    bool file_and_url_manager::file_copy(std::string source_file_name, std::string destination_file_name, bool overwrite_existing )
-    {
-        if( source_file_name != destination_file_name)
+        error_log->report("Attempting to open ["+program_location+"] with ["+program_info+"] data...");
+        if( sff_ex::file_exists(program_location) || sff_ex::path_exists(program_location) )
         {
-            if(file_exists(source_file_name) )
-            {
-                if( !overwrite_existing && file_exists( destination_file_name ) )
-                {
-                    return false;
-                }
-                #ifdef _WIN32
+    #ifdef _WIN32
+            // win implementation
+            //program_location = "start "+url_string;
+            program_info = stg_ex::string_replace_all(program_info,"/","\\");
+            ShellExecute(NULL,NULL,program_location.c_str(),program_info.c_str(),NULL,SW_SHOW );
+    #elif _APPLE__
+            // apple implementation
+            program_location = "open "+program_location;
 
-                            CopyFile( source_file_name.c_str(), destination_file_name.c_str(), false );
-                #else
-                            std::ifstream srce( source_file_name.c_str(), std::ios::binary ) ;
-                            std::ofstream dest( destination_file_name.c_str(), std::ios::binary ) ;
-                            dest << srce.rdbuf() ;
-                #endif
-                return true;
-            }
+            system(program_location.c_str() );
+    #else
+            // Linux and others implementation
+            program_location = "xdg-open \""+program_location+"\"";
+            system(program_location.c_str() );
+    #endif
         }
-        return false;
-    }
-
-    bool file_and_url_manager::file_delete( std::string f_name)
-    {
-        if( file_exists( f_name) )
+        else if( show_program_info_on_fail )
         {
-            if( remove( f_name.c_str() ) == 0 )
-            {
-                return true;
-            }
+            external_open_url(program_info);
         }
-        return false;
     }
 
-    bool file_and_url_manager::file_exists(std::string new_file_name)
+    void external_open_url(std::string url_string)
     {
-        if( (int)new_file_name.size() > 0 )
-        {
-            /*
-                Code derieved from http://stackoverflow.com/questions/146924/how-can-i-tell-if-a-given-path-is-a-directory-or-a-file-c-c
-                http://stackoverflow.com/a/146938
-                Mk12 - http://stackoverflow.com/users/148195/mk12
-            */
-            struct stat s;
-            if( stat(new_file_name.c_str(),&s) == 0 )
-            {
-                if( s.st_mode & S_IFREG )
-                {
-                    //it's a file
-                    return true;
-                }
-            }
-        }
-        return false;
+        //url_string+="&";
+        /**/
+    #ifdef _WIN32
+        // win implementation
+        ShellExecute(NULL, "open", url_string.c_str(), NULL, NULL, SW_SHOWNORMAL);
+    #elif _APPLE__
+        // apple implementation
+        url_string = "open "+url_string;
+        system(url_string.c_str() );
+    #else
+        // Linux and others implementation
+        url_string = "xdg-open \""+url_string+"\"";
+        system(url_string.c_str() );
+    #endif
     }
 
-    int file_and_url_manager::file_get_size_bytes(const std::string &file_name)
+    int get_file_size_bytes(const std::string &file_name)
     {
         std::ifstream file(file_name.c_str(), std::ifstream::in | std::ifstream::binary);
 
@@ -580,9 +530,9 @@ namespace gpe
         return fileSize;
     }
 
-    std::string file_and_url_manager::file_get_size_string(const std::string &file_name)
+    std::string get_file_size_string(const std::string &file_name)
     {
-        float f_sizeInBytes = file_get_size_bytes( file_name );
+        float f_sizeInBytes = get_file_size_bytes( file_name );
         if( f_sizeInBytes <  0 )
         {
             return "Error: File Size not found...";
@@ -606,10 +556,10 @@ namespace gpe
         return stg_ex::float_to_string( f_sizeInBytes )+" bytes";
     }
 
-    int file_and_url_manager::folder_clean(std::string folder_name)
+    int clean_folder(std::string folder_name)
     {
         file_directory_class * dir = new file_directory_class();
-        file_object * file = nullptr;
+        file_object * file = NULL;
         int iFile = 0;
         int iDirectory = 0;
 
@@ -618,7 +568,7 @@ namespace gpe
         foldersToDelete.push_back(folder_name);
         std::string currentFolderToClear = folder_name;
         int filesDeletedCount = 0;
-        if( dir!=nullptr)
+        if( dir!=NULL)
         {
             while( (int)foldersToDelete.size() > 0 )
             {
@@ -627,7 +577,7 @@ namespace gpe
                 for (iFile = (int)dir->get_count()-1; iFile>=0; iFile--)
                 {
                     file = dir->get_file(iFile);
-                    if( file!=nullptr)
+                    if( file!=NULL)
                     {
                         fileToClick = file->get_name();
                         if( fileToClick!="." && fileToClick!="..")
@@ -654,38 +604,37 @@ namespace gpe
                 }
             }
             delete dir;
-            dir = nullptr;
+            dir = NULL;
             return filesDeletedCount;
         }
         return 0;
     }
 
-
-    int file_and_url_manager::folder_copy(std::string folder_name, std::string folder_target, bool copy_subfolders, bool overwrite_existing_files )
+    int copy_folder(std::string folder_name, std::string folder_target, bool copy_subfolders, bool overwrite_existing_files )
     {
-        if( folder_exists( folder_name ) == false )
+        if( sff_ex::path_exists( folder_name ) == false )
         {
             return -1;
         }
-        if( folder_exists(folder_target) == false )
+        if( sff_ex::path_exists(folder_target) == false )
         {
             return -2;
         }
 
         int filesCopiedCount = 0;
         file_directory_class * dir = new file_directory_class();
-        file_object * file = nullptr;
+        file_object * file = NULL;
         std::string currentFileName = "";
         int iFile = 0;
         int iDirectory = 0;
         int addedFolderFileCount = 0;
-        if( dir!=nullptr )
+        if( dir!=NULL )
         {
             dir->open_directory(folder_name);
             for (iFile = 0; iFile < (int)dir->get_count(); iFile++)
             {
                 file = dir->get_file(iFile);
-                if( file!=nullptr)
+                if( file!=NULL)
                 {
                     currentFileName = file->get_name();
                     if( currentFileName!="." && currentFileName!="..")
@@ -696,8 +645,8 @@ namespace gpe
                         {
                             if( copy_subfolders)
                             {
-                                folder_create(folder_target+"/"+file->get_name() );
-                                addedFolderFileCount= folder_copy( currentFileName, folder_target+"/"+ file->get_name(), true, overwrite_existing_files );
+                                sff_ex::create_directory(folder_target+"/"+file->get_name() );
+                                addedFolderFileCount= copy_folder( currentFileName, folder_target+"/"+ file->get_name(), true, overwrite_existing_files );
 
                                 if( addedFolderFileCount > 0 )
                                 {
@@ -707,7 +656,7 @@ namespace gpe
                         }
                         else
                         {
-                            if( file_copy(currentFileName,folder_target+"/"+ file->get_name(), overwrite_existing_files ) )
+                            if( sff_ex::file_copy(currentFileName,folder_target+"/"+ file->get_name(), overwrite_existing_files ) )
                             {
                                 filesCopiedCount++;
                             }
@@ -716,79 +665,14 @@ namespace gpe
                 }
             }
             delete dir;
-            dir = nullptr;
+            dir = NULL;
             return filesCopiedCount;
         }
         return 0;
     }
 
-    int file_and_url_manager::folder_create( std::string new_path_name)
-    {
-        if( (int)new_path_name.size() > 2)
-        {
-            if( path_exists(new_path_name) )
-            {
-                return 0;
-            }
-            #ifdef _WIN32
-                if (CreateDirectory(new_path_name.c_str(), nullptr) || ERROR_ALREADY_EXISTS == GetLastError())
-                {
-                    return true;
-                }
-                else
-                {
-                    -1;
-                }
-            #else
-                int foundError = -1;
-                foundError = mkdir(newPathToCreate.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-                if( foundError==0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return -1;
-                }
-            #endif
-        }
-        return -1;
-    }
 
-    bool file_and_url_manager::folder_exists(std::string path_name)
-    {
-        int pNameSize = (int)path_name.size();
-        if( pNameSize > 0 )
-        {
-
-            if( path_name[ pNameSize-1] =='/' || path_name[ pNameSize-1] =='\\')
-            {
-                path_name = path_name.substr(0,pNameSize-1);
-            }
-            /*
-                Code derieved from http://stackoverflow.com/questions/146924/how-can-i-tell-if-a-given-path-is-a-directory-or-a-file-c-c
-                http://stackoverflow.com/a/146938
-                Mk12 - http://stackoverflow.com/users/148195/mk12
-            */
-            struct stat s;
-            if( stat(path_name.c_str(),&s) == 0 )
-            {
-                if( s.st_mode & S_IFDIR )
-                {
-                    //it's a directory
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    std::string  file_and_url_manager::get_user_settings_folder()
-    {
-        return settings_app_folder;
-    }
-
-    bool file_and_url_manager::seek_settings_folder()
+    bool seek_settings_folder()
     {
         //Sets the folder used in all  get_user_settings_folder() calls based on the 2 parameters above
         settings_app_folder = app_directory_name;
@@ -805,7 +689,7 @@ namespace gpe
         char* homeDir = getenv("%UserProfile%");
         std::string foundPath = "";
         //Attempt 1...
-        if( homeDir!=nullptr)
+        if( homeDir!=NULL)
         {
             //Attempt 1...
             foundPath = homeDir;
@@ -814,7 +698,7 @@ namespace gpe
         {
             //Attempt 2...
             homeDir = getenv("home");
-            if( homeDir!=nullptr )
+            if( homeDir!=NULL )
             {
                 foundPath = homeDir;
             }
@@ -822,7 +706,7 @@ namespace gpe
             {
                 //Attempt 3...
                 homeDir = getenv("HOME");
-                if( homeDir!=nullptr)
+                if( homeDir!=NULL)
                 {
                     foundPath = homeDir;
                 }
@@ -830,7 +714,7 @@ namespace gpe
                 {
                     //final shot...
                     homeDir = getenv("homepath");
-                    if( homeDir!=nullptr )
+                    if( homeDir!=NULL )
                     {
                         foundPath = homeDir;
                     }
@@ -843,27 +727,27 @@ namespace gpe
             }
         }
 
-        if( homeDirFound && path_exists(foundPath) )
+        if( homeDirFound && sff_ex::path_exists(foundPath) )
         {
             std::string appDataPath = foundPath;
             if( system_found_os== system_os_windows)
             {
                 //First Layer of Windows unlocked :-)
-                if( folder_create(appDataPath+"/AppData")!=-1)
+                if( sff_ex::create_directory(appDataPath+"/AppData")!=-1)
                 {
                     foundPath = appDataPath = appDataPath+"/AppData";
 
                     //See if we can get into the Roaming folder now
-                    if( folder_create(appDataPath+"/Roaming")!=-1)
+                    if( sff_ex::create_directory(appDataPath+"/Roaming")!=-1)
                     {
                         foundPath = appDataPath = appDataPath+"/Roaming";
                     }
-                    else if( folder_create(appDataPath+"/Local")!=-1 )
+                    else if( sff_ex::create_directory(appDataPath+"/Local")!=-1 )
                     {
                         //If failed, lets see if we can get into the Local folder now
                         foundPath = appDataPath = appDataPath+"/Local";
                     }
-                    else if( folder_create(appDataPath+"/LocalLow")!=-1 )
+                    else if( sff_ex::create_directory(appDataPath+"/LocalLow")!=-1 )
                     {
                         foundPath = appDataPath = appDataPath+"/LocalLow";
                     }
@@ -882,7 +766,7 @@ namespace gpe
             else if( system_found_os== system_os_mac)
             {
                 appDataPath = foundPath+"/~/Library/Preferences";
-                if( folder_create(appDataPath)==-1)
+                if( sff_ex::create_directory(appDataPath)==-1)
                 {
                     useProgramFolder = true;
                     appDataPath = foundPath = "";
@@ -911,14 +795,14 @@ namespace gpe
             }
 
             //If we are able to get into the publisher folder
-            if( folder_create(appDataPath)!=-1)
+            if( sff_ex::create_directory(appDataPath)!=-1)
             {
                 foundPath = appDataPath;
                 settings_app_folder = foundPath;
                 if( (int)settings->programTitle.size() > 0 )
                 {
                     //If we are able to get into the titled program's folder
-                    if( folder_create( foundPath+"/"+settings->programTitle )!=-1 )
+                    if( sff_ex::create_directory( foundPath+"/"+settings->programTitle )!=-1 )
                     {
                         foundPath = foundPath+"/"+settings->programTitle;
                         settings_app_folder = foundPath;
@@ -934,6 +818,7 @@ namespace gpe
             }
         }
 
+
         //save the settings and local directory to the application directory
         if( useProgramFolder )
         {
@@ -945,49 +830,38 @@ namespace gpe
         }
     }
 
+    std::string  get_user_settings_folder()
+    {
+        return settings_app_folder;
+    }
 
-    std::string file_and_url_manager::get_user_temp_folder()
+    std::string get_user_temp_folder()
     {
         std::string foundPath =  get_user_settings_folder();
         std::string tempFolderstring = foundPath;
         foundPath = foundPath+"/temp_files";
-        if( folder_create(foundPath)!=-1)
+        if( sff_ex::create_directory(foundPath)!=-1)
         {
             tempFolderstring = foundPath+"/";
         }
         return tempFolderstring;
     }
 
-    std::string file_and_url_manager::get_user_screenshot_folder()
+    std::string get_user_screenshot_folder()
     {
         std::string foundPath =  get_user_settings_folder();
         std::string tempScreenshotstring = foundPath;
         foundPath = foundPath+"/screenshots";
-        if( folder_create(foundPath)!=-1)
+        if( sff_ex::create_directory(foundPath)!=-1)
         {
             tempScreenshotstring = foundPath+"/";
         }
         return tempScreenshotstring;
     }
 
-
-    int file_and_url_manager::path_clean(std::string folder_name)
+    bool delete_file( std::string f_name)
     {
-        return folder_clean( folder_name );
-    }
-
-    int file_and_url_manager::path_copy(std::string folder_name, std::string folder_target, bool copy_subfolders , bool overwrite_existing_files  )
-    {
-        return folder_copy( folder_name, folder_target, copy_subfolders, overwrite_existing_files );
-    }
-
-    int file_and_url_manager::path_create( std::string new_path_name)
-    {
-        return folder_create( new_path_name );
-    }
-
-    bool file_and_url_manager::path_exists(std::string path_name)
-    {
-        return folder_exists( path_name );
+        //Function not yet created
+        return false;
     }
 }

@@ -41,29 +41,14 @@ namespace gpe
         error_occurred = false;
         state_name = "gpe_default_state_name";
         bg_color = new color("bg_color",0,0,0,255 );
-        bg_texture = nullptr;
-        if( rph!=nullptr )
+        bg_texture = NULL;
+        if( rph!=NULL )
         {
             bg_texture = rph->get_new_texture();
         }
     }
 
     program_state::~program_state()
-    {
-
-    }
-
-    void program_state::apply_logic()
-    {
-
-    }
-
-    void program_state::clean_up()
-    {
-
-    }
-
-    void program_state::end_state()
     {
 
     }
@@ -83,27 +68,22 @@ namespace gpe
         return state_previous_name;
     }
 
-    void program_state::process_input()
-    {
-
-    }
-
     void program_state::render()
     {
-        if( gcanvas!= nullptr )
+        if( gcanvas!= NULL )
         {
             gcanvas->render_rectangle( 0, 0, gpe::screen_width, gpe::screen_height, bg_color, false, 255 );
         }
 
-        if( bg_texture!= nullptr )
+        if( bg_texture!= NULL )
         {
-            bg_texture->render_tex_resized( 0, 0, gpe::screen_width, gpe::screen_height, nullptr );
+            bg_texture->render_tex_resized( 0, 0, gpe::screen_width, gpe::screen_height, NULL );
         }
     }
 
     void program_state::set_background_color( uint8_t r , uint8_t g, uint8_t b, uint8_t a )
     {
-        if( bg_color != nullptr )
+        if( bg_color != NULL )
         {
             bg_color->change_rgba(r, g, b, a );
             return;
@@ -114,13 +94,13 @@ namespace gpe
 
     void program_state::set_background_image( std::string bg_file )
     {
-        if( bg_texture != nullptr )
+        if( bg_texture = NULL )
         {
             bg_texture->load_new_texture( renderer_main, bg_file );
             return;
         }
 
-        if( rph!=nullptr )
+        if( rph!=NULL )
         {
             bg_texture = rph->get_new_texture();
             bg_texture->load_new_texture( renderer_main, bg_file );
@@ -130,21 +110,11 @@ namespace gpe
     bool program_state::set_state_name_next( std::string s_name )
     {
         state_next_name = s_name;
-        return true;
     }
 
     bool program_state::set_state_name_previous( std::string s_name )
     {
-        if( s_name == state_name )
-        {
-            return false;
-        }
         state_previous_name = s_name;
         return true;
-    }
-
-    void program_state::start_state()
-    {
-
     }
 }

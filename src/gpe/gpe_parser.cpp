@@ -41,7 +41,7 @@ namespace gpe
         key_string = str;
         key_substring = ksubstr;
         key_value = kValue;
-        parent_pair = nullptr;
+        parent_pair = NULL;
         id_unique_number = 0;
     }
 
@@ -53,11 +53,11 @@ namespace gpe
     gpe::key_pair * key_pair::add_keypair(std::string optionName, std::string optionSubStr,float optionValue )
     {
         bool optionExists = false;
-        gpe::key_pair * tOption = nullptr;
+        gpe::key_pair * tOption = NULL;
         for( int i = 0; i < (int)sub_options.size(); i++)
         {
             tOption = sub_options[i];
-            if( tOption!=nullptr )
+            if( tOption!=NULL )
             {
                 if( tOption->key_string==optionName)
                 {
@@ -73,7 +73,7 @@ namespace gpe
             sub_options.push_back(kp);
             return kp; //returns new option
         }
-        return nullptr; //if everything breaks return nothing
+        return NULL; //if everything breaks return nothing
     }
 
     gpe::key_pair *  key_pair::find_option_id( int kId )
@@ -82,23 +82,23 @@ namespace gpe
         {
             return this;
         }
-        gpe::key_pair * curKey = nullptr;
-        gpe::key_pair * fKey = nullptr;
+        gpe::key_pair * curKey = NULL;
+        gpe::key_pair * fKey = NULL;
         int optionsSize = (int)sub_options.size();
 
         for( int i = 0; i < optionsSize; i++)
         {
             curKey = sub_options[i];
-            if( curKey!=nullptr)
+            if( curKey!=NULL)
             {
                 fKey = curKey->find_option_id( kId);
-                if( fKey!=nullptr)
+                if( fKey!=NULL)
                 {
                     return fKey;
                 }
             }
         }
-        return nullptr;
+        return NULL;
     }
 
     gpe::key_pair *  key_pair::find_option_named( std::string str )
@@ -107,23 +107,23 @@ namespace gpe
         {
             return this;
         }
-        gpe::key_pair * curKey = nullptr;
-        gpe::key_pair * fKey = nullptr;
+        gpe::key_pair * curKey = NULL;
+        gpe::key_pair * fKey = NULL;
         int optionsSize = sub_options.size();
 
         for( int i = 0; i < optionsSize; i++)
         {
             curKey = sub_options[i];
-            if( curKey!=nullptr)
+            if( curKey!=NULL)
             {
                 fKey = curKey->find_option_named( str );
-                if( fKey!=nullptr)
+                if( fKey!=NULL)
                 {
                     return fKey;
                 }
             }
         }
-        return nullptr;
+        return NULL;
     }
 
     gpe::key_pair *  key_pair::find_option_value( float kVal )
@@ -132,29 +132,29 @@ namespace gpe
         {
             return this;
         }
-        gpe::key_pair * curKey = nullptr;
-        gpe::key_pair * fKey = nullptr;
+        gpe::key_pair * curKey = NULL;
+        gpe::key_pair * fKey = NULL;
         int optionsSize = sub_options.size();
 
         for( int i = 0; i < optionsSize; i++)
         {
             curKey = sub_options[i];
-            if( curKey!=nullptr)
+            if( curKey!=NULL)
             {
                 fKey = curKey->find_option_value( kVal );
-                if( fKey!=nullptr)
+                if( fKey!=NULL)
                 {
                     return fKey;
                 }
             }
         }
-        return nullptr;
+        return NULL;
 
     }
 
     int key_pair::get_unique_id()
     {
-        if( parent_pair!=nullptr)
+        if( parent_pair!=NULL)
         {
             return parent_pair->get_unique_id();
         }
@@ -167,13 +167,13 @@ namespace gpe
 
     bool key_pair::name_exists( std::string str)
     {
-        gpe::key_pair * curKey = nullptr;
+        gpe::key_pair * curKey = NULL;
         int optionsSize = sub_options.size();
 
         for( int i = 0; i < optionsSize; i++)
         {
             curKey = sub_options[i];
-            if( curKey!=nullptr)
+            if( curKey!=NULL)
             {
                 if( curKey->name_exists( str) )
                 {
@@ -193,11 +193,11 @@ namespace gpe
     {
         bool optionRemoved = false;
         int optionsSize = sub_options.size();
-        gpe::key_pair * curKey = nullptr;
+        gpe::key_pair * curKey = NULL;
         for( int i = optionsSize -1; i >=0; i--)
         {
             curKey = sub_options[i];
-            if( curKey!=nullptr)
+            if( curKey!=NULL)
             {
                 if( nest_down )
                 {
@@ -212,7 +212,7 @@ namespace gpe
                 }
                 sub_options.erase( sub_options.begin() + i );
                 delete curKey;
-                curKey = nullptr;
+                curKey = NULL;
             }
         }
 
@@ -223,12 +223,12 @@ namespace gpe
     {
         bool optionRemoved = false;
         int optionsSize = (int)sub_options.size();
-        gpe::key_pair * curKey = nullptr;
+        gpe::key_pair * curKey = NULL;
 
         for( int i = optionsSize -1; i >=0; i--)
         {
             curKey = sub_options[i];
-            if( curKey!=nullptr)
+            if( curKey!=NULL)
             {
                 if( nest_down )
                 {
@@ -243,7 +243,7 @@ namespace gpe
                 }
                 sub_options.erase( sub_options.begin() + i );
                 delete curKey;
-                curKey = nullptr;
+                curKey = NULL;
             }
         }
 
@@ -256,12 +256,12 @@ namespace gpe
 
         bool optionRemoved = false;
         int optionsSize = (int)sub_options.size();
-        gpe::key_pair * curKey = nullptr;
+        gpe::key_pair * curKey = NULL;
 
         for( int i = optionsSize -1; i >=0; i--)
         {
             curKey = sub_options[i];
-            if( curKey!=nullptr)
+            if( curKey!=NULL)
             {
                 if( nest_down )
                 {
@@ -276,7 +276,7 @@ namespace gpe
                 }
                 sub_options.erase( sub_options.begin() + i );
                 delete curKey;
-                curKey = nullptr;
+                curKey = NULL;
             }
         }
         return optionRemoved;
@@ -284,14 +284,14 @@ namespace gpe
 
     void key_pair::remove_all()
     {
-        gpe::key_pair * curKey = nullptr;
+        gpe::key_pair * curKey = NULL;
         for( int i = (int)sub_options.size()-1; i >=0; i--)
         {
             curKey = sub_options[i];
-            if( curKey!=nullptr)
+            if( curKey!=NULL)
             {
                 delete curKey;
-                curKey = nullptr;
+                curKey = NULL;
             }
         }
         sub_options.clear();

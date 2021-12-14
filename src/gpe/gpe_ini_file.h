@@ -34,10 +34,9 @@ SOFTWARE.
 #ifndef gpe_ini_file_h
 #define gpe_ini_file_h
 
-#include "gpe_file_system.h"
-#include "gpe_parser.h"
-
+#include "../other_libs/sff_ex.h"
 #include "../other_libs/stg_ex.h"
+#include "gpe_parser.h"
 
 namespace gpe
 {
@@ -47,7 +46,7 @@ namespace gpe
             std::vector <gpe::key_pair *> ini_sections;
         public:
         gpe_ini_file();
-        virtual ~ gpe_ini_file();
+        ~gpe_ini_file();
         virtual gpe::key_pair * add_section( std::string section_name);
         virtual void clear_all_sections();
         virtual void clear_section( std::string section_name );

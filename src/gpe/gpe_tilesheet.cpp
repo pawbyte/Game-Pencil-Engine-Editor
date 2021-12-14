@@ -38,7 +38,7 @@ namespace gpe
     tilesheet::tilesheet()
     {
         tsId = -1;
-        tsImage = nullptr;
+        tsImage = NULL;
         tsWidth = 0;
         tsHeight = 0;
         tsXOff = 0;
@@ -55,16 +55,16 @@ namespace gpe
     tilesheet::~tilesheet()
     {
         tsRects.clear();
-        if( tsImage!=nullptr)
+        if( tsImage!=NULL)
         {
             delete tsImage;
-            tsImage = nullptr;
+            tsImage = NULL;
         }
     }
 
     void tilesheet::organize_tilesheet()
     {
-        if( tsImage!=nullptr)
+        if( tsImage!=NULL)
         {
             tsRects.clear();
             gpe::shape_rect tempRect;

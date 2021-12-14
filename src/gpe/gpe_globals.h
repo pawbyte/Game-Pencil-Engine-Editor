@@ -45,7 +45,6 @@ namespace gpe
     extern bool fps_show_counter;
 
     extern bool debug_mode_active;
-    extern bool debug_texture_renders;
 
     //Actual Engine global variables
     extern std::string app_file_name;

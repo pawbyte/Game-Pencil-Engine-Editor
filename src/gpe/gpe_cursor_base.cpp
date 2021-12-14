@@ -35,13 +35,11 @@ SOFTWARE.
 
 namespace gpe
 {
-    cursor_controller_base * cursor_main_controller = nullptr;
+    cursor_controller_base * cursor_main_controller = NULL;
     int cursor_controller_counter = 0;
 
     cursor_controller_base::cursor_controller_base()
     {
-        custom_cursor_render = false;
-        cursor_is_hidden = false;
         cursor_controller_counter++;
         cursor_window_id = cursor_controller_counter;
         cursor_controller_type = "base";
@@ -102,11 +100,6 @@ namespace gpe
         return false;
     }
 
-    bool cursor_controller_base::cursor_hidden()
-    {
-        return cursor_is_hidden;
-    }
-
     int cursor_controller_base::cursor_map_size()
     {
         return 0;
@@ -119,7 +112,7 @@ namespace gpe
 
     int cursor_controller_base::equals( cursor_controller_base * other )
     {
-        if( other !=nullptr )
+        if( other !=NULL )
         {
             if( other->get_id() == cursor_controller_id )
             {
@@ -151,24 +144,8 @@ namespace gpe
         return cursor_window_id;
     }
 
-    void cursor_controller_base::hide_cursor()
-    {
-
-    }
-
     void cursor_controller_base::process_cursors()
     {
 
     }
-
-    void cursor_controller_base::render()
-    {
-
-    }
-
-    void cursor_controller_base::show_cusor( )
-    {
-
-    }
-
 }

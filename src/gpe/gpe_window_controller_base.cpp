@@ -35,11 +35,11 @@ SOFTWARE.
 
 namespace gpe
 {
-    window_controller_base * window_controller_main = nullptr;
+    window_controller_base * window_controller_main = NULL;
 
     window_controller_base::window_controller_base()
     {
-        window_base_renderer = nullptr;
+        window_base_renderer = NULL;
         window_id = -1;
         window_closed = false;
         window_has_mouse= false;
@@ -177,8 +177,7 @@ namespace gpe
     {
         resized = false;
         window_closed = false;
-        minimized = false;
-        if( window_base_renderer!=nullptr )
+        if( window_base_renderer!=NULL )
         {
             window_base_renderer->resize_renderer( window_width, window_height );
             window_base_renderer->reset_input();
@@ -187,7 +186,7 @@ namespace gpe
 
     void window_controller_base::resize_window()
     {
-        if( window_base_renderer!=nullptr )
+        if( window_base_renderer!=NULL )
         {
             window_base_renderer->resize_renderer( window_width, window_height );
         }
@@ -201,7 +200,7 @@ namespace gpe
 
     bool window_controller_base::scale_window( int s_width, int s_height , bool scale_int )
     {
-        if( window_base_renderer !=nullptr )
+        if( window_base_renderer !=NULL )
         {
             return window_base_renderer->scale_renderer(s_width, s_height, scale_int );
         }

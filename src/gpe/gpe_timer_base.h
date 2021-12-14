@@ -104,6 +104,7 @@ namespace gpe
             virtual float get_delta_ticks();
 
             virtual float get_fps();
+            virtual float get_fps_cap();
             std::string get_name();
             virtual float get_performance_ms();
             virtual float get_performance_seconds();

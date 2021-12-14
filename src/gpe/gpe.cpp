@@ -32,17 +32,20 @@ SOFTWARE.
 */
 
 #include "gpe.h"
-#include "stdlib.h"
 
 namespace gpe
 {
     bool init_core_engine( int argc, char* args[] , std::string error_log_location )
     {
-        if( error_log == nullptr )
+        if( error_log == NULL )
         {
             error_log = new error_log_system( error_log_location );
         }
 
+        if( settings == NULL )
+        {
+            return false;
+        }
 
         if( argc > 0)
         {
@@ -52,15 +55,8 @@ namespace gpe
         }
         args_processed = argc;
 
-
-        if( settings == nullptr )
-        {
-            settings = new engine_settings(app_file_name, app_file_name );
-            //return false;
-        }
-
         //begins making random numbers...
-        //srand( time(nullptr) );
+        srand( time(NULL) );
 
         for(int rI = 0; rI < resource_type_max; rI++)
         {
@@ -127,27 +123,23 @@ namespace gpe
         sound_type_names[ sound_format_wav ] = "wav";
 
         //Sets the folder used in all  get_user_settings_folder() calls based on the 2 paramers above
-        if( main_file_url_manager == nullptr )
-        {
-            main_file_url_manager = new file_and_url_manager();
-        }
-        main_file_url_manager->seek_settings_folder();
+        seek_settings_folder();
 
         //General Debug Info
         //error_log->report("    WARNING: DO NOT CLOSE THE CONSOLE WINDOW. UNSAVED FILES AND DATA WILL BE LOST!");
         //Clears the error logs and such
 
-        std::string errorLogName =  main_file_url_manager->get_user_settings_folder()+"gpe_error_log.txt";
+        std::string errorLogName =  get_user_settings_folder()+"gpe_error_log.txt";
         remove(errorLogName.c_str() );
-        std::string buildEerrorLogName =  main_file_url_manager->get_user_settings_folder()+"build_errors.txt";
+        std::string buildEerrorLogName =  get_user_settings_folder()+"build_errors.txt";
         remove( buildEerrorLogName.c_str() );
-        buildEerrorLogName =  main_file_url_manager->get_user_settings_folder()+"resources_check.txt";
+        buildEerrorLogName =  get_user_settings_folder()+"resources_check.txt";
         remove( buildEerrorLogName.c_str() );
 
         error_log->report("Attempting to initialize GPE-Engine( Version " + stg_ex::float_to_string( gpe::version_number_total ) + ")");
         error_log->report("Program Publisher:"+ settings->programPublisher );
         error_log->report("Program Title:"+settings->programTitle );
-        error_log->report("_settings Folder: "+ main_file_url_manager->get_user_settings_folder() );
+        error_log->report("_settings Folder: "+ get_user_settings_folder() );
 
         error_log->report("Initializing Color_System..");
         init_colors();
@@ -165,7 +157,7 @@ namespace gpe
         if( init_font_system() == false)
         {
             error_log->report("-- Error initializing fonts.");
-            //return false;
+            return false;
         }
 
         rsm = new asset_manager(rph->get_default_render_package(), "gcm-rsm");
@@ -174,12 +166,6 @@ namespace gpe
         cursor_main_controller->cursor_change( cursor_main_controller->cursor_system_name( cursor_default_type::wait ) );
 
         window_controller_main = new window_controller_base();
-        render_package * default_render_package = rph->add_render_package( "default" );
-
-        default_render_package->packageRenderer = renderer_main;
-        default_render_package->packageTexture = new texture_base();
-        default_render_package->packageWindow = window_controller_main;
-
         game_runtime = new runtime_master();
         game_runtime->loading_data = true;
         return true;
@@ -201,34 +187,34 @@ namespace gpe
     {
         //Deletes in the order of dependencies from top/down
         error_log->report("Deleting resource manager....");
-        if( rsm!=nullptr)
+        if( rsm!=NULL)
         {
             rsm->clean_up();
             delete rsm;
-            rsm = nullptr;
+            rsm = NULL;
         }
         error_log->report("Deleting game_runtime....");
-        if( game_runtime!=nullptr)
+        if( game_runtime!=NULL)
         {
             delete game_runtime;
-            game_runtime = nullptr;
+            game_runtime = NULL;
         }
 
         error_log->report("Deleting input object...");
-        if( input!=nullptr)
+        if( input!=NULL)
         {
             delete input;
-            input = nullptr;
+            input = NULL;
         }
         return true;
     }
 
     bool quit_core_engine()
     {
-        if( error_log!=nullptr )
+        if( error_log!=NULL )
         {
             delete error_log;
-            error_log = nullptr;
+            error_log = NULL;
         }
         return true;
     }

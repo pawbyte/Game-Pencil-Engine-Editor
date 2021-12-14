@@ -39,12 +39,10 @@ SOFTWARE.
 #include <cmath>
 #include <sstream>
 #include "gpe_collisions.h"
-#include "gpe_file_system.h"
+#include "../other_libs\stg_ex.h"
 #include "gpe_globals.h"
 #include "gpe_branch.h"
 #include "gpe_render_package.h"
-#include "../other_libs\stg_ex.h"
-
 
 namespace gpe
 {
@@ -101,14 +99,14 @@ namespace gpe
             std::string get_name();
             bool has_texture();
             void load_image( render_package * r_package,std::string anim_filename, bool transparent = true );
-            void render(int sub_image_to_draw, int x_pos, int y_pos,  shape_rect * cam = nullptr);
-            void render_colored(int sub_image_to_draw, int x_pos, int y_pos, color * render_color, int alpha = 255, shape_rect * cam = nullptr);
-            void render_piece( int x_pos, int y_pos, shape_rect * rect_piece = nullptr, shape_rect * cam = nullptr);
-            void render_piece_resized( int x_pos, int y_pos, int new_width, int new_height, shape_rect * rect_piece = nullptr, shape_rect * cam = nullptr);
-            void render_resized(int sub_image_to_draw, int x_pos, int y_pos, float new_width, float new_height, shape_rect * cam = nullptr);
-            void render_rotated(int sub_image_to_draw, int x_pos, int y_pos, float new_angle, float x_scale, float y_scale, shape_rect * cam= nullptr);
-            void render_scaled(int sub_image_to_draw, int x_pos, int y_pos, float x_scale, float y_scale, shape_rect * cam = nullptr);
-            void render_special(int sub_image_to_draw, int x_pos, int y_pos, float x_scale, float y_scale,float new_angle = 0,color * render_color = nullptr, int alpha = 255, shape_rect * cam= nullptr);
+            void render(int sub_image_to_draw, int x_pos, int y_pos,  shape_rect * cam = NULL);
+            void render_colored(int sub_image_to_draw, int x_pos, int y_pos, color * render_color, int alpha = 255, shape_rect * cam = NULL);
+            void render_piece( int x_pos, int y_pos, shape_rect * rect_piece = NULL, shape_rect * cam = NULL);
+            void render_piece_resized( int x_pos, int y_pos, int new_width, int new_height, shape_rect * rect_piece = NULL, shape_rect * cam = NULL);
+            void render_resized(int sub_image_to_draw, int x_pos, int y_pos, float new_width, float new_height, shape_rect * cam = NULL);
+            void render_rotated(int sub_image_to_draw, int x_pos, int y_pos, float new_angle, float x_scale, float y_scale, shape_rect * cam= NULL);
+            void render_scaled(int sub_image_to_draw, int x_pos, int y_pos, float x_scale, float y_scale, shape_rect * cam = NULL);
+            void render_special(int sub_image_to_draw, int x_pos, int y_pos, float x_scale, float y_scale,float new_angle = 0,color * render_color = NULL, int alpha = 255, shape_rect * cam= NULL);
             void reset_frames();
             void setup_animation( int frame_count, int aw, int ah, int sofx, int sofy, int hPad, int vPad );
             void setup_fullimg_animation(  int aw, int ah, int sofx, int sofy, int hPad, int vPad );
