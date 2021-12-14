@@ -3,10 +3,10 @@ game_state_load.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -102,12 +102,12 @@ game_loader::game_loader( std::string s_name )
             cCategorty = gpe::settings->gameResourcesInstructions->find_option_named( seeked_categories[i] );
             if( cCategorty !=NULL )
             {
-                load_title_current = cCategorty->keyString;
-                load_value_seeked += (int)cCategorty->subOptions.size();
+                load_title_current = cCategorty->key_string;
+                load_value_seeked += (int)cCategorty->sub_options.size();
             }
             else
             {
-                gpe::error_log->report("Error: Engine Settings group ["+seeked_categories[i]+"] is currently NULL!" );
+                gpe::error_log->report("Error: Engine _settings group ["+seeked_categories[i]+"] is currently NULL!" );
             }
         }
     }
@@ -136,11 +136,11 @@ void game_loader::apply_logic()
         gpe::key_pair * mPair = NULL;
         gpe::key_pair * cPair = NULL;
         int j = 0;
-        int maxResourceTypeSize = (int)gpe::settings->gameResourcesInstructions->subOptions.size();
+        int maxResourceTypeSize = (int)gpe::settings->gameResourcesInstructions->sub_options.size();
         for( int i = load_category_current; i < maxResourceTypeSize; i++ )
         {
-            mPair = gpe::settings->gameResourcesInstructions->subOptions[i];
-            load_title_current = "Loading " + mPair->keyString + "s";
+            mPair = gpe::settings->gameResourcesInstructions->sub_options[i];
+            load_title_current = "Loading " + mPair->key_string + "s";
             if( mPair !=NULL )
             {
                 process_keypair( mPair );
@@ -183,7 +183,7 @@ bool game_loader::keypair_is_seeked( gpe::key_pair * pairToProcess )
     {
         for( int i = (int)seeked_categories.size(); i >=0; i--)
         {
-            if( pairToProcess->keyString == seeked_categories[i] )
+            if( pairToProcess->key_string == seeked_categories[i] )
             {
                 return true;
             }

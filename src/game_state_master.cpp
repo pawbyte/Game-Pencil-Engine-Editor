@@ -3,10 +3,10 @@ game_state_master.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
-Copyright (c) 2014-2020 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -119,7 +119,7 @@ void game_master::apply_logic()
 
     //apply game object prelogics
     apply_game_objects_prelogic();
-    //apply_spatial_game_objects_prelogics(this.collisionSpacesInView);
+    //apply_spatial_game_objects_prelogics(this.collision_spaces_in_view);
     init_collision_handler();
 
     update_spaces_in_view();
@@ -177,8 +177,8 @@ void game_master::clean_up()
     game_objects_delete_list.clear();
     game_objects_delete_types.clear();
     game_objects_continuous.clear();
-    collisionSpacesInView.clear();
-    objectCollisionIsChecked.clear();
+    collision_spaces_in_view.clear();
+    object_collision_is_checked.clear();
 
     gpe::error_log->report("State removed..");
 }
@@ -215,9 +215,9 @@ void game_master::process_scene_movement()
         for( iHolderType = (int)game_objects.size()-1; iHolderType>=0; iHolderType--)
         {
             foundObjTypeHolder = game_objects.at( iHolderType );
-            for( jj=(int)foundObjTypeHolder->internalArray.size()-1; jj>=0; jj--)
+            for( jj=(int)foundObjTypeHolder->internal_list.size()-1; jj>=0; jj--)
             {
-                foundRegObj = foundObjTypeHolder->internalArray[jj];
+                foundRegObj = foundObjTypeHolder->internal_list[jj];
                 if( foundRegObj->gpeIsBeingDestroyed==false )
                 {
                     foundRegObj->scene_end();
@@ -274,12 +274,12 @@ int game_master::remove_deleted_objects()
         foundObjTypeHolder = game_objects[iObjectType];
         if( foundObjTypeHolder!=NULL )
         {
-            for( jObject = (int)foundObjTypeHolder->internalArray.size() -1; jObject >=0; iObjectType-- )
+            for( jObject = (int)foundObjTypeHolder->internal_list.size() -1; jObject >=0; iObjectType-- )
             {
-                foundRegObj = foundObjTypeHolder->internalArray[jObject];
+                foundRegObj = foundObjTypeHolder->internal_list[jObject];
                 if( foundRegObj->gpeIsBeingDestroyed == true )
                 {
-                    foundObjTypeHolder->internalArray.erase( foundObjTypeHolder->internalArray.begin() + jObject );
+                    foundObjTypeHolder->internal_list.erase( foundObjTypeHolder->internal_list.begin() + jObject );
                     /*
                     for( kItr = foundRegObj.SPATIAL_PARTITION_LIST.length -1; kItr>=0; kItr--)
                     {
@@ -315,7 +315,7 @@ void game_master::start_state()
 
 void game_master::update_spaces_in_view()
 {
-    collisionSpacesInView.clear();
+    collision_spaces_in_view.clear();
     int cSceneViewFound = 0;
     int icameraX = 0;
     int jcameraY = 0;
@@ -327,17 +327,17 @@ void game_master::update_spaces_in_view()
         {
             /*
             cSceneViewFound = scene_current->sceneView[iV];
-            if( cSceneViewFound->isVisible)
+            if( cSceneViewFound->is_visible)
             {
-                for( icameraX = cSceneViewFound.cameraRect.xPos; icameraX <= cSceneViewFound.cameraRect.x2Pos+spatialGridWidthSize;icameraX+=spatialGridWidthSize)
+                for( icameraX = cSceneViewFound.camera_rect.x_pos; icameraX <= cSceneViewFound.camera_rect.x2Pos+spatial_grid_width_size;icameraX+=spatial_grid_width_size)
                 {
-                    for(  jcameraY = cSceneViewFound.cameraRect.yPos; jcameraY <= cSceneViewFound.cameraRect.y2Pos+spatialGridHeightSize;jcameraY+=spatialGridHeightSize)
+                    for(  jcameraY = cSceneViewFound.camera_rect.y_pos; jcameraY <= cSceneViewFound.camera_rect.y2Pos+spatial_grid_height_size;jcameraY+=spatial_grid_height_size)
                     {
-                        viewPartitionSpace = (( icameraX / spatialGridWidthSize)|0) * spatialGridHeightAmount;
-                        viewPartitionSpace+= ( jcameraY / spatialGridHeightSize)|0;
+                        viewPartitionSpace = (( icameraX / spatial_grid_width_size)|0) * spatial_grid_y_amount;
+                        viewPartitionSpace+= ( jcameraY / spatial_grid_height_size)|0;
                         if( viewPartitionSpace < COLLISION_AREA_SPACES.length )
                         {
-                            collisionSpacesInView.push_back(viewPartitionSpace);
+                            collision_spaces_in_view.push_back(viewPartitionSpace);
                         }
                     }
                 }
