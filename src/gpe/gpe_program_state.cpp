@@ -31,6 +31,7 @@ SOFTWARE.
 
 */
 
+#include "gpe_artist_base.h"
 #include "gpe_program_state.h"
 
 namespace gpe

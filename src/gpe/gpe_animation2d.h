@@ -39,10 +39,10 @@ SOFTWARE.
 #include <cmath>
 #include <sstream>
 #include "gpe_collisions.h"
-#include "../other_libs\stg_ex.h"
 #include "gpe_globals.h"
 #include "gpe_branch.h"
 #include "gpe_render_package.h"
+#include "../other_libs\stg_ex.h"
 
 namespace gpe
 {

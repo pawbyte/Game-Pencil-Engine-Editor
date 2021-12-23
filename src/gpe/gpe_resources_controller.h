@@ -34,21 +34,22 @@ SOFTWARE.
 #ifndef gpe_resources_controller_h
 #define gpe_resources_controller_h
 
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <string>
+#include <sstream>
+
+#include "gpe_animation2d.h"
+#include "gpe_audio_base.h"
+#include "gpe_color_manager.h"
 #include "gpe_common_includes.h"
 #include "gpe_constants.h"
 #include "gpe_globals.h"
+#include "gpe_render_package.h"
 #include "gpe_texture_base.h"
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <algorithm>
-#include <fstream>
-#include <map>
-#include "gpe_color_manager.h"
-
-#include "gpe_animation2d.h"
 #include "gpe_tilesheet.h"
-#include "gpe_audio_base.h"
 #include "../other_libs/stg_ex.h"
 
 namespace gpe

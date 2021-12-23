@@ -56,16 +56,36 @@ namespace gpe
             int alpha_current;
             int defaultLineWidth;
             texture_target_base * lightingOverlayTexture;
+
+            //Counters used on each of their prospective renders
+            long animations_in_frame;
+            long arcs_in_frame;
+            long circles_in_frame;
+            long triangles_in_frame;
+            long vertices_in_frame;
+            primitive_type current_primitive;
         public:
             artist_base();
             artist_base( renderer_base * aRenderer );
             virtual ~artist_base();
 
+            //Frame based functions[START]
+            virtual void begin_frame();
+            virtual void end_frame();
+            //Frame based functions[END]
+
             //Getters [START]
+            primitive_type get_current_primitive_mode( );
+            virtual int primitive_supported( primitive_type primitive_to_check ); //Returns 1 if supported, 0 if partially supported and -1 if not supported at all
+            long get_animations_in_frame(); //Returns amount rendered so far in frame by parent/child class directly
+            long get_arcs_in_frame(); //Returns amount rendered so far in frame by parent/child class directly
+            long get_circles_in_frame(); //Returns amount rendered so far in frame by parent/child class directly
+            long get_triangles_in_frame(); //Returns amount rendered so far in frame by parent/child class directly
+            long get_vertices_in_frame(); //Returns amount rendered so far in frame by parent/child class directly
+
             int animation_get_number(animaton2d* animationIn);
             int get_artist_blend_mode();
             bool using_simple_geometry(); //Useful for toggling in renderers in which line rendering versus triangle/geometry rendering is possible(Pre SDL 2.0.18, software renderers, etc)
-
             //Getters [ END ]
 
             //Animation/animation Rendering Functions [ BEGIN ]
@@ -138,9 +158,7 @@ namespace gpe
             virtual void render_rectangle( int x1, int y1, int x2, int y2,  color *render_color,bool outline = false, int alpha_channel = 255);
             virtual void render_square( int x, int y, int squareSize,  color *render_color,bool outline = false, int alpha_channel = 255);
             virtual void render_rotated_rectangle(int get_center(), int yCenter, int w, int h, int angle, color * render_color = NULL, int alpha_channel = 255);
-
             //Rectangles Rendering [ END ]
-
 
             virtual void render_roundrect_filled(int x1, int y1, int x2, int y2);
             virtual void render_roundrect_filled_radius(int x1, int y1, int x2, int y2, int rad);

@@ -50,6 +50,13 @@ namespace gpe
         alpha_current = 255;
 
         lightingOverlayTexture = NULL;
+
+        animations_in_frame = 0;
+        arcs_in_frame = 0;
+        circles_in_frame = 0;
+        triangles_in_frame = 0;
+        vertices_in_frame = 0;
+        current_primitive = primitive_type::pr_none;
     }
 
     artist_base::artist_base( renderer_base * aRenderer )
@@ -65,6 +72,13 @@ namespace gpe
         alpha_current = 255;
 
         lightingOverlayTexture = NULL;
+
+        animations_in_frame = 0;
+        arcs_in_frame = 0;
+        circles_in_frame = 0;
+        triangles_in_frame = 0;
+        vertices_in_frame = 0;
+        current_primitive = primitive_type::pr_none;
     }
 
     artist_base::~artist_base()
@@ -92,6 +106,57 @@ namespace gpe
             delete lightingOverlayTexture;
             lightingOverlayTexture = NULL;
         }
+    }
+
+    void artist_base::begin_frame()
+    {
+        animations_in_frame = 0;
+        arcs_in_frame = 0;
+        circles_in_frame = 0;
+        triangles_in_frame = 0;
+        vertices_in_frame = 0;
+        current_primitive = primitive_type::pr_none;
+    }
+
+    void artist_base::end_frame()
+    {
+        current_primitive = primitive_type::pr_none;
+    }
+
+    primitive_type artist_base::get_current_primitive_mode( )
+    {
+        return primitive_type::pr_none;
+    }
+
+    int artist_base::primitive_supported( primitive_type primitive_to_check )
+    {
+        return -1;
+    }
+
+    long artist_base::get_animations_in_frame()
+    {
+        return animations_in_frame;
+    }
+     //Returns amount rendered so far in frame by parent/child class directly
+    long artist_base::get_arcs_in_frame()
+    {
+        return arcs_in_frame;
+    }
+
+     //Returns amount rendered so far in frame by parent/child class directly
+    long artist_base::get_circles_in_frame()
+    {
+       return circles_in_frame;
+    }
+
+    long artist_base::get_triangles_in_frame()
+    {
+       return triangles_in_frame;
+    }
+
+    long artist_base::get_vertices_in_frame()
+    {
+        return vertices_in_frame;
     }
 
     int artist_base::animation_get_number(animaton2d* animationIn)
@@ -511,12 +576,13 @@ namespace gpe
 
     int artist_base::begin_primitive_render( primitive_type new_mode )
     {
+        current_primitive = primitive_type::pr_none;
         return -1;
     }
 
     void artist_base::end_primitive_render()
     {
-
+        current_primitive = primitive_type::pr_none;
     }
 
     void artist_base::add_vertex( int new_x, int new_y )

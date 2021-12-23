@@ -163,6 +163,11 @@ namespace gpe
                 }
                 //renderer_main->clear_renderer( false );
 
+                if( gcanvas != NULL )
+                {
+                    gcanvas->begin_frame();
+                }
+
                 if( state_current!=NULL )
                 {
                     state_current->render();
@@ -223,6 +228,12 @@ namespace gpe
         {
             rph->update_render_packages();
         }
+
+        if( gcanvas != NULL )
+        {
+            gcanvas->end_frame();
+        }
+
         time_keeper->cap_fps( window_controller_main->is_minimized() );
         time_keeper->calculate_avg_fps( window_controller_main->is_minimized() );
         //}

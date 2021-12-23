@@ -48,8 +48,8 @@ namespace gpe
             std::string packageName;
         public:
             //Package properties
-            texture_base * packageTexture;
             renderer_base * packageRenderer;
+            texture_base * packageTexture;
             window_controller_base * packageWindow;
 
             render_package( int pId, std::string pName );
