@@ -3,9 +3,9 @@ stg_ex.cpp
 This file is part of:
 stg_ex
 https://pawbyte.com/stg_ex
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2021 PawByte LLC.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -87,13 +87,13 @@ namespace stg_ex
         int wholeLength= str.size();
         if(numbLines>0)
         {
-             int maxLengthForString = wholeLength/numbLines;
+             int maxLengthForstring = wholeLength/numbLines;
              for(int ii=0;ii<numbLines;ii+=1)
              {
 
                   //divides the string into multiple two pieces
-                  std::string line_text_xx=str.substr((i*maxLengthForString),(i+1)*maxLengthForString);
-                  std::string new_text_n=str.substr((i*maxLengthForString),line_text_x.size()-(i*maxLengthForString));
+                  std::string line_text_xx=str.substr((i*maxLengthForstring),(i+1)*maxLengthForstring);
+                  std::string new_text_n=str.substr((i*maxLengthForstring),line_text_x.size()-(i*maxLengthForstring));
                   //checks for the first character in the string of both old and new
                   std::string firstForNew=new_text_n.substr(0,1);
                   std::string firstForNew2 = string_letters(firstForNew);
@@ -188,6 +188,13 @@ namespace stg_ex
         return converter.str();
     }
 
+    std::string long_to_string(long in)
+    {
+        std::ostringstream converter;
+        converter << in;
+        return converter.str();
+    }
+
     //returns the inputed value with 2 digits each time
     std::string get_2digit_value_string(int numberIn)
     {
@@ -254,9 +261,9 @@ namespace stg_ex
             found=str.find_last_of("/\\");
             if( found != std::string::npos)
             {
-                std::string dString = str.substr(0,found);
-                std::string rString = str.substr(found+1);
-                return rString;
+                std::string dstring = str.substr(0,found);
+                std::string rstring = str.substr(found+1);
+                return rstring;
             }
         }
         return str;
@@ -270,8 +277,8 @@ namespace stg_ex
             found=str.find_last_of("/\\");
             if( found != std::string::npos)
             {
-                std::string rString = str.substr(0,found);
-                return rString+"\\";
+                std::string rstring = str.substr(0,found);
+                return rstring+"\\";
             }
         }
         return str;
@@ -617,26 +624,26 @@ namespace stg_ex
         return trim_left_inplace(trim_right_inplace(s, delimiters), delimiters);
     }
 
-    bool wrap_string( const std::string str,std::vector < std::string > &strVector, int lineWidth, int maxLines)
+    bool wrap_string( const std::string str,std::vector < std::string > &strVector, int line_width, int maxLines)
     {
-        if( lineWidth <= 0)
+        if( line_width <= 0)
         {
-            lineWidth = 256;
+            line_width = 256;
         }
 
         strVector.clear();
-        if( (int) str.size() >= lineWidth )
+        if( (int) str.size() >= line_width )
         {
             int prevSpacePos = 0;
             int prevSavedPos = 0;
             int spacePos = 0;
-            int countedStrings = 0;
-            while( (int)str.size() > spacePos && ( maxLines <=0 || ( maxLines > 0 && countedStrings < maxLines ) ) )
+            int countedstrings = 0;
+            while( (int)str.size() > spacePos && ( maxLines <=0 || ( maxLines > 0 && countedstrings < maxLines ) ) )
             {
                 spacePos=str.find(" ",prevSpacePos);
                 if( spacePos!=(int)std::string::npos )
                 {
-                    if( spacePos-prevSavedPos >= lineWidth )
+                    if( spacePos-prevSavedPos >= line_width )
                     {
                         if( prevSpacePos > prevSavedPos)
                         {
@@ -649,7 +656,7 @@ namespace stg_ex
                             strVector.push_back( str.substr(prevSavedPos,1 )  );
                             prevSpacePos = prevSavedPos+1;
                         }
-                        countedStrings++;
+                        countedstrings++;
                     }
                     else
                     {
@@ -658,9 +665,9 @@ namespace stg_ex
                 }
                 else
                 {
-                    strVector.push_back( str.substr(prevSavedPos,lineWidth)  );
-                    countedStrings++;
-                    prevSpacePos = prevSavedPos+lineWidth+1;
+                    strVector.push_back( str.substr(prevSavedPos,line_width)  );
+                    countedstrings++;
+                    prevSpacePos = prevSavedPos+line_width+1;
                     prevSavedPos = prevSpacePos;
                     spacePos = prevSpacePos+1;
                 }

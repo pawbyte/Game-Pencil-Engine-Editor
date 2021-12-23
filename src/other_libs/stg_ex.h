@@ -3,9 +3,9 @@ stg_ex.h
 This file is part of:
 stg_ex
 https://pawbyte.com/stg_ex
-Copyright (c) 2014-2020 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2020 PawByte LLC.
+Copyright (c) 2014-2021 PawByte LLC.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -60,6 +60,7 @@ namespace stg_ex
 
     std::string file_to_dir(const std::string new_file_name);
     std::string float_to_string(float in);
+    std::string long_to_string(long in);
 
     std::string get_2digit_value_string(int numberIn);
 
@@ -67,12 +68,12 @@ namespace stg_ex
     std::string get_file_ext_last_dot(const std::string str_file_name);
     std::string get_file_noext(const std::string str_file_name);
 
-    int get_leading_space_count(const std::string strIn);
+    int get_leading_space_count(const std::string str_in);
     std::string get_local_from_global_file(const std::string str);
     std::string get_path_from_file(const std::string str);
     std::string get_short_filename(const std::string new_file_name, bool show_extension=false);
-    std::string get_substring(const std::string strIn, int cStart = 0, int cLength =-1);
-    int get_trailing_space_count( const std::string strIn);
+    std::string get_substring(const std::string str_in, int cStart = 0, int cLength =-1);
+    int get_trailing_space_count( const std::string str_in);
 
     std::string int_to_string(int in);
     bool is_alnum(const std::string str, bool allowSpaces = false, bool allowUnderscores = false);
@@ -102,7 +103,7 @@ namespace stg_ex
     std::string trim_right_inplace(std::string       s,const std::string& delimiters = " \f\n\r\t\v" );
     std::string trim_string(const std::string s, char c);
 
-    bool wrap_string( const std::string strIn,std::vector < std::string > &strVector, int lineWidth = 256, int maxLines = -1);
+    bool wrap_string( const std::string str_in,std::vector < std::string > &strVector, int line_width = 256, int maxLines = -1);
 }
 
 #endif //stg_ex_h
