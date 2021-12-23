@@ -139,6 +139,12 @@ shape_test_state::shape_test_state( std::string s_name )
         //rect_render_points[ i_point] = {0,0,0,1 };
     }
 
+    average_circles = 0;
+    average_triangles = 0;
+    current_frame = 0;
+    current_circles = 0;
+    current_triangles = 0;
+
     show_circles = true;
     show_triangles = true;
     show_rectangles = true;
@@ -193,6 +199,22 @@ void shape_test_state::apply_logic()
 
     float c_fps = gpe::time_keeper->get_fps_cap();
 
+    if( gpe::gcanvas != NULL )
+    {
+        current_circles+= gpe::gcanvas->get_circles_in_frame();
+        current_triangles+= gpe::gcanvas->get_triangles_in_frame();
+        current_frame ++;
+
+        if( current_frame >= c_fps )
+        {
+           average_circles = current_circles / current_frame;
+           average_circles = current_triangles / current_frame;
+
+           current_frame = 0;
+           current_circles = 0;
+           current_triangles = 0;
+        }
+    }
     if( gpe::input->check_kb_pressed( kb_m ))
     {
         if( gpe::gcanvas->using_simple_geometry() )
@@ -498,14 +520,14 @@ void shape_test_state::render()
             c_arc = random_arcs[i_arc];
             gpe::gcanvas->render_arc_width_color( c_arc->my_circle->position.x,c_arc->my_circle->position.y,c_arc->my_circle->radius, c_arc->arc_width,
                                                 c_arc->start_arc_angle,c_arc->end_arc_angle, c_arc->arc_vertices, c_arc->my_color, 255 );
-
         }
 
+
         //Renders arc animation around mouse cursor
-        gpe::gcanvas->render_arc_width_color(gpe::input->mouse_position_x,gpe::input->mouse_position_y,32,8,180.f * semath::math_radians_multiplier,arc_degree_ctr * semath::math_radians_multiplier, 128, gpe::c_red, 255 );
+        gpe::gcanvas->render_arc_width_color(gpe::input->mouse_position_x,gpe::input->mouse_position_y,32,8,180.f * semath::math_radians_multiplier,arc_degree_ctr * semath::math_radians_multiplier, 8, gpe::c_red, 255 );
         gpe::gcanvas->render_arc_width_color(gpe::input->mouse_position_x,gpe::input->mouse_position_y,64,8,180.f * semath::math_radians_multiplier,arc_degree_ctr * semath::math_radians_multiplier, 128, gpe::c_white, 255 );
         gpe::gcanvas->render_arc_width_color(gpe::input->mouse_position_x,gpe::input->mouse_position_y,96,8,180.f * semath::math_radians_multiplier,arc_degree_ctr * semath::math_radians_multiplier, 128, gpe::c_blue, 255 );
-
+        gpe::gcanvas->render_arc_color(gpe::input->mouse_position_x,gpe::input->mouse_position_y,128,0,360.f * semath::math_radians_multiplier, 128, gpe::c_lime, 255 );
     }
 
     gpe::gcanvas->set_artist_blend_mode( gpe::blend_mode_blend );
@@ -531,9 +553,9 @@ void shape_test_state::render()
     gpe::gfs->render_text( mouse_triangle->vertices[1].x,mouse_triangle->vertices[1].y,"1", gpe::c_white, gpe::font_default, gpe::fa_left, gpe::fa_top, 228 );
     gpe::gfs->render_text( mouse_triangle->vertices[2].x,mouse_triangle->vertices[2].y,"2", gpe::c_white, gpe::font_default, gpe::fa_left, gpe::fa_top, 228 );
 
-    gpe::gfs->render_text( gpe::screen_width/2, gpe::screen_height - 96, "Viewing "+stg_ex::int_to_string( circle_seeked_count ) + " /" + stg_ex::int_to_string( circle_count)+" circles", gpe::c_white, gpe::font_default, gpe::fa_center, gpe::fa_bottom, 228 );
-    gpe::gfs->render_text( gpe::screen_width/2, gpe::screen_height - 64, "Viewing "+stg_ex::int_to_string( triangle_seeked_count) + " /" + stg_ex::int_to_string( triangle_count)+" triangles", gpe::c_white, gpe::font_default, gpe::fa_center, gpe::fa_bottom, 228 );
-    gpe::gfs->render_text( gpe::screen_width/2, gpe::screen_height - 32, "Viewing "+stg_ex::int_to_string( rectangle_seeked_count ) + " /" + stg_ex::int_to_string( rectangle_count)+" rectangles", gpe::c_white, gpe::font_default, gpe::fa_center, gpe::fa_bottom, 228 );
+    gpe::gfs->render_text( gpe::screen_width/2, gpe::screen_height - 96, "Circle Count "+stg_ex::long_to_string( current_circles ), gpe::c_white, gpe::font_default, gpe::fa_center, gpe::fa_bottom, 228 );
+    gpe::gfs->render_text( gpe::screen_width/2, gpe::screen_height - 64, "Viewing "+stg_ex::long_to_string( triangle_seeked_count) + " /" + stg_ex::long_to_string( gpe::gcanvas->get_triangles_in_frame())+" triangles", gpe::c_white, gpe::font_default, gpe::fa_center, gpe::fa_bottom, 228 );
+    gpe::gfs->render_text( gpe::screen_width/2, gpe::screen_height - 32, "Viewing "+stg_ex::long_to_string( rectangle_seeked_count ) + " /" + stg_ex::long_to_string( rectangle_count)+" rectangles", gpe::c_white, gpe::font_default, gpe::fa_center, gpe::fa_bottom, 228 );
 
 }
 

@@ -85,6 +85,9 @@ class colored_rectangle
 class shape_test_state: public gpe::program_state
 {
     public:
+        long current_circles, average_circles;
+        long current_triangles, average_triangles;
+        long current_frame;
         SDL_FPoint line_render_points[ gpe::render_points_giant_size];
 
         float arc_degree_ctr;
