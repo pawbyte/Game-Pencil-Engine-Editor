@@ -16,7 +16,7 @@ The Game Pencil Engine Version 1.4.1 and beyond!
 
 *New files added to github, but does not currently compile to C++, pending a few changes*
 
-Please look at our [Website](https://pawbyte.com/gamepencilengine/) and take a look around!
+Please look at our [Website](https://gamepencil.net/) and take a look around!
 
 If you have any questions or comments: feel free to email us at <help@pawbyte.com>
 
@@ -53,11 +53,11 @@ Come and  [join our discord server](https://discord.gg/dCrCwrQutP)!  Here, you c
 
 Forums
 ======
-Become a member on our [forum](http://community.pawbyte.com/)!  Here, you can find help and talk directly with the developers of this project!
+Become a member on our [forum](http://forums.pawbyte.com/)!  Here, you can find help and talk directly with the developers of this project!
 
 Download Newest Version
 =======================
-If you would like to download the newest version of the engine, go [here](https://pawbyte.com/gamepencilengine/)
+If you would like to download the newest version of the engine, go [here](https://gamepencil.net/)
 
 
 Coding with Game Pencil Engine
@@ -72,7 +72,7 @@ Please note that using the .MP3/.MP4 formats is strongly not recommended due to 
 
 Building Game Pencil From Source Code
 =====================================
-We have made a helpful guide on how to compile Game Pencil from source [here](https://pawbyte.com/building-game-pencil-from-source-code/)
+We have made a helpful guide on how to compile Game Pencil from source [here](https://gamepencil.net/building-game-pencil-from-source-code/)
 
 Developers
 ----------
