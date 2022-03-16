@@ -72,7 +72,7 @@ Please note that using the .MP3/.MP4 formats is strongly not recommended due to 
 
 Building Game Pencil From Source Code
 =====================================
-We have made a helpful guide on how to compile Game Pencil from source [here](https://gamepencil.net/building-game-pencil-from-source-code/)
+We have made a helpful guide on how to compile Game Pencil from source [here](https://docs.gamepencil.net/docs/building)
 
 Developers
 ----------
