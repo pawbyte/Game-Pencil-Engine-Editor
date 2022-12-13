@@ -3,10 +3,10 @@ pawgui_context.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -472,7 +472,7 @@ namespace pawgui
 
     popup_menu_option * popup_menu_option::add_option( popup_menu_option * otherOption )
     {
-        if( otherOption !=nullptr )
+        if( otherOption !=nullptr)
         {
             otherOption->set_height( context_menu_height_default );
             maxOptionsToView = gpe::screen_height/context_menu_height_default;
@@ -553,12 +553,14 @@ namespace pawgui
                     }
                 }
             }
+
             return otherOption;
         }
-        return nullptr ;
+
+        return nullptr;
     }
 
-    popup_menu_option * popup_menu_option::add_menu_option( std::string name, int id, gpe::texture_base * gTexture, int animationImgNumb, gpe::animaton2d * ganimation, bool endsSection, bool selectable, bool isResource, int kbS1, int kbS2, int kbS3 )
+    popup_menu_option * popup_menu_option::add_menu_option( std::string name, int id, gpe::texture_base * gTexture, int animationImgNumb, gpe::animation2d * ganimation, bool endsSection, bool selectable, bool isResource, int kbS1, int kbS2, int kbS3 )
     {
         popup_menu_option * newOp = new popup_menu_option(name,id,selectable,showShortCuts,false, kbS1, kbS2, kbS3);
         newOp->isTopOfMenu = false;
@@ -566,6 +568,7 @@ namespace pawgui
         newOp->subMenuIsOpen = false;
         newOp->isResourceOption = isResource;
 
+        int i = 0;
         if( id<0 )
         {
             //newOp->set_id( (int)sub_options.size() *-1);
@@ -692,13 +695,16 @@ namespace pawgui
                 bool keyActivityHappend = false;
                 if( isContext)
                 {
+                    int currentCursorPos = 0;
                     if( selectedOption>=0 && selectedOption < (int)sub_options.size() )
                     {
                         fOption = sub_options[selectedOption];
+                        currentCursorPos = selectedOption;
                     }
                     else if( hoverOption>=0 && hoverOption < (int)sub_options.size() )
                     {
                         fOption = sub_options[hoverOption];
+                        currentCursorPos = hoverOption;
                     }
                     /*else if( (int)sub_options.size() > 0 && sub_options[0]!=nullptr )
                     {
@@ -746,7 +752,7 @@ namespace pawgui
                         downDelay = -1;
                         keyActivityHappend = true;
                     }
-                    else if( ( gpe::input->kb_button_released[kb_enter] || gpe::input->kb_button_released[kb_space] ) && subMenuIsOpen  )
+                    else if( gpe::input->kb_button_released[kb_enter] || gpe::input->kb_button_released[kb_space] && subMenuIsOpen  )
                     {
                         browsing_result  = activate_hovered();
                         hoverOption = -1;
@@ -936,7 +942,7 @@ namespace pawgui
         hoverOption = -1;*/
     }
 
-    void popup_menu_option::change_texture_data( gpe::animaton2d * new_animation,int new_id)
+    void popup_menu_option::change_texture_data( gpe::animation2d * new_animation,int new_id)
     {
         opanimation = new_animation;
         animationFrameNumber = new_id;
@@ -1558,7 +1564,7 @@ namespace pawgui
                     }
                     downDelay = -1;
                 }
-                else if( ( gpe::input->kb_button_released[kb_enter] || gpe::input->kb_button_released[kb_space] ) && toolBarIsOpen  )
+                else if( gpe::input->kb_button_released[kb_enter] || gpe::input->kb_button_released[kb_space] && toolBarIsOpen  )
                 {
                     toolBarActionHappened = true;
                     if( fOption!=nullptr)
@@ -1739,15 +1745,17 @@ namespace pawgui
         {
             return -1;
         }
+        bool firstFrame = true;
 
         /*
         Checks if we should move the menu direction based on x position
         Also if the x is too far to the right it right aligns it to the edge of the screen.
         */
-        if( main_context_menu->get_xpos() +32 >= gpe::screen_width )
+
+        if( main_context_menu->get_xpos() + main_context_menu->optionWidthSpace >= gpe::screen_width )
         {
             main_context_menu->menuDirection = gpe::fa_left;
-            main_context_menu->set_position( gpe::screen_width - main_context_menu->get_width() - 32, main_context_menu->get_ypos() );
+            main_context_menu->set_position( gpe::screen_width - main_context_menu->get_width() - main_context_menu->optionWidthSpace , main_context_menu->get_ypos() );
         }
 
 
@@ -1808,6 +1816,7 @@ namespace pawgui
                 }
             }
 
+            firstFrame = false;
             gpe::game_runtime->end_loop();
         }
         context_menu_close();

@@ -3,10 +3,10 @@ pawgui_tab_manager.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -604,11 +604,11 @@ namespace pawgui
 
                     if( tabInUse==i)
                     {
-                        gpe::gfs->render_text_resized(subPos*(tabSize+tabXPAdding)+padding_default,tabHeaderBox.h/2,tabOptionStr,pawgui::theme_main->tab_text_color, font_tab,gpe::fa_left,gpe::fa_middle,tabSize-tabXPAdding-16);
+                        gpe::gfs->render_text_clipped(subPos*(tabSize+tabXPAdding)+padding_default,tabHeaderBox.h/2,tabOptionStr,pawgui::theme_main->tab_text_color, font_tab,gpe::fa_left,gpe::fa_middle,tabSize-tabXPAdding-16);
                     }
                     else
                     {
-                        gpe::gfs->render_text_resized(subPos*(tabSize+tabXPAdding)+padding_default,tabHeaderBox.h/2,tabOptionStr,pawgui::theme_main->tab_text_color,font_tab,gpe::fa_left,gpe::fa_middle,tabSize-tabXPAdding-16);
+                        gpe::gfs->render_text_clipped(subPos*(tabSize+tabXPAdding)+padding_default,tabHeaderBox.h/2,tabOptionStr,pawgui::theme_main->tab_text_color,font_tab,gpe::fa_left,gpe::fa_middle,tabSize-tabXPAdding-16);
                     }
                 }
 

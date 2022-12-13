@@ -3,10 +3,10 @@ pawgui_themes.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -102,7 +102,7 @@ namespace pawgui
             std::string theme_bg_location;
             gpe::texture_base * theme_texture_bg;
 
-            gpe::animaton2d * main_menu_animation;
+            gpe::animation2d * main_menu_animation;
 
             //main bg gpe::colors ( defaults everywhere)
             gpe::color * program_color;
@@ -231,6 +231,7 @@ namespace pawgui
     };
 
     extern gui_theme * theme_default;
+    extern gui_theme * theme_system_based;
     extern gui_theme * theme_main;
 }
 #endif //PAWGUI_THEMES_H

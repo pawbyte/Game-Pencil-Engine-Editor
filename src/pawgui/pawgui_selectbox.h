@@ -3,10 +3,10 @@ pawgui_selectbox.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -47,7 +47,7 @@ namespace pawgui
             bool isClicked;
             std::string optionName;
             gpe::texture_base * optionTexture;
-            gpe::animaton2d * optionanimation;
+            gpe::animation2d * optionanimation;
             int subimageIndex;
             float optionValue;
             selectbox_option();
@@ -76,7 +76,7 @@ namespace pawgui
             ~widget_selectbox();
             std::string get_data();
             void load_data(std::string datastring);
-            void add_option(std::string newOptionName, float newOpValue = -1,gpe::texture_base * evRepIcon = nullptr, gpe::animaton2d * evRepanimation=nullptr, int subimageInIndex = 0, bool selectNew = false, bool useGuiColor = true);
+            void add_option(std::string newOptionName, float newOpValue = -1,gpe::texture_base * evRepIcon = nullptr, gpe::animation2d * evRepanimation=nullptr, int subimageInIndex = 0, bool selectNew = false, bool useGuiColor = true);
             void correct_camera();
             void clear_list();
             int get_option_id(std::string optionName );
@@ -86,7 +86,7 @@ namespace pawgui
             int get_size();
             selectbox_option * get_option(int optionId);
             std::string get_option_name(int optionId);
-            void insert_option(int optionId, std::string new_name, gpe::texture_base * evRepIcon = nullptr, gpe::animaton2d * evRepanimation=nullptr, int subimageInIndex = 0,bool selectNew = false);
+            void insert_option(int optionId, std::string new_name, gpe::texture_base * evRepIcon = nullptr, gpe::animation2d * evRepanimation=nullptr, int subimageInIndex = 0,bool selectNew = false);
             void limit_height(int newH);
             void alter_content( int optionId, bool sectionHasContent);
             void alter_content_from_value( float valueId, bool sectionHasContent);

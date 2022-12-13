@@ -3,10 +3,10 @@ gpe_layer.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -70,7 +70,7 @@ namespace gpe
 
     void scene_layer::add_branch( branch * new_branch )
     {
-        if( new_branch == NULL )
+        if( new_branch == nullptr )
         {
             return;
         }
@@ -78,7 +78,7 @@ namespace gpe
 
     layer_tile_map *  scene_layer::add_tilemap( std::string name, int x,  int y, int w, int h  )
     {
-
+        return nullptr; //WIPNOTFUNCTIONALYET
     }
 
     void scene_layer::add_collision_pair( game_object *objPairA, game_object *objPairB)
@@ -95,7 +95,7 @@ namespace gpe
 
         if( camera_scene_width>0 && camera_scene_height>0 )
         {
-            if( main_spatial_grid!=NULL )
+            if( main_spatial_grid!=nullptr )
             {
                 main_spatial_grid->init_system( camera_scene_width, camera_scene_height );
             }
@@ -109,9 +109,9 @@ namespace gpe
         render_list_regular_entities.clear();
         render_list_front_entities.clear();
         render_list_hud_entities.clear();
-        game_object *  foundGameObject = NULL;
+        game_object *  foundGameObject = nullptr;
         int jObjectHolderParse = 0;
-        spatial_partition *  currentSpace = NULL;
+        spatial_partition *  currentSpace = nullptr;
         int foundCollisionSpaceId = 0;
         int jLoop = 0;
         //Adds camera independent objects of this layer into render list
@@ -133,7 +133,7 @@ namespace gpe
 
     void scene_layer::clear_spaces()
     {
-        if( main_spatial_grid !=NULL )
+        if( main_spatial_grid !=nullptr )
         {
             main_spatial_grid->deactivate_layer( layer_id );
         }
@@ -146,7 +146,7 @@ namespace gpe
 
     void scene_layer::remove_object ( game_object * objToRemove)
     {
-        game_object *  tObject = NULL;
+        game_object *  tObject = nullptr;
         for( int iItr = (int)layer_entities.size()-1; iItr >=0; iItr--)
         {
             tObject = layer_entities[iItr];
@@ -164,7 +164,7 @@ namespace gpe
 
     void scene_layer::render_objects()
     {
-        game_object * foundGameObject = NULL;
+        game_object * foundGameObject = nullptr;
         int iLoop = 0;
 
         gpe::gcanvas->set_render_alpha(255);
@@ -197,7 +197,7 @@ namespace gpe
     {
         for (int iTemp = (int)layer_backgrounds.size()-1; iTemp >=0; iTemp--)
         {
-            if( layer_backgrounds[iTemp]!= NULL )
+            if( layer_backgrounds[iTemp]!= nullptr )
                 layer_backgrounds[iTemp]->scroll_bg();
         }
     }

@@ -3,10 +3,10 @@ pawgui_base.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -73,6 +73,23 @@ namespace pawgui
     widget_basic::~widget_basic()
     {
 
+    }
+
+    bool widget_basic::contains_string( std::string s_name )
+    {
+        if( (int)s_name.size() == 0 )
+        {
+            return true;
+        }
+        std::string lowered_string = stg_ex::string_lower( widget_name );
+
+        int foundPosition = lowered_string.find( s_name );
+
+        if ( foundPosition!=std::string::npos )
+        {
+            return true;
+        }
+        return false;
     }
 
     bool widget_basic::is_modified()
@@ -228,6 +245,7 @@ namespace pawgui
 
     void widget_basic::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam)
     {
+        bool wasHovered = isHovered;
         windowInView = false;
         isClicked = false;
         isPressed = false;
@@ -274,7 +292,7 @@ namespace pawgui
                             main_overlay_system->update_tooltip(widget_name);
                         }
                     }
-                    if( gpe::input->check_mouse_pressed(0) )
+                    if( gpe::input->check_mouse_pressed( mb_left ) )
                     {
                         isPressed = true;
                         isInUse = true;
@@ -284,7 +302,7 @@ namespace pawgui
                         isClicked = true;
                         isInUse = true;
                     }
-                    else if( gpe::input->check_mouse_pressed(1) )
+                    else if( gpe::input->check_mouse_pressed( mb_right) )
                     {
                         isRightClicked = true;
                         isInUse = true;

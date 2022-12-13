@@ -3,10 +3,10 @@ pawgui_panel_list.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,6 +37,8 @@ namespace pawgui
 {
     widget_content_row::widget_content_row()
     {
+        rowClassType = row_type_general;
+        lastColumnFloatsRight = true;
         calculatedRowWidth = 0;
         calculatedRowHeight = 0;
         inDebugMode = false;
@@ -46,10 +48,11 @@ namespace pawgui
         widget_box.h = 0;
         alignment_h = gpe::fa_left;
         alignment_v = gpe::fa_top;
-        barXPadding = 0;
+        barXPadding = pawgui::padding_default;
         barYPadding = 0;
         outterWidth = 0;
         outterHeight = 0;
+        rowSizingStyle = panel_align_default;
         /*barXMargin = 0;
         barYMargin = 0;*/
     }
@@ -61,14 +64,24 @@ namespace pawgui
 
     void widget_content_row::add_gui_element(widget_basic *  newElement )
     {
+        if( newElement == nullptr )
+        {
+            return;
+        }
+
+        if( newElement->indentationLevel > indentationLevel )
+        {
+            indentationLevel = newElement->indentationLevel;
+        }
         sub_options.push_back( newElement );
     }
 
     void widget_content_row::calculate_width()
     {
-        calculatedRowWidth = (barXPadding)*2 + indentationLevel*padding_default;
+        calculatedRowWidth = indentationLevel*padding_default + barXPadding;
         widget_basic * tempOption = nullptr;
         int optionsSize = (int)sub_options.size();
+        bool breakHappened = false;
         for( int i = 0; i < optionsSize; i++ )
         {
             tempOption = sub_options[i];
@@ -76,11 +89,12 @@ namespace pawgui
             {
                 if( tempOption->requires_newline() || tempOption->is_full_width())
                 {
-                    calculatedRowWidth = outterWidth;
+                    calculatedRowWidth = outterWidth - calculatedRowWidth;
                     //gpe::error_log->report("Calculated outer width:"+ stg_ex::int_to_string(outterWidth) );
+                    breakHappened = true;
                     break;
                 }
-                else
+                else if( tempOption->autoResizes == false )
                 {
                     calculatedRowWidth+=tempOption->get_width()+barXPadding;
                 }
@@ -96,17 +110,6 @@ namespace pawgui
 
     void widget_content_row::clear_list()
     {
-        /*
-        widget_basic * tempItem = nullptr;
-        for( int i = 0; (int)sub_options.size(); i++)
-        {
-            tempItem = sub_options[i];
-            if( tempItem!=nullptr )
-            {
-                delete tempItem;
-                tempItem = nullptr;
-            }
-        }*/
         sub_options.clear();
     }
 
@@ -118,14 +121,17 @@ namespace pawgui
     //Correct width issue
     void widget_content_row::set_coords(int x_new, int y_new)
     {
+        outterWidth = widget_box.w;
         widget_box.x = x_new;
         widget_box.y = y_new;
         widget_box.w = 0;
         widget_box.h = 0;
         //For now we just gonna assume is all gpe::fa_left until its time to fix it
         widget_basic * cContainer = nullptr;
-        int indentWidth = indentationLevel*barXPadding;
-        int tempX = x_new + indentWidth;
+
+        int indentWidth = indentationLevel*padding_default;
+        int itemIndentWidth = indentationLevel*padding_default;
+        int tempX = indentWidth + barXPadding;
         int tempY = y_new;//+barYPadding;
         int i;
         int optionsSize = (int)sub_options.size();
@@ -135,13 +141,21 @@ namespace pawgui
             return;
         }
 
+        int maxHeight = 0;
+
         //Does horizontal align calculations
         bool keepCalculatingWidth = true;
 
         int remainderWidth = indentWidth;
+        int found_row_width = barXPadding + indentWidth;
+        int resizable_elements_total = 0;
+        int regular_elements_total = 0;
+        int regular_elements_width = 0;
+        int resizble_element_width = 0;
+
         if( rowSizingStyle == panel_align_full )
         {
-            widget_box.w = outterWidth;
+            widget_box.w = outterWidth  - indentationLevel;
             for( i=0; i<optionsSize; i++)
             {
                 cContainer = sub_options[i];
@@ -149,178 +163,62 @@ namespace pawgui
                 {
                     if( cContainer->autoResizes )
                     {
-                        cContainer->set_width( outterWidth - barXPadding*2 );
+                        cContainer->set_width( outterWidth - (barXPadding+indentWidth)*2 );
+                        cContainer->set_coords( ( barXPadding*2) +indentWidth, 0 );
                     }
                 }
-            }
-        }
-        else if( rowSizingStyle == panel_align_left)
-        {
-            widget_box.w = outterWidth;
-            if( optionsSize > 1)
-            {
-                for( i=optionsSize -1; i > 0; i--)
-                {
-                    cContainer = sub_options[i];
-
-                    if( cContainer->get_width() > outterWidth )
-                    {
-                        cContainer->set_width( outterWidth );
-                    }
-                    if(cContainer!=nullptr)
-                    {
-                        remainderWidth+= cContainer->get_width() + barXPadding *2;
-                    }
-                }
-                cContainer = sub_options[0];
-                if(cContainer->autoResizes )
-                {
-                    if(cContainer->autoResizes )
-                    {
-                        cContainer->set_width( outterWidth - remainderWidth -  barXPadding );
-                    }
-                    else
-                    {
-                        cContainer->set_width( 0 );
-                    }
-                }
-            }
-            else
-            {
-                //equal to 1, since function would've returned if 0
-                cContainer = sub_options[ 0 ];
-                if(cContainer->autoResizes )
-                {
-                    cContainer->set_width( outterWidth - barXPadding*2 );
-                }
-                else if( cContainer->get_width() > outterWidth - barXPadding*2  )
-                {
-                    cContainer->set_width( outterWidth - barXPadding*2 );
-                }
-            }
-        }
-        else if( rowSizingStyle == panel_align_right)
-        {
-            if( optionsSize > 1)
-            {
-                for( i=0; i < optionsSize -1; i++)
-                {
-                    cContainer = sub_options[i];
-                    if(cContainer!=nullptr)
-                    {
-                        remainderWidth+= cContainer->get_width()  + barXPadding*2;
-                    }
-                }
-                cContainer = sub_options[optionsSize -1];
-                if(cContainer->autoResizes )
-                {
-                    if( remainderWidth < outterWidth)
-                    {
-                        cContainer->set_width( outterWidth - remainderWidth - barXPadding*2 );
-                    }
-                    else
-                    {
-                        cContainer->set_width( 0 );
-                    }
-                }
-            }
-            else
-            {
-                //equal to 1, since function would've returned if 0
-                cContainer = sub_options[ 0 ];
-                if(cContainer->autoResizes )
-                {
-                    cContainer->set_width( outterWidth - barXPadding*2  );
-                }
-            }
-        }
-        else if( rowSizingStyle == panel_align_equal)
-        {
-            widget_box.w = outterWidth;
-            if( optionsSize > 1)
-            {
-                for( i=optionsSize -1; i > 0; i--)
-                {
-                    cContainer = sub_options[i];
-
-                    if( cContainer->get_width() > outterWidth )
-                    {
-                        cContainer->set_width( outterWidth );
-                    }
-                    if(cContainer!=nullptr && !cContainer->autoResizes )
-                    {
-                        remainderWidth+= cContainer->get_width() + barXPadding *2;
-                    }
-                }
-                cContainer = sub_options[0];
-                if(cContainer->autoResizes )
-                {
-                    if(cContainer->autoResizes )
-                    {
-                        cContainer->set_width( outterWidth - remainderWidth -  barXPadding );
-                    }
-                    else
-                    {
-                        cContainer->set_width( 0 );
-                    }
-                }
-            }
-            else
-            {
-                //equal to 1, since function would've returned if 0
-                cContainer = sub_options[ 0 ];
-                if(cContainer->autoResizes )
-                {
-                    cContainer->set_width( outterWidth - barXPadding*2 );
-                }
-                else if( cContainer->get_width() > outterWidth - barXPadding*2  )
-                {
-                    cContainer->set_width( outterWidth - barXPadding*2 );
-                }
-            }
-        }
-        else if( alignment_h==gpe::fa_right || alignment_h == gpe::fa_center  )
-        {
-            int foundRowWidth = 0;
-            for( i=0; i<optionsSize; i++)
-            {
-                cContainer = sub_options[i];
-                if(cContainer!=nullptr)
-                {
-                    if( cContainer->is_full_width() )
-                    {
-                        cContainer->set_width( outterWidth - barXPadding );
-                        foundRowWidth = cContainer->get_width();
-                        keepCalculatingWidth = false;
-                    }
-                    else if( keepCalculatingWidth )
-                    {
-                        foundRowWidth+=cContainer->get_width()+barXPadding;
-                    }
-                }
-            }
-
-            if( alignment_h==gpe::fa_right)
-            {
-                tempX += outterWidth - foundRowWidth - barXPadding;
-            }
-            else if(alignment_h == gpe::fa_center  )
-            {
-                tempX += abs( outterWidth - foundRowWidth )/2;
             }
         }
         else
         {
-            //defaults to left align( gpe::fa_left )
-            widget_box.w = outterWidth;
             for( i=0; i<optionsSize; i++)
             {
                 cContainer = sub_options[i];
                 if(cContainer!=nullptr)
                 {
-                    if( cContainer->is_full_width() && cContainer->autoResizes )
+                    if( !cContainer->is_full_width() )
                     {
-                        cContainer->set_width( outterWidth );
+                        if( cContainer->autoResizes )
+                        {
+                            cContainer->set_width( 0 ); // we'll resize it later.
+                            resizable_elements_total++;
+                        }
+                        else
+                        {
+                            regular_elements_total++;
+                            found_row_width += cContainer->get_width()+barXPadding - indentWidth;
+                        }
+                    }
+                }
+            }
+
+            //if no relements are available to resize it's easy
+            if( resizable_elements_total > 0 )
+            {
+                if( found_row_width >= outterWidth - barXPadding*2 - indentWidth   )
+                {
+                    resizble_element_width = ( outterWidth - barXPadding*2 - indentWidth   ) / resizable_elements_total;
+                }
+                else
+                {
+                    resizble_element_width = ( outterWidth - found_row_width - barXPadding*2 - indentWidth ) / resizable_elements_total;
+                }
+                resizble_element_width -= ( optionsSize )*barXPadding + indentWidth;
+
+                if( resizble_element_width < 32 + barXPadding  - indentWidth )
+                {
+                    resizble_element_width = 32 + barXPadding  - indentWidth;
+                }
+                //We re-loop through elements and set the width of these resizable elements to be even.
+                for( i=0; i<optionsSize; i++)
+                {
+                    cContainer = sub_options[i];
+                    if(cContainer!=nullptr)
+                    {
+                        if( cContainer->autoResizes )
+                        {
+                            cContainer->set_width(  resizble_element_width ); // we'll resize it later.
+                        }
                     }
                 }
             }
@@ -335,101 +233,78 @@ namespace pawgui
             cContainer = sub_options[0];
             if( cContainer!=nullptr )
             {
-                if( cContainer->is_full_width() == false )
+                if( cContainer->is_full_width() )
                 {
-                    //widget_box.w
+                    cContainer->set_width( outterWidth - barXPadding*2 - indentWidth  );
                 }
+                else if( cContainer->autoResizes )
+                {
+                    cContainer->set_width( outterWidth - barXPadding*2 - indentWidth );
+                }
+
                 if( alignment_h == gpe::fa_center)
                 {
-                    cContainer->set_coords( widget_box.x + indentWidth+( outterWidth - cContainer->get_width() ) /2, y_new );
+                    tempX = ( outterWidth - cContainer->get_width() )/2 + indentWidth;
+                    cContainer->set_coords( tempX  , y_new );
                 }
                 else if( alignment_h == gpe::fa_right)
                 {
-                    cContainer->set_coords(  widget_box.x+indentWidth+outterWidth - cContainer->get_width() - barXPadding, y_new );
+                    tempX =  outterWidth - cContainer->get_width()  + indentWidth;
+                    cContainer->set_coords(  tempX, y_new );
                 }
                 else
                 {
-                    cContainer->set_coords(x_new+indentWidth, y_new );
+                    cContainer->set_coords( indentWidth + barXPadding, y_new );
                 }
             }
-            widget_box.w = cContainer->get_width();
-            widget_box.h = cContainer->get_height();
+            widget_box.w = outterWidth - barXPadding*2 - indentWidth ;
+            widget_box.h = cContainer->get_height()+barYPadding;
             return;
         }
 
         widget_box.w = 0;
-        if( alignment_v == gpe::fa_middle)
-        {
-            for( i = 0; i < optionsSize; i++)
-            {
-                cContainer = sub_options[i];
-                if( cContainer!=nullptr )
-                {
-                    cHeight = cContainer->get_height();
-                    if(cContainer->autoResizes)
-                    {
-                        //cContainer->set_width( widget_box.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
-                    }
 
-                    if( cHeight > widget_box.h)
-                    {
-                        widget_box.h = cContainer->get_height();
-                        cContainer->set_coords(tempX, tempY  );
-                    }
-                    else
-                    {
-                        cContainer->set_coords(tempX, tempY + abs( widget_box.h - cHeight ) /2 );
-                    }
-                    tempX+=barXPadding+cContainer->get_width();
-                    widget_box.w+=  cContainer->get_width();
-                }
-            }
-        }
-        else if( alignment_v == gpe::fa_bottom )
+        //If elements are resizble or left aligned or our row is larger than the screen space we will default to left align.
+        if( resizable_elements_total > 0 || alignment_h == gpe::fa_left || found_row_width  >= outterWidth )
         {
-            for( i = 0; i < optionsSize; i++)
-            {
-                cContainer = sub_options[i];
-                if( cContainer!=nullptr )
-                {
-                    cHeight = cContainer->get_height();
-                    if(cContainer->autoResizes)
-                    {
-                        //cContainer->set_width( widget_box.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
-                    }
-                    if( cHeight > widget_box.h)
-                    {
-                        widget_box.h = cHeight;
-                        cContainer->set_coords(tempX, tempY );
-                    }
-                    else
-                    {
-                        cContainer->set_coords(tempX, tempY + (widget_box.h - cHeight) );
-                    }
-                    tempX+=barXPadding+cContainer->get_width();
-                    widget_box.w+= cContainer->get_width();
-                }
-            }
+            tempX = indentWidth + barXPadding;
+        }
+        else if( alignment_h == gpe::fa_center )
+        {
+            tempX = barXPadding + indentWidth + ( outterWidth - found_row_width)/2;
         }
         else
         {
-            //defaults to gpe::fa_top
-            for( i = 0; i < optionsSize; i++)
+            //right align
+            tempX = barXPadding + indentWidth + (outterWidth - found_row_width );
+        }
+
+        for( i = 0; i < optionsSize; i++)
+        {
+            cContainer = sub_options[i];
+            if( cContainer!=nullptr )
             {
-                cContainer = sub_options[i];
-                if( cContainer!=nullptr )
+                cHeight = cContainer->get_height();
+
+                if(cContainer->autoResizes)
+                {
+                    //cContainer->set_width( widget_box.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
+                }
+
+                if( (optionsSize > 1 ) && lastColumnFloatsRight && (i == optionsSize -1)  )
+                {
+                    cContainer->set_coords( outterWidth - cContainer->get_width() - barXPadding + indentWidth, tempY );
+                }
+                else
                 {
                     cContainer->set_coords(tempX, tempY );
-                    if( cContainer->autoResizes )
-                    {
-                        //cContainer->set_width( widget_box.w - (barXPadding+barXMargin)*2 - yScroll->get_box_width() );
-                    }
-                    tempX+=barXPadding+cContainer->get_width();
-                    if( cContainer->get_height() > widget_box.h)
-                    {
-                        widget_box.h = cContainer->get_height();
-                    }
-                    widget_box.w+= barXPadding + cContainer->get_width();
+                }
+                tempX += barXPadding+cContainer->get_width();
+                widget_box.w+= cContainer->get_width();
+
+                if( cContainer->get_height() > widget_box.h)
+                {
+                    widget_box.h = cContainer->get_height();
                 }
             }
         }
@@ -460,13 +335,128 @@ namespace pawgui
 
     }
 
-    void set_maxed_out_height()
+    void widget_content_row::set_maxed_out_height()
     {
+
+    }
+
+    widget_panel_section::widget_panel_section( std::string section_name, bool auto_indent_elements)
+    {
+        widget_name = section_name;
+        autoIndents = auto_indent_elements;
+        widget_type = "panel_section";
+        autoResizes = true;
+        needsNewLine = true;
+        sectionIsOpen = true;
+        widget_box.w = 256;
+        widget_box.h = 32;
+        indentationLevel = 0;
+    }
+
+    widget_panel_section::~widget_panel_section()
+    {
+        sub_options.clear();
+    }
+
+    bool widget_panel_section::add_widget( widget_basic * widget_element, bool requires_nl  )
+    {
+        if( widget_element == nullptr )
+        {
+            return false;
+        }
+
+        panel_section_item new_secton;
+        if( autoIndents )
+        {
+            widget_element->indentationLevel = indentationLevel +1;
+        }
+        new_secton.widget_element = widget_element;
+
+        if( widget_element->hasLineBreak )
+        {
+            new_secton.requiresNewLine = true;
+        }
+        else
+        {
+            new_secton.requiresNewLine = requires_nl;
+        }
+        sub_options.push_back( new_secton );
+        return true;
+    }
+
+    bool widget_panel_section::auto_indents()
+    {
+        return autoIndents;
+    }
+
+    bool widget_panel_section::is_section_open()
+    {
+        return sectionIsOpen;
+    }
+
+    void widget_panel_section::process_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
+    {
+        view_space = gpe::camera_find(view_space);
+        cam = gpe::camera_find(cam);
+        widget_basic::process_self( view_space, cam );
+        if( is_clicked() )
+        {
+            sectionIsOpen = !sectionIsOpen;
+        }
+    }
+
+    void widget_panel_section::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
+    {
+        view_space = gpe::camera_find(view_space);
+        cam = gpe::camera_find(cam);
+
+        if( view_space==nullptr || cam==nullptr  )
+        {
+            return;
+        }
+
+        gpe::gcanvas->render_rectangle( widget_box.x - cam->x, widget_box.y - cam->y, widget_box.x + widget_box.w- cam->x, widget_box.y + widget_box.h - cam->y, pawgui::theme_main->text_box_color, false, 255 );
+
+
+        if( (int)widget_name.size() > 0 )
+        {
+
+            if( isInUse)
+            {
+                gpe::gfs->render_text_clipped( widget_box.x-cam->x + padding_default,widget_box.y+widget_box.h/2-cam->y,widget_name,pawgui::theme_main->text_box_highlight_color,FONT_LABEL_TITLE,gpe::fa_left,gpe::fa_middle, widget_box.w - 32, widget_box.h, 255);
+            }
+            else
+            {
+                gpe::gfs->render_text_clipped( widget_box.x-cam->x+ padding_default,widget_box.y+widget_box.h/2-cam->y,widget_name,pawgui::theme_main->main_box_font_color,FONT_LABEL_TITLE,gpe::fa_left,gpe::fa_middle, widget_box.w - 32, widget_box.h, 255);
+            }
+        }
+
+
+
+        if(  sectionIsOpen )
+        {
+            gpe::gfs->render_text_clipped( widget_box.x + widget_box.w - 16 -cam->x ,widget_box.y+widget_box.h/2-cam->y,"▲",pawgui::theme_main->text_box_highlight_color,FONT_LABEL_TITLE,gpe::fa_center,gpe::fa_middle, widget_box.w - 32, widget_box.h, 255);
+        }
+        else
+        {
+            gpe::gfs->render_text_clipped( widget_box.x + widget_box.w - 16 -cam->x,widget_box.y+widget_box.h/2-cam->y,"▼",pawgui::theme_main->main_box_font_color,FONT_LABEL_TITLE,gpe::fa_center,gpe::fa_middle, widget_box.w - 32, widget_box.h, 255);
+        }
+
+        if( isInUse)
+        {
+            gpe::gcanvas->render_rectangle( widget_box.x - cam->x, widget_box.y - cam->y, widget_box.x + widget_box.w- cam->x, widget_box.y + widget_box.h - cam->y, pawgui::theme_main->text_box_highlight_color, true, 255 );
+        }
+        else
+        {
+            gpe::gcanvas->render_rectangle( widget_box.x - cam->x, widget_box.y - cam->y, widget_box.x + widget_box.w- cam->x, widget_box.y + widget_box.h - cam->y, pawgui::theme_main->text_box_outline_color, true, 255 );
+        }
+
 
     }
 
     widget_panel_list::widget_panel_list()
     {
+        lastColumnFloatsRight = false;
         panelAlignType = panel_align_default;
         usingFullSizeElement = false;
         selectedElement = nullptr;
@@ -517,6 +507,104 @@ namespace pawgui
         clear_list();
     }
 
+    /*
+    void widget_panel_list::add_gui_element(widget_basic *  newElement, bool isNLElement)
+    {
+        if( newElement!=nullptr )
+        {
+            widget_content_row *  current_color_row = nullptr;
+            if( newElement->requires_newline() || newElement->is_full_width() )
+            {
+                newRowRequested = true;
+            }
+
+            if( panelAlignType == panel_align_full )
+            {
+                isNLElement = true;
+            }
+            newElement->hasLineBreak = isNLElement;
+
+
+            int rowSize = (int)subRows.size();
+
+            if(  rowSize == 0 || newRowRequested )
+            {
+                current_color_row = new widget_content_row();
+                current_color_row->alignment_h = alignment_h;
+                current_color_row->alignment_v = alignment_v;
+                current_color_row->barXPadding = barXPadding;
+                current_color_row->barYPadding = barYPadding;
+                subRows.push_back( current_color_row );
+            }
+            else
+            {
+                current_color_row = subRows[ rowSize -1 ];
+            }
+
+            if( current_color_row !=nullptr )
+            {
+                current_color_row->add_gui_element( newElement );
+            }
+
+            if( newElement->hasLineBreak || newElement->requires_newline() )
+            {
+                isNLElement = true;
+            }
+            newRowRequested = isNLElement;
+
+            //Adds content to giant list of objects within list.
+            //Then gives it a unique id
+            newElement->dynamic_id = (int)allElements.size();
+            allElements.push_back( newElement );
+        }
+    }
+
+    void widget_panel_list::add_gui_auto(widget_basic *  newElement )
+    {
+        if( newElement!=nullptr)
+        {
+            widget_content_row *  current_color_row = nullptr;
+            newElement->hasLineBreak = false;
+            int rowSize = (int)subRows.size();
+
+            if( newElement->requires_newline() || newElement->is_full_width() || panelAlignType == panel_align_full  )
+            {
+                newRowRequested = true;
+                newElement->hasLineBreak = true;
+            }
+
+            if(  rowSize == 0 || newRowRequested )
+            {
+                current_color_row = new widget_content_row();
+                current_color_row->alignment_h = alignment_h;
+                current_color_row->alignment_v = alignment_v;
+                current_color_row->barXPadding = barXPadding;
+                current_color_row->barYPadding = barYPadding;
+                subRows.push_back( current_color_row );
+                current_color_row->add_gui_element( newElement );
+                newRowRequested = false;
+            }
+            else
+            {
+                //Finds last row
+                current_color_row = subRows[ rowSize -1 ];
+                if( current_color_row !=nullptr )
+                {
+                    current_color_row->add_gui_element( newElement );
+                    //gpe::error_log->report("Able to squeeze in...");
+                    newRowRequested = false;
+                }
+            }
+
+            //Adds content to giant list of objects within list.
+            //Then gives it a unique id
+            newElement->dynamic_id = (int)allElements.size();
+            allElements.push_back( newElement );
+
+        }
+    }
+    */
+
     void widget_panel_list::add_gui_element(widget_basic *  newElement, bool isNLElement)
     {
         if( newElement!=nullptr )
@@ -539,6 +627,7 @@ namespace pawgui
             if(  rowSize == 0 || newRowRequested )
             {
                 currentRow = new widget_content_row();
+                currentRow->indentationLevel = newElement->indentationLevel;
                 currentRow->alignment_h = alignment_h;
                 currentRow->alignment_v = alignment_v;
                 currentRow->barXPadding = barXPadding;
@@ -650,6 +739,41 @@ namespace pawgui
             barYMargin = 0;
             add_gui_auto( newElement );
             usingFullSizeElement = true;
+        }
+    }
+
+    void widget_panel_list::add_gui_section(widget_panel_section *  newElement )
+    {
+        if( newElement == nullptr)
+        {
+            return;
+        }
+        add_gui_element( newElement, true );
+
+        int maxEntries = newElement->sub_options.size();
+        int nextIndexLevel = newElement->indentationLevel + 1;
+
+        if( newElement->is_section_open() && maxEntries !=0 )
+        {
+            panel_section_item temp_section;
+            for( int i = 0; i < maxEntries; i++ )
+            {
+                temp_section = newElement->sub_options[i];
+
+                if( temp_section.widget_element != nullptr )
+                {
+                    temp_section.widget_element->indentationLevel = nextIndexLevel;
+                    if( temp_section.requiresNewLine )
+                    {
+
+                        add_gui_element( temp_section.widget_element, true );
+                    }
+                    else
+                    {
+                        add_indented_element( nextIndexLevel, temp_section.widget_element );
+                    }
+                }
+            }
         }
     }
 
@@ -792,8 +916,10 @@ namespace pawgui
         widget_basic * cContainer = nullptr;
         widget_basic * containerInControl = nullptr;
         int lastselectedId = -1;
-        int i = 0;
+        int i = 0, j = 0;
+        int pastRowChange = 0;
         int current_row_count = (int)subRows.size();
+        int rowOptionsCount = 0;
         bool directionChangeRequested = false;
 
         if( inDebugMode)
@@ -868,72 +994,72 @@ namespace pawgui
 
             if( gpe::input->kb_button_down[kb_ctrl] && gpe::input->kb_button_down[kb_comma] && gpe::input->kb_button_pressed[kb_comma]==false && gpe::input->kb_button_released[kb_comma]==false )
             {
-                leserKeyDelay+= gpe::time_keeper->get_delta_ticks();
+                leserKeyDelay+= gpe::time_keeper->get_delta_performance();
             }
             else
             {
-                leserKeyDelay = -1;
+                leserKeyDelay = 0;
             }
 
             if( gpe::input->kb_button_down[kb_ctrl] && gpe::input->kb_button_down[kb_period] && gpe::input->kb_button_pressed[kb_period]==false && gpe::input->kb_button_released[kb_period]==false )
             {
-                greaterKeyDelay+= gpe::time_keeper->get_delta_ticks();
+                greaterKeyDelay+= gpe::time_keeper->get_delta_performance();
             }
             else
             {
-                greaterKeyDelay = -1;
+                greaterKeyDelay = 0;
             }
         }
         if( isInUse && hasArrowkeyControl )
         {
             if( gpe::input->kb_button_down[kb_tab] && gpe::input->kb_button_pressed[kb_tab]==false && gpe::input->kb_button_released[kb_tab]==false )
             {
-                tabDelay += gpe::time_keeper->get_delta_ticks();
+                tabDelay += gpe::time_keeper->get_delta_performance();
             }
             else
             {
-                tabDelay = -1;
+                tabDelay = 0;
             }
             if( gpe::input->kb_button_down[kb_left] && gpe::input->kb_button_pressed[kb_left]==false && gpe::input->kb_button_released[kb_left]==false )
             {
-                leftDelay+= gpe::time_keeper->get_delta_ticks();
+                leftDelay+= gpe::time_keeper->get_delta_performance();
             }
             else
             {
-                leftDelay = -1;
+                leftDelay = 0;
             }
             if( gpe::input->kb_button_down[kb_right] && gpe::input->kb_button_pressed[kb_right]==false && gpe::input->kb_button_released[kb_right]==false )
             {
-                rightDelay+= gpe::time_keeper->get_delta_ticks();
+                rightDelay+= gpe::time_keeper->get_delta_performance();
             }
             else
             {
-                rightDelay = -1;
+                rightDelay = 0;
             }
             if( gpe::input->kb_button_down[kb_up] && gpe::input->kb_button_pressed[kb_up]==false && gpe::input->kb_button_released[kb_up]==false )
             {
-                upDelay+= gpe::time_keeper->get_delta_ticks();
+                upDelay+= gpe::time_keeper->get_delta_performance();
             }
             else
             {
-                upDelay = -1;
+                upDelay = 0;
             }
             if( gpe::input->kb_button_down[kb_down] && gpe::input->kb_button_pressed[kb_down]==false && gpe::input->kb_button_released[kb_down]==false )
             {
-                downDelay+= gpe::time_keeper->get_delta_ticks();
+                downDelay+= gpe::time_keeper->get_delta_performance();
             }
             else
             {
-                downDelay = -1;
+                downDelay = 0;
             }
         }
         else
         {
-            tabDelay = -1;
-            upDelay = -1;
-            downDelay = -1;
-            leftDelay = -1;
-            rightDelay = -1;
+            tabDelay = 0;
+            upDelay = 0;
+            downDelay = 0;
+            leftDelay = 0;
+            rightDelay = 0;
         }
 
         if( inDebugMode)
@@ -956,6 +1082,7 @@ namespace pawgui
         int y2Pos = y_pos;
         int rowWidth = 0;
         int maxRowWidth = 0;
+        int totalMaxRowWidth = 0;
         int rowHeight = 0;
 
         x_pos = barXMargin+barXPadding;
@@ -965,6 +1092,7 @@ namespace pawgui
             cRow = subRows[i];
             if( cRow!=nullptr )
             {
+                cRow->lastColumnFloatsRight = lastColumnFloatsRight;
                 cRow->rowSizingStyle = panelAlignType;
                 cRow->barXPadding = barXPadding;
                 cRow->barYPadding = barYPadding;
@@ -972,7 +1100,7 @@ namespace pawgui
                 cRow->outterWidth  = menuBox.w - barXMargin - yScroll->get_width();
 
                 cRow->outterHeight = menuBox.h - barYMargin - xScroll->get_height();
-                cRow->set_width( menuBox.w );
+                cRow->set_width( menuBox.w  - cRow->indentationLevel*padding_default );
                 cRow->set_height( menuBox.h );
                 cRow->set_coords(x_pos, y2Pos );
 
@@ -1206,7 +1334,7 @@ namespace pawgui
                     selectedId++;
                     directionChangeRequested = true;
                 }
-                tabDelay = -1;
+                tabDelay = 0;
             }
 
             if( subElementsHasArrowControl==false)
@@ -1214,12 +1342,12 @@ namespace pawgui
                 if( upDelay > main_settings->normalInputDelayTime )
                 {
                     scroll_up( cameraBox.h/4 );
-                    upDelay = -1;
+                    upDelay = 0;
                 }
                 else if( downDelay > main_settings->normalInputDelayTime )
                 {
                     scroll_down( cameraBox.h/4 );
-                    downDelay = -1;
+                    downDelay = 0;
                 }
             }
         }

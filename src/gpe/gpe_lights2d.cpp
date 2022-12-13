@@ -3,10 +3,10 @@ gpe_lights2d.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include "gpe_artist_base.h"
 #include "gpe_lights2d.h"
-#include "../other_libs/semath.h"
+#include "internal_libs/semath.h"
 
 namespace gpe
 {
@@ -49,10 +49,10 @@ namespace gpe
 
     light_basic_2d::~light_basic_2d()
     {
-        if( light_color!=NULL )
+        if( light_color!=nullptr )
         {
             delete light_color;
-            light_color = NULL;
+            light_color = nullptr;
         }
     }
 
@@ -83,7 +83,7 @@ namespace gpe
         light_width = 64;
         light_length = 128;
         light_direction = 0;
-        light_texture = NULL;
+        light_texture = nullptr;
     }
 
     light_direction2d::~light_direction2d()
@@ -104,9 +104,9 @@ namespace gpe
     void light_direction2d::render_light_at( float x, float y, float scale, gpe::shape_rect * cam )
     {
         cam = gpe::camera_find( cam );
-        if( light_texture!=NULL )
+        if( light_texture!=nullptr )
         {
-            light_texture->render_tex_rotated( x - cam->x, y - cam->y,light_direction, light_color, NULL, light_intensity );
+            light_texture->render_tex_rotated( x - cam->x, y - cam->y,light_direction, light_color, nullptr, light_intensity );
         }
         else
         {

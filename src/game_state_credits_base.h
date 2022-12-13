@@ -35,7 +35,7 @@ SOFTWARE.
 #define game_state_credits_base_h
 
 #include "gpe/gpe.h"
-#include "other_libs/semath.h"
+#include "gpe/internal_libs/semath.h"
 
 //This is optional of course, but the basis for our first party credits
 

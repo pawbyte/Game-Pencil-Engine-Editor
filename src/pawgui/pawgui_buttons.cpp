@@ -3,10 +3,10 @@ pawgui_buttons.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -131,7 +131,7 @@ namespace pawgui
 
         if( isClicked && (int)webUrl.size() > 3)
         {
-            gpe::main_file_url_manager->external_open_url(webUrl);
+            gpe::external_open_url(webUrl);
         }
 
         if( isHovered )
@@ -359,7 +359,7 @@ namespace pawgui
                 }
                 else if( c_button->is_hovered() )
                 {
-                    main_overlay_system->update_tooltip( c_button->get_name() );
+                    main_overlay_system->update_tooltip( c_button->descriptionText );
                 }
                 new_buttonXPos+= xPadding+widget_box.h;
             }
@@ -473,6 +473,7 @@ namespace pawgui
 
     void widget_button_iconbar::set_height(int new_height)
     {
+        int pastH = widget_box.h;
         if( widget_box.h!=new_height)
         {
             widget_box.h = new_height;
@@ -727,7 +728,7 @@ namespace pawgui
             }
             if( isClicked && (int)webUrl.size() > 3)
             {
-                gpe::main_file_url_manager->external_open_url(webUrl);
+                gpe::external_open_url(webUrl);
             }
         }
     }
@@ -840,6 +841,7 @@ namespace pawgui
 
     widget_button_card_vertical::widget_button_card_vertical( std::string imgLocation, std::string parsedLines, std::string strValue, int id, int buttonSize)
     {
+        autoResizes = false;
         usingFlagIcon = false;
         showBackground = false;
         int ww = 0;
@@ -878,6 +880,10 @@ namespace pawgui
             {
                 buttonLines.push_back(parsedLines);
             }
+        }
+        else
+        {
+            buttonLines.push_back( "Project..." );
         }
         descriptionText = strValue;
         opId = id;
@@ -936,7 +942,7 @@ namespace pawgui
             }
             if( isClicked && (int)webUrl.size() > 3)
             {
-                gpe::main_file_url_manager->external_open_url(webUrl);
+                gpe::external_open_url(webUrl);
             }
 
         }

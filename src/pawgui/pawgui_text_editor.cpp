@@ -3,10 +3,10 @@ pawgui_text_editor.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,7 +37,6 @@ SOFTWARE.
 #include "pawgui_search_controller.h"
 #include "pawgui_statusbar.h"
 #include "pawgui_text_editor.h"
-#include "time.h"
 
 namespace pawgui
 {
@@ -2041,7 +2040,7 @@ namespace pawgui
     {
         if( !new_file_name.empty() )
         {
-            textFileLocation = new_file_name;
+            textfile_location = new_file_name;
             std::ifstream newTxtFile( new_file_name.c_str() );
             //If the level file could be loaded
             if( !newTxtFile.fail() )
@@ -2160,7 +2159,7 @@ namespace pawgui
 
     void widget_text_editor::open_text_file()
     {
-        gpe::main_file_url_manager->external_open_program( textFileLocation );
+        gpe::external_open_program( textfile_location );
     }
 
     void widget_text_editor::paste_clipboard()
@@ -2261,6 +2260,7 @@ namespace pawgui
             std::string currstringToRender = "";
             std::string currentLineInView = "";
 
+            int tempSynstringSize = 0;
             int currPosToParse = 0, lineEnd = 0;
             bool isInBlockCommentMode = false;
             bool isInfloatQuoteMode = false;
@@ -2269,6 +2269,7 @@ namespace pawgui
             int endBlockCommentPos = 0;
             int endDQuoteCommentPos = 0;
             int endSQuoteCommentPos = 0;
+            bool commentFoundInSymbols = false;
             int openBracesCount = 0;
             int openBracketsCount = 0;
             int openParenthesisCount = 0;
@@ -2562,7 +2563,7 @@ namespace pawgui
                 else if( textEditor_buttonBar->selectedOption==TEXTAREA_OPTION_EXPORT)
                 {
                     std::string exportTextFileName = get_filename_save_from_popup("Export Text","",main_settings->fileOpenFunctionDir);
-                    if( gpe::main_file_url_manager->file_exists(exportTextFileName) )
+                    if( sff_ex::file_exists(exportTextFileName) )
                     {
                         if( display_prompt_message("Warning!","File Exists already, do you wish to overwrite it?)")==display_query_yes )
                         {
@@ -2654,7 +2655,7 @@ namespace pawgui
                         }
                     }
                     //Handles the Mouse movements & buttons
-                    if( gpe::input->check_mouse_button_clicked(0) && resource_dragged==nullptr )
+                    if( gpe::input->check_mouse_double_clicked( mb_left) && resource_dragged==nullptr )
                     {
                         update_cursor_to_mouse(view_space, cam);
                         if( cursorYPos >=0 && cursorYPos < (int)listOfstrings.size() )
@@ -2825,7 +2826,7 @@ namespace pawgui
                         }
                         main_context_menu->add_menu_option("Select All",6,rsm_gui->texture_add("sticky_buttonIcon", gpe::app_directory_name+"resources/buttons/sticky-note.png"),-1,nullptr,true,true);
 
-                        if( (int)textFileLocation.size() > 0 )
+                        if( (int)textfile_location.size() > 0 )
                         {
                             main_context_menu->add_menu_option("Open File",7,rsm_gui->texture_add("sticky_buttonIcon", gpe::app_directory_name+"resources/buttons/file-open.png"),-1,nullptr,true,true);
                             main_context_menu->add_menu_option("Refresh Text",8,rsm_gui->texture_add("sticky_buttonIcon", gpe::app_directory_name+"resources/buttons/file-open.png"),-1,nullptr,true,true);
@@ -2975,7 +2976,7 @@ namespace pawgui
                 //used to delay events from happening superfast
                 if( gpe::input->kb_button_down[kb_backspace] )
                 {
-                    bscDelay +=gpe::time_keeper->get_delta_ticks();
+                    bscDelay += gpe::time_keeper->get_delta_performance();
                 }
                 else
                 {
@@ -2983,7 +2984,7 @@ namespace pawgui
                 }
                 if( gpe::input->kb_button_down[kb_delete] )
                 {
-                    delDelay += gpe::time_keeper->get_delta_ticks();
+                    delDelay += gpe::time_keeper->get_delta_performance();
                 }
                 else
                 {
@@ -2991,11 +2992,11 @@ namespace pawgui
                 }
                 if( gpe::input->kb_button_down[kb_tab] )
                 {
-                    tabDelay += gpe::time_keeper->get_delta_ticks();
+                    tabDelay += gpe::time_keeper->get_delta_performance();
                 }
                 if(gpe::input->kb_button_down[kb_enter] )
                 {
-                    enterDelay+=gpe::time_keeper->get_delta_ticks();
+                    enterDelay+=gpe::time_keeper->get_delta_performance();
                 }
                 else
                 {
@@ -3003,7 +3004,7 @@ namespace pawgui
                 }
                 if( gpe::input->kb_button_down[kb_left] )
                 {
-                    leftDelay+=gpe::time_keeper->get_delta_ticks();
+                    leftDelay+=gpe::time_keeper->get_delta_performance();
                 }
                 else
                 {
@@ -3012,7 +3013,7 @@ namespace pawgui
 
                 if( gpe::input->kb_button_down[kb_right]  )
                 {
-                    rightDelay+=gpe::time_keeper->get_delta_ticks();
+                    rightDelay+=gpe::time_keeper->get_delta_performance();
                 }
                 else
                 {
@@ -3021,7 +3022,7 @@ namespace pawgui
 
                 if(gpe::input->kb_button_down[kb_up]  )
                 {
-                    upDelay+=gpe::time_keeper->get_delta_ticks();
+                    upDelay+=gpe::time_keeper->get_delta_performance();
                 }
                 else
                 {
@@ -3029,7 +3030,7 @@ namespace pawgui
                 }
                 if(gpe::input->kb_button_down[kb_down] )
                 {
-                    downDelay+=gpe::time_keeper->get_delta_ticks();
+                    downDelay+=gpe::time_keeper->get_delta_performance();
                 }
                 else
                 {
@@ -3038,7 +3039,7 @@ namespace pawgui
 
                 if(gpe::input->kb_button_down[kb_d] )
                 {
-                    dKeyDelay+=gpe::time_keeper->get_delta_ticks();
+                    dKeyDelay+=gpe::time_keeper->get_delta_performance();
                 }
                 else
                 {
@@ -3210,7 +3211,7 @@ namespace pawgui
                                 }
                                 if( iNCursorX >=(int)currentLineToScroll.size() )
                                 {
-                                    iNCursorX = (int)currentLineToScroll.size()-1;
+                                    iNCursorX >(int)currentLineToScroll.size()-1;
                                 }
                                 if( iNCursorX < 0)
                                 {
@@ -3933,7 +3934,8 @@ namespace pawgui
             hasArrowkeyControl = false;
         }
 
-
+        bool scrollingUp = false;
+        bool scrollingDown = false;
         if( isHovered)
         {
             if( gpe::input->mouse_scrolling_up )
@@ -4102,7 +4104,7 @@ namespace pawgui
 
                                 if( findAllResult > 0)
                                 {
-                                    replace_all_found( main_search_controller->findTextstringBox->get_string(), main_search_controller->replaceTextstringBox->get_string() ) ;
+                                    int replaceCount = replace_all_found( main_search_controller->findTextstringBox->get_string(), main_search_controller->replaceTextstringBox->get_string() ) ;
                                     main_search_controller->showFindAllResults = true;
                                 }
                                 else
@@ -4162,7 +4164,7 @@ namespace pawgui
 
     void widget_text_editor::refresh_text_file()
     {
-        import_text( textFileLocation );
+        import_text( textfile_location );
     }
 
     void widget_text_editor::render_code( gpe::shape_rect * view_space, gpe::shape_rect * cam )
@@ -4176,7 +4178,8 @@ namespace pawgui
             {
                 mostCharactersOfText-=2;
             }
-            int i = 0;
+            int i = 0, j = 0;
+            int parsedTokensCount = 0;
             std::string currstringToRender = "";
             std::string currentLineInView = "";
             //Processes the sythax to re-render each one
@@ -4187,6 +4190,7 @@ namespace pawgui
             std::string foundGPEProjectFunction = "";
             std::string foundGPEProjectKeyword = "";
             std::string foundSyntaxstring = "";
+            int tempSynstringSize = 0;
             int currPosToParse = 0, lineEnd = 0;
             gpe::color *color = nullptr;
             int textRenderXPos = 0, textRenderYPos = 0;
@@ -4803,12 +4807,14 @@ namespace pawgui
         {
             gpe::color * text_color = pawgui::theme_main->text_box_font_color;
             int foundSpecialLogPos = 0;
+            int subCopyStartPos = 0;
             std::string stringToRender = "";
             for( int iLine=lineStartYPos; iLine <= lineStartYPos+linesWithinView && iLine < (int)listOfstrings.size(); iLine++)
             {
                 stringToRender = listOfstrings[ iLine ];
                 if( (int)stringToRender.size() > lineStartXPos )
                 {
+                    subCopyStartPos = 0;
 
                     text_color = pawgui::theme_main->text_box_font_color;
                     if( isTextLog)
@@ -4818,6 +4824,7 @@ namespace pawgui
                         if( foundSpecialLogPos!=(int)std::string::npos)
                         {
                             text_color = pawgui::theme_main->text_box_font_color;
+                            subCopyStartPos =7;
                         }
                         else
                         {
@@ -4825,6 +4832,7 @@ namespace pawgui
                             if( foundSpecialLogPos!=(int)std::string::npos)
                             {
                                 text_color = pawgui::theme_main->text_box_font_keyword_color;
+                                subCopyStartPos =8;
                             }
                             else
                             {
@@ -4832,6 +4840,7 @@ namespace pawgui
                                 if( foundSpecialLogPos!=(int)std::string::npos)
                                 {
                                     text_color = pawgui::theme_main->text_box_font_comment_color;
+                                    subCopyStartPos =8;
                                 }
                             }
                         }
@@ -4852,6 +4861,7 @@ namespace pawgui
         setup_editor(view_space,cam);
         if( view_space!=nullptr &&  cam!=nullptr  )
         {
+            int subCopyStartPos = 0;
             if( (int)listOfstrings.size()==0)
             {
                 listOfstrings.push_back("");
@@ -5052,7 +5062,7 @@ namespace pawgui
             {
                 if( prevCursorXPos!=cursorXPos || prevCursorYPos!=cursorYPos )
                 {
-                    gpe::gcanvas->render_vertical_line_color( renderBox->x+2+(prevCursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
+                    gpe::gcanvas->render_vertical_line_color( renderBox->x+(prevCursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
                                                      renderBox->y+(prevCursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
                                                      renderBox->y+(prevCursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
                                                      pawgui::theme_main->text_box_color);
@@ -5064,14 +5074,14 @@ namespace pawgui
             {
                 if( showCursor)
                 {
-                    gpe::gcanvas->render_vertical_line_color( renderBox->x+2+(cursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
+                    gpe::gcanvas->render_vertical_line_color( renderBox->x+(cursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
                                                      renderBox->y+(cursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
                                                      renderBox->y+(cursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
                                                      pawgui::theme_main->text_box_font_color);
                 }
                 else
                 {
-                    gpe::gcanvas->render_vertical_line_color( renderBox->x+2+(cursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
+                    gpe::gcanvas->render_vertical_line_color( renderBox->x+(cursorXPos-lineStartXPos)*TEXTBOX_FONT_SIZE_WIDTH,
                                                      renderBox->y+(cursorYPos-lineStartYPos)*(editorZoomLevel*defaultLineHeight),
                                                      renderBox->y+(cursorYPos-lineStartYPos+1)*(editorZoomLevel*defaultLineHeight),
                                                      pawgui::theme_main->text_box_color);
