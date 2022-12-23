@@ -2,10 +2,10 @@
 gpe_file_system.cpp
 This file is part of:GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -40,11 +40,11 @@ namespace gpe
     std::string generate_filters(const std::vector<filetype_filter *> filters)
     {
         std::string result ="";
-        filetype_filter * tempFilter = NULL;
+        filetype_filter * tempFilter = nullptr;
         for(int i = 0; i < (int)filters.size(); i++)
         {
             tempFilter = filters[i];
-            if( tempFilter!=NULL)
+            if( tempFilter!=nullptr)
             {
                 result += tempFilter->desc;
                 result += '\0';
@@ -60,7 +60,7 @@ namespace gpe
         fileTypeVector.clear();
         std::string returnFileFilterstring = "All types(*.*)\0*.*\0";
         std::vector<filetype_filter *> filters;
-        filetype_filter * tempNewFilter = NULL;
+        filetype_filter * tempNewFilter = nullptr;
         if( (int)allowedFileTypes.size() > 0)
         {
             if( allowedFileTypes=="All types(*.*)" ||  allowedFileTypes=="All Files" || allowedFileTypes=="None" ||  allowedFileTypes=="All Files*")
@@ -69,16 +69,20 @@ namespace gpe
             }
             else if( allowedFileTypes=="Image Only" || allowedFileTypes=="Image" || allowedFileTypes=="Images" || allowedFileTypes=="Photos")
             {
-                tempNewFilter = new filetype_filter("Images (*.bmp | *.png | *.jpg)", "*.bmp;*.png;*.jpg");
+                tempNewFilter = new filetype_filter("Images (*.bmp | *.png | *.jpg| *.jpeg | *.jif  | *.jfif  | .gif )", "*.bmp;*.png;*.jpg;*.jpeg;*.jif;*.jfif;*.gif");
                 filters.push_back(tempNewFilter );
                 fileTypeVector.push_back("bmp");
                 fileTypeVector.push_back("BMP");
                 fileTypeVector.push_back("gif");
                 fileTypeVector.push_back("GIF");
+                fileTypeVector.push_back("jif");
+                fileTypeVector.push_back("JIF");
                 fileTypeVector.push_back("jpg");
                 fileTypeVector.push_back("JPG");
                 fileTypeVector.push_back("jpeg");
                 fileTypeVector.push_back("JPEG");
+                fileTypeVector.push_back("jfif");
+                fileTypeVector.push_back("JFIF");
                 fileTypeVector.push_back("png");
                 fileTypeVector.push_back("PNG");
             }
@@ -149,10 +153,10 @@ namespace gpe
         for( int iDelete = (int)filters.size()-1; iDelete>=0; iDelete--)
         {
             tempNewFilter = filters.at(iDelete);
-            if( tempNewFilter!=NULL)
+            if( tempNewFilter!=nullptr)
             {
                 delete tempNewFilter;
-                tempNewFilter = NULL;
+                tempNewFilter = nullptr;
             }
         }
         filters.clear();
@@ -214,7 +218,7 @@ namespace gpe
             file_name = "";
             fileType = "";
         }
-        thumbnail_texture = NULL;
+        thumbnail_texture = nullptr;
         file_size_info = 0;
         date_creation_info = "";
         date_modified_info = "";
@@ -222,10 +226,10 @@ namespace gpe
 
     file_object::~file_object()
     {
-        if( thumbnail_texture!=NULL)
+        if( thumbnail_texture!=nullptr)
         {
             delete thumbnail_texture;
-            thumbnail_texture = NULL;
+            thumbnail_texture = nullptr;
         }
     }
 
@@ -264,14 +268,14 @@ namespace gpe
 
     void file_directory_class::close_directory()
     {
-        file_object * tFile = NULL;
+        file_object * tFile = nullptr;
         for( int i = (int)files_list.size()-1; i>=0; i--)
         {
             tFile = files_list[i];
-            if( tFile!=NULL)
+            if( tFile!=nullptr)
             {
                 delete tFile;
-                tFile = NULL;
+                tFile = nullptr;
             }
         }
         files_list.clear();
@@ -282,14 +286,14 @@ namespace gpe
 
     void file_directory_class::filter_directory(bool only_folders, std::vector <std::string> &file_types_to_use)
     {
-        file_object * tempFile = NULL;
+        file_object * tempFile = nullptr;
         file_position = 0;
         file_count = 0;
         sub_directory_count = 0;
         for( int i = (int)files_list.size() - 1; i >=0; i--)
         {
             tempFile = files_list[i];
-            if( tempFile!=NULL)
+            if( tempFile!=nullptr)
             {
                 if( only_folders)
                 {
@@ -309,7 +313,7 @@ namespace gpe
                 else
                 {
                     delete tempFile;
-                    tempFile = NULL;
+                    tempFile = nullptr;
                     files_list.erase(files_list.begin()+i);
                 }
             }
@@ -329,7 +333,7 @@ namespace gpe
             DIR *dir;
             struct dirent *ent;
             dir = opendir( directory_string.c_str() );
-            if( dir==NULL)
+            if( dir==nullptr)
             {
                 foundErrorMessage = strerror(errno);
 
@@ -341,14 +345,14 @@ namespace gpe
             }
             else
             {
-                file_object * newFile = NULL;
-                file_object * tFile = NULL;
+                file_object * newFile = nullptr;
+                file_object * tFile = nullptr;
                 int i = 0;
                 int j = 0;
                 bool foundNewPosition = false;
                 bool newFileIsDirectory = false;
                 std::string new_file_name = "";
-                while ( (ent = readdir(dir)) != NULL )
+                while ( (ent = readdir(dir)) != nullptr )
                 {
                     std::string entry( ent->d_name );
                     //std::string lcEntry( std::strToLower(entry) );
@@ -367,10 +371,10 @@ namespace gpe
                         if(new_file_name!=".." && new_file_name!=".")
                         {
                             newFileIsDirectory = sff_ex::path_exists(directory_string+"/"+ent->d_name);
-                            //if( ( main_editor_settings!=NULL && main_editor_settings->showHiddenFilesInBrowser->is_clicked() ) || system_found_os!=GPE_IDE_LINUX || (system_found_os==GPE_IDE_LINUX && new_file_name.find_first_of(".",0)!=0) )
+                            //if( ( main_editor_settings!=nullptr && main_editor_settings->showHiddenFilesInBrowser->is_clicked() ) || system_found_os!=GPE_IDE_LINUX || (system_found_os==GPE_IDE_LINUX && new_file_name.find_first_of(".",0)!=0) )
                             {
                                 newFile = new file_object(new_file_name, newFileIsDirectory);
-                                if( newFile!=NULL)
+                                if( newFile!=nullptr)
                                 {
                                     newFile->file_directory_location = directory_string;
                                     foundNewPosition = false;
@@ -378,7 +382,7 @@ namespace gpe
                                     for( j = (int)files_list.size()-1; j >=0 && foundNewPosition==false; j--)
                                     {
                                         tFile = files_list[j];
-                                        if( tFile!=NULL)
+                                        if( tFile!=nullptr)
                                         {
                                             if( tFile->get_name() >= new_file_name )
                                             {
@@ -421,7 +425,7 @@ namespace gpe
         {
             return files_list.at(position);
         }
-        return NULL;
+        return nullptr;
     }
 
     int file_directory_class::get_count()
@@ -446,7 +450,7 @@ namespace gpe
             file_position++;
             return get_file(file_position);
         }
-        return NULL;
+        return nullptr;
     }
 
     bool file_directory_class::has_next_file()
@@ -478,7 +482,7 @@ namespace gpe
             // win implementation
             //program_location = "start "+url_string;
             program_info = stg_ex::string_replace_all(program_info,"/","\\");
-            ShellExecute(NULL,NULL,program_location.c_str(),program_info.c_str(),NULL,SW_SHOW );
+            ShellExecute(nullptr,nullptr,program_location.c_str(),program_info.c_str(),nullptr,SW_SHOW );
     #elif _APPLE__
             // apple implementation
             program_location = "open "+program_location;
@@ -502,7 +506,7 @@ namespace gpe
         /**/
     #ifdef _WIN32
         // win implementation
-        ShellExecute(NULL, "open", url_string.c_str(), NULL, NULL, SW_SHOWNORMAL);
+        ShellExecute(nullptr, "open", url_string.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
     #elif _APPLE__
         // apple implementation
         url_string = "open "+url_string;
@@ -559,7 +563,7 @@ namespace gpe
     int clean_folder(std::string folder_name)
     {
         file_directory_class * dir = new file_directory_class();
-        file_object * file = NULL;
+        file_object * file = nullptr;
         int iFile = 0;
         int iDirectory = 0;
 
@@ -568,7 +572,7 @@ namespace gpe
         foldersToDelete.push_back(folder_name);
         std::string currentFolderToClear = folder_name;
         int filesDeletedCount = 0;
-        if( dir!=NULL)
+        if( dir!=nullptr)
         {
             while( (int)foldersToDelete.size() > 0 )
             {
@@ -577,7 +581,7 @@ namespace gpe
                 for (iFile = (int)dir->get_count()-1; iFile>=0; iFile--)
                 {
                     file = dir->get_file(iFile);
-                    if( file!=NULL)
+                    if( file!=nullptr)
                     {
                         fileToClick = file->get_name();
                         if( fileToClick!="." && fileToClick!="..")
@@ -604,7 +608,7 @@ namespace gpe
                 }
             }
             delete dir;
-            dir = NULL;
+            dir = nullptr;
             return filesDeletedCount;
         }
         return 0;
@@ -623,18 +627,18 @@ namespace gpe
 
         int filesCopiedCount = 0;
         file_directory_class * dir = new file_directory_class();
-        file_object * file = NULL;
+        file_object * file = nullptr;
         std::string currentFileName = "";
         int iFile = 0;
         int iDirectory = 0;
         int addedFolderFileCount = 0;
-        if( dir!=NULL )
+        if( dir!=nullptr )
         {
             dir->open_directory(folder_name);
             for (iFile = 0; iFile < (int)dir->get_count(); iFile++)
             {
                 file = dir->get_file(iFile);
-                if( file!=NULL)
+                if( file!=nullptr)
                 {
                     currentFileName = file->get_name();
                     if( currentFileName!="." && currentFileName!="..")
@@ -665,7 +669,7 @@ namespace gpe
                 }
             }
             delete dir;
-            dir = NULL;
+            dir = nullptr;
             return filesCopiedCount;
         }
         return 0;
@@ -689,7 +693,7 @@ namespace gpe
         char* homeDir = getenv("%UserProfile%");
         std::string foundPath = "";
         //Attempt 1...
-        if( homeDir!=NULL)
+        if( homeDir!=nullptr)
         {
             //Attempt 1...
             foundPath = homeDir;
@@ -698,7 +702,7 @@ namespace gpe
         {
             //Attempt 2...
             homeDir = getenv("home");
-            if( homeDir!=NULL )
+            if( homeDir!=nullptr )
             {
                 foundPath = homeDir;
             }
@@ -706,7 +710,7 @@ namespace gpe
             {
                 //Attempt 3...
                 homeDir = getenv("HOME");
-                if( homeDir!=NULL)
+                if( homeDir!=nullptr)
                 {
                     foundPath = homeDir;
                 }
@@ -714,7 +718,7 @@ namespace gpe
                 {
                     //final shot...
                     homeDir = getenv("homepath");
-                    if( homeDir!=NULL )
+                    if( homeDir!=nullptr )
                     {
                         foundPath = homeDir;
                     }

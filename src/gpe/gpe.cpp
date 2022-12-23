@@ -3,10 +3,10 @@ gpe.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,12 +37,12 @@ namespace gpe
 {
     bool init_core_engine( int argc, char* args[] , std::string error_log_location )
     {
-        if( error_log == NULL )
+        if( error_log == nullptr )
         {
             error_log = new error_log_system( error_log_location );
         }
 
-        if( settings == NULL )
+        if( settings == nullptr )
         {
             return false;
         }
@@ -56,7 +56,7 @@ namespace gpe
         args_processed = argc;
 
         //begins making random numbers...
-        srand( time(NULL) );
+        srand( time(nullptr) );
 
         for(int rI = 0; rI < resource_type_max; rI++)
         {
@@ -86,6 +86,7 @@ namespace gpe
         resource_type_names[resource_type_event] = "Event";
         resource_type_names[resource_type_quest] = "Quest";
         resource_type_names[resource_type_project_settings] = "Project Properties";
+        resource_type_names[resource_type_back_button] = "Back Button";
 
         //Plural names
         resource_type_names_plural[resource_type_animation] = "Animations";
@@ -110,6 +111,7 @@ namespace gpe
         resource_type_names_plural[resource_type_event] = "Events";
         resource_type_names_plural[resource_type_quest] = "Quests";
         resource_type_names_plural[resource_type_project_settings] = "Project Properties";
+        resource_type_names_plural[resource_type_back_button] = "Back Button";
 
         for( int i_sound_format = 0; i_sound_format < sound_format_max; i_sound_format++ )
         {
@@ -168,6 +170,18 @@ namespace gpe
         window_controller_main = new window_controller_base();
         game_runtime = new runtime_master();
         game_runtime->loading_data = true;
+
+        if( branch_factory_master != nullptr )
+        {
+            delete branch_factory_master;
+            branch_factory_master = nullptr;
+        }
+        branch_factory_master = new branch_factory();
+        branch_factory_master->add_to_map( "particle", new particle_emitter() );
+        branch_factory_master->add_to_map( "light2d",  new light_basic_2d() );
+        branch_factory_master->add_to_map( "light2d_ambient", new light_basic_2d()  );
+        branch_factory_master->add_to_map( "light2d_point", new light_point2d() );
+        branch_factory_master->add_to_map( "light2d_direction", new light_direction2d() );
         return true;
     }
 
@@ -187,34 +201,34 @@ namespace gpe
     {
         //Deletes in the order of dependencies from top/down
         error_log->report("Deleting resource manager....");
-        if( rsm!=NULL)
+        if( rsm!=nullptr)
         {
             rsm->clean_up();
             delete rsm;
-            rsm = NULL;
+            rsm = nullptr;
         }
         error_log->report("Deleting game_runtime....");
-        if( game_runtime!=NULL)
+        if( game_runtime!=nullptr)
         {
             delete game_runtime;
-            game_runtime = NULL;
+            game_runtime = nullptr;
         }
 
         error_log->report("Deleting input object...");
-        if( input!=NULL)
+        if( input!=nullptr)
         {
             delete input;
-            input = NULL;
+            input = nullptr;
         }
         return true;
     }
 
     bool quit_core_engine()
     {
-        if( error_log!=NULL )
+        if( error_log!=nullptr )
         {
             delete error_log;
-            error_log = NULL;
+            error_log = nullptr;
         }
         return true;
     }

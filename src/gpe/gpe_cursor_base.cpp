@@ -3,10 +3,10 @@ gpe_cursor_base.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,7 +35,7 @@ SOFTWARE.
 
 namespace gpe
 {
-    cursor_controller_base * cursor_main_controller = NULL;
+    cursor_controller_base * cursor_main_controller = nullptr;
     int cursor_controller_counter = 0;
 
     cursor_controller_base::cursor_controller_base()
@@ -112,7 +112,7 @@ namespace gpe
 
     int cursor_controller_base::equals( cursor_controller_base * other )
     {
-        if( other !=NULL )
+        if( other !=nullptr )
         {
             if( other->get_id() == cursor_controller_id )
             {

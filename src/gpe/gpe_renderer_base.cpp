@@ -3,10 +3,10 @@ renderer_base.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,7 +35,7 @@ SOFTWARE.
 
 namespace gpe
 {
-    renderer_base * renderer_main = NULL;
+    renderer_base * renderer_main = nullptr;
     renderer_base::renderer_base()
     {
         previously_scaled = false;
@@ -45,6 +45,29 @@ namespace gpe
         scale_percentage_y = 0;
         scale_source_width = 0;
         scale_source_height = 0;
+        current_render_mode = render_mode_2D;
+        for( int i_rm = 0; i_rm < render_mode_max; i_rm++ )
+        {
+            render_mode_supported[ i_rm ] = -1;
+        	render_mode_names[ i_rm ] = "";
+        }
+
+        render_mode_supported[ render_mode_2D ] = true;
+        render_mode_names[render_mode_2D] = "2D Ortho";
+        render_mode_names[render_mode_2D_iso] = "2D Isometric";
+        render_mode_names[render_mode_pseudo3d_m7] = "Psuedo3D-MODE7";
+        render_mode_names[render_mode_psuedo3d_raycast] = "Psuedo3D-Raycast";
+        render_mode_names[render_mode_psuedo3d_stacked] = "Psuedo3D-SpriteStacking";
+        render_mode_names[render_mode_3d] = "3D";
+        render_mode_names[render_mode_3d_vr] = "3D-VR";
+        render_mode_names[render_mode_3d_ar] = "3D-AR";
+        render_mode_names[render_mode_userdefined0] = "Uderdefined0";
+        render_mode_names[render_mode_userdefined1] = "Uderdefined1";
+        render_mode_names[render_mode_userdefined2] = "Uderdefined2";
+        render_mode_names[render_mode_userdefined3] = "Uderdefined3";
+        render_mode_names[render_mode_userdefined4] = "Uderdefined4";
+        render_mode_names[render_mode_userdefined5] = "Uderdefined5";
+        render_mode_names[render_mode_none] = "None";
     }
 
     renderer_base::renderer_base(int rId, int widthStart, int heightStart )
@@ -59,6 +82,30 @@ namespace gpe
         scale_percentage_y = 0;
         scale_source_width = 0;
         scale_source_height = 0;
+        current_render_mode = render_mode_2D;
+        for( int i_rm = 0; i_rm < render_mode_max; i_rm++ )
+        {
+            render_mode_supported[ i_rm ] = false;;
+            render_mode_names[ i_rm ] = "";
+        }
+        render_mode_supported[ render_mode_2D ] = true;
+
+		render_mode_supported[ render_mode_2D ] = true;
+		render_mode_names[render_mode_2D] = "2D Ortho";
+        render_mode_names[render_mode_2D_iso] = "2D Isometric";
+        render_mode_names[render_mode_pseudo3d_m7] = "Psuedo3D-MODE7";
+        render_mode_names[render_mode_psuedo3d_raycast] = "Psuedo3D-Raycast";
+        render_mode_names[render_mode_psuedo3d_stacked] = "Psuedo3D-SpriteStacking";
+        render_mode_names[render_mode_3d] = "3D";
+        render_mode_names[render_mode_3d_vr] = "3D-VR";
+        render_mode_names[render_mode_3d_ar] = "3D-AR";
+        render_mode_names[render_mode_userdefined0] = "Uderdefined0";
+        render_mode_names[render_mode_userdefined1] = "Uderdefined1";
+        render_mode_names[render_mode_userdefined2] = "Uderdefined2";
+        render_mode_names[render_mode_userdefined3] = "Uderdefined3";
+        render_mode_names[render_mode_userdefined4] = "Uderdefined4";
+        render_mode_names[render_mode_userdefined5] = "Uderdefined5";
+        render_mode_names[render_mode_none] = "None";
     }
 
     renderer_base::~renderer_base()
@@ -98,6 +145,15 @@ namespace gpe
         return render_blend_mode;
     }
 
+    std::string renderer_base::get_render_mode_name( int rmode_to_check )
+    {
+        if( rmode_to_check >=0 && rmode_to_check < render_mode_max )
+        {
+            return render_mode_names[ rmode_to_check ];
+        }
+        return ""; //defaults to blank, not supported
+    }
+
     std::string renderer_base::get_renderer_name()
     {
         return r_name;
@@ -133,9 +189,23 @@ namespace gpe
         return scale_percentage_y;
     }
 
+    bool renderer_base::set_vysnc()
+    {
+        return vsync_is_on;
+    }
+
     bool renderer_base::is_integer_scaling()
     {
         return use_integer_scaling;
+    }
+
+    signed char renderer_base::is_render_mode_supported( int rmode_to_check )
+    {
+        if( rmode_to_check >=0 && rmode_to_check < render_mode_max )
+        {
+            return render_mode_supported[ rmode_to_check ];
+        }
+        return -1; //defaults to negative one, not supported
     }
 
     bool renderer_base::is_scaled()
@@ -156,7 +226,7 @@ namespace gpe
 
     bool renderer_base::render_circle_color( int x, int y, int rad, uint8_t r, uint8_t g, uint8_t b, uint8_t a )
     {
-
+        return false; //WIPNOTFUNCTIONALYET
     }
 
     void renderer_base::reset_input()
@@ -200,9 +270,23 @@ namespace gpe
 
     }
 
+    int renderer_base::set_render_mode( int r_mode )
+    {
+        if( r_mode >=0 && r_mode < render_mode_max )
+        {
+            return render_mode_supported[r_mode];
+        }
+        return -1;
+    }
+
     void renderer_base::set_viewpoint( gpe::shape_rect * newViewPoint )
     {
 
+    }
+
+    void renderer_base::set_vysnc( bool vs_on )
+    {
+        vsync_is_on = vs_on;
     }
 
     void renderer_base::update_renderer( bool windowIsMinimized )

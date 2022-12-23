@@ -3,10 +3,10 @@ gpe_collision_controller_base.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,10 +35,10 @@ gpe_collision_controller_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -68,7 +68,7 @@ SOFTWARE.
 namespace gpe
 {
     int collision_controller_counter = 0;
-    collision_controller_base * main_collision_controller = NULL;
+    collision_controller_base * main_collision_controller = nullptr;
 
     collision_controller_base::collision_controller_base()
     {
@@ -114,7 +114,7 @@ namespace gpe
 
     int collision_controller_base::compare( collision_controller_base * other )
     {
-        if( other == NULL )
+        if( other == nullptr )
         {
             return -1;
         }
@@ -144,7 +144,7 @@ namespace gpe
 
     bool collision_controller_base::init_system( int scene_width, int scene_height )
     {
-
+        return false; //WIPNOTFUNCTIONALYET
     }
 
     void collision_controller_base::remove_object( game_object * g_obj )
