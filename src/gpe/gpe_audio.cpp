@@ -37,8 +37,8 @@ namespace gpe
 {
     audio::audio(int aId , std::string aName , std::string aFileName )
     {
-        audioChunk = nullptr;
-        audioMusic = nullptr;
+        audioChunk = NULL;
+        audioMusic = NULL;
         audioId = aId;
         audioName = aName;
         audioFileName = aFileName;
@@ -55,15 +55,15 @@ namespace gpe
 
     audio::~audio()
     {
-        if( audioChunk!=nullptr)
+        if( audioChunk!=NULL)
         {
             Mix_FreeChunk( audioChunk );
-            audioChunk = nullptr;
+            audioChunk = NULL;
         }
-        if( audioMusic!=nullptr)
+        if( audioMusic!=NULL)
         {
             Mix_FreeMusic(audioMusic);
-            audioMusic = nullptr;
+            audioMusic = NULL;
         }
     }
 

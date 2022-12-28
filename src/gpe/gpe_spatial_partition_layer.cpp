@@ -3,10 +3,10 @@ spatial_partition_layer.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -59,7 +59,7 @@ namespace gpe
     void spatial_partition_layer::add_object( game_object * gameObject )
     {
         int partitionsSize = (int)layerPartitions.size();
-        if( gameObject == nullptr || partitionsSize == 0 )
+        if( gameObject == NULL || partitionsSize == 0 )
         {
             return;
         }
@@ -79,10 +79,10 @@ namespace gpe
 
     void spatial_partition_layer::check_collisions_self()
     {
-        spatial_partition * tempPartition = nullptr;
-        spatial_partition * tempPartitionLeft = nullptr;
-        spatial_partition * tempPartitionAbove = nullptr;
-        spatial_partition * tempPartitionAboveLeft = nullptr;
+        spatial_partition * tempPartition = NULL;
+        spatial_partition * tempPartitionLeft = NULL;
+        spatial_partition * tempPartitionAbove = NULL;
+        spatial_partition * tempPartitionAboveLeft = NULL;
 
         int collisionSpaceCount = (int)layerPartitions.size();
 
@@ -92,7 +92,7 @@ namespace gpe
         for( int i = 0; i < collisionSpaceCount; i++ )
         {
             tempPartition = layerPartitions[i];
-            if( tempPartition!=nullptr )
+            if( tempPartition!=NULL )
             {
                 //Check all of the collisions within itself
                 tempPartition->check_collisions();
@@ -102,7 +102,7 @@ namespace gpe
                 if( tempLeftPos > 0 && tempLeftPos < collisionSpaceCount)
                 {
                     tempPartitionLeft = layerPartitions[tempLeftPos];
-                    if( tempPartitionLeft !=nullptr )
+                    if( tempPartitionLeft !=NULL )
                     {
                         tempPartition->check_collisions_with_other( tempPartitionLeft );
                     }
@@ -112,7 +112,7 @@ namespace gpe
                 if( tempAbovePos > 0 && tempAbovePos < collisionSpaceCount)
                 {
                     tempPartitionAbove = layerPartitions[tempAbovePos];
-                    if( tempPartitionAbove !=nullptr )
+                    if( tempPartitionAbove !=NULL )
                     {
                         tempPartition->check_collisions_with_other( tempPartitionAbove );
                     }
@@ -122,7 +122,7 @@ namespace gpe
                 if( tempAboveLeftPos > 0 && tempAboveLeftPos < collisionSpaceCount)
                 {
                     tempPartitionAboveLeft = layerPartitions[tempAboveLeftPos];
-                    if( tempPartitionAboveLeft !=nullptr )
+                    if( tempPartitionAboveLeft !=NULL )
                     {
                         tempPartition->check_collisions_with_other( tempPartitionAboveLeft );
                     }
@@ -138,14 +138,14 @@ namespace gpe
 
     void spatial_partition_layer::clear_spaces( )
     {
-        spatial_partition *  tempSpace = nullptr;
+        spatial_partition *  tempSpace = NULL;
         for( int i = (int)layerPartitions.size()-1; i >=0; i-- )
         {
             tempSpace = layerPartitions[i];
-            if( tempSpace!=nullptr)
+            if( tempSpace!=NULL)
             {
                 delete tempSpace;
-                tempSpace = nullptr;
+                tempSpace = NULL;
             }
         }
         layerPartitions.clear();
@@ -213,7 +213,7 @@ namespace gpe
         //smallest size possible is 2x2
         int iGrid, jGrid;
         int x_start=0, y_start=0;
-        spatial_partition * newSpace = nullptr;
+        spatial_partition * newSpace = NULL;
         for( iGrid =0; iGrid < spatial_grid_x_amount; iGrid+=1)
         {
             for( jGrid=0; jGrid < spatial_grid_y_amount; jGrid+=1)
@@ -237,7 +237,7 @@ namespace gpe
 
     void spatial_partition_layer::remove_object( game_object * gameObject )
     {
-        if( gameObject == nullptr)
+        if( gameObject == NULL)
         {
             return;
         }

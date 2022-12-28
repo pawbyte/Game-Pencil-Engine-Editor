@@ -3,10 +3,10 @@ gpe_render_package_handler.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,7 +35,7 @@ SOFTWARE.
 
 namespace gpe
 {
-    render_package_handler * rph = nullptr;
+    render_package_handler * rph = NULL;
 
     render_package_handler::render_package_handler()
     {
@@ -51,13 +51,13 @@ namespace gpe
     {
         if( (int)packageName.size() == 0)
         {
-            return nullptr;
+            return NULL;
         }
 
-        if( get_render_package_from_name( packageName) != nullptr )
+        if( get_render_package_from_name( packageName) != NULL )
         {
             //can't add duplicates
-            return nullptr;
+            return NULL;
         }
         render_package * newPackage = new render_package(r_packageCount, packageName);
         r_packages.push_back( newPackage );
@@ -68,11 +68,11 @@ namespace gpe
     void render_package_handler::clear_render_packages()
     {
         int packageMax = (int)r_packages.size();
-        render_package * tempPackage = nullptr;
+        render_package * tempPackage = NULL;
         for( int i = packageMax -1; i >= 0; i--)
         {
             tempPackage = r_packages[i];
-            if( tempPackage!=nullptr && tempPackage->packageRenderer!=nullptr && tempPackage->packageWindow!=nullptr )
+            if( tempPackage!=NULL && tempPackage->packageRenderer!=NULL && tempPackage->packageWindow!=NULL )
             {
                 tempPackage->packageRenderer->clear_renderer( tempPackage->packageWindow->is_minimized() );
             }
@@ -86,7 +86,7 @@ namespace gpe
 
     render_package * render_package_handler::get_render_package_from_id( int packageId )
     {
-        return nullptr;
+        return NULL;
     }
 
     render_package * render_package_handler::get_render_package_from_name( std::string packageName )
@@ -96,16 +96,16 @@ namespace gpe
             packageName = defaultr_packageName;
         }
         int packageMax = (int)r_packages.size();
-        render_package * tempPackage = nullptr;
+        render_package * tempPackage = NULL;
         for( int i = packageMax -1; i >= 0; i--)
         {
             tempPackage = r_packages[i];
-            if( tempPackage !=nullptr && tempPackage->get_package_name() == packageName )
+            if( tempPackage !=NULL && tempPackage->get_package_name() == packageName )
             {
                 return tempPackage;
             }
         }
-        return nullptr;
+        return NULL;
     }
 
     texture_base * render_package_handler::get_new_texture()
@@ -115,14 +115,14 @@ namespace gpe
 
     texture_base * render_package_handler::get_new_texture_from_id( int packageId )
     {
-        return nullptr;
+        return NULL;
     }
 
     texture_base * render_package_handler::get_new_texture_from_package( render_package * r_package)
     {
-        if( r_package == nullptr)
+        if( r_package == NULL)
         {
-            return nullptr;
+            return NULL;
         }
         return r_package->create_texture();
     }
@@ -130,9 +130,9 @@ namespace gpe
     texture_base * render_package_handler::get_new_texture_from_name( std::string packageName )
     {
         render_package * fPackage = get_render_package_from_name( packageName);
-        if( fPackage == nullptr)
+        if( fPackage == NULL)
         {
-            return nullptr;
+            return NULL;
         }
         return fPackage->create_texture();
     }
@@ -140,11 +140,11 @@ namespace gpe
     bool render_package_handler::is_all_windows_minimized()
     {
         int packageMax = (int)r_packages.size();
-        render_package * tempPackage = nullptr;
+        render_package * tempPackage = NULL;
         for( int i = packageMax -1; i >= 0; i--)
         {
             tempPackage = r_packages[i];
-            if( tempPackage!=nullptr && tempPackage->packageWindow!=nullptr )
+            if( tempPackage!=NULL && tempPackage->packageWindow!=NULL )
             {
                 if( tempPackage->packageWindow->is_minimized() == false )
                 {
@@ -158,11 +158,11 @@ namespace gpe
     void render_package_handler::process_event( input_event_container * e )
     {
         int packageMax = (int)r_packages.size();
-        render_package * tempPackage = nullptr;
+        render_package * tempPackage = NULL;
         for( int i = packageMax -1; i >= 0; i--)
         {
             tempPackage = r_packages[i];
-            if( tempPackage!=nullptr && tempPackage->packageWindow!=nullptr )
+            if( tempPackage!=NULL && tempPackage->packageWindow!=NULL )
             {
                 tempPackage->packageWindow->process_event( e );
             }
@@ -172,11 +172,11 @@ namespace gpe
     int render_package_handler::window_in_focus()
     {
         int packageMax = (int)r_packages.size();
-        render_package * tempPackage = nullptr;
+        render_package * tempPackage = NULL;
         for( int i = packageMax -1; i >= 0; i--)
         {
             tempPackage = r_packages[i];
-            if(  tempPackage->packageWindow!=nullptr )
+            if(  tempPackage->packageWindow!=NULL )
             {
                 if( tempPackage->packageWindow->has_focus() )
                 {
@@ -192,50 +192,48 @@ namespace gpe
         if( deletePackage )
         {
             int packageMax = (int)r_packages.size();
-            render_package * tempPackage = nullptr;
+            render_package * tempPackage = NULL;
             for( int i = packageMax -1; i >= 0; i--)
             {
                 tempPackage = r_packages[i];
-                if( tempPackage !=nullptr)
+                if( tempPackage !=NULL)
                 {
                     delete tempPackage;
-                    tempPackage =nullptr;
+                    tempPackage =NULL;
                 }
             }
         }
         r_packages.clear();
-        return true;
     }
 
     bool render_package_handler::remove_render_package( std::string packageName, bool deletePackage )
     {
         int packageMax = (int)r_packages.size();
-        render_package * tempPackage = nullptr;
+        render_package * tempPackage = NULL;
         for( int i = packageMax -1; i >= 0; i--)
         {
             tempPackage = r_packages[i];
-            if( tempPackage !=nullptr && tempPackage->get_package_name() == packageName )
+            if( tempPackage !=NULL && tempPackage->get_package_name() == packageName )
             {
                 if( deletePackage )
                 {
                     delete tempPackage;
-                    tempPackage =nullptr;
+                    tempPackage =NULL;
                 }
                 r_packages.erase( r_packages.begin() + i );
             }
         }
-        return true;
     }
 
     void render_package_handler::update_render_packages()
     {
         int packageMax = (int)r_packages.size();
-        render_package * tempPackage = nullptr;
+        render_package * tempPackage = NULL;
         for( int i = packageMax -1; i >= 0; i--)
         {
             tempPackage = r_packages[i];
 
-            if( tempPackage!=nullptr && tempPackage->packageRenderer!=nullptr && tempPackage->packageWindow!=nullptr )
+            if( tempPackage!=NULL && tempPackage->packageRenderer!=NULL && tempPackage->packageWindow!=NULL )
             {
                 tempPackage->packageRenderer->update_renderer( tempPackage->packageWindow->is_minimized() );
             }

@@ -3,10 +3,10 @@ gpe_shapes.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -49,16 +49,22 @@ namespace gpe
         float x, y, z;
     };
 
-    struct shape_circle
+    class shape_circle
     {
+        public:
             shape_point2d position;
             float radius;
+            shape_circle(float xpos, float ypos, float radiusIn);
+            ~shape_circle();
     };
 
-    struct shape_sphere
+    class shape_sphere
     {
+        public:
             shape_point3d position;
             float radius;
+            shape_sphere(float xpos, float ypos, float zpos, float radiusIn);
+            ~shape_sphere();
     };
 
     class shape_rect
@@ -82,7 +88,7 @@ namespace gpe
             float get_y();
             float get_y2();
             //Limitations
-            void limit_space_to_rect(int * limitedX = nullptr, int * limitedY = nullptr);
+            void limit_space_to_rect(int * limitedX = NULL, int * limitedY = NULL);
             void set_x( float x_new );
             void set_y( float y_new );
             void set_w( float newW );

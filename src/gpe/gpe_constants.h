@@ -3,10 +3,10 @@ gpe_constants.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -44,10 +44,20 @@ namespace gpe
         render_sys_other = 4,
     };
 
+    enum class render_mode
+    {
+        rmode_1d = 0,
+        rmode_2d = 1,
+        rmode_25d = 2,
+        rmode_3d = 2,
+        rmode_4d = 4,
+        rmode_other = 6,
+    };
+
     //Game Pencil Runtime
     const float version_number_major = 1;
-    const float version_number_minor = 5;
-    const float version_number_update = 0;
+    const float version_number_minor = 4;
+    const float version_number_update = 1;
     const float version_number_total = version_number_major + version_number_minor/10.f + version_number_update/100.f;
 
     const int is_null = -1;
@@ -110,9 +120,8 @@ namespace gpe
     const int resource_type_quest = 19;
     const int resource_type_achievement = 20;
     const int resource_type_shader = 21;
-    const int resource_type_back_button = 22;
 
-    const int resource_type_max = 23;
+    const int resource_type_max = 22;
 }
 
 #endif //gpe_constants_h

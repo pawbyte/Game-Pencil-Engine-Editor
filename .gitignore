@@ -1,6 +1,5 @@
 # build files
 build/
-.vs/
+
 **/*.o
 Game_Pencil_Engine_IDE
-/CppProperties.json

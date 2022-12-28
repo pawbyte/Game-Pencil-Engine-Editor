@@ -3,10 +3,10 @@ render_package.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -34,55 +34,45 @@ SOFTWARE.
 #include "gpe_render_package.h"
 namespace gpe
 {
-    render_package * gpepm = nullptr;
+    render_package * gpepm = NULL;
 
     render_package::render_package( int pId, std::string pName )
     {
         packageId = pId;
         packageName = pName;
-        packageTexture = nullptr;
-        packageRenderer = nullptr;
-        packageWindow = nullptr;
+        packageTexture = NULL;
+        packageRenderer = NULL;
+        packageWindow = NULL;
     }
 
     render_package::~render_package()
     {
-        if( packageTexture !=nullptr)
+        if( packageTexture !=NULL)
         {
             delete packageTexture;
-            packageTexture = nullptr;
+            packageTexture = NULL;
         }
 
-        if( packageRenderer !=nullptr)
+        if( packageRenderer !=NULL)
         {
             delete packageRenderer;
-            packageRenderer = nullptr;
+            packageRenderer = NULL;
         }
 
-        if( packageWindow !=nullptr)
+        if( packageWindow !=NULL)
         {
             delete packageWindow;
-            packageWindow = nullptr;
+            packageWindow = NULL;
         }
     }
-
-    animation2d * render_package::create_animation2d( const std::string& anim_name, const std::string& anim_filename , bool transparent_image)
-    {
-        if( packageTexture!=nullptr)
-        {
-            return packageAnimation2d->create_new( anim_name, anim_filename, transparent_image );
-        }
-        return nullptr;
-    }
-
 
     texture_base * render_package::create_texture()
     {
-        if( packageTexture!=nullptr)
+        if( packageTexture!=NULL)
         {
             return packageTexture->create_new();
         }
-        return nullptr;
+        return NULL;
     }
 
     int render_package::get_package_id()

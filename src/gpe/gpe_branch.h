@@ -3,10 +3,10 @@ gpe_branch.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,8 +36,6 @@ SOFTWARE.
 
 #include "gpe_common_includes.h"
 #include "gpe_globals.h"
-
-#include <memory>
 
 namespace gpe
 {
@@ -73,29 +71,17 @@ namespace gpe
         END = 23
     };
 
-    class branch_factory;
-
     class branch
     {
         private:
             int frames_til_deletion;
             bool branch_being_removed;
-            void default_branch_constructor(); //used by both constructors to set every variable
         protected:
             branch * branch_parent;
             branch * branch_tree;
-
-            int branch_id; //All branches have this on creation
-            bool branch_was_inited;
-            bool branch_is_permanent;
-
-            int scene_id; //
-            int scene_orign_id;
-            int scene_unique_id;
-
             std::vector< branch * > sub_elements;
             std::string name, branch_tag;
-            float xpos, ypos, zpos;
+            float xpos, ypos;
             float xscale, yscale;
             float angle;
             float xpivot, ypivot;
@@ -104,35 +90,22 @@ namespace gpe
             int current_layer;
             bool branch_visible;
 
-            bool uses_render_start;
-            bool uses_render_end;
-            bool uses_render_hud;
-            bool uses_render_hud_start;
-            bool uses_render_hud_end;
         public:
             branch();
-            branch( int branch_layer_id, float x_pos_in,  float y_pos_in, float z_pos_in );
             virtual ~branch();
             virtual void add_branch( branch * new_branch );
-            bool being_deleted();
-
-            virtual branch * branch_create( );
-            virtual branch * branch_create_and_init( int branch_layer_id, float x_pos_in,  float y_pos_in, float z_pos_in = 0);
-            virtual void branch_destroy();
-            bool branch_inited();
-            virtual void branch_init( int branch_layer_id, float x_pos_in,  float y_pos_in, float z_pos_in = 0);
-
+            void being_deleted();
+            int get_frames_before_deleted();
             branch * find_branch_by_name( std::string branch_name , bool nest_down = false );
             branch * find_typed_branch_by_name( int branch_type, std::string branch_name , bool nest_down = false  );
             float get_angle();
-            int get_frames_before_deleted();
             std::string get_name();
             branch * get_parent();
             branch * get_parent_tree();
             std::string get_tag();
             float getx();
             float gety();
-            uint8_t get_layer_id();
+            int get_layer_id();
             float get_width();
             float get_height();
             int get_size();
@@ -152,12 +125,6 @@ namespace gpe
             bool remove_typed_branch_by_name( int branch_type_id, std::string branch_name , bool nest_down = true );
 
             virtual void render();
-            virtual void render_start(); //Useful for rendering on start(i.e, floors and shadows)
-            virtual void render_end(); //Useful for post-rendering(i.e  effects and texts)
-            virtual void render_hud(); //Useful for rendering on the HUD level
-            virtual void render_hud_start(); //Useful for rendering at start the HUD level
-            virtual void render_hud_end(); //Useful for rendering on last layer of HUD level
-
             virtual void reset_branch();
             virtual bool self_destruct();
 
@@ -186,8 +153,6 @@ namespace gpe
             branch_type_id( int branch_catetory_start );
             ~branch_type_id();
     };
-
-    extern branch_factory * branch_factory_master;
 }
 
 #endif //gpe_branch_h

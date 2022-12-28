@@ -3,10 +3,10 @@ gpe_window_controller_base.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,17 +35,16 @@ SOFTWARE.
 
 namespace gpe
 {
-    window_controller_base * window_controller_main = nullptr;
+    window_controller_base * window_controller_main = NULL;
 
     window_controller_base::window_controller_base()
     {
-        window_base_renderer = nullptr;
+        window_base_renderer = NULL;
         window_id = -1;
         window_closed = false;
         window_has_mouse= false;
         window_has_focus = false;
         previously_scaled = false;
-        window_resizing_enabled = true;
         window_width = 0;
         window_height = 0;
         resized = false;
@@ -78,17 +77,6 @@ namespace gpe
     }
 
     bool window_controller_base::enable_scaling()
-    {
-        return false;
-    }
-
-
-    bool window_controller_base::disable_window_resize()
-    {
-        return false;
-    }
-
-    bool window_controller_base::enable_window_resize()
     {
         return false;
     }
@@ -139,11 +127,6 @@ namespace gpe
         return window_height;
     }
 
-    bool window_controller_base::get_vysnc()
-    {
-        return vsync_is_on;
-    }
-
     bool window_controller_base::has_focus()
     {
         return window_has_focus;
@@ -179,26 +162,11 @@ namespace gpe
         return resized;
     }
 
-    bool window_controller_base::is_window_resizable()
-    {
-        return window_resizing_enabled;
-    }
-
     bool window_controller_base::is_scaling()
     {
         return window_scaling;
     }
 
-
-    bool window_controller_base::minimize_window()
-    {
-        return false;
-    }
-
-    bool window_controller_base::maximize_window()
-    {
-        return false;
-    }
 
     void window_controller_base::process_event( input_event_container * event_holder )
     {
@@ -209,7 +177,7 @@ namespace gpe
     {
         resized = false;
         window_closed = false;
-        if( window_base_renderer!=nullptr )
+        if( window_base_renderer!=NULL )
         {
             window_base_renderer->resize_renderer( window_width, window_height );
             window_base_renderer->reset_input();
@@ -218,7 +186,7 @@ namespace gpe
 
     void window_controller_base::resize_window()
     {
-        if( window_base_renderer!=nullptr )
+        if( window_base_renderer!=NULL )
         {
             window_base_renderer->resize_renderer( window_width, window_height );
         }
@@ -232,7 +200,7 @@ namespace gpe
 
     bool window_controller_base::scale_window( int s_width, int s_height , bool scale_int )
     {
-        if( window_base_renderer !=nullptr )
+        if( window_base_renderer !=NULL )
         {
             return window_base_renderer->scale_renderer(s_width, s_height, scale_int );
         }
@@ -242,11 +210,6 @@ namespace gpe
     bool window_controller_base::scale_window_factor( float s_width, float s_height, bool scale_int )
     {
         return false;
-    }
-
-    void window_controller_base::set_vysnc( bool vs_on )
-    {
-        vsync_is_on = vs_on;
     }
 
     void window_controller_base::set_window_position( int new_x, int new_y )

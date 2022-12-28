@@ -3,10 +3,10 @@ gpe_timer.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -41,7 +41,7 @@ namespace gpe
     float delta_current = 0;
     int time_keeper_count = 0;
 
-    time_keeper_base * time_keeper = nullptr;
+    time_keeper_base * time_keeper = NULL;
     //The frames per second cap timer
     time_keeper_base::time_keeper_base()
     {
@@ -155,7 +155,7 @@ namespace gpe
 
     int time_keeper_base::equals( time_keeper_base * other )
     {
-        if( other == nullptr )
+        if( other == NULL )
         {
             return -1;
         }
@@ -225,11 +225,6 @@ namespace gpe
     float time_keeper_base::get_time_difference( uint64_t time_p, uint64_t time_c )
     {
         return time_c - time_p;
-    }
-
-    bool time_keeper_base::get_vysnc()
-    {
-        return vsync_is_on;
     }
 
     bool time_keeper_base::is_started()
@@ -304,11 +299,6 @@ namespace gpe
             recorded_fps.clear();
         }
 
-    }
-
-    void time_keeper_base::set_vysnc( bool vs_on )
-    {
-        vsync_is_on = vs_on;
     }
 
     void time_keeper_base::start_timer()

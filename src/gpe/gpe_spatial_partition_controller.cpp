@@ -3,10 +3,10 @@ gpe_spatial_partition_controller.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,7 +35,7 @@ SOFTWARE.
 
 namespace gpe
 {
-    spatial_partition_controller * main_spatial_grid = nullptr;
+    spatial_partition_controller * main_spatial_grid = NULL;
 
     spatial_partition_controller::spatial_partition_controller( std::string c_name )
     {
@@ -49,16 +49,16 @@ namespace gpe
 
     spatial_partition_controller::~spatial_partition_controller()
     {
-        spatial_partition_layer * tempLayer = nullptr;
+        spatial_partition_layer * tempLayer = NULL;
         for( int i = maxLayerCount -1; i >=0 ; i--)
         {
             tempLayer = collisionlayers[i];
-            if( tempLayer!=nullptr)
+            if( tempLayer!=NULL)
             {
                 delete tempLayer;
-                tempLayer = nullptr;
+                tempLayer = NULL;
             }
-            collisionlayers[i] = nullptr;
+            collisionlayers[i] = NULL;
         }
         clear_checked_map();
     }
@@ -77,11 +77,11 @@ namespace gpe
 
     void spatial_partition_controller::activate_all_layers()
     {
-        spatial_partition_layer * tempLayer = nullptr;
+        spatial_partition_layer * tempLayer = NULL;
         for( int i = maxLayerCount -1; i >=0 ; i--)
         {
             tempLayer = collisionlayers[i];
-            if( tempLayer!=nullptr)
+            if( tempLayer!=NULL)
             {
                 tempLayer->activate_layer();
             }
@@ -95,7 +95,7 @@ namespace gpe
 
     void spatial_partition_controller::add_object( game_object * g_obj , int layer_id )
     {
-        if( g_obj == nullptr)
+        if( g_obj == NULL)
         {
             return;
         }
@@ -108,7 +108,7 @@ namespace gpe
             layer_id = maxLayerCount -1;
         }
 
-        if( collisionlayers[layer_id] == nullptr)
+        if( collisionlayers[layer_id] == NULL)
         {
             return;
         }
@@ -118,12 +118,12 @@ namespace gpe
 
     void spatial_partition_controller::clear_spaces()
     {
-        spatial_partition_layer * tempLayer = nullptr;
+        spatial_partition_layer * tempLayer = NULL;
         for( int iLayer = 0; iLayer < maxLayerCount; iLayer++ )
         {
             tempLayer = collisionlayers[iLayer];
 
-            if( tempLayer!=nullptr )
+            if( tempLayer!=NULL )
             {
                 tempLayer->clear_spaces();
             }
@@ -135,8 +135,8 @@ namespace gpe
         clear_checked_map();
         int iLayer, jLayer = 0;
         //loop through every active layer
-        spatial_partition_layer * tempLayerRow = nullptr;
-        spatial_partition_layer * tempLayerColumn = nullptr;
+        spatial_partition_layer * tempLayerRow = NULL;
+        spatial_partition_layer * tempLayerColumn = NULL;
         for( iLayer = 0; iLayer < maxLayerCount; iLayer++ )
         {
             tempLayerRow = collisionlayers[iLayer];
@@ -163,11 +163,11 @@ namespace gpe
 
     void spatial_partition_controller::deactivate_all_layers()
     {
-        spatial_partition_layer * tempLayer = nullptr;
+        spatial_partition_layer * tempLayer = NULL;
         for( int i = maxLayerCount -1; i >=0 ; i--)
         {
             tempLayer = collisionlayers[i];
-            if( tempLayer!=nullptr)
+            if( tempLayer!=NULL)
             {
                 tempLayer->deactivate_layer();
             }
@@ -186,11 +186,11 @@ namespace gpe
 
     bool spatial_partition_controller::init_system(  int camera_scene_width, int camera_scene_height )
     {
-        spatial_partition_layer * tempLayer = nullptr;
+        spatial_partition_layer * tempLayer = NULL;
         for( int i = maxLayerCount -1; i >=0 ; i--)
         {
             tempLayer = collisionlayers[i];
-            if( tempLayer!=nullptr)
+            if( tempLayer!=NULL)
             {
                 tempLayer->init_collision_handler( camera_scene_width, camera_scene_height );
             }
@@ -210,7 +210,7 @@ namespace gpe
 
     void spatial_partition_controller::remove_object( game_object * g_obj )
     {
-        if( g_obj == nullptr)
+        if( g_obj == NULL)
         {
             return;
         }
@@ -224,7 +224,7 @@ namespace gpe
             layer_id = maxLayerCount -1;
         }
 
-        if( collisionlayers[layer_id] == nullptr)
+        if( collisionlayers[layer_id] == NULL)
         {
             return;
         }

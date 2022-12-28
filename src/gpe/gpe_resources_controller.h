@@ -1,15 +1,12 @@
-// *** ADDED BY HEADER FIXUP ***
-#include <istream>
-// *** END ***
 /*
 gpe_resources_controller.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -53,7 +50,7 @@ SOFTWARE.
 #include "gpe_render_package.h"
 #include "gpe_texture_base.h"
 #include "gpe_tilesheet.h"
-#include "internal_libs/stg_ex.h"
+#include "../other_libs/stg_ex.h"
 
 namespace gpe
 {
@@ -67,7 +64,7 @@ namespace gpe
             render_package * rr_package;
 
             std::string last_animation_loaded;
-            std::map<std::string, animation2d*> atlas_animations; //map of every game animation
+            std::map<std::string, animaton2d*> atlas_animations; //map of every game animation
 
             std::string last_music_loaded;
             std::map<std::string, music_base *> atlas_music; //map of every game music object
@@ -86,11 +83,11 @@ namespace gpe
             ~asset_manager();  //deconstructor
             //adds a animation with only one row of subimages
 
-            animation2d* animation_add( std::string resource_name, std::string resource_file_name,int imgnumb,bool transparent=true,int xorig=0,int yorig=0, bool add_mirror=false);
-            animation2d* animation_add_collision(std::string resource_name, std::string resource_file_name,int imgnumb,bool transparent=true,int xorig=0,int yorig=0, int cx=0, int cy=0, int cw=-1, int ch=-1, bool add_mirror=false);
-            //animation2d* animation_add_centered(std::string filename,int imgnumb,bool transparent,int xorig,int yorig, bool add_mirror);
-            animation2d* animation_addsheet( std::string resource_name, std::string resource_file_name, bool transparent, int width, int height);
-            animation2d* animation_addsheet_ext( std::string resource_name, std::string resource_file_name, bool transparent, unsigned short imgnumb, unsigned short imgPerRow, unsigned short width, unsigned short height, unsigned short cell_offx, unsigned short cell_offy, unsigned short pixel_offx, unsigned short pixel_offy, unsigned short hsep_px, unsigned short vsep_px);
+            animaton2d* animation_add( std::string resource_name, std::string resource_file_name,int imgnumb,bool transparent=true,int xorig=0,int yorig=0, bool add_mirror=false);
+            animaton2d* animation_add_collision(std::string resource_name, std::string resource_file_name,int imgnumb,bool transparent=true,int xorig=0,int yorig=0, int cx=0, int cy=0, int cw=-1, int ch=-1, bool add_mirror=false);
+            //animaton2d* animation_add_centered(std::string filename,int imgnumb,bool transparent,int xorig,int yorig, bool add_mirror);
+            animaton2d* animation_addsheet( std::string resource_name, std::string resource_file_name, bool transparent, int width, int height);
+            animaton2d* animation_addsheet_ext( std::string resource_name, std::string resource_file_name, bool transparent, unsigned short imgnumb, unsigned short imgPerRow, unsigned short width, unsigned short height, unsigned short cell_offx, unsigned short cell_offy, unsigned short pixel_offx, unsigned short pixel_offy, unsigned short hsep_px, unsigned short vsep_px);
 
             music_base * music_add(int s_id, std::string s_name, std::string s_file,int group_id_number =-1 );
             sound_base * sound_add(int s_id, std::string s_name, std::string s_file,int group_id_number =-1 );
@@ -99,7 +96,7 @@ namespace gpe
             void clean_up();
 
             //Getters
-            animation2d * get_animation( std::string resource_name );
+            animaton2d * get_animation( std::string resource_name );
 
             std::string get_last_animation_name();
             std::string get_last_music_name();
