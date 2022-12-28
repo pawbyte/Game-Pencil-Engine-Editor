@@ -3,10 +3,10 @@ gpe_branch.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,20 +35,10 @@ SOFTWARE.
 
 namespace gpe
 {
-    branch_factory * branch_factory_master = nullptr;
-
     branch::branch()
     {
-        default_branch_constructor();
-    }
+        branch_visible = true;
 
-    branch::branch( int branch_layer_id, float x_pos_in,  float y_pos_in, float z_pos_in )
-    {
-        default_branch_constructor();
-        current_layer = branch_layer_id;
-        xpos = x_pos_in;
-        ypos = y_pos_in;
-        zpos = z_pos_in;
     }
 
     branch::~branch()
@@ -56,85 +46,22 @@ namespace gpe
 
     }
 
-
     void branch::add_branch( branch * new_branch )
     {
-        if( new_branch == nullptr )
+        if( new_branch == NULL )
         {
             return;
         }
     }
 
-    bool branch::being_deleted()
-    {
-        return branch_being_removed;
-    }
-
-    branch * branch::branch_create( )
-    {
-        return nullptr;
-    }
-
-    branch * branch::branch_create_and_init( int branch_layer_id, float x_pos_in,  float y_pos_in, float z_pos_in )
-    {
-        return nullptr;
-    }
-
-    void branch::branch_destroy()
-    {
-
-    }
-
-    void branch::branch_init( int branch_layer_id, float x_pos_in,  float y_pos_in, float z_pos_in )
-    {
-
-    }
-
-    bool branch::branch_inited()
-    {
-        return branch_was_inited;
-    }
-
-    void branch::default_branch_constructor()
-    {
-        branch_visible = true;
-        frames_til_deletion = -1;
-        uses_render_start = uses_render_hud = uses_render_end = false;
-        branch_parent = nullptr;
-        branch_tree = nullptr;
-        name = "";
-        branch_tag = "";
-        xpos = 0;
-        ypos = 0;
-        xscale = 1;
-        yscale = 1;
-        angle = 0;
-        xpivot = 0;
-        ypivot = 0;
-        width = 32;
-        height = 32;
-        current_layer = 0;
-        branch_visible = true;
-        branch_parent = nullptr;
-
-        branch_was_inited = false;
-        branch_being_removed = false;
-        branch_is_permanent = false;
-        branch_tree = nullptr;
-
-        scene_id = -1;
-        scene_orign_id = -1;
-        scene_unique_id = -1;
-    }
-
     branch * branch::find_branch_by_name( std::string branch_name , bool nest_down )
     {
-        return nullptr;
+        return NULL;
     }
 
     branch * branch::find_typed_branch_by_name( int branch_type, std::string branch_name , bool nest_down )
     {
-        return nullptr;
+        return NULL;
     }
 
     float branch::get_angle()
@@ -162,7 +89,7 @@ namespace gpe
         return ypos;
     }
 
-    uint8_t branch::get_layer_id()
+    int branch::get_layer_id()
     {
         return current_layer;
     }
@@ -185,7 +112,7 @@ namespace gpe
 
     std::string branch::get_type_string()
     {
-        return branch_tag;
+
     }
 
     float branch::get_xpivot()
@@ -215,59 +142,35 @@ namespace gpe
 
     bool branch::remove_branch_by_name( std::string branch_name , bool nest_down )
     {
-        return false; //WIPNOTFUNCTIONALYET
+
     }
 
     bool branch::remove_typed_branch_by_name( int branch_type_id, std::string branch_name , bool nest_down )
     {
-        return false; //WIPNOTFUNCTIONALYET
+
     }
 
     void branch::render()
     {
-        branch * current_branch = nullptr;
+        branch * current_branch = NULL;
         for( int branch_itr = 0; branch_itr < (int)sub_elements.size(); branch_itr++ )
         {
             current_branch = sub_elements[branch_itr];
-            if( current_branch != nullptr )
+            if( current_branch != NULL )
             {
                 current_branch->render();
             }
         }
     }
 
-    void branch::render_end()
-    {
-
-    }
-
-    void branch::render_start()
-    {
-
-    }
-
-    void branch::render_hud()
-    {
-
-    }
-
-    void branch::render_hud_end()
-    {
-
-    }
-
-    void branch::render_hud_start()
-    {
-
-    }
 
     void branch::reset_branch()
     {
-        branch * current_branch = nullptr;
+        branch * current_branch = NULL;
         for( int branch_itr = 0; branch_itr < (int)sub_elements.size(); branch_itr++ )
         {
             current_branch = sub_elements[ branch_itr ];
-            if( current_branch != nullptr )
+            if( current_branch != NULL )
             {
                 current_branch->reset_branch();
             }
@@ -354,11 +257,11 @@ namespace gpe
 
     void branch::update()
     {
-        branch * current_branch = nullptr;
+        branch * current_branch = NULL;
         for( int branch_itr = 0; branch_itr < (int)sub_elements.size(); branch_itr++ )
         {
             current_branch = sub_elements[ branch_itr ];
-            if( current_branch != nullptr)
+            if( current_branch != NULL)
             {
                 current_branch->update();
             }

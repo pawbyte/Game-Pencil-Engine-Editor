@@ -3,10 +3,10 @@ gpe_basic_object.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -48,7 +48,7 @@ namespace gpe
     std::map<std::string, bool > spatial_grid_data::collisionsCheckedInFrame;
     bool spatial_grid_data::soryByXAxis = true;
 
-    game_object::game_object( int object_layer_id, int x_pos_in,  int y_pos_in, int z_pos_in  )
+    game_object::game_object(int x_pos_in,  int y_pos_in,  int object_layer_id)
     {
         pathId = -1;
         foundPathObject = -1;
@@ -80,7 +80,7 @@ namespace gpe
         gpeLogicAppliedInFrame = false;
         gpePrelogicAppliedInFrame = false;
         gpeAddedToRenderList = false;
-        branch_is_permanent = false;
+        gpeAddedToContinuousList = false;
         gpeSceneStartCodeUsed = false;
         isMovingObject = false;
 
@@ -130,7 +130,7 @@ namespace gpe
 
     void game_object::add_collision_object( game_object * other )
     {
-        if( other == nullptr )
+        if( other == NULL )
         {
             return;
         }
@@ -143,7 +143,7 @@ namespace gpe
 
     bool game_object::check_collison_with_object(  game_object * otherObj )
     {
-        if( otherObj == nullptr )
+        if( otherObj == NULL )
         {
             return false;
         }
@@ -268,35 +268,10 @@ namespace gpe
 
     void game_object::render()
     {
-        if( gcanvas!=nullptr )
+        if( gcanvas!=NULL )
         {
             gcanvas->render_rectangle( xpos, ypos, xpos + 32, ypos + 32, c_red, false );
         }
-    }
-
-    void game_object::render_end()
-    {
-
-    }
-
-    void game_object::render_start()
-    {
-
-    }
-
-    void game_object::render_hud()
-    {
-
-    }
-
-    void game_object::render_hud_end()
-    {
-
-    }
-
-    void game_object::render_hud_start()
-    {
-
     }
 
     void game_object::reset_branch()

@@ -3,10 +3,10 @@ gpe_runtime.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the ԓoftwareԩ, to deal
@@ -33,18 +33,18 @@ SOFTWARE.
 
 #include "gpe_runtime.h"
 #include "gpe_artist_base.h"
-#include "internal_libs/semath.h"
+#include "../other_libs/semath.h"
 
 namespace gpe
 {
-    runtime_master * game_runtime = nullptr;
+    runtime_master * game_runtime = NULL;
 
     runtime_master::runtime_master()
     {
         loading_data = false;
         loop_started = false;
 
-        state_current = nullptr;
+        state_current = NULL;
         state_seeked_name = "";
         state_current_name = "";
 
@@ -57,31 +57,31 @@ namespace gpe
     runtime_master::~runtime_master()
     {
         error_log->report("Removing program states...");
-        program_state *  cState = nullptr;
+        program_state *  cState = NULL;
         for( int i = (int)states_list.size() -1; i >=0; i-- )
         {
             cState = states_list[i];
-            if( cState!=nullptr )
+            if( cState!=NULL )
             {
                 error_log->report("Removing State["+cState->get_state_name()+"]...");
                 delete cState;
-                cState = nullptr;
+                cState = NULL;
             }
         }
         states_list.clear();
-        state_current = nullptr;
+        state_current = NULL;
 
         error_log->report("Removing cameras...");
-        scene_camera * tCamera = nullptr;
+        scene_camera * tCamera = NULL;
         for(int iV= max_cameras_allowed-1; iV >=0; iV-- )
         {
             tCamera = runtime_cameras[iV];
-            if( tCamera!=nullptr)
+            if( tCamera!=NULL)
             {
                 delete tCamera;
-                tCamera = nullptr;
+                tCamera = NULL;
             }
-            runtime_cameras[iV] = nullptr;
+            runtime_cameras[iV] = NULL;
         }
     }
 
@@ -116,7 +116,7 @@ namespace gpe
             return -4;
         }
 
-        if( state_current == nullptr )
+        if( state_current == NULL )
         {
             return -3; //no state set on first go around so we exit
         }
@@ -136,7 +136,7 @@ namespace gpe
                 return true;
             }
 
-            if( state_current != nullptr )
+            if( state_current != NULL )
             {
                 sTicks = time_keeper->get_ticks();
                 state_current->process_input();
@@ -157,18 +157,18 @@ namespace gpe
             {
                 sTicks = time_keeper->get_ticks();
 
-                if( rph!=nullptr )
+                if( rph!=NULL )
                 {
                     rph->clear_render_packages();
                 }
                 //renderer_main->clear_renderer( false );
 
-                if( gcanvas != nullptr )
+                if( gcanvas != NULL )
                 {
                     gcanvas->begin_frame();
                 }
 
-                if( state_current!=nullptr )
+                if( state_current!=NULL )
                 {
                     state_current->render();
                 }
@@ -181,11 +181,11 @@ namespace gpe
             }
             else
             {
-                if(input!=nullptr)
+                if(input!=NULL)
                 {
                     input->reset_temp_input();
                 }
-                if( time_keeper!=nullptr )
+                if( time_keeper!=NULL )
                 {
                     time_keeper->reset_timer();
                 }
@@ -202,7 +202,7 @@ namespace gpe
         input->handle_input(true, false );
         if(  window_controller_main->is_minimized() == false )
         {
-            if( cursor_main_controller !=nullptr )
+            if( cursor_main_controller !=NULL )
             {
                 cursor_main_controller->process_cursors();
             }
@@ -224,12 +224,12 @@ namespace gpe
             return;
         }
 
-        if( rph!=nullptr )
+        if( rph!=NULL )
         {
             rph->update_render_packages();
         }
 
-        if( gcanvas != nullptr )
+        if( gcanvas != NULL )
         {
             gcanvas->end_frame();
         }
@@ -252,9 +252,9 @@ namespace gpe
 
     bool runtime_master::state_add( program_state * newState )
     {
-        if( newState!=nullptr )
+        if( newState!=NULL )
         {
-            if( state_find( newState->get_state_name() ) == nullptr )
+            if( state_find( newState->get_state_name() ) == NULL )
             {
                 states_list.push_back( newState );
                 return true;
@@ -265,16 +265,16 @@ namespace gpe
 
     program_state * runtime_master::state_find( std::string state_name )
     {
-        program_state *  cState = nullptr;
+        program_state *  cState = NULL;
         for( int i = (int)states_list.size() -1; i >=0; i-- )
         {
             cState = states_list[i];
-            if( cState!=nullptr && cState->get_state_name() == state_name )
+            if( cState!=NULL && cState->get_state_name() == state_name )
             {
                 return cState;
             }
         }
-        return nullptr;
+        return NULL;
     }
 
     bool runtime_master::state_handle_changes()
@@ -282,14 +282,14 @@ namespace gpe
         //If the state needs to be changed
         if( (int)state_seeked_name.size() > 0 && state_current_name != state_seeked_name )
         {
-            if( state_current!=nullptr )
+            if( state_current!=NULL )
             {
                 state_current->end_state();
             }
-            state_current = nullptr;
+            state_current = NULL;
 
             program_state * cState  = state_find( state_seeked_name);
-            if( cState!=nullptr )
+            if( cState!=NULL )
             {
                 state_current = cState;
                 state_current->start_state();

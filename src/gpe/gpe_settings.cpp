@@ -3,10 +3,10 @@ gpe_settings.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,7 +35,7 @@ SOFTWARE.
 
 namespace gpe
 {
-    engine_settings * settings = nullptr;
+    engine_settings * settings = NULL;
 
     engine_settings::engine_settings( std::string app_publisher, std::string appTitle )
     {
@@ -53,7 +53,7 @@ namespace gpe
 
         startMaximized = false;
         startFullScreen = false;
-        showWindowBorder = false;
+        showWindowBorder = true;
 
         startScene = "default";
         startScene = "default.txt";
@@ -77,10 +77,10 @@ namespace gpe
 
     engine_settings::~engine_settings()
     {
-        if( settingsLeadPair !=nullptr )
+        if( settingsLeadPair !=NULL )
         {
             delete settingsLeadPair;
-            settingsLeadPair = nullptr;
+            settingsLeadPair = NULL;
         }
     }
 
@@ -88,7 +88,7 @@ namespace gpe
     {
         gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
-        if( fPair != nullptr )
+        if( fPair != NULL )
         {
             return fPair->key_value;
         }
@@ -99,7 +99,7 @@ namespace gpe
     {
         gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
-        if( fPair != nullptr )
+        if( fPair != NULL )
         {
             return fPair->key_value;
         }
@@ -110,7 +110,7 @@ namespace gpe
     {
         gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
-        if( fPair != nullptr )
+        if( fPair != NULL )
         {
             return fPair->key_substring;
         }
@@ -122,7 +122,7 @@ namespace gpe
     {
         gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
-        if( fPair != nullptr )
+        if( fPair != NULL )
         {
             fPair->key_substring = stg_ex::float_to_string( s_val );
             fPair->key_value = s_val;
@@ -138,7 +138,7 @@ namespace gpe
     {
         gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
-        if( fPair != nullptr )
+        if( fPair != NULL )
         {
             fPair->key_substring = stg_ex::int_to_string( s_val );
             fPair->key_value = s_val;
@@ -154,7 +154,7 @@ namespace gpe
     {
         gpe::key_pair * fPair = settingsLeadPair->find_option_named( s_name );
 
-        if( fPair != nullptr )
+        if( fPair != NULL )
         {
             fPair->key_substring = s_val;
             fPair->key_value = stg_ex::string_to_float( s_val, 0 );
@@ -168,12 +168,12 @@ namespace gpe
     //Creates the settings object and error logger
     bool init_settings(int argc, char* args[], std::string app_publisher, std::string app_name, std::string error_log_location  )
     {
-        if( error_log == nullptr )
+        if( error_log == NULL )
         {
             error_log = new error_log_system( error_log_location );
         }
 
-        if( settings != nullptr )
+        if( settings != NULL )
         {
             return false;
         }
@@ -183,10 +183,10 @@ namespace gpe
 
     void quit_settings()
     {
-        if( settings!=nullptr )
+        if( settings!=NULL )
         {
             delete settings;
-            settings = nullptr;
+            settings = NULL;
         }
     }
 }

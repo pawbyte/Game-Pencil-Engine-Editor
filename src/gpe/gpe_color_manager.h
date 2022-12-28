@@ -3,10 +3,10 @@ gpe_color_manager.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -38,7 +38,6 @@ SOFTWARE.
 #include "gpe_common_includes.h"
 #include "gpe_color.h"
 #include "gpe_constants.h"
-#include <math.h>
 #include <string>
 #include <vector>
 
@@ -105,12 +104,9 @@ namespace gpe
         std::string get_color_name(int pos);
 
         void hex_to_rgb(std::string hexCode,int &r, int &g, int &b);
-        bool hsv_to_rgb(float h, float s, float v, float &r, float &g, float &b );
-
         int merge_channel(int a, int b, float amount);
         color merge_color(color clOne, color clTwo, float amount);
         std::string rgb_to_hex(int r, int g, int b);
-        bool rgb_to_hsv(float r, float g, float b, float &h, float &s, float &v );
     };
 
     extern color_master * color_system;

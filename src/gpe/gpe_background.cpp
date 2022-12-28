@@ -3,10 +3,10 @@ gpe_background.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,7 +39,7 @@ namespace gpe
     {
         strech_bg = false;
         bg_id = is_null;
-        texture_background = nullptr;
+        texture_background = NULL;
         bg_xoffset = 0;
         bg_yoffset = 0;
         bg_xspeed = 0;
@@ -73,11 +73,11 @@ namespace gpe
 
     void background::render_bg_speed( int xx, int yy, shape_rect *  cam, shape_rect * render_camera)
     {
-        if(texture_background !=nullptr )
+        if(texture_background !=NULL )
         {
             float camera_scaleX = 1;
             float camera_scaleY = 1;
-            if( cam!=nullptr)
+            if( cam!=NULL)
             {
                 texture_background->render_tex(  xx*camera_scaleX - cam->get_x(),yy*camera_scaleY- cam->get_y() );
             }
@@ -92,7 +92,7 @@ namespace gpe
     void background::render_bg( shape_rect * renderToArea, shape_rect *  cam, shape_rect *  render_camera, int scene_width, int scene_height)
     {
         bool colCam = true;
-        if(texture_background !=nullptr )
+        if(texture_background !=NULL )
         {
             if( loop_bg_hori )
             {
@@ -150,7 +150,7 @@ namespace gpe
 
     void background::scroll_bg()
     {
-        if(texture_background!=nullptr && strech_bg==false)
+        if(texture_background!=NULL && strech_bg==false)
         {
             bg_xoffset +=bg_xspeed;
             bg_yoffset +=bg_yspeed;
@@ -209,7 +209,7 @@ namespace gpe
         else
         {
             bg_id = is_null;
-            texture_background = nullptr;
+            texture_background = NULL;
             //console.log("Unable to set background to "+new_bg_id+".");
         }
         */

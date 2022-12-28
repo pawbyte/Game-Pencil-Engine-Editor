@@ -3,10 +3,10 @@ gpe_tilesheet.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -38,7 +38,7 @@ namespace gpe
     tilesheet::tilesheet()
     {
         tsId = -1;
-        tsImage = nullptr;
+        tsImage = NULL;
         tsWidth = 0;
         tsHeight = 0;
         tsXOff = 0;
@@ -50,25 +50,21 @@ namespace gpe
         name = "";
         file_nameLocation = "";
         isPreloaded = true;
-        tsCkeyR = 255;
-        tsCkeyG = 0;
-        tsCkeyB = 255;
-        tsIsTransparent = false;
     }
 
     tilesheet::~tilesheet()
     {
         tsRects.clear();
-        if( tsImage!=nullptr)
+        if( tsImage!=NULL)
         {
             delete tsImage;
-            tsImage = nullptr;
+            tsImage = NULL;
         }
     }
 
     void tilesheet::organize_tilesheet()
     {
-        if( tsImage!=nullptr)
+        if( tsImage!=NULL)
         {
             tsRects.clear();
             gpe::shape_rect tempRect;

@@ -3,10 +3,10 @@ gpe.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,10 +37,6 @@ SOFTWARE.
 #include "gpe_artist_base.h"
 #include "gpe_animation2d.h"
 #include "gpe_basic_object_list.h"
-#include "gpe_branch_factory.h"
-#include "gpe_color.h"
-#include "gpe_color_manager.h"
-#include "gpe_error_logger.h"
 #include "gpe_file_system.h"
 #include "gpe_font_base.h"
 #include "gpe_ini_file.h"
@@ -55,8 +51,8 @@ SOFTWARE.
 #include "gpe_scene.h"
 #include "gpe_settings.h"
 
-#include "internal_libs/semath.h"
-#include "internal_libs/stg_ex.h"
+#include "../other_libs/semath.h"
+#include "../other_libs/stg_ex.h"
 
 #include <ctime>
 #include <stdlib.h>

@@ -3,10 +3,10 @@ gpe_basic_object_type_mapper.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -67,7 +67,7 @@ namespace gpe
         auto pairExists = objMap.find( object_name );
         if (pairExists == objMap.end() )
         {
-            return nullptr;
+            return NULL;
         }
         return objMap[object_name](x_pos_in, y_pos_in, object_layer_id);
     }

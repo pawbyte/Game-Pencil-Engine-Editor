@@ -36,15 +36,18 @@ SOFTWARE.
                            |___/
 Created By PawByte
 Attribution required at start of program and in credits.
-
+SDL 2.0.9 used for this version...
 */
 
 #include "gpe/gpe.h"
+#include "sdl_libs/gpe_sdl.h"
 #include "game_state_credits_base.h"
 #include "game_state_load.h"
 #include "game_state_main_menu_base.h"
 #include "game_state_master.h"
 #include "game_state_splash.h"
+#include "gpe_editor/gpe_game_master_itenary.h"
+#include "game_state_shape_test.h"
 
 int main( int argc, char* args[] )
 {
@@ -58,6 +61,10 @@ int main( int argc, char* args[] )
         return -2;
     }
 
+    if( gpe::init_sdl_all_systems() == false )
+    {
+        gameFailed = -3;
+    }
 
     if(gameFailed !=0)
     {
@@ -70,7 +77,9 @@ int main( int argc, char* args[] )
         gameFailed = 1;
     }
 
-    gpe::time_keeper->set_fps( gpe::settings->defaultFPS );
+    gpe::time_keeper->set_fps( 60 );
+
+    //gpe::time_keeper->set_fps( gpe::settings->defaultFPS );
 
     //Our preferred order, although some people may do it in their own way
     game_state_credits_base  * game_credits = new game_state_credits_base("game_credits");
@@ -78,12 +87,14 @@ int main( int argc, char* args[] )
     game_loader  * game_load_screen = new game_loader("game_loading");
     game_master * game_main_master = new game_master( "gpe_master");
     splash_screen * game_splash_screen = new splash_screen( "game_splash" );
+    shape_test_state * shape_tester = new shape_test_state("shape_tester");
 
     gpe::game_runtime->state_add( game_load_screen );
     gpe::game_runtime->state_add( game_credits );
     gpe::game_runtime->state_add( game_main_menu );
     gpe::game_runtime->state_add( game_main_master );
     gpe::game_runtime->state_add( game_splash_screen );
+    gpe::game_runtime->state_add( shape_tester );
 
     game_splash_screen->set_state_name_next( game_load_screen->get_state_name() );
     game_load_screen->set_state_name_next( game_main_menu->get_state_name() );
@@ -91,7 +102,14 @@ int main( int argc, char* args[] )
     game_credits->set_state_name_next( game_main_menu->get_state_name() );
     game_main_master->set_state_name_next( game_splash_screen->get_state_name() );
 
-    gpe::game_runtime->state_set( game_splash_screen->get_state_name() );
+    gpe::game_runtime->state_set( shape_tester->get_state_name() );
+
+
+    /*if( init_gpe_master_itenary( argc, args ) == false )
+    {
+        gameFailed = -2000;
+    }
+    */
 
     gpe::time_keeper->set_fps( 60 );
 
@@ -108,8 +126,16 @@ int main( int argc, char* args[] )
     }
 
     //Clean up
+    quit_gpe_master_itenary();
     gpe::error_log->report("Deleting GPE...");
     gpe::quit_engine();
+
+    //We now remove the independent audio engine
+    gpe::quit_sdl_font_system();
+    gpe::quit_sdl_mixer_audio_system();
+    gpe::quit_sdl_render_package();
+    gpe::quit_sdl_window_system();
+    gpe::quit_sdl_main_system();
 
     gpe::error_log->report("Program Exited with Return Status 0...");
     gpe::quit_core_engine(); //Removes the  remaining pieces of the engine

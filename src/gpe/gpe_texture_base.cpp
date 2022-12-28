@@ -3,10 +3,10 @@ texture_base.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2021 PawByte LLC.
+Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,22 +35,20 @@ SOFTWARE.
 
 namespace gpe
 {
-    texture_base::texture_base( bool store_pixels )
+    texture_base::texture_base()
     {
-        tex_id=-1;
-        tex_width = 0;
-        tex_height = 0;
-        current_color_r = 255;
-        current_color_g = 255;
-        current_color_b = 255;
+        texId=-1;
+        texWid = 0;
+        texHeight = 0;
+        currentR = 255;
+        currentG = 255;
+        currentB = 255;
 
         lastAlphaRendered = 255;
-        blend_mode_current = -1;
-        file_location = "";
-        is_transparent = false;
-        texture_type = "base";
-        pixel_values_are_stored = store_pixels;
-        render_texture_effect = false;
+        currentBlendMode = -1;
+        fileLocation = "";
+        isTransparent = false;
+        textureType = "base";
     }
 
     texture_base::~texture_base()
@@ -73,24 +71,24 @@ namespace gpe
 
     }
 
-    bool texture_base::copy_image_source( const std::string& directory_output_name)
+    bool texture_base::copy_image_source(std::string directory_output_name)
     {
         return false;
     }
 
     int texture_base::get_id()
     {
-        return tex_id;
+        return texId;
     }
 
     std::string texture_base::get_filename()
     {
-        return file_location;
+        return fileLocation;
     }
 
     int texture_base::get_height()
     {
-        return tex_height;
+        return texHeight;
     }
 
     std::string texture_base::get_name()
@@ -98,74 +96,19 @@ namespace gpe
         return name;
     }
 
-    uint32_t texture_base::get_pixel_32bit(int x, int y )
-    {
-        return 0; //up to the child class to implement
-    }
-
-    void texture_base::get_pixel_values(int x, int y, uint8_t * r, uint8_t * g, uint8_t * b, uint8_t * a )
-    {
-        //up to the child class to implement
-    }
-
     int texture_base::get_width()
     {
-        return tex_width;
+        return texWid;
     }
 
     std::string texture_base::get_texture_type()
     {
-        return texture_type;
+        return textureType;
     }
 
-    void texture_base::load_new_texture(  const std::string& file_name, int id , bool transparent , bool useLinearScaling, uint8_t colorkeyR, uint8_t colorkeyG, uint8_t colorkeyB )
+    void texture_base::load_new_texture( renderer_base * renderer, std::string file_name, int id , bool transparent , bool useLinearScaling )
     {
 
-    }
-
-    bool texture_base::modify_texture_grayscale( )
-    {
-        return false;
-    }
-
-    bool texture_base::modify_texture_invert( )
-    {
-        return false;
-    }
-
-    bool texture_base::modify_texture_merge_color_rgba( color * color_key, float amount )
-    {
-        return false;
-    }
-
-    bool texture_base::modify_texture_recolor_rgba(  color * color_key, float amount )
-    {
-        return false;
-    }
-
-    bool texture_base::modify_texture_remove_color_rgba( color * color_key )
-    {
-        return false;
-    }
-
-    bool texture_base::modify_texture_selective_color( color * selected_color, float difference_allowed )
-    {
-        return false;
-    }
-
-    bool texture_base::modify_texture_selective_color_duo( color * selected_color1, color * selected_color2, float difference_allowed )
-    {
-        return false;
-    }
-
-    bool texture_base::modify_texture_selective_color_trio( color * selected_color1, color * selected_color2, color * selected_color3, float difference_allowed  )
-    {
-        return false;
-    }
-
-    bool texture_base::modify_texture_flip( int flags )
-    {
-        return false;
     }
 
     void texture_base::prerender_circle( renderer_base * renderer,int rad, color * circleColor,  uint8_t alpha ,int id, bool transparent, bool useLinearScaling, bool isOutline )
@@ -209,26 +152,6 @@ namespace gpe
 
     }
 
-    bool texture_base::render_tex_polygon( int x, int y, int shape_length , int point_count, color * render_color, int alpha, float start_angle )
-    {
-        return false;
-    }
-
-    bool texture_base::render_tex_polygon_clipped( int x, int y, int shape_length , int point_count, color * render_color,shape_rect* clip, int alpha, float start_angle )
-    {
-        return false;
-    }
-
-    void texture_base::render_tex_quad(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha)
-    {
-
-    }
-
-    void texture_base::render_tex_quad(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha , shape_rect * clip )
-    {
-
-    }
-
     void texture_base::render_tex_resized(  int x, int y,float new_width, float new_height, shape_rect* clip, color * render_color, int alpha)
     {
 
@@ -259,20 +182,6 @@ namespace gpe
 
     }
 
-    bool texture_base::reset_effect_texture()
-    {
-        return false;
-    }
-
-    int texture_base::save_as_bmp( const std::string& file_location, bool save_effect )
-    {
-        return 0;
-    }
-
-    int texture_base::save_as_png( const std::string& file_location, bool save_effect )
-    {
-        return 0;
-    }
 
     void texture_base::set_alpha( int alpha)
     {
@@ -283,25 +192,5 @@ namespace gpe
     void texture_base::set_blend_mode( int blend_mode_new)
     {
 
-    }
-
-    void texture_base::set_pixel_32bit( int x, int y, uint32_t pixel )
-    {
-
-    }
-
-    void texture_base::set_pixel_values( int x, int y, uint8_t r, uint8_t g, uint8_t b, uint8_t a )
-    {
-
-    }
-
-    bool texture_base::storing_pixel_values()
-    {
-        return pixel_values_are_stored;
-    }
-
-    bool texture_base::update_pixels()
-    {
-        return false;
     }
 }
