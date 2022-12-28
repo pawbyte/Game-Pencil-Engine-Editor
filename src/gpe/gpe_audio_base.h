@@ -3,10 +3,10 @@ gpe_audio_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,6 +35,9 @@ SOFTWARE.
 
 #ifndef gpe_audio_base_h
 #define gpe_audio_base_h
+
+#include "gpe_module_version_info.h"
+
 
 namespace gpe
 {
@@ -65,15 +68,32 @@ namespace gpe
             bool sound_loaded;
             std::string file_name;
             int last_channel_played;
+
+            //The total length of the sound in milliseconds
+            float sound_length_ms_total;
+
+            //The computer amount of each time
+            float sound_length_ms;
+            int sound_length_seconds;
+            int sound_length_minutes;
+            int sound_length_hours;
+            int sound_length_days;
         public:
             sound_base();
             sound_base( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
             ~sound_base();
             virtual sound_base * create_new( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
+            void computer_lengths();
             std::string get_error();
             std::string get_file_name();
             int get_group_id();
             int get_id();
+            int get_length();
+            int get_length_ms();
+            int get_length_seconds();
+            int get_length_minutes();
+            int get_length_hours();
+            int get_length_days();
             std::string get_name();
             std::string get_type();
             virtual float get_volume();
@@ -106,8 +126,27 @@ namespace gpe
             virtual void unload();
     };
 
+    class audio_controller_base
+    {
+        protected:
+            bool sound_is_format_supported[ sound_format_max ];
+            std::string sound_type_name[ sound_format_max ];
+
+            music_base * module_music;
+            sound_base * module_sound;
+
+        public:
+            module_information *  version_info;
+            audio_controller_base();
+            ~audio_controller_base();
+            bool audio_type_supported( int audio_type_id );
+            std::string get_audio_type_name( int audio_type_id );
+    };
+
     extern music_base * sound_music_object;
     extern sound_base * standard_sound_object;
+
+    extern audio_controller_base * audio_main_controller;
 };
 
 #endif //gpe_audio_base_h

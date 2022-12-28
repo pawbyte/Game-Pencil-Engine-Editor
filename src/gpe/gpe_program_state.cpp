@@ -3,10 +3,10 @@ gpe_program_state.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -42,8 +42,8 @@ namespace gpe
         error_occurred = false;
         state_name = "gpe_default_state_name";
         bg_color = new color("bg_color",0,0,0,255 );
-        bg_texture = NULL;
-        if( rph!=NULL )
+        bg_texture = nullptr;
+        if( rph!=nullptr )
         {
             bg_texture = rph->get_new_texture();
         }
@@ -71,20 +71,20 @@ namespace gpe
 
     void program_state::render()
     {
-        if( gcanvas!= NULL )
+        if( gcanvas!= nullptr )
         {
             gcanvas->render_rectangle( 0, 0, gpe::screen_width, gpe::screen_height, bg_color, false, 255 );
         }
 
-        if( bg_texture!= NULL )
+        if( bg_texture!= nullptr )
         {
-            bg_texture->render_tex_resized( 0, 0, gpe::screen_width, gpe::screen_height, NULL );
+            bg_texture->render_tex_resized( 0, 0, gpe::screen_width, gpe::screen_height, nullptr );
         }
     }
 
     void program_state::set_background_color( uint8_t r , uint8_t g, uint8_t b, uint8_t a )
     {
-        if( bg_color != NULL )
+        if( bg_color != nullptr )
         {
             bg_color->change_rgba(r, g, b, a );
             return;
@@ -95,27 +95,37 @@ namespace gpe
 
     void program_state::set_background_image( std::string bg_file )
     {
-        if( bg_texture = NULL )
+        if( bg_texture = nullptr )
         {
-            bg_texture->load_new_texture( renderer_main, bg_file );
+            bg_texture->load_new_texture(  bg_file );
             return;
         }
 
-        if( rph!=NULL )
+        if( rph!=nullptr )
         {
             bg_texture = rph->get_new_texture();
-            bg_texture->load_new_texture( renderer_main, bg_file );
+            bg_texture->load_new_texture(bg_file );
         }
     }
 
     bool program_state::set_state_name_next( std::string s_name )
     {
-        state_next_name = s_name;
+        if( s_name != state_next_name )
+        {
+            state_next_name = s_name;
+            return true;
+        }
+        return false;
     }
 
     bool program_state::set_state_name_previous( std::string s_name )
     {
-        state_previous_name = s_name;
-        return true;
+        if( s_name != state_previous_name )
+        {
+            state_previous_name = s_name;
+            return true;
+        }
+        return false;
     }
+
 }

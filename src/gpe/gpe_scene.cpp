@@ -3,10 +3,10 @@ gpe_scene.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -64,10 +64,10 @@ namespace gpe
 
     game_scene::~game_scene()
     {
-        if( bg_color!=NULL )
+        if( bg_color!=nullptr )
         {
             delete bg_color;
-            bg_color = NULL;
+            bg_color = nullptr;
         }
 
         sceneObjects.clear();
@@ -75,7 +75,7 @@ namespace gpe
         sub_elements.clear();
         scenesStartLayers.clear();
 
-        if( main_spatial_grid != NULL )
+        if( main_spatial_grid != nullptr )
         {
             main_spatial_grid->deactivate_all_layers();
         }
@@ -83,7 +83,7 @@ namespace gpe
 
     void game_scene::add_branch( branch * new_branch )
     {
-        if( new_branch == NULL )
+        if( new_branch == nullptr )
         {
             return;
         }
@@ -97,7 +97,7 @@ namespace gpe
         scene_layer * found_layer = find_layer( branch_layer_id );
         if( new_branch->get_type() == branch_type::LAYER )
         {
-            if( found_layer == NULL )
+            if( found_layer == nullptr )
             {
                 sub_elements.push_back( new_branch );
             }
@@ -112,24 +112,24 @@ namespace gpe
     {
         if( newLayerId >=0 && newLayerId < 32 )
         {
-            if( main_spatial_grid != NULL )
+            if( main_spatial_grid != nullptr )
             {
                 main_spatial_grid->activate_layer( newLayerId );
             }
-            if( find_layer( newLayerId )== NULL  )
+            if( find_layer( newLayerId )== nullptr  )
             {
                 scene_layer * new_layer = new scene_layer( newLayerId, newLayerAlpha);
                 sub_elements.push_back( new_layer );
                 return new_layer;
             }
         }
-        return NULL;
+        return nullptr;
     }
 
     scene_layer * game_scene::add_start_layer(   int newLayerId, float newLayerAlpha )
     {
         scene_layer * newLayer = add_layer(   newLayerId, newLayerAlpha );
-        if( newLayer!= NULL )
+        if( newLayer!= nullptr )
         {
             scene_layer_meta_data * newStartLayer = new scene_layer_meta_data();
             newStartLayer->lId = newLayerId;
@@ -151,7 +151,7 @@ namespace gpe
 
     bool game_scene::add_to_persistent_objects( game_object * nObject)
     {
-        if( nObject!= NULL)
+        if( nObject!= nullptr)
         {
             for( int i = (int)persistentObjects.size() - 1; i >=0; i--)
             {
@@ -183,7 +183,7 @@ namespace gpe
         {
             return foundVector[ 0 ];
         }
-        return NULL;
+        return nullptr;
     }
 
     int game_scene::find_tagged_branch_count( const std::string branch_name )
@@ -199,7 +199,7 @@ namespace gpe
         {
             return foundVector[ foundVector.size() -1 ];
         }
-        return NULL;
+        return nullptr;
     }
 
     std::vector< branch * > game_scene::find_all_tagged_branches( const std::string branch_name )
@@ -213,12 +213,13 @@ namespace gpe
             foundVector = branchIterator->second;
             return foundVector;
         }
+        return foundVector;
     }
 
     void game_scene::init_collision_handler()
     {
-        branch * current_branch = NULL;
-        scene_layer * current_layer = NULL;
+        branch * current_branch = nullptr;
+        scene_layer * current_layer = nullptr;
         for( int branch_itr = 0; branch_itr < (int)sub_elements.size(); branch_itr++ )
         {
             current_branch = sub_elements[branch_itr];
@@ -234,14 +235,14 @@ namespace gpe
 
     scene_layer * game_scene::find_layer ( int layerIdIn )
     {
-        scene_layer * foundLayer = NULL;
-        branch * current_branch = NULL;
+        scene_layer * foundLayer = nullptr;
+        branch * current_branch = nullptr;
         if( layerIdIn < 32 && layerIdIn>=0 )
         {
             for( int branch_itr = 0; branch_itr < (int)sub_elements.size(); branch_itr++ )
             {
                 current_branch = sub_elements[branch_itr];
-                if( current_branch != NULL && current_branch->get_type() == branch_type::LAYER )
+                if( current_branch != nullptr && current_branch->get_type() == branch_type::LAYER )
                 {
                     foundLayer = (scene_layer *)(current_branch);
                     if( foundLayer!= nullptr )
@@ -254,14 +255,14 @@ namespace gpe
                 }
             }
         }
-        return NULL;
+        return nullptr;
     }
 
 
     scene_layer * game_scene::get_layer ( int layerIdIn)
     {
         scene_layer * foundLayer = find_layer( layerIdIn );
-        if( foundLayer !=NULL )
+        if( foundLayer !=nullptr )
         {
             foundLayer;
         }
@@ -272,7 +273,7 @@ namespace gpe
             return add_layer(  layerIdIn,1);
 
         }
-        return NULL;
+        return nullptr;
     }
 
     int game_scene::get_scene_width()
@@ -523,15 +524,15 @@ namespace gpe
         if( sceneResourcesAreProcessed && sceneIsProcessed)
         {
             int tempTileId;
-            layer_game_tile * cTile = NULL;
+            layer_game_tile * cTile = nullptr;
             int gTemp = 0;
             int hTemp=0;
             int iTemp=0;
             int jTemp=0;
             int kTemp = 0;
             int mainRenderToArea = 0;
-            scene_camera * camInUse = NULL;
-            scene_layer_ptr cLayer = NULL;
+            scene_camera * camInUse = nullptr;
+            scene_layer_ptr cLayer = nullptr;
 
             int rendableCameraCount = 0;
 
