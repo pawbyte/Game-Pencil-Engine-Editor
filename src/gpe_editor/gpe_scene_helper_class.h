@@ -3,10 +3,10 @@ gpe_scene_helper_class.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -68,7 +68,7 @@ private:
     std::vector <gameScenePopupCategories * > popupCategories;
 public:
     int editMode;
-    gpe::animaton2d * eraserAnimation;
+    gpe::animation2d * eraserAnimation;
     pawgui::widget_dropdown_menu * layerListsDropDown;
     pawgui::widget_resource_container * cSceneAnimtList;
     pawgui::widget_resource_container * cSceneObjList;

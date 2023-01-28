@@ -3,10 +3,10 @@ gpe_cpp_builder_settings.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -383,7 +383,7 @@ gpeCPPBuildHolder * gameCPPBuilder_settingsResource::find_build_system( std::str
 
 bool gameCPPBuilder_settingsResource::include_local_files( std::string pBuildDir , int buildType )
 {
-
+    return false; ////WIPNOTFUNCTIONALYET
 }
 
 void gameCPPBuilder_settingsResource::prerender_self( )
@@ -410,8 +410,8 @@ void gameCPPBuilder_settingsResource::load_resource(std::string file_path)
     std::string otherColContainerName = "";
 
     std::string newFileIn ="";
-    std::string soughtDir =  gpe::main_file_url_manager->get_user_settings_folder();
-    if( gpe::main_file_url_manager->file_exists(file_path) )
+    std::string soughtDir =  gpe::get_user_settings_folder();
+    if( sff_ex::file_exists(file_path) )
     {
         newFileIn = file_path;
         soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -651,14 +651,14 @@ void gameCPPBuilder_settingsResource::save_resource(std::string file_path, int b
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( gpe::main_file_url_manager->path_exists(soughtDir) )
+    if( sff_ex::path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
     }
     else
     {
-        soughtDir =  gpe::main_file_url_manager->get_user_settings_folder();
+        soughtDir =  gpe::get_user_settings_folder();
         newFileOut = soughtDir + "cpp_builder_settings.gpf";
     }
     std::ofstream newSaveDataFile( newFileOut.c_str() );
@@ -761,10 +761,10 @@ bool gameCPPBuilder_settingsResource::write_cpp_header_file(std::ofstream * file
     *fileTarget << "GAME PENCIL ENGINE's Editor \n";
     *fileTarget << "Version "+ stg_ex::float_to_string( gpe::version_number_total)+" \n";
     *fileTarget << "https://www.pawbyte.com/gamepencilengine \n";
-    *fileTarget << "Copyright (c) 2014-2021 Nathan Hurde, Chase Lee. \n";
+    *fileTarget << "Copyright (c) 2014-2023 Nathan Hurde, Chase Lee. \n";
     *fileTarget << "\n";
-    *fileTarget << "Copyright (c) 2014-2021 PawByte. \n";
-    *fileTarget << "Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page ) \n";
+    *fileTarget << "Copyright (c) 2014-2023 PawByte. \n";
+    *fileTarget << "Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page ) \n";
     *fileTarget << "\n";
     *fileTarget << "Permission is hereby granted, free of charge, to any person obtaining a copy \n";
     *fileTarget << "of this software and associated documentation files (the “Software”), to deal \n";
@@ -788,9 +788,10 @@ bool gameCPPBuilder_settingsResource::write_cpp_header_file(std::ofstream * file
     *fileTarget << "\n";
     *fileTarget << "\n";
     *fileTarget << "*/ \n";
+    return true;
 }
 
 bool gameCPPBuilder_settingsResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn )
 {
-
+    return true; //WIPNOTFUNCTIONALYET
 }

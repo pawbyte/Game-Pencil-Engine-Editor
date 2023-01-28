@@ -3,10 +3,10 @@ pawgui_panel_list.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -47,30 +47,62 @@ namespace pawgui
         panel_align_equal = 4,     /**< Panel elements modified to resize equally after non-resizable elements */
     };
 
+    enum
+    {
+        row_type_general = 0,
+        row_type_spacing = 1,
+        row_type_hr = 2,
+    };
+
     class widget_content_row: public widget_basic
     {
-    private:
-        int calculatedRowWidth, calculatedRowHeight;
-    public:
-        bool inDebugMode;
-        int rowSizingStyle;
-        int outterWidth, outterHeight;
-        int barXPadding, barYPadding;
-        std::vector < widget_basic * > sub_options;
-        widget_content_row();
-        ~widget_content_row();
-        void add_gui_element(widget_basic *  newElement );
-        void calculate_width();
-        void clear_list();
-        int get_sub_width();
-        void set_coords(int x_new = -1, int y_new = -1);
-        void set_full_width();
-        void set_full_width( int maxRowWidth );
-        void set_horizontal_align(int height_valueue);
-        void set_vertical_align(int vValue);
-        void set_maxed_out_width();
-        void set_maxed_out_height();
+        private:
+            int calculatedRowWidth, calculatedRowHeight;
+        public:
+            int rowClassType;
+            bool lastColumnFloatsRight;
+            bool inDebugMode;
+            int rowSizingStyle;
+            int outterWidth, outterHeight;
+            int barXPadding, barYPadding;
+            std::vector < widget_basic * > sub_options;
+            widget_content_row();
+            ~widget_content_row();
+            void add_gui_element(widget_basic *  newElement );
+            void calculate_width();
+            void clear_list();
+            int get_sub_width();
+            void set_coords(int x_new = -1, int y_new = -1);
+            void set_full_width();
+            void set_full_width( int maxRowWidth );
+            void set_horizontal_align(int height_valueue);
+            void set_vertical_align(int vValue);
+            void set_maxed_out_width();
+            void set_maxed_out_height();
 
+    };
+
+    struct panel_section_item
+    {
+        widget_basic * widget_element;
+        bool requiresNewLine;
+    };
+
+
+    class widget_panel_section: public widget_basic
+    {
+        private:
+            bool autoIndents;
+            bool sectionIsOpen;
+        public:
+            std::vector < panel_section_item > sub_options;
+            widget_panel_section(std::string section_name, bool auto_indent_elements = true);
+            ~widget_panel_section();
+            bool auto_indents();
+            bool add_widget( widget_basic * widget_element, bool requires_nl = true );
+            bool is_section_open();
+            void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+            void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     };
 
     class widget_panel_list: public widget_basic
@@ -103,11 +135,13 @@ namespace pawgui
         int barXPadding, barYPadding;
         int barXMargin, barYMargin;
         int selectedId;
+        bool lastColumnFloatsRight;
         widget_panel_list();
         ~widget_panel_list();
-        void add_gui_element(widget_basic *  newElement, bool isNLElement );
         void add_gui_auto(widget_basic *  newElement );
+        void add_gui_element(widget_basic *  newElement, bool isNLElement );
         void add_gui_element_fullsize(widget_basic * newElement );
+        void add_gui_section(widget_panel_section *  newElement );
         void add_indented_element( int level, widget_basic * newElement );
         void clear_list();
         void scroll_left(int xToMove );

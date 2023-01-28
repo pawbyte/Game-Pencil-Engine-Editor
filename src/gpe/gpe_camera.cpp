@@ -3,10 +3,10 @@ gpe_camera.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,12 +37,12 @@ SOFTWARE.
 namespace gpe
 {
     //The camera
-    shape_rect * camera_default = NULL;
-    shape_rect * camera_current = NULL;
+    shape_rect * camera_default = nullptr;
+    shape_rect * camera_current = nullptr;
 
     shape_rect * camera_find( shape_rect * rect_in)
     {
-        if(rect_in==NULL)
+        if(rect_in==nullptr)
         {
             return camera_default;
         }
@@ -51,7 +51,7 @@ namespace gpe
 
     void camera_reset()
     {
-        if( camera_default != NULL )
+        if( camera_default != nullptr )
         {
             camera_default->x = 0;
             camera_default->y = 0;
@@ -88,28 +88,28 @@ namespace gpe
 
     scene_camera::~scene_camera()
     {
-        if( camera_rect!=NULL )
+        if( camera_rect!=nullptr )
         {
             delete camera_rect;
-            camera_rect = NULL;
+            camera_rect = nullptr;
         }
 
-        if( camera_boundaries!=NULL )
+        if( camera_boundaries!=nullptr )
         {
             delete camera_boundaries;
-            camera_boundaries = NULL;
+            camera_boundaries = nullptr;
         }
 
-        if( render_rect!=NULL )
+        if( render_rect!=nullptr )
         {
             delete render_rect;
-            render_rect = NULL;
+            render_rect = nullptr;
         }
 
-        if( scaled_rect!=NULL )
+        if( scaled_rect!=nullptr )
         {
             delete scaled_rect;
-            scaled_rect = NULL;
+            scaled_rect = nullptr;
         }
     }
 
@@ -138,6 +138,11 @@ namespace gpe
         }
         //console.log( "New Camera Pos:	("+camera_rect.get_x()+" , "+camera_rect.get_y()+")" );
 
+    }
+
+    float scene_camera::scene_camera::get_angle()
+    {
+        return camera_angle;
     }
 
     bool scene_camera::is_visible()
@@ -188,6 +193,17 @@ namespace gpe
             }
         }
     }
+
+    void scene_camera::scene_camera::set_angle( float new_angle )
+    {
+        if( new_angle < 0 )
+        {
+            new_angle *= -1; // only positives.
+        }
+
+        camera_angle = new_angle;
+    }
+
 
     void scene_camera::set_visible( bool visiblility )
     {

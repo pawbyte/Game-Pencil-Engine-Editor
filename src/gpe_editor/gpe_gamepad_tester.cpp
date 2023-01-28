@@ -3,10 +3,10 @@ gpe_gamepad_tester.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -47,8 +47,16 @@ gamePencilgamepadTesterResource::gamePencilgamepadTesterResource()
         playerY[iController] = playerRadius[iController];
         playerTestColor[iController]  = new pawgui::gpe_widget_color_picker("Player Color","Change to your favorite color",228,32,32 );
         playerFontColor[iController]  = new pawgui::gpe_widget_color_picker("Player Font Color","Change to your favorite color",228,228,228 );
+
+        playerDeadZoneSection[iController] = new pawgui::widget_panel_section("Axis DeadZones", true);
+
         playerDeadZoneField[iController]  = new pawgui::widget_input_number("Joysticks DeadZone(From 0.0 to 1.0)",false,0, 1);
         playerDeadZoneField[iController] ->set_number( playerDeadZone[iController] );
+        playerAutoDeadZone[iController] = new pawgui::widget_button_push("","Calculate Deadzones...","Calculate deadzones based on current axis inputs" );
+
+        playerDeadZoneSection[iController]->add_widget(playerDeadZoneField[iController] , true );
+        playerDeadZoneSection[iController]->add_widget(playerAutoDeadZone[iController] , true );
+
         playerSizeRadius[iController]  = new pawgui::widget_input_number("Radius(in pixels)",true,playerRadiusMin, playerRadiusMax);
         playerSizeRadius[iController] ->set_number( playerRadius[iController] );
 
@@ -114,7 +122,7 @@ gamePencilgamepadTesterResource::~gamePencilgamepadTesterResource()
 
 bool gamePencilgamepadTesterResource::include_local_files( std::string pBuildDir , int buildType )
 {
-
+    return true; //WIPNOTFUNCTIONALYET
 }
 
 void gamePencilgamepadTesterResource::prerender_self( )
@@ -149,7 +157,7 @@ void gamePencilgamepadTesterResource::process_self( gpe::shape_rect * view_space
         panel_main_editor->add_gui_element(playerTestColor[controllerInView],true);
         panel_main_editor->add_gui_element(playerFontColor[controllerInView],true);
         panel_main_editor->add_gui_element(playerSizeRadius[controllerInView],true);
-        panel_main_editor->add_gui_element(playerDeadZoneField[controllerInView],true);
+        panel_main_editor->add_gui_section( playerDeadZoneSection[controllerInView] );
         panel_main_editor->process_self();
 
         gpe::input->gamepad_requires_input = requireInputToConnect->is_clicked();
@@ -197,20 +205,31 @@ void gamePencilgamepadTesterResource::process_self( gpe::shape_rect * view_space
             playerDeadZone[iController] = 0.f;
         }
 
-        if( gpe::input->gamepad_get_axis_value( iController, 0) < -playerDeadZone[iController] )
+        if( gpe::input->gamepad_get_axis_value( iController, 0) < -playerDeadZone[iController]
+
+           ||
+
+           gpe::input->gamepad_check_button_down( iController, gp_left )
+           )
         {
-            playerX[iController] -= 2;
+            playerX[iController] -= gpe::time_keeper->get_delta_performance();
         }
-        else if( gpe::input->gamepad_get_axis_value( iController, 0) > playerDeadZone[iController]  )
+        else if( gpe::input->gamepad_get_axis_value( iController, 0) > playerDeadZone[iController] ||
+
+           gpe::input->gamepad_check_button_down( iController, gp_right ) )
         {
-            playerX[iController] += 2;
+            playerX[iController] += gpe::time_keeper->get_delta_performance();
         }
 
-        if( gpe::input->gamepad_get_axis_value( iController, 1) < -playerDeadZone[iController] )
+        if( gpe::input->gamepad_get_axis_value( iController, 1) < -playerDeadZone[iController] ||
+
+           gpe::input->gamepad_check_button_down( iController, gp_up ))
         {
             playerY[iController] -= 2;
         }
-        else if( gpe::input->gamepad_get_axis_value( iController, 1) > playerDeadZone[iController] )
+        else if( gpe::input->gamepad_get_axis_value( iController, 1) > playerDeadZone[iController] ||
+
+           gpe::input->gamepad_check_button_down( iController, gp_down ))
         {
             playerY[iController] += 2;
         }
@@ -305,6 +324,6 @@ void gamePencilgamepadTesterResource::save_resource(std::string file_path, int b
 
 bool gamePencilgamepadTesterResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn)
 {
-
+    return true; //WIPNOTFUNCTIONALYET
 }
 

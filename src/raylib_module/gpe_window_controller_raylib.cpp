@@ -1,5 +1,5 @@
 /*
-gpe_window_controller_raylib.cpp
+gpe_window_controller.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -33,143 +33,135 @@ SOFTWARE.
 
 //The headers
 
-#include "gpe_window_controller_raylib.h"
+#include "gpe_window_controller_sdl.h"
 
 
 namespace gpe
 {
-    window_controller_raylib * window_controller_main_raylib = nullptr;
+    window_controller_sdl * window_controller_main_sdl = NULL;
 
-    bool init_raylib_window_system()
+    bool init_sdl_window_system()
     {
-        error_log->report("Starting raylib_module window system...");
-        if( window_controller_main != nullptr )
+        error_log->report("Starting SDL2 Window system...");
+        if( window_controller_main != NULL )
         {
             delete window_controller_main;
-            window_controller_main = nullptr;
+            window_controller_main = NULL;
         }
-        window_controller_main_raylib = new window_controller_raylib( settings->programTitle,settings->defaultWindowWidth, settings->defaultWindowHeight,  settings->showWindowBorder, settings->startFullScreen, settings->startMaximized, settings->mainWindowIsResizable );
-        window_controller_main = window_controller_main_raylib;
-        error_log->report("Window Controller swapped from base to raylib class...");
+        window_controller_main_sdl = new window_controller_sdl( settings->programTitle,settings->defaultWindowWidth, settings->defaultWindowHeight,  settings->showWindowBorder, settings->startFullScreen, settings->startMaximized, settings->mainWindowIsResizable );
+        window_controller_main = window_controller_main_sdl;
+        error_log->report("Window Controller swapped from base to sdl class...");
         return true;
     }
 
-    void quit_raylib_window_system()
+    void quit_sdl_window_system()
     {
-        error_log->report("Closing raylib window..");
-        if( window_controller_main_raylib != nullptr )
+        if( window_controller_main_sdl != NULL )
         {
-            delete window_controller_main_raylib;
-            window_controller_main_raylib = nullptr;
+            delete window_controller_main_sdl;
+            window_controller_main_sdl = NULL;
         }
-        window_controller_main = nullptr;
-        error_log->report("Raylib window successfully closed");
+        window_controller_main = NULL;
     }
 
-    window_controller_raylib::window_controller_raylib(std::string windowTitle, int wWidth, int wHeight,bool showBorder, bool fullScreen, bool maximized, bool isResizable )
+    window_controller_sdl::window_controller_sdl(std::string windowTitle, int wWidth, int wHeight,bool showBorder, bool fullScreen, bool maximized, bool isResizable )
     {
-        if( window_base_renderer!=nullptr )
-        {
-            delete window_base_renderer;
-        }
-        window_base_renderer = nullptr;
-        window_id = 0;
+        window_base_renderer = NULL;
+        window_id = -1;
         window_closed = false;
         window_has_mouse= false;
         window_has_focus = false;
-        window_scaling = false;
-
-        if( wWidth < 0 )
-        {
-            wWidth = 320;
-        }
-
-        if( wHeight < 0 )
-        {
-            wHeight = 240;
-        }
         window_width = wWidth;
         window_height = wHeight;
         resized = false;
         minimized = false;
-
+        position_x = 0;
+        position_y = 0;
         //Set up the window and render area
-        InitWindow(window_width, window_height, windowTitle.c_str() );
-        int current_window_monitor =  0; //GetCurrentMonitor();
-        position_x = GetMonitorWidth( current_window_monitor )/2;
-        position_y = GetMonitorHeight( current_window_monitor )/2;
 
+        window_flags = SDL_WINDOW_SHOWN;
         if( isResizable )
         {
-           SetWindowState(FLAG_WINDOW_RESIZABLE);
+            window_flags = window_flags | SDL_WINDOW_RESIZABLE;
         }
 
         if( !showBorder)
         {
-            SetWindowState( FLAG_WINDOW_UNDECORATED );
+            window_flags = window_flags | SDL_WINDOW_BORDERLESS;
         }
-
         if(fullScreen)
         {
-            SetWindowState( FLAG_FULLSCREEN_MODE );
+            window_flags = window_flags | SDL_WINDOW_FULLSCREEN;
         }
         else if( maximized )
         {
-            SetWindowState( FLAG_WINDOW_MAXIMIZED );
+            window_flags = window_flags | SDL_WINDOW_MAXIMIZED;
         }
 
-        window_icon = LoadImage("icon.png");
-        SetWindowIcon( window_icon );
-
-        SetWindowMinSize( settings->minWindowWidth, settings->minWindowHeight );
+        local_sdl_window = SDL_CreateWindow(windowTitle.c_str(),SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,wWidth,wHeight,window_flags  );
+        std::string window_iconFName = "icon.png";
+        window_icon = sdl_surface_ex::load_surface_image( window_iconFName.c_str() );
+        SDL_SetWindowIcon( local_sdl_window, window_icon);
+        SDL_SetWindowMinimumSize( local_sdl_window, settings->minWindowWidth, settings->minWindowHeight );
 
         //Set window flag
         windowed = true;
-        window_id = 0;
+        window_id = SDL_GetWindowID( local_sdl_window );
 
-        window_width = GetScreenWidth();
-        window_height = GetScreenHeight();
-        SetWindowPosition( position_x - window_width/2, position_y - window_height/2);
-
-    }
-
-    window_controller_raylib::~window_controller_raylib()
-    {
-        UnloadImage( window_icon ); //Unloads the window icon if one was found
-        if( IsWindowReady() )
+        if( local_sdl_window!=NULL)
         {
-            CloseWindow(); // Not much to do here, but close the window
+            SDL_GetWindowPosition(local_sdl_window,&position_x, &position_y);
+            SDL_GetWindowSize( local_sdl_window, &window_width, &window_height );
+        }
+        else
+        {
+            window_error_occurred = false;
+            return;
         }
     }
 
-    bool window_controller_raylib::disable_scaling()
+    window_controller_sdl::~window_controller_sdl()
     {
-        window_scaling = false;
-        return window_scaling;
+
     }
 
-    bool window_controller_raylib::enable_scaling()
+    bool window_controller_sdl::disable_scaling()
+    {
+        window_scaling = window_base_renderer->disable_scaling();
+        if( !window_scaling )
+        {
+            gpe::screen_width = window_width;
+            gpe::screen_height = window_height;
+        }
+
+        return true;
+    }
+
+    bool window_controller_sdl::enable_scaling()
     {
         return true;
     }
 
-    bool window_controller_raylib::hide_window()
+    SDL_Window * window_controller_sdl::get_sdl_window()
     {
-        minimized  = true;
-        if( IsWindowHidden() )
+        return local_sdl_window;
+    }
+
+    bool window_controller_sdl::hide_window()
+    {
+        if( local_sdl_window == NULL )
         {
             return false;
         }
-        SetWindowState( FLAG_WINDOW_HIDDEN );
+        SDL_HideWindow( local_sdl_window );
         return true;
     }
 
-    void window_controller_raylib::process_event( input_event_container * event_holder )
+    void window_controller_sdl::process_event( input_event_container * event_holder )
     {
         resized = false;
-        minimized = false;
 
-        if( event_holder == nullptr )
+        if( event_holder == NULL )
         {
             error_log->report("Event holder = null!");
             return;
@@ -180,15 +172,14 @@ namespace gpe
             return;
         }
 
-        /*
         switch( event_holder->event_type )
         {
             //Get new dimensions and repaint on window size change
             case input_event_type::window_resized_event:
                 if( minimized)
                 {
-                    //raylib_RestoreWindow(gpeWindow);
-                    raylib_SetWindowSize(local_raylib_window,window_width,window_height);
+                    //SDL_RestoreWindow(gpeWindow);
+                    SDL_SetWindowSize(local_sdl_window,window_width,window_height);
                     minimized = false;
                     gpe::error_log->report("Window unminimized");
                 }
@@ -216,7 +207,7 @@ namespace gpe
 
 
             case input_event_type::window_minimized_event:
-                //raylib_SetWindowFullscreen( gpeWindow, window_flags);
+                //SDL_SetWindowFullscreen( gpeWindow, window_flags);
                 windowed = true;
                 minimized = true;
                 resized = true;
@@ -251,10 +242,10 @@ namespace gpe
                 {
                     minimized = false;
                     resized = false;
-                    raylib_RestoreWindow(local_raylib_window);
-                    raylib_MaximizeWindow(local_raylib_window);
-                    raylib_GetWindowSize(local_raylib_window,&window_width,&window_height);
-                    //raylib_RaiseWindow(local_raylib_window);
+                    SDL_RestoreWindow(local_sdl_window);
+                    SDL_MaximizeWindow(local_sdl_window);
+                    SDL_GetWindowSize(local_sdl_window,&window_width,&window_height);
+                    //SDL_RaiseWindow(local_sdl_window);
                     //resize_window();
                     gpe::error_log->report("Window unminimized from being exposed!");
                 }
@@ -276,7 +267,7 @@ namespace gpe
 
             case input_event_type::window_shown_event:
                 minimized = false;
-                raylib_GetWindowSize(local_raylib_window,&window_width,&window_height);
+                SDL_GetWindowSize(local_sdl_window,&window_width,&window_height);
                 if( minimized)
                 {
                     minimized = false;
@@ -299,28 +290,24 @@ namespace gpe
                 minimized =false;
             break;
         }
-
-        */
     }
 
 
-    void window_controller_raylib::reset_input()
+    void window_controller_sdl::reset_input()
     {
-        window_controller_base::reset_input();
+        //window_base_renderer::reset_input();
         resized = false;
         window_closed = false;
-
-
-        if(  window_base_renderer!=nullptr )
+        if( local_sdl_window!=NULL && window_base_renderer!=NULL)
         {
+            SDL_GetWindowSize( local_sdl_window, &window_width, &window_height );
             window_base_renderer->reset_input();
         }
     }
 
-    void window_controller_raylib::resize_window()
+    void window_controller_sdl::resize_window()
     {
-        resized = true;
-        if( window_base_renderer!=nullptr )
+        if( window_base_renderer!=NULL )
         {
             window_base_renderer->resize_renderer( window_width, window_height );
         }
@@ -332,9 +319,9 @@ namespace gpe
         minimized = false;
     }
 
-    bool window_controller_raylib::scale_window( int s_width, int s_height , bool scale_int )
+    bool window_controller_sdl::scale_window( int s_width, int s_height , bool scale_int )
     {
-        if( window_base_renderer !=nullptr )
+        if( window_base_renderer !=NULL )
         {
             window_scaling = window_base_renderer->scale_renderer(s_width, s_height, scale_int );
 
@@ -354,9 +341,9 @@ namespace gpe
         return false;
     }
 
-    bool window_controller_raylib::scale_window_factor( float s_width, float s_height, bool scale_int )
+    bool window_controller_sdl::scale_window_factor( float s_width, float s_height, bool scale_int )
     {
-        if( window_base_renderer !=nullptr )
+        if( window_base_renderer !=NULL )
         {
             window_scaling = window_base_renderer->scale_renderer_factor(s_width, s_height, scale_int );
             return window_scaling;
@@ -364,126 +351,106 @@ namespace gpe
         return false;
     }
 
-    void window_controller_raylib::set_renderer( renderer_base * new_renderer, bool remove_current )
+    void window_controller_sdl::set_renderer( renderer_base * new_renderer, bool remove_current )
     {
-        if( remove_current && window_base_renderer!=nullptr )
+        if( remove_current && window_base_renderer!=NULL )
         {
             delete window_base_renderer;
-            window_base_renderer = nullptr;
+            window_base_renderer = NULL;
         }
-        if( new_renderer == nullptr )
+        if( new_renderer == NULL )
         {
-            error_log->report(" new_renderer = null in [void window_controller_raylib::set_renderer()] function!");
+            error_log->report(" new_renderer = null in [void window_controller_sdl::set_renderer()] function!");
             return;
         }
         window_base_renderer = new_renderer;
         new_renderer->resize_renderer( window_width, window_height );
     }
 
-    void window_controller_raylib::set_window_position( int new_x, int new_y )
+    void window_controller_sdl::set_window_position( int new_x, int new_y )
     {
-        int current_monitor = 0; //GetCurrentMonitor();
-        if( current_monitor >=0 )
+        if( local_sdl_window != NULL )
         {
             if( new_x < 0 )
             {
-                new_x = GetMonitorWidth( current_monitor ) / 2;
+                new_x = SDL_WINDOWPOS_CENTERED;
             }
 
             if( new_y < 0 )
             {
-                new_y = GetMonitorHeight(current_monitor ) / 2;
+                new_y = SDL_WINDOWPOS_CENTERED;
             }
-            SetWindowPosition(  new_x - GetScreenWidth()/2, new_y  - GetScreenHeight()/2 );
+            SDL_SetWindowPosition( local_sdl_window, new_x, new_y );
         }
     }
 
-    bool window_controller_raylib::set_window_size( int n_width, int n_height )
+    bool window_controller_sdl::set_window_size( int n_width, int n_height )
     {
         if( n_width > 0 && n_height > 0 )
         {
-            SetWindowSize(  n_width, n_height );
+            if( local_sdl_window != NULL )
+            {
+                SDL_SetWindowSize( local_sdl_window, n_width, n_height );
+            }
 
             window_width = n_width;
             window_height = n_height;
-            resize_window();
-            return true;
 
-            if( window_base_renderer !=nullptr )
+            if( window_base_renderer !=NULL )
             {
                 window_base_renderer->resize_renderer(n_width, n_height );
                 window_width = gpe::screen_width = n_width;
                 window_height = gpe::screen_height = n_height;
+                return true;
             }
             return true;
         }
         return false;
     }
 
-    void window_controller_raylib::set_window_title(std::string new_title)
+    void window_controller_sdl::set_window_title(std::string new_title)
     {
-        SetWindowTitle( new_title.c_str() );
+        SDL_SetWindowTitle(local_sdl_window, new_title.c_str() );
     }
 
-    bool window_controller_raylib::show_window()
+    bool window_controller_sdl::show_window()
     {
-        RestoreWindow(  );
-        minimized  = false;
+        if( local_sdl_window == NULL )
+        {
+            return false;
+        }
+        SDL_ShowWindow( local_sdl_window );
         return true;
     }
 
 
-    void window_controller_raylib::start_loop()
+    void window_controller_sdl::start_loop()
     {
         resized = false;
-
-        int past_width = window_width;
-        int past_height = window_height;
-        window_width = GetScreenWidth();
-        window_height = GetScreenHeight();
-
-        if( past_width != window_width || past_height != window_height )
-        {
-            resized = true;
-            resize_window();
-        }
-        else if( IsWindowResized() )
-        {
-            resized = true;
-            resize_window();
-        }
-        else
-        {
-            resized = false;
-        }
-        window_has_mouse = IsCursorOnScreen();
-        window_has_focus = IsWindowFocused();
-        window_closed = WindowShouldClose();
-        minimized = IsWindowMinimized();
-        windowed = !minimized;
     }
 
-    void window_controller_raylib::toggle_fullscreen()
+    void window_controller_sdl::toggle_fullscreen()
     {
         if( windowed )
         {
+            SDL_SetWindowFullscreen( local_sdl_window, SDL_WINDOW_FULLSCREEN_DESKTOP   );
             windowed = false;
 
         }
         else
         {
+            SDL_SetWindowFullscreen( local_sdl_window, window_flags);
             windowed = true;
         }
-        ToggleFullscreen();
-        window_width = GetScreenWidth();
-        window_height = GetScreenHeight();
+        SDL_GetWindowSize(local_sdl_window,&window_width,&window_height);
         gpe::screen_width = window_width;
         gpe::screen_height = window_height;
         resized = true;
         gpe::error_log->report("Window Size: "+ stg_ex::int_to_string(window_width)+","+ stg_ex::int_to_string(window_height) );
+        gpe::error_log->report("Window Flags: "+ stg_ex::int_to_string(window_flags) );
     }
 
-    bool window_controller_raylib::window_changed()
+    bool window_controller_sdl::window_changed()
     {
         return resized;
     }

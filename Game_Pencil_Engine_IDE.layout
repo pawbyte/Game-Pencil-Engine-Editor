@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<FileVersion major="1" minor="0" />
+	<ActiveTarget name="Win32-Release" />
+	<File name="src\game_state_credits_base.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2107" topLine="32" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_render_package_sdl2.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="14" />
+		</Cursor>
+	</File>
+	<File name="src\gpe_editor\audio_resource.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="21700" topLine="560" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_window_controller_sdl2.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1612" topLine="39" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_window_controller_sdl2.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3828" topLine="65" />
+		</Cursor>
+		<Folding>
+			<Collapse line="159" />
+			<Collapse line="207" />
+		</Folding>
+	</File>
+	<File name="src\sdl2_module\gpe_font_sdl2.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="36448" topLine="942" />
+		</Cursor>
+	</File>
+	<File name="src\gpe_editor\gpe_editor_globals.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1790" topLine="15" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_cursor_sdl2.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="6667" topLine="176" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\thirdparty\sdl2_surface_ex.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1299" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\gpe_editor\animation_resource.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="25595" topLine="631" />
+		</Cursor>
+	</File>
+	<File name="src\game_state_splash.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2636" topLine="46" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_render_package_sdl2.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="-3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1765" topLine="26" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_artist_sdl2.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1755" topLine="42" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_texture_sdl2.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5274" topLine="155" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_timer_sdl2.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2721" topLine="51" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_sdl2.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1425" topLine="11" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\thirdparty\sdl2_surface_ex.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1306" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\game_state_triangle_test.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="39" />
+		</Cursor>
+	</File>
+	<File name="src\gpe\gpe_branch.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="15" />
+		</Cursor>
+	</File>
+	<File name="src\gpe\gpe_parser.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1508" topLine="29" />
+		</Cursor>
+	</File>
+	<File name="src\gpe_editor\gpe_extra_tools.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="10217" topLine="189" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_sdl2_basic.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1573" topLine="16" />
+		</Cursor>
+	</File>
+	<File name="src\gpe_editor\animation_resource.h" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1512" topLine="25" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_animiation2d_sdl2.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1179" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_texture_sdl2.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1849" topLine="20" />
+		</Cursor>
+	</File>
+	<File name="src\gpe_editor\font_resource.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="30794" topLine="669" />
+		</Cursor>
+	</File>
+	<File name="src\game_state_splash.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5618" topLine="156" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_animiation2d_sdl2.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="163" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_renderer_sdl2.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1655" topLine="41" />
+		</Cursor>
+	</File>
+	<File name="src\gpe\gpe_file_system.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="90" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_input_sdl2.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1484" topLine="10" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_cursor_sdl2.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1529" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="src\gpe_editor\class_resource.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4665" topLine="174" />
+		</Cursor>
+	</File>
+	<File name="src\game_state_triangle_test.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7641" topLine="203" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_renderer_sdl2.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1658" topLine="536" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_sdl2_converter.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1527" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_sdl2.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3389" topLine="53" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_sdl2_constants.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="src\main.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1772" topLine="76" />
+		</Cursor>
+	</File>
+	<File name="src\game_state_master.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\game_state_credits_base.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2050" topLine="49" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_texture_target_sdl2.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3731" topLine="109" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_timer_sdl2.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="285" />
+		</Cursor>
+	</File>
+	<File name="src\gpe\gpe_file_system.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="45" />
+		</Cursor>
+	</File>
+	<File name="src\gpe_editor\function_resource.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5773" topLine="164" />
+		</Cursor>
+	</File>
+	<File name="src\gpe\gpe_runtime.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="96" />
+		</Cursor>
+	</File>
+	<File name="src\sdl2_module\gpe_artist_sdl2.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8491" topLine="1442" />
+		</Cursor>
+	</File>
+</CodeBlocks_layout_file>

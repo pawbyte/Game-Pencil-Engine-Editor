@@ -3,10 +3,10 @@ gpee_settings.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -34,7 +34,7 @@ SOFTWARE.
 #ifndef gpe_settings_h
 #define gpe_settings_h
 
-#include "../other_libs/stg_ex.h"
+#include "internal_libs/stg_ex.h"
 #include "gpe_parser.h"
 #include "gpe_error_logger.h"
 

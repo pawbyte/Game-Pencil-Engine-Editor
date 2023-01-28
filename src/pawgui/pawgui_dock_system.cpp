@@ -3,10 +3,10 @@ pawgui_dock_system.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -114,6 +114,14 @@ namespace pawgui
         if( panelGuiList!=nullptr && element!=nullptr)
         {
             panelGuiList->add_gui_element_fullsize( element);
+        }
+    }
+
+    void widget_dock_panel::add_gui_section( widget_panel_section *  element )
+    {
+        if( panelGuiList!=nullptr && element!=nullptr)
+        {
+            panelGuiList->add_gui_section( element);
         }
     }
 
@@ -278,7 +286,7 @@ namespace pawgui
 
         view_space = gpe::camera_find( view_space );
         cam = gpe::camera_find( cam );
-        //gpe::renderer_main->reset_viewpoint();
+        gpe::renderer_main->reset_viewpoint();
         gpe::renderer_main->set_viewpoint( view_space);
 
         gpe::gcanvas->render_roundrect_filled_color(widget_box.x, widget_box.y, widget_box.get_x2(), widget_box.get_y2(), pawgui::theme_main->panel_border_color, 255 );
@@ -724,7 +732,7 @@ namespace pawgui
     bool widget_dock::handle_resizing()
     {
 
-        bool panel_below_found = false;
+        bool panel_above_found = false, panel_below_found = false;
         widget_dock_panel * temp_panel = nullptr;
         widget_dock_panel * temp_panel_other = nullptr;
         int x_panel_numb = 0, y_panel_numb = 0, y_panel_numb_other = 0;
@@ -758,6 +766,8 @@ namespace pawgui
                         //Last check to make sure we are not out of bounds, we only resize from column 1 and to the right tho...
                         if( column_being_resized_id > 0 && column_being_resized_id < panel_x_count )
                         {
+                            widget_dock_panel * temp_panel = nullptr;
+                            widget_dock_panel * foundBPanel = nullptr;
                             int currentpanel_x = 0;
                             int lastPanelWidth = 0;
                             int lastLeftPanel = -1;
@@ -1150,6 +1160,10 @@ namespace pawgui
                         {
                             panelIdNumb = stg_ex::split_first_int( valstring, ',' );
                             panelName = stg_ex::split_first_string( valstring, ',' );
+                            if( panelName == "Resource"  || panelName == "Resources" )
+                            {
+                                panelName = "Resource Browser";
+                            }
                             panelOpenTab = stg_ex::string_to_bool( stg_ex::split_first_string(  valstring, ',' ) );
 
                             if( panelIdNumb >=0 && panelIdNumb < panel_max_count )
@@ -1178,7 +1192,6 @@ namespace pawgui
         {
             dock_updated_this_frame = true;
             setup_dock();
-            gpe::error_log->report("Dock resizes this frame...");
             return;
         }
 
@@ -1193,6 +1206,7 @@ namespace pawgui
 
         //Process all of the remaining panels
         widget_dock_panel *  tPanel = nullptr;
+        widget_dock_panel *  bPanel = nullptr;
         int tPanel_buttonHitID = -1;
         int iPanel = 0;
         for( iPanel = 0; iPanel < panel_max_count; iPanel++ )
@@ -1207,7 +1221,6 @@ namespace pawgui
                     {
                         tPanel_buttonHitID = iPanel;
                         tPanel->dock_settings_button->set_clicked( false );
-                        gpe::error_log->report("Resetting input" + stg_ex::int_to_string( iPanel) );
                         gpe::input->reset_all_input();
                     }
                 }
@@ -1449,9 +1462,10 @@ namespace pawgui
                 }
                 newSaveDataFile << "\n";
                 newSaveDataFile.close();
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     bool widget_dock::set_primary_panel( int primaryXId, int primaryYId )
@@ -1502,6 +1516,7 @@ namespace pawgui
 
         int shortest_panel_id = 0, tallest_panel_id = 0;
         float shortest_panel_height = 100, tallest_panel_height = 0;
+        int current_column_row_count = 0;
         for(  i_col = 0; i_col < panel_x_count; i_col++)
         {
             if( column_is_open( i_col) )
@@ -1586,6 +1601,7 @@ namespace pawgui
             if( col_found )
             {
                 first_row_round = -1;
+                current_column_row_count = 0;
                 calculated_percentages = 0;
                 shortest_panel_id = -1;
                 tallest_panel_id = -1;
@@ -1660,10 +1676,12 @@ namespace pawgui
         }
 
         //Horizontally Resizing panels;
+        bool panelBeingHovered = false;
 
         //Let's set the position of the  panels
         int panel_x = 0;
         int panelY = 0;
+        int cPanel = 0;
 
         //Places the panels on the docks
         for( i_col = 0; i_col < panel_x_count ; i_col++)

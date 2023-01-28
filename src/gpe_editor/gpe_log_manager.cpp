@@ -3,10 +3,10 @@ gpe_log_manager.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -494,10 +494,10 @@ void log_manager::process_self( gpe::shape_rect * view_space, gpe::shape_rect *c
                                         }
                                         else if( pawgui::main_search_controller->findScope->get_selected_tag()=="Project Resources" && current_project!=nullptr )
                                         {
-                                            if( current_project->RESC_project_FOLDER!=nullptr)
+                                            if( current_project->RESC_PROJECT_FOLDER!=nullptr)
                                             {
                                                 log_general_comment("Searching Project for ["+pawgui::main_search_controller->findTextstringBox->get_string()+"]...");
-                                                current_project->RESC_project_FOLDER->search_for_string(pawgui::main_search_controller->findTextstringBox->get_string() );
+                                                current_project->RESC_PROJECT_FOLDER->search_for_string(pawgui::main_search_controller->findTextstringBox->get_string() );
                                             }
                                         }
                                         gpe::input->reset_all_input();
@@ -861,15 +861,15 @@ void log_manager::process_anchors()
                 GPE_ProjectFolder * foundProject = editor_gui_main->find_project_from_filename( tAnchor->anchorProjectName);
                 pawgui::widget_resource_container * foundResContainer = nullptr;
                 pawgui::general_resource * foundGameResource = nullptr;
-                if( foundProject!=nullptr && foundProject->RESC_project_FOLDER!=nullptr )
+                if( foundProject!=nullptr && foundProject->RESC_PROJECT_FOLDER!=nullptr )
                 {
                     if( tAnchor->anchorProjectResourceId >=0 )
                     {
-                        foundResContainer = foundProject->RESC_project_FOLDER->find_resource_from_id( tAnchor->anchorProjectResourceId,true,false);
+                        foundResContainer = foundProject->RESC_PROJECT_FOLDER->find_resource_from_id( tAnchor->anchorProjectResourceId,true,false);
                     }
                     else if( tAnchor->anchorProjectResourceId < 0 )
                     {
-                        foundResContainer = foundProject->RESC_project_SETTINGS;
+                        foundResContainer = foundProject->RESC_PROJECT_SETTINGS;
                     }
                 }
 

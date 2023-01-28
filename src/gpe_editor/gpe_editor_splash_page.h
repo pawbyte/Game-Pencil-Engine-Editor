@@ -3,9 +3,9 @@ gpe_editor_splash_page.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,27 +39,36 @@ SOFTWARE.
 
 class gpe_splash_page
 {
-    private:
+    protected:
         float item1Value;
         float item1Max;
         float item2Value;
         float item2Max;
+        bool startup_mode;
         gpe::texture_base * gpe_logo;
+        float post_load_c_ticks, post_load_c_ticks_max;
+        std::vector< std::string> top_supporters_credits;
+        int random_splash_top_four[4];
+        int current_supporter_pos;
+        float load_progress; // last 30% is for the remainder credits
     public:
-        bool in_startup_mode;
         std::string displayMessageTitle;
         std::string displayMessageSubtitle;
         std::string displayMessagestring;
         gpe_splash_page();
         ~gpe_splash_page();
+        bool exit_startup_mode(); //Attempts to exit startup mode based on loading ticks
+        bool in_startup_mode(); //Checks if the loader is still in startup mode
         void increment_bar1();
         void increment_bar2();
         void increment_and_update( std::string subTitle, std::string message, int barNumber = 0, bool renderUpdate = true );
 
-        void set_bar1( float max_value);
-        void set_bar2( float max_value);
         void render_loader();
         void reset();
+
+        void set_bar1( float max_value);
+        void set_bar2( float max_value);
+        void set_load_percent( float load_percent);
         void update_messages(std::string title, std::string subTitle, std::string message, bool renderUpdate = true );
         void update_submessages(  std::string subTitle, std::string message, bool renderUpdate = true  );
 };

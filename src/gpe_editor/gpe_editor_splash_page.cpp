@@ -3,9 +3,9 @@ gpe_editor_splash_page.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -32,7 +32,6 @@ SOFTWARE.
 
 #include "gpe_editor_splash_page.h"
 
-
 gpe_splash_page * main_gpe_splash_page = nullptr;
 
 gpe_splash_page::gpe_splash_page()
@@ -43,12 +42,117 @@ gpe_splash_page::gpe_splash_page()
     displayMessageSubtitle = "";
     displayMessagestring = "";
     gpe_logo = gpe::rsm->texture_add("gpe_logo", gpe::app_directory_name+"resources/gfx/textures/logo_white.png");
-    in_startup_mode = true;
+    startup_mode = true;
+    post_load_c_ticks = 0;
+    post_load_c_ticks_max = 3000; //3 seconds to thank our patrons/spoonsors :-
+
+    random_splash_top_four[0] = 0;
+    random_splash_top_four[1] = 1;
+    random_splash_top_four[2] = 2;
+    random_splash_top_four[3] = 3;
+    current_supporter_pos = 0;
+
+    //Hard-coded for now....
+
+    //Code contributors, educators, etc:
+    top_supporters_credits.push_back("YellowAfterLife");
+    top_supporters_credits.push_back("raysan");
+    top_supporters_credits.push_back("icculus");
+    top_supporters_credits.push_back("javidx9");
+    top_supporters_credits.push_back("Acegikmo");
+
+    //Patreon Sponsors:
+
+    //Active
+    top_supporters_credits.push_back("Anthony Gal");
+    top_supporters_credits.push_back("Dennis Guardado");
+    top_supporters_credits.push_back("Angelo Theodorou");
+    top_supporters_credits.push_back("Marcus Guiterrez");
+    top_supporters_credits.push_back("Ulises Bustamente");
+    top_supporters_credits.push_back("Link X Peach");
+    top_supporters_credits.push_back("Chris Munn");
+    top_supporters_credits.push_back("Joe Davis");
+    top_supporters_credits.push_back("JoeyGhost");
+    top_supporters_credits.push_back("Raidenspawn");
+    top_supporters_credits.push_back("Aerikos");
+    top_supporters_credits.push_back("Kay");
+
+    //Cancelled pledges
+    top_supporters_credits.push_back("Eric Ellis");
+    top_supporters_credits.push_back("Terver Myadze");
+    top_supporters_credits.push_back("Mudra Zgat");
+    top_supporters_credits.push_back("Victor Huynh");
+    top_supporters_credits.push_back("Noah Rothermund");
+    top_supporters_credits.push_back("Keiretsu");
+    top_supporters_credits.push_back("James Thomas from Kerala");
+    top_supporters_credits.push_back("Thomas Ingham");
+    top_supporters_credits.push_back("Jen Anderson");
+    top_supporters_credits.push_back("Kyle Schwartz");
+
+    //Declined pledges
+    top_supporters_credits.push_back("David Ballenger");
+    top_supporters_credits.push_back("JM Lions");
+    top_supporters_credits.push_back("Chad Davis");
+    top_supporters_credits.push_back("Roshin Varghese");
+    top_supporters_credits.push_back("Feral Monk");
+
+
+    for( int i_sponsor = 0; i_sponsor < 4; i_sponsor++ )
+    {
+        random_splash_top_four[i_sponsor] = semath::random_int( (int)top_supporters_credits.size() -1);
+    }
+    current_supporter_pos = random_splash_top_four[0];
 }
 
 gpe_splash_page::~gpe_splash_page()
 {
 
+}
+
+bool gpe_splash_page::exit_startup_mode()
+{
+    post_load_c_ticks+= gpe::time_keeper->get_delta_performance();
+
+    displayMessageTitle = "Shouting out the homies";
+    load_progress = 50.f + ( post_load_c_ticks / post_load_c_ticks_max )*50.f;
+
+    if( post_load_c_ticks < post_load_c_ticks_max / 3 )
+    {
+        current_supporter_pos = random_splash_top_four[1];
+        displayMessageSubtitle = "You rock!";
+        displayMessagestring = "";
+    }
+    else if( post_load_c_ticks > post_load_c_ticks_max * 2 /3)
+    {
+        current_supporter_pos = random_splash_top_four[3];
+        displayMessageSubtitle = "Thank you for being a supporter!";
+        displayMessagestring = "";
+    }
+    else
+    {
+        current_supporter_pos = random_splash_top_four[2];
+        displayMessageSubtitle = "Your rule!";
+        displayMessagestring = "";
+    }
+
+    if( post_load_c_ticks >= post_load_c_ticks_max )
+    {
+        //Exists startup mode and enables window to be resized
+        startup_mode = false;
+        if( gpe::window_controller_main != nullptr )
+        {
+            gpe::window_controller_main->enable_window_resize();
+            gpe::window_controller_main->maximize_window();
+        }
+        return true;
+    }
+
+    return false;
+}
+
+bool gpe_splash_page::in_startup_mode()
+{
+    return startup_mode;
 }
 
 void gpe_splash_page::increment_bar1()
@@ -89,12 +193,9 @@ void gpe_splash_page::render_loader()
         //Update screen
         gpe::game_runtime->end_loop( );
         gpe::game_runtime->start_loop();
-
-        gpe::cursor_main_controller->cursor_change( gpe::cursor_main_controller->cursor_system_name( gpe::cursor_default_type::wait) );
-
         gpe::renderer_main->reset_viewpoint();
 
-        if( in_startup_mode )
+        if( startup_mode )
         {
             gpe::gcanvas->render_rectangle( 0, 0, gpe::screen_width,gpe::screen_height,gpe::c_blgray, false);
 
@@ -123,21 +224,35 @@ void gpe_splash_page::render_loader()
 
             current_y_pos += y_padding;
 
-            gpe::gfs->render_text( gpe::screen_width/2,current_y_pos,"Copyright (c) 2014-2021 PawByte LLC. All rights reserved" ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_bottom );
+            gpe::gfs->render_text( gpe::screen_width/2,current_y_pos,"Copyright (c) 2014-2023 PawByte LLC. All rights reserved" ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_bottom );
             current_y_pos += line_height_with_padding * 2;
 
-            gpe::gfs->render_text( gpe::screen_width/2,current_y_pos,"Game Pencil Engine is possible thanks to our sponsors" ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_bottom );
+            gpe::gfs->render_text( gpe::screen_width/2,current_y_pos,"Game Pencil Engine is possible thanks to our code&wiki contributors, sponsors & friends " ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_bottom );
             current_y_pos += line_height_with_padding * 2;
 
 
-            gpe::gfs->render_text( gpe::screen_width/2,current_y_pos,"Sponsored by" ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_bottom );
             current_y_pos += line_height_with_padding * 3;
 
 
-            gpe::gcanvas->render_rectangle( gpe::screen_width * 2 / 3,gpe::screen_height - 96,gpe::screen_width,gpe::screen_height,pawgui::theme_main->popup_box_color,false);
-            gpe::gfs->render_text( gpe::screen_width - 32 ,gpe::screen_height - 80,displayMessageTitle,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_right,gpe::fa_bottom );
-            gpe::gfs->render_text( gpe::screen_width - 32,gpe::screen_height - 48,displayMessageSubtitle,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_right,gpe::fa_bottom );
-            gpe::gfs->render_text( gpe::screen_width - 32,gpe::screen_height - 16,displayMessagestring,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_right, gpe::fa_bottom );
+            gpe::gcanvas->render_rectangle( 0,gpe::screen_height - 176,gpe::screen_width,gpe::screen_height,pawgui::theme_main->popup_box_color,false);
+
+            gpe::gfs->render_text( 32, gpe::screen_height - 144,"Thank you for your support",pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_left,gpe::fa_bottom );
+            gpe::gfs->render_text( 32, gpe::screen_height - 96,top_supporters_credits[ current_supporter_pos] ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_left,gpe::fa_bottom );
+            gpe::gfs->render_text( 32, gpe::screen_height - 48,"You keep Open Source alive!",pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_left, gpe::fa_bottom );
+
+            if( post_load_c_ticks <= 0 )
+            {
+                gpe::gfs->render_text( gpe::screen_width - 32 ,gpe::screen_height - 144,displayMessageTitle,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_right,gpe::fa_bottom );
+                gpe::gfs->render_text( gpe::screen_width - 32,gpe::screen_height - 96,displayMessageSubtitle,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_right,gpe::fa_bottom );
+                gpe::gfs->render_text( gpe::screen_width - 32,gpe::screen_height - 48,displayMessagestring,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_right, gpe::fa_bottom );
+            }
+            else
+            {
+                gpe::gfs->render_text( gpe::screen_width - 32 ,gpe::screen_height - 144,displayMessageTitle,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_right,gpe::fa_bottom );
+                gpe::gfs->render_text( gpe::screen_width - 32,gpe::screen_height - 96,displayMessageSubtitle,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_right,gpe::fa_bottom );
+                gpe::gfs->render_text( gpe::screen_width - 32,gpe::screen_height - 48,displayMessagestring,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_right, gpe::fa_bottom );
+            }
+
             gpe::gcanvas->render_rectangle( gpe::screen_width * 2 / 3,gpe::screen_height - 96,gpe::screen_width,gpe::screen_height ,pawgui::theme_main->popup_box_border_color,true);
         }
         else
@@ -147,8 +262,17 @@ void gpe_splash_page::render_loader()
             gpe::gfs->render_text( gpe::screen_width/2,gpe::screen_height/2 ,displayMessageSubtitle,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_center );
             gpe::gfs->render_text( gpe::screen_width/2,gpe::screen_height/2 +  32,displayMessagestring,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center, gpe::fa_bottom );
             gpe::gcanvas->render_rectangle( 32,gpe::screen_height - 48 ,gpe::screen_width-32,gpe::screen_height/2 + 48 ,pawgui::theme_main->popup_box_border_color,true);
-
         }
+
+        //The loading bar:
+        if( startup_mode )
+        {
+            gpe::gcanvas->render_rectangle( 0, gpe::screen_height - 32, gpe::screen_width ,gpe::screen_height, gpe::c_dkgray,false);
+            gpe::gcanvas->render_rectangle( 0, gpe::screen_height - 32, gpe::screen_width * (load_progress/100.f),gpe::screen_height, gpe::c_navy,false);
+            gpe::gcanvas->render_rectangle( 0, gpe::screen_height - 32, gpe::screen_width * (load_progress/100.f),gpe::screen_height, gpe::c_ltgray, true);
+            gpe::gfs->render_text( gpe::screen_width/2,gpe::screen_height  - 8,"Starting Editor" ,gpe::c_ltgray, gpe::font_default,gpe::fa_center,gpe::fa_bottom );
+        }
+
         gpe::game_runtime->end_loop();
         gpe::game_runtime->start_loop();
     }
@@ -188,6 +312,20 @@ void gpe_splash_page::set_bar2( float max_value)
     else
     {
         item1Max = item2Value  = 0;
+    }
+}
+
+void gpe_splash_page::set_load_percent( float load_percent)
+{
+    float past_load_value = load_progress;
+    if ( load_percent > 0 && load_percent <= 50 )
+    {
+        load_progress = load_percent;
+    }
+
+    if( past_load_value != load_percent )
+    {
+        render_loader();
     }
 }
 

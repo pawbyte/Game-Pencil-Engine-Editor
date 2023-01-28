@@ -3,10 +3,10 @@ pawgui_syntax_handler.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -884,7 +884,7 @@ namespace pawgui
         JSLang->add_language_constant("GPE_SETTINGS_ENTRY_LEVEL_LOCATION");
         JSLang->add_language_constant("pi");
         JSLang->add_language_constant("PI");
-        JSLang->add_language_constant("isnullptr");
+        JSLang->add_language_constant("isNULL");
         JSLang->add_language_constant("is_null");
         JSLang->add_language_constant("is_null");
         JSLang->add_language_constant("NaN");
@@ -1322,6 +1322,8 @@ namespace pawgui
 
     bool syntax_highlighter::is_compilable_word(std::string str_in)
     {
+        syntax_compiler_term * tTerm = nullptr;
+        int i = 0;
         if( defaultLanguage!=nullptr )
         {
             return defaultLanguage->is_compilable_word(str_in);

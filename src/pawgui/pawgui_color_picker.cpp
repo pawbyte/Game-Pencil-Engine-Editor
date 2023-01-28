@@ -3,10 +3,10 @@ pawgui_color_picker.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -252,9 +252,30 @@ namespace pawgui
                             isClicked = true;
                         }
                     }
-                    else if( gpe::input->check_mouse_released( mb_anybutton ) )
+                    else
                     {
-                        clickedOutside = true;
+                        if( showLabel )
+                        {
+                            if (gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,widget_box.x+view_space->x-cam->x,fieldElementBox.y+view_space->y-cam->y,fieldElementBox.x+view_space->x-cam->x,fieldElementBox.y+widget_box.h+view_space->y-cam->y) )
+                            {
+                                if( (int)inputLabel.size() > 0 )
+                                {
+                                    main_overlay_system->update_tooltip( inputLabel);
+                                }
+                                else if( (int)descriptionText.size()>0 )
+                                {
+                                    main_overlay_system->update_tooltip(descriptionText);
+                                }
+                                else
+                                {
+                                    main_overlay_system->update_tooltip(widget_name);
+                                }
+                            }
+                        }
+                        if( gpe::input->check_mouse_released( mb_anybutton ) )
+                        {
+                            clickedOutside = true;
+                        }
                     }
                 }
                 else if( gpe::input->check_mouse_released( mb_anybutton ) )
@@ -295,7 +316,7 @@ namespace pawgui
                 gpe::gcanvas->render_rectangle( widget_box.x-cam->x,widget_box.y-cam->y,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y, pawgui::theme_main->main_box_highlight_color, false );
                 if( showLabel && (int)inputLabel.size() > 0)
                 {
-                    gpe::gfs->render_text_resized( widget_box.x-cam->x+padding_default,widget_box.y+widget_box.h/2-cam->y,inputLabel,pawgui::theme_main->main_box_font_highlight_color,font_textinput,gpe::fa_left,gpe::fa_middle );
+                    gpe::gfs->render_text_clipped( widget_box.x-cam->x+padding_default,widget_box.y+widget_box.h/2-cam->y,inputLabel,pawgui::theme_main->main_box_font_highlight_color,font_textinput,gpe::fa_left,gpe::fa_middle );
                 }
             }
             else
@@ -304,7 +325,7 @@ namespace pawgui
 
                 if( showLabel && (int)inputLabel.size() > 0)
                 {
-                    gpe::gfs->render_text_resized( widget_box.x-cam->x+padding_default,widget_box.y+widget_box.h/2-cam->y,inputLabel,pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_left,gpe::fa_middle );
+                    gpe::gfs->render_text_clipped( widget_box.x-cam->x+padding_default,widget_box.y+widget_box.h/2-cam->y,inputLabel,pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_left,gpe::fa_middle );
                 }
             }
             gpe::gcanvas->render_rectangle( fieldElementBox.x-cam->x,fieldElementBox.y-cam->y,fieldElementBox.x+fieldElementBox.w-cam->x,fieldElementBox.y+fieldElementBox.h-cam->y,storedColor,false);
@@ -332,7 +353,17 @@ namespace pawgui
     {
         int r = stg_ex::split_first_int(color_newStr,',');
         int g = stg_ex::split_first_int(color_newStr,',');
-        int b = stg_ex::string_to_int(color_newStr,0);
+
+        //For the last variable we automate if a commma was used to end the string
+        int b = 0;
+        if( stg_ex::string_contains( color_newStr,",") )
+        {
+            b = stg_ex::split_first_int(color_newStr,',');
+        }
+        else
+        {
+            b = stg_ex::string_to_int(color_newStr,0);
+        }
 
         if( r < 0 || r > 255)
         {
@@ -455,6 +486,9 @@ namespace pawgui
         gpe::color * alteredColor = nullptr, *colorShadeTempColor = nullptr;
         colorShadeTempColor = new gpe::color( "custom",0,0,0 );
         int rV = 0,  gV = 0,  bV = 0;
+        uint8_t rU8 = 0, gU8 = 0, bU8 = 0, uU8 = 0;
+        uint64_t foundPixelColor = 0;
+        int foundColorPickerX = 0, foundColorPickerY = 0;
         int colorPickerShaderI = 0;
         //float colorShadeDifference = 0;
         float colorShadeDivision = 0;

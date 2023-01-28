@@ -3,10 +3,10 @@ gpe_editor_settings.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -62,7 +62,7 @@ public:
     void remove_background();
 };
 
-class gamePencilEditor_settingsResource: public pawgui::general_resource
+class gpe_editor_settings_resource: public pawgui::general_resource
 {
 public:
     pawgui::widget_button_push * confirmResource_button;
@@ -78,7 +78,7 @@ public:
     pawgui::widget_checkbox * userInvertMouseScroll;
 
     pawgui::widget_button_push * openEditorFolder;
-    pawgui::widget_button_push * openLocal_settingsFolder;
+    pawgui::widget_button_push * openLocalSettingsFolder;
     pawgui::widget_checkbox * autoSaveScreenshots;
     pawgui::widget_checkbox * makeMetaScreenshots;
 
@@ -92,6 +92,7 @@ public:
     pawgui::widget_label_paragraph * CodingLanguageParagraph;
     pawgui::widget_text_url * CodingLanguageURL;
     pawgui::widget_selectbox * codingLanguageSelector;
+
     //FPS Related Items
     pawgui::widget_label_title * editorGui_settingsLabel;
     pawgui::widget_label_title * ide_settingsFPSRateLabel;
@@ -99,6 +100,7 @@ public:
     pawgui::widget_label_text  * ideFPSRatioLabel;
     pawgui::widget_label_text  *    ide_buttonBarSizeLabel;
     pawgui::widget_checkbox * showFPSOnEditor;
+    pawgui::widget_checkbox * vsyncEditor;
 
     pawgui::widget_dropdown_menu * ide_buttonBarSize;
     pawgui::widget_radio_button_controller * ide_buttonBarAlignment;
@@ -138,8 +140,20 @@ public:
     int currentThemeInEdit;
 
     pawgui::widget_label_text  * themeBgLabel;
+    pawgui::widget_label_paragraph  * themeSystemDescription;
     pawgui::widget_button_label * themeBgBrowse_button;
     pawgui::widget_button_label * themeBgRemove_button;
+
+    //Login Section [ BEGIN ]
+    pawgui::widget_label_text  * assetLibTitleLabel;
+    pawgui::widget_input_text * assetLibUserName;
+    pawgui::widget_input_text * assetLibPassword;
+    pawgui::widget_checkbox * showLibPasswordText;
+    pawgui::widget_button_push * assetLibSignInButton;
+    pawgui::widget_button_push * assetLibSignOutButton;
+    pawgui::widget_text_url * assetLibSignUpURL;
+    //Login Section [ END ]
+
     //Advanced Section
     pawgui::widget_label_title * advancedAreaLabel;
     pawgui::widget_checkbox * showHiddenFilesInBrowser;
@@ -150,8 +164,10 @@ public:
     gpe::shape_rect subViewedSpace;
     pawgui::widget_panel_list * editorPageList;
     std::string projectFolderListLocation;
-    gamePencilEditor_settingsResource();
-    ~gamePencilEditor_settingsResource();
+    int current_editor_view_mode;
+
+    gpe_editor_settings_resource();
+    ~gpe_editor_settings_resource();
     bool include_local_files( std::string pBuildDir , int buildType );
 
     void load_themes_from_folder( std::string themeFolder );
@@ -163,5 +179,5 @@ public:
     bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 
-extern gamePencilEditor_settingsResource * main_editor_settings;
+extern gpe_editor_settings_resource * main_editor_settings;
 #endif // GPE_EDITOR_SETTINGS_RESOURCES_H

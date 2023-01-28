@@ -3,10 +3,10 @@ gpe_scene_helper_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -226,7 +226,7 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
         {
             promptBoxWidth = 320;
         }
-        int promptBoxHeight = gpe::screen_height * 7/8;
+        int promptBoxHeight = gpe::screen_height*3/4;
         if( promptBoxHeight < 240 )
         {
             promptBoxHeight = 240;
@@ -247,15 +247,15 @@ int GPE_SceneEditorHelper::get_new_resource(std::string title )
             //error_log->report("Processing tip of the day");
             gpe::game_runtime->start_loop();
 
-            widget_box.x = (gpe::screen_width-promptBoxWidth)/2;
-            widget_box.y = (gpe::screen_height-promptBoxHeight)/2;
+            widget_box.x = (gpe::screen_width-promptBoxWidth ) /2;
+            widget_box.y = (gpe::screen_height-promptBoxHeight ) /2;
             widget_box.w = promptBoxWidth;
             widget_box.h = promptBoxHeight;
 
             topList->set_height( 64 );
             bottomList->set_height( 128 );
 
-            topList->set_coords(widget_box.x, widget_box.y +32 );
+            topList->set_coords(widget_box.x, widget_box.y+32 );
             topList->set_width(widget_box.w);
 
             topList->barXMargin = 0;

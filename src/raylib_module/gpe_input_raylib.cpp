@@ -1,5 +1,5 @@
 /*
-gpe_input_raylib.cpp
+gpe_input_sdl.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,179 +31,290 @@ SOFTWARE.
 
 */
 
-#include "gpe_input_raylib.h"
+#include "gpe_input_sdl.h"
 
 namespace gpe
 {
-    gamepad_raylib::gamepad_raylib()
+    gamepad_sdl::gamepad_sdl()
     {
-        gamepad_id_number = -1;
-        system_handler = "raylib";
+        joy_sdl_id = -1;
+        assigned_sdl_controller = NULL;
+        system_handler = "sdl";
     }
 
-    gamepad_raylib::~gamepad_raylib()
+    gamepad_sdl::~gamepad_sdl()
     {
 
     }
 
 
-    void gamepad_raylib::handle_input()
+    void gamepad_sdl::handle_input()
     {
         gamepad_base::handle_input();
     }
 
-    void gamepad_raylib::pure_reset()
+    void gamepad_sdl::pure_reset()
     {
         gamepad_base::pure_reset();
-
+        if( assigned_sdl_controller!=NULL )
+        {
+            //SDL_gamepadClose( assigned_sdl_controller );
+            //assigned_sdl_controller = NULL;
+            if (SDL_JoystickGetAttached(assigned_sdl_controller) )
+            {
+                SDL_JoystickClose( assigned_sdl_controller);
+            }
+            assigned_sdl_controller = NULL;
+        }
     }
 
-    void gamepad_raylib::reset_gamepad()
+    void gamepad_sdl::reset_gamepad()
     {
         gamepad_base::reset_gamepad();
     }
 
-    void gamepad_raylib::reset_temp_input()
+    void gamepad_sdl::reset_temp_input()
     {
         gamepad_base::reset_temp_input();
     }
 
-    void gamepad_raylib::setup_default_mapping( bool map_buttons, bool mapAxis)
+    void gamepad_sdl::setup_default_mapping( bool map_buttons, bool mapAxis)
     {
         gamepad_base::setup_default_mapping( map_buttons, mapAxis );
         if( map_buttons)
         {
             //Maps the default controller buttons
-             button_map[gp_but0] = GAMEPAD_BUTTON_RIGHT_FACE_DOWN;
-             button_map[gp_but1] = GAMEPAD_BUTTON_RIGHT_FACE_LEFT;
-             button_map[gp_but2] = GAMEPAD_BUTTON_RIGHT_FACE_RIGHT;
-             button_map[gp_but3] = GAMEPAD_BUTTON_RIGHT_FACE_UP;
+             button_map[gp_but0] = SDL_CONTROLLER_BUTTON_A;
+             button_map[gp_but1] = SDL_CONTROLLER_BUTTON_B;
+             button_map[gp_but2] = SDL_CONTROLLER_BUTTON_X;
+             button_map[gp_but3] = SDL_CONTROLLER_BUTTON_Y;
 
-             button_map[gp_left] = GAMEPAD_BUTTON_LEFT_FACE_LEFT;
-             button_map[gp_right] = GAMEPAD_BUTTON_LEFT_FACE_RIGHT;
-             button_map[gp_up] = GAMEPAD_BUTTON_LEFT_FACE_UP;
-             button_map[gp_down] = GAMEPAD_BUTTON_LEFT_FACE_DOWN;
+             button_map[gp_left] = SDL_CONTROLLER_BUTTON_DPAD_LEFT;
+             button_map[gp_right] = SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
+             button_map[gp_up] = SDL_CONTROLLER_BUTTON_DPAD_UP;
+             button_map[gp_down] = SDL_CONTROLLER_BUTTON_DPAD_DOWN;
 
-             button_map[gp_l1] = GAMEPAD_BUTTON_LEFT_TRIGGER_1;
-             button_map[gp_l2] = GAMEPAD_BUTTON_LEFT_TRIGGER_2;
-             button_map[gp_l3] = GAMEPAD_BUTTON_LEFT_THUMB;
+             button_map[gp_l1] = SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
+             button_map[gp_r1] = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
 
-             button_map[gp_r1] = GAMEPAD_BUTTON_RIGHT_TRIGGER_1;
-             button_map[gp_r2] = GAMEPAD_BUTTON_RIGHT_TRIGGER_2;
-             button_map[gp_r3] = GAMEPAD_BUTTON_RIGHT_THUMB;
+             button_map[gp_l3] = SDL_CONTROLLER_BUTTON_LEFTSTICK;
+             button_map[gp_r3] = SDL_CONTROLLER_BUTTON_RIGHTSTICK;
 
-             button_map[gp_home] = GAMEPAD_BUTTON_MIDDLE;
-             button_map[gp_select] = GAMEPAD_BUTTON_MIDDLE_LEFT;
-             button_map[gp_start] = GAMEPAD_BUTTON_MIDDLE_RIGHT;
+             button_map[gp_home] = SDL_CONTROLLER_BUTTON_GUIDE;
+             button_map[gp_select] = SDL_CONTROLLER_BUTTON_BACK;
+             button_map[gp_start] = SDL_CONTROLLER_BUTTON_START;
         }
 
         if( mapAxis )
         {
-            axes_map[ gp_joystick_left_x ] = GAMEPAD_AXIS_LEFT_X;
-            axes_map[ gp_joystick_left_y ] = GAMEPAD_AXIS_LEFT_Y;
+            axes_map[ gp_joystick_left_x ] = SDL_CONTROLLER_AXIS_LEFTX;
+            axes_map[ gp_joystick_left_y ] = SDL_CONTROLLER_AXIS_LEFTY;
 
-            axes_map[ gp_joystick_right_x ] = GAMEPAD_AXIS_RIGHT_X;
-            axes_map[ gp_joystick_right_y ] = GAMEPAD_AXIS_RIGHT_Y;
+            axes_map[ gp_joystick_right_x ] = SDL_CONTROLLER_AXIS_RIGHTX;
+            axes_map[ gp_joystick_right_y ] = SDL_CONTROLLER_AXIS_RIGHTY;
 
-            axes_map[ gp_joystick_trigger_left ] = GAMEPAD_AXIS_LEFT_TRIGGER;
-            axes_map[ gp_joystick_trigger_right ] = GAMEPAD_AXIS_RIGHT_TRIGGER;
+            axes_map[ gp_joystick_trigger_left ] = SDL_CONTROLLER_AXIS_TRIGGERLEFT;
+            axes_map[ gp_joystick_trigger_right ] = SDL_CONTROLLER_AXIS_TRIGGERRIGHT;
         }
     }
 
-    input_manager_raylib::input_manager_raylib()
+    input_manager_sdl::input_manager_sdl()
     {
-        manager_type = "raylib";
-        handles_double_clicks = true;
-        double_clicked_ms_rest = 600; //600 ms
+        SDL_GameControllerAddMapping("gamepaddb.txt");
+        SDL_StartTextInput();
+        manager_type = "sdl";
         for( int i_gamepad = 0; i_gamepad < gp_max_devices; i_gamepad++ )
         {
-            game_pads_raylib[i_gamepad] = new gamepad_raylib();
-            game_pads_raylib[i_gamepad]->gamepad_id_number = i_gamepad;
+            game_pads_sdl[i_gamepad] = new gamepad_sdl();
         }
         key_bind_qwerty();
     }
 
-    input_manager_raylib::~input_manager_raylib()
+    input_manager_sdl::~input_manager_sdl()
     {
 
     }
 
-    bool input_manager_raylib::clipboard_empty()
+    bool input_manager_sdl::clipboard_empty()
     {
-        std::string clip_text = GetClipboardText();
-        return !(clip_text.size() > 0);
+        return !SDL_HasClipboardText();
     }
 
-    bool input_manager_raylib::clipboard_set( std::string new_clipboard_string)
+    bool input_manager_sdl::clipboard_set( std::string new_clipboard_string)
     {
-        SetClipboardText( new_clipboard_string.c_str() );
-        return true;
+        SDL_SetClipboardText( new_clipboard_string.c_str() );
     }
 
-    std::string input_manager_raylib::clipboard_string()
+    std::string input_manager_sdl::clipboard_string()
     {
-        return GetClipboardText();
+        return SDL_GetClipboardText();
     }
 
-    bool input_manager_raylib::gamepad_detect_all()
+    void input_manager_sdl::convert_event_input( )
+    {
+        if( event_container == NULL )
+        {
+            error_log->report("Unable to convert event container, it's null!");
+            return;
+        }
+
+        if( sdl_input_event.type == SDL_WINDOWEVENT )
+        {
+            event_container->reset_event();
+
+            event_container->event_time = sdl_input_event.window.timestamp;
+            event_container->window_id = sdl_input_event.window.windowID;
+
+            switch( sdl_input_event.window.event )
+            {
+                //Get new dimensions and repaint on window size change
+                case SDL_WINDOWEVENT_SIZE_CHANGED:
+                case SDL_WINDOWEVENT_RESIZED:
+                    event_container->event_type = input_event_type::window_resized_event;
+                    event_container->window_resize_w = sdl_input_event.window.data1;
+                    event_container->window_resize_h = sdl_input_event.window.data2;
+                break;
+
+                case SDL_WINDOWEVENT_MINIMIZED:
+                    event_container->event_type = input_event_type::window_minimized_event;
+                break;
+
+                case SDL_WINDOWEVENT_MAXIMIZED:
+                    event_container->event_type = input_event_type::window_maximized_event;
+                break;
+
+                case SDL_WINDOWEVENT_ENTER:
+                    event_container->event_type = input_event_type::window_entered_event;
+                break;
+
+                case SDL_WINDOWEVENT_LEAVE:
+                    event_container->event_type = input_event_type::window_leave_event;
+                break;
+
+                case SDL_WINDOWEVENT_FOCUS_GAINED:
+                    event_container->event_type = input_event_type::window_focus_gained_event;
+                break;
+
+                case SDL_WINDOWEVENT_FOCUS_LOST:
+                    event_container->event_type = input_event_type::window_focus_lost_event;
+                break;
+
+                case SDL_WINDOWEVENT_EXPOSED:
+                    event_container->event_type = input_event_type::window_exposed_event;
+                break;
+
+                case SDL_WINDOWEVENT_HIDDEN:
+                    event_container->event_type = input_event_type::window_hidden_event;
+                break;
+
+                case SDL_WINDOWEVENT_CLOSE:
+                    event_container->event_type = input_event_type::window_closed_event;
+                break;
+
+                case SDL_WINDOWEVENT_SHOWN:
+                case SDL_WINDOWEVENT_RESTORED:
+                    event_container->event_type = input_event_type::window_shown_event;
+                break;
+            }
+        }
+    }
+
+
+    bool input_manager_sdl::gamepad_detect_all()
     {
         input_manager_base::gamepad_detect_all();
 
         int currentControllerId = 0;
         gamepad_current_count = 0;
 
-        for ( int i_gamepad = 0; i_gamepad <= GAMEPAD_PLAYER4; i_gamepad++ )
+        int foundJoyStickCount = SDL_NumJoysticks();
+
+        if( debug_input )
         {
-            if( IsGamepadAvailable( i_gamepad) )
+            if( debug_input )
             {
-                gamepad_setup( i_gamepad );
-                gamepad_current_count++;
+                error_log->report("Attempting to process ["+ stg_ex::int_to_string( foundJoyStickCount )+"] SDL_JoySticks...");
             }
-            else
-            {
-                game_pads_raylib[i_gamepad]->reset_gamepad();
-            }
+        }
+
+        for ( int i_gamepad = 0; i_gamepad < foundJoyStickCount; i_gamepad++ )
+        {
+            gamepad_setup( i_gamepad );
         }
 
         if( gamepad_current_count > 0)
         {
             return true;
         }
-
         if( debug_input )
         {
-            error_log->report("No Game Controllers found...");
+            error_log->report("    No Game Controllers found...");
         }
         return false;
     }
 
-    bool input_manager_raylib::gamepad_disconnect( int gamepad_id )
+    bool input_manager_sdl::gamepad_disconnect( int gamepad_id )
     {
         input_manager_base::gamepad_disconnect( gamepad_id );
-        gamepad_raylib * temp_raylib_gamepad = nullptr;
-        for( int i = gp_max_devices - 1; i >=0; i--)
+        SDL_ClearError();
+        gamepad_sdl * temp_sdl_gamepad = NULL;
+        if ( SDL_IsGameController( gamepad_id ) )
         {
-            if( game_pads[i]->get_system_handler() == "raylib" )
+            for( int i = gp_max_devices - 1; i >=0; i--)
             {
-                temp_raylib_gamepad->pure_reset();
-                temp_raylib_gamepad->set_connected( false );
-                if( gamepad_current_count > 0)
+                if( game_pads[i]->get_system_handler() == "sdl" )
                 {
-                    gamepad_current_count--;
+                    temp_sdl_gamepad = (gamepad_sdl*) game_pads[i];
+                    if( temp_sdl_gamepad!=NULL && temp_sdl_gamepad->joy_sdl_id == gamepad_id )
+                    {
+                        temp_sdl_gamepad->pure_reset();
+                        temp_sdl_gamepad->set_connected( false );
+                        if( gamepad_current_count > 0)
+                        {
+                            gamepad_current_count--;
+                        }
+                        temp_sdl_gamepad->joy_sdl_id  = -1;
+                    }
                 }
             }
+            if( debug_input )
+            {
+                error_log->report(SDL_GetError() );
+            }
             return true;
+        }
+        else if( debug_input )
+        {
+            error_log->report(SDL_GetError() );
         }
         if( debug_input)
         {
             error_log->report("gamepad["+ stg_ex::int_to_string(gamepad_id )+"] disconnected..." );
         }
-        return false;
     }
 
-    bool input_manager_raylib::gamepad_setup( int gamepad_id )
+    bool input_manager_sdl::gamepad_setup( int gamepad_id )
     {
-        if( gamepad_id < GAMEPAD_PLAYER1 || gamepad_id > GAMEPAD_PLAYER4 )
+        SDL_ClearError();
+        int jStickCount = SDL_NumJoysticks();
+        if( jStickCount < 0 )
+        {
+            if( debug_input )
+            {
+                error_log->report("Joystick count ["+ stg_ex::int_to_string(jStickCount)+"] is out of range!" );
+                error_log->report( SDL_GetError( ) );
+            }
+            //Attempt to fix our problem...
+            if( SDL_WasInit( SDL_INIT_JOYSTICK ) )
+            {
+                SDL_QuitSubSystem( SDL_INIT_JOYSTICK );
+            }
+            SDL_InitSubSystem( SDL_INIT_JOYSTICK );
+            return false;
+        }
+
+
+        if( gamepad_id >= jStickCount )
         {
             if( debug_input )
             {
@@ -212,396 +323,607 @@ namespace gpe
             return false;
         }
 
-        if ( IsGamepadAvailable(gamepad_id) )
+        if ( SDL_IsGameController(gamepad_id) )
         {
-            if( debug_input )
+            SDL_GameController * foundSDLController = SDL_GameControllerOpen( gamepad_id );
+            if( foundSDLController )
             {
-                error_log->report("Finding gamepad...");
-            }
-            gamepad_base * tgamepad = game_pads[ gamepad_id ];
-            if( tgamepad->get_system_handler() == "raylib" )
-            {
-                if( tgamepad != nullptr )
+                if( gamepad_current_count >=0 && gamepad_current_count < gp_max_devices-1 )
                 {
-                    gamepad_raylib * tgamepad = (gamepad_raylib*) tgamepad;
                     if( debug_input )
                     {
-                        error_log->report("Finding Joystick ID...");
+                        error_log->report("Finding gamepad...");
                     }
-                    tgamepad->set_connected( true );
-                    tgamepad->set_name( GetGamepadName( gamepad_id ) );
+                    gamepad_base * tgamepad = game_pads_sdl[ gamepad_current_count ];
+                    if( tgamepad->get_system_handler() == "sdl" )
+                    {
+                        gamepad_sdl * temp_sdl_gamepad = (gamepad_sdl*) tgamepad;
+                        if( debug_input )
+                        {
+                            error_log->report("Finding Joystick ID...");
+                        }
+                        SDL_Joystick * jStick = SDL_GameControllerGetJoystick( foundSDLController );
 
-                    if( debug_input )
-                    {
-                        error_log->report("Mapping buttons...");
+                        if( jStick !=NULL )
+                        {
+                            temp_sdl_gamepad->assigned_sdl_controller = jStick;
+                            temp_sdl_gamepad->set_connected( true );
+                        }
+                        else
+                        {
+                            temp_sdl_gamepad->assigned_sdl_controller = NULL;
+                            temp_sdl_gamepad->set_connected( false );
+                            if( debug_input )
+                            {
+                                error_log->report( SDL_GetError() );
+                            }
+                            return false;
+                        }
+
+                        temp_sdl_gamepad->joy_sdl_id = gamepad_current_count;
+
+                        if( debug_input )
+                        {
+                            error_log->report("Setting name...");
+                        }
+                        tgamepad->set_name( SDL_JoystickNameForIndex( gamepad_id ) );
+
+                        if( debug_input )
+                        {
+                            error_log->report("Name set successfully...");
+                        }
+                        if( !gamepad_requires_input )
+                        {
+                            tgamepad->set_connected( true );
+                        }
+                        if( debug_input )
+                        {
+                            error_log->report("Mapping buttons...");
+                        }
+                        tgamepad->setup_default_mapping();
+                        if( debug_input )
+                        {
+                            error_log->report("New gamepad has been setup.");
+                        }
+                        gamepad_current_count++;
+                        return true;
                     }
-                    tgamepad->setup_default_mapping();
-                    if( debug_input )
-                    {
-                        error_log->report("New gamepad has been setup.");
-                    }
-                    gamepad_current_count++;
-                    return true;
+                }
+                else if( debug_input)
+                {
+                    error_log->report("Failed to start gamepad["+ stg_ex::int_to_string(gamepad_id )+"]..." );
+                    error_log->report(SDL_GetError() );
+                    return false;
                 }
             }
             else if( debug_input )
             {
-                error_log->report("Unable to open gamepad ("+ stg_ex::int_to_string( gamepad_id )+").");
+                error_log->report("Unable to open gamepad ("+ stg_ex::int_to_string( gamepad_id )+"):    ["+SDL_GetError()+"].");
                 return false;
             }
         }
         else if( debug_input )
         {
             error_log->report("Failed...");
-            game_pads_raylib[ gamepad_id]->set_connected( false );
+            error_log->report(SDL_GetError( ));
             return false;
         }
         return true;
     }
 
-    void input_manager_raylib::handle_input(bool dump_event, bool is_embedded )
+    void input_manager_sdl::handle_input(bool dump_event, bool is_embedded )
     {
+        SDL_GameController * foundSDLController = NULL;
+        SDL_JoystickUpdate();
+
         handle_input_start( dump_event, is_embedded );
 
+
+        std::vector < int > addControllerList;
+        std::vector < int > removeControllerList;
+
+        /* Check for events */
+        int cbutton = -1;
+        int frame_wait = 2; /* anything less than 16 ms is good */
+        unsigned tries = 3; /* use UINT_MAX for no effective limit */
         int fControllerInputId = 0;
-        gamepad_raylib *  tempController = nullptr;
+        gamepad_sdl *  tempController = NULL;
         float  tempAxisValue  = 0.0;
 
-        mouse_wheel_received  = false;
-        mouse_scrolling_left  = false;
-        mouse_scrolling_right = false;
-        mouse_scrolling_up = false;
-        mouse_scrolling_down = false;
-
-        //Process keys typed
-        inputted_keys = "";
-        int typed_key = GetCharPressed();
-        // Check if more characters have been pressed on the same frame
-        while (  typed_key > 0)
+        while (SDL_PollEvent( &sdl_input_event) )
         {
-            // NOTE: Only allow keys in range [32..125]
-            if ((typed_key >= 32) && (typed_key <= 125) )
+            switch(sdl_input_event.type)
             {
-                inputted_keys += (char)typed_key;
-            }
-
-            typed_key = GetCharPressed();  // Check next character in the queue
-        }
-
-        int typed_key_size = (int)inputted_keys.size();
-        if( typed_key_size  > 0 && IsKeyPressed(KEY_BACKSPACE))
-        {
-            //backspace it to hades...
-        }
-
-        //Then handle keyboard input
-
-        bool key_detected_down = false, key_detected_up = false;
-        for( int i_key = 0; i_key < kb_button_count; i_key++ )
-        {
-            key_detected_down = false;
-            key_detected_up = false;
-
-            if( kb_binding[ i_key] >= 0 )
-            {
-                if( IsKeyPressed ( kb_binding[i_key] ) )
-                {
-                    key_detected_down = true;
-                }
-            }
-            if(  kb_binding_alt[i_key]  >= 0 )
-            {
-                if(  IsKeyPressed ( kb_binding_alt[i_key] ) )
-                {
-                    key_detected_down = true;
-                }
-            }
-
-            if( key_detected_down )
-            {
-                kb_input_received = true;
-                kb_button_pressed[i_key] =  true;
-                kb_button_down[i_key] =  true;
-                kb_last_button = i_key;
-
-                if( i_key == kb_shift)
-                {
-                    kb_shift_pressed = true;
-                }
-
-                if( i_key == kb_backspace)
-                {
-                    kb_backspace_pressed = true;
-                }
-            }
-            key_detected_down = false;
-
-
-            if( kb_binding[ i_key] >= 0 )
-            {
-                if( IsKeyReleased ( kb_binding[i_key] ) )
-                {
-                    key_detected_up = true;
-                }
-            }
-            if(  kb_binding_alt[i_key]  >= 0 )
-            {
-                if(  IsKeyReleased ( kb_binding_alt[i_key] ) )
-                {
-                    key_detected_up = true;
-                }
-            }
-
-            if( key_detected_up )
-            {
-                kb_input_received = true;
-                kb_button_pressed[i_key] =  false;
-                kb_button_down[i_key] =  false;
-                kb_button_locked[i_key] = false;
-                kb_last_button = i_key;
-
-                if( i_key == kb_shift)
-                {
-                    kb_shift_pressed = false;
-                }
-
-                if( i_key == kb_backspace)
-                {
-                    kb_backspace_pressed = false;
-                }
-            }
-            key_detected_up = false;
-        }
-
-
-        for( int i_mouse_button = MOUSE_LEFT_BUTTON; i_mouse_button <= MOUSE_MIDDLE_BUTTON; i_mouse_button++ )
-        {
-            if( handles_double_clicks )
-            {
-                mouse_double_clicked_time[i_mouse_button] -= time_keeper->get_delta_ticks();
-                if( mouse_double_clicked_time[i_mouse_button] <= 0 )
-                {
-                    mouse_clicked_button[ i_mouse_button] = 0;
-                    mouse_double_clicked_time[i_mouse_button] = 0;
-                }
-            }
-
-            if( IsMouseButtonPressed( i_mouse_button) )
-            {
-                input_received = true;
-                mouse_input_received = true;
-
-                mouse_down_button[i_mouse_button] = true;
-                mouse_released_button[i_mouse_button] = false;
-
-            }
-            else if( IsMouseButtonReleased( i_mouse_button) )
-            {
-                mouse_down_button[ i_mouse_button ] = false;
-                mouse_pressed_button[ i_mouse_button] = false;
-                if( handles_double_clicks )
-                {
-                    mouse_clicked_button[ i_mouse_button] += 1;
-                    if( mouse_double_clicked_time[i_mouse_button] <= 0 )
+                case SDL_WINDOWEVENT:
+                    input_received = true;
+                    kb_input_received = false;
+                    //Window related events
+                    if( rph!=NULL )
                     {
-                        mouse_double_clicked_time[i_mouse_button] = double_clicked_ms_rest;
+                        convert_event_input();
+                        rph->process_event( event_container );
+                        //reset_all_input();
                     }
+                break;
 
-                }
-                else
+                case SDL_QUIT:
+                    input_received = true;
+                    kb_input_received = true;
+                    if( is_embedded==false)
+                    {
+                        //User requests quit
+                        exit_requested = true;
+                    }
+                break;
+
+
+                case (SDL_DROPFILE):
+                    // In case if dropped file
+                    file_dropped_path = sdl_input_event.drop.file;
+                    // Shows directory of dropped file
+                    /*
+                    SDL_ShowSimpleMessageBox(
+                        SDL_MESSAGEBOX_ERROR,
+                        "File dropped on window",
+                        file_dropped_path,
+                        renderer_main->get_window()
+                    );
+                    */
+                    files_dropped_list.push_back( file_dropped_path );
+                    SDL_free( file_dropped_path );    // Free file_dropped_path memory
+                    input_received = true;
+                    kb_input_received = true;
+                break;
+
+                //Game Controller Input
+                case SDL_CONTROLLERDEVICEADDED:
+                    //For reasons, we will just add to them a list and manage em at the end
+                    addControllerList.push_back( sdl_input_event.cdevice.which );
+                break;
+
+                case SDL_CONTROLLERDEVICEREMOVED:
+                    //For reasons, we will just add to them a list and manage em at the end
+                    removeControllerList.push_back( sdl_input_event.cdevice.which );
+                break;
+
+                case SDL_CONTROLLERBUTTONDOWN:
+                    fControllerInputId = sdl_input_event.cdevice.which;
+                    if( debug_input )
+                    {
+                        error_log->report("_button[" + stg_ex::int_to_string( sdl_input_event.cbutton.button) + "] on controller [" + stg_ex::int_to_string(fControllerInputId  )+"]  fired...");
+                    }
+                    if( fControllerInputId >= 0 && fControllerInputId < gp_max_devices )
+                    {
+                        tempController = game_pads_sdl[ fControllerInputId ];
+                        if( gamepad_requires_input || tempController->is_connected() == false )
+                        {
+                            tempController->set_connected( true );
+                        }
+                        for (  cbutton = 0;  cbutton < gp_button_count; cbutton++ )
+                        {
+                            if ( sdl_input_event.cbutton.button == tempController->button_map[cbutton] )
+                            {
+                                tempController->button_button[ tempController->button_map[cbutton] ] = true;
+                                tempController->button_pressed[ tempController->button_map[cbutton] ] = true;
+                            }
+                        }
+                    }
+                break;
+
+                case SDL_CONTROLLERBUTTONUP:
+                    fControllerInputId = sdl_input_event.cdevice.which;
+                    if( debug_input )
+                    {
+                        error_log->report("_button[" + stg_ex::int_to_string( sdl_input_event.cbutton.button) + "] on controller [" + stg_ex::int_to_string( fControllerInputId )+"] released...");
+                    }
+                    if( fControllerInputId >= 0 && fControllerInputId < gp_max_devices )
+                    {
+                        tempController = game_pads_sdl[ fControllerInputId ];
+                        for (  cbutton = 0;  cbutton < gp_button_count; cbutton++)
+                        {
+                            if ( sdl_input_event.cbutton.button == tempController->button_map[cbutton] )
+                            {
+                                tempController->button_button[ tempController->button_map[cbutton] ] = false;
+                                tempController->button_pressed[ tempController->button_map[cbutton] ] = false;
+                            }
+                        }
+                    }
+                break;
+
+                case SDL_CONTROLLERAXISMOTION:
+                    fControllerInputId = sdl_input_event.cdevice.which;
+                    if( fControllerInputId >= 0 && fControllerInputId < gp_max_devices )
+                    {
+                        tempController = game_pads_sdl[ fControllerInputId ];
+                        if( gamepad_requires_input || tempController->is_connected() == false )
+                        {
+                            tempController->set_connected( true );
+                        }
+                        //if( sdl_input_event.caxis.axis >= 0 && sdl_input_event.caxis.axis < gp_axes_count )
+                        {
+                            tempAxisValue = sdl_input_event.caxis.value / gp_deadzone;
+                            //Less than the dead zone
+                            if( tempAxisValue < -1.f )
+                            {
+                                tempAxisValue = -1.f;
+                            }
+                            //Right of dead zone
+                            else if( tempAxisValue > 1.f )
+                            {
+                                tempAxisValue =  1.f;
+                            }
+                            tempController->axes_value[sdl_input_event.caxis.axis] = tempAxisValue;
+                        }
+                    }
+                break;
+
+                // grab symbol keys
+                case SDL_KEYDOWN:
+                    input_received = true;
+                    kb_input_received = true;
+                    //handle_modifers( sdl_input_event.key->keysym.mod );
+                    if( sdl_input_event.key.keysym.sym == SDLK_BACKSPACE)
+                    {
+                        kb_backspace_pressed = true;
+                        kb_button_down[kb_backspace] = true;
+                        kb_button_pressed[kb_backspace] = true;
+                    }
+                    else if( sdl_input_event.key.keysym.sym == SDLK_LSHIFT || sdl_input_event.key.keysym.sym == SDLK_RSHIFT)
+                    {
+                        kb_shift_pressed = true;
+                        kb_button_down[kb_shift] = true;
+                        kb_button_pressed[kb_shift] = true;
+                    }
+                    else if( sdl_input_event.key.keysym.scancode==SDL_SCANCODE_LCTRL || sdl_input_event.key.keysym.scancode==SDL_SCANCODE_RCTRL)
+                    {
+                        kb_button_down[kb_ctrl] = true;
+                        kb_button_pressed[kb_ctrl] = true;
+                    }
+                    else if( sdl_input_event.key.keysym.scancode==SDL_SCANCODE_LALT || sdl_input_event.key.keysym.scancode==SDL_SCANCODE_RALT)
+                    {
+                        kb_button_down[kb_alt] = true;
+                        kb_button_pressed[kb_alt] = true;
+                    }
+                    else
+                    {
+                        for ( int key=0; key<kb_button_count; key++)
+                        {
+                            if (sdl_input_event.key.keysym.sym == kb_binding[key] || sdl_input_event.key.keysym.sym == kb_binding_alt[key])
+                            {
+                                kb_button_down[key] = true;
+                                kb_button_pressed[key] = true;
+                            }
+                        }
+                    }
+                break;
+
+                case SDL_KEYUP:
+                    input_received = true;
+                    kb_input_received = true;
+                    if( sdl_input_event.key.keysym.scancode==SDL_SCANCODE_LCTRL || sdl_input_event.key.keysym.scancode==SDL_SCANCODE_RCTRL)
+                    {
+                        kb_button_down[kb_ctrl] = false;
+                        kb_button_pressed[kb_ctrl] = false;
+                        kb_button_locked[kb_ctrl] = false;
+                    }
+                    else if( sdl_input_event.key.keysym.scancode==SDL_SCANCODE_LALT || sdl_input_event.key.keysym.scancode==SDL_SCANCODE_RALT)
+                    {
+                        kb_button_down[kb_alt] = false;
+                        kb_button_pressed[kb_alt] = false;
+                        kb_button_locked[kb_alt] = true;
+                    }
+                    else if( sdl_input_event.key.keysym.sym == SDLK_LSHIFT || sdl_input_event.key.keysym.sym == SDLK_RSHIFT)
+                    {
+                        kb_shift_pressed = false;
+                        kb_button_down[kb_shift] = false;
+                        kb_button_pressed[kb_shift] = false;
+                        kb_button_locked[kb_shift] = true;
+                    }
+                    else if( sdl_input_event.key.keysym.sym == SDLK_BACKSPACE)
+                    {
+                        kb_backspace_pressed = false;
+                        kb_button_down[kb_backspace] = false;
+                        kb_button_pressed[kb_backspace] = false;
+                        kb_button_locked[kb_shift] = true;
+                    }
+                    else
+                    {
+                        for (int key=0; key<kb_button_count; key++)
+                        {
+                            if (sdl_input_event.key.keysym.sym == kb_binding[key] || sdl_input_event.key.keysym.sym == kb_binding_alt[key])
+                            {
+                                kb_button_down[key] = false;
+                                kb_button_pressed[key] = false;
+                                //released[key] = true;
+                                kb_button_locked[key] = false;
+                            }
+                        }
+                    }
+                    kb_last_button = sdl_input_event.key.keysym.sym;
+                break;
+
+                case SDL_TEXTINPUT:
+                    //Not copy or pasting
+                    //if( !( ( sdl_input_event.text.text[ 0 ] == 'c' || sdl_input_event.text.text[ 0 ] == 'C' ) && ( sdl_input_event.text.text[ 0 ] == 'v' || sdl_input_event.text.text[ 0 ] == 'V' ) && SDL_GetModState() & KMOD_CTRL ) )
                 {
-                    mouse_clicked_button[ i_mouse_button] = 1;
+                    //Append character
+                    inputted_keys= sdl_input_event.text.text;
+                    input_received = true;
+                    kb_input_received = true;
                 }
-            }
-            else if( IsMouseButtonUp( i_mouse_button) )
-            {
-                mouse_down_button[ i_mouse_button ] = false;
-                mouse_pressed_button[ i_mouse_button] = false;
-            }
+                break;
+
+                case SDL_MOUSEBUTTONDOWN:
+                    input_received = true;
+                    kb_input_received = true;
+                    switch(sdl_input_event.button.button)
+                    {
+                        case SDL_BUTTON_LEFT:
+                            mouse_down_button[0] = 1;
+                            mouse_clicked_button[0] = sdl_input_event.button.clicks;
+                            mouse_released_button[0] = false;
+                        break;
+
+                        case SDL_BUTTON_RIGHT:
+                            mouse_down_button[1] = 1;
+                            mouse_clicked_button[1] = sdl_input_event.button.clicks;
+                            mouse_released_button[1] = false;
+                        break;
+
+                        case SDL_BUTTON_MIDDLE:
+                            mouse_down_button[2] = 1;
+                            mouse_clicked_button[2] = sdl_input_event.button.clicks;
+                            mouse_released_button[2] = false;
+                        break;
+
+                        default:
+
+                        break;
+                    }
+                break;
+
+                case SDL_MOUSEBUTTONUP:
+                    input_received = true;
+                    kb_input_received = false;
+                    switch(sdl_input_event.button.button)
+                    {
+                        case SDL_BUTTON_LEFT:
+                            mouse_down_button[0] = false;
+                            mouse_pressed_button[0] = false;
+                            //mouse_released_button[0] = true;
+                        break;
+                        case SDL_BUTTON_RIGHT:
+                            mouse_down_button[1] = false;
+                            mouse_pressed_button[1] = false;
+                            //mouse_released_button[1] = true;
+                        break;
+                        case SDL_BUTTON_MIDDLE:
+                            mouse_down_button[2] = false;
+                            mouse_pressed_button[2] = false;
+                            //mouse_released_button[2] = true;
+                        break;
+                        case SDL_BUTTON_X1:
+                            mouse_down_button[3] = false;
+                            mouse_pressed_button[3] = false;
+                            //mouse_released_button[3] = true;
+                        break;
+                        case SDL_BUTTON_X2:
+                            mouse_down_button[4] = false;
+                            mouse_pressed_button[4] = false;
+                            //mouse_released_button[4] = true;
+                        break;
+                        default:
+
+                        break;
+                    }
+                break;
+
+                case SDL_MOUSEWHEEL:
+                    input_received = true;
+                    kb_input_received = true;
+                    mouse_wheel_received = true;
+                    if( mouse_scroll_inverted )
+                    {
+                        if( sdl_input_event.wheel.x > 0)
+                        {
+                            mouse_scrolling_left = true;
+                        }
+                        else if( sdl_input_event.wheel.x < 0)
+                        {
+                            mouse_scrolling_right = true;
+                        }
+
+                        if( sdl_input_event.wheel.y > 0)
+                        {
+                            mouse_scrolling_down = true;
+                        }
+                        else if( sdl_input_event.wheel.y < 0)
+                        {
+                            mouse_scrolling_up = true;
+                        }
+                    }
+                    else
+                    {
+                        if( sdl_input_event.wheel.x > 0)
+                        {
+                            mouse_scrolling_right = true;
+                        }
+                        else if( sdl_input_event.wheel.x < 0)
+                        {
+                            mouse_scrolling_left = true;
+                        }
+
+                        if( sdl_input_event.wheel.y > 0)
+                        {
+                            mouse_scrolling_up = true;
+                        }
+                        else if( sdl_input_event.wheel.y < 0)
+                        {
+                            mouse_scrolling_down = true;
+                        }
+                    }
+                break;
+
+                default:
+                break;
+                };
         }
 
-        mouse_position_x = GetMouseX();
-        mouse_position_y = GetMouseY();
-
-        if( mouse_position_x!= mouse_previous_position_x || mouse_position_y != mouse_previous_position_y )
+        //remove disconnected game controllers
+        if( (int)removeControllerList.size() > 0 )
         {
-            mouse_movement_received = true;
-            mouse_input_received = true;
+            for( int i = (int)removeControllerList.size() - 1; i >= 0; i-- )
+            {
+                gamepad_disconnect( removeControllerList[i] );
+            }
+            if( gamepad_count()==0 && SDL_WasInit( SDL_INIT_GAMECONTROLLER ) )
+            {
+                SDL_QuitSubSystem( SDL_INIT_GAMECONTROLLER );
+                SDL_InitSubSystem( SDL_INIT_GAMECONTROLLER );
+            }
         }
 
-        float mouse_wheel_movement = GetMouseWheelMove();
-        if( mouse_wheel_movement != 0.f )
+        //Adds new connected controllers
+        if( (int)addControllerList.size() > 0 )
         {
-            mouse_wheel_received = true;
-            mouse_input_received = true;
+            if( gamepad_count()== 0 )
+            {
+                if( SDL_WasInit( SDL_INIT_JOYSTICK ) )
+                {
+                    SDL_QuitSubSystem( SDL_INIT_JOYSTICK );
+                }
+                SDL_InitSubSystem( SDL_INIT_JOYSTICK );
+            }
 
-            if( mouse_wheel_movement > 0.f )
+            for( int i = 0; i < (int)addControllerList.size(); i++ )
             {
-                if( mouse_scroll_inverted )
-                {
-                    mouse_scrolling_down = true;
-                }
-                else
-                {
-                    mouse_scrolling_up = true;
-                }
+                //gamepad_setup( addControllerList[i], true);
             }
-            else if ( mouse_wheel_movement < 0.f )
-            {
-                if( mouse_scroll_inverted )
-                {
-                    mouse_scrolling_up = true;
-                }
-                else
-                {
-                    mouse_scrolling_down = true;
-                }
-            }
+            gamepad_detect_all();
         }
+
+        SDL_GetMouseState(&mouse_position_x, &mouse_position_y);
 
         handle_input_end( dump_event, is_embedded );
     }
 
-    void input_manager_raylib::key_bind_qwerty()
+    void input_manager_sdl::key_bind_qwerty()
     {
-        for (int key=0; key<kb_button_count; key++)
-        {
-            kb_binding[ key] = -1;
-            kb_binding_alt[ key] = -1;
-        }
+        kb_binding[kb_esc] = SDLK_ESCAPE;
+        kb_binding[kb_enter] = SDLK_RETURN;
+        kb_binding[kb_up] = SDLK_UP;
+        kb_binding[kb_down] = SDLK_DOWN;
+        kb_binding[kb_left] = SDLK_LEFT;
+        kb_binding[kb_right] = SDLK_RIGHT;
+        kb_binding[kb_space] = kb_binding_alt[kb_space] = SDLK_SPACE;
+        kb_binding[kb_page_down] = kb_binding_alt[kb_page_down] = SDLK_PAGEDOWN;
+        kb_binding[kb_page_up] = kb_binding_alt[kb_page_up] = SDLK_PAGEUP;
+        kb_binding[kb_a] = kb_binding_alt[kb_a] = SDLK_a;
+        kb_binding[kb_b] = kb_binding_alt[kb_b] = SDLK_b;
+        kb_binding[kb_c] = kb_binding_alt[kb_c] = SDLK_c;
+        kb_binding[kb_d] = kb_binding_alt[kb_d] = SDLK_d;
+        kb_binding[kb_e] = kb_binding_alt[kb_e] = SDLK_e;
+        kb_binding[kb_f] = kb_binding_alt[kb_f] = SDLK_f;
+        kb_binding[kb_g] = kb_binding_alt[kb_g] = SDLK_g;
+        kb_binding[kb_h] = kb_binding_alt[kb_h] = SDLK_h;
+        kb_binding[kb_i] = kb_binding_alt[kb_i] = SDLK_i;
+        kb_binding[kb_j] = kb_binding_alt[kb_j] = SDLK_j;
+        kb_binding[kb_k] = kb_binding_alt[kb_k] = SDLK_k;
+        kb_binding[kb_l] = kb_binding_alt[kb_l] = SDLK_l;
+        kb_binding[kb_m] = kb_binding_alt[kb_m] = SDLK_m;
+        kb_binding[kb_n] = kb_binding_alt[kb_n] = SDLK_n;
+        kb_binding[kb_o] = kb_binding_alt[kb_o] = SDLK_o;
+        kb_binding[kb_p] = kb_binding_alt[kb_p] = SDLK_p;
+        kb_binding[kb_q] = kb_binding_alt[kb_q] = SDLK_q;
+        kb_binding[kb_r] = kb_binding_alt[kb_r] = SDLK_r;
+        kb_binding[kb_s] = kb_binding_alt[kb_s] = SDLK_s;
+        kb_binding[kb_t] = kb_binding_alt[kb_t] = SDLK_t;
+        kb_binding[kb_u] = kb_binding_alt[kb_u] = SDLK_u;
+        kb_binding[kb_v] = kb_binding_alt[kb_v] = SDLK_v;
+        kb_binding[kb_w] = kb_binding_alt[kb_w] = SDLK_w;
+        kb_binding[kb_x] = kb_binding_alt[kb_x] = SDLK_x;
+        kb_binding[kb_y] = kb_binding_alt[kb_y] = SDLK_y;
+        kb_binding[kb_z] = kb_binding_alt[kb_z] = SDLK_z;
+        kb_binding[kb_minus] = SDLK_MINUS;
+        kb_binding_alt[kb_minus] = SDLK_UNDERSCORE;
+        kb_binding[kb_plus] = SDLK_EQUALS;
+        kb_binding_alt[kb_plus] = SDLK_BACKQUOTE;
 
-        kb_binding[kb_esc] = kb_binding_alt[kb_esc] ==  KEY_ESCAPE;
-        kb_binding[kb_enter] = kb_binding_alt[kb_enter] = KEY_ENTER;
-        kb_binding[kb_up] = kb_binding[kb_up] = KEY_UP;
-        kb_binding[kb_down] = kb_binding[kb_down] =KEY_DOWN;
-        kb_binding[kb_left] = kb_binding[kb_left] =KEY_LEFT;
-        kb_binding[kb_right] = kb_binding[kb_right] =KEY_RIGHT;
-        kb_binding[kb_space] = kb_binding_alt[kb_space] = KEY_SPACE;
-        kb_binding[kb_page_down] = kb_binding_alt[kb_page_down] = KEY_PAGE_DOWN;
-        kb_binding[kb_page_up] = kb_binding_alt[kb_page_up] = KEY_PAGE_UP;
-        kb_binding[kb_a] = kb_binding_alt[kb_a] = KEY_A;
-        kb_binding[kb_b] = kb_binding_alt[kb_b] = KEY_B;
-        kb_binding[kb_c] = kb_binding_alt[kb_c] = KEY_C;
-        kb_binding[kb_d] = kb_binding_alt[kb_d] = KEY_D;
-        kb_binding[kb_e] = kb_binding_alt[kb_e] = KEY_E;
-        kb_binding[kb_f] = kb_binding_alt[kb_f] = KEY_F;
-        kb_binding[kb_g] = kb_binding_alt[kb_g] = KEY_G;
-        kb_binding[kb_h] = kb_binding_alt[kb_h] = KEY_H;
-        kb_binding[kb_i] = kb_binding_alt[kb_i] = KEY_I;
-        kb_binding[kb_j] = kb_binding_alt[kb_j] = KEY_J;
-        kb_binding[kb_k] = kb_binding_alt[kb_k] = KEY_K;
-        kb_binding[kb_l] = kb_binding_alt[kb_l] = KEY_L;
-        kb_binding[kb_m] = kb_binding_alt[kb_m] = KEY_M;
-        kb_binding[kb_n] = kb_binding_alt[kb_n] = KEY_N;
-        kb_binding[kb_o] = kb_binding_alt[kb_o] = KEY_O;
-        kb_binding[kb_p] = kb_binding_alt[kb_p] = KEY_P;
-        kb_binding[kb_q] = kb_binding_alt[kb_q] = KEY_Q;
-        kb_binding[kb_r] = kb_binding_alt[kb_r] = KEY_R;
-        kb_binding[kb_s] = kb_binding_alt[kb_s] = KEY_S;
-        kb_binding[kb_t] = kb_binding_alt[kb_t] = KEY_T;
-        kb_binding[kb_u] = kb_binding_alt[kb_u] = KEY_U;
-        kb_binding[kb_v] = kb_binding_alt[kb_v] = KEY_V;
-        kb_binding[kb_w] = kb_binding_alt[kb_w] = KEY_W;
-        kb_binding[kb_x] = kb_binding_alt[kb_x] = KEY_X;
-        kb_binding[kb_y] = kb_binding_alt[kb_y] = KEY_Y;
-        kb_binding[kb_z] = kb_binding_alt[kb_z] = KEY_Z;
-        kb_binding[kb_minus] = kb_binding_alt[kb_minus] = KEY_MINUS;
-        kb_binding[kb_plus] = kb_binding_alt[kb_plus] = KEY_EQUAL;
+        kb_binding_alt[kb_esc] = SDLK_ESCAPE;
+        kb_binding_alt[kb_enter] = SDLK_RETURN2;
 
-        kb_binding[kb_1] = kb_binding_alt[kb_1] = KEY_ONE;
-        kb_binding[kb_2] = kb_binding_alt[kb_2] = KEY_TWO;
-        kb_binding[kb_3] = kb_binding_alt[kb_3] = KEY_THREE;
-        kb_binding[kb_4] = kb_binding_alt[kb_4] = KEY_FOUR;
-        kb_binding[kb_5] = kb_binding_alt[kb_5] = KEY_FIVE;
-        kb_binding[kb_6] = kb_binding_alt[kb_6] = KEY_SIX;
-        kb_binding[kb_7] = kb_binding_alt[kb_7] = KEY_SEVEN;
-        kb_binding[kb_8] = kb_binding_alt[kb_8] = KEY_EIGHT;
-        kb_binding[kb_9] = kb_binding_alt[kb_9] = KEY_NINE;
-        kb_binding[kb_0] = kb_binding_alt[kb_0] = KEY_ZERO;
+        kb_binding_alt[kb_up] = SDLK_UP;
+        kb_binding_alt[kb_down] = SDLK_DOWN;
+        kb_binding_alt[kb_left] = SDLK_LEFT;
+        kb_binding_alt[kb_right] = SDLK_RIGHT;
 
-        kb_binding_alt[kb_1] = KEY_KP_1;
-        kb_binding_alt[kb_2] = KEY_KP_2;
-        kb_binding_alt[kb_3] = KEY_KP_3;
-        kb_binding_alt[kb_4] = KEY_KP_4;
-        kb_binding_alt[kb_5] = KEY_KP_5;
-        kb_binding_alt[kb_6] = KEY_KP_6;
-        kb_binding_alt[kb_7] = KEY_KP_7;
-        kb_binding_alt[kb_8] = KEY_KP_8;
-        kb_binding_alt[kb_9] = KEY_KP_9;
-        kb_binding_alt[kb_0] = KEY_KP_0;
+        kb_binding[kb_1] = kb_binding_alt[kb_1] = SDLK_1;
+        kb_binding[kb_2] = kb_binding_alt[kb_2] = SDLK_2;
+        kb_binding[kb_3] = kb_binding_alt[kb_3] = SDLK_3;
+        kb_binding[kb_4] = kb_binding_alt[kb_4] = SDLK_4;
+        kb_binding[kb_5] = kb_binding_alt[kb_5] = SDLK_5;
+        kb_binding[kb_6] = kb_binding_alt[kb_6] = SDLK_6;
+        kb_binding[kb_7] = kb_binding_alt[kb_7] = SDLK_7;
+        kb_binding[kb_8] = kb_binding_alt[kb_8] = SDLK_8;
+        kb_binding[kb_9] = kb_binding_alt[kb_9] = SDLK_9;
+        kb_binding[kb_0] = kb_binding_alt[kb_0] = SDLK_0;
+
         //
-        kb_binding[kb_f1] = kb_binding_alt[kb_f1] = KEY_F1;
-        kb_binding[kb_f2] = kb_binding_alt[kb_f2] = KEY_F2;
-        kb_binding[kb_f3] = kb_binding_alt[kb_f3] = KEY_F3;
-        kb_binding[kb_f4] = kb_binding_alt[kb_f4] = KEY_F4;
-        kb_binding[kb_f5] = kb_binding_alt[kb_f5] = KEY_F5;
-        kb_binding[kb_f6] = kb_binding_alt[kb_f6] = KEY_F6;
-        kb_binding[kb_f7] = kb_binding_alt[kb_f7] = KEY_F7;
-        kb_binding[kb_f8] = kb_binding_alt[kb_f8] = KEY_F8;
-        kb_binding[kb_f9] = kb_binding_alt[kb_f9] = KEY_F9;
-        kb_binding[kb_f10] = kb_binding_alt[kb_f10] = KEY_F10;
-        kb_binding[kb_f11] = kb_binding_alt[kb_f11] = KEY_F11;
-        kb_binding[kb_f12] = kb_binding_alt[kb_f12] = KEY_F12;
+        kb_binding[kb_f1] = kb_binding_alt[kb_f1] = SDLK_F1;
+        kb_binding[kb_f2] = kb_binding_alt[kb_f2] = SDLK_F2;
+        kb_binding[kb_f3] = kb_binding_alt[kb_f3] = SDLK_F3;
+        kb_binding[kb_f4] = kb_binding_alt[kb_f4] = SDLK_F4;
+        kb_binding[kb_f5] = kb_binding_alt[kb_f5] = SDLK_F5;
+        kb_binding[kb_f6] = kb_binding_alt[kb_f6] = SDLK_F6;
+        kb_binding[kb_f7] = kb_binding_alt[kb_f7] = SDLK_F7;
+        kb_binding[kb_f8] = kb_binding_alt[kb_f8] = SDLK_F8;
+        kb_binding[kb_f9] = kb_binding_alt[kb_f9] = SDLK_F9;
+        kb_binding[kb_f10] = kb_binding_alt[kb_f10] = SDLK_F10;
+        kb_binding[kb_f11] = kb_binding_alt[kb_f11] = SDLK_F11;
+        kb_binding[kb_f12] = kb_binding_alt[kb_f12] = SDLK_F12;
+        kb_binding[kb_comma] = SDLK_LESS;
+        kb_binding_alt[kb_comma] = SDLK_COMMA;
+        kb_binding[kb_period]  = SDLK_GREATER;
+        kb_binding_alt[kb_period] = SDLK_PERIOD;
 
-        kb_binding[kb_comma] = KEY_COMMA;
-        kb_binding_alt[kb_comma] = KEY_COMMA;
-        kb_binding[kb_period]  = KEY_PERIOD;
-        kb_binding_alt[kb_period] = KEY_PERIOD;
+        kb_binding[kb_alt] = SDLK_LALT;
+        kb_binding_alt[kb_alt] = SDLK_RALT;
+        kb_binding[kb_backspace] = SDLK_BACKSPACE;
+        kb_binding_alt[kb_backspace] = -1;
 
-        kb_binding[kb_alt] = KEY_LEFT_ALT;
-        kb_binding_alt[kb_alt] = KEY_RIGHT_ALT;
-        kb_binding[kb_backspace] = KEY_BACKSPACE;
-        kb_binding_alt[kb_backspace] = KEY_BACKSPACE;
+        kb_binding[kb_ctrl] = SDLK_LCTRL;
+        kb_binding_alt[kb_ctrl] = SDLK_RCTRL;
+        kb_binding[kb_shift] = SDLK_LSHIFT;
+        kb_binding_alt[kb_shift] = SDLK_RSHIFT;
+        kb_binding[kb_delete] = SDLK_DELETE;
+        kb_binding_alt[kb_delete] = SDLK_DELETE;
+        kb_binding[kb_delete] = SDLK_PRINTSCREEN;
+        kb_binding_alt[kb_delete] = SDLK_SYSREQ;
 
-        kb_binding[kb_ctrl] = KEY_LEFT_CONTROL;
-        kb_binding_alt[kb_ctrl] = KEY_RIGHT_CONTROL;
-
-        kb_binding[kb_shift] = KEY_LEFT_SHIFT;
-        kb_binding_alt[kb_shift] = KEY_RIGHT_SHIFT;
-
-        kb_binding[kb_delete] = KEY_DELETE ;
-        kb_binding_alt[kb_delete] = KEY_DELETE;
-
-        kb_binding[kb_print_screen] = KEY_PRINT_SCREEN;
-        kb_binding_alt[kb_print_screen] = KEY_PRINT_SCREEN;
-
-        kb_binding[kb_pause] = KEY_PAUSE;
-        kb_binding_alt[kb_pause] = KEY_PAUSE;
-
-        kb_binding[kb_tab] = kb_binding_alt[kb_tab] = KEY_TAB;
+        kb_binding[kb_tab] = kb_binding_alt[kb_tab] = SDLK_TAB;
     }
 
-    void input_manager_raylib::key_bind_load()
-    {
-
-    }
-
-    void input_manager_raylib::key_bind_save()
-    {
-
-    }
-
-    bool input_manager_raylib::load_input_settings(std::string file_path )
+    bool input_manager_sdl::load_input_settings(std::string file_path )
     {
         return input_manager_base::load_input_settings( file_path );
     }
 
-    bool init_raylib_input_system()
+    bool init_sdl_input_system()
     {
-        error_log->report("Starting raylib_module input system...");
-        if( input != nullptr )
+        error_log->report("Starting SDL input system...");
+        if( input != NULL )
         {
             delete input;
-            input = nullptr;
+            input = NULL;
         }
-        input = new input_manager_raylib();
-        error_log->report("Input swapped from base to raylib_module class...");
-        return ( input!= nullptr);
+        input = new input_manager_sdl();
+        error_log->report("Input swapped from base to sdl class...");
+        return true;
     }
 
-    void quit_raylib_input_system()
+    void quit_sdl_input_system()
     {
-        if( input != nullptr && input->get_type() == "raylib")
+        if( input != NULL && input->get_type() == "sdl")
         {
             delete input;
             input = new input_manager_base();

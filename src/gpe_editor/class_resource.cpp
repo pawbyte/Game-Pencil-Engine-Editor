@@ -3,10 +3,10 @@ class_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -120,7 +120,7 @@ bool classResource::include_local_files( std::string pBuildDir , int buildType )
 
 bool classResource::is_build_ready()
 {
-    return true;
+    return false;
 }
 
 void classResource::integrate_into_syntax()
@@ -152,7 +152,7 @@ void classResource::open_code( int lineNumb, int colNumb,std::string codeTitle)
 
 void classResource::load_resource(std::string file_path)
 {
-    if( resourcePostProcessed ==false  || gpe::main_file_url_manager->file_exists(file_path) )
+    if( resourcePostProcessed ==false  || sff_ex::file_exists(file_path) )
     {
         if( main_gpe_splash_page != nullptr )
         {
@@ -162,7 +162,7 @@ void classResource::load_resource(std::string file_path)
         bool usingAltSaveSource = false;
         std::string newFileIn ="";
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/source/";
-        if( gpe::main_file_url_manager->file_exists(file_path) )
+        if( sff_ex::file_exists(file_path) )
         {
             newFileIn = file_path;
             soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -276,7 +276,7 @@ void classResource::load_resource(std::string file_path)
                                     classHeaderCode->set_ycursor(fCursorY);
                                     classHeaderCode->set_xcursor(fCursorX);
                                 }
-                                else if( (key_string=="Source_Cursor") && classSourceCode!=nullptr)
+                                else if( key_string=="Source_Cursor" & classSourceCode!=nullptr)
                                 {
                                     fCursorY = stg_ex::split_first_int(valstring,',');
                                     fCursorX = stg_ex::string_to_int(valstring,0);
@@ -308,6 +308,8 @@ void classResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
     pawgui::widget_dock_panel * fEditorPanel = gpe_dock->find_panel("Editor");
     if( classEditorList!=nullptr && cam!=nullptr && view_space!=nullptr && codeCategoryTabs!=nullptr &&  save_button!=nullptr && renameBox!=nullptr && classSourceCode!=nullptr )
     {
+        int prevTab = codeCategoryTabs->tabInUse;
+
         classEditorList->set_coords( 0, 0 );
         classEditorList->set_width(view_space->w );
         classEditorList->set_height(view_space->h);
@@ -324,13 +326,12 @@ void classResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
         classEditorList->set_height( view_space->h);
         classEditorList->clear_list();
 
-        if( fEditorPanel!=nullptr )
+        if( panel_main_editor!=nullptr )
         {
-            fEditorPanel->add_gui_element(renameBox,true);
-            fEditorPanel->add_gui_element(confirmResource_button,true);
-            fEditorPanel->add_gui_element(cancelResource_button,true);
-            fEditorPanel->process_self();
-            //panel_main_editor->process_self();
+            panel_main_editor->add_gui_element(renameBox,true);
+            panel_main_editor->add_gui_element(confirmResource_button,true);
+            panel_main_editor->add_gui_element(cancelResource_button,true);
+            panel_main_editor->process_self();
         }
         else
         {
@@ -386,11 +387,11 @@ void classResource::save_resource(std::string file_path, int backupId)
     {
         main_gpe_splash_page->update_submessages( "Saving Class", resource_name );
     }
-    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"resources_check.txt ", "Saving "+ get_name() +"...");
+    sff_ex::append_to_file( gpe::get_user_settings_folder()+"resources_check.txt ", "Saving "+ get_name() +"...");
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( gpe::main_file_url_manager->path_exists(soughtDir) )
+    if( sff_ex::path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
@@ -416,7 +417,7 @@ void classResource::save_resource(std::string file_path, int backupId)
                 std::string sourceCodeSaveLocation = soughtDir+resource_name+".js";
                 if( usingAltSaveSource)
                 {
-                    if( gpe::main_file_url_manager->file_exists(sourceCodeSaveLocation) )
+                    if( sff_ex::file_exists(sourceCodeSaveLocation) )
                     {
                         /*
                         if( pawgui::display_prompt_message("[WARNING]Class File Already exists?","Are you sure you will like to overwrite your ["+resource_name+".js] Class file? This action is irreversible!")==pawgui::display_query_yes)

@@ -1,5 +1,5 @@
 /*
-gpe_renderer_package_raylib.h
+gpe_renderer_package_sdl.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,22 +31,22 @@ SOFTWARE.
 
 */
 
-#ifndef gpe_render_package_raylib_h
-#define gpe_render_package_raylib_h
+#ifndef gpe_render_package_sdl_h
+#define gpe_render_package_sdl_h
 
 #include "../gpe/gpe_render_package.h"
 #include "../gpe/gpe_render_package_handler.h"
 
-#include "gpe_artist_raylib.h"
-#include "gpe_renderer_raylib.h"
-#include "gpe_texture_raylib.h"
-#include "gpe_texture_target_raylib.h"
-#include "gpe_window_controller_raylib.h"
+#include "gpe_artist_sdl.h"
+#include "gpe_renderer_sdl.h"
+#include "gpe_texture_sdl.h"
+#include "gpe_texture_target_sdl.h"
+#include "gpe_window_controller_sdl.h"
 
 namespace gpe
 {
-    bool init_raylib_render_package();
-    void quit_raylib_render_package();
+    bool init_sdl_render_package();
+    void quit_sdl_render_package();
 }
 
-#endif //gpe_render_package_raylib_h
+#endif //gpe_render_package_sdl_h

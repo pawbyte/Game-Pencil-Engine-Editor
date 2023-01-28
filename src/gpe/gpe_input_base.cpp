@@ -1,12 +1,15 @@
+// *** ADDED BY HEADER FIXUP ***
+#include <istream>
+// *** END ***
 /*
 gpe_input_base.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -34,7 +37,7 @@ SOFTWARE.
 #include <iostream>
 #include "gpe_globals.h"
 #include "gpe_input_base.h"
-#include "../other_libs/stg_ex.h"
+#include "internal_libs/stg_ex.h"
 
 namespace gpe
 {
@@ -554,7 +557,7 @@ namespace gpe
         return false;
     }
 
-    bool input_manager_base::check_mouse_button_clicked(int button_id)
+    bool input_manager_base::check_mouse_double_clicked(int button_id)
     {
         if(button_id>=0 && button_id<mouse_button_count )
         {
@@ -797,7 +800,7 @@ namespace gpe
         {
             return game_pads[gamepad_id];
         }
-        return NULL;
+        return nullptr;
     };
 
     int input_manager_base::gamepad_get_axes_count ( int gamepad_id )
@@ -951,7 +954,7 @@ namespace gpe
         mouse_scrolling_up = false;
         mouse_scrolling_down = false;
 
-        if( window_controller_main !=NULL )
+        if( window_controller_main !=nullptr )
         {
             window_controller_main->reset_input();
         }
@@ -1180,7 +1183,7 @@ namespace gpe
         kb_backspace_pressed= false;
         kb_shift_pressed = false;
 
-        gamepad_base * tempGC = NULL;
+        gamepad_base * tempGC = nullptr;
 
         for( int i = 0; i < gp_max_devices; i++ )
         {

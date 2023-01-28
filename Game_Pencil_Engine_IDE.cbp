@@ -19,27 +19,19 @@
 				<Option output="bin/Debug/Game_Pencil_Engine_IDE" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="0" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-g" />
-					<Add directory="C:/Users/SirNathanHurde/OneDrive/Documents/gpe_crossplatform/Game_Pencil_Engine_IDE/" />
-				</Compiler>
-				<Linker>
-					<Add library="SDL2" />
-					<Add library="SDL2main" />
-					<Add library="SDL2_image" />
-					<Add library="SDL2_ttf" />
-					<Add library="SDL2_mixer" />
-					<Add library="mingw32" />
-					<Add library="Comdlg32" />
-					<Add library="gdi32" />
-					<Add library="comctl32" />
-				</Linker>
+				<Option compiler="sdl2x_compiler" />
 			</Target>
 			<Target title="Win32-Release">
 				<Option platforms="Windows;" />
 				<Option output="bin/Release/Game_Pencil_Engine_IDE" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="sdl2x_compiler" />
+			</Target>
+			<Target title="MacOS-Debug">
+				<Option platforms="Mac;" />
+				<Option output="bin/Debug/Game_Pencil_Engine_IDE" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -50,6 +42,7 @@
 					<Add directory="C:/Users/SirNathanHurde/OneDrive/Documents/gpe_crossplatform/Game_Pencil_Engine_IDE/" />
 				</Compiler>
 				<Linker>
+					<Add option="-pg -lgmon" />
 					<Add option="-pg" />
 					<Add library="SDL2" />
 					<Add library="SDL2main" />
@@ -58,17 +51,6 @@
 					<Add library="SDL2_mixer" />
 					<Add library="procps" />
 				</Linker>
-			</Target>
-			<Target title="MacOS-Debug">
-				<Option platforms="Mac;" />
-				<Option output="bin/Debug/Game_Pencil_Engine_IDE" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
-				<Option type="0" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-g" />
-					<Add directory="C:/Users/SirNathanHurde/OneDrive/Documents/gpe_crossplatform/Game_Pencil_Engine_IDE/" />
-				</Compiler>
 			</Target>
 			<Target title="MacOS-Release">
 				<Option platforms="Mac;" />
@@ -180,10 +162,11 @@
 		</Build>
 		<Unit filename="resource.rc">
 			<Option compilerVar="WINDRES" />
-			<Option target="Win32-Debug" />
 			<Option target="Win32-Release" />
+			<Option target="Win32-Debug" />
 		</Unit>
 		<Unit filename="src/game_state_credits_base.cpp" />
+		<Unit filename="src/game_state_credits_base.h" />
 		<Unit filename="src/game_state_load.cpp" />
 		<Unit filename="src/game_state_load.h" />
 		<Unit filename="src/game_state_main_menu_base.cpp" />
@@ -212,6 +195,8 @@
 		<Unit filename="src/gpe/gpe_basic_object_type_mapper.h" />
 		<Unit filename="src/gpe/gpe_branch.cpp" />
 		<Unit filename="src/gpe/gpe_branch.h" />
+		<Unit filename="src/gpe/gpe_branch_factory.cpp" />
+		<Unit filename="src/gpe/gpe_branch_factory.h" />
 		<Unit filename="src/gpe/gpe_camera.cpp" />
 		<Unit filename="src/gpe/gpe_camera.h" />
 		<Unit filename="src/gpe/gpe_collision_controller_base.cpp" />
@@ -309,8 +294,6 @@
 		<Unit filename="src/gpe_editor/gpe_basic_resource_page.h" />
 		<Unit filename="src/gpe_editor/gpe_cpp_builder_settings.cpp" />
 		<Unit filename="src/gpe_editor/gpe_cpp_builder_settings.h" />
-		<Unit filename="src/gpe_editor/gpe_dock_system.cpp" />
-		<Unit filename="src/gpe_editor/gpe_dock_system.h" />
 		<Unit filename="src/gpe_editor/gpe_editor.cpp" />
 		<Unit filename="src/gpe_editor/gpe_editor.h" />
 		<Unit filename="src/gpe_editor/gpe_editor_aboutpage.cpp" />
@@ -326,6 +309,8 @@
 		<Unit filename="src/gpe_editor/gpe_editor_project_helper.h" />
 		<Unit filename="src/gpe_editor/gpe_editor_settings.cpp" />
 		<Unit filename="src/gpe_editor/gpe_editor_settings.h" />
+		<Unit filename="src/gpe_editor/gpe_editor_splash_page.cpp" />
+		<Unit filename="src/gpe_editor/gpe_editor_splash_page.h" />
 		<Unit filename="src/gpe_editor/gpe_editor_start_page.cpp" />
 		<Unit filename="src/gpe_editor/gpe_editor_start_page.h" />
 		<Unit filename="src/gpe_editor/gpe_editor_state.cpp" />
@@ -382,50 +367,6 @@
 		<Unit filename="src/gpe_editor/video_resource.h" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/other_libs/dlgmodule.h" />
-		<Unit filename="src/other_libs/dlgmodule/macos/buttons.h">
-			<Option target="MacOS-Debug" />
-			<Option target="MacOS-Release" />
-		</Unit>
-		<Unit filename="src/other_libs/dlgmodule/macos/cocoa.mm">
-			<Option compile="1" />
-			<Option link="1" />
-			<Option target="MacOS-Debug" />
-			<Option target="MacOS-Release" />
-		</Unit>
-		<Unit filename="src/other_libs/dlgmodule/macos/config.cpp">
-			<Option target="MacOS-Debug" />
-			<Option target="MacOS-Release" />
-		</Unit>
-		<Unit filename="src/other_libs/dlgmodule/macos/config.h">
-			<Option target="MacOS-Debug" />
-			<Option target="MacOS-Release" />
-		</Unit>
-		<Unit filename="src/other_libs/dlgmodule/macos/macos.cpp">
-			<Option target="MacOS-Debug" />
-			<Option target="MacOS-Release" />
-		</Unit>
-		<Unit filename="src/other_libs/dlgmodule/unix/lodepng.cpp">
-			<Option target="Linux-Debug" />
-			<Option target="Linux-Release" />
-			<Option target="FreeBSD-Debug" />
-			<Option target="FreeBSD-Release" />
-		</Unit>
-		<Unit filename="src/other_libs/dlgmodule/unix/lodepng.h">
-			<Option target="Linux-Debug" />
-			<Option target="Linux-Release" />
-			<Option target="FreeBSD-Debug" />
-			<Option target="FreeBSD-Release" />
-		</Unit>
-		<Unit filename="src/other_libs/dlgmodule/unix/unix.cpp">
-			<Option target="Linux-Debug" />
-			<Option target="Linux-Release" />
-			<Option target="FreeBSD-Debug" />
-			<Option target="FreeBSD-Release" />
-		</Unit>
-		<Unit filename="src/other_libs/dlgmodule/win32/win32.cpp">
-			<Option target="Win32-Debug" />
-			<Option target="Win32-Release" />
-		</Unit>
 		<Unit filename="src/other_libs/semath.cpp" />
 		<Unit filename="src/other_libs/semath.h" />
 		<Unit filename="src/other_libs/sff_ex.cpp" />
@@ -447,6 +388,8 @@
 		<Unit filename="src/pawgui/pawgui_content_selector.h" />
 		<Unit filename="src/pawgui/pawgui_context.cpp" />
 		<Unit filename="src/pawgui/pawgui_context.h" />
+		<Unit filename="src/pawgui/pawgui_dock_system.cpp" />
+		<Unit filename="src/pawgui/pawgui_dock_system.h" />
 		<Unit filename="src/pawgui/pawgui_dropdown.cpp" />
 		<Unit filename="src/pawgui/pawgui_dropdown.h" />
 		<Unit filename="src/pawgui/pawgui_file_popups.cpp" />
@@ -457,6 +400,8 @@
 		<Unit filename="src/pawgui/pawgui_general_resource_container.h" />
 		<Unit filename="src/pawgui/pawgui_globals.cpp" />
 		<Unit filename="src/pawgui/pawgui_globals.h" />
+		<Unit filename="src/pawgui/pawgui_iconpack.cpp" />
+		<Unit filename="src/pawgui/pawgui_iconpack.h" />
 		<Unit filename="src/pawgui/pawgui_labels.cpp" />
 		<Unit filename="src/pawgui/pawgui_labels.h" />
 		<Unit filename="src/pawgui/pawgui_notifications.cpp" />
@@ -503,36 +448,39 @@
 		<Unit filename="src/pawgui/pawgui_theme_controller.h" />
 		<Unit filename="src/pawgui/pawgui_themes.cpp" />
 		<Unit filename="src/pawgui/pawgui_themes.h" />
-		<Unit filename="src/sdl_libs/gpe_artist_sdl.cpp" />
-		<Unit filename="src/sdl_libs/gpe_artist_sdl.h" />
-		<Unit filename="src/sdl_libs/gpe_audio_sdl_mixer.cpp" />
-		<Unit filename="src/sdl_libs/gpe_audio_sdl_mixer.h" />
-		<Unit filename="src/sdl_libs/gpe_cursor_sdl.cpp" />
-		<Unit filename="src/sdl_libs/gpe_cursor_sdl.h" />
-		<Unit filename="src/sdl_libs/gpe_font_sdl.cpp" />
-		<Unit filename="src/sdl_libs/gpe_font_sdl.h" />
-		<Unit filename="src/sdl_libs/gpe_input_sdl.cpp" />
-		<Unit filename="src/sdl_libs/gpe_input_sdl.h" />
-		<Unit filename="src/sdl_libs/gpe_render_package_sdl.cpp" />
-		<Unit filename="src/sdl_libs/gpe_render_package_sdl.h" />
-		<Unit filename="src/sdl_libs/gpe_renderer_sdl.cpp" />
-		<Unit filename="src/sdl_libs/gpe_renderer_sdl.h" />
-		<Unit filename="src/sdl_libs/gpe_sdl.cpp" />
-		<Unit filename="src/sdl_libs/gpe_sdl.h" />
-		<Unit filename="src/sdl_libs/gpe_sdl_basic.cpp" />
-		<Unit filename="src/sdl_libs/gpe_sdl_basic.h" />
-		<Unit filename="src/sdl_libs/gpe_sdl_converter.cpp" />
-		<Unit filename="src/sdl_libs/gpe_sdl_converter.h" />
-		<Unit filename="src/sdl_libs/gpe_texture_sdl.cpp" />
-		<Unit filename="src/sdl_libs/gpe_texture_sdl.h" />
-		<Unit filename="src/sdl_libs/gpe_texture_target_sdl.cpp" />
-		<Unit filename="src/sdl_libs/gpe_texture_target_sdl.h" />
-		<Unit filename="src/sdl_libs/gpe_timer_sdl.cpp" />
-		<Unit filename="src/sdl_libs/gpe_timer_sdl.h" />
-		<Unit filename="src/sdl_libs/gpe_window_controller_sdl.cpp" />
-		<Unit filename="src/sdl_libs/gpe_window_controller_sdl.h" />
-		<Unit filename="src/sdl_libs/sdl_surface_ex.cpp" />
-		<Unit filename="src/sdl_libs/sdl_surface_ex.h" />
+		<Unit filename="src/sdl2_module/gpe_animiation2d_sdl2.cpp" />
+		<Unit filename="src/sdl2_module/gpe_animiation2d_sdl2.h" />
+		<Unit filename="src/sdl2_module/gpe_artist_sdl2.cpp" />
+		<Unit filename="src/sdl2_module/gpe_artist_sdl2.h" />
+		<Unit filename="src/sdl2_module/gpe_audio_sdl2_mixer.cpp" />
+		<Unit filename="src/sdl2_module/gpe_audio_sdl2_mixer.h" />
+		<Unit filename="src/sdl2_module/gpe_cursor_sdl2.cpp" />
+		<Unit filename="src/sdl2_module/gpe_cursor_sdl2.h" />
+		<Unit filename="src/sdl2_module/gpe_font_sdl2.cpp" />
+		<Unit filename="src/sdl2_module/gpe_font_sdl2.h" />
+		<Unit filename="src/sdl2_module/gpe_input_sdl2.cpp" />
+		<Unit filename="src/sdl2_module/gpe_input_sdl2.h" />
+		<Unit filename="src/sdl2_module/gpe_render_package_sdl2.cpp" />
+		<Unit filename="src/sdl2_module/gpe_render_package_sdl2.h" />
+		<Unit filename="src/sdl2_module/gpe_renderer_sdl2.cpp" />
+		<Unit filename="src/sdl2_module/gpe_renderer_sdl2.h" />
+		<Unit filename="src/sdl2_module/gpe_sdl2.cpp" />
+		<Unit filename="src/sdl2_module/gpe_sdl2.h" />
+		<Unit filename="src/sdl2_module/gpe_sdl2_basic.cpp" />
+		<Unit filename="src/sdl2_module/gpe_sdl2_basic.h" />
+		<Unit filename="src/sdl2_module/gpe_sdl2_constants.h" />
+		<Unit filename="src/sdl2_module/gpe_sdl2_converter.cpp" />
+		<Unit filename="src/sdl2_module/gpe_sdl2_converter.h" />
+		<Unit filename="src/sdl2_module/gpe_texture_sdl2.cpp" />
+		<Unit filename="src/sdl2_module/gpe_texture_sdl2.h" />
+		<Unit filename="src/sdl2_module/gpe_texture_target_sdl2.cpp" />
+		<Unit filename="src/sdl2_module/gpe_texture_target_sdl2.h" />
+		<Unit filename="src/sdl2_module/gpe_timer_sdl2.cpp" />
+		<Unit filename="src/sdl2_module/gpe_timer_sdl2.h" />
+		<Unit filename="src/sdl2_module/gpe_window_controller_sdl2.cpp" />
+		<Unit filename="src/sdl2_module/gpe_window_controller_sdl2.h" />
+		<Unit filename="src/sdl2_module/thirdparty/sdl2_surface_ex.cpp" />
+		<Unit filename="src/sdl2_module/thirdparty/sdl2_surface_ex.h" />
 		<Extensions>
 			<code_completion>
 				<search_path add="C:\Users\SirNathanHurde\OneDrive\Documents\gpe_crossplatform\Game_Pencil_Engine_IDE\" />

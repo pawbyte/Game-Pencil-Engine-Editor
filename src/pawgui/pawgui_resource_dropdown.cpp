@@ -3,10 +3,10 @@ pawgui_resource_dropdown.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -286,17 +286,17 @@ namespace pawgui
                 selectedResource = containerTree->find_resource_from_id(selectedId);
                 if( selectedResource!=nullptr)
                 {
-                    gpe::gfs->render_text_resized( widget_box.x+32+padding_default-cam->x,widget_box.y+widget_box.h/2-cam->y,selectedResource->get_name(),pawgui::theme_main->input_font_color,font_popup,gpe::fa_left,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
+                    gpe::gfs->render_text_clipped( widget_box.x+32+padding_default-cam->x,widget_box.y+widget_box.h/2-cam->y,selectedResource->get_name(),pawgui::theme_main->input_font_color,font_popup,gpe::fa_left,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
                     selectedResource->render_image( widget_box.x,widget_box.y,widget_box.h-2,widget_box.h-2,view_space,cam);
                 }
                 else
                 {
-                    gpe::gfs->render_text_resized( widget_box.x-cam->x,widget_box.y+widget_box.h/2-cam->y,widget_name,pawgui::theme_main->input_font_color,font_popup,gpe::fa_left,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
+                    gpe::gfs->render_text_clipped( widget_box.x-cam->x,widget_box.y+widget_box.h/2-cam->y,widget_name,pawgui::theme_main->input_font_color,font_popup,gpe::fa_left,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
                 }
             }
             else
             {
-                gpe::gfs->render_text_resized( widget_box.x+padding_default-cam->x,widget_box.y+widget_box.h/2-cam->y,widget_name,pawgui::theme_main->input_font_color,font_popup,gpe::fa_left,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
+                gpe::gfs->render_text_clipped( widget_box.x+padding_default-cam->x,widget_box.y+widget_box.h/2-cam->y,widget_name,pawgui::theme_main->input_font_color,font_popup,gpe::fa_left,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
             }
             //gpe::gcanvas->render_rectangle( widget_box.x+widget_box.w-widget_box.h*3/4-cam->x,widget_box.y-cam->y,widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y,pawgui::theme_main->input_outline_color ,false);
             if( dropdown_arrow_texture!=nullptr )

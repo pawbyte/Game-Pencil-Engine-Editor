@@ -3,10 +3,10 @@ gpe_editor.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -31,7 +31,6 @@ SOFTWARE.
 
 */
 
-#include <ctime>
 #include "../gpe/gpe.h"
 #include "gpe_editor.h"
 #include "gpe_editor_start_page.h"
@@ -99,14 +98,21 @@ GPE_Gui_Engine::GPE_Gui_Engine()
     if( gpe::window_controller_main!=nullptr)
     {
         gpe::window_controller_main->set_window_title("Game Pencil Engine");
+        gpe::error_log->report("gpe::window_controller_main is not nullptr...");
     }
     else
     {
-        gpe::error_log->report("gpe::window_controller_main is a nullptr...");
+        gpe::error_log->report("gpe::window_controller_main is nullptr...");
     }
+
     pawgui::theme_default = editor_theme_controller->add_theme("default");
     pawgui::theme_default->load_theme( gpe::app_directory_name+"themes/default.gpf");
     pawgui::theme_main = pawgui::theme_default;
+
+
+    pawgui::theme_system_based = editor_theme_controller->add_theme("system_based");
+    pawgui::theme_system_based->load_theme( gpe::app_directory_name+"themes/system_based.gpf");
+
 
     main_notification_holder = new pawgui::widget_notfications_holder();
     main_notification_holder->add_notification_simple("Test","This is a simple notification test.....");
@@ -132,7 +138,7 @@ GPE_Gui_Engine::GPE_Gui_Engine()
     showStartPageAtStartUp = true;
 
     //loads the recent file list
-    std::string recentFileListFileName =  gpe::main_file_url_manager->get_user_settings_folder()+"recent_projects.txt";
+    std::string recentFileListFileName =  gpe::get_user_settings_folder()+"recent_projects.txt";
     std::ifstream recentFileListFile( recentFileListFileName.c_str() );
     if( !recentFileListFile.fail() )
     {
@@ -154,7 +160,6 @@ GPE_Gui_Engine::GPE_Gui_Engine()
 
 GPE_Gui_Engine::~GPE_Gui_Engine()
 {
-    gpe::error_log->report("Clearing projects...");
     GPE_ProjectFolder * tempProject = nullptr;
     for( int i = (int)gpeProjects.size()-1; i >=0; i--)
     {
@@ -162,54 +167,45 @@ GPE_Gui_Engine::~GPE_Gui_Engine()
         if( tempProject!=nullptr)
         {
             delete tempProject;
-            tempProject = nullptr;
+            tempProject= nullptr;
         }
     }
     gpeProjects.clear();
 
-    gpe::error_log->report("Deleting main_toolbar...");
     if( main_toolbar!=nullptr)
     {
         delete main_toolbar;
         main_toolbar = nullptr;
     }
 
-    gpe::error_log->report("Deleting mainResourceTree...");
     if( mainResourceTree!=nullptr)
     {
         delete mainResourceTree;
         mainResourceTree = nullptr;
     }
 
-    gpe::error_log->report("Deleting theme_main...");
     if( pawgui::theme_main!=nullptr)
     {
         delete pawgui::theme_main;
         pawgui::theme_main = nullptr;
     }
 
-    gpe::error_log->report("Deleting main_context_menu...");
     if( pawgui::main_context_menu!=nullptr)
     {
         delete pawgui::main_context_menu;
         pawgui::main_context_menu = nullptr;
     }
-
-    gpe::error_log->report("Deleting main_tab_resource_bar...");
     if(pawgui::main_tab_resource_bar!=nullptr)
     {
         delete pawgui::main_tab_resource_bar;
         pawgui::main_tab_resource_bar = nullptr;
     }
 
-    gpe::error_log->report("Deleting main_editor_log...");
     if(main_editor_log!=nullptr)
     {
         delete main_editor_log;
         main_editor_log = nullptr;
     }
-
-    gpe::error_log->report("Deleting main_anchor_controller...");
     if( pawgui::main_anchor_controller!=nullptr )
     {
         pawgui::main_anchor_controller->clear_list( false );
@@ -217,15 +213,10 @@ GPE_Gui_Engine::~GPE_Gui_Engine()
         pawgui::main_anchor_controller = nullptr;
     }
 
-    gpe::error_log->report("Deleting texture_gpe_logo'");
-
     if( texture_gpe_logo!=nullptr)
     {
         texture_gpe_logo = nullptr;
     }
-
-    gpe::error_log->report("End of GPE_Gui_Engine deletion...");
-
 }
 
 void GPE_Gui_Engine::add_to_recent_project_list(std::string newProjectFileName, bool saveData)
@@ -257,7 +248,7 @@ void GPE_Gui_Engine::add_to_recent_project_list(std::string newProjectFileName, 
     if( saveData)
     {
         cSize = (int)gpeRecentProjects.size();
-        std::string recentFileListFileName =  gpe::main_file_url_manager->get_user_settings_folder()+"recent_projects.txt";
+        std::string recentFileListFileName =  gpe::get_user_settings_folder()+"recent_projects.txt";
         std::ofstream recentFileListFile( recentFileListFileName.c_str() );
         if( !recentFileListFile.fail() )
         {
@@ -286,13 +277,13 @@ void GPE_Gui_Engine::apply_logic()
     {
         if( pawgui::main_overlay_system!=nullptr)
         {
-            pawgui::main_overlay_system->update_tooltip("");
+            //pawgui::main_overlay_system->update_tooltip("");
         }
         pawgui::update_popup_info();
     }
     process_window_title();
 
-    if( main_toolbar!= nullptr && pawgui::main_context_menu!=nullptr )
+    if( main_toolbar!=nullptr && pawgui::main_context_menu!=nullptr )
     {
         main_toolbar->set_coords(0,0);
         main_toolbar->set_width( gpe::screen_width );
@@ -344,7 +335,7 @@ void GPE_Gui_Engine::apply_logic()
                 }
 
                 panel_main_editor = gpe_dock->find_panel("Editor");
-                panel_resource_tree = gpe_dock->find_panel("Resources");
+                panel_resource_tree = gpe_dock->find_panel("Resource Browser");
                 panel_inspector = gpe_dock->find_panel("Inspector");
                 panel_meta = gpe_dock->find_panel("Meta");
 
@@ -369,10 +360,6 @@ void GPE_Gui_Engine::apply_logic()
                 gpe::error_log->report( "gpe_dock not initialized!" );
             }
         }
-    }
-    else
-    {
-        gpe::error_log->report("Toolbar or contextmenu = nullptr...");
     }
 
     if( main_toolbar!=nullptr && main_toolbar->just_closed() )
@@ -523,7 +510,7 @@ void GPE_Gui_Engine::apply_logic()
         for( int iRFile = 0; iRFile < uInS; iRFile++)
         {
             temp_gpe_file = gpe::input->files_dropped_list.at( iRFile);
-            if( gpe::main_file_url_manager->file_exists(temp_gpe_file) )
+            if( sff_ex::file_exists(temp_gpe_file) )
             {
                 if( stg_ex::get_file_ext(temp_gpe_file)=="gppf" )
                 {
@@ -544,7 +531,7 @@ void GPE_Gui_Engine::apply_logic()
     if( gpe::input->check_mouse_released( mb_anybutton ) )
     {
         pawgui::resource_dragged = nullptr;
-        pawgui::resource_last_clicked = nullptr;
+        //pawgui::resource_last_clicked = nullptr;
     }
 
     //If the user has Xed out the window
@@ -602,7 +589,7 @@ void GPE_Gui_Engine::dock_reset()
     gpe_dock->resize_dock( 5, 3 );
     gpe_dock->set_primary_panel( 2, 1 );
     gpe_dock->add_to_panel( "Main", gpe_dock->get_primary_panel(), true );
-    gpe_dock->add_to_panel("Resources", 0, true );
+    gpe_dock->add_to_panel("Resource Browser", 0, true );
     gpe_dock->add_to_panel("Editor", 1, true );
     gpe_dock->add_to_panel("Inspector", 0 );
     gpe_dock->add_to_panel("Meta", 0 );
@@ -786,7 +773,7 @@ void GPE_Gui_Engine::clean_current_project_build_folder(int buildMetaTemplate)
 void GPE_Gui_Engine::clear_recent_project_list()
 {
     gpeRecentProjects.clear();
-    std::string recentFileListFileName =  gpe::main_file_url_manager->get_user_settings_folder()+"recent_projects.txt";
+    std::string recentFileListFileName =  gpe::get_user_settings_folder()+"recent_projects.txt";
     std::ofstream recentFileListFile( recentFileListFileName.c_str() );
     recentFileListFile.close();
     update_recent_project_list(false);
@@ -944,7 +931,7 @@ void GPE_Gui_Engine::launch_new_project()
         //pawgui::main_overlay_system->render_frozen_screenshot( );
         while(exitOperation==false)
         {
-            gpe::cursor_main_controller->cursor_change( gpe::cursor_main_controller->cursor_system_name( gpe::cursor_default_type::arrow ) );
+            gpe::cursor_main_controller->cursor_change( gpe::cursor_main_controller->cursor_system_name( gpe::cursor_default_type::arrow) );
             //gpe::error_log->report("Processing tip of the day");
             gpe::game_runtime->start_loop();
 
@@ -1020,7 +1007,7 @@ void GPE_Gui_Engine::launch_new_project()
                         We exit this while loop and skip to end of function ready to create
                         a new project.
                         */
-                        if( gpe::main_file_url_manager->path_exists( stg_ex::get_path_from_file(newProjectFileName)  ) )
+                        if( sff_ex::path_exists( stg_ex::get_path_from_file(newProjectFileName)  ) )
                         {
                             manualCancel = false;
                             create_buttonPushed = true;
@@ -1219,7 +1206,7 @@ void GPE_Gui_Engine::load_settings()
 
     std::string otherColContainerName = "";
 
-    std::string newFileIn =  gpe::main_file_url_manager->get_user_settings_folder()+"gpe_ide_settings.txt";
+    std::string newFileIn =  gpe::get_user_settings_folder()+"gpe_ide_settings.txt";
     std::ifstream gameResourceFileIn( newFileIn.c_str() );
 
     gpe::error_log->report("Loading settings - "+newFileIn);
@@ -1317,7 +1304,7 @@ void GPE_Gui_Engine::load_settings()
                             else if(key_string=="ColorTheme")
                             {
                                 colortheme_name = valstring;
-                                if( gpe::main_file_url_manager->file_exists( gpe::app_directory_name+"themes/"+colortheme_name) )
+                                if( sff_ex::file_exists( gpe::app_directory_name+"themes/"+colortheme_name) )
                                 {
 
                                 }
@@ -1351,7 +1338,7 @@ void GPE_Gui_Engine::open_project(std::string newProjectFileName)
         {
             if( stg_ex::get_file_ext(newProjectFileName)=="gppf" )
             {
-                if( gpe::main_file_url_manager->file_exists(newProjectFileName) )
+                if( sff_ex::file_exists(newProjectFileName) )
                 {
                     if( pawgui::main_settings && pawgui::main_settings->useShortProjectNames )
                     {
@@ -1386,7 +1373,7 @@ void GPE_Gui_Engine::open_project(std::string newProjectFileName)
                         {
                             main_editor_log->log_general_line("Project ["+newProjectFileName+"] processed...");
                         }
-                        mainResourceTree->add_resource_container( newProject->RESC_project_FOLDER );
+                        mainResourceTree->add_resource_container( newProject->RESC_PROJECT_FOLDER );
                     }
                     else
                     {
@@ -1446,13 +1433,6 @@ void GPE_Gui_Engine::process_overlay_message()
         if( (int)nFolderName.size()>0)
         {
             pawgui::resource_last_clicked->set_name( nFolderName);
-        }
-    }
-    else if( pawgui::action_message_text=="Open Resource" && pawgui::resource_last_clicked!=nullptr )
-    {
-        if(  pawgui::main_tab_resource_bar != nullptr )
-        {
-            pawgui::main_tab_resource_bar->add_new_tab( pawgui::resource_last_clicked->get_held_resource() );
         }
     }
     else if( pawgui::action_message_text=="Rename Resource" && pawgui::resource_last_clicked!=nullptr )
@@ -1571,8 +1551,8 @@ void GPE_Gui_Engine::process_overlay_message()
                             pawgui::widget_resource_container * newResource = fFolder->create_blank_resource( tempResType,pawgui::resource_last_clicked->parentResource,newresource_name );
                             if( newResource!=nullptr)
                             {
-                                pawgui::resource_last_clicked->save_container(gpe::main_file_url_manager->get_user_temp_folder()+"temp_duplicated_resource.gpf");
-                                newResource->preprocess_container( gpe::main_file_url_manager->get_user_temp_folder()+"temp_duplicated_resource.gpf");
+                                pawgui::resource_last_clicked->save_container(gpe::get_user_temp_folder()+"temp_duplicated_resource.gpf");
+                                newResource->preprocess_container( gpe::get_user_temp_folder()+"temp_duplicated_resource.gpf");
                                 newResource->set_name( newresource_name );
                                 newResource->detect_name_change(true);
                                 pawgui::main_tab_resource_bar->add_new_tab(newResource->get_held_resource() );
@@ -1638,7 +1618,7 @@ void GPE_Gui_Engine::process_overlay_message()
     {
         if( current_project!=nullptr)
         {
-            gpe::main_file_url_manager->external_open_program(current_project->get_project_directory() );
+            gpe::external_open_program(current_project->get_project_directory() );
         }
     }
     else if( pawgui::action_message_text=="Save Project")
@@ -1653,8 +1633,8 @@ void GPE_Gui_Engine::process_overlay_message()
     {
         if( current_project!=nullptr)
         {
-            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_project_SETTINGS->get_held_resource() );
-            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_project_SETTINGS->get_held_resource();
+            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_PROJECT_SETTINGS->get_held_resource() );
+            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_PROJECT_SETTINGS->get_held_resource();
             tProjectProps->project_settingsBar->set_selected_option("Platforms");
         }
         else if( main_editor_log!=nullptr)
@@ -1687,8 +1667,8 @@ void GPE_Gui_Engine::process_overlay_message()
     {
         if( current_project!=nullptr)
         {
-            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_project_SETTINGS->get_held_resource() );
-            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_project_SETTINGS->get_held_resource();
+            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_PROJECT_SETTINGS->get_held_resource() );
+            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_PROJECT_SETTINGS->get_held_resource();
             tProjectProps->project_settingsBar->set_selected_option("Platforms");
             tProjectProps->export_settingsBar->set_selected_option("HTML5");
         }
@@ -1702,8 +1682,8 @@ void GPE_Gui_Engine::process_overlay_message()
         if( current_project!=nullptr)
         {
             /*
-            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_project_SETTINGS->get_held_resource() );
-            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_project_SETTINGS->get_held_resource();
+            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_PROJECT_SETTINGS->get_held_resource() );
+            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_PROJECT_SETTINGS->get_held_resource();
             tProjectProps->project_settingsBar->set_selected_option("Platforms");
             tProjectProps->export_settingsBar->set_selected_option("HTML5");
             */
@@ -1727,10 +1707,10 @@ void GPE_Gui_Engine::process_overlay_message()
     }
     else if( pawgui::action_message_text=="Build Nintendo Switch GAME")
     {
-        if( current_project!=nullptr && current_project->RESC_project_SETTINGS!=nullptr )
+        if( current_project!=nullptr && current_project->RESC_PROJECT_SETTINGS!=nullptr )
         {
-            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_project_SETTINGS->get_held_resource() );
-            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_project_SETTINGS->get_held_resource();
+            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_PROJECT_SETTINGS->get_held_resource() );
+            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_PROJECT_SETTINGS->get_held_resource();
             tProjectProps->project_settingsBar->set_selected_option("Platforms");
             tProjectProps->export_settingsBar->set_selected_option("Switch");
         }
@@ -1741,10 +1721,10 @@ void GPE_Gui_Engine::process_overlay_message()
     }
     else if( pawgui::action_message_text=="Build WINDOWS GAME")
     {
-        if( current_project!=nullptr && current_project->RESC_project_SETTINGS!=nullptr )
+        if( current_project!=nullptr && current_project->RESC_PROJECT_SETTINGS!=nullptr )
         {
-            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_project_SETTINGS->get_held_resource() );
-            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_project_SETTINGS->get_held_resource();
+            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_PROJECT_SETTINGS->get_held_resource() );
+            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_PROJECT_SETTINGS->get_held_resource();
             tProjectProps->project_settingsBar->set_selected_option("Platforms");
             tProjectProps->export_settingsBar->set_selected_option("Windows");
         }
@@ -1755,10 +1735,10 @@ void GPE_Gui_Engine::process_overlay_message()
     }
     else if( pawgui::action_message_text=="Build OSX GAME")
     {
-        if( current_project!=nullptr && current_project->RESC_project_SETTINGS!=nullptr )
+        if( current_project!=nullptr && current_project->RESC_PROJECT_SETTINGS!=nullptr )
         {
-            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_project_SETTINGS->get_held_resource() );
-            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_project_SETTINGS->get_held_resource();
+            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_PROJECT_SETTINGS->get_held_resource() );
+            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_PROJECT_SETTINGS->get_held_resource();
             tProjectProps->project_settingsBar->set_selected_option("Platforms");
             tProjectProps->export_settingsBar->set_selected_option("OSX");
         }
@@ -1769,10 +1749,10 @@ void GPE_Gui_Engine::process_overlay_message()
     }
     else if( pawgui::action_message_text=="Build LINUX GAME")
     {
-        if( current_project!=nullptr && current_project->RESC_project_SETTINGS!=nullptr )
+        if( current_project!=nullptr && current_project->RESC_PROJECT_SETTINGS!=nullptr )
         {
-            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_project_SETTINGS->get_held_resource() );
-            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_project_SETTINGS->get_held_resource();
+            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_PROJECT_SETTINGS->get_held_resource() );
+            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_PROJECT_SETTINGS->get_held_resource();
             tProjectProps->project_settingsBar->set_selected_option("Platforms");
             tProjectProps->export_settingsBar->set_selected_option("Linux");
         }
@@ -1799,20 +1779,20 @@ void GPE_Gui_Engine::process_overlay_message()
     }
     else if( pawgui::action_message_text=="Online Documentation"|| pawgui::action_message_text=="Documentation")
     {
-        gpe::main_file_url_manager->external_open_url("http://docs.pawbyte.com/");
+        gpe::external_open_url("http://docs.gamepencil.net/");
     }
     else if( pawgui::action_message_text=="Check Updates"|| pawgui::action_message_text=="Check Version")
     {
-        gpe::main_file_url_manager->external_open_url("http://gamepencil.net/get-game-pencil-engine/");
+        gpe::external_open_url("http://gamepencil.net/get-game-pencil-engine/");
     }
 
     else if( pawgui::action_message_text=="Community" || pawgui::action_message_text=="Online Forums" || pawgui::action_message_text=="Community" || pawgui::action_message_text=="Forums")
     {
-        gpe::main_file_url_manager->external_open_url("http://community.pawbyte.com/");
+        gpe::external_open_url("http://community.pawbyte.com/");
     }
     else if( pawgui::action_message_text=="Community Chat")
     {
-        gpe::main_file_url_manager->external_open_url("https://discord.gg/bua3rDW");
+        gpe::external_open_url("https://discord.gg/bua3rDW");
     }
     else if( pawgui::action_message_text=="Toggle Fullscreen Mode")
     {
@@ -1878,12 +1858,12 @@ void GPE_Gui_Engine::process_overlay_message()
     }
     else if( pawgui::action_message_text=="Find Project Resource...")
     {
-        if( current_project!=nullptr&& current_project->RESC_project_FOLDER!=nullptr)
+        if( current_project!=nullptr&& current_project->RESC_PROJECT_FOLDER!=nullptr)
         {
             std::string resourceNeedle = pawgui::get_string_from_popup("Project Resource Search","Resource name:","");
             if( (int)resourceNeedle.size() > 0 )
             {
-                pawgui::widget_resource_container * foundRes = current_project->RESC_project_FOLDER->find_resource_from_name(resourceNeedle);
+                pawgui::widget_resource_container * foundRes = current_project->RESC_PROJECT_FOLDER->find_resource_from_name(resourceNeedle);
                 if( foundRes!=nullptr)
                 {
                     pawgui::general_resource * foundHeldRes = foundRes->get_held_resource();
@@ -1920,7 +1900,7 @@ void GPE_Gui_Engine::process_overlay_message()
     }
     else if( pawgui::action_message_text=="Report Issue")
     {
-        gpe::main_file_url_manager->external_open_url("https://github.com/pawbyte/Game-Pencil-Engine/issues");
+        gpe::external_open_url("https://github.com/pawbyte/Game-Pencil-Engine/issues");
     }
     else if( pawgui::action_message_text=="About" || pawgui::action_message_text=="About..." || pawgui::action_message_text=="About Game Pencil Engine" )
     {
@@ -1967,7 +1947,7 @@ void GPE_Gui_Engine::process_overlay_message()
             if( foundResType )
             {
                 std::string fileToImportName = pawgui::get_filename_open_from_popup( pawgui::action_message_text,".gpf", pawgui::main_settings->fileOpenImportFileDir );
-                if( gpe::main_file_url_manager->file_exists(fileToImportName) && stg_ex::get_file_ext(fileToImportName) =="gpf" )
+                if( sff_ex::file_exists(fileToImportName) && stg_ex::get_file_ext(fileToImportName) =="gpf" )
                 {
                     pawgui::widget_resource_container * newResource = current_project->create_blank_resource(tempResType,nullptr, stg_ex::get_file_noext( stg_ex::get_local_from_global_file( fileToImportName) ) );
                     if( newResource!=nullptr)
@@ -1995,7 +1975,7 @@ void GPE_Gui_Engine::process_overlay_message()
         pawgui::action_message_text = stg_ex::string_replace_all(pawgui::action_message_text," Pane","");
         gpe_dock->toggle_default_pane( pawgui::action_message_text );
     }
-    else if( gpe::main_file_url_manager->file_exists(pawgui::action_message_text) )
+    else if( sff_ex::file_exists(pawgui::action_message_text) )
     {
         if( stg_ex::get_file_ext(pawgui::action_message_text)=="gppf")
         {
@@ -2225,7 +2205,7 @@ void GPE_Gui_Engine::save_current_project()
 
 void GPE_Gui_Engine::save_settings()
 {
-    std::string newSaveDataFilename =  gpe::main_file_url_manager->get_user_settings_folder()+"gpe_ide_settings.txt";
+    std::string newSaveDataFilename =  gpe::get_user_settings_folder()+"gpe_ide_settings.txt";
     std::ofstream newSaveDataFile( newSaveDataFilename.c_str() );
     //If the scene file could be saved
     if( !newSaveDataFile.fail() )
@@ -2287,7 +2267,7 @@ void GPE_Gui_Engine::take_live_screenshor()
 
 
                     screenshotNewLocation = gpe::app_directory_name+"screenshots/"+ stg_ex::get_file_noext( stg_ex::get_local_from_global_file( pawgui::project_current_name) )+"_"+timeBuffer+".png";
-                    if( gpe::main_file_url_manager->file_exists( screenshotNewLocation) ==false )
+                    if( sff_ex::file_exists( screenshotNewLocation) ==false )
                     {
                         foundBlank = true;
                         gpe::renderer_main->save_screenshot(screenshotNewLocation);
@@ -2295,7 +2275,7 @@ void GPE_Gui_Engine::take_live_screenshor()
                     for(int i = 1; foundBlank == false && i <= 1000; i++)
                     {
                         screenshotNewLocation = gpe::app_directory_name+"screenshots/"+stg_ex::get_file_noext( stg_ex::get_local_from_global_file( pawgui::project_current_name) )+"_"+timeBuffer+"_"+ stg_ex::int_to_string(i)+".png";
-                        if( gpe::main_file_url_manager->file_exists( screenshotNewLocation) ==false )
+                        if( sff_ex::file_exists( screenshotNewLocation) ==false )
                         {
                             foundBlank = true;
                             gpe::renderer_main->save_screenshot(screenshotNewLocation);
@@ -2304,7 +2284,7 @@ void GPE_Gui_Engine::take_live_screenshor()
                     }
                     if( foundBlank==false)
                     {
-                        gpe::main_file_url_manager->file_ammend_string( gpe::app_directory_name+"screenshots/screenshot_log.txt","Unable to save screenshot to "+screenshotNewLocation);
+                        sff_ex::append_to_file( gpe::app_directory_name+"screenshots/screenshot_log.txt","Unable to save screenshot to "+screenshotNewLocation);
                         gpe::error_log->report("Unable to save screenshot to "+screenshotNewLocation);
                     }
                 }
@@ -2360,13 +2340,13 @@ void init_gpe_editor_globals()
     GPE_BUILD_NAMES[ gpe::system_os_ios] = "IOS";
 
     //animation Labels we will use
-    animaton2d_LABELS[gpe::anim_frame_count] = "Frame Count";
-    animaton2d_LABELS[gpe::anim_frame_width] = "Frame Width";
-    animaton2d_LABELS[gpe::anim_frame_height] = "Frame Height";
-    animaton2d_LABELS[gpe::anim_pixel_offset_hori] = "Horizontal Pixel  Offset";
-    animaton2d_LABELS[gpe::anim_pixel_offset_vert] = "Vertical Pixel Offset";
-    animaton2d_LABELS[gpe::anim_pixel_padding_hori] = "Horizontal Frame Padding";
-    animaton2d_LABELS[gpe::anim_pixel_padding_vert] = "Vertictal Frame Padding";
+    animation2d_LABELS[gpe::anim_frame_count] = "Frame Count";
+    animation2d_LABELS[gpe::anim_frame_width] = "Frame Width";
+    animation2d_LABELS[gpe::anim_frame_height] = "Frame Height";
+    animation2d_LABELS[gpe::anim_pixel_offset_hori] = "Horizontal Pixel  Offset";
+    animation2d_LABELS[gpe::anim_pixel_offset_vert] = "Vertical Pixel Offset";
+    animation2d_LABELS[gpe::anim_pixel_padding_hori] = "Horizontal Frame Padding";
+    animation2d_LABELS[gpe::anim_pixel_padding_vert] = "Vertictal Frame Padding";
 
     //Tilesheet labels we will use
     tsDataLabels[0] = "Width";

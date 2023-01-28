@@ -3,10 +3,10 @@ light_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -44,7 +44,7 @@ lightResource::lightResource(pawgui::widget_resource_container * pFolder)
     myDirectionLight = new gpe::light_direction2d();
     myPointLight = new gpe::light_point2d();
 
-    //emitterTexture->load_new_texture( gpe::renderer_main, app_directory_name+"resources/gfx/animations/c_snow.png",-1,true );
+    //emitterTexture->load_new_texture( app_directory_name+"resources/gfx/animations/c_snow.png",-1,true );
     browseTexture_button = new pawgui::widget_button_label("Browse...","Browse for texture image" );
     clearTexture_button = new pawgui::widget_button_label("Clear Image...","Clears texture and reverts to shape" );
 
@@ -119,7 +119,7 @@ lightResource::~lightResource()
 
 bool lightResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount )
 {
-
+    return true;
 }
 
 bool lightResource::build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount  )
@@ -161,7 +161,7 @@ void lightResource::load_image(std::string new_file_name, bool autoProcess )
     {
         directionLightTexture = gpe::rph->get_new_texture();
     }
-    directionLightTexture->load_new_texture( gpe::renderer_main,new_file_name );
+    directionLightTexture->load_new_texture( new_file_name );
     directionLightTexture->set_blend_mode( gpe::blend_mode_add );
     myDirectionLight->light_texture = directionLightTexture;
     texturePreviewImgLabel->change_texture( directionLightTexture );
@@ -169,13 +169,13 @@ void lightResource::load_image(std::string new_file_name, bool autoProcess )
     texturePreviewImgLabel->set_height( 64 );
     if( autoProcess)
     {
-        gpe::main_file_url_manager->file_copy( new_file_name, stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/lights/"+ stg_ex::get_local_from_global_file(new_file_name) );
+        sff_ex::file_copy( new_file_name, stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/lights/"+ stg_ex::get_local_from_global_file(new_file_name) );
     }
 }
 
 void lightResource::load_resource(std::string file_path )
 {
-    if( resourcePostProcessed ==false || gpe::main_file_url_manager->file_exists(file_path))
+    if( resourcePostProcessed ==false || sff_ex::file_exists(file_path))
     {
         if( main_gpe_splash_page != nullptr )
         {
@@ -186,7 +186,7 @@ void lightResource::load_resource(std::string file_path )
 
         std::string newFileIn = "";
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/lights/";
-        if( gpe::main_file_url_manager->file_exists(file_path) )
+        if( sff_ex::file_exists(file_path) )
         {
             newFileIn = file_path;
             soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -336,7 +336,7 @@ void lightResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
             if( browseTexture_button!=nullptr && browseTexture_button->is_clicked() )
             {
                 std::string newTextureLocation = pawgui::get_filename_open_from_popup("Choose Light Texture","Images",pawgui::main_settings->fileOpenTextureDir);
-                if( gpe::main_file_url_manager->file_exists( newTextureLocation) && stg_ex::file_is_image(newTextureLocation) )
+                if( sff_ex::file_exists( newTextureLocation) && stg_ex::file_is_image(newTextureLocation) )
                 {
                     load_image( newTextureLocation, true);
                 }
@@ -487,7 +487,7 @@ void lightResource::save_resource(std::string file_path, int backupId )
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( gpe::main_file_url_manager->path_exists(soughtDir) )
+    if( sff_ex::path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;

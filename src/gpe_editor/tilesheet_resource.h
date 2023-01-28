@@ -3,10 +3,10 @@ tilesheet_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -82,9 +82,10 @@ public:
     bool isPreloaded;
     tilesheetPreviewer * tsPreviewer;
     gpe::tilesheet * tilesheetInEditor;
+    pawgui::widget_checkbox * imageUsesColorKey;
+    pawgui::gpe_widget_color_picker * imageColorKey;
     pawgui::widget_checkbox * preloadCheckBox;
     pawgui::widget_label_text  * tilesheetDimensionsStr;
-    pawgui::widget_button_icon * transformResource_button;
     pawgui::widget_button_icon * openExternalEditor_button;
     pawgui::widget_button_icon * refreshResourceData_button;
     pawgui::widget_input_number * tsDataFields[TILESHEET_DATA_FIELD_COUNT];
@@ -96,7 +97,7 @@ public:
     void compile_cpp();
     gpe::texture_base * get_resource_texture();
     bool include_local_files( std::string pBuildDir , int buildType );
-    void load_image( std::string new_file_name);
+    bool load_image( std::string new_file_name);
     bool is_build_ready();
     void load_resource(std::string file_path = "");
     void prerender_self( );

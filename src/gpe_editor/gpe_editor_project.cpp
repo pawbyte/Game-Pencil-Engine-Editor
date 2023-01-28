@@ -3,10 +3,10 @@ gpe_editor_project.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -30,8 +30,6 @@ SOFTWARE.
 
 
 */
-
-#include <ctime>
 
 #include "gpe_editor_project.h"
 #include "gpe_project_resources.h"
@@ -89,7 +87,7 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directory_str
     projectName = name;
     projectStartDirectoryName = projectDirectory = directory_string;
     projectFileName = new_file_name;
-    RESC_project_FOLDER = nullptr;
+    RESC_PROJECT_FOLDER = nullptr;
     RESC_ANIMATIONS = nullptr;
     RESC_TEXTURES = nullptr;
     RESC_TILESHEETS = nullptr;
@@ -109,37 +107,40 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directory_str
         RESC_ALL[i] = nullptr;
         CREATED_RESOURCE_COUNT[i] = 0;
     }
-    RESC_project_FOLDER = new pawgui::widget_resource_container(projectFileName,projectName,pawgui::restype_projfolder,-1,true, -1, pawgui::restype_projfolder);
-    RESC_project_FOLDER->parentProjectDirectory = projectDirectory;
-    RESC_project_FOLDER->projectParentFileName = projectFileName;
-    RESC_project_FOLDER->open_folder();
+    RESC_PROJECT_FOLDER = new pawgui::widget_resource_container(projectFileName,projectName,pawgui::restype_projfolder, -1,true, increment_resouce_count(), pawgui::restype_projfolder);
+    RESC_PROJECT_FOLDER->parentProjectDirectory = projectDirectory;
+    RESC_PROJECT_FOLDER->projectParentFileName = projectFileName;
+    RESC_PROJECT_FOLDER->open_folder();
 
-    RESC_TEXTURES =  RESC_ALL[ gpe::resource_type_texture] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_texture,"Textures", increment_resouce_count(), pawgui::restype_superfolder);
-    RESC_TILESHEETS =  RESC_ALL[ gpe::resource_type_tilesheet] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_tilesheet,"Tilesheets", increment_resouce_count(), pawgui::restype_superfolder);
-    RESC_ANIMATIONS =  RESC_ALL[ gpe::resource_type_animation] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_animation,"Animations", increment_resouce_count(), pawgui::restype_superfolder);
-    RESC_AUDIO =  RESC_ALL[ gpe::resource_type_audio] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_audio,"Audio", increment_resouce_count(), pawgui::restype_superfolder);
-    RESC_VIDEOS =  RESC_ALL[ gpe::resource_type_video] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_video,"Videos", increment_resouce_count(), pawgui::restype_superfolder);
-    RESC_FUNCTIONS =  RESC_ALL[ gpe::resource_type_function] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_function,"Functions", increment_resouce_count(), pawgui::restype_superfolder);
-    RESC_PATHS =  RESC_ALL[ gpe::resource_type_path] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_path,"Paths", increment_resouce_count(), pawgui::restype_superfolder);
-    RESC_EMITTERS =  RESC_ALL[ gpe::resource_type_emitter] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_emitter,"Particles", increment_resouce_count(), pawgui::restype_superfolder);
-    RESC_LIGHTS =  RESC_ALL[ gpe::resource_type_light] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_light,"Lights", increment_resouce_count(), pawgui::restype_superfolder);
-    RESC_ENTITIES =  RESC_ALL[ gpe::resource_type_object] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_object,"Entities", increment_resouce_count(), pawgui::restype_superfolder);
-    RESC_CLASSES =  RESC_ALL[ gpe::resource_type_class] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_class,"Classes", increment_resouce_count(), pawgui::restype_superfolder);
-    RESC_SCENES =  RESC_ALL[ gpe::resource_type_scene] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_scene,"Scenes", increment_resouce_count(), pawgui::restype_superfolder);
-    //RESC_ACHIEVEMENTS =  RESC_ALL[ gpe::resource_type_achievement] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_achievement,"Achievements", increment_resouce_count(), pawgui::restype_superfolder);
-    RESC_FONTS =  RESC_ALL[ gpe::resource_type_font] =RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_font,"Fonts", increment_resouce_count(), pawgui::restype_superfolder);
-    RESC_DICTIONARIES =  RESC_ALL[ gpe::resource_type_dictionary]  = nullptr;//=RESC_project_FOLDER->add_newtype_folder( gpe::resource_type_dictionary,"Dictionaries", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_TEXTURES =  RESC_ALL[ gpe::resource_type_texture] =RESC_PROJECT_FOLDER->add_newtype_folder( gpe::resource_type_texture,"Textures", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_TILESHEETS =  RESC_ALL[ gpe::resource_type_tilesheet] =RESC_PROJECT_FOLDER->add_newtype_folder( gpe::resource_type_tilesheet,"Tilesheets", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_ANIMATIONS =  RESC_ALL[ gpe::resource_type_animation] =RESC_PROJECT_FOLDER->add_newtype_folder( gpe::resource_type_animation,"Animations", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_AUDIO =  RESC_ALL[ gpe::resource_type_audio] =RESC_PROJECT_FOLDER->add_newtype_folder( gpe::resource_type_audio,"Audio", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_VIDEOS =  RESC_ALL[ gpe::resource_type_video] =RESC_PROJECT_FOLDER->add_newtype_folder( gpe::resource_type_video,"Videos", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_FUNCTIONS =  RESC_ALL[ gpe::resource_type_function] =RESC_PROJECT_FOLDER->add_newtype_folder( gpe::resource_type_function,"Functions", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_PATHS =  RESC_ALL[ gpe::resource_type_path] =RESC_PROJECT_FOLDER->add_newtype_folder( gpe::resource_type_path,"Paths", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_EMITTERS =  RESC_ALL[ gpe::resource_type_emitter] =RESC_PROJECT_FOLDER->add_newtype_folder( gpe::resource_type_emitter,"Particles", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_LIGHTS =  RESC_ALL[ gpe::resource_type_light] =RESC_PROJECT_FOLDER->add_newtype_folder( gpe::resource_type_light,"Lights", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_ENTITIES =  RESC_ALL[ gpe::resource_type_object] =RESC_PROJECT_FOLDER->add_newtype_folder( gpe::resource_type_object,"Entities", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_CLASSES =  RESC_ALL[ gpe::resource_type_class] =RESC_PROJECT_FOLDER->add_newtype_folder( gpe::resource_type_class,"Classes", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_SCENES =  RESC_ALL[ gpe::resource_type_scene] =RESC_PROJECT_FOLDER->add_newtype_folder( gpe::resource_type_scene,"Scenes", increment_resouce_count(), pawgui::restype_superfolder);
+    //RESC_ACHIEVEMENTS =  RESC_ALL[ gpe::resource_type_achievement] =RESC_PROJECT_FOLDER->add_newtype_folder( gpe::resource_type_achievement,"Achievements", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_FONTS =  RESC_ALL[ gpe::resource_type_font] =RESC_PROJECT_FOLDER->add_newtype_folder( gpe::resource_type_font,"Fonts", increment_resouce_count(), pawgui::restype_superfolder);
+    RESC_DICTIONARIES =  RESC_ALL[ gpe::resource_type_dictionary]  = nullptr;//=RESC_PROJECT_FOLDER->add_newtype_folder( gpe::resource_type_dictionary,"Dictionaries", increment_resouce_count(), pawgui::restype_superfolder);
 
     int projectPropertiesId = increment_resouce_count();
-    RESC_project_SETTINGS = new pawgui::widget_resource_container(projectFileName, gpe::resource_type_names[ gpe::resource_type_project_settings], gpe::resource_type_project_settings,projectPropertiesId,false, projectPropertiesId,-1);
-    RESC_project_SETTINGS->parentProjectDirectory = projectDirectory;
+    RESC_PROJECT_SETTINGS = new pawgui::widget_resource_container(projectFileName, gpe::resource_type_names[ gpe::resource_type_project_settings], gpe::resource_type_project_settings,projectPropertiesId,false, projectPropertiesId, -1);
+    RESC_PROJECT_SETTINGS->parentProjectDirectory = projectDirectory;
 
-    RESC_project_FOLDER->add_resource_container(RESC_project_SETTINGS,true);
-    projectPropertiesResource * projectProps = new projectPropertiesResource(RESC_project_FOLDER);
+    RESC_PROJECT_FOLDER->add_resource_container(RESC_PROJECT_SETTINGS,  false );
+    projectPropertiesResource * projectProps = new projectPropertiesResource(RESC_PROJECT_FOLDER);
     projectProps->set_name( gpe::resource_type_names[ gpe::resource_type_project_settings] );
     projectProps->set_parent_project( projectFileName );
-    RESC_project_SETTINGS->set_held_resource(projectProps);
-    GLOBAL_REZ_ID_COUNT = 1000;
+    RESC_PROJECT_SETTINGS->set_held_resource(projectProps);
+
+    //DO NOT REMOVE THIS LINE, could create instability and incompability. IDs 0 through 999 are reserved for key folders/resource types see ids above ^^^
+    GLOBAL_REZ_ID_COUNT = 1000; //After we create the project, all remaining resources ids will begin at 1000 and above
+
     projectFilePreviousVersion = projectFileVersion = gpe::version_number_total;
     if( createBlankScene )
     {
@@ -149,11 +150,11 @@ GPE_ProjectFolder::GPE_ProjectFolder(std::string name, std::string directory_str
 
 GPE_ProjectFolder::~GPE_ProjectFolder()
 {
-    gpe::error_log->report("Deleting RESC_project_FOLDER" );
-    if( RESC_project_FOLDER!=nullptr )
+    gpe::error_log->report("Deleting RESC_PROJECT_FOLDER" );
+    if( RESC_PROJECT_FOLDER!=nullptr )
     {
-        delete RESC_project_FOLDER;
-        RESC_project_FOLDER = nullptr;
+        delete RESC_PROJECT_FOLDER;
+        RESC_PROJECT_FOLDER = nullptr;
     }
 
     if( projectRSM!=nullptr )
@@ -278,9 +279,9 @@ void GPE_ProjectFolder::clear_project_keywords()
 
 bool GPE_ProjectFolder::export_and_play_native(bool launchProgram)
 {
-    if( RESC_project_SETTINGS!=nullptr && RESC_project_SETTINGS->get_held_resource()!=nullptr)
+    if( RESC_PROJECT_SETTINGS!=nullptr && RESC_PROJECT_SETTINGS->get_held_resource()!=nullptr)
     {
-        projectPropertiesResource * project_settingsObject = (projectPropertiesResource*)RESC_project_SETTINGS->get_held_resource();
+        projectPropertiesResource * project_settingsObject = (projectPropertiesResource*)RESC_PROJECT_SETTINGS->get_held_resource();
         return project_settingsObject->export_and_play_native(launchProgram);
     }
     return false;
@@ -312,14 +313,14 @@ bool GPE_ProjectFolder::clean_build_folder( int buildMetaTemplate )
     }
     if( (int)projectBuildDirectory.size() > 0 )
     {
-        if( gpe::main_file_url_manager->path_exists(projectBuildDirectory) )
+        if( sff_ex::path_exists(projectBuildDirectory) )
         {
             if( pawgui::display_prompt_message("[WARNING]Function deletion of "+folderDeletionName+" build folder?","Are you sure you will like to delete all the contents of this build directory? This action is irreversible!")==pawgui::display_query_yes)
             {
                 main_editor_log->log_build_line("---");
                 main_editor_log->log_build_line("Cleaning Project ["+projectName+" build folder:");
                 main_editor_log->log_build_line("["+projectBuildDirectory+"]...");
-                int filesDeleted =  gpe::main_file_url_manager->folder_clean(projectBuildDirectory);
+                int filesDeleted =  gpe::clean_folder(projectBuildDirectory);
                 if( filesDeleted > 0)
                 {
                     main_editor_log->log_build_line("Folder content files were deleted successfully. Estimated ["+ stg_ex::int_to_string(filesDeleted)+"] files deleted...");
@@ -381,45 +382,45 @@ pawgui::widget_resource_container *  GPE_ProjectFolder::create_blank_resource(in
             switch( rNewType)
             {
                 case gpe::resource_type_audio:
-                    newProjectResource = new audioResource(RESC_project_FOLDER);
+                    newProjectResource = new audioResource(RESC_PROJECT_FOLDER);
                 break;
                 case gpe::resource_type_video:
-                    newProjectResource = new videoResource(RESC_project_FOLDER);
+                    newProjectResource = new videoResource(RESC_PROJECT_FOLDER);
                 break;
                 case gpe::resource_type_font:
-                    newProjectResource = new fontResource(RESC_project_FOLDER);
+                    newProjectResource = new fontResource(RESC_PROJECT_FOLDER);
                 break;
                 case gpe::resource_type_function:
-                    newProjectResource = new functionResource(RESC_project_FOLDER);
+                    newProjectResource = new functionResource(RESC_PROJECT_FOLDER);
                 break;
                 case gpe::resource_type_class:
-                    newProjectResource = new classResource(RESC_project_FOLDER);
+                    newProjectResource = new classResource(RESC_PROJECT_FOLDER);
                 break;
                 case gpe::resource_type_light:
-                    newProjectResource = new lightResource(RESC_project_FOLDER);
+                    newProjectResource = new lightResource(RESC_PROJECT_FOLDER);
                 break;
                 case gpe::resource_type_object:
-                    newProjectResource = new gameEntityResource(RESC_project_FOLDER);
+                    newProjectResource = new gameEntityResource(RESC_PROJECT_FOLDER);
                 break;
                 //Added since Version 1.12 [BEGIN]
                 case gpe::resource_type_path:
-                    newProjectResource = new gamePathResource(RESC_project_FOLDER);
+                    newProjectResource = new gamePathResource(RESC_PROJECT_FOLDER);
                 break;
                 case gpe::resource_type_emitter:
-                    newProjectResource = new particleResource(RESC_project_FOLDER);
+                    newProjectResource = new particleResource(RESC_PROJECT_FOLDER);
                 break;
                 //Added since Version 1.12 [END]
                 case gpe::resource_type_scene:
-                    newProjectResource = new gameSceneResource(RESC_project_FOLDER);
+                    newProjectResource = new gameSceneResource(RESC_PROJECT_FOLDER);
                 break;
                 case gpe::resource_type_animation:
-                    newProjectResource = new animationResource(RESC_project_FOLDER);
+                    newProjectResource = new animationResource(RESC_PROJECT_FOLDER);
                 break;
                 case gpe::resource_type_texture:
-                    newProjectResource = new textureResource(RESC_project_FOLDER);
+                    newProjectResource = new textureResource(RESC_PROJECT_FOLDER);
                 break;
                 case gpe::resource_type_tilesheet:
-                    newProjectResource = new tilesheetResource(RESC_project_FOLDER);
+                    newProjectResource = new tilesheetResource(RESC_PROJECT_FOLDER);
                 break;
                 default:
                     newProjectResource = nullptr;
@@ -535,7 +536,7 @@ bool GPE_ProjectFolder::export_project_cpp(std::string projectBuildDirectory, st
     pawgui::main_syntax_highlighter->begin_compiling();
 
     main_editor_log->log_build_line("Copying GPE source files..");
-    int filesCopiedCount = gpe::main_file_url_manager->folder_copy( gpe::app_directory_name+"build_files/cplusplus_source",projectDirectory+"/gpe_project/source", true, true );
+    int filesCopiedCount = gpe::copy_folder( gpe::app_directory_name+"build_files/cplusplus_source",projectDirectory+"/gpe_project/source", true, true );
     if(  filesCopiedCount > 0 )
     {
         main_editor_log->log_build_line("Successfully copied GPE Source("+ stg_ex::int_to_string( filesCopiedCount )+") files!");
@@ -592,16 +593,16 @@ bool GPE_ProjectFolder::export_project_cpp(std::string projectBuildDirectory, st
     }
 
     main_editor_log->log_build_line("Seeking Build System ["+ gpeBuilderName+"]...");
-    gpeCPPBuildHolder * currentBuildSystem = GPE_CPP_BUILDER_SETTINGS->find_build_system( gpeBuilderName );
+    gpeCPPBuildHolder * current_color_buildSystem = GPE_CPP_BUILDER_SETTINGS->find_build_system( gpeBuilderName );
 
-    if( currentBuildSystem == nullptr)
+    if( current_color_buildSystem == nullptr)
     {
         main_editor_log->log_build_error("Unable to detect BuildSystem["+gpeBuilderName+"]. Exciting build now...");
         return false;
     }
 
     gpeCPPSubsytemHolder * tempSubSystem = nullptr;
-    int cBuildSubsystemcount = (int)currentBuildSystem->mySubsystems.size();
+    int cBuildSubsystemcount = (int)current_color_buildSystem->mySubsystems.size();
     main_editor_log->log_build_line("Build subsystems detected ["+ stg_ex::int_to_string(cBuildSubsystemcount)+"]..");
 
     std::string buildScriptFile = "";
@@ -609,7 +610,7 @@ bool GPE_ProjectFolder::export_project_cpp(std::string projectBuildDirectory, st
     std::string cppBuildDir = stg_ex::file_to_dir(projectFileName)+"/gpe_project";
     for( int i = 0; i < cBuildSubsystemcount; i++)
     {
-        tempSubSystem = currentBuildSystem->mySubsystems[i];
+        tempSubSystem = current_color_buildSystem->mySubsystems[i];
         if( tempSubSystem !=nullptr)
         {
             main_editor_log->log_build_line("--- Initiating Build Subsystem ["+ tempSubSystem->subsystemName +"] ---");
@@ -653,7 +654,7 @@ bool GPE_ProjectFolder::export_project_cpp(std::string projectBuildDirectory, st
     //Added as of 1.14 [ END ]
     std::vector <pawgui::widget_resource_container *> buildGameObjectOptions;
     std::vector <pawgui::widget_resource_container *> buildGameSceneOptions;
-    projectPropertiesResource * project_settingsObject = (projectPropertiesResource*)RESC_project_SETTINGS->get_held_resource();
+    projectPropertiesResource * project_settingsObject = (projectPropertiesResource*)RESC_PROJECT_SETTINGS->get_held_resource();
     RESC_TEXTURES->grab_useable_resources(buildTextureOptions);
     RESC_TILESHEETS->grab_useable_resources(buildTilesheetOptions);
     RESC_ANIMATIONS->grab_useable_resources(buildanimationOptions);
@@ -739,16 +740,16 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
 
 
                 //Checks if any of the resources names are banned/part of engine
-                if( check_names_against_keywords( RESC_project_FOLDER) )
+                if( check_names_against_keywords( RESC_PROJECT_FOLDER) )
                 {
                     hadSaveErrors = true;
                 }
 
                 projectPropertiesResource * project_settingsObject = nullptr;
 
-                if( RESC_project_SETTINGS!=nullptr && RESC_project_SETTINGS->get_held_resource() !=nullptr)
+                if( RESC_PROJECT_SETTINGS!=nullptr && RESC_PROJECT_SETTINGS->get_held_resource() !=nullptr)
                 {
-                    project_settingsObject  = (projectPropertiesResource*)RESC_project_SETTINGS->get_held_resource();
+                    project_settingsObject  = (projectPropertiesResource*)RESC_PROJECT_SETTINGS->get_held_resource();
                 }
 
                 if( project_settingsObject == nullptr)
@@ -771,13 +772,13 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
 
                     //for preloading of surface and such
 
-                    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"resources_check.txt","Checking all resources..");
-                    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"resources_check.txt","[Textures]");
+                    sff_ex::append_to_file( gpe::get_user_settings_folder()+"resources_check.txt","Checking all resources..");
+                    sff_ex::append_to_file( gpe::get_user_settings_folder()+"resources_check.txt","[Textures]");
 
                     bool hasTextureToUse = false;
                     int amountOfObjectsCompiled = 0;
 
-                    if( include_local_files( RESC_project_FOLDER, projectBuildDirectory,buildMetaTemplate ) )
+                    if( include_local_files( RESC_PROJECT_FOLDER, projectBuildDirectory,buildMetaTemplate ) )
                     {
 
                     }
@@ -803,7 +804,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
                     //GPE Engine Files
                     std::string buildFileStyleCssFilleName = gpe::app_directory_name+"build_files/css/style.css";
                     std::string indexStyleCssFileName = projectBuildDirectory+"/css/style.css";
-                    if( gpe::main_file_url_manager->file_copy( buildFileStyleCssFilleName, indexStyleCssFileName)==false )
+                    if( sff_ex::file_copy( buildFileStyleCssFilleName, indexStyleCssFileName)==false )
                     {
                         hadSaveErrors = true;
                         main_editor_log->log_build_error("Unable to copy [style.css] file");
@@ -828,14 +829,14 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
                     {
                         std::string buildFileElectronAddonFile = gpe::app_directory_name+"build_files/js/lib/electron_addon.txt";
                         std::string indexFileElectronAddonFile = projectBuildDirectory+"/js/lib/electron_addon.js";
-                        if( gpe::main_file_url_manager->file_copy( buildFileElectronAddonFile, indexFileElectronAddonFile)==false )
+                        if( sff_ex::file_copy( buildFileElectronAddonFile, indexFileElectronAddonFile)==false )
                         {
                             hadSaveErrors = true;
                             main_editor_log->log_build_error("Unable to copy Electron Addon");
                         }
                     }
 
-                    if( gpe::main_file_url_manager->file_copy( buildFileGPEPowerFilleName, indexFileGPEPowerFileName)==false )
+                    if( sff_ex::file_copy( buildFileGPEPowerFilleName, indexFileGPEPowerFileName)==false )
                     {
                         hadSaveErrors = true;
                         main_editor_log->log_build_error("Unable to copy GPE HTML5 engine");
@@ -843,7 +844,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
 
                     std::string buildFileGPESuperArrayFileName = gpe::app_directory_name+"build_files/js/lib/gpe_superarray.txt";
                     std::string indexFileGPESuperArrayFileName = projectBuildDirectory+"/js/lib/gpe_superarray.js";
-                    if( gpe::main_file_url_manager->file_copy( buildFileGPESuperArrayFileName, indexFileGPESuperArrayFileName)==false )
+                    if( sff_ex::file_copy( buildFileGPESuperArrayFileName, indexFileGPESuperArrayFileName)==false )
                     {
                         hadSaveErrors = true;
                         main_editor_log->log_build_error("Unable to copy array library");
@@ -851,7 +852,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
                     }
                     std::string buildFileGPESuperstringFilleName = gpe::app_directory_name+"build_files/js/lib/gpe_superstring.txt";
                     std::string indexFileGPESuperstringFileName = projectBuildDirectory+"/js/lib/gpe_superstring.js";
-                    if( gpe::main_file_url_manager->file_copy( buildFileGPESuperstringFilleName, indexFileGPESuperstringFileName)==false )
+                    if( sff_ex::file_copy( buildFileGPESuperstringFilleName, indexFileGPESuperstringFileName)==false )
                     {
                         hadSaveErrors = true;
                         main_editor_log->log_build_error("Unable to superstring library");
@@ -859,7 +860,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
 
                     /*std::string buildFileScreenfullgFilleName = gpe::app_directory_name+"build_files/js/lib/screenfull.txt";
                     std::string indexFileScreenfullFileName = projectBuildDirectory+"/js/lib/screenfull.js";
-                    if( gpe::main_file_url_manager->file_copy( buildFileScreenfullgFilleName, indexFileScreenfullFileName)==false )
+                    if( sff_ex::file_copy( buildFileScreenfullgFilleName, indexFileScreenfullFileName)==false )
                     {
                         hadSaveErrors = true;
                         main_editor_log->log_build_error("Unable to screenfull library");
@@ -867,7 +868,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
 
                     std::string buildFileGPEFrameManagerFilleName = gpe::app_directory_name+"build_files/js/lib/frame_management.txt";
                     std::string indexFileGPEFrameManagerFileName = projectBuildDirectory+"/js/lib/frame_management.js";
-                    if( gpe::main_file_url_manager->file_copy( buildFileGPEFrameManagerFilleName, indexFileGPEFrameManagerFileName)==false )
+                    if( sff_ex::file_copy( buildFileGPEFrameManagerFilleName, indexFileGPEFrameManagerFileName)==false )
                     {
                         hadSaveErrors = true;
                         main_editor_log->log_build_error("Unable to copy frame management library");
@@ -876,35 +877,35 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
 
                     std::string buildFileGPELogoStartFilleName = gpe::app_directory_name+"build_files/res/gpe_logo_start.png";
                     std::string indexFileGPELogoStartFileName = projectBuildDirectory+"/res/gpe_logo_start.png";
-                    if( gpe::main_file_url_manager->file_copy( buildFileGPELogoStartFilleName, indexFileGPELogoStartFileName)==false )
+                    if( sff_ex::file_copy( buildFileGPELogoStartFilleName, indexFileGPELogoStartFileName)==false )
                     {
                         hadSaveErrors = true;
                         main_editor_log->log_build_error("Unable to copyGPE logo.");
                     }
                     std::string buildFileIntroAudioStartAACFilleName = gpe::app_directory_name+"build_files/res/gpe_intro.aac";
                     std::string indexFileGPEIntroAudioStartAACFileName = projectBuildDirectory+"/res/gpe_intro.aac";
-                    if( gpe::main_file_url_manager->file_copy( buildFileIntroAudioStartAACFilleName, indexFileGPEIntroAudioStartAACFileName)==false )
+                    if( sff_ex::file_copy( buildFileIntroAudioStartAACFilleName, indexFileGPEIntroAudioStartAACFileName)==false )
                     {
                         hadSaveErrors = true;
                         main_editor_log->log_build_error("Unable to copy gpe_intro.aac");
                     }
                     std::string buildFileIntroAudioStartMP3FilleName = gpe::app_directory_name+"build_files/res/gpe_intro.mp3";
                     std::string indexFileIntroAudioStartMP3FileName = projectBuildDirectory+"/res/gpe_intro.mp3";
-                    if( gpe::main_file_url_manager->file_copy( buildFileIntroAudioStartMP3FilleName, indexFileIntroAudioStartMP3FileName)==false )
+                    if( sff_ex::file_copy( buildFileIntroAudioStartMP3FilleName, indexFileIntroAudioStartMP3FileName)==false )
                     {
                         hadSaveErrors = true;
                         main_editor_log->log_build_error("Unable to copy gpe_intro.mp3");
                     }
                     std::string buildFileIntroAudioStartOOGFilleName = gpe::app_directory_name+"build_files/res/gpe_intro.ogg";
                     std::string indexFileGPEIntroAudioStartOOGFileName = projectBuildDirectory+"/res/gpe_intro.ogg";
-                    if( gpe::main_file_url_manager->file_copy( buildFileIntroAudioStartOOGFilleName, indexFileGPEIntroAudioStartOOGFileName)==false )
+                    if( sff_ex::file_copy( buildFileIntroAudioStartOOGFilleName, indexFileGPEIntroAudioStartOOGFileName)==false )
                     {
                         hadSaveErrors = true;
                         main_editor_log->log_build_error("Unable to copy gpe_intro.ogg");
                     }
                     std::string buildFileIntroAudioStartWAVFilleName = gpe::app_directory_name+"build_files/res/gpe_intro.wav";
                     std::string indexFileGPEIntroAudioStartWAVFileName = projectBuildDirectory+"/res/gpe_intro.wav";
-                    if( gpe::main_file_url_manager->file_copy( buildFileIntroAudioStartWAVFilleName, indexFileGPEIntroAudioStartWAVFileName)==false )
+                    if( sff_ex::file_copy( buildFileIntroAudioStartWAVFilleName, indexFileGPEIntroAudioStartWAVFileName)==false )
                     {
                         hadSaveErrors = true;
                         main_editor_log->log_build_error("Unable to copy gpe_intro.wav");
@@ -1091,11 +1092,11 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
                                     sound_preload_count[ i_sound_format ] = 0;
                                 }
 
-                                if( RESC_project_SETTINGS!=nullptr )
+                                if( RESC_PROJECT_SETTINGS!=nullptr )
                                 {
                                     indexJS_settingsFILE << "var Game_LayerMatrix = [];\n";
                                     indexJS_settingsFILE << "var Game_SelfCollideLayerList = [];\n";
-                                    projectPropertiesResource * tProjectProps = (projectPropertiesResource *)RESC_project_SETTINGS->get_held_resource();
+                                    projectPropertiesResource * tProjectProps = (projectPropertiesResource *)RESC_PROJECT_SETTINGS->get_held_resource();
                                     if( tProjectProps!=nullptr)
                                     {
                                         int jLayerCol = 0;
@@ -1124,12 +1125,12 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
                                     }
                                     else
                                     {
-                                        indexJS_settingsFILE << "//RESC_project_SETTINGS local not reachable...\n";
+                                        indexJS_settingsFILE << "//RESC_PROJECT_SETTINGS local not reachable...\n";
                                     }
                                 }
                                 else
                                 {
-                                    indexJS_settingsFILE << "//RESC_project_SETTINGS not reachable...\n";
+                                    indexJS_settingsFILE << "//RESC_PROJECT_SETTINGS not reachable...\n";
                                 }
 
                                 indexJS_settingsFILE.close();
@@ -1189,11 +1190,11 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
 
                                 pawgui::widget_resource_container * tempContainer = nullptr;
                                 pawgui::general_resource * tempHeldResource = nullptr;
-                                int maxResources = RESC_project_FOLDER->get_size();
+                                int maxResources = RESC_PROJECT_FOLDER->get_size();
 
                                 for( iRes = 0; iRes < maxResources; iRes++)
                                 {
-                                    tempContainer = RESC_project_FOLDER->get_resource_at( iRes );
+                                    tempContainer = RESC_PROJECT_FOLDER->get_resource_at( iRes );
                                     if( tempContainer!=nullptr && tempContainer->get_held_resource()!=nullptr )
                                     {
                                         tempHeldResource = tempContainer->get_held_resource();
@@ -1239,7 +1240,7 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
                                     if( runGameOnCompile && buildMetaTemplate== gpe::system_os_html5)
                                     {
                                         main_editor_log->log_build_line("Opening... "+indexHTML5FileName+" .");
-                                        gpe::main_file_url_manager->external_open_url(indexHTML5FileName);
+                                        gpe::external_open_url(indexHTML5FileName);
                                     }
                                 }
                                 else
@@ -1259,9 +1260,9 @@ bool GPE_ProjectFolder::export_project_html5(std::string projectBuildDirectory, 
                             pawgui::display_user_alert("Project Build Error!","Unable to create game [index.html] file...");
                             main_editor_log->log_build_error("Unable to create game [index.html] file...");
                         }
-                        if(RESC_project_FOLDER!=nullptr)
+                        if(RESC_PROJECT_FOLDER!=nullptr)
                         {
-                            //hadSaveErrors = RESC_project_FOLDER->write_data_into_projectfile(&indexHTML5FILE);
+                            //hadSaveErrors = RESC_PROJECT_FOLDER->write_data_into_projectfile(&indexHTML5FILE);
                         }
                     }
                     else
@@ -1344,13 +1345,13 @@ bool GPE_ProjectFolder::export_project_windows(std::string projectBuildDirectory
                 {
                     appAddonFileName+="_debug";
                 }
-                if( gpe::main_file_url_manager->file_exists(pBuildDirectory+"/../../game"+appAddonFileName+".exe") )
+                if( sff_ex::file_exists(pBuildDirectory+"/../../game"+appAddonFileName+".exe") )
                 {
-                    gpe::main_file_url_manager->external_open_program(pBuildDirectory+"/../../game"+appAddonFileName+".exe");
+                    gpe::external_open_program(pBuildDirectory+"/../../game"+appAddonFileName+".exe");
                 }
-                else if( gpe::main_file_url_manager->file_exists(pBuildDirectory+"/../../electron"+appAddonFileName+".exe") )
+                else if( sff_ex::file_exists(pBuildDirectory+"/../../electron"+appAddonFileName+".exe") )
                 {
-                    gpe::main_file_url_manager->external_open_program(pBuildDirectory+"/../../electron"+appAddonFileName+".exe");
+                    gpe::external_open_program(pBuildDirectory+"/../../electron"+appAddonFileName+".exe");
                 }
                 */
             }
@@ -1427,21 +1428,21 @@ bool GPE_ProjectFolder::export_project_osx(std::string projectBuildDirectory,  s
                 {
                     appAddonFileName+="_debug";
                 }
-                if( gpe::main_file_url_manager->file_exists(pBuildDirectory+"/../../game"+appAddonFileName+".app") )
+                if( sff_ex::file_exists(pBuildDirectory+"/../../game"+appAddonFileName+".app") )
                 {
-                    gpe::main_file_url_manager->external_open_program(pBuildDirectory+"/../../game"+appAddonFileName+".app");
+                    gpe::external_open_program(pBuildDirectory+"/../../game"+appAddonFileName+".app");
                 }
-                else if( gpe::main_file_url_manager->file_exists(pBuildDirectory+"/../../Game"+appAddonFileName+".app") )
+                else if( sff_ex::file_exists(pBuildDirectory+"/../../Game"+appAddonFileName+".app") )
                 {
-                    gpe::main_file_url_manager->external_open_program(pBuildDirectory+"/../../Game"+appAddonFileName+".app");
+                    gpe::external_open_program(pBuildDirectory+"/../../Game"+appAddonFileName+".app");
                 }
-                else if( gpe::main_file_url_manager->file_exists(pBuildDirectory+"/../../Electron"+appAddonFileName+".app") )
+                else if( sff_ex::file_exists(pBuildDirectory+"/../../Electron"+appAddonFileName+".app") )
                 {
-                    gpe::main_file_url_manager->external_open_program(pBuildDirectory+"/../../Electron"+appAddonFileName+".app");
+                    gpe::external_open_program(pBuildDirectory+"/../../Electron"+appAddonFileName+".app");
                 }
-                else if( gpe::main_file_url_manager->file_exists(pBuildDirectory+"/../../electron"+appAddonFileName+".app") )
+                else if( sff_ex::file_exists(pBuildDirectory+"/../../electron"+appAddonFileName+".app") )
                 {
-                    gpe::main_file_url_manager->external_open_program(pBuildDirectory+"/../../electron"+appAddonFileName+".app");
+                    gpe::external_open_program(pBuildDirectory+"/../../electron"+appAddonFileName+".app");
                 }
                 */
             }
@@ -1518,17 +1519,17 @@ bool GPE_ProjectFolder::export_project_linux(std::string projectBuildDirectory, 
                 {
                     appAddonFileName+="_debug";
                 }
-                if( gpe::main_file_url_manager->file_exists(pBuildDirectory+"/../../game"+appAddonFileName) )
+                if( sff_ex::file_exists(pBuildDirectory+"/../../game"+appAddonFileName) )
                 {
-                    gpe::main_file_url_manager->external_open_program(pBuildDirectory+"/../../game"+appAddonFileName);
+                    gpe::external_open_program(pBuildDirectory+"/../../game"+appAddonFileName);
                 }
-                else if( gpe::main_file_url_manager->file_exists(pBuildDirectory+"/../../electron"+appAddonFileName) )
+                else if( sff_ex::file_exists(pBuildDirectory+"/../../electron"+appAddonFileName) )
                 {
-                    gpe::main_file_url_manager->external_open_program(pBuildDirectory+"/../../electron"+appAddonFileName);
+                    gpe::external_open_program(pBuildDirectory+"/../../electron"+appAddonFileName);
                 }
-                else if( gpe::main_file_url_manager->file_exists(pBuildDirectory+"/../../Electron"+appAddonFileName) )
+                else if( sff_ex::file_exists(pBuildDirectory+"/../../Electron"+appAddonFileName) )
                 {
-                    gpe::main_file_url_manager->external_open_program(pBuildDirectory+"/../../Electron"+appAddonFileName);
+                    gpe::external_open_program(pBuildDirectory+"/../../Electron"+appAddonFileName);
                 }
                 */
             }
@@ -1573,9 +1574,9 @@ std::string GPE_ProjectFolder::get_project_file_name()
 
 int GPE_ProjectFolder::get_resource_count()
 {
-    if( RESC_project_FOLDER!=nullptr)
+    if( RESC_PROJECT_FOLDER!=nullptr)
     {
-        return RESC_project_FOLDER->get_resource_count();
+        return RESC_PROJECT_FOLDER->get_resource_count();
     }
     return 0;
 }
@@ -1641,7 +1642,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                 {
                     main_gpe_splash_page->update_submessages( "Reading Project File","DO NOT CLOSE..." );
                 }
-                pawgui::widget_resource_container * currentResFolder = nullptr;
+                pawgui::widget_resource_container * current_color_resFolder = nullptr;
                 pawgui::widget_resource_container * tempResFolder = nullptr;
                 pawgui::widget_resource_container * containerFolderToEdit = nullptr;
                 pawgui::widget_resource_container * newContainer = nullptr;
@@ -1756,7 +1757,7 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                 else if(key_string=="projectname" || key_string=="name")
                                 {
                                     projectName = valstring;
-                                    RESC_project_FOLDER->set_name(projectName);
+                                    RESC_PROJECT_FOLDER->set_name(projectName);
                                 }
                                 else if(key_string=="projectlanguage" || key_string=="programmingLanguage" || key_string=="codinglanguage")
                                 {
@@ -1778,10 +1779,10 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                                         valstring = currLine.substr(equalPos+1,endBracketPos-equalPos-1);
                                         if( (int)valstring.size()>0)
                                         {
-                                            tempResFolder = RESC_project_FOLDER->find_resource_from_name(valstring,false);
+                                            tempResFolder = RESC_PROJECT_FOLDER->find_resource_from_name(valstring,false);
                                             if( tempResFolder!=nullptr)
                                             {
-                                                containerFolderToEdit = currentResFolder = tempResFolder;
+                                                containerFolderToEdit = current_color_resFolder = tempResFolder;
                                                 tempResFolder = nullptr;
                                             }
                                         }
@@ -2187,8 +2188,8 @@ bool GPE_ProjectFolder::load_project_file(std::string projectFileIn )
                         tempScnRes->load_resource();
                     }
                 }
-                RESC_project_SETTINGS->set_project_parent_name(projectFileIn);
-                RESC_project_SETTINGS->preprocess_container();
+                RESC_PROJECT_SETTINGS->set_project_parent_name(projectFileIn);
+                RESC_PROJECT_SETTINGS->preprocess_container();
                 gpe::error_log->report("Project successfully preprocessed.");
                 if( (int)projectScenes.size() > 0 )
                 {
@@ -2256,9 +2257,9 @@ void GPE_ProjectFolder::integrate_syntax()
 {
     clear_project_functions();
     clear_project_keywords();
-    if( RESC_project_FOLDER!=nullptr)
+    if( RESC_PROJECT_FOLDER!=nullptr)
     {
-        RESC_project_FOLDER->integrate_into_syntax();
+        RESC_PROJECT_FOLDER->integrate_into_syntax();
     }
     refresh_gui_syntax();
 }
@@ -2271,7 +2272,7 @@ bool GPE_ProjectFolder::process_build_script(std::string scriptFName, std::strin
         return false;
     }
 
-    if( gpe::main_file_url_manager->file_exists( templateFName) ==0 )
+    if( sff_ex::file_exists( templateFName) ==0 )
     {
         main_editor_log->log_build_error("Build Script template ["+templateFName+"] file not found!");
         return false;
@@ -2285,7 +2286,7 @@ bool GPE_ProjectFolder::process_build_script(std::string scriptFName, std::strin
     gpe::gpe_ini_file * scriptIniReader = new gpe::gpe_ini_file();
     if( (int)scriptFName.size() > 0 )
     {
-        if( gpe::main_file_url_manager->file_exists( scriptFName) )
+        if( sff_ex::file_exists( scriptFName) )
         {
             main_editor_log->log_build_line("Attempting to read build script ["+scriptFName+"]...");
 
@@ -2388,9 +2389,9 @@ bool GPE_ProjectFolder::run_project(std::string projectBuildDirectory, int build
         {
             projectBuildDirectory = stg_ex::file_to_dir(projectFileName)+"/gpe_project/builds/html5";
         }
-        if( gpe::main_file_url_manager->file_exists(projectBuildDirectory+"/index.html")==true )
+        if( sff_ex::file_exists(projectBuildDirectory+"/index.html")==true )
         {
-            gpe::main_file_url_manager->external_open_url(projectBuildDirectory+"/index.html");
+            gpe::external_open_url(projectBuildDirectory+"/index.html");
             return true;
         }
         else
@@ -2416,14 +2417,14 @@ bool GPE_ProjectFolder::run_project(std::string projectBuildDirectory, int build
         {
             //projectBuildDirectory+="_debug";
         }*/
-        if( gpe::main_file_url_manager->file_exists(projectBuildDirectory+"/game.exe")==true )
+        if( sff_ex::file_exists(projectBuildDirectory+"/game.exe")==true )
         {
-            gpe::main_file_url_manager->external_open_program(projectBuildDirectory+"/game.exe");
+            gpe::external_open_program(projectBuildDirectory+"/game.exe");
             return true;
         }
-        else if( gpe::main_file_url_manager->file_exists(projectBuildDirectory+"/electron.exe")==true )
+        else if( sff_ex::file_exists(projectBuildDirectory+"/electron.exe")==true )
         {
-            gpe::main_file_url_manager->external_open_program(projectBuildDirectory+"/electron.exe");
+            gpe::external_open_program(projectBuildDirectory+"/electron.exe");
             return true;
         }
         else
@@ -2451,14 +2452,14 @@ bool GPE_ProjectFolder::run_project(std::string projectBuildDirectory, int build
             //projectBuildDirectory+="_debug";
         }
         */
-        if( gpe::main_file_url_manager->file_exists(projectBuildDirectory+"/game.app")==true )
+        if( sff_ex::file_exists(projectBuildDirectory+"/game.app")==true )
         {
-            gpe::main_file_url_manager->external_open_program(projectBuildDirectory+"/game.app");
+            gpe::external_open_program(projectBuildDirectory+"/game.app");
             return true;
         }
-        else if( gpe::main_file_url_manager->file_exists(projectBuildDirectory+"/electron.app")==true )
+        else if( sff_ex::file_exists(projectBuildDirectory+"/electron.app")==true )
         {
-            gpe::main_file_url_manager->external_open_program(projectBuildDirectory+"/electron.app");
+            gpe::external_open_program(projectBuildDirectory+"/electron.app");
             return true;
         }
         else
@@ -2484,14 +2485,14 @@ bool GPE_ProjectFolder::run_project(std::string projectBuildDirectory, int build
         {
             //projectBuildDirectory+="_debug";
         }
-        if( gpe::main_file_url_manager->file_exists(projectBuildDirectory+"/game")==true )
+        if( sff_ex::file_exists(projectBuildDirectory+"/game")==true )
         {
-            gpe::main_file_url_manager->external_open_program(projectBuildDirectory+"/game");
+            gpe::external_open_program(projectBuildDirectory+"/game");
             return true;
         }
-        else if( gpe::main_file_url_manager->file_exists(projectBuildDirectory+"/electron")==true )
+        else if( sff_ex::file_exists(projectBuildDirectory+"/electron")==true )
         {
-            gpe::main_file_url_manager->external_open_program(projectBuildDirectory+"/electron");
+            gpe::external_open_program(projectBuildDirectory+"/electron");
             return true;
         }
         else
@@ -2564,9 +2565,9 @@ bool GPE_ProjectFolder::save_project_as(std::string projectFilenew_name)
                 {
                     pawgui::display_user_alert("Error!","Unable to save project("+projectFileName+")");
                 }
-                if(RESC_project_FOLDER!=nullptr)
+                if(RESC_PROJECT_FOLDER!=nullptr)
                 {
-                    RESC_project_FOLDER->set_project_parent_name(projectFileName);
+                    RESC_PROJECT_FOLDER->set_project_parent_name(projectFileName);
                 }
             }
             else
@@ -2600,9 +2601,9 @@ bool GPE_ProjectFolder::save_project_as(std::string projectFilenew_name)
                     myfile << "ProjectLanguage=CPP\n";
                 }
                 myfile << "ProjectIcon=" << projectIconName << "\n";
-                if(RESC_project_FOLDER!=nullptr)
+                if(RESC_PROJECT_FOLDER!=nullptr)
                 {
-                    hadSaveErrors = RESC_project_FOLDER->write_data_into_projectfile(&myfile);
+                    hadSaveErrors = RESC_PROJECT_FOLDER->write_data_into_projectfile(&myfile);
                 }
                 time( &lastTimeBackedUp);
                 myfile.close();
@@ -2646,13 +2647,13 @@ bool GPE_ProjectFolder::save_project_as(std::string projectFilenew_name)
 
 bool GPE_ProjectFolder::save_project_settings()
 {
-    if( RESC_project_SETTINGS!=nullptr)
+    if( RESC_PROJECT_SETTINGS!=nullptr)
     {
         std::string project_settingsFileName = projectStartDirectoryName+"gpe_project/project_settings.ini";
         std::ofstream myfile (project_settingsFileName.c_str() );
         if (myfile.is_open() )
         {
-            RESC_project_SETTINGS->write_data_into_projectfile(&myfile,0);
+            RESC_PROJECT_SETTINGS->write_data_into_projectfile(&myfile,0);
             myfile.close();
             return true;
         }

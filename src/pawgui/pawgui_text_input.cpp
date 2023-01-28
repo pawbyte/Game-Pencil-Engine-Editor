@@ -3,10 +3,10 @@ pawgui_text_input.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,6 +37,8 @@ namespace pawgui
 {
     widget_input_text::widget_input_text( std::string startName,std::string placeHolderText)
     {
+        inputFieldPadding = 8;
+        inputIsPassword = false;
         resubmissionAllowed = false;
         widget_name = "";
         lastfloatClickAction = 0;
@@ -226,6 +228,11 @@ namespace pawgui
 
     void widget_input_text::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
     {
+        font_textinput->get_metrics("A",&font_sizeW,&font_sizeH);
+        if( font_sizeW<=0)
+        {
+            font_sizeW = 12;
+        }
         prevCursorPos = cursorPos;
         inputSubmitted = false;
         bool pasteCommandGiven = false;
@@ -261,6 +268,7 @@ namespace pawgui
                 {
                     if (gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,fieldElementBox.x+view_space->x-cam->x,fieldElementBox.y+view_space->y-cam->y,fieldElementBox.x+fieldElementBox.w+view_space->x-cam->x,fieldElementBox.y+fieldElementBox.h+view_space->y-cam->y) )
                     {
+
                         isHovered = true;
                         if( (int)descriptionText.size()>0 )
                         {
@@ -277,11 +285,33 @@ namespace pawgui
                             hasScrollControl = false;
                         }
                     }
-                    else if( gpe::input->check_mouse_released( mb_anybutton ) )
+                    else
                     {
-                        clickedOutside = true;
-                        hasScrollControl = false;
-                        hasArrowkeyControl = false;
+                        if( showLabel )
+                        {
+                            if (gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,widget_box.x+view_space->x-cam->x,fieldElementBox.y+view_space->y-cam->y,fieldElementBox.x+view_space->x-cam->x,fieldElementBox.y+widget_box.h+view_space->y-cam->y) )
+                            {
+                                if( (int)inputLabel.size() > 0 )
+                                {
+                                    main_overlay_system->update_tooltip( inputLabel);
+                                }
+                                else if( (int)descriptionText.size()>0 )
+                                {
+                                    main_overlay_system->update_tooltip(descriptionText);
+                                }
+                                else
+                                {
+                                    main_overlay_system->update_tooltip(widget_name);
+                                }
+                            }
+                        }
+
+                        if( gpe::input->check_mouse_released( mb_anybutton ) )
+                        {
+                            clickedOutside = true;
+                            hasScrollControl = false;
+                            hasArrowkeyControl = false;
+                        }
                     }
                 }
                 else if( gpe::input->check_mouse_released( mb_anybutton ) )
@@ -312,7 +342,7 @@ namespace pawgui
         }
         if( isHovered)
         {
-            if( gpe::input->check_mouse_button_clicked( mb_left) )
+            if( gpe::input->check_mouse_double_clicked( mb_left) )
             {
                 if( lastfloatClickAction ==0)
                 {
@@ -411,7 +441,7 @@ namespace pawgui
                 gpe::input->reset_all_input();
 
             }
-            else if( gpe::input->check_mouse_pressed( mb_left)   )
+            else if( gpe::input->check_mouse_pressed(0)   )
             {
                 get_cursor_from_mouse(view_space,cam);
                 selectionCursorPos = cursorPos;
@@ -477,7 +507,7 @@ namespace pawgui
         //limit_space_to_rect(view_space,&INP_mouse_position_x,&INP_mouse_position_y);
         if( isEnabled &&  isInUse )
         {
-            cursorTimer+=gpe::time_keeper->get_delta_ticks();
+            cursorTimer+=gpe::time_keeper->get_delta_performance();
             if( cursorTimer > main_settings->cursorBlinkTime )
             {
                 showCursor = !showCursor;
@@ -487,7 +517,7 @@ namespace pawgui
             //Process Input Field delay timers
             if( gpe::input->kb_button_down[kb_backspace]  )
             {
-                bscDelay+=gpe::time_keeper->get_delta_ticks();
+                bscDelay+=gpe::time_keeper->get_delta_performance();
             }
             else
             {
@@ -495,7 +525,7 @@ namespace pawgui
             }
             if( gpe::input->kb_button_down[kb_delete] )
             {
-                delDelay+=gpe::time_keeper->get_delta_ticks();
+                delDelay+=gpe::time_keeper->get_delta_performance();
             }
             else
             {
@@ -503,7 +533,7 @@ namespace pawgui
             }
             if( gpe::input->kb_button_down[kb_up] )
             {
-                upArrowDelay+=gpe::time_keeper->get_delta_ticks();
+                upArrowDelay+=gpe::time_keeper->get_delta_performance();
             }
             else
             {
@@ -511,7 +541,7 @@ namespace pawgui
             }
             if( gpe::input->kb_button_down[kb_down] )
             {
-                downArrowDelay+=gpe::time_keeper->get_delta_ticks();
+                downArrowDelay+=gpe::time_keeper->get_delta_performance();
             }
             else
             {
@@ -519,7 +549,7 @@ namespace pawgui
             }
             if( gpe::input->kb_button_down[kb_left]  )
             {
-                leftArrowDelay+=gpe::time_keeper->get_delta_ticks();
+                leftArrowDelay+=gpe::time_keeper->get_delta_performance();
             }
             else
             {
@@ -527,7 +557,7 @@ namespace pawgui
             }
             if( gpe::input->kb_button_down[kb_right] )
             {
-                rightArrowDelay+=gpe::time_keeper->get_delta_ticks();
+                rightArrowDelay+=gpe::time_keeper->get_delta_performance();
             }
             else
             {
@@ -535,7 +565,7 @@ namespace pawgui
             }
             if( gpe::input->kb_button_down[kb_enter] )
             {
-                enterDelay+=gpe::time_keeper->get_delta_ticks();
+                enterDelay+=gpe::time_keeper->get_delta_performance();
             }
             else
             {
@@ -582,7 +612,7 @@ namespace pawgui
                 }
                 else if( leftArrowDelay >= main_settings->textInputDelayTime )
                 {
-                    leftArrowDelay = -1;
+                    leftArrowDelay = 0;
                     if( gpe::input->kb_shift_pressed)
                     {
                         if( selectionCursorPos==selectionEndCursorPos )
@@ -628,11 +658,11 @@ namespace pawgui
                     {
                         selectionEndCursorPos = cursorPos;
                     }
-                    leftArrowDelay = -1;
+                    leftArrowDelay = 0;
                 }
                 else if( rightArrowDelay >= main_settings->textInputDelayTime )
                 {
-                    rightArrowDelay = -1;
+                    rightArrowDelay = 0;
                     if( gpe::input->kb_shift_pressed)
                     {
                         if( selectionCursorPos==selectionEndCursorPos )
@@ -771,7 +801,7 @@ namespace pawgui
                 }
                 showCursor = true;
                 cursorTimer = 0;
-                leftArrowDelay = -1;
+                leftArrowDelay = 0;
             }
             else if( rightArrowDelay >= main_settings->textInputDelayTime  )
             {
@@ -788,7 +818,7 @@ namespace pawgui
                 }
                 showCursor = true;
                 cursorTimer = 0;
-                rightArrowDelay = -1;
+                rightArrowDelay = 0;
             }
             else if( upArrowDelay >= main_settings->textInputDelayTime  )
             {
@@ -804,7 +834,7 @@ namespace pawgui
                 }
                 showCursor = true;
                 cursorTimer = 0;
-                upArrowDelay = -1;
+                upArrowDelay = 0;
             }
             else if( downArrowDelay >= main_settings->textInputDelayTime  )
             {
@@ -822,7 +852,7 @@ namespace pawgui
                 }
                 showCursor = true;
                 cursorTimer = 0;
-                downArrowDelay = -1;
+                downArrowDelay = 0;
             }
             else if( gpe::input->kb_button_pressed[kb_enter] )
             {
@@ -873,13 +903,13 @@ namespace pawgui
         }
         else
         {
-            bscDelay = -1;
-            delDelay = -1;
-            enterDelay = -1;
-            upArrowDelay = -1;
-            downArrowDelay = -1;
-            leftArrowDelay = -1;
-            rightArrowDelay = -1;
+            bscDelay = 0;
+            delDelay = 0;
+            enterDelay = 0;
+            upArrowDelay = 0;
+            downArrowDelay = 0;
+            leftArrowDelay = 0;
+            rightArrowDelay = 0;
         }
     }
 
@@ -919,57 +949,97 @@ namespace pawgui
     {
         view_space = gpe::camera_find(view_space);
         cam = gpe::camera_find(cam);
-        if( isEnabled && cam!=nullptr)
+        if( !isEnabled || cam == nullptr)
         {
-            if(showBorderBox)
-            {
-                if( hasValidInput )
-                {
-                    gpe::gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_color,false, 128 );
-                }
-                else
-                {
-                    gpe::gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_error_Box_color,false, 128 );
-                }
-            }
+            return;
+        }
 
-            if( showLabel && (int)inputLabel.size() > 0)
+        if( showLabel && (int)inputLabel.size() > 0)
+        {
+            if( alignment_h == gpe::fa_center)
             {
-                if( alignment_h == gpe::fa_center)
-                {
-                    gpe::gfs->render_text( widget_box.x+widget_box.w/2-cam->x,widget_box.y-2-cam->y,inputLabel,pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_center,gpe::fa_top);
-                }
-                else
-                {
-                    gpe::gfs->render_text( widget_box.x-cam->x,widget_box.y-2-cam->y,inputLabel,pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_left,gpe::fa_top);
-                }
+                gpe::gfs->render_text( widget_box.x+widget_box.w/4-cam->x,widget_box.y-cam->y + widget_box.h/2,inputLabel,pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_center,gpe::fa_middle);
             }
-
-            if(selectionCursorPos!=selectionEndCursorPos )
+            else if( alignment_h == gpe::fa_right )
             {
-                int minHighlightPos = std::min(selectionCursorPos, selectionEndCursorPos);
-                if( minHighlightPos < startXPos)
-                {
-                    minHighlightPos = startXPos;
-                }
-                int maxHighlightPos = std::max(selectionCursorPos, selectionEndCursorPos);
-                if( maxHighlightPos < startXPos)
-                {
-                    maxHighlightPos = startXPos;
-                }
-                maxHighlightPos = std::min(startXPos+maxCharactersInView,maxHighlightPos);
-
-                gpe::gcanvas->render_rectangle(
-                    fieldElementBox.x+(minHighlightPos-startXPos)*font_sizeW - cam->x,
-                    fieldElementBox.y+1 - cam->y,
-                    fieldElementBox.x+2+(maxHighlightPos-startXPos)*font_sizeW- cam->x,
-                    fieldElementBox.y+fieldElementBox.h-1 - cam->y,
-                    pawgui::theme_main->input_selected_color,false, 128 );
+                gpe::gfs->render_text( widget_box.x+widget_box.w/2 -cam->x,widget_box.y-cam->y  + widget_box.h/2,inputLabel,pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_right,gpe::fa_middle);
             }
-            int subLength = 0;
-            if( (int)textInputstring.size() > maxCharactersInView)
+            else
             {
-                subLength = (int)textInputstring.size()-startXPos;
+                gpe::gfs->render_text( widget_box.x-cam->x,widget_box.y-cam->y + widget_box.h/2,inputLabel,pawgui::theme_main->main_box_font_color,font_textinput,gpe::fa_left,gpe::fa_middle);
+            }
+        }
+
+        if(showBorderBox)
+        {
+            if( hasValidInput )
+            {
+                gpe::gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_color,false, 255 );
+            }
+            else
+            {
+                gpe::gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_error_Box_color,false, 255 );
+            }
+        }
+
+
+
+        if(selectionCursorPos!=selectionEndCursorPos )
+        {
+            int minHighlightPos = std::min(selectionCursorPos, selectionEndCursorPos);
+            if( minHighlightPos < startXPos)
+            {
+                minHighlightPos = startXPos;
+            }
+            int maxHighlightPos = std::max(selectionCursorPos, selectionEndCursorPos);
+            if( maxHighlightPos < startXPos)
+            {
+                maxHighlightPos = startXPos;
+            }
+            maxHighlightPos = std::min(startXPos+maxCharactersInView,maxHighlightPos);
+
+            gpe::gcanvas->render_rectangle(
+                fieldElementBox.x+(minHighlightPos-startXPos)*font_sizeW - cam->x,
+                fieldElementBox.y+1 - cam->y,
+                fieldElementBox.x+2+(maxHighlightPos-startXPos)*font_sizeW- cam->x,
+                fieldElementBox.y+fieldElementBox.h-1 - cam->y,
+                pawgui::theme_main->input_selected_color,false, 255 );
+        }
+        int subLength = 0;
+        if( (int)textInputstring.size() > maxCharactersInView)
+        {
+            subLength = (int)textInputstring.size()-startXPos;
+            if( subLength >maxCharactersInView)
+            {
+                subLength = maxCharactersInView;
+            }
+        }
+        else
+        {
+            subLength =  (int)textInputstring.size();
+        }
+
+        if( subLength < 0)
+        {
+            subLength = 0;
+        }
+
+        if( (int)textInputstring.size()>0)
+        {
+            if( inputIsPassword )
+            {
+                gpe::gfs->render_text( fieldElementBox.x - cam->x + inputFieldPadding,fieldElementBox.y+fieldElementBox.h/2- cam->y,stg_ex::string_repeat("*",subLength),pawgui::theme_main->input_font_color,font_textinput,gpe::fa_left,gpe::fa_middle,255);
+            }
+            else
+            {
+                gpe::gfs->render_text( fieldElementBox.x - cam->x + inputFieldPadding,fieldElementBox.y+fieldElementBox.h/2- cam->y,stg_ex::get_substring(textInputstring,startXPos,subLength),pawgui::theme_main->input_font_color,font_textinput,gpe::fa_left,gpe::fa_middle,255);
+            }
+        }
+        else if(showPlaceHolder && (int)placeHolderstring.size() > 0 )
+        {
+            if( (int)placeHolderstring.size() > maxCharactersInView)
+            {
+                subLength = (int)placeHolderstring.size()-startXPos;
                 if( subLength >maxCharactersInView)
                 {
                     subLength = maxCharactersInView;
@@ -977,65 +1047,41 @@ namespace pawgui
             }
             else
             {
-                subLength =  (int)textInputstring.size();
+                subLength =  (int)placeHolderstring.size();
             }
+            gpe::gfs->render_text( fieldElementBox.x - cam->x + inputFieldPadding,fieldElementBox.y+fieldElementBox.h/2 - cam->y,stg_ex::get_substring(placeHolderstring,0,subLength),pawgui::theme_main->input_faded_font_color,font_textinput,gpe::fa_left,gpe::fa_middle);
+        }
 
-            if( subLength < 0)
+        if(showBorderBox)
+        {
+            if( isInUse )
             {
-                subLength = 0;
+                gpe::gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_highlight_outline_color,true);
             }
+            else if( isHovered )
+            {
+                gpe::gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_highlight_alt_color,true);
+            }
+            else
+            {
+                gpe::gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_outline_color,true);
+            }
+        }
 
-            if( (int)textInputstring.size()>0)
-            {
-                gpe::gfs->render_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2- cam->y,stg_ex::get_substring(textInputstring,startXPos,subLength),pawgui::theme_main->input_font_color,font_textinput,gpe::fa_left,gpe::fa_middle,255);
-            }
-            else if(showPlaceHolder && (int)placeHolderstring.size() > 0 )
-            {
-                if( (int)placeHolderstring.size() > maxCharactersInView)
-                {
-                    subLength = (int)placeHolderstring.size()-startXPos;
-                    if( subLength >maxCharactersInView)
-                    {
-                        subLength = maxCharactersInView;
-                    }
-                }
-                else
-                {
-                    subLength =  (int)placeHolderstring.size();
-                }
-                gpe::gfs->render_text( fieldElementBox.x+4-cam->x,fieldElementBox.y+fieldElementBox.h/2 - cam->y,stg_ex::get_substring(placeHolderstring,0,subLength),pawgui::theme_main->input_faded_font_color,font_textinput,gpe::fa_left,gpe::fa_middle);
-            }
-            if(showBorderBox)
-            {
-                if( isInUse )
-                {
-                    gpe::gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_highlight_outline_color,true);
-                }
-                else if( isHovered )
-                {
-                    gpe::gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_highlight_alt_color,true);
-                }
-                else
-                {
-                    gpe::gcanvas->render_rectangle( fieldElementBox.x - cam->x,fieldElementBox.y - cam->y,fieldElementBox.x+fieldElementBox.w - cam->x,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_outline_color,true);
-                }
-            }
+        if(isInUse && prevCursorPos!=cursorPos && prevCursorPos >=startXPos && prevCursorPos <= startXPos+maxCharactersInView )
+        {
+            //gpe::gcanvas->render_vertical_line_color( fieldElementBox.x+padding_default/2+(prevCursorPos-startXPos)*font_sizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_color);
+        }
 
-            if(isInUse && prevCursorPos!=cursorPos && prevCursorPos >=startXPos && prevCursorPos <= startXPos+maxCharactersInView )
+        if(isInUse && cursorPos >=startXPos && cursorPos <= startXPos+maxCharactersInView )
+        {
+            if(showCursor)
             {
-                gpe::gcanvas->render_vertical_line_color( fieldElementBox.x+padding_default/2+(prevCursorPos-startXPos)*font_sizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_color);
+                gpe::gcanvas->render_vertical_line_color( fieldElementBox.x+(cursorPos-startXPos)*font_sizeW- cam->x + inputFieldPadding ,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_font_color);
             }
-
-            if(isInUse && cursorPos >=startXPos && cursorPos <= startXPos+maxCharactersInView )
+            else
             {
-                if(showCursor)
-                {
-                    gpe::gcanvas->render_vertical_line_color( fieldElementBox.x+padding_default/2+(cursorPos-startXPos)*font_sizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_font_color);
-                }
-                else
-                {
-                    gpe::gcanvas->render_vertical_line_color( fieldElementBox.x+padding_default/2+(cursorPos-startXPos)*font_sizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_color);
-                }
+                //gpe::gcanvas->render_vertical_line_color( fieldElementBox.x+padding_default/2+(cursorPos-startXPos)*font_sizeW- cam->x,fieldElementBox.y - cam->y,fieldElementBox.y+fieldElementBox.h - cam->y,pawgui::theme_main->input_color);
             }
         }
     }
@@ -1086,15 +1132,19 @@ namespace pawgui
             inputLabel = newLabel;
             showLabel = true;
 
-            widget_box.h=prevwidget_boxH+font_sizeH;
+            widget_box.h=prevwidget_boxH;
             //widget_box.w = std::max( prevwidget_boxW, ( font_sizeW *(int)inputLabel.size()  ) );
-            fieldElementBox.x = widget_box.x;
-            fieldElementBox.y = widget_box.y+font_sizeH;
+            fieldElementBox.x = widget_box.x + widget_box.w/2;
+            fieldElementBox.y = widget_box.y;
             //fieldElementBox.w = prevwidget_boxW;
-            fieldElementBox.h = prevwidget_boxH;
+            fieldElementBox.w = widget_box.w/2;
+            fieldElementBox.h = widget_box.h;
         }
         else
         {
+            fieldElementBox.x = widget_box.x;
+            fieldElementBox.w = widget_box.w;
+            fieldElementBox.h = widget_box.h;
             inputLabel = "";
             showLabel = false;
         }

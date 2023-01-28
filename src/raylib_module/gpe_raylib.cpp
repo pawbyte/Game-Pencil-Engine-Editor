@@ -1,5 +1,5 @@
 /*
-gpe_raylib.cpp
+gpe_sdl.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,120 +31,75 @@ SOFTWARE.
 
 */
 
-#include "gpe_raylib.h"
+#include "gpe_sdl.h"
 
 namespace gpe
 {
-    bool init_raylib_all_systems()
+    bool init_sdl_all_systems()
     {
         bool inittd_succesffully = true;
-        //First we initialize raylib_module
-        if( init_raylib_main_system() == false )
+        //First we initialize SDL2
+        if( init_sdl_main_system() == false )
         {
-            error_log->report( "Unable to properly initialize raylib_main_system! \n" );
+            error_log->report( "Unable to properly initialize sdl_main_system! \n" );
             inittd_succesffully = false;
-        }
-        else
-        {
-            error_log->report( "Successfully initialized raylib_main_system! \n" );
         }
 
         //Then we begin our window
-        if( init_raylib_window_system() == false )
+        if( init_sdl_window_system() == false )
         {
-            error_log->report( "Unable to properly initialize raylib_window_system! \n" );
-            inittd_succesffully = false;
-        }
-        else
-        {
-            error_log->report( "Successfully initialized raylib_window_system! \n" );
-        }
-
-        //Then we begin our file system
-        if( init_raylib_file_system() == false )
-        {
-            error_log->report( "Unable to properly initialize raylib_file_system! \n" );
-            inittd_succesffully = false;
-        }
-        else
-        {
-            error_log->report( "Successfully initialized raylib_file_system! \n" );
-        }
-
-        //We will be using the raylib Graphics System...
-        if( init_raylib_render_package() == false )
-        {
-            error_log->report( "Unable to properly initialize raylib_render_package! \n" );
-            inittd_succesffully = false;
-        }
-        else
-        {
-            error_log->report( "Successfully initialized raylib_render_package! \n" );
-        }
-
-        if( init_raylib_cursor_system()  )
-        {
-            error_log->report( "Cursor system updated to raylib_cursor_system! \n" );
-        }
-        else
-        {
-            error_log->report( "Unable to properly initialize raylib_cursor_system! \n" );
+            error_log->report( "Unable to properly initialize sdl_window_system! \n" );
             inittd_succesffully = false;
         }
 
-        if( init_raylib_input_system() == false )
+        //We will be using the SDL Graphics System...
+        if( init_sdl_render_package() == false )
         {
-            error_log->report( "Unable to properly initialize raylib_input_system! \n" );
+            error_log->report( "Unable to properly initialize sdl_render_package! \n" );
             inittd_succesffully = false;
-        }
-        else
-        {
-            error_log->report( "Successfully initialized raylib_input_system! \n" );
         }
 
-        if( init_raylib_font_system() == false )
+        if( init_sdl_cursor_system()  )
         {
-            error_log->report( "Unable to properly initialize raylib_font_system! \n" );
-            inittd_succesffully = false;
+            error_log->report( "Cursor system updated to sdl_cursor_system! \n" );
         }
         else
         {
-            error_log->report( "Successfully initialized raylib_font_system! \n" );
+            error_log->report( "Unable to properly initialize sdl_cursor_system! \n" );
+            inittd_succesffully = false;
         }
 
-        //We will be using the raylib Audio System...
-        if( init_raylib_audio_system() == false )
+        if( init_sdl_input_system() == false )
         {
-            error_log->report( "Unable to properly initialize raylib_audio_system! \n" );
+            error_log->report( "Unable to properly initialize sdl_input_system! \n" );
             inittd_succesffully = false;
-        }
-        else
-        {
-            error_log->report( "Successfully initialized raylib_audio_system! \n" );
         }
 
-        if( init_raylib_time_system() == false )
+        if( init_sdl_font_system() == false )
         {
-            error_log->report( "Unable to properly initialize raylib_time_system! \n" );
+            error_log->report( "Unable to properly initialize sdl_font_system! \n" );
             inittd_succesffully = false;
         }
-        else
+
+        //We will be using the SDL Audio System...
+        if( init_sdl_mixer_audio_system() == false )
         {
-            error_log->report( "Successfully initialized raylib_time_system! \n" );
+            error_log->report( "Unable to properly initialize sdl_audio_system! \n" );
+            inittd_succesffully = false;
+        }
+
+        if( init_sdl_time_system() == false )
+        {
+            error_log->report( "Unable to properly initialize sdl_time_system! \n" );
+            inittd_succesffully = false;
         }
 
         return inittd_succesffully;
     }
 
-    void quit_raylib_all_systems()
+    void quit_sdl_all_systems()
     {
-        gpe::quit_raylib_font_system();
-        gpe::quit_raylib_audio_system();
-        gpe::quit_raylib_render_package();
-        gpe::quit_raylib_file_system();
-        gpe::quit_raylib_window_system();
-        gpe::quit_raylib_main_system();
-        error_log->report( "Raylib module removal is complete! \n" );
+
     }
 
 }

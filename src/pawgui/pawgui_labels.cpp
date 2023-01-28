@@ -3,10 +3,10 @@ pawgui_labels.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -37,7 +37,7 @@ namespace pawgui
     widget_label_image::widget_label_image(std::string name_param, std::string file_name, std::string description, std::string url_string)
     {
         allowOverSize = true;
-        resizeAspect = 1;
+        resizeAspect = 0.5;
         widget_type = "labelimage";
         widget_name = name_param;
         descriptionText = description;
@@ -93,7 +93,7 @@ namespace pawgui
                 wasClicked = true;
                 if( (int)webUrl.size() > 3)
                 {
-                    gpe::main_file_url_manager->external_open_url(webUrl);
+                    gpe::external_open_url(webUrl);
                 }
             }
         }
@@ -145,6 +145,7 @@ namespace pawgui
         {
             if( newW > 0)
             {
+                float newH = 0;
                 if( imgSrc!=nullptr && imgSrc->get_width() > 0)
                 {
                     if( !allowOverSize && !isFullWidth )
@@ -155,10 +156,10 @@ namespace pawgui
                         }
                     }
 
-                    widget_box.w = newW*resizeAspect;
+                    widget_box.w = newW * resizeAspect;
                     if( imgSrc!=nullptr && imgSrc->get_width()!=0 )
                     {
-                        widget_box.h =  ( widget_box.w ) *  ( (float) imgSrc->get_height() / (float)imgSrc->get_width() );
+                        widget_box.h =  widget_box.w * (float)imgSrc->get_height()/(float)imgSrc->get_width();
                     }
                 }
             }
@@ -186,10 +187,17 @@ namespace pawgui
                     newH = imgSrc->get_height();
                 }
             }
-            widget_box.h = newH*resizeAspect;
+            widget_box.h = newH;
             if( imgSrc!=nullptr )
             {
-                widget_box.w = resizeAspect * ceil( (float)newH * (float)imgSrc->get_width()/(float)imgSrc->get_height() );
+                if( resizeAspect != 0.f )
+                {
+                    widget_box.w = resizeAspect * ceil( (float)newH * (float)imgSrc->get_width()/(float)imgSrc->get_height() );
+                }
+                else
+                {
+                    widget_box.w = widget_box.h;
+                }
             }
         }
         else
@@ -265,7 +273,7 @@ namespace pawgui
             wasClicked = true;
             if( (int)webUrl.size() > 3)
             {
-                gpe::main_file_url_manager->external_open_url(webUrl);
+                gpe::external_open_url(webUrl);
             }
         }
         */
@@ -360,7 +368,7 @@ namespace pawgui
             wasClicked = true;
             if( (int)webUrl.size() > 3)
             {
-                gpe::main_file_url_manager->external_open_url(webUrl);
+                gpe::external_open_url(webUrl);
             }
         }
         */
@@ -454,7 +462,7 @@ namespace pawgui
             wasClicked = true;
             if( (int)webUrl.size() > 3)
             {
-                gpe::main_file_url_manager->external_open_url(webUrl);
+                gpe::external_open_url(webUrl);
             }
         }
         */
@@ -737,7 +745,7 @@ namespace pawgui
             wasClicked = true;
             if( (int)webUrl.size() > 3)
             {
-                gpe::main_file_url_manager->external_open_url(webUrl);
+                gpe::external_open_url(webUrl);
             }
         }
         */

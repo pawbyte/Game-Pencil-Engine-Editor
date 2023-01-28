@@ -1,5 +1,5 @@
 /*
-gpe_raylib_basic.h
+gpe_sdl_basic.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,25 +31,25 @@ SOFTWARE.
 
 */
 
-#ifndef gpe_raylib_basic_h
-#define gpe_raylib_basic_h
+#ifndef gpe_sdl_basic_h
+#define gpe_sdl_basic_h
 
 #include "../gpe/gpe_error_logger.h"
-#include "raylib.h"
-
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #ifdef _WIN32
 
+//#include <SDL_sysWM.h>
 //#undef _WIN32_LEAN_AND_MEAN
-
 #endif
 
 namespace gpe
 {
-    extern bool using_raylib_system_underneath;
-    bool init_raylib_main_system();
-    bool raylib_is_initted();
-    void quit_raylib_main_system();
+    extern bool using_sdl_system_underneath;
+    bool init_sdl_main_system();
+    bool sdl_is_initted();
+    void quit_sdl_main_system();
 }
 
-#endif //gpe_raylib_basic_h
+#endif //gpe_sdl_basic_h

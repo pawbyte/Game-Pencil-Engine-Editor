@@ -3,10 +3,10 @@ pawgui_dropdown.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -214,6 +214,7 @@ namespace pawgui
 
     std::string widget_dropdown_menu::get_menu_option(int atNumb)
     {
+        gpe::key_pair * kp = nullptr;
         if( selectedPair!=nullptr  )
         {
             return selectedPair->key_string;
@@ -252,6 +253,7 @@ namespace pawgui
 
     std::string widget_dropdown_menu::get_selected_tag()
     {
+        gpe::key_pair * kp = nullptr;
         if( selectedPair !=nullptr )
         {
             return selectedPair->key_substring;
@@ -270,7 +272,7 @@ namespace pawgui
 
     std::string widget_dropdown_menu::get_tag_from( std::string tagName, int tagId )
     {
-        return "";
+        return ""; //WIPNOTFUNCTIONALYET
     }
 
     bool widget_dropdown_menu::just_activated()
@@ -455,6 +457,7 @@ namespace pawgui
 
     void widget_dropdown_menu::remove_option(std::string optionToRemove)
     {
+        gpe::key_pair * tOption = nullptr;
         if( selectedName == optionToRemove )
         {
             set_id( -1 );
@@ -472,11 +475,11 @@ namespace pawgui
 
             if( selectedPair!=nullptr )
             {
-                gpe::gfs->render_text_resized( widget_box.x+widget_box.w/2-cam->x,widget_box.y+widget_box.h/2-cam->y,selectedPair->key_string,pawgui::theme_main->input_font_color,font_popup,gpe::fa_center,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
+                gpe::gfs->render_text_clipped( widget_box.x+widget_box.w/2-cam->x,widget_box.y+widget_box.h/2-cam->y,selectedPair->key_string,pawgui::theme_main->input_font_color,font_popup,gpe::fa_center,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
             }
             else
             {
-                gpe::gfs->render_text_resized( widget_box.x+widget_box.w/2-cam->x,widget_box.y+widget_box.h/2-cam->y,widget_name,pawgui::theme_main->input_font_color,font_popup,gpe::fa_center,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
+                gpe::gfs->render_text_clipped( widget_box.x+widget_box.w/2-cam->x,widget_box.y+widget_box.h/2-cam->y,widget_name,pawgui::theme_main->input_font_color,font_popup,gpe::fa_center,gpe::fa_middle,widget_box.w-widget_box.h-12,-1);
             }
 
             if( isInUse)

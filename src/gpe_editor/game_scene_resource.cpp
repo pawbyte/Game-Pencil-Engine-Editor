@@ -3,10 +3,10 @@ game_scene_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -302,6 +302,7 @@ gameSceneResource::~gameSceneResource()
         delete gridRenderRect;
         gridRenderRect = nullptr;
     }
+    int i = 0;
 
     if(animationInEditor!=nullptr)
     {
@@ -690,7 +691,7 @@ sceneLayer * gameSceneResource::add_layer( int newLayerId, bool selectLayer )
     sceneLayer * newLayer = nullptr;
 
     bool makeNewLayer = false;
-    if( newLayerId >=0 && newLayerId < 32)
+    if( newLayerId >=0 & newLayerId < 32)
     {
         previousFoundLayer = find_layer(newLayerId);
         if(  previousFoundLayer==nullptr )
@@ -1317,7 +1318,7 @@ void gameSceneResource::handle_scrolling()
                     yScrollHappened = true;
                     editorCameraRect.y+=(editorCameraRect.h/16)*zoomValue;
                 }
-                else if( editorScrolling == false )
+                else if( editorScrolling = false )
                 {
                     //arrow scrolling
                     if( gpe::input->check_kb_down(kb_up) )
@@ -1441,7 +1442,7 @@ void gameSceneResource::prerender_self(  )
 
 void gameSceneResource::load_resource(std::string file_path)
 {
-    if( scnPostProcessed ==false || gpe::main_file_url_manager->file_exists(file_path) )
+    if( scnPostProcessed ==false || sff_ex::file_exists(file_path) )
     {
         editorCameraRect.x = 0;
         editorCameraRect.y = 0;
@@ -1455,7 +1456,7 @@ void gameSceneResource::load_resource(std::string file_path)
         std::string otherColContainerName = "";
         std::string newScnFilename = "";
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/scenes/";
-        if( gpe::main_file_url_manager->file_exists(file_path) )
+        if( sff_ex::file_exists(file_path) )
         {
             newScnFilename = file_path;
             soughtDir = stg_ex::get_path_from_file(newScnFilename);
@@ -2225,7 +2226,7 @@ void gameSceneResource::load_resource(std::string file_path)
                                             */
                                             foundNickname = stg_ex::split_first_string( valstring, ",,,");
                                             newSceneGroup = new sceneBranchGroup(foundNickname);
-                                            if( (recentObject!=nullptr ) && ( recentObject->get_type()==gpe::branch_type::LAYER || recentObject->get_type()==gpe::branch_type::GROUP ) )
+                                            if(recentObject!=nullptr && recentObject->get_type()==gpe::branch_type::LAYER || recentObject->get_type()==gpe::branch_type::GROUP )
                                             {
                                                 recentObject->add_scene_branch( newSceneGroup);
                                             }
@@ -3425,25 +3426,25 @@ void gameSceneResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
             cancelResource_button->enable_self();
 
             panel_main_editor->add_gui_element(sceneEditorSubTitle,true);
-            panel_main_editor->add_gui_auto(renameBox );
-            panel_main_editor->add_gui_auto(sceneCaptionField );
-            panel_main_editor->add_gui_auto(sceneHintField );
-            panel_main_editor->add_gui_auto(levelPixelWidthField );
+            panel_main_editor->add_gui_element(renameBox, true );
+            panel_main_editor->add_gui_element(sceneCaptionField, true  );
+            panel_main_editor->add_gui_element(sceneHintField, true  );
+            panel_main_editor->add_gui_element(levelPixelWidthField, false  );
             panel_main_editor->add_gui_element(levelPixelHeightField, true );
-            panel_main_editor->add_gui_element(defaultTileWidthField, true  );
-            panel_main_editor->add_gui_auto(defaultTileHeightField);
-            panel_main_editor->add_gui_auto(musicAudioDropDown );
-            panel_main_editor->add_gui_auto(startAudioDropDown );
-            panel_main_editor->add_gui_auto(endAudioDropDown );
-            //panel_main_editor->add_gui_auto(isometricCheckBox );
-            panel_main_editor->add_gui_auto(checkBoxIsContinuous );
-            panel_main_editor->add_gui_auto(sceneBackgroundColor );
+            panel_main_editor->add_gui_element(defaultTileWidthField, false  );
+            panel_main_editor->add_gui_element(defaultTileHeightField, true );
+            panel_main_editor->add_gui_element(musicAudioDropDown, true  );
+            panel_main_editor->add_gui_element(startAudioDropDown, true  );
+            panel_main_editor->add_gui_element(endAudioDropDown, true  );
+            //panel_main_editor->add_gui_element(isometricCheckBox );
+            panel_main_editor->add_gui_element(checkBoxIsContinuous, true );
+            panel_main_editor->add_gui_element(sceneBackgroundColor, true );
             if( main_editor_settings!=nullptr && main_editor_settings->renderSceneBGColor!=nullptr)
             {
-                panel_main_editor->add_gui_auto(main_editor_settings->renderSceneBGColor );
+                panel_main_editor->add_gui_element(main_editor_settings->renderSceneBGColor, true  );
             }
-            panel_main_editor->add_gui_auto(confirmResource_button );
-            panel_main_editor->add_gui_auto(cancelResource_button );
+            panel_main_editor->add_gui_element(confirmResource_button, false );
+            panel_main_editor->add_gui_element(cancelResource_button, true );
             //panel_main_editor->set_maxed_out_width();
             panel_main_editor->process_self(nullptr, nullptr);
 
@@ -3873,11 +3874,11 @@ void gameSceneResource::save_resource(std::string file_path, int backupId)
         main_gpe_splash_page->update_submessages( "Saving Game Scene", resource_name );
     }
     std::string newFileIn ="";
-    gpe::main_file_url_manager->file_ammend_string(file_path,"blank");
+    sff_ex::append_to_file(file_path,"blank");
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( gpe::main_file_url_manager->path_exists(soughtDir) )
+    if( sff_ex::path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;

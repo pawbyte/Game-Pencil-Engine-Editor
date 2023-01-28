@@ -3,10 +3,10 @@ audio_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -70,6 +70,7 @@ audioResource::audioResource(pawgui::widget_resource_container * pFolder)
     defaultVolume->set_name("Default Volume:");
     defaultVolume->set_width(32);
     volumeSlider = new pawgui::widget_slide_xaxis(100,0,200);
+    positionSlider = new pawgui::widget_slide_xaxis(100,0,200);
 }
 
 audioResource::~audioResource()
@@ -83,6 +84,11 @@ audioResource::~audioResource()
     {
         delete volumeLabel;
         volumeLabel = nullptr;
+    }
+    if(positionSlider!=nullptr)
+    {
+        delete positionSlider;
+        positionSlider = nullptr;
     }
     if(volumeSlider!=nullptr)
     {
@@ -216,7 +222,7 @@ bool audioResource::copy_audio_source(std::string directory_output_name)
         if((int)audioFileName[i].size() > 0)
         {
             copyDestinationStr = directory_output_name+"/"+ stg_ex::get_short_filename(audioFileName[i],true);
-            if( gpe::main_file_url_manager->file_copy(audioFileName[i],copyDestinationStr )==false)
+            if( sff_ex::file_copy(audioFileName[i],copyDestinationStr )==false)
             {
                 copyErrorFound = true;
             }
@@ -306,7 +312,7 @@ void audioResource::load_resource(std::string file_path )
 
     std::string newFileIn ="";
     std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/audio/";
-    if( gpe::main_file_url_manager->file_exists(file_path) )
+    if( sff_ex::file_exists(file_path) )
     {
         newFileIn = file_path;
         soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -384,7 +390,7 @@ void audioResource::load_resource(std::string file_path )
                     {
                         renameBox->set_string(valstring);
                     }
-                    else if( key_string=="AudioFileLocation")
+                    else if( key_string=="Audiofile_location")
                     {
                         load_audio( soughtDir+valstring );
                     }
@@ -580,16 +586,16 @@ void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
 
                             if( main_editor_settings!=nullptr && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_AUD]!=nullptr)
                             {
-                                gpe::main_file_url_manager->external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_AUD]->get_string(),fileToEdit, true );
+                                gpe::external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_AUD]->get_string(),fileToEdit, true );
                             }
                             else
                             {
-                                gpe::main_file_url_manager->external_open_url(fileToEdit);
+                                gpe::external_open_url(fileToEdit);
                             }
                             /*
                             fileToEdit = "\"C:/Program Files (x86)/Audacity/audacity.exe\" \""+fileToEdit+"\"";
                             external_open_url(fileToEdit);*/
-                            gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+fileToEdit+"]...");
+                            sff_ex::append_to_file( gpe::get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+fileToEdit+"]...");
                         }
                     }
                 }
@@ -610,6 +616,17 @@ void audioResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
             else if( volumeSlider->get_value() != prevVolumeSliderVal  )
             {
                 defaultVolume->set_number(  volumeSlider->get_value()   );
+            }
+        }
+
+        positionSlider->set_coords( view_space->w/2, view_space->h - 64 - pawgui::padding_default  );
+        positionSlider->set_width( view_space->w/2 - 64 - pawgui::padding_default );
+        positionSlider->set_height( 64 );
+        if( panel_main_editor->hasArrowkeyControl== false && panel_main_editor->hasScrollControl == false )
+        {
+            if( get_mouse_coords(view_space,cam) )
+            {
+                positionSlider->process_self( view_space, cam );
             }
         }
     }
@@ -647,19 +664,81 @@ void audioResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *
                     support_string = "Not supported with current sound system";
                 }
 
-                gpe::gfs->render_text( pawgui::padding_default,view_space->h - i_sound_type*(pawgui::padding_default+pawgui::default_line_height), gpe::sound_type_names[i_sound_type]+" "+support_string,pawgui::theme_main->main_box_font_highlight_color, gpe::font_default, gpe::fa_left, gpe::fa_bottom);
-
-                if( audioFileName[i_sound_type].size()> 0)
+                if( view_space->h > 720 )
                 {
-                    gpe::gfs->render_text( view_space->w-pawgui::padding_default*3,i_sound_type *(pawgui::padding_default+pawgui::default_line_height), gpe::sound_type_names[i_sound_type]+" attatched ",pawgui::theme_main->main_box_font_highlight_color, gpe::font_default, gpe::fa_right, gpe::fa_top);
+                    gpe::gfs->render_text( pawgui::padding_default,positionSlider->get_ypos() - 32 - i_sound_type*(pawgui::padding_default+pawgui::default_line_height), gpe::sound_type_names[i_sound_type]+" "+support_string,pawgui::theme_main->main_box_font_highlight_color, gpe::font_default, gpe::fa_left, gpe::fa_bottom);
+
+                    if( audioFileName[i_sound_type].size()> 0)
+                    {
+                        if( gpe::sound_is_format_supported[i_sound_type] )
+                        {
+                            gpe::gfs->render_text( view_space->w-pawgui::padding_default*3,i_sound_type *(pawgui::padding_default+pawgui::default_line_height), stg_ex::get_local_from_global_file( audioFileName[i_sound_type]  )+ " " + gpe::sound_type_names[i_sound_type]+" attatched ", pawgui::theme_main->input_selected_color, gpe::font_default, gpe::fa_right, gpe::fa_top);
+                        }
+                        else
+                        {
+                            gpe::gfs->render_text( view_space->w-pawgui::padding_default*3,i_sound_type *(pawgui::padding_default+pawgui::default_line_height), stg_ex::get_local_from_global_file( audioFileName[i_sound_type] ) + " " + gpe::sound_type_names[i_sound_type]+" attatched ", pawgui::theme_main->input_error_Box_color, gpe::font_default, gpe::fa_right, gpe::fa_top);
+                        }
+                    }
+                    else
+                    {
+                        gpe::gfs->render_text( view_space->w-pawgui::padding_default*3,i_sound_type*(pawgui::padding_default+pawgui::default_line_height), gpe::sound_type_names[i_sound_type]+" not attatched ",pawgui::theme_main->input_error_Box_color, gpe::font_default,gpe::fa_right,gpe::fa_top);
+                    }
+                }
+
+            }
+        }
+        if( gpe::sound_is_working )
+        {
+            gpe::gfs->render_text( pawgui::padding_default,pawgui::padding_default, gpe::sound_system_name,pawgui::theme_main->input_color, gpe::font_default, gpe::fa_left, gpe::fa_top );
+        }
+        else
+        {
+            gpe::gfs->render_text( pawgui::padding_default,pawgui::padding_default, gpe::sound_system_name,pawgui::theme_main->input_error_Box_color, gpe::font_default, gpe::fa_left, gpe::fa_top );
+        }
+
+        std::string sound_string_length = "";
+        if( soundVal != nullptr )
+        {
+            if( view_space->h > 720 )
+            {
+                gpe::gfs->render_text( view_space->w/2,view_space->h/2, "Sound size: "+stg_ex::int_to_string( soundVal->get_length() )+" ms",pawgui::theme_main->main_box_font_highlight_color, gpe::font_default, gpe::fa_right, gpe::fa_bottom);
+                gpe::gfs->render_text( view_space->w/2,view_space->h/2+32, "Sound size: "+stg_ex::int_to_string( soundVal->get_length_seconds() )+" seconds",pawgui::theme_main->main_box_font_highlight_color, gpe::font_default, gpe::fa_right, gpe::fa_bottom);
+                gpe::gfs->render_text( view_space->w/2,view_space->h/2+64, "Sound size: "+stg_ex::int_to_string( soundVal->get_length_minutes() )+" minutes",pawgui::theme_main->main_box_font_highlight_color, gpe::font_default, gpe::fa_right, gpe::fa_bottom);
+                gpe::gfs->render_text( view_space->w/2,view_space->h/2+96, "Sound size: "+stg_ex::int_to_string( soundVal->get_length_hours() )+" hours",pawgui::theme_main->main_box_font_highlight_color, gpe::font_default, gpe::fa_right, gpe::fa_bottom);
+                gpe::gfs->render_text( view_space->w/2,view_space->h/2+128, "Sound size: "+stg_ex::int_to_string( soundVal->get_length_days() )+" days",pawgui::theme_main->main_box_font_highlight_color, gpe::font_default, gpe::fa_right, gpe::fa_bottom);
+            }
+
+
+            if( soundVal->get_length() > 0)
+            {
+                if( soundVal->get_length_days() > 0 )
+                {
+                    sound_string_length = stg_ex::int_to_string( soundVal->get_length_days() )+
+                    ":"+stg_ex::int_to_string( soundVal->get_length_hours() )+
+                    ":"+stg_ex::int_to_string( soundVal->get_length_minutes() )+
+                    ":"+stg_ex::int_to_string( soundVal->get_length_seconds() )+
+                    ":"+stg_ex::int_to_string( soundVal->get_length_ms() );
+                }
+                else if( soundVal->get_length_hours() > 0)
+                {
+                    sound_string_length = stg_ex::int_to_string( soundVal->get_length_hours() )+":"+stg_ex::int_to_string( soundVal->get_length_minutes() )+":"+stg_ex::int_to_string( soundVal->get_length_seconds() )+":"+stg_ex::int_to_string( soundVal->get_length_ms() );
                 }
                 else
                 {
-                    gpe::gfs->render_text( view_space->w-pawgui::padding_default*3,i_sound_type*(pawgui::padding_default+pawgui::default_line_height), gpe::sound_type_names[i_sound_type]+" not attatched ",pawgui::theme_main->main_box_font_color, gpe::font_default,gpe::fa_right,gpe::fa_top);
+                    sound_string_length = stg_ex::int_to_string( soundVal->get_length_minutes() )+":"+stg_ex::int_to_string( soundVal->get_length_seconds() )+":"+stg_ex::int_to_string( soundVal->get_length_ms() );
                 }
             }
+            else
+            {
+                sound_string_length = "0 ms";
+            }
         }
-        gpe::gfs->render_text( view_space->w - pawgui::padding_default,view_space->h - pawgui::padding_default, gpe::sound_system_name,pawgui::theme_main->main_box_font_highlight_color, gpe::font_default, gpe::fa_right, gpe::fa_bottom);
+        else
+        {
+            sound_string_length = "Empty";
+        }
+        gpe::gfs->render_text( pawgui::padding_default, view_space->h - pawgui::padding_default-32, sound_string_length ,pawgui::theme_main->main_box_font_highlight_color, gpe::font_default, gpe::fa_left, gpe::fa_bottom);
+        positionSlider->render_self( view_space, cam );
     }
 }
 
@@ -673,7 +752,7 @@ void audioResource::save_resource(std::string file_path, int backupId)
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( gpe::main_file_url_manager->path_exists(soughtDir) )
+    if( sff_ex::path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
@@ -690,23 +769,23 @@ void audioResource::save_resource(std::string file_path, int backupId)
         //makes sure the file is open
         if (newSaveDataFile.is_open())
         {
-            std::string resFileLocation = "";
+            std::string resfile_location = "";
             std::string resFileCopySrc;
             std::string resFileCopyDest;
             for(int i = 0; i < gpe::sound_format_max; i++)
             {
                 if( (int)audioFileName[i].size() > 3)
                 {
-                    resFileLocation = stg_ex::get_short_filename (audioFileName[i],true );
-                    newSaveDataFile << "AudioFile["+ gpe::sound_type_names[i]+"]="+resFileLocation+"\n";
-                    if( (int)resFileLocation.size() > 0 && usingAltSaveSource )
+                    resfile_location = stg_ex::get_short_filename (audioFileName[i],true );
+                    newSaveDataFile << "AudioFile["+ gpe::sound_type_names[i]+"]="+resfile_location+"\n";
+                    if( (int)resfile_location.size() > 0 && usingAltSaveSource )
                     {
-                        resFileCopySrc = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/audio/"+resFileLocation;
-                        resFileCopyDest = soughtDir+resFileLocation;
-                        if( gpe::main_file_url_manager->file_exists(resFileCopyDest) )
+                        resFileCopySrc = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/audio/"+resfile_location;
+                        resFileCopyDest = soughtDir+resfile_location;
+                        if( sff_ex::file_exists(resFileCopyDest) )
                         {
                             /*
-                            if( pawgui::display_prompt_message("[WARNING]Audio File Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] audio file? This action is irreversible!")==pawgui::display_query_yes)
+                            if( pawgui::display_prompt_message("[WARNING]Audio File Already exists?","Are you sure you will like to overwrite your ["+resfile_location+"] audio file? This action is irreversible!")==pawgui::display_query_yes)
                             {
                                 file_copy(resFileCopySrc,resFileCopyDest);
                             }
@@ -714,7 +793,7 @@ void audioResource::save_resource(std::string file_path, int backupId)
                         }
                         else
                         {
-                            gpe::main_file_url_manager->file_copy(resFileCopySrc,resFileCopyDest);
+                            sff_ex::file_copy(resFileCopySrc,resFileCopyDest);
                         }
                     }
 

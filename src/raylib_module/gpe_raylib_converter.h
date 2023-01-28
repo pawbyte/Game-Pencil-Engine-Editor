@@ -1,5 +1,5 @@
 /*
-gpe_raylib_converter.h
+gpe_sdl_converter.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,15 +31,15 @@ SOFTWARE.
 
 */
 
-#ifndef gpe_raylib_converter_h
-#define gpe_raylib_converter_h
+#ifndef gpe_sdl_converter_h
+#define gpe_sdl_converter_h
 
 #include "../gpe/gpe_color.h"
-#include "raylib.h"
+#include <SDL2/SDL.h>
 
 namespace gpe
 {
-    //raylib_Color * to_raylib_color( color * color_from_gpe );
+    //SDL_Color * to_sdl_color( color * color_from_gpe );
 }
 
-#endif // gpe_raylib_converter_h
+#endif // gpe_sdl_converter_h

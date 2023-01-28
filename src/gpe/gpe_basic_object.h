@@ -3,10 +3,10 @@ gpe_basic_object.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -82,8 +82,8 @@ namespace gpe
             //Animation variables
             std::string animation_id;
             std::string collisionMask;
-            animaton2d * animationPtr;
-            animaton2d * collisionMaskPtr;
+            animation2d * animationPtr;
+            animation2d * collisionMaskPtr;
             float animationFrame;
             float imageSpeed;
             bool animationEnded;
@@ -141,16 +141,15 @@ namespace gpe
             bool gpeLogicAppliedInFrame;
             bool gpePrelogicAppliedInFrame;
             bool gpeAddedToRenderList;
-            bool gpeAddedToContinuousList;
             bool gpeSceneStartCodeUsed;
 
-            game_object(  int x_pos_in,  int y_pos_in,  int object_layer_id);
+            game_object(  int object_layer_id, int x_pos_in,  int y_pos_in, int z_pos_in = 0 );
             virtual ~game_object();
             void apply_gravity();
             void check_spatial_movement();
             void clear_collisions();
             void add_collision_object( game_object * other );
-            static game_object * create_object(int x_pos_in,  int y_pos_in,  int object_layer_id) { return new game_object( x_pos_in,   y_pos_in, object_layer_id); }
+            static game_object * create_object( int object_layer_id, int x_pos_in,  int y_pos_in , int z_pos_in = 0 ) { return new game_object( object_layer_id, x_pos_in,   y_pos_in, z_pos_in ); }
             bool check_collison_with_object(  game_object * otherObj );
             bool under_mouse( int cameraId );
             void bounce_from( game_object * otherObj);
@@ -159,10 +158,10 @@ namespace gpe
             void default_load();
             std::string get_animation_name();
 
-            animaton2d * get_animation();
+            animation2d * get_animation();
             int get_collision_height();
             std::string get_collision_mask_name();
-            animaton2d * get_collision_mask();
+            animation2d * get_collision_mask();
 
             int get_collision_space_id();
             int get_collision_width();
@@ -208,6 +207,12 @@ namespace gpe
             void process_gpe_movement();
             void process_timed_functions();
             virtual void render();
+            virtual void render_start(); //Useful for rendering on start(i.e, floors and shadows)
+            virtual void render_end(); //Useful for post-rendering(i.e  effects and texts)
+            virtual void render_hud(); //Useful for rendering on the HUD level
+            virtual void render_hud_start(); //Useful for rendering at start the HUD level
+            virtual void render_hud_end(); //Useful for rendering on last layer of HUD level
+
             void reset_branch();
             virtual void scene_end();
             virtual void scene_start();

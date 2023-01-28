@@ -3,10 +3,10 @@ game_state_shape_test.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -33,20 +33,15 @@ SOFTWARE.
 
 #include "game_state_shape_test.h"
 
-colored_circle::colored_circle( int x, int y, int r )
+colored_circle::colored_circle( float x, float y, float r )
 {
-    my_circle = new gpe::shape_circle( x, y, r );
+    my_circle.position ={ x, y};
+    my_circle.radius = r;
     my_color = new gpe::color("circle_color",semath::random(0,255),semath::random(0,255),semath::random(0,255),255);
 }
 
 colored_circle::~colored_circle()
 {
-    if( my_circle != NULL)
-    {
-        delete my_circle;
-        my_circle = NULL;
-    }
-
     if( my_color != NULL)
     {
         delete my_color;
@@ -54,9 +49,10 @@ colored_circle::~colored_circle()
     }
 }
 
-colored_arc::colored_arc( int x, int y, int r, float s_angle, float e_angle, float a_verts, int a_width )
+colored_arc::colored_arc( float x, float y, float r, float s_angle, float e_angle, float a_verts, int a_width )
 {
-    my_circle = new gpe::shape_circle( x, y, r );
+    my_circle.position ={ x, y};
+    my_circle.radius = r;
     my_color = new gpe::color("arc_color",semath::random(0,255),semath::random(0,255),semath::random(0,255),255);
     arc_alpha = 255;
     start_arc_angle = s_angle * semath::math_radians_multiplier;
@@ -67,12 +63,6 @@ colored_arc::colored_arc( int x, int y, int r, float s_angle, float e_angle, flo
 
 colored_arc::~colored_arc()
 {
-    if( my_circle != NULL)
-    {
-        delete my_circle;
-        my_circle = NULL;
-    }
-
     if( my_color != NULL)
     {
         delete my_color;
@@ -101,7 +91,7 @@ colored_triangle::~colored_triangle()
     }
 }
 
-colored_rectangle::colored_rectangle( int x, int y, int w, int h )
+colored_rectangle::colored_rectangle( float x, float y, float w, float h )
 {
     my_rectangle = new gpe::shape_rect( x, y, w, h );
     my_color = new gpe::color("circle_color",0,0,0,255);
@@ -162,7 +152,7 @@ shape_test_state::shape_test_state( std::string s_name )
     arc_seeked_count = (int)random_arcs.size();
 
     circle_seeked_count = 0;
-    mouse_circle = new gpe::shape_circle(0,0, 16 );
+    mouse_circle = { {0,0}, 16};
     mouse_circle_position = 0;
 
     mouse_triangle = new gpe::shape_triangle2d();
@@ -187,15 +177,19 @@ shape_test_state::~shape_test_state()
 
 void shape_test_state::apply_logic()
 {
+    //Adds to the arc variable for animation effect
     arc_degree_ctr -= gpe::time_keeper->get_delta_performance() / 8.f;
 
     if( arc_degree_ctr < -210 )
     {
         arc_degree_ctr = 180;
     }
+
+    //Triangle shapes
     colored_triangle * c_triangle = NULL;
     gpe::shape_triangle2d * s_triangle = NULL;
     int i_triangle = 0;
+
 
     float c_fps = gpe::time_keeper->get_fps_cap();
 
@@ -409,7 +403,7 @@ colored_arc * shape_test_state::create_random_arc()
 {
     colored_arc * c_arc = new colored_arc( semath::random(0, gpe::screen_width), semath::random(0, gpe::screen_height), semath::random(0, 1024 ), semath::random(0,360),semath::random(0,360), semath::random(32,128), semath::random(0,64) );
     c_arc->my_color->change_rgba( semath::random(0,255),semath::random(0,255),semath::random(0,255),semath::random(0,255) );
-    c_arc->arc_vertices = c_arc->my_circle->radius / 2; //semath::random(64,128 );
+    c_arc->arc_vertices = c_arc->my_circle.radius / 2; //semath::random(64,128 );
     c_arc->arc_alpha = semath::random(0, 255 );
     random_arcs.push_back( c_arc );
     arc_seeked_count++;
@@ -506,8 +500,9 @@ void shape_test_state::render()
     }
 
 
-    gpe::gcanvas->render_triangle_color(mouse_triangle,gpe::c_ltorange, 255 );
+    gpe::gcanvas->render_triangle_color(mouse_triangle,gpe::c_gray, 128 );
     gpe::gcanvas->end_geometric_shape();
+
 
     colored_arc * c_arc;
     gpe::gcanvas->set_artist_blend_mode( gpe::blend_mode_blend );
@@ -518,7 +513,7 @@ void shape_test_state::render()
         for( int i_arc =  arc_seeked_count - 1; i_arc >=0 ; i_arc-- )
         {
             c_arc = random_arcs[i_arc];
-            gpe::gcanvas->render_arc_width_color( c_arc->my_circle->position.x,c_arc->my_circle->position.y,c_arc->my_circle->radius, c_arc->arc_width,
+            gpe::gcanvas->render_arc_width_color( c_arc->my_circle.position.x,c_arc->my_circle.position.y,c_arc->my_circle.radius, c_arc->arc_width,
                                                 c_arc->start_arc_angle,c_arc->end_arc_angle, c_arc->arc_vertices, c_arc->my_color, 255 );
         }
 
@@ -529,6 +524,19 @@ void shape_test_state::render()
         gpe::gcanvas->render_arc_width_color(gpe::input->mouse_position_x,gpe::input->mouse_position_y,96,8,180.f * semath::math_radians_multiplier,arc_degree_ctr * semath::math_radians_multiplier, 128, gpe::c_blue, 255 );
         gpe::gcanvas->render_arc_color(gpe::input->mouse_position_x,gpe::input->mouse_position_y,128,0,360.f * semath::math_radians_multiplier, 128, gpe::c_lime, 255 );
     }
+
+    gpe::gcanvas->set_artist_blend_mode( gpe::blend_mode_add );
+    gpe::gcanvas->render_bezier_curve_width_color( mouse_triangle->vertices[0].x, mouse_triangle->vertices[0].y,
+                                            mouse_triangle->vertices[1].x, mouse_triangle->vertices[1].y, 32, gpe::c_red, 255);
+
+
+    gpe::gcanvas->set_artist_blend_mode( gpe::blend_mode_blend);
+    gpe::gcanvas->render_bezier_curve_width_color( mouse_triangle->vertices[1].x, mouse_triangle->vertices[1].y,
+                                            mouse_triangle->vertices[2].x, mouse_triangle->vertices[2].y, 16, gpe::c_white, 255);
+
+    gpe::gcanvas->set_artist_blend_mode( gpe::blend_mode_none );
+    gpe::gcanvas->render_bezier_curve_width_color( mouse_triangle->vertices[2].x, mouse_triangle->vertices[2].y,
+                                        mouse_triangle->vertices[0].x, mouse_triangle->vertices[0].y, 8, gpe::c_blue, 255);
 
     gpe::gcanvas->set_artist_blend_mode( gpe::blend_mode_blend );
 

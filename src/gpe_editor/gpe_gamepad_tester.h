@@ -3,10 +3,10 @@ gpe_gamepad_tester.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -52,10 +52,17 @@ public:
     pawgui::widget_label_title * playerStats;
     int playerRadius[gp_max_devices];
     float playerDeadZone[gp_max_devices];
+
+    pawgui::widget_panel_section * playerDeadZoneSection[gp_max_devices];
     pawgui::widget_input_number * playerDeadZoneField[gp_max_devices];
+    pawgui::widget_button_push * playerAutoDeadZone[gp_max_devices];
+
     pawgui::widget_input_number * playerSizeRadius[gp_max_devices];
+
+    pawgui::widget_panel_section * playerColorsSection[gp_max_devices];
     pawgui::gpe_widget_color_picker * playerTestColor[gp_max_devices];
     pawgui::gpe_widget_color_picker * playerFontColor[gp_max_devices];
+
     pawgui::widget_button_push * detectControllers_button;
     pawgui::widget_button_push * vibrateController_button;
     pawgui::widget_button_icon * previousController_button;

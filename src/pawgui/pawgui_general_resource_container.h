@@ -3,10 +3,10 @@ pawgui_general_resource_container.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -44,6 +44,15 @@ namespace pawgui
     const int restype_superfolder = 0;
     const int restype_projfolder = 1;
 
+    enum
+    {
+        tree_mode_list = 0,
+        tree_mode_icons_small = 1,
+        tree_mode_icons_medium = 2,
+        tree_mode_icons_large = 3,
+        tree_mode_icons_xlarge = 4,
+    };
+
     class widget_resource_container: public widget_basic
     {
         protected:
@@ -52,17 +61,19 @@ namespace pawgui
             int resourceType;
             bool isFolder, isSuperFolder, isSuperProjectFolder;
             bool subMenuIsOpen;
-            gpe::animaton2d * containeranimation;
+            gpe::animation2d * containeranimation;
             gpe::texture_base * containerTexture;
             int animationFrameNumber;
             general_resource * heldResource;
             std::vector <widget_resource_container *> sub_options;
             bool resouceNameChanged;
             bool subContentsModified;
-            int strTexWidth, strTexHeight;
+            int strtex_widthth, strtex_height;
         public:
+            int currentlySelectedId;
             int foundX2Pos;
             int exportBuildGlobalId;
+            int treeMode;
             std::string parentProjectDirectory;
             std::string projectParentFileName;
             std::string projectParentName;
@@ -72,6 +83,9 @@ namespace pawgui
             widget_resource_container(std::string projFolderName = "", std::string new_name =  "", int rType = -1, int rId = -1,bool folder = true, int globalIdVal = -1,int  rezPropValue = -1);
             virtual ~widget_resource_container();
             void add_resource_container( widget_resource_container * newResource, bool changeGlobalId = false, widget_resource_container * referenceObject = nullptr );
+            bool add_if_contains_string( std::string s_name, std::vector <widget_resource_container * > &rVector );
+            void add_to_list( std::vector <widget_resource_container * > &rVector, widget_resource_container * current_folder_id = nullptr );
+
             widget_resource_container * add_resource_folder( std::string resourceTypeName, int gResId = -1, int rezPropValue = -1);
             widget_resource_container * add_newtype_folder( int rType,std::string resourceTypeName, int gResId = -1,int rezPropValue = -1);
             void delete_resource(widget_resource_container * otherContainer);
@@ -90,7 +104,7 @@ namespace pawgui
             std::string get_project_name();
             int get_resource_count();
             int get_resource_image_frame();
-            virtual gpe::animaton2d * get_resource_animation();
+            virtual gpe::animation2d * get_resource_animation();
             virtual gpe::texture_base * get_resource_texture();
             int get_size();
             int get_options_width();
@@ -105,10 +119,12 @@ namespace pawgui
             void open_folder();
             void preprocess_container(std::string file_path = "", int backupId = -1);
             void prerender_self( );
-            int process_container(int x_pos, int y_pos, int selectedId = -1, gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr, bool mouseInRange = false);
+            virtual void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect *cam = nullptr);
+
             bool read_data_from_projectfile(std::ofstream * fileTarget);
             void remove_resource(widget_resource_container * otherContainer, bool deleteResource = true);
             //Render options
+            virtual void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
             void render_contained_object( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
             void render_option( int x_pos, int y_pos, int selectedIdNumber=-1, gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr, bool renderSubOptions = true, bool renderAutomatically = false);
             void render_image( int x_pos, int y_pos, int r_width = -1, int r_height = -1, gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr, gpe::color * render_color = nullptr);

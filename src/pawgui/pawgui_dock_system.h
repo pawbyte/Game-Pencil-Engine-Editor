@@ -3,10 +3,10 @@ pawgui_dock_system.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -63,6 +63,8 @@ namespace pawgui
         void add_gui_element(pawgui::widget_basic * element, bool isNLElement = true );
         void add_gui_auto(pawgui::widget_basic * element);
         void add_gui_element_fullsize(pawgui::widget_basic * element);
+        void add_gui_section( widget_panel_section *  element );
+
         void clear_panel();
         bool container_in_view( std::string name );
         bool contains_tab( std::string name );

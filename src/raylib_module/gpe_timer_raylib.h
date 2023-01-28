@@ -31,23 +31,23 @@ SOFTWARE.
 
 */
 
-#ifndef gpe_timer_raylib_h
-#define gpe_timer_raylib_h
+#ifndef gpe_timer_sdl_h
+#define gpe_timer_sdl_h
 
 #include "../gpe/gpe_runtime.h"
 #include "../gpe/gpe_timer_base.h"
 #include <math.h>
-#include "raylib.h"
+#include <SDL2/SDL.h>
 
 namespace gpe
 {
     //The timer
-    class time_keeper_raylib: public time_keeper_base
+    class time_keeper_sdl: public time_keeper_base
     {
         protected:
         public:
-            time_keeper_raylib( std::string t_name );
-            ~time_keeper_raylib();
+            time_keeper_sdl( std::string t_name );
+            ~time_keeper_sdl();
 
             void cap_fps( bool is_minimized );
 
@@ -78,9 +78,9 @@ namespace gpe
             void set_average_fps_count( int new_count );
     };
 
-    bool init_raylib_time_system();
-    void quit_raylib_time_system();
+    bool init_sdl_time_system();
+    void quit_sdl_time_system();
 }
 
 //The frames per second timer
-#endif //gpe_timer_raylib_h
+#endif //gpe_timer_sdl_h

@@ -3,10 +3,10 @@ gpe_color_manager.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -34,51 +34,51 @@ SOFTWARE.
 
 namespace gpe
 {
-    color_master * color_system = NULL;
+    color_master * color_system = nullptr;
 
-    color * c_aqua = NULL;
-    color * c_black = NULL;
-    color * c_alblack = NULL;
-    color * c_blgray = NULL;
-    color * c_brown = NULL;
-    color * c_blue = NULL;
-    color * c_dkgray = NULL;
-    color * c_fuchsia = NULL;
-    color * c_gold = NULL;
-    color * c_gray = NULL;
-    color * c_green = NULL;
-    color * c_jetblack = NULL;
-    color * c_lime = NULL;
-    color * c_ltblue = NULL;
-    color * c_ltgray = NULL;
-    color * c_ltgreen = NULL;
-    color * c_ltlime = NULL;
-    color * c_ltorange = NULL;
-    color * c_ltpink = NULL;
-    color * c_ltpurple = NULL;
-    color * c_ltred = NULL;
-    color * c_maroon = NULL;
-    color * c_navy = NULL;
-    color * c_olive = NULL;
-    color * c_orange = NULL;
-    color * c_orangered = NULL;
-    color * c_purple = NULL;
-    color * c_red = NULL;
-    color * c_silver = NULL;
-    color * c_teal = NULL;
-    color * c_violet = NULL;
-    color * c_white = NULL;
-    color * c_yellow = NULL;
+    color * c_aqua = nullptr;
+    color * c_black = nullptr;
+    color * c_alblack = nullptr;
+    color * c_blgray = nullptr;
+    color * c_brown = nullptr;
+    color * c_blue = nullptr;
+    color * c_dkgray = nullptr;
+    color * c_fuchsia = nullptr;
+    color * c_gold = nullptr;
+    color * c_gray = nullptr;
+    color * c_green = nullptr;
+    color * c_jetblack = nullptr;
+    color * c_lime = nullptr;
+    color * c_ltblue = nullptr;
+    color * c_ltgray = nullptr;
+    color * c_ltgreen = nullptr;
+    color * c_ltlime = nullptr;
+    color * c_ltorange = nullptr;
+    color * c_ltpink = nullptr;
+    color * c_ltpurple = nullptr;
+    color * c_ltred = nullptr;
+    color * c_maroon = nullptr;
+    color * c_navy = nullptr;
+    color * c_olive = nullptr;
+    color * c_orange = nullptr;
+    color * c_orangered = nullptr;
+    color * c_purple = nullptr;
+    color * c_red = nullptr;
+    color * c_silver = nullptr;
+    color * c_teal = nullptr;
+    color * c_violet = nullptr;
+    color * c_white = nullptr;
+    color * c_yellow = nullptr;
 
-    color * color_hud = NULL;
-    color * color_hud_highlight = NULL;
+    color * color_hud = nullptr;
+    color * color_hud_highlight = nullptr;
 
     void init_colors()
     {
-        if( color_system!=NULL)
+        if( color_system!=nullptr)
         {
             delete color_system;
-            color_system= NULL;
+            color_system= nullptr;
         }
         c_aqua = new color(   "aqua", 000,255,255);
         c_black =new color(  "black", 0,0,0);
@@ -176,7 +176,7 @@ namespace gpe
     {
         for(int i=0; i<(int)color_directory_list.size(); i++)
         {
-            if(color_directory_list[i]!=NULL)
+            if(color_directory_list[i]!=nullptr)
             {
                 if(color_directory_list[i]->get_name()==string_in_search)
                 {
@@ -192,7 +192,7 @@ namespace gpe
     {
         for(unsigned i=0; i<(unsigned)color_directory_list.size(); i++)
         {
-            if(color_directory_list[i]!=NULL)
+            if(color_directory_list[i]!=nullptr)
             {
                 if(color_directory_list[i]->get_name()==string_in_search)
                 {
@@ -262,6 +262,11 @@ namespace gpe
         }
     }
 
+    bool color_master::hsv_to_rgb(float h, float s, float v, float &r, float &g, float &b )
+    {
+        return false;
+    }
+
     bool color_master::color_equals(color ccOne, color ccTwo)
     {
         return ccOne.checkEquality(ccTwo);
@@ -295,7 +300,7 @@ namespace gpe
                 }
                 else
                 {
-                    color  * result = NULL;
+                    color  * result = nullptr;
 
                     result->change_r( merge_channel(clOne.get_r(), clTwo.get_r(), amount) );
                     result->change_g( merge_channel(clOne.get_g(), clTwo.get_g(), amount) );
@@ -313,6 +318,63 @@ namespace gpe
         char buf[256];
         sprintf(buf, "%.2X%.2X%.2X", r, g, b);
         return std::string(buf);
+    }
+
+    bool color_master::rgb_to_hsv(float r, float g, float b, float &h, float &s, float &v )
+    {
+        //Divide each color by 255 to begin range from 0.0f to 1.f
+        r /= 255.f;
+        g /= 255.f;
+        b /= 255.f;
+
+        //calculates min and max values of colors
+        float max_color_val = std::max( r,g);
+        max_color_val = std::max( max_color_val,b );
+        float min_color_val = std::min( r,g);
+        min_color_val = std::min( min_color_val, b );
+
+        float delta_color = max_color_val - min_color_val;
+
+        //Avoids division by 0;
+        if( (max_color_val == 0) ||  ( delta_color < 0.00001) )
+        {
+            h = 0;
+            s = 0;
+            v = 0;
+            return false;
+        }
+
+
+        float rc = (max_color_val-r) / delta_color;
+        float gc = (max_color_val-g) / delta_color;
+        float bc = (max_color_val-b) / delta_color;
+        if (r == max_color_val )
+        {
+            h = 0.0+bc-gc;
+        }
+        else if (g == max_color_val )
+        {
+            h = 2.0+rc-bc;
+        }
+        else
+        {
+            h = 4.0+gc-rc;
+        }
+
+        //asigns values
+        h = fmod( h/6.f, 1.0 );
+        s = (delta_color) / max_color_val;
+        v = max_color_val;
+
+        //We made it this far, so "should be successful....
+        return true;
+    }
+
+
+    bool within_threshold(float value, float base, float difference)
+    {
+        //check lower & upper bounds
+        return ( ( value >=  base * (1.f-difference) ) && (value <= base * (1.f+difference) ) );
     }
 
 }

@@ -3,10 +3,10 @@ texture_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,17 +36,20 @@ SOFTWARE.
 
 textureResource::textureResource(pawgui::widget_resource_container * pFolder)
 {
+
     projectParentFolder = pFolder;
     editorMode = 0;
     textureInEditor = nullptr;
     isPreloaded = true;
     preloadCheckBox = new pawgui::widget_checkbox("Preload Texture","Check to load texture at game open", true);
-    transformResource_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png","Transform the Image",-1);
+    textureUsesPixels = new pawgui::widget_checkbox("Pixel Data Accessible","Useful for mode7/raycasting and other effects", false );
     labelImageDimensions = new pawgui::widget_label_text ("","");
     //labelTextureMessage = new pawgui::widget_label_text ("","");
     openExternalEditor_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens Texture Image In External Editor");
     refreshResourceData_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refreshes the loaded texture image");
     labelInfoMaxTextureSize = new pawgui::widget_label_text ("Max Image Size: 4096 X 4096px","Max Image Size: 4096 X 4096px");
+    imageUsesColorKey = new pawgui::widget_checkbox("Image Transparent?","Image uses a color key?", false );
+    imageColorKey = new pawgui::gpe_widget_color_picker("Image Color Key","The RGB value of image's color key",255,0,255 );
 }
 
 textureResource::~textureResource()
@@ -72,11 +75,13 @@ textureResource::~textureResource()
         delete preloadCheckBox;
         preloadCheckBox = nullptr;
     }
-    if( transformResource_button!=nullptr)
+
+    if( textureUsesPixels!=nullptr)
     {
-        delete transformResource_button;
-        transformResource_button = nullptr;
+        delete textureUsesPixels;
+        textureUsesPixels = nullptr;
     }
+
     if( labelImageDimensions!=nullptr)
     {
         delete labelImageDimensions;
@@ -126,13 +131,13 @@ gpe::texture_base * textureResource::get_resource_texture()
 
 bool textureResource::include_local_files( std::string pBuildDir , int buildType )
 {
-    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"resources_check.txt",get_name() +"...");
+    sff_ex::append_to_file( gpe::get_user_settings_folder()+"resources_check.txt",get_name() +"...");
 
     if( ( textureInEditor!=nullptr) && ( textureInEditor->get_width() > 0 ) )
     {
         return textureInEditor->copy_image_source(pBuildDir+"/resources/textures");
     }
-    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"resources_check.txt","Does not contain texture...");
+    sff_ex::append_to_file( gpe::get_user_settings_folder()+"resources_check.txt","Does not contain texture...");
     return true;
 }
 
@@ -161,11 +166,12 @@ bool textureResource::is_build_ready()
 
 int textureResource::load_image(std::string new_file_name)
 {
-    if( gpe::main_file_url_manager->file_exists(new_file_name) )
+    if( sff_ex::file_exists(new_file_name) )
     {
         if( stg_ex::file_is_image(new_file_name) )
         {
             textureInEditor = gpe::rsm->texture_add_filename( new_file_name );
+            textureInEditor->load_new_texture( new_file_name, -1,  imageUsesColorKey->is_clicked (), false,imageColorKey->get_r(),imageColorKey->get_g(),imageColorKey->get_b() );
             textureInEditor->copy_image_source( stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/textures");
             return true;
         }
@@ -179,7 +185,7 @@ int textureResource::load_image(std::string new_file_name)
 
 void textureResource::load_resource(std::string file_path)
 {
-    if( resourcePostProcessed ==false  || gpe::main_file_url_manager->file_exists(file_path) )
+    if( resourcePostProcessed ==false  || sff_ex::file_exists(file_path) )
     {
         if( main_gpe_splash_page != nullptr )
         {
@@ -191,7 +197,7 @@ void textureResource::load_resource(std::string file_path)
         std::string newFileIn ="";
 
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/textures/";
-        if( gpe::main_file_url_manager->file_exists(file_path) )
+        if( sff_ex::file_exists(file_path) )
         {
             newFileIn = file_path;
             soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -205,6 +211,7 @@ void textureResource::load_resource(std::string file_path)
 
         //gpe::error_log->report("Loading Texture - "+newFileIn);
         //If the level file could be loaded
+        std::string found_tx_string = "";
         if( !gameResourceFileIn.fail() )
         {
             //makes sure the file is open
@@ -263,11 +270,19 @@ void textureResource::load_resource(std::string file_path)
                                 {
                                     renameBox->set_string(valstring);
                                 }
+                                else if( key_string=="TransparentImage")
+                                {
+                                    imageUsesColorKey->set_checked( stg_ex::string_to_bool(valstring) );
+                                }
+                                else if( key_string=="ColorKeyValue")
+                                {
+                                    imageColorKey->set_color_from_rgb( valstring );
+                                }
                                 else if( key_string=="ImageLocation")
                                 {
                                     if( valstring!="nullptr")
                                     {
-                                        load_image( soughtDir+valstring );
+                                        found_tx_string = soughtDir+valstring;
                                     }
                                 }
                                 else if( key_string=="Preload")
@@ -283,6 +298,13 @@ void textureResource::load_resource(std::string file_path)
                         gpe::error_log->report("Invalid FoundFileVersion ="+ stg_ex::float_to_string(foundFileVersion)+".");
                     }
                 }
+            }
+        }
+        if( (int)found_tx_string.size() > 0  )
+        {
+            if( load_image(found_tx_string ) == 1 && textureInEditor != nullptr )
+            {
+                labelImageDimensions->set_name("Image Size: "+ stg_ex::int_to_string(textureInEditor->get_width() )+" x "+ stg_ex::int_to_string(textureInEditor->get_height() )+"px" );
             }
         }
     }
@@ -322,7 +344,6 @@ void textureResource::process_self( gpe::shape_rect * view_space, gpe::shape_rec
         panel_main_editor->add_gui_element(refreshResourceData_button,false);
         panel_main_editor->add_gui_element(loadResource_button,false);
         //panel_main_editor->add_gui_element(saveResource_button,false);
-        panel_main_editor->add_gui_element(transformResource_button,false);
         panel_main_editor->add_gui_element( openExternalEditor_button,true);
 
         if( textureInEditor!=nullptr)
@@ -333,8 +354,12 @@ void textureResource::process_self( gpe::shape_rect * view_space, gpe::shape_rec
         {
             labelImageDimensions->set_name("Image not loaded");
         }
+        panel_main_editor->add_gui_element( textureUsesPixels,true);
         panel_main_editor->add_gui_element( labelImageDimensions,true);
         panel_main_editor->add_gui_element(labelInfoMaxTextureSize,true);
+
+        panel_main_editor->add_gui_element(imageUsesColorKey,true);
+        panel_main_editor->add_gui_element(imageColorKey,true);
 
         panel_main_editor->add_gui_element(preloadCheckBox,true);
         panel_main_editor->add_gui_element(confirmResource_button,true);
@@ -365,7 +390,7 @@ void textureResource::process_self( gpe::shape_rect * view_space, gpe::shape_rec
             {
                 std::string currentFileToRefresh = stg_ex::get_short_filename (textureInEditor->get_filename(),true );
                 currentFileToRefresh = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/textures/"+currentFileToRefresh;
-                textureInEditor->load_new_texture( gpe::renderer_main, currentFileToRefresh, -1, true, true );
+                load_image(  currentFileToRefresh );
             }
         }
         else if( confirmResource_button->is_clicked() )
@@ -400,64 +425,12 @@ void textureResource::process_self( gpe::shape_rect * view_space, gpe::shape_rec
                 isPreloaded = preloadCheckBox->is_clicked();
             }
         }
-        if( transformResource_button!=nullptr)
-        {
-            if( transformResource_button->is_clicked() && textureInEditor!=nullptr)
-            {
-                if( textureInEditor->get_width() > 0 && textureInEditor->get_height() > 0)
-                {
-                    pawgui::context_menu_open(-1,-1,256);
-                    pawgui::main_context_menu->add_menu_option("Erase BG Color",0);
-                    pawgui::main_context_menu->add_menu_option("Invert Colors",1);
-                    pawgui::main_context_menu->add_menu_option("Make Gray_scale",2);
-                    pawgui::main_context_menu->add_menu_option("Exit",10);
-                    int menuSelection = pawgui::context_menu_process();
-
-                    if( menuSelection>=0 && menuSelection <=3)
-                    {
-                        std::string current_file_name = textureInEditor->get_filename();
-                        if( menuSelection==0)
-                        {
-                            gpe::color * foundBGColor = gpe::c_fuchsia->duplicate_color();
-                            if( pawgui::get_color_from_popup("Image Background Color To Remove",foundBGColor) )
-                            {
-                                if( pawgui::display_prompt_message("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                                {
-                                    gpe::error_log->report("Modifying image at: "+ current_file_name +".");
-                                    gpe::renderer_main->file_perform_effect_color_erase( current_file_name, foundBGColor );
-                                }
-                            }
-                            delete foundBGColor;
-                            foundBGColor = nullptr;
-
-                        }
-                        else if( menuSelection==1 )
-                        {
-                            if( pawgui::display_prompt_message("Are you sure you want to invert your image's colors?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                            {
-                                gpe::renderer_main->file_perform_effect_color_invert( current_file_name );
-                            }
-                        }
-                        else if( menuSelection==2 )
-                        {
-                            if( pawgui::display_prompt_message("Are you sure you want to grayscale your image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                            {
-                                gpe::renderer_main->file_perform_effect_grayscale( current_file_name );
-                            }
-                        }
-                        load_image(current_file_name);
-                        textureInEditor->load_new_texture( gpe::renderer_main, current_file_name, -1, true, true );
-
-                    }
-                }
-            }
-        }
 
         if( openExternalEditor_button!=nullptr && textureInEditor!=nullptr)
         {
             if( openExternalEditor_button->is_clicked() )
             {
-                if( gpe::main_file_url_manager->file_exists(textureInEditor->get_filename() ) )
+                if( sff_ex::file_exists(textureInEditor->get_filename() ) )
                 {
                     std::string external_editor_program = "";
                     if( main_editor_settings!=nullptr && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]!=nullptr)
@@ -467,13 +440,13 @@ void textureResource::process_self( gpe::shape_rect * view_space, gpe::shape_rec
 
                     if( (int)external_editor_program.size() > 0 )
                     {
-                        gpe::main_file_url_manager->external_open_program( external_editor_program, textureInEditor->get_filename(), true );
+                        gpe::external_open_program( external_editor_program, textureInEditor->get_filename(), true );
                     }
                     else
                     {
-                         gpe::main_file_url_manager->external_open_program(textureInEditor->get_filename());
+                         gpe::external_open_program(textureInEditor->get_filename());
                     }
-                    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit texture ["+textureInEditor->get_filename()+"]...");
+                    sff_ex::append_to_file( gpe::get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit texture ["+textureInEditor->get_filename()+"]...");
                 }
             }
         }
@@ -525,7 +498,7 @@ void textureResource::save_resource(std::string file_path, int backupId)
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if(  gpe::main_file_url_manager->path_exists(soughtDir) )
+    if(  sff_ex::path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
@@ -546,18 +519,36 @@ void textureResource::save_resource(std::string file_path, int backupId)
         {
             write_header_on_file(&newSaveDataFile);
 
+            if(imageUsesColorKey!=nullptr)
+            {
+                newSaveDataFile << "TransparentImage=" << imageUsesColorKey->is_clicked() << "\n";
+            }
+            else
+            {
+                newSaveDataFile << "TransparentImage=1\n";
+            }
+
+            if(imageColorKey!=nullptr)
+            {
+                newSaveDataFile << "ColorKeyValue=" << imageColorKey->get_rgb_string() << ",\n";
+            }
+            else
+            {
+                newSaveDataFile << "ColorKeyValue=255,0,255,\n";
+            }
+
             if( textureInEditor!=nullptr)
             {
-                std::string resFileLocation = stg_ex::get_short_filename (textureInEditor->get_filename(),true );
-                newSaveDataFile << "ImageLocation="+resFileLocation+"\n";
-                if( (int)resFileLocation.size() > 0 && usingAltSaveSource )
+                std::string resfile_location = stg_ex::get_short_filename (textureInEditor->get_filename(),true );
+                newSaveDataFile << "ImageLocation="+resfile_location+"\n";
+                if( (int)resfile_location.size() > 0 && usingAltSaveSource )
                 {
-                    std::string resFileCopySrc = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/textures/"+resFileLocation;
-                    std::string resFileCopyDest = soughtDir+resFileLocation;
-                    if( gpe::main_file_url_manager->file_exists(resFileCopyDest) )
+                    std::string resFileCopySrc = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/textures/"+resfile_location;
+                    std::string resFileCopyDest = soughtDir+resfile_location;
+                    if( sff_ex::file_exists(resFileCopyDest) )
                     {
                         /*
-                        if( pawgui::display_prompt_message("[WARNING]Texture Image Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] texture file? This action is irreversible!")==pawgui::display_query_yes)
+                        if( pawgui::display_prompt_message("[WARNING]Texture Image Already exists?","Are you sure you will like to overwrite your ["+resfile_location+"] texture file? This action is irreversible!")==pawgui::display_query_yes)
                         {
                             file_copy(resFileCopySrc,resFileCopyDest);
                         }
@@ -565,7 +556,7 @@ void textureResource::save_resource(std::string file_path, int backupId)
                     }
                     else
                     {
-                         gpe::main_file_url_manager->file_copy(resFileCopySrc,resFileCopyDest);
+                         sff_ex::file_copy(resFileCopySrc,resFileCopyDest);
                     }
                 }
             }

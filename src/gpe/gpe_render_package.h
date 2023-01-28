@@ -3,10 +3,10 @@ gpe_render_package.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,6 +36,7 @@ SOFTWARE.
 
 #include "gpe_common_includes.h"
 #include "gpe_renderer_base.h"
+#include "gpe_animation2d.h"
 #include "gpe_texture_base.h"
 #include "gpe_window_controller_base.h"
 
@@ -50,14 +51,18 @@ namespace gpe
             //Package properties
             renderer_base * packageRenderer;
             texture_base * packageTexture;
+            animation2d * packageAnimation2d;
+
             window_controller_base * packageWindow;
 
             render_package( int pId, std::string pName );
             ~render_package();
+            animation2d * create_animation2d( const std::string& anim_name, const std::string& anim_filename , bool transparent_image=false );
             texture_base * create_texture();
 
             int get_package_id();
             std::string get_package_name();
+            void set_vysnc( bool vs_on );
     };
 }
 

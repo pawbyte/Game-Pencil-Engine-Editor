@@ -3,10 +3,10 @@ tilesheet_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -595,8 +595,10 @@ tilesheetResource::tilesheetResource(pawgui::widget_resource_container * pFolder
         tsDataFields[i] = new pawgui::widget_input_number("0",true,0,2048);
         tsDataFields[i] ->set_label(tsDataLabels[i]);
     }
-    transformResource_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png","Transform the Image",-1);
     tilesheetDimensionsStr = new pawgui::widget_label_text ("Image Size: 0x0px");
+
+    imageUsesColorKey = new pawgui::widget_checkbox("Image Transparent?","Image uses a color key?", false );
+    imageColorKey = new pawgui::gpe_widget_color_picker("Image Color Key","The RGB value of image's color key",255,0,255 );
 
     openExternalEditor_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens Tilesheet Image In External Editor");
     refreshResourceData_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png", "Refreshes the loaded tilesheet image");
@@ -639,11 +641,7 @@ tilesheetResource::~tilesheetResource()
             tsDataFields[i] = nullptr;
         }
     }
-    if( transformResource_button!=nullptr)
-    {
-        delete transformResource_button;
-        transformResource_button = nullptr;
-    }
+
     if( tsPreviewer!=nullptr)
     {
         delete tsPreviewer;
@@ -706,7 +704,7 @@ bool tilesheetResource::include_local_files( std::string pBuildDir , int buildTy
             return tilesheetInEditor->tsImage->copy_image_source(pBuildDir+"/resources/tilesheets");
         }
     }
-    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"resources_check.txt","Tilesheet Does not contain texture image...");
+    sff_ex::append_to_file( gpe::get_user_settings_folder()+"resources_check.txt","Tilesheet Does not contain texture image...");
     return true;
 }
 
@@ -746,78 +744,106 @@ bool tilesheetResource::is_build_ready()
     return isReady;
 }
 
-void tilesheetResource::load_image(std::string new_file_name)
+bool tilesheetResource::load_image(std::string new_file_name)
 {
-    if( stg_ex::file_is_image(new_file_name) )
+    if( stg_ex::file_is_image(new_file_name) == false )
     {
-        gpe::texture_base * tempTexture =  gpe::rph->get_new_texture();
-        tempTexture->load_new_texture(  gpe::renderer_main,new_file_name, -1, true);
-        if( tempTexture->get_width()>0 )
+        pawgui::display_user_alert("Unable to load image","File type["+stg_ex::get_file_ext(new_file_name)+"] not supported when loading ["+new_file_name+"] TS_ER_LOAD_01.");
+        return false;
+    }
+
+    gpe::texture_base * tempTexture =  gpe::rph->get_new_texture();
+    tempTexture->load_new_texture( new_file_name, -1, imageUsesColorKey->is_clicked (), false,imageColorKey->get_r(),imageColorKey->get_g(),imageColorKey->get_b() );
+    if( tempTexture->get_width() == 0 || tempTexture->get_height() == 0 )
+    {
+        pawgui::display_user_alert("Tilesheet Edit Log","Unable to load image named ("+ new_file_name + ") Please check file location in project. TS_ER_LOAD_02" );
+        delete tempTexture;
+        tempTexture = NULL;
+        return false;
+    }
+
+    if(tilesheetInEditor==nullptr)
+    {
+        tilesheetInEditor = new gpe::tilesheet();
+    }
+
+    if(tilesheetInEditor->tsImage!=nullptr)
+    {
+        delete tilesheetInEditor->tsImage;
+        tilesheetInEditor->tsImage = nullptr;
+    }
+
+    if( tilesheetInEditor==nullptr)
+    {
+        pawgui::display_user_alert("Tilesheet Edit Log","Resource Error: ("+ resource_name + ") Problem loading Tilesheet TS_ER_LOAD_03." );
+        delete tempTexture;
+        tempTexture = NULL;
+        return false;
+    }
+
+    tilesheetInEditor->tsImage = tempTexture;
+    if(tilesheetInEditor->tsImage == nullptr)
+    {
+        pawgui::display_user_alert("Tilesheet Edit Log","Resource Error: ("+ resource_name + ") Problem loading Tilesheet Texture TS_ER_LOAD_04." );
+        return false;
+    }
+
+    tilesheetInEditor->tsImage->load_new_texture(  new_file_name, -1,  imageUsesColorKey->is_clicked (), false,imageColorKey->get_r(),imageColorKey->get_g(),imageColorKey->get_b() );
+    if( tilesheetInEditor->tsImage->get_width() == 0 || tilesheetInEditor->tsImage->get_height() == 0 )
+    {
+        pawgui::display_user_alert("Tilesheet Edit Log","Resource Error: ("+ resource_name + ") Problem loading Tilesheet Texture TS_ER_LOAD_05." );
+        return false;
+    }
+
+    if( tilesheetInEditor->tsImage->get_width() <1 || tilesheetInEditor->tsImage->get_width()>16384 || tilesheetInEditor->tsImage->get_height() <1 || tilesheetInEditor->tsImage->get_height()>16384 )
+    {
+        pawgui::display_user_alert("Unable to load image","Editor Error: Unable to load ["+new_file_name+"] please check file and make sure it is between 1x1 and 4096x4096 pixels and is a valid image TS_ER_LOAD_06");
+        if( tilesheetInEditor->tsImage!=nullptr)
         {
-            if(tilesheetInEditor==nullptr)
-            {
-                tilesheetInEditor = new gpe::tilesheet();
-            }
-            if(tilesheetInEditor->tsImage!=nullptr)
-            {
-                delete tilesheetInEditor->tsImage;
-                tilesheetInEditor->tsImage = nullptr;
-            }
-            if( tilesheetInEditor!=nullptr)
-            {
-                tilesheetInEditor->tsImage = tempTexture;
-                if(tilesheetInEditor->tsImage!=nullptr)
-                {
-                    tilesheetInEditor->tsImage->load_new_texture( gpe::renderer_main, new_file_name, -1, true );
-                    if( tilesheetInEditor->tsImage->get_width()>0 )
-                    {
-                        if( tilesheetInEditor->tsImage->get_width() <1 || tilesheetInEditor->tsImage->get_width()>4096 || tilesheetInEditor->tsImage->get_height() <1 || tilesheetInEditor->tsImage->get_height()>4096)
-                        {
-                            pawgui::display_user_alert("Unable to load image","Editor Error: Unable to load ["+new_file_name+"] please check file and make sure it is between 1x1 and 4096x4096 pixels and is a valid image");
-                            if( tilesheetInEditor->tsImage!=nullptr)
-                            {
-                                delete tilesheetInEditor->tsImage;
-                                tilesheetInEditor->tsImage = nullptr;
-                            }
-                        }
-                        else
-                        {
-                            //successfully added new image.
-                            tilesheetInEditor->tsRects.clear();
-                            tilesheetInEditor->file_nameLocation = new_file_name;
-                            gpe::shape_rect newBox;
-                            newBox.w = tilesheetInEditor->tsImage->get_width();
-                            newBox.h = tilesheetInEditor->tsImage->get_height();
-                            tilesheetInEditor->tsRects.push_back(newBox);
-                            tsDataFields[0]->set_string( stg_ex::int_to_string(tempTexture->get_width()) );
-                            tsDataFields[1]->set_string( stg_ex::int_to_string(tempTexture->get_height()) );
-                            tsDataFields[2]->set_string("0");
-                            tsDataFields[3]->set_string("0");
-                            tsDataFields[4]->set_string("0");
-                            tsDataFields[5]->set_string("0");
-                            tilesheetInEditor->tsImage->copy_image_source( stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/tilesheets");
-                            process_data_fields();
-                            tilesheetDimensionsStr->set_name("Image Size: "+ stg_ex::int_to_string(tilesheetInEditor->tsImage->get_width() )+" x "+ stg_ex::int_to_string(tilesheetInEditor->tsImage->get_height() )+"px" );
-                        }
-                    }
-                }
-            }
+            delete tilesheetInEditor->tsImage;
+            tilesheetInEditor->tsImage = nullptr;
         }
-        else
+        return false;
+    }
+
+
+    //successfully added new image.
+    tilesheetInEditor->tsRects.clear();
+    tilesheetInEditor->file_nameLocation = new_file_name;
+    gpe::shape_rect newBox;
+    newBox.w = tilesheetInEditor->tsImage->get_width();
+    newBox.h = tilesheetInEditor->tsImage->get_height();
+    tilesheetInEditor->tsRects.push_back(newBox);
+    tsDataFields[0]->set_string( stg_ex::int_to_string(tempTexture->get_width()) );
+    tsDataFields[1]->set_string( stg_ex::int_to_string(tempTexture->get_height()) );
+    tsDataFields[2]->set_string("0");
+    tsDataFields[3]->set_string("0");
+    tsDataFields[4]->set_string("0");
+    tsDataFields[5]->set_string("0");
+    tilesheetInEditor->tsImage->copy_image_source( stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/tilesheets");
+    process_data_fields();
+    tilesheetDimensionsStr->set_name("Image Size: "+ stg_ex::int_to_string(tilesheetInEditor->tsImage->get_width() )+" x "+ stg_ex::int_to_string(tilesheetInEditor->tsImage->get_height() )+"px" );
+
+    //Lastly let's copy the tilesheet image to our local directory
+    std::string resfile_location = stg_ex::get_short_filename( new_file_name, true);
+    if( (int)new_file_name.size() > 0 )
+    {
+        std::string resFileCopyDest = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/tilesheets/"+resfile_location;
+
+        //We won't overrride an existing file in the directory
+        if( sff_ex::file_exists(resFileCopyDest) == false )
         {
-            pawgui::display_user_alert("Tilesheet Edit Log","Unable to load image" );
+            sff_ex::file_copy(new_file_name,resFileCopyDest, false );
         }
     }
-    else
-    {
-        pawgui::display_user_alert("Unable to load image","File type["+stg_ex::get_file_ext(new_file_name)+"] not supported when loading ["+new_file_name+"].");
-    }
+
+    return true;
 }
 
 
 void tilesheetResource::load_resource(std::string file_path)
 {
-    if( resourcePostProcessed ==false  || gpe::main_file_url_manager->file_exists(file_path) )
+    if( resourcePostProcessed ==false  || sff_ex::file_exists(file_path) )
     {
         if( main_gpe_splash_page != nullptr )
         {
@@ -825,10 +851,11 @@ void tilesheetResource::load_resource(std::string file_path)
         }
 
         std::string otherColContainerName = "";
+        std::string found_ts_string = "";
 
         std::string newFileIn ="";
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/tilesheets/";
-        if( gpe::main_file_url_manager->file_exists(file_path) )
+        if( sff_ex::file_exists(file_path) )
         {
             newFileIn = file_path;
             soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -900,13 +927,21 @@ void tilesheetResource::load_resource(std::string file_path)
                                 {
                                     renameBox->set_string(valstring);
                                 }
+                                else if( key_string=="TransparentImage")
+                                {
+                                    imageUsesColorKey->set_checked( stg_ex::string_to_bool(valstring) );
+                                }
+                                else if( key_string=="ColorKeyValue")
+                                {
+                                    imageColorKey->set_color_from_rgb( valstring );
+                                }
                                 else if( key_string=="ImageLocation")
                                 {
                                     if( valstring!="nullptr")
                                     {
-                                        load_image( soughtDir+valstring );
+                                        found_ts_string = soughtDir+valstring ;
+
                                     }
-                                    tilesheetDimensionsStr->set_name("Image Size: "+ stg_ex::int_to_string(tilesheetInEditor->tsImage->get_width() )+" x "+ stg_ex::int_to_string(tilesheetInEditor->tsImage->get_height() )+"px" );
                                 }
                                 else if( key_string=="Preload")
                                 {
@@ -933,7 +968,17 @@ void tilesheetResource::load_resource(std::string file_path)
                 }
             }
         }
+
+        if( (int)found_ts_string.size() > 0  )
+        {
+            if( load_image(found_ts_string ) )
+            {
+                tilesheetDimensionsStr->set_name("Image Size: "+ stg_ex::int_to_string(tilesheetInEditor->tsImage->get_width() )+" x "+ stg_ex::int_to_string(tilesheetInEditor->tsImage->get_height() )+"px" );
+            }
+        }
     }
+
+
     process_data_fields();
 }
 
@@ -959,6 +1004,10 @@ void tilesheetResource::process_data_fields()
         }
         if( allInputsAreValid)
         {
+            tilesheetInEditor->tsIsTransparent = imageUsesColorKey->is_clicked();
+            tilesheetInEditor->tsCkeyR = imageColorKey->get_r();
+            tilesheetInEditor->tsCkeyG = imageColorKey->get_g();
+            tilesheetInEditor->tsCkeyB = imageColorKey->get_b();
             tilesheetInEditor->tsWidth = tsDataFields[0]->get_held_number();
             tilesheetInEditor->tsHeight = tsDataFields[1]->get_held_number();
             tilesheetInEditor->tsXOff = tsDataFields[2]->get_held_number();
@@ -993,12 +1042,14 @@ void tilesheetResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
             panel_main_editor->add_gui_element(renameBox,true);
             panel_main_editor->add_gui_element(refreshResourceData_button,false );
             panel_main_editor->add_gui_element(loadResource_button,false );
-            panel_main_editor->add_gui_element(transformResource_button,false );
             panel_main_editor->add_gui_element( openExternalEditor_button,true);
 
             //panel_main_editor->add_gui_element(saveResource_button,true);
             panel_main_editor->add_gui_element(tilesheetDimensionsStr,true);
             panel_main_editor->add_gui_element(labelInfoMaxTextureSize,true);
+
+            panel_main_editor->add_gui_element(imageUsesColorKey,true);
+            panel_main_editor->add_gui_element(imageColorKey,true);
 
             //processes the tile data fields
             for(  i =0; i < TILESHEET_DATA_FIELD_COUNT; i++)
@@ -1053,61 +1104,11 @@ void tilesheetResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
                     load_resource();
                 }
             }
-            else if( transformResource_button!=nullptr && transformResource_button->is_clicked() )
-            {
-                if( tilesheetInEditor!=nullptr && tilesheetInEditor->tsImage!=nullptr)
-                {
-                    if( tilesheetInEditor->tsImage->get_width() > 0 && tilesheetInEditor->tsImage->get_height() > 0)
-                    {
-                        pawgui::context_menu_open(-1,-1,256);
-                        pawgui::main_context_menu->add_menu_option("Erase BG Color",0);
-                        pawgui::main_context_menu->add_menu_option("Invert Colors",1);
-                        pawgui::main_context_menu->add_menu_option("Make Gray_scale",2);
-                        pawgui::main_context_menu->add_menu_option("Exit",10);
-                        int menuSelection = pawgui::context_menu_process();
-
-                        if( menuSelection>=0 && menuSelection <=3)
-                        {
-                            std::string current_file_name = tilesheetInEditor->tsImage->get_filename();
-                            if( menuSelection==0)
-                            {
-                                gpe::color * foundBGColor = gpe::c_fuchsia->duplicate_color();
-                                if( pawgui::get_color_from_popup("Image Background Color To Remove",foundBGColor) )
-                                {
-                                    if( pawgui::display_prompt_message("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                                    {
-                                        gpe::error_log->report("Modifying image at: "+ current_file_name +".");
-                                        gpe::renderer_main->file_perform_effect_color_erase( current_file_name, foundBGColor );
-                                    }
-                                }
-                                delete foundBGColor;
-                                foundBGColor = nullptr;
-
-                            }
-                            else if( menuSelection==1 )
-                            {
-                                if( pawgui::display_prompt_message("Are you sure you want to invert your image's colors?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                                {
-                                    gpe::renderer_main->file_perform_effect_color_invert( current_file_name );
-                                }
-                            }
-                            else if( menuSelection==2 )
-                            {
-                                if( pawgui::display_prompt_message("Are you sure you want to grayscale your image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                                {
-                                    gpe::renderer_main->file_perform_effect_grayscale( current_file_name );
-                                }
-                            }
-                            tilesheetInEditor->tsImage = gpe::rsm->texture_add_filename(  current_file_name );
-                        }
-                    }
-                }
-            }
             else if( openExternalEditor_button!=nullptr && openExternalEditor_button->is_clicked() )
             {
                 if( tilesheetInEditor!=nullptr )
                 {
-                    if( gpe::main_file_url_manager->file_exists(tilesheetInEditor->file_nameLocation ) )
+                    if( sff_ex::file_exists(tilesheetInEditor->file_nameLocation ) )
                     {
                         std::string external_editor_program = "";
 
@@ -1118,14 +1119,14 @@ void tilesheetResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
 
                         if( (int)external_editor_program.size() > 0 )
                         {
-                            gpe::main_file_url_manager->external_open_program( external_editor_program,tilesheetInEditor->file_nameLocation, true  );
+                            gpe::external_open_program( external_editor_program,tilesheetInEditor->file_nameLocation, true  );
                         }
                         else
                         {
-                            gpe::main_file_url_manager->external_open_program(tilesheetInEditor->file_nameLocation );
+                            gpe::external_open_program(tilesheetInEditor->file_nameLocation );
                         }
 
-                        gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+tilesheetInEditor->file_nameLocation+"]...");
+                        sff_ex::append_to_file( gpe::get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+tilesheetInEditor->file_nameLocation+"]...");
                     }
                 }
             }
@@ -1167,6 +1168,7 @@ void tilesheetResource::render_self( gpe::shape_rect *view_space, gpe::shape_rec
     bool texturePreviewIsRendered = false;
     if( cam!=nullptr && view_space!=nullptr )
     {
+        gpe::gcanvas->render_rect( view_space, gpe::c_blue, false, 255 );
         if( tsPreviewer!=nullptr)
         {
             tsPreviewer->render_self( view_space,cam);
@@ -1186,7 +1188,7 @@ void tilesheetResource::save_resource(std::string file_path, int backupId)
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( gpe::main_file_url_manager->path_exists(soughtDir) )
+    if( sff_ex::path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
@@ -1205,29 +1207,7 @@ void tilesheetResource::save_resource(std::string file_path, int backupId)
         {
             write_header_on_file(&newSaveDataFile);
 
-            if( tilesheetInEditor!=nullptr)
-            {
-                std::string resFileLocation = stg_ex::get_short_filename(tilesheetInEditor->file_nameLocation,true);
-                newSaveDataFile << "ImageLocation="+resFileLocation+"\n";
-                if( (int)resFileLocation.size() > 0 && usingAltSaveSource )
-                {
-                    std::string resFileCopySrc = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/tilesheets/"+resFileLocation;
-                    std::string resFileCopyDest = soughtDir+resFileLocation;
-                    if( gpe::main_file_url_manager->file_exists(resFileCopyDest) )
-                    {
-                        /*
-                        if( pawgui::display_prompt_message("[WARNING]Tilesheet Image Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] Tilesheet File? This action is irreversible!")==pawgui::display_query_yes)
-                        {
-                            gpe::main_file_url_manager->file_copy(resFileCopySrc,resFileCopyDest);
-                        }
-                        */
-                    }
-                    else
-                    {
-                        gpe::main_file_url_manager->file_copy(resFileCopySrc,resFileCopyDest);
-                    }
-                }
-            }
+
             if(preloadCheckBox!=nullptr)
             {
                 newSaveDataFile << "Preload=" << preloadCheckBox->is_clicked() << "\n";
@@ -1236,6 +1216,48 @@ void tilesheetResource::save_resource(std::string file_path, int backupId)
             {
                 newSaveDataFile << "Preload=1\n";
             }
+            if(imageUsesColorKey!=nullptr)
+            {
+                newSaveDataFile << "TransparentImage=" << imageUsesColorKey->is_clicked() << "\n";
+            }
+            else
+            {
+                newSaveDataFile << "TransparentImage=1\n";
+            }
+
+            if(imageColorKey!=nullptr)
+            {
+                newSaveDataFile << "ColorKeyValue=" << imageColorKey->get_rgb_string() << ",\n";
+            }
+            else
+            {
+                newSaveDataFile << "ColorKeyValue=255,0,255,\n";
+            }
+
+            if( tilesheetInEditor!=nullptr)
+            {
+                std::string resfile_location = stg_ex::get_short_filename(tilesheetInEditor->file_nameLocation,true);
+                newSaveDataFile << "ImageLocation="+resfile_location+"\n";
+                if( (int)resfile_location.size() > 0 && usingAltSaveSource )
+                {
+                    std::string resFileCopySrc = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/tilesheets/"+resfile_location;
+                    std::string resFileCopyDest = soughtDir+resfile_location;
+                    if( sff_ex::file_exists(resFileCopyDest) )
+                    {
+                        /*
+                        if( pawgui::display_prompt_message("[WARNING]Tilesheet Image Already exists?","Are you sure you will like to overwrite your ["+resfile_location+"] Tilesheet File? This action is irreversible!")==pawgui::display_query_yes)
+                        {
+                            sff_ex::file_copy(resFileCopySrc,resFileCopyDest);
+                        }
+                        */
+                    }
+                    else
+                    {
+                        sff_ex::file_copy(resFileCopySrc,resFileCopyDest);
+                    }
+                }
+            }
+
             for( int i = 0; i < TILESHEET_DATA_FIELD_COUNT; i++)
             {
                 newSaveDataFile << "TilesheetData[" << stg_ex::int_to_string(i)<< "]=";

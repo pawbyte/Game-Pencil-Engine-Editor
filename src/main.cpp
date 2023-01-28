@@ -3,10 +3,10 @@ main.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -40,7 +40,7 @@ SDL 2.0.9 used for this version...
 */
 
 #include "gpe/gpe.h"
-#include "sdl_libs/gpe_sdl.h"
+#include "sdl2_module/gpe_sdl2.h"
 #include "game_state_credits_base.h"
 #include "game_state_load.h"
 #include "game_state_main_menu_base.h"
@@ -61,7 +61,7 @@ int main( int argc, char* args[] )
         return -2;
     }
 
-    if( gpe::init_sdl_all_systems() == false )
+    if( gpe::init_sdl2_all_systems() == false )
     {
         gameFailed = -3;
     }
@@ -105,11 +105,10 @@ int main( int argc, char* args[] )
     gpe::game_runtime->state_set( shape_tester->get_state_name() );
 
 
-    /*if( init_gpe_master_itenary( argc, args ) == false )
+    if( init_gpe_master_itenary( argc, args ) == false )
     {
         gameFailed = -2000;
     }
-    */
 
     gpe::time_keeper->set_fps( 60 );
 
@@ -131,11 +130,11 @@ int main( int argc, char* args[] )
     gpe::quit_engine();
 
     //We now remove the independent audio engine
-    gpe::quit_sdl_font_system();
-    gpe::quit_sdl_mixer_audio_system();
-    gpe::quit_sdl_render_package();
-    gpe::quit_sdl_window_system();
-    gpe::quit_sdl_main_system();
+    gpe::quit_sdl2_font_system();
+    gpe::quit_sdl2_mixer_audio_system();
+    gpe::quit_sdl2_render_package();
+    gpe::quit_sdl2_window_system();
+    gpe::quit_sdl2_main_system();
 
     gpe::error_log->report("Program Exited with Return Status 0...");
     gpe::quit_core_engine(); //Removes the  remaining pieces of the engine
