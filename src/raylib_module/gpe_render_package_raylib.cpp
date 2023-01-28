@@ -1,5 +1,5 @@
 /*
-gpe_renderer_package_raylib.cpp
+gpe_renderer_package_sdl.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,55 +31,54 @@ SOFTWARE.
 
 */
 
-#include "gpe_render_package_raylib.h"
+#include "gpe_render_package_sdl.h"
 
 namespace gpe
 {
-    bool init_raylib_render_package()
+    bool init_sdl_render_package()
     {
-        if( renderer_main!=nullptr )
+        if( renderer_main!=NULL )
         {
             delete renderer_main;
-            renderer_main = nullptr;
+            renderer_main = NULL;
         }
-        if( gcanvas != nullptr )
+        if( gcanvas != NULL )
         {
             delete gcanvas;
-            gcanvas = nullptr;
+            gcanvas = NULL;
         }
-        renderer_main_raylib = new renderer_system_raylib( window_controller_main_raylib->get_window_id(), settings->defaultWindowWidth, settings->defaultWindowHeight );
-        renderer_main = renderer_main_raylib;
+        renderer_main_sdl = new renderer_system_sdl( window_controller_main_sdl->get_window_id(), settings->defaultWindowWidth, settings->defaultWindowHeight, window_controller_main_sdl->get_sdl_window() );
+        renderer_main = renderer_main_sdl;
 
-        if( rph != nullptr )
+        if( rph == NULL )
         {
-            delete rph;
-            rph = nullptr;
+            rph = new render_package_handler();
+
         }
-        rph = new render_package_handler();
 
-
-        render_package * defaultr_package = rph->add_render_package( "raylib" );
-        if( gpe::rsm != nullptr )
+        render_package * defaultr_package = rph->add_render_package( "sdl" );
+        if( gpe::rsm != NULL )
         {
             delete gpe::rsm;
-            gpe::rsm = nullptr;
-            gpe::rsm = new gpe::asset_manager( defaultr_package, "gcm-rsm-raylib" );
+            gpe::rsm = NULL;
+            gpe::rsm = new gpe::asset_manager( defaultr_package, "gcm-rsm" );
         }
 
-        window_controller_main_raylib->set_renderer( renderer_main_raylib, false );
+        window_controller_main_sdl->set_renderer( renderer_main_sdl, false );
 
-        defaultr_package->packageRenderer = renderer_main_raylib;
-        defaultr_package->packageTexture = new texture_raylib();
-        defaultr_package->packageWindow = window_controller_main_raylib;
+        defaultr_package->packageRenderer = renderer_main_sdl;
+        defaultr_package->packageTexture = new texture_sdl();
+        defaultr_package->packageWindow = window_controller_main_sdl;
         rph->defaultr_packageName = defaultr_package->get_package_name();
 
-        error_log->report("-Starting gpe_raylib artist...");
-        gcanvas = new artist_raylib( renderer_main_raylib );
+        error_log->report("-Starting GPE_SDL Artist...");
+        gcanvas = new artist_sdl( renderer_main_sdl );
         return true;
     }
 
-    void quit_raylib_render_package()
+    void quit_sdl_render_package()
     {
-        error_log->report("Quitting gpe_raylib render package....");
+        error_log->report("Quitting SDL_IMG....");
+        IMG_Quit();
     }
 }

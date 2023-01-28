@@ -32,39 +32,39 @@ SOFTWARE.
 */
 
 #include "../other_libs/stg_ex.h"
-#include "gpe_timer_raylib.h"
+#include "gpe_timer_sdl.h"
 
 namespace gpe
 {
-    bool init_raylib_time_system()
+    bool init_sdl_time_system()
     {
-        error_log->report("Starting raylib_module timekeeper...");
-        if( time_keeper != nullptr )
+        error_log->report("Starting SDL2 timekeeper...");
+        if( time_keeper != NULL )
         {
             delete time_keeper;
-            time_keeper = nullptr;
+            time_keeper = NULL;
         }
-        time_keeper = new time_keeper_raylib("raylib");
+        time_keeper = new time_keeper_sdl("sdl");
         time_keeper->set_fps( fps_cap );
-        error_log->report("Timekeeper swapped from base to raylib class...");
+        error_log->report("Timekeeper swapped from base to sdl class...");
         return true;
     }
 
-    void quit_raylib_time_system()
+    void quit_sdl_time_system()
     {
-        if( time_keeper !=nullptr )
+        if( time_keeper !=NULL )
         {
             delete time_keeper;
-            time_keeper = nullptr;
+            time_keeper = NULL;
         }
         time_keeper = new time_keeper_base();
     }
 
 
     //The frames per second cap timer
-    time_keeper_raylib::time_keeper_raylib(std::string t_name)
+    time_keeper_sdl::time_keeper_sdl(std::string t_name)
     {
-        keeper_type = "raylib";
+        keeper_type = "sdl";
         keeper_name = t_name;
         time_past = 0;
         fps_average_count = 5;
@@ -86,17 +86,17 @@ namespace gpe
         ticks_now =0;
         time_now = 0;
         ticks_paused = 0;
-        timer_frequency = 0;
+        timer_frequency = (float)SDL_GetPerformanceFrequency();
         ticks_elapsed = 0;
         frames_passed_counter = 0;
     }
 
-    time_keeper_raylib::~time_keeper_raylib()
+    time_keeper_sdl::~time_keeper_sdl()
     {
         recorded_fps.clear();
     }
 
-    void time_keeper_raylib::cap_fps( bool is_minimized )
+    void time_keeper_sdl::cap_fps( bool is_minimized )
     {
         //Returns if the window is minimized to prevent strange behaviors
         if( is_minimized)
@@ -112,17 +112,15 @@ namespace gpe
         delta_ticks =  ticks_now - ticks_start;
         delta_performance = time_now - time_past;
 
-        /*
         if( delta_ticks < ticks_per_frame )
         {
             delay( ticks_per_frame - delta_ticks );
             time_now = get_performance_ms();
             delta_performance = time_now - time_past;
         }
-        */
     }
 
-    void time_keeper_raylib::delay( float delay_time )
+    void time_keeper_sdl::delay( float delay_time )
     {
         if( delay_time <= 0.f )
         {
@@ -131,12 +129,12 @@ namespace gpe
 
         if( system_cap_on || delay_time >= min_delay_ms )
         {
-            //error_log->report("Via raylib_Delay..");
-            //raylib_Delay( floor( delay_time + 0.5 ) );
+            //error_log->report("Via SDL_Delay..");
+            SDL_Delay( floor( delay_time + 0.5 ) );
             delta_ticks = ticks_per_frame;
             return;
         }
-        return;
+
         float time_c = 0;
         float time_p = get_ticks();
         float timeDiff = 0;
@@ -151,62 +149,62 @@ namespace gpe
         delta_performance = ticks_per_frame;
     }
 
-    void time_keeper_raylib::finish_timer()
+    void time_keeper_sdl::finish_timer()
     {
 
     }
 
-    float time_keeper_raylib::get_delta_performance()
+    float time_keeper_sdl::get_delta_performance()
     {
-        return (float)GetFrameTime() * 1000.f;
+        return delta_performance;
     }
 
-    float time_keeper_raylib::get_delta_ticks()
+    float time_keeper_sdl::get_delta_ticks()
     {
-        return (float)GetFrameTime() * 1000.f;
+        return delta_ticks;
     }
 
-    float time_keeper_raylib::get_fps()
+    float time_keeper_sdl::get_fps()
     {
         return my_fps;
     }
 
-    float time_keeper_raylib::get_needed_ticks()
+    float time_keeper_sdl::get_needed_ticks()
     {
         return ticks_per_frame;
     }
 
-    float time_keeper_raylib::get_performance_ms()
+    float time_keeper_sdl::get_performance_ms()
     {
-        return get_ticks();
+        return ( ( (float)SDL_GetPerformanceCounter() )/( (float)SDL_GetPerformanceFrequency() ) )* 1000.0f;
     }
 
-    float time_keeper_raylib::get_performance_seconds()
+    float time_keeper_sdl::get_performance_seconds()
     {
-        return (float)GetFrameTime();
+        return ( (float)SDL_GetPerformanceCounter() )/( (float)SDL_GetPerformanceFrequency() );
     }
 
-    uint64_t time_keeper_raylib::get_ticks()
+    uint64_t time_keeper_sdl::get_ticks()
     {
-        return (float)GetFrameTime() * 1000.f;
+        return SDL_GetTicks();
     }
 
-    float time_keeper_raylib::get_time_difference( uint64_t time_p, uint64_t time_c )
+    float time_keeper_sdl::get_time_difference( uint64_t time_p, uint64_t time_c )
     {
         return time_c - time_p;
     }
 
-    bool time_keeper_raylib::is_started()
+    bool time_keeper_sdl::is_started()
     {
         return started;
     }
 
-    bool time_keeper_raylib::is_paused()
+    bool time_keeper_sdl::is_paused()
     {
         return paused;
     }
 
-    void time_keeper_raylib::pause_timer()
+    void time_keeper_sdl::pause_timer()
     {
         //If the timer is running and isn't already paused
         if( started &&  !paused )
@@ -219,7 +217,7 @@ namespace gpe
         }
     }
 
-    void time_keeper_raylib::reset_timer()
+    void time_keeper_sdl::reset_timer()
     {
         time_now = 0;
         time_past = 0;
@@ -232,7 +230,7 @@ namespace gpe
         recorded_fps.clear();
     }
 
-    void time_keeper_raylib::set_fps( float fps_new )
+    void time_keeper_sdl::set_fps( float fps_new )
     {
         //resets the timers and such since a new FPS cap has been set.
         if( fps_new > 0 && fps_new <= 1000.f )
@@ -245,7 +243,6 @@ namespace gpe
             fps_cap = 20;
         }
         my_fps = fps_cap;
-        SetTargetFPS( my_fps );
         ticks_per_frame = 1000.f / my_fps;
         seconds_per_frame = 1.f/my_fps;
         fps_ratio = my_fps/20.f;
@@ -257,7 +254,7 @@ namespace gpe
         recorded_fps.clear();
     }
 
-    void time_keeper_raylib::set_average_fps_count( int new_count )
+    void time_keeper_sdl::set_average_fps_count( int new_count )
     {
         if( fps_average_count != new_count)
         {
@@ -271,13 +268,13 @@ namespace gpe
 
     }
 
-    void time_keeper_raylib::start_timer()
+    void time_keeper_sdl::start_timer()
     {
         ticks_start = get_ticks();
-        time_past = ticks_start;
+        time_past = get_performance_ms();
     }
 
-    void time_keeper_raylib::stop_timer()
+    void time_keeper_sdl::stop_timer()
     {
         reset_timer();
 
@@ -291,7 +288,7 @@ namespace gpe
     }
 
 
-    void time_keeper_raylib::unpause_timer()
+    void time_keeper_sdl::unpause_timer()
     {
         //If the timer is paused
         if(  paused  )

@@ -1,5 +1,5 @@
 /*
-gpe_window_controller_raylib.h
+gpe_window_controller.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,42 +31,39 @@ SOFTWARE.
 
 */
 
-#ifndef gpe_window_raylib_h
-#define gpe_window_raylib_h
+#ifndef gpe_window_sdl_h
+#define gpe_window_sdl_h
 
 //The headers
 
 #include "../gpe/gpe_globals.h"
 #include "../gpe/gpe_shared_resources.h"
 #include "../gpe/gpe_window_controller_base.h"
-#include "raylib.h"
+#include "sdl_surface_ex.h"
 
 namespace gpe
 {
-    /*
-    Our raylib_module window wrapper
-    Since raylib is simple it only supports 1 window by default.
-    So declaring this won't create multiple windows, so bear this in mind please
-    "Please understand" - legend
-    */
-
-    class window_controller_raylib: public window_controller_base
+    //Our Window SDL Wrapper
+    class window_controller_sdl: public window_controller_base
     {
         private:
-            Image window_icon;
+            SDL_Window * local_sdl_window;
+            Uint32 window_flags;
+            SDL_Surface * window_icon;
         public:
-            //raylib_SysWMinfo * get_sys_info();
-            window_controller_raylib(std::string windowTitle,int wWidth, int wHeight,bool showBorder, bool fullScreen, bool maximized, bool isResizable );
-            ~window_controller_raylib();
+            //SDL_SysWMinfo * get_sys_info();
+            window_controller_sdl(std::string windowTitle,int wWidth, int wHeight,bool showBorder, bool fullScreen, bool maximized, bool isResizable );
+            ~window_controller_sdl();
 
             bool disable_scaling();
             bool enable_scaling();
+            SDL_Window * get_sdl_window();
 
             //Handle window events
             bool hide_window();
             void process_event( input_event_container * event_holder );
 
-            //raylib_SysWMinfo * get_info();
+            //SDL_SysWMinfo * get_info();
             void reset_input();
             void resize_window();
 
@@ -87,9 +84,9 @@ namespace gpe
             bool window_changed();
     };
 
-    extern window_controller_raylib * window_controller_main_raylib;
+    extern window_controller_sdl * window_controller_main_sdl;
 
-    bool init_raylib_window_system();
-    void quit_raylib_window_system();
+    bool init_sdl_window_system();
+    void quit_sdl_window_system();
 }
-#endif //gpe_window_raylib_h
+#endif //gpe_window_sdl_h

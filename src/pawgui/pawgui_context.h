@@ -3,10 +3,10 @@ pawgui_context.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -49,7 +49,7 @@ namespace pawgui
         bool showShortCuts;
         std::string widget_name;
         int opId;
-        gpe::animaton2d * opanimation;
+        gpe::animation2d * opanimation;
         gpe::texture_base * opTexture;
         int animationFrameNumber;
         int startYPos;
@@ -86,7 +86,7 @@ namespace pawgui
         popup_menu_option(std::string name = "", int id = -1,bool selectable = true, bool seeShortCut = true, bool makeContext = false, int kbS1 = -1, int kbS2 = -1, int kbS3 = -1 );
         ~popup_menu_option();
         popup_menu_option * add_option( popup_menu_option * otherOption);
-        popup_menu_option * add_menu_option( std::string name, int id = -1, gpe::texture_base * gTexture = nullptr,int animationImgNumb = -1, gpe::animaton2d * ganimation=nullptr, bool endsSection=false, bool selectable = true, bool isResource = false, int kbS1 = -1, int kbS2 = -1, int kbS3 = -1 );
+        popup_menu_option * add_menu_option( std::string name, int id = -1, gpe::texture_base * gTexture = nullptr,int animationImgNumb = -1, gpe::animation2d * ganimation=nullptr, bool endsSection=false, bool selectable = true, bool isResource = false, int kbS1 = -1, int kbS2 = -1, int kbS3 = -1 );
         int activate_hovered();
         void clear_menu();
         void close_menu();
@@ -102,7 +102,7 @@ namespace pawgui
         bool push_down();
         void reset_suboptions();
         void set_id(int new_id);
-        void change_texture_data( gpe::animaton2d * new_animation,int new_id);
+        void change_texture_data( gpe::animation2d * new_animation,int new_id);
         void set_position(int x_pos = -1, int y_pos = -1);
         void set_width(int new_width);
         void set_texture( gpe::texture_base * newTexture);

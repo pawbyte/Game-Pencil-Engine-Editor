@@ -3,10 +3,10 @@ gpe_editor_project.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -59,7 +59,7 @@ private:
 public:
     gpe::asset_manager * projectRSM;
     std::string projectIconName;
-    pawgui::widget_resource_container * RESC_project_FOLDER;
+    pawgui::widget_resource_container * RESC_PROJECT_FOLDER;
     pawgui::widget_resource_container * RESC_ANIMATIONS;
     pawgui::widget_resource_container * RESC_TEXTURES;
     pawgui::widget_resource_container * RESC_TILESHEETS;
@@ -78,7 +78,7 @@ public:
     pawgui::widget_resource_container * RESC_ACHIEVEMENTS;
     pawgui::widget_resource_container * RESC_FONTS;
     pawgui::widget_resource_container * RESC_SHADERS;
-    pawgui::widget_resource_container * RESC_project_SETTINGS;
+    pawgui::widget_resource_container * RESC_PROJECT_SETTINGS;
     pawgui::widget_resource_container * RESC_ALL[ gpe::resource_type_max ];
     int CREATED_RESOURCE_COUNT[ gpe::resource_type_max ];
 

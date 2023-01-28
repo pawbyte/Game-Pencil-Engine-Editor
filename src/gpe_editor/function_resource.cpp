@@ -3,10 +3,10 @@ functionResource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -176,7 +176,7 @@ void functionResource::open_code( int lineNumb, int colNumb,std::string codeTitl
 
 void functionResource::load_resource(std::string file_path)
 {
-    if( resourcePostProcessed ==false  || gpe::main_file_url_manager->file_exists(file_path) )
+    if( resourcePostProcessed ==false  || sff_ex::file_exists(file_path) )
     {
         if( main_gpe_splash_page != nullptr )
         {
@@ -186,7 +186,7 @@ void functionResource::load_resource(std::string file_path)
         bool usingAltSaveSource = false;
         std::string newFileIn ="";
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/source/";
-        if( gpe::main_file_url_manager->file_exists(file_path) )
+        if( sff_ex::file_exists(file_path) )
         {
             newFileIn = file_path;
             soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -393,11 +393,11 @@ void functionResource::save_resource(std::string file_path, int backupId)
     {
         main_gpe_splash_page->update_submessages( "Processing Function", resource_name );
     }
-    gpe::main_file_url_manager->file_ammend_string(file_path,"blank");
+    sff_ex::append_to_file(file_path,"blank");
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( gpe::main_file_url_manager->path_exists(soughtDir) )
+    if( sff_ex::path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
@@ -422,7 +422,7 @@ void functionResource::save_resource(std::string file_path, int backupId)
                 std::string  functionCodeSaveLocation = soughtDir+resource_name+".cps";
                 if( usingAltSaveSource)
                 {
-                    if( gpe::main_file_url_manager->file_exists(functionCodeSaveLocation) )
+                    if( sff_ex::file_exists(functionCodeSaveLocation) )
                     {
                         /*
                         if( pawgui::display_prompt_message("[WARNING]Function File Already exists?","Are you sure you will like to overwrite your ["+resource_name+".cps] Function file? This action is irreversible!")==pawgui::display_query_yes)

@@ -3,10 +3,10 @@ game_entity_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -289,6 +289,8 @@ bool gameEntityResource::build_intohtml5_file(std::ofstream * fileTarget, int le
     bool buildSuccessful = true;
     if( fileTarget!=nullptr && fileTarget->is_open() )
     {
+        int iFunc = 0;
+        int paramLine = 0;
         int iErrorLine = 0;
         std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
         std::string nestedTabsStrObjFunc = pawgui::generate_tabs( leftTabAmount +1 );
@@ -393,7 +395,7 @@ pawgui::widget_resource_container * gameEntityResource::get_parent_resource()
     return nullptr;
 }
 
-gpe::animaton2d * gameEntityResource::get_resource_animation()
+gpe::animation2d * gameEntityResource::get_resource_animation()
 {
     if( projectParentFolder!=nullptr)
     {
@@ -622,7 +624,7 @@ void gameEntityResource::prerender_self(  )
 
 void gameEntityResource::load_resource(std::string file_path)
 {
-    if( resourcePostProcessed == false  || gpe::main_file_url_manager->file_exists(file_path) )
+    if( resourcePostProcessed == false  || sff_ex::file_exists(file_path) )
     {
         if( main_gpe_splash_page != nullptr )
         {
@@ -637,7 +639,7 @@ void gameEntityResource::load_resource(std::string file_path)
 
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/entities/";
         std::string soughtCodeDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/source/";
-        if( gpe::main_file_url_manager->file_exists(file_path) )
+        if( sff_ex::file_exists(file_path) )
         {
             newameObjFilename = file_path;
             soughtDir = stg_ex::get_path_from_file(newameObjFilename);
@@ -915,6 +917,7 @@ void gameEntityResource::process_self( gpe::shape_rect * view_space, gpe::shape_
     }
     selectedMode = objModeSelector->get_selected_value();
 
+    int functionI = 0;
     pawgui::widget_text_editor *  fTextArea = nullptr;
 
     if( panel_main_editor!=nullptr )
@@ -1214,7 +1217,7 @@ void gameEntityResource::save_resource(std::string file_path, int backupId)
     std::string headerFileName ="";
     std::string sourceFileName ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( gpe::main_file_url_manager->path_exists(soughtDir) )
+    if( sff_ex::path_exists(soughtDir) )
     {
         newFileOut = file_path;
         headerFileName = soughtDir+resource_name+".h";
@@ -1250,6 +1253,8 @@ void gameEntityResource::save_resource(std::string file_path, int backupId)
         load_resource();
     }
     int i = 0;
+    pawgui::widget_resource_container * objsParentContainer = projectParentFolder->find_resource_from_name(gpe::resource_type_names_plural[ gpe::resource_type_object] );
+    pawgui::widget_resource_container * tOtherContainer = nullptr;
     std::string otherColContainerName = "";
     animationIndex = -1;
     if( animationField!=nullptr)
@@ -1333,6 +1338,7 @@ int gameEntityResource::search_for_string(std::string needle)
 
     if( pawgui::main_anchor_controller!=nullptr  )
     {
+        int i = 0;
         pawgui::main_anchor_controller->searchResultProjectName = parentProjectName;
         pawgui::main_anchor_controller->searchResultResourceId = globalResouceIdNumber;
         pawgui::main_anchor_controller->searchResultResourceName = resource_name;
@@ -1354,6 +1360,7 @@ int gameEntityResource::search_and_replace_string(std::string needle, std::strin
     int foundstrings = 0;
     int tempFoundCount = 0;
     main_editor_log->log_general_comment("Searching ["+resource_name+"] object..");
+    int i = 0;
 
     if( pawgui::main_anchor_controller!=nullptr )
     {

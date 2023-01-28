@@ -3,10 +3,10 @@ gpe_editor_start_page.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -60,7 +60,7 @@ bool quickProjectReader::review_project(std::string projectFileName)
     detectedLocation = "";
     detectedSaveTime = "";
     detectedVersion = "Unknown";
-    if( gpe::main_file_url_manager->file_exists(projectFileName) )
+    if( sff_ex::file_exists(projectFileName) )
     {
         std::ifstream newprofileFile( projectFileName.c_str() );
 
@@ -137,10 +137,10 @@ bool quickProjectReader::review_project(std::string projectFileName)
                                 }
                                 else if( key_string=="ProjectIcon")
                                 {
-                                    if( gpe::main_file_url_manager->path_exists( stg_ex::get_file_noext(projectFileName) ) )
+                                    if( sff_ex::path_exists( stg_ex::get_file_noext(projectFileName) ) )
                                     {
                                         tempFoundIcon = stg_ex::get_file_noext(projectFileName)+"/"+valstring;
-                                        if( gpe::main_file_url_manager->file_exists( tempFoundIcon )  && stg_ex::file_is_image(tempFoundIcon) )
+                                        if( sff_ex::file_exists( tempFoundIcon )  && stg_ex::file_is_image(tempFoundIcon) )
                                         {
                                             detectedIcon = tempFoundIcon;
                                         }
@@ -151,9 +151,9 @@ bool quickProjectReader::review_project(std::string projectFileName)
                     }
                 }
                 newprofileFile.close();
-                if( ( (int)tempFoundIcon.size()==0) && gpe::main_file_url_manager->path_exists( stg_ex::get_file_noext(projectFileName) ) )
+                if( ( (int)tempFoundIcon.size()==0) && sff_ex::path_exists( stg_ex::get_file_noext(projectFileName) ) )
                 {
-                    if( gpe::main_file_url_manager->file_exists( stg_ex::get_file_noext(projectFileName)+"/icon.png" ) )
+                    if( sff_ex::file_exists( stg_ex::get_file_noext(projectFileName)+"/icon.png" ) )
                     {
                         detectedIcon = stg_ex::get_file_noext(projectFileName)+"/icon.png";
                     }
@@ -167,6 +167,11 @@ bool quickProjectReader::review_project(std::string projectFileName)
 
 gamePencilStartPageResource::gamePencilStartPageResource( )
 {
+    firstFrameRendered = false;
+    tipsShownAtStartup = false;
+    timesRenderedCount = 0;
+    timesRenderedMax = 3000; // 3 seconds
+
     recent_project_list_size = 16;
     headerViewedSpace = new gpe::shape_rect();
     sidePanelRect = new gpe::shape_rect();
@@ -228,7 +233,7 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
     labelHelpfulLinks = new pawgui::widget_label_title("Helpful Links","Helpful Links");
 
     pawgui::widget_text_url * tTempUrl = nullptr;
-    tTempUrl = new pawgui::widget_text_url("Game Pencil Home Page","","http://gamepencil.net");
+    tTempUrl = new pawgui::widget_text_url("Game Pencil Home Page","","http://gamepencil.pawbyte.com");
     tTempUrl->hasLineBreak = true;
     helpfulWebLinks.push_back(tTempUrl);
     tTempUrl = new pawgui::widget_text_url("Documentation","","http://docs.pawbyte.com");
@@ -247,7 +252,7 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
     tTempUrl->hasLineBreak = true;
     helpfulWebLinks.push_back(tTempUrl);
 
-    tTempUrl = new pawgui::widget_text_url("Official News","","http://gamepencil.net/category/news/");
+    tTempUrl = new pawgui::widget_text_url("Official News","","http://gamepencil.pawbyte.com/category/news/");
     tTempUrl->hasLineBreak = true;
     helpfulWebLinks.push_back(tTempUrl);
 
@@ -298,7 +303,7 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
     tSocial_button->set_website("https://www.youtube.com/user/PawByte");
     add_communitylink(tSocial_button);
 
-    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/gamepad.png","IndieDB" );
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/gamecontroller.png","IndieDB" );
     tSocial_button->set_website("http://www.indiedb.com/engines/game-pencil-engine");
     add_communitylink(tSocial_button);
 
@@ -353,11 +358,11 @@ gamePencilStartPageResource::gamePencilStartPageResource( )
     for( i = 0; i < recent_project_list_size; i++)
     {
         tempProjectName = editor_gui_main->get_recent_project_name(i);
-        if( (int)tempProjectName.size() > 0 && gpe::main_file_url_manager->file_exists(tempProjectName) )
+        if( (int)tempProjectName.size() > 0 && sff_ex::file_exists(tempProjectName) )
         {
             if( qpr->review_project(tempProjectName) )
             {
-                if( gpe::main_file_url_manager->file_exists(qpr->detectedIcon) ==false)
+                if( sff_ex::file_exists(qpr->detectedIcon) ==false)
                 {
                     qpr->detectedIcon =gpe::app_directory_name+"resources/gamepencil_icon_72dpi.png";
                 }
@@ -524,7 +529,7 @@ void gamePencilStartPageResource::load_example_projects_folder( )
     std::string newMultiLine= "";
     std::string exampleProjectsLocation = gpe::app_directory_name+"examples";
     gpe::error_log->report("Browsing for example projects in ["+exampleProjectsLocation+"] folder");
-    if( gpe::main_file_url_manager->path_exists( exampleProjectsLocation ) )
+    if( sff_ex::path_exists( exampleProjectsLocation ) )
     {
         quickProjectReader * qpr = new quickProjectReader();
         gpe::file_directory_class * exampleFolderDirectory = new gpe::file_directory_class();
@@ -550,7 +555,7 @@ void gamePencilStartPageResource::load_example_projects_folder( )
                 {
                     tempProjectName = exampleProjectsLocation+"/"+tempFile->get_name();
 
-                    if( (int)tempProjectName.size() > 0 && gpe::main_file_url_manager->file_exists(tempProjectName) )
+                    if( (int)tempProjectName.size() > 0 && sff_ex::file_exists(tempProjectName) )
                     {
                         projectLoadedAlready = false;
                         /*for( j = (int)recentProjectsList.size()-1; j>=0; j--)
@@ -565,7 +570,7 @@ void gamePencilStartPageResource::load_example_projects_folder( )
 
                         if( !projectLoadedAlready && qpr->review_project(tempProjectName) )
                         {
-                            if( gpe::main_file_url_manager->file_exists(qpr->detectedIcon) ==false)
+                            if( sff_ex::file_exists(qpr->detectedIcon) ==false)
                             {
                                 qpr->detectedIcon =gpe::app_directory_name+"resources/gamepencil_icon_72dpi.png";
                             }
@@ -615,7 +620,7 @@ void gamePencilStartPageResource::load_projecs_folder( std::string projectsDirec
     foundProjectsList.clear();
 
     gpe::error_log->report("Browsing for  projects in ["+projectsDirectory+"] folder");
-    if( gpe::main_file_url_manager->path_exists(projectsDirectory) )
+    if( sff_ex::path_exists(projectsDirectory) )
     {
         quickProjectReader * qpr = new quickProjectReader();
         gpe::file_directory_class * favFolderDirectory = new gpe::file_directory_class();
@@ -645,7 +650,7 @@ void gamePencilStartPageResource::load_projecs_folder( std::string projectsDirec
                 {
                     tempProjectName = projectsDirectory+"/"+tempFile->get_name();
 
-                    if( (int)tempProjectName.size() > 0 && gpe::main_file_url_manager->file_exists(tempProjectName) )
+                    if( (int)tempProjectName.size() > 0 && sff_ex::file_exists(tempProjectName) )
                     {
                         projectLoadedAlready = false;
                         for( j = (int)recentProjectsList.size()-1; j>=0; j--)
@@ -660,7 +665,7 @@ void gamePencilStartPageResource::load_projecs_folder( std::string projectsDirec
 
                         if( !projectLoadedAlready && qpr->review_project(tempProjectName) )
                         {
-                            if( gpe::main_file_url_manager->file_exists(qpr->detectedIcon) ==false)
+                            if( sff_ex::file_exists(qpr->detectedIcon) ==false)
                             {
                                 qpr->detectedIcon =gpe::app_directory_name+"resources/gamepencil_icon_72dpi.png";
                             }
@@ -704,12 +709,28 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
 
-    if( !processedFirst )
+    if( !processedFirst && firstFrameRendered )
     {
         if( main_editor_settings!=nullptr)
         {
             load_projecs_folder(main_editor_settings->projectFolderListLocation);
             processedFirst = true;
+        }
+    }
+
+    if( editor_gui_main->showTipsAtStartUp && !tipsShownAtStartup )
+    {
+        if( firstFrameRendered )
+        {
+            tipsShownAtStartup = true;
+            gpe::cursor_main_controller->cursor_change( gpe::cursor_main_controller->cursor_system_name( gpe::cursor_default_type::arrow) );
+            gpe::input->handle_input(true);
+            gpe::input->reset_all_input();
+            if( editor_gui_main->showTipsAtStartUp)
+            {
+                tipsShownAtStartup = true;
+                GPE_Show_Tip_Of_Day();
+            }
         }
     }
 
@@ -797,6 +818,7 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
                     if( recentProjectsList[i]!=nullptr)
                     {
                         //recentProjectsList[i]->set_height(64);
+                        recentProjectsList[i]->autoResizes = false;
                         startPageList->add_gui_auto(recentProjectsList[i]);
                     }
                 }
@@ -816,8 +838,8 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
                 {
                     if( examplesProjectsList[i]!=nullptr)
                     {
-                        //examplesProjectsList[i]->set_height(64);
-                        startPageList->add_gui_auto(examplesProjectsList[i] );
+                        examplesProjectsList[i]->autoResizes = false;
+                        startPageList->add_gui_auto( examplesProjectsList[i] );
                     }
                 }
             }
@@ -839,6 +861,7 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
                     if( foundProjectsList[i]!=nullptr)
                     {
                         //foundProjectsList[i]->set_height(64);
+                        foundProjectsList[i]->autoResizes = false;
                         startPageList->add_gui_auto(foundProjectsList[i] );
                     }
                 }
@@ -890,11 +913,11 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
             for( i = 0; i < recent_project_list_size; i++)
             {
                 tempProjectName = editor_gui_main->get_recent_project_name(i);
-                if( (int)tempProjectName.size() > 0 && gpe::main_file_url_manager->file_exists(tempProjectName) )
+                if( (int)tempProjectName.size() > 0 && sff_ex::file_exists(tempProjectName) )
                 {
                     if( qpr->review_project(tempProjectName) )
                     {
-                        if( gpe::main_file_url_manager->file_exists(qpr->detectedIcon) ==false)
+                        if( sff_ex::file_exists(qpr->detectedIcon) ==false)
                         {
                             qpr->detectedIcon =gpe::app_directory_name+"resources/gamepencil_icon_72dpi.png";
                         }
@@ -942,7 +965,7 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
         {
             std::string lastDirectory = "";
             std::string newPathToScan = pawgui::get_directory_name_from_popup("Scan Folder for Projects", lastDirectory,false);
-            if( gpe::main_file_url_manager->path_exists(newPathToScan) )
+            if( sff_ex::path_exists(newPathToScan) )
             {
                 load_projecs_folder(newPathToScan);
                 gpe::input->reset_all_input();
@@ -1053,6 +1076,16 @@ void gamePencilStartPageResource::process_self( gpe::shape_rect * view_space, gp
 
 void gamePencilStartPageResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect * cam )
 {
+    if( main_gpe_splash_page->in_startup_mode() )
+    {
+        return;
+    }
+
+    if( timesRenderedCount < timesRenderedMax )
+    {
+        timesRenderedCount+= gpe::time_keeper->get_delta_performance();
+    }
+
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
     if( view_space!=nullptr && cam!=nullptr )
@@ -1070,6 +1103,11 @@ void gamePencilStartPageResource::render_self( gpe::shape_rect * view_space, gpe
         if( headerPageList!=nullptr)
         {
             headerPageList->render_self( view_space,cam);
+        }
+
+        if( timesRenderedCount >=timesRenderedMax  )
+        {
+            firstFrameRendered = true;
         }
     }
 }

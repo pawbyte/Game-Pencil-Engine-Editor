@@ -3,10 +3,10 @@ project_properties.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -236,7 +236,8 @@ projectPropertiesResource::projectPropertiesResource(pawgui::widget_resource_con
     project_settingsBar->set_option_height(32);
 
     project_settingsBar->add_option("General",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/wrench.png"),nullptr,2, false, false);
-    project_settingsBar->add_option("Platforms",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/umbrella.png"),nullptr,2, false, false);
+    project_settingsBar->add_option("Dependencies",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/chain.png"),nullptr,2, false, false);
+    project_settingsBar->add_option("Platforms",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/cubes.png"),nullptr,2, false, false);
     project_settingsBar->add_option("Layers",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/map.png"),nullptr,2, false, false);
     project_settingsBar->add_option("Macros",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/tags.png"),nullptr,2, false, false);
     project_settingsBar->add_option("Notes",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/sticky-note.png"),nullptr,2, false, false);
@@ -314,7 +315,7 @@ projectPropertiesResource::projectPropertiesResource(pawgui::widget_resource_con
     */
     switchNativeBuildTypeOptions->add_menu_option("Do not Export...","gpe_no_native",native_option_none,false);
 
-    gpe::animaton2d * mainExportOptionsanimation = pawgui::rsm_gui->animation_add("exportOptionsIcons", gpe::app_directory_name+"resources/gfx/animations/main_export_options_icons.png",12,true,0,0,false);
+    gpe::animation2d * mainExportOptionsanimation = pawgui::rsm_gui->animation_add("exportOptionsIcons", gpe::app_directory_name+"resources/gfx/animations/main_export_options_icons.png",12,true,0,0,false);
 
     gpe::texture_base * desktopLogoTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/desktop.png");
     gpe::texture_base * appleLogoTexture = pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/apple.png");
@@ -852,7 +853,7 @@ bool projectPropertiesResource::include_local_files( std::string pBuildDir , int
 
 bool projectPropertiesResource::is_build_ready()
 {
-
+    return true; //WIPNOTFUNCTIONALYET
 }
 
 void projectPropertiesResource::open_code(int lineNumb, int colNumb, std::string codeTitle )
@@ -891,7 +892,7 @@ void projectPropertiesResource::prerender_self(  )
 
 void projectPropertiesResource::load_resource(std::string file_path)
 {
-    if( resourcePostProcessed ==false  || gpe::main_file_url_manager->file_exists(file_path) )
+    if( resourcePostProcessed ==false  || sff_ex::file_exists(file_path) )
     {
         if( main_gpe_splash_page != nullptr )
         {
@@ -901,7 +902,7 @@ void projectPropertiesResource::load_resource(std::string file_path)
         std::string otherColContainerName = "";
 
         std::string newFileIn ="";
-        if( gpe::main_file_url_manager->file_exists(file_path) )
+        if( sff_ex::file_exists(file_path) )
         {
             newFileIn = file_path;
         }
@@ -994,7 +995,7 @@ void projectPropertiesResource::load_resource(std::string file_path)
                                     {
                                         current_project->projectIconName =  stg_ex::get_local_from_global_file( iconFileName);
                                     }
-                                    if( gpe::main_file_url_manager->file_exists(iconFileName) && stg_ex::file_is_image(iconFileName) )
+                                    if( sff_ex::file_exists(iconFileName) && stg_ex::file_is_image(iconFileName) )
                                     {
                                         if( projectIconImg!=nullptr)
                                         {
@@ -1292,7 +1293,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                     editor_gui_main->fileOpenProjectIconDir = current_project->get_project_directory();
                 }
                 std::string newProjectIconName = pawgui::get_filename_open_from_popup("Find Project Icon","Image",editor_gui_main->fileOpenProjectIconDir );
-                if( gpe::main_file_url_manager->file_exists(newProjectIconName ) )
+                if( sff_ex::file_exists(newProjectIconName ) )
                 {
                     if( stg_ex::file_is_image(newProjectIconName) )
                     {
@@ -1304,7 +1305,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
                         if( current_project!=nullptr )
                         {
                             iconFileName = current_project->projectIconName = stg_ex::get_local_from_global_file(newProjectIconName );
-                            gpe::main_file_url_manager->file_copy(newProjectIconName, current_project->get_project_directory()+"/"+current_project->projectIconName  );
+                            sff_ex::file_copy(newProjectIconName, current_project->get_project_directory()+"/"+current_project->projectIconName  );
                         }
                     }
                 }
@@ -1641,7 +1642,6 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
             {
                 projectLayerNamesColumnTitles[iLayerN]->set_height(widestTitle);
                 //projectLayerNamesColumnTitles[iLayerN]->set_width(16);
-                projectLayerNamesColumnTitles[iLayerN]->set_width( projectCollisionLayerMatrix[0]->get_width() );
                 collisionLayerMatrixList->add_gui_element(projectLayerNamesColumnTitles[iLayerN],(iLayerN==maxCollisionLayerCount-1) );
             }
             for( iLayerN = 0; iLayerN < maxCollisionLayerCount; iLayerN++)

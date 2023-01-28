@@ -3,10 +3,10 @@ gpe_scene_background_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -106,7 +106,7 @@ bool GPE_SceneBackground::build_intohtml5_file( std::ofstream * fileTarget, int 
      pawgui::widget_resource_container * tempBgResource = allTexturesFolder->find_resource_from_id( textureId);
     if( tempBgResource!=nullptr)
     {
-        *fileTarget << nestedTabsStr << "newBranch = scn_temp_layer.scnStartBackgrounds.push( {bgTexId:" <<stg_ex::int_to_string(tempBgResource->exportBuildGlobalId) << ",";
+        *fileTarget << nestedTabsStr << "newBranch = scn_temp_layer.scnStartBackgrounds.push( {bgtex_id:" <<stg_ex::int_to_string(tempBgResource->exportBuildGlobalId) << ",";
 
         *fileTarget << "bgXPos: " << stg_ex::int_to_string( x_pos) << ",";
         *fileTarget << "bgYPos: " << stg_ex::int_to_string( y_pos) << ",";

@@ -3,10 +3,10 @@ font_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -218,7 +218,7 @@ void fontResource::compile_cpp()
 
 bool fontResource::include_local_files( std::string pBuildDir , int buildType )
 {
-    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"resources_check.txt " , get_name() +"...");
+    sff_ex::append_to_file( gpe::get_user_settings_folder()+"resources_check.txt " , get_name() +"...");
 
     bool fontNotCopied = false;
     std::string copyFileDestination;
@@ -227,9 +227,9 @@ bool fontResource::include_local_files( std::string pBuildDir , int buildType )
         if( (int)storedFontFileNames[jFontType].size() > 3 )
         {
             copyFileDestination = pBuildDir+"/resources/fonts/"+ stg_ex::get_short_filename(storedFontFileNames[jFontType],true);
-            if( gpe::main_file_url_manager->file_copy( storedFontFileNames[jFontType],copyFileDestination)==false )
+            if( sff_ex::file_copy( storedFontFileNames[jFontType],copyFileDestination)==false )
             {
-                gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"resources_check.txt","Unable to copy ["+storedFontFileNames[jFontType]+"] to ["+copyFileDestination+"]...");
+                sff_ex::append_to_file( gpe::get_user_settings_folder()+"resources_check.txt","Unable to copy ["+storedFontFileNames[jFontType]+"] to ["+copyFileDestination+"]...");
                 return fontNotCopied;
             }
         }
@@ -268,13 +268,13 @@ void fontResource::load_font(std::string new_file_name, int newfont_size )
         {
             std::string copyDestinationStr = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ stg_ex::get_short_filename(new_file_name,true);
             storedFontFileNames[FONT_EOT] = copyDestinationStr;
-            gpe::main_file_url_manager->file_copy(new_file_name.c_str(),copyDestinationStr );
+            sff_ex::file_copy(new_file_name.c_str(),copyDestinationStr );
         }
         else if( stg_ex::get_file_ext(new_file_name)=="svg" || stg_ex::get_file_ext(new_file_name)=="SVG" )
         {
             std::string copyDestinationStr = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ stg_ex::get_short_filename(new_file_name,true);
             storedFontFileNames[FONT_SVG] = copyDestinationStr;
-            gpe::main_file_url_manager->file_copy(new_file_name.c_str(),copyDestinationStr );
+            sff_ex::file_copy(new_file_name.c_str(),copyDestinationStr );
         }
         else if( stg_ex::get_file_ext(new_file_name)=="otf" || stg_ex::get_file_ext(new_file_name)=="OTF" )
         {
@@ -285,7 +285,7 @@ void fontResource::load_font(std::string new_file_name, int newfont_size )
             }
             fontInEditorFileName = stg_ex::get_short_filename(new_file_name,true);
             std::string copyDestinationStr = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ fontInEditorFileName;
-            gpe::main_file_url_manager->file_copy(new_file_name.c_str(),copyDestinationStr );
+            sff_ex::file_copy(new_file_name.c_str(),copyDestinationStr );
 
             fontInEditor = gpe::gfs->open_font( copyDestinationStr.c_str(),newfont_size,false,"Custom Font");
             font_family_name =fontInEditor->get_family_name();
@@ -313,7 +313,7 @@ void fontResource::load_font(std::string new_file_name, int newfont_size )
             }
             fontInEditorFileName = stg_ex::get_short_filename(new_file_name,true);
             std::string copyDestinationStr = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ fontInEditorFileName;
-            gpe::main_file_url_manager->file_copy(new_file_name.c_str(),copyDestinationStr );
+            sff_ex::file_copy(new_file_name.c_str(),copyDestinationStr );
 
             fontInEditor = gpe::gfs->open_font(copyDestinationStr.c_str(),newfont_size,false,"Custom Font");
             font_family_name =fontInEditor->get_family_name();
@@ -337,13 +337,13 @@ void fontResource::load_font(std::string new_file_name, int newfont_size )
         {
             std::string copyDestinationStr = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ stg_ex::get_short_filename(new_file_name,true);
             storedFontFileNames[FONT_WOFF] = copyDestinationStr;
-            gpe::main_file_url_manager->file_copy(new_file_name.c_str(),copyDestinationStr );
+            sff_ex::file_copy(new_file_name.c_str(),copyDestinationStr );
         }
         else if( stg_ex::get_file_ext(new_file_name)=="woff2" || stg_ex::get_file_ext(new_file_name)=="WOFF2" )
         {
             std::string copyDestinationStr = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+ stg_ex::get_short_filename(new_file_name,true);
             storedFontFileNames[FONT_WOFF2] = copyDestinationStr;
-            gpe::main_file_url_manager->file_copy(new_file_name.c_str(),copyDestinationStr );
+            sff_ex::file_copy(new_file_name.c_str(),copyDestinationStr );
         }
         else
         {
@@ -354,7 +354,7 @@ void fontResource::load_font(std::string new_file_name, int newfont_size )
 
 void fontResource::load_resource(std::string file_path)
 {
-    if( resourcePostProcessed ==false || gpe::main_file_url_manager->file_exists(file_path) )
+    if( resourcePostProcessed ==false || sff_ex::file_exists(file_path) )
     {
         if( main_gpe_splash_page != nullptr )
         {
@@ -365,7 +365,7 @@ void fontResource::load_resource(std::string file_path)
 
         std::string newFileIn ="";
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/";
-        if( gpe::main_file_url_manager->file_exists(file_path) )
+        if( sff_ex::file_exists(file_path) )
         {
             newFileIn = file_path;
             soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -535,16 +535,16 @@ void fontResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect *
 
                     if( main_editor_settings!=nullptr && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_FONT]!=nullptr)
                     {
-                        gpe::main_file_url_manager->external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_FONT]->get_string(),fileToEdit, true );
+                        gpe::external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_FONT]->get_string(),fileToEdit, true );
                     }
                     else
                     {
-                        gpe::main_file_url_manager->external_open_url(fileToEdit);
+                        gpe::external_open_url(fileToEdit);
                     }
                     /*
                     fileToEdit = "\"C:/Program Files (x86)/Audacity/audacity.exe\" \""+fileToEdit+"\"";
                     external_open_url(fileToEdit);*/
-                    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+fileToEdit+"]...");
+                    sff_ex::append_to_file( gpe::get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+fileToEdit+"]...");
                 }
             }
         }
@@ -631,7 +631,7 @@ void fontResource::save_resource(std::string file_path, int backupId)
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if(  gpe::main_file_url_manager->path_exists(soughtDir) )
+    if(  sff_ex::path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
@@ -655,23 +655,23 @@ void fontResource::save_resource(std::string file_path, int backupId)
             newSaveDataFile << "font_size=12\n";
         }
 
-        std::string resFileLocation = "";
+        std::string resfile_location = "";
         std::string resFileCopySrc;
         std::string resFileCopyDest;
         for( int i = 0; i < FONT_FILE_TYPES; i++)
         {
             if( (int)storedFontFileNames[i].size() > 3)
             {
-                resFileLocation = storedFontFileNames[i];
-                newSaveDataFile << SUPPORTED_FONT_EXT[i]+"_File=" << resFileLocation <<"\n";
-                if( (int)resFileLocation.size() > 0 && usingAltSaveSource )
+                resfile_location = storedFontFileNames[i];
+                newSaveDataFile << SUPPORTED_FONT_EXT[i]+"_File=" << resfile_location <<"\n";
+                if( (int)resfile_location.size() > 0 && usingAltSaveSource )
                 {
-                    resFileCopySrc = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+resFileLocation;
-                    resFileCopyDest = soughtDir+resFileLocation;
-                    if( gpe::main_file_url_manager->file_exists(resFileCopyDest) )
+                    resFileCopySrc = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/fonts/"+resfile_location;
+                    resFileCopyDest = soughtDir+resfile_location;
+                    if( sff_ex::file_exists(resFileCopyDest) )
                     {
                         /*
-                        if( pawgui::display_prompt_message("[WARNING]Font File Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] font file? This action is irreversible!")==pawgui::display_query_yes)
+                        if( pawgui::display_prompt_message("[WARNING]Font File Already exists?","Are you sure you will like to overwrite your ["+resfile_location+"] font file? This action is irreversible!")==pawgui::display_query_yes)
                         {
                             file_copy(resFileCopySrc,resFileCopyDest);
                         }
@@ -679,7 +679,7 @@ void fontResource::save_resource(std::string file_path, int backupId)
                     }
                     else
                     {
-                        gpe::main_file_url_manager->file_copy(resFileCopySrc,resFileCopyDest);
+                        sff_ex::file_copy(resFileCopySrc,resFileCopyDest);
                     }
                 }
             }

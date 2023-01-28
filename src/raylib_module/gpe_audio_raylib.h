@@ -1,5 +1,5 @@
 /*
-gpe_audio_raylib.h
+gpe_audio_sdl_mixer.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,24 +31,21 @@ SOFTWARE.
 
 */
 
-#ifndef gpe_audio_raylib_h
-#define gpe_audio_raylib_h
+#ifndef gpe_audio_sdl_mixer_h
+#define gpe_audio_sdl_mixer_h
 
+#include <SDL2/SDL_mixer.h>
 #include "../gpe/gpe_audio_base.h"
-#include "raylib.h"
-#include "config.h"
+
 namespace gpe
 {
-    class sound_raylib: public sound_base
+    class sound_sdl_mixer: public sound_base
     {
         private:
-            Sound  raylib_sound;
-            int sound_plays_remaining;
-            float current_volume; //In raylib this is between 0.f and 1.f.
-            //The base class uses between 0 to 100, so conversions will be made on getters/setters
+            Mix_Chunk * sound_chunk;
         public:
-            sound_raylib( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
-            ~sound_raylib();
+            sound_sdl_mixer( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
+            ~sound_sdl_mixer();
             sound_base * create_new( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
             float get_volume();
 
@@ -60,13 +57,13 @@ namespace gpe
             void unload();
     };
 
-    class music_raylib: public music_base
+    class music_sdl_mixer: public music_base
     {
         private:
-            Music raylib_music;
+            Mix_Music * sdl_music;
         public:
-            music_raylib( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
-            ~music_raylib();
+            music_sdl_mixer( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
+            ~music_sdl_mixer();
             sound_base * create_new( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1);
             music_base * create_new_music( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
             bool is_playing();
@@ -77,8 +74,8 @@ namespace gpe
             void unload();
     };
 
-    bool init_raylib_audio_system();
-    void quit_raylib_audio_system();
+    bool init_sdl_mixer_audio_system(int audio_frequency  = 22050, Uint16 audio_format = MIX_DEFAULT_FORMAT, int audio_max_channels = MIX_DEFAULT_CHANNELS, int audio_chunksize  = 1024);
+    void quit_sdl_mixer_audio_system();
 }
 
-#endif //gpe_audio_raylib_h
+#endif //gpe_audio_sdl_h

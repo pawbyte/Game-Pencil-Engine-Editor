@@ -1,5 +1,5 @@
 /*
-gpe_font_raylib.h
+gpe_font_sdl.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,8 +31,8 @@ SOFTWARE.
 
 */
 
-#ifndef gpe_font_raylib_h
-#define gpe_font_raylib_h
+#ifndef gpe_font_sdl_h
+#define gpe_font_sdl_h
 
 #include "../gpe/gpe_artist_base.h"
 #include "../gpe/gpe_branch.h"
@@ -43,51 +43,45 @@ SOFTWARE.
 #include "../gpe/gpe_runtime.h"
 #include "../gpe/gpe_shared_resources.h"
 #include "../other_libs/stg_ex.h"
-#include "gpe_renderer_raylib.h"
-#include "gpe_texture_raylib.h"
-#include "raylib.h"
-#include "rlgl.h"
+#include "gpe_renderer_sdl.h"
+#include <SDL2/SDL_ttf.h>
 
 namespace gpe
 {
-    class font_pair_raylib: public font_pair_base
+    class font_pair_sdl: public font_pair_base
     {
         private:
             std::string str;
-            texture_raylib * strTexture;
+            SDL_Texture * strTexture;
         public:
             int lastAlphaRendered;
-            font_pair_raylib(Font  fontIn, std::string str_in);
-            ~font_pair_raylib();
-            texture_raylib * get_texture();
+            font_pair_sdl(TTF_Font * fontIn, std::string str_in);
+            ~font_pair_sdl();
+            SDL_Texture * get_texture();
     };
 
-    class font_raylib_tff: public font_base
+    class font_sdl_tff: public font_base
     {
         private:
-            std::map < const std::string, font_pair_raylib * > font_text_pairs;
-            std::map <const std::string, font_pair_raylib * > font_character_pairs;
-            Font raylib_held_font;
-            Color current_box_color;
-            Color current_font_color;
-            Vector2 current_font_position;
-            Rectangle current_font_box;
+            std::map < const std::string, font_pair_sdl * > textPairs;
+            std::map <const std::string, font_pair_sdl * > characterPairs;
+            TTF_Font * heldSDLFont;
         public:
-            font_raylib_tff( const std::string file_loc, int f_size, bool make_monospaced = false, const std::string f_nickname = "", int id_number =-1);
-            ~font_raylib_tff();
+            font_sdl_tff( const std::string file_loc, int f_size, bool make_monospaced = false, const std::string f_nickname = "", int id_number =-1);
+            ~font_sdl_tff();
             void clear_cache();
             font_base * create_new(std::string file_loc, int f_size, bool make_monospaced = false, const std::string f_nickname = "", int id_number =-1);
             void get_metrics(std::string text_to_render, int * width_value, int *height_value);
             void get_numbered_metrics(std::string text_to_render, int * width_value, int *height_value);
             void get_wrapped_string_metrics( const std::string str_in, int line_width, int linePadding, int * width_value, int *height_value);
-            Font get_raylib_font();
+            TTF_Font * get_sdl_font();
             int get_cache_count();
             int get_font_id();
             font_pair_base * find_character_texture( const std::string id_number);
-            font_pair_raylib * find_character_texture_raylib( const std::string id_number);
+            font_pair_sdl * find_character_texture_sdl( const std::string id_number);
 
             font_pair_base * find_texture( const std::string text_to_render);
-            font_pair_raylib * find_texture_raylib( const std::string text_to_render);
+            font_pair_sdl * find_texture_sdl( const std::string text_to_render);
             void render_bitmapped_text( int x_pos, int y_pos, std::string number_to_render, color * text_color, int alignment_h=gpe::fa_top,int alignment_v=gpe::fa_top,int render_alpha = 255);
             void render_text( int x_pos, int y_pos, std::string text_to_render, color * text_color, int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top,int render_alpha = 255);
             void render_text_boxed( int x_pos, int y_pos, std::string text_to_render, color * text_color,color * boxColor,int alignment_h=gpe::fa_left,int alignment_v=gpe::fa_top,int render_alpha = 255);
@@ -98,8 +92,8 @@ namespace gpe
 
     };
 
-    bool init_raylib_font_system();
-    void quit_raylib_font_system();
+    bool init_sdl_font_system();
+    void quit_sdl_font_system();
 }
 
-#endif // gpe_font_raylib_h
+#endif // gpe_font_sdl_h

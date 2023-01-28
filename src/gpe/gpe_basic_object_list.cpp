@@ -3,10 +3,10 @@ gpe_basic_object_list.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -47,7 +47,7 @@ namespace gpe
 
     void game_object_list::add_object( game_object * object_in)
     {
-        if( object_in!=NULL)
+        if( object_in!=nullptr)
         {
             internal_list.push_back(object_in);
         }
@@ -55,9 +55,9 @@ namespace gpe
 
     void game_object_list::remove_held_object( game_object * object_in)
     {
-        if( object_in!=NULL )
+        if( object_in!=nullptr )
         {
-            game_object * foundHeldObject = NULL;
+            game_object * foundHeldObject = nullptr;
             for( int ii = (int)internal_list.size()-1;  ii>=0; ii--)
             {
                 foundHeldObject = internal_list[ii];

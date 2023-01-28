@@ -3,10 +3,10 @@ gpe_editor_settings.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include "gpe_editor_settings.h"
 
-gamePencilEditor_settingsResource * main_editor_settings = nullptr;
+gpe_editor_settings_resource * main_editor_settings = nullptr;
 
 theme_holder::theme_holder( std::string tName, std::string tFileName, bool isCustomTheme )
 {
@@ -153,7 +153,7 @@ bool theme_holder::copy_theme( pawgui::gui_theme * systemTheme, bool copyToSelf 
 bool theme_holder::load_background( std::string bg_textureLocation, bool allOrNothing)
 {
     std::string miniBGFileName = "";
-    if( gpe::main_file_url_manager->file_exists(bg_textureLocation ) && stg_ex::file_is_image(bg_textureLocation) )
+    if( sff_ex::file_exists(bg_textureLocation ) && stg_ex::file_is_image(bg_textureLocation) )
     {
         if(themeIconImg!=nullptr)
         {
@@ -170,7 +170,7 @@ bool theme_holder::load_background( std::string bg_textureLocation, bool allOrNo
         {
             miniBGFileName = gpe::app_directory_name+"themes/"+miniBGFileName;
         }
-        gpe::main_file_url_manager->file_copy( bg_textureLocation, miniBGFileName );
+        sff_ex::file_copy( bg_textureLocation, miniBGFileName );
         templateBgFileName = miniBGFileName;
         theme_bg_location->set_string( miniBGFileName );
         return true;
@@ -187,7 +187,7 @@ bool theme_holder::load_background( std::string bg_textureLocation, bool allOrNo
         {
             miniBGFileName = gpe::app_directory_name+"themes/"+bg_textureLocation;
         }
-        if( gpe::main_file_url_manager->file_exists(miniBGFileName ) && stg_ex::file_is_image(miniBGFileName) )
+        if( sff_ex::file_exists(miniBGFileName ) && stg_ex::file_is_image(miniBGFileName) )
         {
             //performs "guaranteed recursion after finding local file"
             return load_background( miniBGFileName, true );
@@ -206,8 +206,10 @@ void theme_holder::remove_background()
     theme_bg_location->set_string( "" );
 }
 
-gamePencilEditor_settingsResource::gamePencilEditor_settingsResource()
+gpe_editor_settings_resource::gpe_editor_settings_resource()
 {
+    current_editor_view_mode = gpe::render_mode_2D;
+
     confirmResource_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/check.png","Confirm Changes","Confirm and Save Changes");
     cancelResource_button =  new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/times.png","Cancel Changes","Cancel Changes and Revert to previous settings");
 
@@ -226,6 +228,7 @@ gamePencilEditor_settingsResource::gamePencilEditor_settingsResource()
     sideAreaPanel->add_option("External Editors",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/external-link-square.png"),nullptr,2, false, false);
     sideAreaPanel->add_option("Coding Languages",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/code-fork.png"),nullptr,2, false, false);
     sideAreaPanel->add_option("Themes",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/eye.png"),nullptr,2, false, false);
+    sideAreaPanel->add_option("Login",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/users.png"),nullptr,2, false, false);
     sideAreaPanel->add_option("Advanced",-1,pawgui::rsm_gui->texture_add_filename( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/stethoscope.png"),nullptr,2, false, false);
 
     sidePanelRect = new gpe::shape_rect();
@@ -246,7 +249,7 @@ gamePencilEditor_settingsResource::gamePencilEditor_settingsResource()
     codingLanguageSelector->add_option("Lua",pawgui::program_language_lua );
 
     openEditorFolder = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/folder-open.png","Open Editor Folder...","Be very super careful!");
-    openLocal_settingsFolder = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/folder-open.png","Open _settings Folder...","Be very super careful!");
+    openLocalSettingsFolder = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/folder-open.png","Open Settings Folder...","Be very super careful!");
 
     userInvertMouseScroll = new pawgui::widget_checkbox("Invert Mouse Scroll","Inverts the direction the mouse scrolls in", false );
     autoSaveScreenshots = new pawgui::widget_checkbox("Save screenshot on Print-Screen","Saves PrintScreen images to Screenshots Folder", true);
@@ -286,7 +289,7 @@ gamePencilEditor_settingsResource::gamePencilEditor_settingsResource()
     editorCursorBlinkDelayTime->set_label("Cursor Blink Time: (15-6000 ms)[300 Recommended]");
     editorCursorBlinkDelayTime->set_number( pawgui::main_settings->cursorBlinkTime );
 
-    advancedAreaLabel = new pawgui::widget_label_title("Advanced","Advanced Editor Settings");
+    advancedAreaLabel = new pawgui::widget_label_title("Advanced","Advanged Editor Settings");
     forceFrameRedraw = new pawgui::widget_checkbox("Redraw every frame[Not reccommended]","Redraws the Editor every frame regardless of user input", false);
     showHiddenFilesInBrowser = new pawgui::widget_checkbox("Show Hidden Files in Browser","(Linux only feature", true);
     clearCache_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/close.png","Clear Font Cache","Clears the cache of pre-rendered texts");
@@ -324,14 +327,14 @@ gamePencilEditor_settingsResource::gamePencilEditor_settingsResource()
     ide_settingsFPSRate->add_menu_option("900 FPS","",900);
     ide_settingsFPSRate->add_menu_option("1000 FPS","",1000);
     showFPSOnEditor = new pawgui::widget_checkbox("Show FPS Counter","Show FPS Counter", gpe::fps_show_counter );
+    vsyncEditor = new pawgui::widget_checkbox("VSync On","VSync On", gpe::fps_show_counter );
 
-    ide_buttonBarSizeLabel= new pawgui::widget_label_text ("Buttonbar Size","Changes the size of the buttonbar");
-    ide_buttonBarSize = new pawgui::widget_dropdown_menu( "Buttonbar Size",true);
+    ide_buttonBarSizeLabel= new pawgui::widget_label_text ("Top Buttonbar Size","Changes the size of the buttonbar");
+    ide_buttonBarSize = new pawgui::widget_dropdown_menu( "Top Buttonbar Size",true);
     ide_buttonBarSize->add_menu_option("Small","",24);
     ide_buttonBarSize->add_menu_option("Medium","",32);
     ide_buttonBarSize->add_menu_option("Large","",48);
-    ide_buttonBarSize->add_menu_option("Invisible","",0);
-    ide_buttonBarAlignment = new pawgui::widget_radio_button_controller("Buttonbar Alignment");
+    ide_buttonBarAlignment = new pawgui::widget_radio_button_controller("Top Buttonbar Alignment");
     ide_buttonBarAlignment->add_menu_option("Left","Aligns to the left size of window",0,true);
     ide_buttonBarAlignment->add_menu_option("Center","Aligns to the center size of window",1,false);
     ide_buttonBarAlignment->add_menu_option("Right","Aligns to the right size of window",2,false);
@@ -361,9 +364,26 @@ gamePencilEditor_settingsResource::gamePencilEditor_settingsResource()
     dockDefaultPanel = new pawgui::widget_dropdown_menu("dock_default_panel" , true );
 
     //Dock _settings [ end ]
+
+    //Login Section [ BEGIN ]
+    assetLibTitleLabel = new pawgui::widget_label_text("Game Pencil Asset Library Account", "Game Pencil Asset Library Account");
+
+    assetLibUserName = new pawgui::widget_input_text("Username", "");
+    assetLibUserName->set_label("Username");
+    assetLibPassword = new pawgui::widget_input_text("Password", "");
+    assetLibPassword->set_label("Password");
+    assetLibPassword->inputIsPassword = true;
+    showLibPasswordText = new pawgui::widget_checkbox("Show Password","Show Password", true );
+    assetLibSignInButton = new pawgui::widget_button_push("","Sign In", "Sign into Asset Library");
+    assetLibSignInButton = new pawgui::widget_button_push("","Sign In", "Sign into Asset Library");
+    assetLibSignOutButton = new pawgui::widget_button_push("","Sign Out", "Sign Out...");
+    assetLibSignUpURL = new pawgui::widget_text_url("Create Account","Will open web page","https://gamepencil.net/signup");
+    //Login Section [ END ]
+
     //Themes Section
     currentThemeInEdit = 0;
     themesLabel = new pawgui::widget_label_title("Themes");
+    themeSystemDescription = new pawgui::widget_label_paragraph("System Based Theme( WIP)","This is an emulation of your current operating system's theme. As such it is not modifiable in this editor.", "System Based Theme(WIP)");
     themeBgLabel = new pawgui::widget_label_text ("Theme Background:    ");
     themeBgBrowse_button = new pawgui::widget_button_label( "Browse...","Browse for theme background...");
     themeBgRemove_button = new pawgui::widget_button_label( "Remove Background","Removes background image from theme");
@@ -413,17 +433,17 @@ gamePencilEditor_settingsResource::gamePencilEditor_settingsResource()
 
 }
 
-gamePencilEditor_settingsResource::~gamePencilEditor_settingsResource()
+gpe_editor_settings_resource::~gpe_editor_settings_resource()
 {
     if( openEditorFolder!=nullptr)
     {
         delete openEditorFolder;
         openEditorFolder = nullptr;
     }
-    if( openLocal_settingsFolder!=nullptr)
+    if( openLocalSettingsFolder!=nullptr)
     {
-        delete openLocal_settingsFolder;
-        openLocal_settingsFolder = nullptr;
+        delete openLocalSettingsFolder;
+        openLocalSettingsFolder = nullptr;
     }
     if( themeSetDefault_button!=nullptr)
     {
@@ -601,12 +621,12 @@ gamePencilEditor_settingsResource::~gamePencilEditor_settingsResource()
     }
 }
 
-bool gamePencilEditor_settingsResource::include_local_files( std::string pBuildDir , int buildType )
+bool gpe_editor_settings_resource::include_local_files( std::string pBuildDir , int buildType )
 {
     return true;
 }
 
-void gamePencilEditor_settingsResource::load_themes_from_folder( std::string themeFolder )
+void gpe_editor_settings_resource::load_themes_from_folder( std::string themeFolder )
 {
     //Used for searching directories
     int iFile;
@@ -643,12 +663,12 @@ void gamePencilEditor_settingsResource::load_themes_from_folder( std::string the
     }
 }
 
-void gamePencilEditor_settingsResource::prerender_self( )
+void gpe_editor_settings_resource::prerender_self( )
 {
 
 }
 
-void gamePencilEditor_settingsResource::load_resource(std::string file_path)
+void gpe_editor_settings_resource::load_resource(std::string file_path)
 {
     //showStatupTipsBox->set_clicked( editor_gui_main->showTipsAtStartUp );
     if( main_gpe_splash_page != nullptr )
@@ -658,7 +678,7 @@ void gamePencilEditor_settingsResource::load_resource(std::string file_path)
 
     std::string otherColContainerName = "";
 
-    std::string newFileIn =  gpe::main_file_url_manager->get_user_settings_folder()+"gpe_ide_local_settings.txt";
+    std::string newFileIn =  gpe::get_user_settings_folder()+"gpe_ide_local_settings.txt";
     std::ifstream gameResourceFileIn( newFileIn.c_str() );
 
     gpe::error_log->report("Loading Local settings - "+newFileIn);
@@ -853,6 +873,12 @@ void gamePencilEditor_settingsResource::load_resource(std::string file_path)
                                 gpe::time_keeper->set_fps(foundFPSValue);
                                 ide_settingsFPSRate->set_option_value(foundFPSValue);
                             }
+                            else if( key_string=="VSync")
+                            {
+                                vsyncEditor->set_clicked( stg_ex::string_to_bool(valstring ) );
+                                gpe::time_keeper->set_fps( vsyncEditor->is_clicked() );
+
+                            }
                             else if( key_string=="_buttonBarSize")
                             {
                                 ide_buttonBarSize->set_option_value( stg_ex::string_to_int( valstring) );
@@ -878,7 +904,7 @@ void gamePencilEditor_settingsResource::load_resource(std::string file_path)
     }
 }
 
-void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
+void gpe_editor_settings_resource::process_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
 {
     cam = gpe::camera_find(cam);
     view_space = gpe::camera_find(view_space);
@@ -938,6 +964,7 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
 
             editorPageList->add_gui_element(ide_settingsFPSRateLabel,true);
             editorPageList->add_gui_element(ide_settingsFPSRate,true);
+            editorPageList->add_gui_element(vsyncEditor,true);
             ideFPSRatioLabel->set_name("FPS Ratio: "+ stg_ex::float_to_string( gpe::fps_ratio*100)+"%");
             editorPageList->add_gui_element(ideFPSRatioLabel,true);
             editorPageList->add_gui_element(showFPSOnEditor,true);
@@ -954,7 +981,19 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
             editorPageList->add_gui_element(confirmResource_button,false);
             editorPageList->add_gui_element(cancelResource_button,true);
         }
-        else if( sideAreaPanel->get_selected_name()=="Dock Settings")
+        else if( sideAreaPanel->get_selected_name()=="Login")
+        {
+            editorPageList->alignment_h = gpe::fa_center;
+            editorPageList->add_gui_element(assetLibTitleLabel,true);
+            editorPageList->add_gui_element(assetLibUserName,true);
+            assetLibPassword->inputIsPassword = showLibPasswordText->is_clicked();
+            editorPageList->add_gui_element(assetLibPassword,true);
+            editorPageList->add_gui_element(showLibPasswordText,true);
+            editorPageList->add_gui_element(assetLibSignInButton,false);
+            editorPageList->add_gui_element(assetLibSignOutButton,true);
+            editorPageList->add_gui_element(assetLibSignUpURL,true);
+        }
+        else if( sideAreaPanel->get_selected_name()=="Dock ")
         {
             editorPageList->alignment_h = gpe::fa_center;
             editorPageList->add_gui_element(dock_settingsLabel,true);
@@ -985,30 +1024,25 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
 
             if( currentThemeBeingEdited!=nullptr )
             {
-                editorPageList->add_gui_element( themeBgLabel, false );
-                editorPageList->add_gui_element( currentThemeBeingEdited->theme_bg_location, true );
-                editorPageList->add_gui_element( themeBgBrowse_button, false );
-                editorPageList->add_gui_element( themeBgRemove_button, true );
-                editorPageList->add_gui_element( currentThemeBeingEdited->themeIconImg, true );
-
-                iThemeColorMax =  (int)currentThemeBeingEdited->colorsInEditor.size();
-                for( iColor = 0; iColor < iThemeColorMax; iColor++ )
+                if( themePicker->get_selected_name() == "system_based" )
                 {
-                    /*
-                    colorsInLine++;
-                    if( colorsInLine >= colorsPerLine || iColor==iThemeColorMax-1 )
-                    {
-                        goToNextColorLine = true;
-                        colorsInLine = 0;
-                    }
-                    else
-                    {
-                        goToNextColorLine = false;
-                    }
-                    editorPageList->add_gui_element(currentThemeBeingEdited->colorsInEditor[iColor] , goToNextColorLine );
-                    */
-                    editorPageList->add_gui_element(currentThemeBeingEdited->colorsInEditor[iColor], true );
+                    editorPageList->add_gui_element( themeSystemDescription, true  );
                 }
+                else
+                {
+                    editorPageList->add_gui_element( themeBgLabel, false );
+                    editorPageList->add_gui_element( currentThemeBeingEdited->theme_bg_location, true );
+                    editorPageList->add_gui_element( themeBgBrowse_button, false );
+                    editorPageList->add_gui_element( themeBgRemove_button, true );
+                    editorPageList->add_gui_element( currentThemeBeingEdited->themeIconImg, true );
+
+                    iThemeColorMax =  (int)currentThemeBeingEdited->colorsInEditor.size();
+                    for( iColor = 0; iColor < iThemeColorMax; iColor++ )
+                    {
+                        editorPageList->add_gui_element(currentThemeBeingEdited->colorsInEditor[iColor], true );
+                    }
+                }
+
             }
 
             editorPageList->add_gui_element(confirmResource_button,false);
@@ -1047,7 +1081,7 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
         {
             editorPageList->add_gui_element(advancedAreaLabel,true);
             editorPageList->add_gui_element(openEditorFolder,true);
-            editorPageList->add_gui_element(openLocal_settingsFolder,true);
+            editorPageList->add_gui_element(openLocalSettingsFolder,true);
             editorPageList->add_gui_element(clearCache_button,true);
             editorPageList->add_gui_element(showHiddenFilesInBrowser,true);
             editorPageList->add_gui_element(forceFrameRedraw,true);
@@ -1095,7 +1129,7 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
                     if( currentThemeInEdit >=0 && currentThemeInEdit < (int)editor_theme_controller->theme_list.size() )
                     {
                         pawgui::theme_main = editor_theme_controller->theme_list[currentThemeInEdit];
-                        gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"gpe_ide_local_settings.txt","DefaultTheme="+pawgui::theme_main->theme_name );
+                        sff_ex::append_to_file( gpe::get_user_settings_folder()+"gpe_ide_local_settings.txt","DefaultTheme="+pawgui::theme_main->theme_name );
 
                     }
                 }
@@ -1168,11 +1202,11 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
             }
             else if( openEditorFolder->is_clicked() )
             {
-                gpe::main_file_url_manager->external_open_program( gpe::app_directory_name );
+                gpe::external_open_program( gpe::app_directory_name );
             }
-            else if( openLocal_settingsFolder->is_clicked() )
+            else if( openLocalSettingsFolder->is_clicked() )
             {
-                gpe::main_file_url_manager->external_open_program(  gpe::main_file_url_manager->get_user_settings_folder() );
+                gpe::external_open_program(  gpe::get_user_settings_folder() );
             }
         }
         else if( sideAreaPanel->get_selected_name()=="External Editors")
@@ -1182,7 +1216,7 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
                 if( pencilExternalEditorsLoad_button[i]->is_clicked() )
                 {
                     std::string new_file_name = pawgui::get_filename_open_from_popup("Find External File Editor","",pawgui::main_settings->fileOpenDefaultDir);
-                    if( gpe::main_file_url_manager->file_exists(new_file_name) )
+                    if( sff_ex::file_exists(new_file_name) )
                     {
                         pencilExternalEditorsFile[i]->set_string(new_file_name);
                     }
@@ -1257,6 +1291,9 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
             editorCursorBlinkDelayTime->set_number(foundDelTime );
 
             gpe::input->mouse_scroll_inverted = userInvertMouseScroll->is_clicked();
+            gpe::time_keeper->set_vysnc( vsyncEditor->is_clicked() );
+            gpe::window_controller_main->set_vysnc( vsyncEditor->is_clicked() );
+            gpe::renderer_main->set_vysnc( vsyncEditor->is_clicked() );
             save_resource();
         }
 
@@ -1269,7 +1306,7 @@ void gamePencilEditor_settingsResource::process_self( gpe::shape_rect * view_spa
     }
 }
 
-void gamePencilEditor_settingsResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
+void gpe_editor_settings_resource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam)
 {
     cam = gpe::camera_find(cam);
     view_space = gpe::camera_find(view_space);
@@ -1292,11 +1329,11 @@ void gamePencilEditor_settingsResource::render_self( gpe::shape_rect * view_spac
     }
 }
 
-void gamePencilEditor_settingsResource::save_resource(std::string file_path, int backupId)
+void gpe_editor_settings_resource::save_resource(std::string file_path, int backupId)
 {
     bool usingAltSaveSource = false;
     isModified = false;
-    std::string newSaveDataFilename =  gpe::main_file_url_manager->get_user_settings_folder()+"gpe_ide_local_settings.txt";
+    std::string newSaveDataFilename =  gpe::get_user_settings_folder()+"gpe_ide_local_settings.txt";
     std::ofstream newSaveDataFile( newSaveDataFilename.c_str() );
     //If the scene file could be saved
     if( !newSaveDataFile.fail() )
@@ -1326,6 +1363,7 @@ void gamePencilEditor_settingsResource::save_resource(std::string file_path, int
             newSaveDataFile << "BrowseHiddenFiles=" << showHiddenFilesInBrowser->is_clicked() << "\n";
             newSaveDataFile << "PreviewSceneBGColor=" << renderSceneBGColor->is_clicked() << "\n";
             newSaveDataFile << "FPS="+ stg_ex::int_to_string( ide_settingsFPSRate->get_selected_value() ) << "\n";
+            newSaveDataFile << "VSync="+ stg_ex::int_to_string( vsyncEditor->is_clicked() ) << "\n";
             newSaveDataFile << "ProjectFolderList="+projectFolderListLocation << "\n";
             newSaveDataFile << "_buttonBarSize="+ stg_ex::int_to_string( ide_buttonBarSize->get_selected_value() ) << "\n";
             newSaveDataFile << "_buttonBarAlignment="+ stg_ex::int_to_string( ide_buttonBarAlignment->get_selected_value() ) << "\n";
@@ -1335,7 +1373,7 @@ void gamePencilEditor_settingsResource::save_resource(std::string file_path, int
     gpe::time_keeper->set_fps( ide_settingsFPSRate->get_selected_value() );
 }
 
-bool gamePencilEditor_settingsResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn )
+bool gpe_editor_settings_resource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn )
 {
     if( fileTarget!=nullptr)
     {

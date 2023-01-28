@@ -3,10 +3,10 @@ video_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -155,7 +155,7 @@ bool videoResource::copy_video_source(std::string directory_output_name)
         {
             copyDestinationStr = directory_output_name+"/"+ stg_ex::get_short_filename(videoFileName[i],true);
             gpe::error_log->report(videoFileName[i]+" attempted to copy to "+copyDestinationStr);
-            if( gpe::main_file_url_manager->file_copy(videoFileName[i],copyDestinationStr )==false)
+            if( sff_ex::file_copy(videoFileName[i],copyDestinationStr )==false)
             {
                 copyErrorFound = true;
             }
@@ -166,7 +166,7 @@ bool videoResource::copy_video_source(std::string directory_output_name)
 
 bool videoResource::include_local_files( std::string pBuildDir , int buildType )
 {
-    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"resources_check.txt", get_name() +"...");
+    sff_ex::append_to_file( gpe::get_user_settings_folder()+"resources_check.txt", get_name() +"...");
     return true;
 }
 
@@ -208,7 +208,7 @@ void videoResource::load_video(std::string new_file_name)
 
 void videoResource::load_resource(std::string file_path)
 {
-    if( resourcePostProcessed == false  || gpe::main_file_url_manager->file_exists(file_path) )
+    if( resourcePostProcessed == false  || sff_ex::file_exists(file_path) )
     {
         if( main_gpe_splash_page != nullptr )
         {
@@ -219,7 +219,7 @@ void videoResource::load_resource(std::string file_path)
 
         std::string newFileIn ="";
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/videos/";
-        if( gpe::main_file_url_manager->file_exists(file_path) )
+        if( sff_ex::file_exists(file_path) )
         {
             newFileIn = file_path;
             soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -287,7 +287,7 @@ void videoResource::load_resource(std::string file_path)
                             {
                                 renameBox->set_string(valstring);
                             }
-                            else if( key_string=="videoFileLocation")
+                            else if( key_string=="videofile_location")
                             {
                                 load_video( soughtDir+valstring );
                             }
@@ -407,16 +407,16 @@ void videoResource::process_self( gpe::shape_rect * view_space, gpe::shape_rect 
 
                     if( main_editor_settings!=nullptr && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_VID]!=nullptr)
                     {
-                        gpe::main_file_url_manager->external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_VID]->get_string(),fileToEdit, true );
+                        gpe::external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_VID]->get_string(),fileToEdit, true );
                     }
                     else
                     {
-                        gpe::main_file_url_manager->external_open_url(fileToEdit);
+                        gpe::external_open_url(fileToEdit);
                     }
                     /*
                     fileToEdit = "\"C:/Program Files (x86)/Audacity/audacity.exe\" \""+fileToEdit+"\"";
                     external_open_url(fileToEdit);*/
-                    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+fileToEdit+"]...");
+                    sff_ex::append_to_file( gpe::get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit ["+fileToEdit+"]...");
                 }
             }
         }
@@ -460,7 +460,7 @@ void videoResource::save_resource(std::string file_path, int backupId)
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( gpe::main_file_url_manager->path_exists(soughtDir) )
+    if( sff_ex::path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
@@ -476,7 +476,7 @@ void videoResource::save_resource(std::string file_path, int backupId)
     {
         write_header_on_file(&newSaveDataFile);
 
-        std::string resFileLocation = "";
+        std::string resfile_location = "";
         std::string resFileCopySrc;
         std::string resFileCopyDest;
 
@@ -484,24 +484,24 @@ void videoResource::save_resource(std::string file_path, int backupId)
         {
             if( (int)videoFileName[i].size() > 3)
             {
-                resFileLocation = stg_ex::get_short_filename (videoFileName[i],true );
-                newSaveDataFile << "videoFile["+SUPPORTED_VIDEO_EXT[i]+"]="+resFileLocation+"\n";
-                if( (int)resFileLocation.size() > 0 && usingAltSaveSource )
+                resfile_location = stg_ex::get_short_filename (videoFileName[i],true );
+                newSaveDataFile << "videoFile["+SUPPORTED_VIDEO_EXT[i]+"]="+resfile_location+"\n";
+                if( (int)resfile_location.size() > 0 && usingAltSaveSource )
                 {
-                    resFileCopySrc = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/video/"+resFileLocation;
-                    resFileCopyDest = soughtDir+resFileLocation;
-                    if( gpe::main_file_url_manager->file_exists(resFileCopyDest) )
+                    resFileCopySrc = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/video/"+resfile_location;
+                    resFileCopyDest = soughtDir+resfile_location;
+                    if( sff_ex::file_exists(resFileCopyDest) )
                     {
                         /*
-                        if( pawgui::display_prompt_message("[WARNING]Video File Already exists?","Are you sure you will like to overwrite your ["+resFileLocation+"] Video file? This action is irreversible!")==pawgui::display_query_yes)
+                        if( pawgui::display_prompt_message("[WARNING]Video File Already exists?","Are you sure you will like to overwrite your ["+resfile_location+"] Video file? This action is irreversible!")==pawgui::display_query_yes)
                         {
-                            gpe::main_file_url_manager->file_copy(resFileCopySrc,resFileCopyDest);
+                            sff_ex::file_copy(resFileCopySrc,resFileCopyDest);
                         }
                         */
                     }
                     else
                     {
-                        gpe::main_file_url_manager->file_copy(resFileCopySrc,resFileCopyDest);
+                        sff_ex::file_copy(resFileCopySrc,resFileCopyDest);
                     }
                 }
             }

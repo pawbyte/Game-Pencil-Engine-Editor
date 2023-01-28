@@ -3,10 +3,10 @@ gpe_js_compiler_settings.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -145,7 +145,7 @@ gameJSCompiler_settingsResource::~gameJSCompiler_settingsResource()
 
 bool gameJSCompiler_settingsResource::include_local_files( std::string pBuildDir , int buildType )
 {
-
+    return true; //WIPNOTFUNCTIONALYET
 }
 
 void gameJSCompiler_settingsResource::prerender_self( )
@@ -163,7 +163,7 @@ void gameJSCompiler_settingsResource::load_resource(std::string file_path)
 
     std::string otherColContainerName = "";
 
-    std::string newFileIn =  gpe::main_file_url_manager->get_user_settings_folder()+"gpe_js_compiler_settings.txt";
+    std::string newFileIn =  gpe::get_user_settings_folder()+"gpe_js_compiler_settings.txt";
     std::ifstream gameResourceFileIn( newFileIn.c_str() );
 
     gpe::error_log->report("Loading Local settings - "+newFileIn);
@@ -327,7 +327,7 @@ void gameJSCompiler_settingsResource::save_resource(std::string file_path, int b
 {
     bool usingAltSaveSource = false;
     isModified = false;
-    std::string newSaveDataFilename =  gpe::main_file_url_manager->get_user_settings_folder()+"gpe_js_compiler_settings.txt";
+    std::string newSaveDataFilename =  gpe::get_user_settings_folder()+"gpe_js_compiler_settings.txt";
     std::ofstream newSaveDataFile( newSaveDataFilename.c_str() );
     //If the scene file could be saved
     if( !newSaveDataFile.fail() )
@@ -343,5 +343,5 @@ void gameJSCompiler_settingsResource::save_resource(std::string file_path, int b
 }
 bool gameJSCompiler_settingsResource::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn )
 {
-
+    return true;
 }

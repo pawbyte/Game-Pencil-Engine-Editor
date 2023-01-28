@@ -3,10 +3,10 @@ pawgui_selectbox.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -150,7 +150,7 @@ namespace pawgui
     }
 
 
-    void widget_selectbox::add_option(std::string newOptionName, float newOpValue, gpe::texture_base * evRepIcon, gpe::animaton2d * evRepanimation, int subimageInIndex, bool selectNew, bool useGuiColor )
+    void widget_selectbox::add_option(std::string newOptionName, float newOpValue, gpe::texture_base * evRepIcon, gpe::animation2d * evRepanimation, int subimageInIndex, bool selectNew, bool useGuiColor )
     {
         if( (int)newOptionName.size() > 0 || evRepIcon!=nullptr || evRepanimation!=nullptr )
         {
@@ -273,7 +273,7 @@ namespace pawgui
         return (int)sub_options.size();
     }
 
-    void widget_selectbox::insert_option(int optionId, std::string newOptionName, gpe::texture_base * evRepIcon, gpe::animaton2d * evRepanimation, int subimageInIndex, bool selectNew )
+    void widget_selectbox::insert_option(int optionId, std::string newOptionName, gpe::texture_base * evRepIcon, gpe::animation2d * evRepanimation, int subimageInIndex, bool selectNew )
     {
         if( (int)newOptionName.size() > 0 || evRepIcon!=nullptr || evRepanimation!=nullptr )
         {

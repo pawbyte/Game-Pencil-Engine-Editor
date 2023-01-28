@@ -3,10 +3,10 @@ gpe_resource_tree.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -41,10 +41,24 @@ extern int resourcetype_last_rendered_type;
 class GPE_ResourceTree: public pawgui::widget_basic
 {
 private:
+    pawgui::widget_resource_container * backbutton_option;
+    pawgui::widget_resource_container * selected_option;
+    pawgui::widget_resource_container * selected_folder_option;
     std::vector <pawgui::widget_resource_container *> sub_options;
+    std::vector <pawgui::widget_resource_container *> options_in_browser;
     int lastWidth;
     int barTitleWidth;
     int barTitleHeight;
+    std::string searchString;
+    int treeMode;
+    int treeColumnCount, treeRowCount;
+    int currentIconSize;
+    int smallIconSize, mediumIconSize, largeIconSize, xlIconSize;
+    int options_position;
+    int options_max_in_view;
+    pawgui::widget_input_text * searchBox;
+    pawgui::widget_button_iconbar * treeModeBar;
+    pawgui::widget_panel_list * treeGuiList;
 public:
     bool showYScroll;
     gpe::shape_rect entireBox, cameraBox, viewBox;

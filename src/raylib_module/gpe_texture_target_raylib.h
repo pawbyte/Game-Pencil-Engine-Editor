@@ -1,5 +1,5 @@
 /*
-gpe_texture_target_raylib.h
+gpe_texture_target_sdl.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,37 +31,36 @@ SOFTWARE.
 
 */
 
-#ifndef gpe_texture_target_raylib_h
-#define gpe_texture_target_raylib_h
+#ifndef gpe_texture_target_sdl_h
+#define gpe_texture_target_sdl_h
 
 
-#include "gpe_renderer_raylib.h"
+#include "gpe_renderer_sdl.h"
 #include "../gpe/gpe_texture_target_base.h"
-#include "../gpe/gpe.h"
 
 namespace gpe
 {
-    class texture_target_raylib: public texture_target_base
+    class texture_target_sdl: public texture_target_base
     {
         protected:
-            RenderTexture2D raylib_texture_target;
+            SDL_Texture * sdlTargetTexture;
         public:
-            texture_target_raylib();
-            ~texture_target_raylib();
-            void change_alpha( uint8_t alpha );
+            texture_target_sdl();
+            ~texture_target_sdl();
+            void change_alpha( Uint8 alpha );
             void change_color( color * color_new);
-            void change_color( uint8_t red, uint8_t green, uint8_t blue );
+            void change_color( Uint8 red, Uint8 green, Uint8 blue );
 
-            renderer_system_raylib * get_gpe_renderer_raylib(renderer_base * renderer);
-            RenderTexture2D  get_raylib_render_texture();
-            Texture  get_raylib_texture();
+            renderer_system_sdl * get_gpe_renderer_sdl(renderer_base * renderer);
+            SDL_Renderer * get_sdl_renderer(renderer_base * renderer);
+            SDL_Texture * get_sdl_texture();
 
             texture_base * create_new();
-            void render_overlay(  renderer_base * renderer,int x, int y, gpe::shape_rect* clip = nullptr, int alpha = 255  );
-            void render_overlay_scaled(  renderer_base * renderer,int x, int y,float x_scale, float y_scale, gpe::shape_rect* clip = nullptr, color * render_color = nullptr, int alpha = 255 );
+            void render_overlay(  renderer_base * renderer,int x, int y, gpe::shape_rect* clip = NULL, int alpha = 255  );
+            void render_overlay_scaled(  renderer_base * renderer,int x, int y,float x_scale, float y_scale, gpe::shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
 
             void resize_target( renderer_base * renderer,int w, int h, int id = -1,bool useLinearScaling = true  );
             void set_blend_mode( int blend_mode_new);
     };
 }
-#endif //gpe_texture_target_raylib_h
+#endif //gpe_texture_target_sdl_h

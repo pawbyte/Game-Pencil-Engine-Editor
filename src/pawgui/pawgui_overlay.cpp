@@ -3,10 +3,10 @@ pawgui_overlay.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -73,8 +73,8 @@ namespace pawgui
         }
         if( previousScreenshot!=nullptr && gpe::renderer_main!=nullptr)
         {
-            gpe::renderer_main->save_screenshot(  gpe::main_file_url_manager->get_user_settings_folder() +"frozen_screenshot.png");
-            previousScreenshot->load_new_texture( gpe::renderer_main, gpe::main_file_url_manager->get_user_settings_folder() +"frozen_screenshot.png");
+            gpe::renderer_main->save_screenshot(  gpe::get_user_settings_folder() +"frozen_screenshot.png");
+            previousScreenshot->load_new_texture( gpe::get_user_settings_folder() +"frozen_screenshot.png");
         }
     }
 
@@ -174,6 +174,7 @@ namespace pawgui
             int y_pos2 = y_pos+TEXTBOX_FONT_SIZE_HEIGHT+padding_default/2;
 
             int maxLength = ( gpe::screen_width - padding_default*4)/TEXTBOX_FONT_SIZE_WIDTH;
+            int lineCountForTip = 1;
             std::vector< std::string > toolTipLines;
             std::string tempToolTipstring = toolTipstring;
             if( (int)tempToolTipstring.size() >= maxLength)

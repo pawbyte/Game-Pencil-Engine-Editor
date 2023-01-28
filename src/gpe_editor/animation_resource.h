@@ -3,10 +3,10 @@ animation_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -31,23 +31,25 @@ SOFTWARE.
 
 */
 
-#ifndef animaton2d_RESOURCES_H
-#define animaton2d_RESOURCES_H
+#ifndef animation2d_RESOURCES_H
+#define animation2d_RESOURCES_H
 
 #include "gpe_basic_resource_page.h"
-
 const float ZOOM_LEVEL_MIN = 0.0625;
 const float ZOOM_LEVEL_MAX = 16;
 
 const int ANIMATION_DATA_FIELD_COUNT = 7;
 
-extern std::string animaton2d_LABELS[ANIMATION_DATA_FIELD_COUNT];
+extern std::string animation2d_LABELS[ANIMATION_DATA_FIELD_COUNT];
 
 
 const float GPE_ANIM_FCOUNT_VERSION = 1.04;
 
 class animationResource: public standardEditableGameResource
 {
+protected:
+    gpe::shape_point2d quad_points[4];
+    char quad_place_position;
 public:
     bool areaIsScrollable;
     float animationSpeed;
@@ -57,7 +59,7 @@ public:
     float maxZoomValue;
     int autoAnimationPos;
     pawgui::widget_slide_xaxis * animationTrackBar;
-    gpe::animaton2d * animInEditor;
+    gpe::animation2d * animInEditor;
 
     //
     gpe::shape_rect animCameraRect;
@@ -74,11 +76,13 @@ public:
     pawgui::widget_checkbox * previewSubImageNumbers;
 
     //Editor panel elements
+    pawgui::widget_checkbox * imageUsesColorKey;
+    pawgui::gpe_widget_color_picker * imageColorKey;
+
     pawgui::widget_label_text  * labelanimationDimensions;
     pawgui::widget_label_text  * labelFrameInfo;
     pawgui::widget_label_text  * labelanimationMessage;
     pawgui::widget_button_icon * editResource_button;
-    pawgui::widget_button_icon * transformResource_button;
     pawgui::widget_button_icon * playPauseResource_button;
     pawgui::widget_button_icon * openExternalEditor_button;
     pawgui::widget_button_icon * refreshResourceData_button;
@@ -86,7 +90,10 @@ public:
     pawgui::widget_checkbox * showCollisionShapeCheckBox;
     pawgui::widget_checkbox * showAnimationCheckBox;
 
+    pawgui::widget_panel_section * animationDataSection;
     pawgui::widget_input_number * animationDataFields[ANIMATION_DATA_FIELD_COUNT];
+
+    pawgui::widget_panel_section * animationCollisionSection;
 
     pawgui::widget_input_number * animationCollisionRectX;
     pawgui::widget_input_number * animationCollisionRectY;
@@ -100,6 +107,8 @@ public:
     pawgui::widget_button_label * animationCenterCollision_button;
 
     pawgui::widget_dropdown_menu * animationCollisionShapeMenu;
+
+    pawgui::widget_panel_section * animationPreviewSection;
 
     pawgui::widget_button_icon * previousSubImage_button;
     pawgui::widget_button_icon * nextSubImage_button;
@@ -115,9 +124,9 @@ public:
     bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
-    bool get_mouse_coords( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+    //bool get_mouse_coords( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     int get_preview_frame();
-    gpe::animaton2d * get_resource_animation();
+    gpe::animation2d * get_resource_animation();
     void handle_scrolling();
     bool include_local_files( std::string pBuildDir , int buildType );
     bool is_build_ready();
@@ -135,4 +144,4 @@ public:
 };
 
 
-#endif // animaton2d_RESOURCES_H
+#endif // animation2d_RESOURCES_H

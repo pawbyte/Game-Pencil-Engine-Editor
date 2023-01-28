@@ -3,10 +3,10 @@ gpe_particles2d.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -43,8 +43,8 @@ SOFTWARE.
 #include "gpe_texture_base.h"
 #include "gpe_runtime.h"
 #include "gpe_branch.h"
-#include "../other_libs/semath.h"
-#include "../other_libs/stg_ex.h"
+#include "internal_libs/semath.h"
+#include "internal_libs//stg_ex.h"
 
 namespace gpe
 {
@@ -131,8 +131,11 @@ namespace gpe
             color * endColor;
             color * endColorVar;
 
-            particle_emitter(int x, int y, bool isLocal = true, int pMax = 100 );
+            particle_emitter();
+            particle_emitter( int branch_layer_id, float x_pos_in,  float y_pos_in, float z_pos_in = 0 );
             ~particle_emitter();
+            virtual void branch_init( int branch_layer_id, float x_pos_in,  float y_pos_in, float z_pos_in = 0);
+
             bool can_emit();
             void burst_emit();
             void change_texture( texture_base * newTex, int blend_mode_new = blend_mode_blend );

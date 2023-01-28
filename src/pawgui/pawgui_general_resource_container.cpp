@@ -3,10 +3,10 @@ pawgui_general_resource_container.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -53,6 +53,9 @@ namespace pawgui
 
     widget_resource_container::widget_resource_container(std::string projFolderName, std::string new_name, int rType, int rId,bool folder, int globalIdVal,  int rezPropValue)
     {
+        currentlySelectedId = -1;
+        autoResizes = false;
+        treeMode = tree_mode_list;
         foundX2Pos = 0;
         resouceNameChanged = false;
         subContentsModified = false;
@@ -64,10 +67,13 @@ namespace pawgui
         isFolder = folder;
         exportBuildGlobalId = -1;
         globalResouceId = -1;
+        /*
         if(globalIdVal>=0)
         {
             globalResouceId = globalIdVal;
         }
+        */
+        globalResouceId = globalIdVal;
         element_box.x = 0;
         element_box.y = 0;
         element_box.w = 0;
@@ -84,8 +90,8 @@ namespace pawgui
         {
             font_toolbar->get_metrics(widget_name,&textW, &textH);
         }
-        strTexWidth = textW;
-        strTexHeight = textH;
+        strtex_widthth = textW;
+        strtex_height = textH;
 
         set_basic_image_value();
         if( rezPropValue==restype_projfolder)
@@ -160,11 +166,13 @@ namespace pawgui
             {
                 element_box.h += newResource->element_box.h;
             }
+
             if( changeGlobalId)
             {
-                int new_id = (int)sub_options.size()+1;
+                int new_id = (int)sub_options.size()+ globalResouceId + 1;
                 newResource->set_global_id(new_id);
             }
+
             if( referenceObject!=nullptr )
             {
                 int foundRef = -1;
@@ -210,6 +218,80 @@ namespace pawgui
                 else
                 {
                     sub_options.push_back( newResource );
+                }
+            }
+        }
+    }
+
+    bool widget_resource_container::add_if_contains_string( std::string s_name, std::vector <widget_resource_container * > &rVector )
+    {
+        bool returnValue = false;
+        if( contains_string( s_name ) )
+        {
+            rVector.push_back( this );
+            returnValue = true;
+        }
+
+        int options_size = (int)sub_options.size();
+        widget_resource_container * temp_option = nullptr;
+
+        if(  options_size == 0 )
+        {
+            return returnValue;
+        }
+
+        for( int i = 0; i < options_size; i++ )
+        {
+            temp_option = sub_options[i];
+            if( temp_option != nullptr )
+            {
+                temp_option->treeMode = treeMode;
+                if( returnValue == false )
+                {
+                    if( temp_option->contains_string( s_name) )
+                    {
+                        rVector.push_back( this );
+                        temp_option->add_if_contains_string( s_name, rVector );
+                        returnValue = true;
+                    }
+                }
+                else
+                {
+                    temp_option->add_if_contains_string( s_name, rVector );
+                }
+            }
+        }
+        return returnValue;
+    }
+
+    void widget_resource_container::add_to_list( std::vector <widget_resource_container * > &rVector, widget_resource_container * current_folder_id )
+    {
+        if( current_folder_id == nullptr )
+        {
+            rVector.push_back( this );
+        }
+        else if( matches( current_folder_id) != 1)
+        {
+            rVector.push_back( this );
+        }
+
+        int options_size = (int)sub_options.size();
+        widget_resource_container * temp_option = nullptr;
+
+        if( options_size == 0 || ( subMenuIsOpen == false &&  current_folder_id == nullptr ) )
+        {
+            return;
+        }
+
+        if( current_folder_id == nullptr || ( matches( current_folder_id ) == 1) )
+        {
+            for( int i = 0; i < options_size; i++ )
+            {
+                temp_option = sub_options[i];
+                if( temp_option != nullptr )
+                {
+                    temp_option->treeMode = treeMode;
+                    temp_option->add_to_list( rVector );
                 }
             }
         }
@@ -439,7 +521,7 @@ namespace pawgui
         return animationFrameNumber;
     }
 
-    gpe::animaton2d * widget_resource_container::get_resource_animation()
+    gpe::animation2d * widget_resource_container::get_resource_animation()
     {
         if( !isFolder && !isSuperProjectFolder && heldResource!=nullptr )
         {
@@ -474,9 +556,9 @@ namespace pawgui
             tempOption = sub_options[i];
             if( tempOption!=nullptr)
             {
-                if( tempOption->strTexWidth > maxFoundWith)
+                if( tempOption->strtex_widthth > maxFoundWith)
                 {
-                    maxFoundWith = tempOption->strTexWidth;
+                    maxFoundWith = tempOption->strtex_widthth;
                 }
             }
         }
@@ -510,7 +592,7 @@ namespace pawgui
 
     bool widget_resource_container::include_local_files( std::string pBuildDir , int buildType )
     {
-        return false;
+        return true; //WIPNOTFUNCTIONALYET
     }
 
     void widget_resource_container::integrate_into_syntax()
@@ -604,39 +686,52 @@ namespace pawgui
 
     int widget_resource_container::matches(widget_resource_container * otherContainer)
     {
-        if( otherContainer!=nullptr)
+        if( otherContainer==nullptr)
+        {
+            return -1;
+        }
+
+        if( otherContainer->isSuperProjectFolder == isSuperProjectFolder )
         {
             if( get_global_id()==otherContainer->get_global_id() )
             {
-                if( otherContainer->isFolder== isFolder)
+                if( projectParentFileName.compare(otherContainer->projectParentFileName ) ==0)
                 {
-                    if( projectParentFileName.compare(otherContainer->projectParentFileName )==0)
+                    if( widget_name.compare( otherContainer->get_name() ) ==0)
                     {
-                        if( otherContainer->heldResource!=nullptr && heldResource!=nullptr)
-                        {
-                            if( resourceType == otherContainer->resourceType)
-                            {
-                                if( resourceId==otherContainer->resourceId)
-                                {
-                                    return 1;
-                                }
-                            }
-                        }
-                        else if( otherContainer->heldResource==nullptr && heldResource==nullptr)
-                        {
-                            if( resourceType == otherContainer->resourceType)
-                            {
-                                if( resourceId==otherContainer->resourceId)
-                                {
-                                    return 1;
-                                }
-                            }
+                        return 1;
+                    }
+                }
+            }
+            return 0;
+        }
 
+        if( get_global_id()==otherContainer->get_global_id() )
+        {
+            if( projectParentFileName.compare(otherContainer->projectParentFileName )==0)
+            {
+                if( otherContainer->isFolder == isFolder || otherContainer->isSuperFolder == isSuperFolder)
+                {
+                    if( widget_name.compare( otherContainer->get_name() ) ==0)
+                    {
+                        return true;
+                    }
+                }
+                else if( otherContainer->heldResource!=nullptr && heldResource!=nullptr)
+                {
+                    if( resourceType == otherContainer->resourceType)
+                    {
+                        if( resourceId==otherContainer->resourceId)
+                        {
+                            if( widget_name.compare( otherContainer->get_name() ) ==0)
+                            {
+                                return 1;
+                            }
                         }
                     }
                 }
-                return 0;
             }
+            return 0;
         }
         return -1;
     }
@@ -682,207 +777,145 @@ namespace pawgui
         }
     }
 
-    int widget_resource_container::process_container(int x_pos, int y_pos, int selectedId, gpe::shape_rect * view_space, gpe::shape_rect * cam, bool mouseInRange )
+    void widget_resource_container::process_self( gpe::shape_rect * view_space , gpe::shape_rect *cam )
     {
-        int returnAnswer = -1;
-        int lx_pos = x_pos-cam->x+view_space->x;
-        int ly_pos = y_pos-cam->y+view_space->y;
-        int lx2Pos = lx_pos+cam->w;
-        int ly2Pos = ly_pos+resource_container_default_height;
+        view_space = gpe::camera_find(view_space);
+        cam = gpe::camera_find(cam);
         bool folderOpened = false;
-        subContentsModified = false;
-        foundX2Pos = x_pos+strTexWidth+resource_container_default_height*3/2;
+
+        /*
+        if( treeMode == tree_mode_icons )
+        {
+            widget_box.w = 128;
+            widget_box.h = 128;
+        }
+        else if( treeMode == tree_mode_icons_large )
+        {
+            widget_box.w = 256;
+            widget_box.h = 256;
+        }
+        */
+
+        if ( treeMode == tree_mode_list )
+        {
+            //( treeMode == == tree_mode_list)
+            widget_box.w = view_space->w - 32;
+            widget_box.h = resource_container_default_height;
+        }
+        else
+        {
+            if( widget_box.w  >  view_space->w - padding_default*2 )
+            {
+                set_width( view_space->w - padding_default *2 );
+                set_height( view_space->w - padding_default *2 );
+            }
+        }
+        widget_basic::process_self( view_space, cam );
+
         if( isFolder || isSuperFolder || isSuperProjectFolder )
         {
             widget_resource_container * cResource = nullptr;
-            int subYPos = y_pos+resource_container_default_height;
-            if( mouseInRange && gpe::input->check_mouse_pressed(0) )
+            if( isPressed && isHovered )
             {
-                if( gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,lx_pos,ly_pos,lx2Pos,ly2Pos) )
-                {
-                    seeked_project_name = projectParentFileName;
+                seeked_project_name = projectParentFileName;
 
-                    if( !isSuperFolder && !isSuperProjectFolder)
+                if( !isSuperFolder && !isSuperProjectFolder)
+                {
+                    resource_dragged = this;
+                }
+                resource_last_clicked = this;
+            }
+            else if(isHovered && gpe::input->check_mouse_released( mb_left) )
+            {
+                currentlySelectedId = globalResouceId;
+                seeked_project_name = projectParentFileName;
+
+                resource_last_clicked = this;
+
+                bool openAllowed = true;
+                if( resource_dragged!=nullptr)
+                {
+                    if( resource_dragged->matches(this)!=1)
                     {
-                        resource_dragged = this;
+                        openAllowed = false;
+                    }
+                }
+                if( openAllowed)
+                {
+                    if( !subMenuIsOpen)
+                    {
+                        folderOpened = true;
+                    }
+                    else
+                    {
+                        subMenuIsOpen = false;
+                    }
+                    if(folderOpened  )
+                    {
+                        subMenuIsOpen = true;
                     }
                 }
             }
-            else if(mouseInRange && gpe::input->check_mouse_released( mb_left))
+            else if( isHovered && gpe::input->check_mouse_released( mb_right) )
             {
-                if( gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,lx_pos,ly_pos,lx2Pos,ly2Pos) )
-                {
-                    returnAnswer = globalResouceId;
-                    seeked_project_name = projectParentFileName;
+                //returnAnswer = globalResouceId;
+                seeked_project_name = projectParentFileName;
 
-                    bool openAllowed = true;
-                    if( resource_dragged!=nullptr)
-                    {
-                        resource_last_clicked = this;
-                        if( resource_dragged->matches(this)!=1)
-                        {
-                            openAllowed = false;
-                        }
-                    }
-                    if( openAllowed)
-                    {
-                        if( !subMenuIsOpen)
-                        {
-                            folderOpened = true;
-                        }
-                        else
-                        {
-                            subMenuIsOpen = false;
-                        }
-                        if(folderOpened  )
-                        {
-                            subMenuIsOpen = true;
-                            //opens folder
-                            /*
-                            cResource = nullptr;
-                            for(int i = 0; i<(int)sub_options.size();i+=1)
-                            {
-                                cResource = sub_options[i];
-                                if(cResource != nullptr)
-                                {
-                                    cResource->process_container(x_pos+resource_container_default_height,subYPos,selectedId,view_space,cam,mouseInRange);
-                                    subYPos += cResource->element_box.h;
-                                    element_box.h += cResource->element_box.h;
-                                }
-                            }*/
-                        }
-                    }
-                }
-            }
-            else if( mouseInRange && gpe::input->check_mouse_released(1) )
-            {
-                if(gpe::point_within(gpe::input->mouse_position_x,gpe::input->mouse_position_y,lx_pos,ly_pos,lx2Pos,ly2Pos) )
-                {
-                    returnAnswer = globalResouceId;
-                    seeked_project_name = projectParentFileName;
-
-                    resource_last_clicked = this;
-                    resource_last_clicked_type = resourceType;
-                    resourcemenu_rightclicked = true;
-                    resource_dragged = nullptr;
-                }
-            }
-            else if( mouseInRange && gpe::point_between(gpe::input->mouse_position_x,gpe::input->mouse_position_y,lx_pos,ly_pos,lx2Pos,ly2Pos) )
-            {
-                main_overlay_system->update_tooltip( widget_name );
-            }
-
-            if( subMenuIsOpen )
-            {
-                cResource = nullptr;
-                subYPos = y_pos+resource_container_default_height;
-                element_box.h = resource_container_default_height;
-                int subAnswer = -1;
-                for(int i = 0; i<(int)sub_options.size(); i+=1)
-                {
-                    cResource = sub_options[i];
-                    if(cResource != nullptr)
-                    {
-                        subAnswer = cResource->process_container(x_pos,subYPos,selectedId,view_space,cam,mouseInRange);
-                        if(subAnswer>=0)
-                        {
-                            returnAnswer = subAnswer;
-                        }
-                        element_box.h+= cResource->element_box.h;
-                        subYPos += cResource->element_box.h;
-                        if( cResource->resouceNameChanged)
-                        {
-                            subContentsModified= true;
-                        }
-                        if ( cResource->heldResource!=nullptr)
-                        {
-                            if( cResource->heldResource->is_modified() )
-                            {
-                                subContentsModified = true;
-                            }
-                        }
-                        if( foundX2Pos <  cResource->foundX2Pos )
-                        {
-                            foundX2Pos = cResource->foundX2Pos;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                element_box.h = resource_container_default_height;
-                foundX2Pos = x_pos+strTexWidth+resource_container_default_height/2;
+                resource_last_clicked = this;
+                resource_last_clicked_type = resourceType;
+                resourcemenu_rightclicked = true;
+                resource_dragged = nullptr;
             }
         }
         else
         {
-            element_box.h = resource_container_default_height;
-            //set_basic_image_value();
+            if( isHovered && gpe::input->check_mouse_double_clicked( mb_left  ) )
+            {
+                if( globalResouceId == currentlySelectedId && main_tab_resource_bar!=nullptr )
+                {
+                    main_tab_resource_bar->set_selected_gresource( heldResource );
+                }
+                currentlySelectedId = globalResouceId;
+                seeked_project_name = projectParentFileName;
 
-            if( mouseInRange && gpe::input->check_mouse_button_clicked(0))
-            {
-                if( gpe::point_within(gpe::input->mouse_position_x,gpe::input->mouse_position_y,lx_pos,ly_pos,lx2Pos,ly2Pos ) )
-                {
-                    if( globalResouceId == selectedId && main_tab_resource_bar!=nullptr )
-                    {
-                        main_tab_resource_bar->set_selected_gresource( heldResource );
-                    }
-                    returnAnswer = globalResouceId;
-                    seeked_project_name = projectParentFileName;
-
-                    resource_last_clicked = this;
-                    resource_dragged = nullptr;
-                }
+                resource_last_clicked = this;
+                resource_dragged = nullptr;
             }
-            else if( mouseInRange && gpe::input->check_mouse_released( mb_left))
+            else if( isHovered && gpe::input->check_mouse_released( mb_left))
             {
-                if( gpe::point_within(gpe::input->mouse_position_x,gpe::input->mouse_position_y,lx_pos,ly_pos,lx2Pos,ly2Pos ) )
-                {
-                    if(globalResouceId == selectedId)
-                    {
-                        //GPE_set_selected_gresource(heldResource);
-                    }
-                    returnAnswer = globalResouceId;
-                    seeked_project_name = projectParentFileName;
-                    resource_last_clicked = this;
-                }
+                currentlySelectedId = globalResouceId;
+                seeked_project_name = projectParentFileName;
+                resource_last_clicked = this;
             }
-            else if( mouseInRange && gpe::input->check_mouse_released(1) )
+            else if( isHovered && gpe::input->check_mouse_released( mb_right) )
             {
-                if( gpe::point_within(gpe::input->mouse_position_x,gpe::input->mouse_position_y,view_space->x-cam->x,ly_pos,lx2Pos,ly2Pos) )
-                {
-                    returnAnswer = globalResouceId;
-                    seeked_project_name = projectParentFileName;
-                    resource_last_clicked = this;
-                    resourcemenu_rightclicked = true;
-                }
+                currentlySelectedId = globalResouceId;
+                seeked_project_name = projectParentFileName;
+                resource_last_clicked = this;
+                resourcemenu_rightclicked = true;
             }
-            else if( mouseInRange && gpe::input->check_mouse_pressed(0) )
+            else if( isHovered && gpe::input->check_mouse_pressed( mb_left) )
             {
-                if( gpe::point_within(gpe::input->mouse_position_x,gpe::input->mouse_position_y,view_space->x-cam->x,ly_pos,lx2Pos,ly2Pos) )
-                {
-                    resource_dragged = this;
-                }
+                resource_dragged = this;
             }
-            else if(mouseInRange && gpe::point_within(gpe::input->mouse_position_x,gpe::input->mouse_position_y,lx_pos,ly_pos,lx2Pos,ly2Pos) )
+            else if( isHovered )
             {
                 main_overlay_system->update_tooltip( widget_name );
             }
+        }
 
-            if(heldResource!=nullptr)
+        if(heldResource!=nullptr)
+        {
+            std::string heldresource_name = heldResource->get_name();
+            if( widget_name!=heldresource_name )
             {
-                std::string heldresource_name = heldResource->get_name();
-                if( widget_name!=heldresource_name )
+                if( heldresource_name.size()>0 && stg_ex::is_alnum(heldresource_name,false,true)  )
                 {
-                    if( heldresource_name.size()>0 && stg_ex::is_alnum(heldresource_name,false,true)  )
-                    {
-                        resouceNameChanged = true;
-                        widget_name = heldresource_name;
-                    }
+                    resouceNameChanged = true;
+                    widget_name = heldresource_name;
                 }
             }
         }
-        return returnAnswer;
     }
 
     bool widget_resource_container::read_data_from_projectfile(std::ofstream * fileTarget)
@@ -895,6 +928,34 @@ namespace pawgui
             }
         }
         return false;
+    }
+
+    void widget_resource_container::remove_resource(widget_resource_container * otherContainer, bool deleteResource)
+    {
+        if( otherContainer!=nullptr )
+        {
+            widget_resource_container * tContainer = nullptr;
+            int resIdToDelete = otherContainer->get_global_id();
+            for( int i = (int)sub_options.size()-1; i>=0; i--)
+            {
+                tContainer = sub_options[i];
+                if( tContainer!=nullptr && tContainer->get_global_id()==resIdToDelete )
+                {
+                    element_box.h-=otherContainer->element_box.h;
+                    //otherContainer->parentResource = nullptr;
+                    if( deleteResource )
+                    {
+                        main_tab_resource_bar->close_resource_tab(projectParentName, resIdToDelete );
+                        delete tContainer;
+                        tContainer = nullptr;
+                        otherContainer = nullptr;
+                        //gpe::error_log->report("Rez deletedish...");
+                    }
+                    sub_options.erase( sub_options.begin()+i );
+                    //gpe::error_log->report("Rez deleted...");
+                }
+            }
+        }
     }
 
     void widget_resource_container::render_contained_object( gpe::shape_rect * view_space, gpe::shape_rect *cam)
@@ -917,6 +978,8 @@ namespace pawgui
         {
             selfIsInView = true;
         }
+
+        selfIsInView = true;
 
         if( isFolder && renderSubOptions )
         {
@@ -950,7 +1013,7 @@ namespace pawgui
         {
             if(globalResouceId ==selectedIdNumber && projectParentName.compare(project_current_name)==0 )
             {
-                gpe::gcanvas->render_rectangle( x_pos-cam->x, y_pos-cam->y, widget_box.w-cam->x,y_pos+16-cam->y,pawgui::theme_main->button_box_highlight_color,false,64);
+                gpe::gcanvas->render_rectangle( x_pos-cam->x, y_pos-cam->y, x_pos + cam->w-cam->x,y_pos+resource_container_default_height-cam->y, gpe::c_blue,false, 255 );
             }
 
             if( (isFolder || isSuperFolder || isSuperProjectFolder ) && containerTexture!=nullptr )
@@ -997,7 +1060,7 @@ namespace pawgui
         }
         else if( !isSuperProjectFolder)
         {
-            gpe::animaton2d * myAnim = get_resource_animation();
+            gpe::animation2d * myAnim = get_resource_animation();
             if( myAnim !=nullptr )
             {
                 myAnim->render_resized(0,  x_pos - cam->x + r_width/2, y_pos - cam->y + r_height /2 , r_width, r_height, nullptr );
@@ -1016,6 +1079,8 @@ namespace pawgui
 
         if( imageWasRendered==false && containerTexture!=nullptr )
         {
+            gpe::color * imageColor  = pawgui::theme_main->main_box_font_color;
+
             if( r_width <=0 && r_height <= 0 )
             {
                 r_width = r_height = resource_container_default_height;
@@ -1056,7 +1121,7 @@ namespace pawgui
         }
         else if( !isSuperProjectFolder)
         {
-            gpe::animaton2d * myAnim = get_resource_animation();
+            gpe::animation2d * myAnim = get_resource_animation();
             if( myAnim !=nullptr )
             {
                 myAnim->render_scaled(0, x_pos, y_pos, x_scale, y_scale,cam );
@@ -1075,6 +1140,7 @@ namespace pawgui
 
         if( imageWasRendered==false && containerTexture!=nullptr )
         {
+            gpe::color * imageColor  = pawgui::theme_main->main_box_font_color;
 
             if(projectParentName.compare(project_current_name)==0 && isSuperProjectFolder)
             {
@@ -1087,33 +1153,108 @@ namespace pawgui
         }
     }
 
-    void widget_resource_container::remove_resource(widget_resource_container * otherContainer, bool deleteResource)
+
+    void widget_resource_container::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam )
     {
-        if( otherContainer!=nullptr )
+        bool selfIsInView = false;
+
+        view_space = gpe::camera_find( view_space );
+        cam = gpe::camera_find( cam );
+        int x_pos = widget_box.x;
+        int y_pos = widget_box.y;
+        int rendY = y_pos;
+        if( rendY>=cam->y && rendY <=cam->y+cam->h )
         {
-            widget_resource_container * tContainer = nullptr;
-            int resIdToDelete = otherContainer->get_global_id();
-            for( int i = (int)sub_options.size()-1; i>=0; i--)
+            selfIsInView = true;
+        }
+        else if( rendY+resource_container_default_height >=cam->y && rendY+resource_container_default_height <=cam->y+cam->h  )
+        {
+            selfIsInView = true;
+        }
+
+        if( isHovered )
+        {
+            gpe::gcanvas->render_rectangle( widget_box.x-cam->x, widget_box.y-cam->y, widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y, gpe::c_ltblue,false, 255 );
+        }
+        else if( matches( resource_last_clicked) == 1 )
+        {
+            gpe::gcanvas->render_rectangle( widget_box.x-cam->x, widget_box.y-cam->y, widget_box.x+widget_box.w-cam->x,widget_box.y+widget_box.h-cam->y, gpe::c_blue,false, 255 );
+        }
+
+        if( treeMode == tree_mode_list )
+        {
+            if( isFolder )
             {
-                tContainer = sub_options[i];
-                if( tContainer!=nullptr && tContainer->get_global_id()==resIdToDelete )
+                if(subMenuIsOpen)
                 {
-                    element_box.h-=otherContainer->element_box.h;
-                    //otherContainer->parentResource = nullptr;
-                    if( deleteResource )
+                    int subOptionsSize = (int)sub_options.size();
+                    if( (selfIsInView) && subOptionsSize > 0 )
                     {
-                        main_tab_resource_bar->close_resource_tab(projectParentName, resIdToDelete );
-                        delete tContainer;
-                        tContainer = nullptr;
-                        otherContainer = nullptr;
-                        //gpe::error_log->report("Rez deletedish...");
+                        gpe::gfs->render_text( x_pos-cam->x,y_pos-cam->y,"-",pawgui::theme_main->main_box_font_color,font_resourcebar,gpe::fa_left,gpe::fa_top);
                     }
-                    sub_options.erase( sub_options.begin()+i );
-                    //gpe::error_log->report("Rez deleted...");
+                }
+                else if( (selfIsInView ) && (int)sub_options.size() > 0 )
+                {
+                    gpe::gfs->render_text( x_pos-cam->x,y_pos-cam->y,"+",pawgui::theme_main->main_box_font_color,font_resourcebar,gpe::fa_left,gpe::fa_top);
                 }
             }
+
+            if( selfIsInView )
+            {
+                if( isClicked && projectParentName.compare(project_current_name)==0 )
+                {
+                    gpe::gcanvas->render_rectangle( x_pos-cam->x, y_pos-cam->y, x_pos + cam->w-cam->x,y_pos+resource_container_default_height-cam->y, gpe::c_blue,false, 255 );
+                }
+
+                if( (isFolder || isSuperFolder || isSuperProjectFolder ) && containerTexture!=nullptr )
+                {
+                    if(projectParentName.compare(project_current_name)==0 && isSuperProjectFolder)
+                    {
+                        containerTexture->render_tex_resized( x_pos+default_icon_plusminus_size-cam->x,y_pos-cam->y,resource_container_default_height,resource_container_default_height,nullptr,pawgui::theme_main->folder_color_highlight);
+                    }
+                    else
+                    {
+                        containerTexture->render_tex_resized( x_pos+default_icon_plusminus_size-cam->x,y_pos-cam->y,resource_container_default_height,resource_container_default_height,nullptr,pawgui::theme_main->folder_color);
+                    }
+                }
+                else if( !isSuperProjectFolder && !isFolder && !isSuperFolder )
+                {
+                    render_image( x_pos,y_pos ,resource_container_default_height *3/4,resource_container_default_height*3/4,nullptr,cam );
+                }
+
+                gpe::gfs->render_text( x_pos+resource_container_default_height+default_icon_plusminus_size-cam->x,y_pos-cam->y+resource_container_default_height/2,widget_name, pawgui::theme_main->main_box_font_color,font_resourcebar,gpe::fa_left,gpe::fa_center);
+                resourcetype_last_rendered_type = resourceType;
+            }
+        }
+        else
+        {
+            int box_size = 0;
+            box_size = widget_box.w;
+
+            if( isClicked && projectParentName.compare(project_current_name)==0 )
+            {
+                gpe::gcanvas->render_rectangle( x_pos-cam->x, y_pos-cam->y, x_pos + box_size-cam->x,y_pos+box_size-cam->y, gpe::c_blue,false, 255 );
+            }
+
+            if( (isFolder || isSuperFolder || isSuperProjectFolder ) && containerTexture!=nullptr )
+            {
+                if(projectParentName.compare(project_current_name)==0 && isSuperProjectFolder)
+                {
+                    containerTexture->render_tex_resized( x_pos+default_icon_plusminus_size-cam->x,y_pos-cam->y,box_size - resource_container_default_height,box_size - resource_container_default_height,nullptr,pawgui::theme_main->folder_color_highlight);
+                }
+                else
+                {
+                    containerTexture->render_tex_resized( x_pos+default_icon_plusminus_size-cam->x,y_pos-cam->y,box_size - resource_container_default_height, box_size - resource_container_default_height,nullptr,pawgui::theme_main->folder_color);
+                }
+            }
+            else if( !isSuperProjectFolder && !isFolder && !isSuperFolder )
+            {
+                render_image( x_pos,y_pos , box_size - resource_container_default_height , box_size - resource_container_default_height,nullptr,cam );
+            }
+            gpe::gfs->render_text_clipped( x_pos-cam->x + box_size/2,y_pos-cam->y + box_size,widget_name, pawgui::theme_main->main_box_font_color,font_resourcebar,gpe::fa_center,gpe::fa_bottom, widget_box.w, 32, 255 );
         }
     }
+
 
     void widget_resource_container::save_container(std::string file_path, int backupId)
     {
@@ -1198,6 +1339,10 @@ namespace pawgui
                 case gpe::resource_type_scene:
                     containerTexture = rsm_gui->texture_add( "guiSceneIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/area-chart.png");
                 break;
+                case gpe::resource_type_back_button:
+                    containerTexture = rsm_gui->texture_add( "backButtonIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/arrow-circle-left.png");
+                break;
+
                 default:
                     containerTexture = rsm_gui->texture_add( "guiDefaultIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/diamond.png");
                 break;
@@ -1238,8 +1383,8 @@ namespace pawgui
         {
             font_toolbar->get_metrics(widget_name,&textW, &textH);
         }
-        strTexWidth = textW;
-        strTexHeight = textH;
+        strtex_widthth = textW;
+        strtex_height = textH;
         if( heldResource!=nullptr)
         {
             heldResource->set_name(new_name);

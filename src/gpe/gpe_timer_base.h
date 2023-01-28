@@ -3,10 +3,10 @@ gpe_timer_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,6 +36,8 @@ SOFTWARE.
 #include <cstdint>
 #include <string>
 #include <vector>
+
+#include "gpe_module_version_info.h"
 
 namespace gpe
 {
@@ -79,7 +81,9 @@ namespace gpe
             bool paused;
             bool started;
             int fps_average_count;
+            bool vsync_is_on;
         public:
+            module_information *  version_info;
             //Initializes variables
             bool system_cap_on;
             float min_delay_ms;
@@ -111,6 +115,8 @@ namespace gpe
             virtual uint64_t get_ticks();
             virtual float get_time_difference( uint64_t time_p, uint64_t time_c );
 
+            bool get_vysnc();
+
             virtual bool is_started();
             virtual bool is_paused();
 
@@ -118,6 +124,7 @@ namespace gpe
 
             virtual void set_fps( float fps_new = 60 );
             virtual void set_average_fps_count( int new_count );
+            virtual void set_vysnc( bool vs_on );
     };
 
     extern time_keeper_base * time_keeper;

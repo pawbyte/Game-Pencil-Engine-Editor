@@ -3,10 +3,10 @@ pawgui_themes.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -38,6 +38,7 @@ namespace pawgui
     //Define GUI Themes to nullptr
     gui_theme * theme_main = nullptr;
     gui_theme * theme_default = nullptr;
+    gui_theme * theme_system_based = nullptr;
 
     //Define GUI fonts to nullptr
     gpe::font_base * font_buttons = nullptr;
@@ -335,7 +336,7 @@ namespace pawgui
     {
         //If the level file could be loaded
         std::string themeGlobalLocation = "";
-        if( gpe::main_file_url_manager->file_exists(themeLocationIn) )
+        if( sff_ex::file_exists(themeLocationIn) )
         {
             themeGlobalLocation = themeLocationIn;
         }
@@ -463,7 +464,7 @@ namespace pawgui
         {
             themeLocationOut = theme_name+".gpf";
         }
-        if( gpe::main_file_url_manager->file_exists(themeLocationOut) )
+        if( sff_ex::file_exists(themeLocationOut) )
         {
             themeGlobalLocation = themeLocationOut;
         }
@@ -475,7 +476,7 @@ namespace pawgui
         {
             themeGlobalLocation  = gpe::app_directory_name+"themes/"+ stg_ex::get_local_from_global_file( themeLocationOut );
         }
-        if( !gpe::main_file_url_manager->file_exists(themeGlobalLocation) )
+        if( !sff_ex::file_exists(themeGlobalLocation) )
         {
             gpe::error_log->report("Theme File ["+themeGlobalLocation+"] not found...");
             return false;
@@ -496,11 +497,13 @@ namespace pawgui
                         templateFileOut << color_temp->get_name()+"="+ stg_ex::int_to_string( color_temp->get_r() )+","+ stg_ex::int_to_string( color_temp->get_g() )+","+ stg_ex::int_to_string( color_temp->get_b() ) << "\n";
                     }
                 }
+                templateFileOut.close();
+                theme_local_location = themeGlobalLocation;
+                return true;
             }
-            theme_local_location = themeGlobalLocation;
         }
         templateFileOut.close();
-        return true;
+        return false;
     }
 
     bool load_default_fonts( std::string mono_font_location, int font_min_size )
@@ -513,17 +516,17 @@ namespace pawgui
         std::string textEditorFontLocation = gpe::app_directory_name+"resources/fonts/dejavu_sans_mono/DejaVuSansMono.ttf";
         bool font_is_monospaced = true;
 
-        if( gpe::main_file_url_manager->file_exists("C:/Windows/Fonts/Arial.ttf") )
+        if( sff_ex::file_exists("C:/Windows/Fonts/Arial.ttf") )
         {
             mainGuiFontLocation = "C:/Windows/Fonts/Arial.ttf";
             font_is_monospaced = false;
         }
-        else if( gpe::main_file_url_manager->file_exists("C:/Windows/Fonts/Carlito.ttf") )
+        else if( sff_ex::file_exists("C:/Windows/Fonts/Carlito.ttf") )
         {
             mainGuiFontLocation = "C:/Windows/Fonts/Carlito.ttf";
             font_is_monospaced = false;
         }
-        else if( gpe::main_file_url_manager->file_exists("C:/Windows/Fonts/Candara.ttf") )
+        else if( sff_ex::file_exists("C:/Windows/Fonts/Candara.ttf") )
         {
             mainGuiFontLocation = "C:/Windows/Fonts/Candara.ttf";
             font_is_monospaced = false;

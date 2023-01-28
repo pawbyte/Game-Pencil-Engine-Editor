@@ -1,5 +1,5 @@
 /*
-gpe_input_raylib.h
+gpe_input_sdl.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,33 +31,28 @@ SOFTWARE.
 
 */
 
-#ifndef gpe_input_raylib_h
-#define gpe_input_raylib_h
+#ifndef gpe_input_sdl_h
+#define gpe_input_sdl_h
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_version.h>
+#include <SDL2/SDL_video.h>
 #include "../gpe/gpe_input_base.h"
 #include "../gpe/gpe_render_package_handler.h"
 #include "../gpe/gpe_shared_resources.h"
 #include "../gpe/gpe_timer_base.h"
 #include <string>
-#include "raylib.h"
-
-// NOTE: Gamepad name ID depends on drivers and OS
-#if defined(PLATFORM_RPI)
-    #define XBOX360_NAME_ID            "Microsoft X-Box 360 pad"
-    #define PS3_NAME_ID                "PLAYSTATION(R)3 Controller"
-#else
-    #define XBOX360_NAME_ID            "Xbox 360 Controller"
-    #define XBOX360_LEGACY_NAME_ID     "Xbox Controller"
-    #define PS3_NAME_ID                "PLAYSTATION(R)3 Controller"
-#endif
 
 namespace gpe
 {
-    class gamepad_raylib: public gamepad_base
+    class gamepad_sdl: public gamepad_base
     {
         public:
-            gamepad_raylib();
-            ~gamepad_raylib();
+            SDL_Joystick  * assigned_sdl_controller;
+            int joy_sdl_id;
+
+            gamepad_sdl();
+            ~gamepad_sdl();
             void handle_input();
             void pure_reset();
             void reset_gamepad();
@@ -66,42 +61,42 @@ namespace gpe
     };
 
     /**
-     * class input_manager_raylib
+     * class input_manager_sdl
      *
      * Handles keyboard, gamepad and mouse states
      */
 
-    class input_manager_raylib: public input_manager_base
+    class input_manager_sdl: public input_manager_base
     {
         private:
-            gamepad_raylib * game_pads_raylib[gp_max_devices];
+            SDL_Event sdl_input_event;
+            gamepad_sdl * game_pads_sdl[gp_max_devices];
 
         public:
-            input_manager_raylib();
-            ~input_manager_raylib();
+            input_manager_sdl();
+            ~input_manager_sdl();
 
             bool clipboard_empty();
             bool clipboard_set( std::string new_clipboard_string);
             std::string clipboard_string();
 
-            //void handle_modifers( raylibMod mod );
+            void convert_event_input();
+            void key_bind_qwerty();
+            void key_bind_load();
+            void key_bind_save();
+
+            //void handle_modifers( SDLMod mod );
             bool gamepad_detect_all();
             bool gamepad_disconnect( int gamepad_id);
             bool gamepad_setup(int gamepad_id );
-
+            bool load_input_settings(std::string file_path = "");
             void handle_input(bool dump_event = false, bool is_embedded=false );
-
-            void key_bind_load();
-            void key_bind_qwerty();
-            void key_bind_save();
-
-             bool load_input_settings(std::string file_path = "");
             //void reset_all_input();
             //void reset_temp_input();
     };
 
-    bool init_raylib_input_system();
-    void quit_raylib_input_system();
+    bool init_sdl_input_system();
+    void quit_sdl_input_system();
 }
 
-#endif //gpe_input_raylib_h
+#endif //gpe_input_sdl_h

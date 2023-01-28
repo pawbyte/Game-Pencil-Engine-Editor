@@ -1,5 +1,5 @@
 /*
-gpe_renderer_raylib.h
+gpe_renderer_sdl.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,63 +31,39 @@ SOFTWARE.
 
 */
 
-#ifndef gpe_renderer_raylib_h
-#define gpe_renderer_raylib_h
+#ifndef gpe_renderer_sdl_h
+#define gpe_renderer_sdl_h
 
 //The headers
 
-#include "../gpe/gpe_camera.h"
+#include <ctime>
 #include "../gpe/gpe_common_includes.h"
-#include "../gpe/gpe_cursor_base.h"
 #include "../gpe/gpe_shapes.h"
 #include "../gpe/gpe_renderer_base.h"
-#include "../gpe/gpe_timer_base.h"
-
-#include "config.h"
-#include "raylib.h"
-#include "rlgl.h"
-
-
-#if defined(PLATFORM_DESKTOP)
-    #define GLSL_VERSION            330
-#else   // PLATFORM_RPI, PLATFORM_ANDROID, PLATFORM_WEB
-    #define GLSL_VERSION            100
-#endif
+#include "sdl_surface_ex.h"
 
 namespace gpe
 {
-    //Our Renderer raylib wrapper
-    class renderer_system_raylib: public renderer_base
+    //Our Renderer SDL Wrapper
+    class renderer_system_sdl: public renderer_base
     {
-        protected:
-            Camera2D raylib_2d_cameras[ max_cameras_allowed ];
-            Camera raylib_3d_cameras[ max_cameras_allowed ];
-            Color render_current_color;
-            bool in_scissor_mode;
-            RenderTexture2D  scissor_mode_target;
-            Rectangle scissor_mode_rectangle_source;
-            Rectangle scissor_mode_rectangle_dest;
-            Vector2 scissor_mode_position;
+        private:
+            //SDL_SysWMinfo sdl_sys;
+            SDL_Renderer * sdlRenderer;
+            SDL_Texture * renderTexture;
         public:
-            Vector2 scissor_mode_offset;
-            //raylib_SysWMinfo * get_sys_info();
-            renderer_system_raylib(int rId, int wWidth, int wHeight );
-            ~renderer_system_raylib();
+            SDL_RendererFlip bothFlip;
+            SDL_RendererFlip horiFlip;
+            SDL_RendererFlip vertFlip;
+            SDL_Point  defaultPoint;
+            //SDL_SysWMinfo * get_sys_info();
+            renderer_system_sdl(int rId, int wWidth, int wHeight, SDL_Window * window_ptr );
+            ~renderer_system_sdl();
 
-            bool begin_mode_2d();
-            bool begin_mode_25d();
-            bool begin_mode_3d();
-            bool begin_mode_vr();
-
-            void clear_renderer( bool windowIsMinimized = false );
+            void clear_renderer( bool windowIsMinimized );
 
             bool disable_scaling();
             bool enable_scaling();
-
-            bool end_mode_2d();
-            bool end_mode_25d();
-            bool end_mode_3d();
-            bool end_mode_vr();
 
             //Check if anything's wrong with the window
             bool error_check();
@@ -95,13 +71,14 @@ namespace gpe
             int get_blend_mode();
             std::string get_renderer_name();
             std::string get_renderer_type();
+            SDL_Renderer * get_sdl_renderer();
 
-            //raylib_SysWMinfo * get_info();
+            //SDL_SysWMinfo * get_info();
 
             //Some Shape Stuff
             void render_horizontal_line(int y, int x1, int x2);
-            void render_horizontal_line_color( int y, int x1, int x2, uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255);
-            bool render_circle_color( int16_t x, int16_t y, int16_t rad, uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255 );
+            void render_horizontal_line_color( int y, int x1, int x2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
+            bool render_circle_color( Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255 );
 
             void reset_input();
             void reset_viewpoint();
@@ -113,12 +90,11 @@ namespace gpe
 
             bool screen_was_cleared();
             void set_render_blend_mode( int blend_mode_new );
-            void set_viewpoint( shape_rect * newViewPoint = nullptr);
+            void set_viewpoint( shape_rect * newViewPoint = NULL);
             void set_window_title(std::string new_title);
             void update_renderer( bool windowIsMinimized);
     };
 
-    extern renderer_system_raylib * renderer_main_raylib;
+    extern renderer_system_sdl * renderer_main_sdl;
 }
-
-#endif // GPE_RENDERER_raylib_H
+#endif // GPE_RENDERER_SDL_H

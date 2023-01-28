@@ -3,10 +3,10 @@ gpe_editor_aboutpage.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -103,28 +103,21 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
     }
 
     pencilInformation->add_line( versionInfoLine+"." );
+    //pencilInformation->add_line("SDL Version:                   "+ stg_ex::int_to_string(SDL_MAJOR_VERSION)+"."+ stg_ex::int_to_string(SDL_MINOR_VERSION)+"."+ stg_ex::int_to_string(SDL_PATCHLEVEL)+"." );
     pencilInformation->add_line("Renderer:                      "+ gpe::renderer_main->get_renderer_name() + " - " + gpe::renderer_main->get_renderer_type() + "." );
-    if( gpe::sound_is_working )
-    {
-        pencilInformation->add_line("Audio:                         "+ gpe::sound_system_name + "(Working)." );
-    }
-    else
-    {
-        pencilInformation->add_line("Audio:                         "+ gpe::sound_system_name + "(Not working)." );
-    }
-    pencilInformation->add_line("PAWGUI Version:                "+ stg_ex::int_to_string(pawgui::version_major)+"."+ stg_ex::int_to_string(pawgui::version_minor)+"."+ stg_ex::int_to_string( pawgui::version_patch_level)+"." );
-    pencilInformation->add_line("GPE(editor) Version:           "+ stg_ex::int_to_string(editor_version_number_major)+"."+ stg_ex::int_to_string(editor_version_number_minor)+"."+ stg_ex::int_to_string( editor_version_number_update)+"." );
+    pencilInformation->add_line("PAWGUI Version:                  "+ stg_ex::int_to_string(pawgui::version_major)+"."+ stg_ex::int_to_string(pawgui::version_minor)+"."+ stg_ex::int_to_string( pawgui::version_patch_level)+"." );
+    pencilInformation->add_line("GPE(editor) Version:          "+ stg_ex::int_to_string(editor_version_number_major)+"."+ stg_ex::int_to_string(editor_version_number_minor)+"."+ stg_ex::int_to_string( editor_version_number_update)+"." );
     pencilInformation->add_line("GPE(runtime) Version:          "+ stg_ex::int_to_string(gpe::version_number_major)+"."+ stg_ex::int_to_string(gpe::version_number_minor)+"."+ stg_ex::int_to_string(gpe::version_number_update)+"." );
 
-    pencilInformation->add_line("Release Date:                  03-16-2021");
+    pencilInformation->add_line("Release Date:                  01-02-2023");
     pencilInformation->add_line("Author:                        PawByte");
     pencilInformation->add_line("Lead Developer:                Nathan Hurde aka theweirdn8");
     pencilInformation->add_line("Email:                         help@pawbyte.com");
-    pencilInformation->add_line("Website:                       www.gamepencil.net");
+    pencilInformation->add_line("Website:                       gamepencil.pawbyte.com");
     pencilInformation->isCodeEditor = false;
 
     updateChecker_button = new pawgui::widget_button_push( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/download.png","Download new updates...","Compares latest version to your copy");
-    updateChecker_button->set_website("http://gamepencil.net/get-game-pencil-engine/");
+    updateChecker_button->set_website("http://gamepencil.pawbyte.com/get-game-pencil-engine/");
 
     pencilCredits = new pawgui::widget_text_editor();
     pencilCredits->isCodeEditor = false;
@@ -193,11 +186,9 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
     pencilShortkeys->import_text( gpe::app_directory_name+"shortkeys.txt");
     pencilShortkeys->set_height(640);
 
-    helpfulLinksTitle = new pawgui::widget_label_title("Helpful Links","Some links you might find useful while using GPE.");
-
     pawgui::widget_text_url * tHelpfulLink = nullptr;
 
-    tHelpfulLink = new pawgui::widget_text_url("Introduction","Introduction","http://gamepencil.net/introduction");
+    tHelpfulLink = new pawgui::widget_text_url("Introduction","Introduction","http://gamepencil.pawbyte.com/introduction");
     add_helpfullink(tHelpfulLink);
 
     tHelpfulLink = new pawgui::widget_text_url("Community","Community","http://community.pawbyte.com/");
@@ -206,13 +197,13 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
     tHelpfulLink = new pawgui::widget_text_url("Documentation","Documentation","http://docs.pawbyte.com/");
     add_helpfullink(tHelpfulLink);
 
-    tHelpfulLink = new pawgui::widget_text_url("Tutorials","Tutorials","http://gamepencil.net/category/tutorials/");
+    tHelpfulLink = new pawgui::widget_text_url("Tutorials","Tutorials","http://gamepencil.pawbyte.com/category/tutorials/");
     add_helpfullink(tHelpfulLink);
 
-    tHelpfulLink = new pawgui::widget_text_url("Examples","Examples","http://gamepencil.net/examples");
+    tHelpfulLink = new pawgui::widget_text_url("Examples","Examples","http://gamepencil.pawbyte.com/examples");
     add_helpfullink(tHelpfulLink);
 
-    tHelpfulLink = new pawgui::widget_text_url("Demos","Demos","http://gamepencil.net/demos");
+    tHelpfulLink = new pawgui::widget_text_url("Demos","Demos","http://gamepencil.pawbyte.com/demos");
     add_helpfullink(tHelpfulLink);
 
     tHelpfulLink = new pawgui::widget_text_url("itch.io Page","itch.io Page","https://pawbyte.itch.io/game-pencil-engine");
@@ -220,6 +211,18 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
 
     tHelpfulLink = new pawgui::widget_text_url("Steam Greenlight","Steam Greenlight","http://steamcommunity.com/sharedfiles/filedetails/?id=722454621");
     add_helpfullink(tHelpfulLink);
+
+    helpTabSection = new pawgui::widget_panel_section("Helpful Links");
+
+
+    for( int subMenuI= 0; subMenuI <(int)helpfulLinks.size(); subMenuI++)
+    {
+        tHelpfulLink = helpfulLinks.at(subMenuI);
+        if( tHelpfulLink!=nullptr)
+        {
+            helpTabSection->add_widget( tHelpfulLink, true );
+        }
+    }
 
     //Community
     communityLinksTitle = new pawgui::widget_label_title("Community","Community links to stay connected");
@@ -249,7 +252,7 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
     tSocial_button->set_website("https://www.youtube.com/user/PawByte");
     add_communitylink(tSocial_button);
 
-    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/gamepad.png","IndieDB" );
+    tSocial_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/gamecontroller.png","IndieDB" );
     tSocial_button->set_website("http://www.indiedb.com/engines/game-pencil-engine");
     add_communitylink(tSocial_button);
 
@@ -313,12 +316,6 @@ gamePencilAboutPageResource::~gamePencilAboutPageResource()
         updateChecker_button = nullptr;
     }
 
-    if( helpfulLinksTitle!=nullptr)
-    {
-        delete helpfulLinksTitle;
-        helpfulLinksTitle = nullptr;
-    }
-
     if( communityLinksTitle!=nullptr)
     {
         delete communityLinksTitle;
@@ -354,7 +351,7 @@ void gamePencilAboutPageResource::add_communitylink( pawgui::widget_button_icon 
 
 bool gamePencilAboutPageResource::include_local_files( std::string pBuildDir , int buildType )
 {
-
+    return true; //WIPNOTFUNCTIONALYET
 }
 
 void gamePencilAboutPageResource::prerender_self( )
@@ -400,6 +397,7 @@ void gamePencilAboutPageResource::process_self( gpe::shape_rect * view_space, gp
             aboutPageList->reset_self();
         }
 
+        aboutPageList->alignment_h = gpe::fa_center;
         aboutPageList->set_coords(subViewedSpace.x,subViewedSpace.y );
         aboutPageList->set_width(subViewedSpace.w);
         aboutPageList->set_height(subViewedSpace.h );
@@ -412,15 +410,8 @@ void gamePencilAboutPageResource::process_self( gpe::shape_rect * view_space, gp
             int subMenuI = 0;
             pawgui::widget_text_url * tempTextUrl = nullptr;
             aboutPageList->add_gui_element(engineLogo, true );
-            aboutPageList->add_gui_element(helpfulLinksTitle,true);
-            for( subMenuI= 0; subMenuI <(int)helpfulLinks.size(); subMenuI++)
-            {
-                tempTextUrl = helpfulLinks.at(subMenuI);
-                if( tempTextUrl!=nullptr)
-                {
-                    aboutPageList->add_gui_element(tempTextUrl, true);
-                }
-            }
+            aboutPageList->add_gui_section( helpTabSection );
+
             aboutPageList->add_gui_element(communityLinksTitle,true);
             pawgui::widget_button_icon * tCommunity_button = nullptr;
             int menuLinksTotal = (int)community_buttons.size();

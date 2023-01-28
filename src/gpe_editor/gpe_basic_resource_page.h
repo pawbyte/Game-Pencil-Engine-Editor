@@ -3,10 +3,10 @@ gpe_basic_resource_page.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,15 +35,18 @@ SOFTWARE.
 #ifndef GPE_BASIC_project_RESOURCE_H
 #define GPE_BASIC_project_RESOURCE_H
 
-
+#include "../gpe/gpe_render_package_handler.h"
 #include "../pawgui/pawgui_dock_system.h"
-#include "gpe_editor_globals.h"
-#include "gpe_editor_project.h"
 #include "../pawgui/pawgui_general_resource.h"
 #include "../pawgui/pawgui.h"
 
+
+#include "gpe_editor_globals.h"
+#include "gpe_editor_project.h"
+
 extern gpe::texture_base * texture_transparent_bg;
 extern gpe::texture_base * texture_gpe_logo;
+
 
 class GPE_ObjectComponent
 {

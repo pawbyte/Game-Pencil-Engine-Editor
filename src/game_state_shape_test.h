@@ -3,10 +3,10 @@ game_state_shape_test.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,17 +35,17 @@ SOFTWARE.
 #define game_state_triangle_test_h
 
 #include "gpe/gpe.h"
-#include "other_libs/semath.h"
-#include "sdl_libs/gpe_artist_sdl.h"
-#include "sdl_libs/gpe_renderer_sdl.h"
+#include "gpe/internal_libs/semath.h"
+#include "sdl2_module/gpe_artist_sdl2.h"
+#include "sdl2_module/gpe_renderer_sdl2.h"
 
 
 class colored_circle
 {
     public:
-    gpe::shape_circle * my_circle;
+    gpe::shape_circle  my_circle;
     gpe::color * my_color;
-    colored_circle( int x, int y, int r );
+    colored_circle( float x, float y, float r );
     ~colored_circle();
 };
 
@@ -61,14 +61,14 @@ class colored_triangle
 class colored_arc
 {
     public:
-    gpe::shape_circle * my_circle;
+    gpe::shape_circle  my_circle;
     gpe::color * my_color;
     float start_arc_angle;
     float end_arc_angle;
     float arc_vertices;
-    int arc_width;
+    float arc_width;
     int arc_alpha;
-    colored_arc( int x, int y, int r, float s_angle, float e_angle, float a_verts, int a_width );
+    colored_arc( float x, float y, float r, float s_angle, float e_angle, float a_verts, int a_width );
     ~colored_arc();
 };
 
@@ -78,7 +78,7 @@ class colored_rectangle
     public:
     gpe::shape_rect * my_rectangle;
     gpe::color * my_color;
-    colored_rectangle( int x, int y, int w, int h );
+    colored_rectangle( float x, float y, float w, float h );
     ~colored_rectangle();
 };
 
@@ -104,7 +104,7 @@ class shape_test_state: public gpe::program_state
 
         std::vector< colored_circle * > random_circles;
         int circle_seeked_count;
-        gpe::shape_circle * mouse_circle;
+        gpe::shape_circle  mouse_circle;
         int mouse_circle_position;
 
         //Triangle Variables
@@ -120,6 +120,7 @@ class shape_test_state: public gpe::program_state
 
         shape_test_state(std::string s_name );
         ~shape_test_state();
+
         void apply_logic();
         void clean_up();
 

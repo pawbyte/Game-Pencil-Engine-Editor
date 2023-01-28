@@ -3,10 +3,10 @@ gpe_resource_tree.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -36,6 +36,19 @@ SOFTWARE.
 
 GPE_ResourceTree::GPE_ResourceTree()
 {
+    selected_folder_option = nullptr;
+    selected_option = nullptr;
+    smallIconSize = 64;
+    mediumIconSize = 96;
+    largeIconSize = 128;
+    xlIconSize = 256;
+
+    treeGuiList = new pawgui::widget_panel_list();
+    backbutton_option = new pawgui::widget_resource_container("","Back",gpe::resource_type_back_button,-1,false, -2, -1 );
+    treeGuiList->lastColumnFloatsRight = false;
+    options_position = 0;
+    options_max_in_view = 0;
+    treeMode = pawgui::tree_mode_list;
     upDelayTime = 0;
     downDelayTime = 0;
     leftDelayTime = 0;
@@ -70,27 +83,44 @@ GPE_ResourceTree::GPE_ResourceTree()
     selectedSubOption = -1;
     hasScrollControl = false;
     hasArrowkeyControl = false;
-    xScroll = new pawgui::widget_scrollbar_xaxis();
-    yScroll = new pawgui::widget_scrollbar_yaxis();
     barTitleWidth = 0;
     barTitleHeight = 24;
     gpe::font_default->get_metrics("Project Resources",&barTitleWidth,&barTitleHeight);
     barTitleHeight= 24;
     lastWidth = widget_box.w;
+    searchBox = new pawgui::widget_input_text("","Search Resources...");
+    treeModeBar = new pawgui::widget_button_iconbar( searchBox->get_height(), true );
+    treeModeBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/list.png", "List", pawgui::tree_mode_list, false );
+    treeModeBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/smile-o.png", "Icons - Small",pawgui::tree_mode_icons_small, true );
+    treeModeBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/th.png", "Icons - Medium", pawgui::tree_mode_icons_medium, true );
+    treeModeBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/th-large.png", "Icons - Large", pawgui::tree_mode_icons_large, true );
+    treeModeBar->add_option( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/square.png", "Icons - Extra Large", pawgui::tree_mode_icons_xlarge, true );
 }
 
 GPE_ResourceTree::~GPE_ResourceTree()
 {
-    if( xScroll!=nullptr)
+    if( treeGuiList!=nullptr)
     {
-        delete xScroll;
-        xScroll = nullptr;
+        treeGuiList->clear_list();
+        delete treeGuiList;
+        treeGuiList = nullptr;
+    }
+    if( treeModeBar!=nullptr)
+    {
+        delete treeModeBar;
+        treeModeBar = nullptr;
     }
 
-    if( yScroll!=nullptr)
+    if( searchBox!=nullptr)
     {
-        delete yScroll;
-        yScroll = nullptr;
+        delete searchBox;
+        searchBox = nullptr;
+    }
+
+    if( backbutton_option!=nullptr)
+    {
+        delete backbutton_option;
+        backbutton_option = nullptr;
     }
 
 }
@@ -144,212 +174,233 @@ void GPE_ResourceTree::process_self( gpe::shape_rect * view_space, gpe::shape_re
     view_space = gpe::camera_find( view_space );
     cam = gpe::camera_find(cam);
 
+    int current_res_id = -1;
+
+    pawgui::widget_resource_container * past_resource_folder = selected_folder_option;
+    if( pawgui::resource_last_clicked != nullptr )
+    {
+        current_res_id =  pawgui::resource_last_clicked->get_global_id();
+    }
+
     /*widget_box.x = 0;
     widget_box.y = 0;*/
     pawgui::widget_basic::process_self( view_space, cam );
 
-    int sOpNumber = -1;
-
-    bool mouseInRange = false;
-    cameraBox.w = widget_box.w - yScroll->get_box_width();
-    cameraBox.h = widget_box.h - xScroll->get_box_height();
-
-    int x_pos = pawgui::padding_default;
-    int y_pos = pawgui::padding_default;
-    int y2Pos = y_pos;
-
-    if( isHovered )
+    if( view_space->w > treeModeBar->get_width() + 128 )
     {
-        mouseInRange = true;
+        searchBox->set_coords( widget_box.x, widget_box.y );
+        searchBox->set_width( view_space->w  - treeModeBar->get_width() );
+        treeModeBar->set_coords( searchBox->get_x2(), widget_box.y );
     }
-    if( gpe::input->check_mouse_pressed(0) || gpe::input->check_mouse_pressed(1) || gpe::input->check_mouse_pressed(2) )
+    else
     {
-        if( mouseInRange)
+        searchBox->set_coords( widget_box.x, widget_box.y );
+        searchBox->set_width( view_space->w );
+        treeModeBar->set_coords( widget_box.x, widget_box.y + searchBox->get_y2() );
+    }
+
+    searchBox->process_self( view_space, cam );
+    treeModeBar->process_self( view_space, cam );
+    treeMode = treeModeBar->get_tab_id();
+
+    if( widget_box.w == 0 || widget_box.h == 0 )
+    {
+        widget_box.w = view_space->w;
+        widget_box.h = view_space->h;
+    }
+
+    if( treeMode == pawgui::tree_mode_list )
+    {
+        // treeMode == pawgui::tree_mode_list ( default)
+        treeRowCount = ceil( widget_box.h / ( pawgui::resource_container_default_height + pawgui::padding_default ) );
+        treeColumnCount = 1;
+        past_resource_folder = nullptr;
+        selected_folder_option = nullptr;
+    }
+    else
+    {
+        currentIconSize = smallIconSize;
+
+        switch( treeMode )
         {
-            hasScrollControl = true;
-            hasArrowkeyControl = true;
+            case pawgui::tree_mode_icons_xlarge:
+                currentIconSize = xlIconSize;
+            break;
+
+            case pawgui::tree_mode_icons_large:
+                currentIconSize = largeIconSize;
+            break;
+
+            case pawgui::tree_mode_icons_medium:
+                currentIconSize = mediumIconSize;
+            break;
+
+            default:
+                currentIconSize = smallIconSize;
+            break;
+        }
+        treeColumnCount = floor( widget_box.w / ( currentIconSize+pawgui::padding_default) );
+        treeRowCount = floor( widget_box.h / ( currentIconSize+pawgui::padding_default) );
+
+        if( currentIconSize > widget_box.w- pawgui::padding_default )
+        {
+            currentIconSize = widget_box.w - pawgui::padding_default;
+            treeColumnCount = 1;
+        }
+    }
+
+
+    options_max_in_view = treeColumnCount * treeRowCount;
+    options_in_browser.clear();
+    treeGuiList->clear_list();
+
+    pawgui::widget_resource_container * cContainer = nullptr;
+
+    int i_res = 0;
+
+    if( searchBox->has_content() )
+    {
+        searchString = searchBox->get_string();
+        searchString = stg_ex::string_lower( searchString );
+    }
+    else
+    {
+        searchString = "";
+    }
+
+    if( (int)searchString.size() > 0 )
+    {
+        if( selected_folder_option == nullptr )
+        {
+            for( i_res = 0; i_res < (int)sub_options.size(); i_res++ )
+            {
+                cContainer = sub_options[i_res];
+                cContainer->add_if_contains_string( searchString, options_in_browser );
+            }
         }
         else
         {
-            hasScrollControl = false;
-            hasArrowkeyControl = false;
+            selected_folder_option->add_if_contains_string( searchString, options_in_browser );
         }
     }
-
-    //if( mouseInRange || menuResized || resourcebarMoved)
+    else
     {
-        entireBox.x = pawgui::padding_default;
-        entireBox.y = pawgui::padding_default;
-        entireBox.w = cameraBox.w - pawgui::padding_default;
-        entireBox.h = pawgui::resource_container_default_height*3;
-        pawgui::widget_resource_container * cContainer = nullptr;
-
-        viewBox.x = widget_box.x + view_space->x - cam->x;
-        viewBox.y = widget_box.y + view_space->y - cam->y;
-        viewBox.w = cameraBox.w;
-        viewBox.h = cameraBox.h;
-
-        for(int i=0; i<(int)sub_options.size(); i++)
+        if( treeMode == pawgui::tree_mode_list )
         {
-            cContainer = sub_options[i];
-            if(cContainer!=nullptr)
+            for( i_res = 0; i_res < (int)sub_options.size(); i_res++ )
             {
-                sOpNumber=cContainer->process_container(x_pos,y2Pos,selectedSubOption, &viewBox,&cameraBox,mouseInRange);
-                if( sOpNumber>=0)
-                {
-                    selectedSubOption = sOpNumber;
-                }
-                entireBox.h+=cContainer->element_box.h;
-                y2Pos+=cContainer->element_box.h;
-                if( cContainer->foundX2Pos > entireBox.w)
-                {
-                    entireBox.w = cContainer->foundX2Pos;
-                }
+                cContainer = sub_options[i_res];
+                cContainer->add_to_list( options_in_browser );
+            }
+        }
+        else if( selected_folder_option != nullptr )
+        {
+            backbutton_option->add_to_list( options_in_browser );
+            selected_folder_option->add_to_list(  options_in_browser, selected_folder_option );
+        }
+        else
+        {
+            for( i_res = 0; i_res < (int)sub_options.size(); i_res++ )
+            {
+                cContainer = sub_options[i_res];
+                cContainer->add_to_list( options_in_browser );
             }
         }
     }
-    showYScroll = true;
-    //Xscroll code
 
-    if( xScroll!=nullptr && yScroll!=nullptr)
+    treeGuiList->set_coords( widget_box.x, treeModeBar->get_y2()  );
+    treeGuiList->set_width( widget_box.w );
+    treeGuiList->set_height( widget_box.h - treeModeBar->get_y2()  );
+    treeGuiList->barXPadding = pawgui::padding_default;
+    treeGuiList->barYPadding = pawgui::padding_default;
+
+    bool readyForNewRow = false;
+    int current_column = 0;
+    for( int i_options = 0; i_options < (int)options_in_browser.size(); i_options++ )
     {
-        xScroll->set_coords( widget_box.x, widget_box.y+widget_box.h - xScroll->get_height() );
-        xScroll->set_width( widget_box.w - yScroll->get_width() );
-        xScroll->fullRect.x = 0;
-        xScroll->fullRect.y = 0;
-        xScroll->fullRect.w = entireBox.w;
-        xScroll->fullRect.h = entireBox.h;
-
-        //if( hasScrollControl && gpe::input->check_kb_down(kb_ctrl) )
-        if( mouseInRange && gpe::input->check_kb_down(kb_ctrl) )
+        readyForNewRow = false;
+        cContainer = options_in_browser[i_options];
+        cContainer->treeMode = treeMode;
+        if( treeMode == pawgui::tree_mode_list )
         {
-            if( gpe::input->mouse_scrolling_up)
-            {
-                cameraBox.x-=cameraBox.w/8;
-            }
-            else if( gpe::input->mouse_scrolling_down)
-            {
-                cameraBox.x+=cameraBox.w/8;
-            }
+            cContainer->set_width( widget_box.w );
+            cContainer->set_height( pawgui::resource_container_default_height );
         }
-
-        xScroll->contextRect.x = cameraBox.x;
-        xScroll->contextRect.y = cameraBox.y;
-        xScroll->contextRect.w = cameraBox.w;
-        xScroll->contextRect.h = cameraBox.h;
-
-        if( hasScrollControl)
+        else
         {
-            if( gpe::input->check_kb_down(kb_left) && !gpe::input->check_kb_pressed(kb_left) )
-            {
-                leftDelayTime++;
-            }
-            else if( gpe::input->check_kb_down(kb_right)  && !gpe::input->check_kb_pressed(kb_right) )
-            {
-                rightDelayTime++;
-            }
-
-            if( leftDelayTime > pawgui::main_settings->normalInputDelayTime || gpe::input->check_kb_pressed(kb_left) )
-            {
-                xScroll->contextRect.x-=cameraBox.w/8;
-                leftDelayTime = 0;
-            }
-            else if( rightDelayTime > pawgui::main_settings->normalInputDelayTime || gpe::input->check_kb_pressed(kb_right) )
-            {
-                xScroll->contextRect.x+=cameraBox.w/8;
-                rightDelayTime = 0;
-            }
+            cContainer->set_width( currentIconSize );
+            cContainer->set_height( currentIconSize );
         }
-        xScroll->process_self();
-        if( xScroll->has_moved() || xScroll->is_scrolling() )
+        current_column++;
+        if( current_column >= treeColumnCount )
         {
-            cameraBox.x = xScroll->contextRect.x;
-            if( cameraBox.x +cameraBox.w > entireBox.w)
-            {
-                cameraBox.x = entireBox.w - cameraBox.w;
-            }
-            if( cameraBox.x < 0)
-            {
-                cameraBox.x = 0;
-            }
-            xScroll->process_self();
+            current_column = 0;
+            readyForNewRow = true;
         }
+        treeGuiList->add_gui_element( cContainer, readyForNewRow );
+    }
+    treeGuiList->process_self( view_space, cam );
 
-        yScroll->set_coords( widget_box.x+widget_box.w - yScroll->get_width(), widget_box.y );
-        yScroll->set_height( widget_box.h - xScroll->get_height() );
 
-        yScroll->fullRect.x = 0;
-        yScroll->fullRect.y = 0;
-        yScroll->fullRect.w = entireBox.w,
-        yScroll->fullRect.h = entireBox.h;
-
-        yScroll->contextRect.x = cameraBox.x;
-        yScroll->contextRect.y = cameraBox.y;
-        yScroll->contextRect.w = cameraBox.w,
-        yScroll->contextRect.h = cameraBox.h;
-
-        //if( hasScrollControl && gpe::input->check_kb_down(kb_ctrl)==false )
-        if( mouseInRange && gpe::input->check_kb_down(kb_ctrl)==false )
+    if( pawgui::resource_last_clicked != nullptr && treeMode != pawgui::tree_mode_list )
+    {
+        /*if( pawgui::resource_last_clicked->matches(past_resource_folder) != 1 )
         {
-            if( gpe::input->mouse_scrolling_up)
-            {
-                yScroll->contextRect.y-=cameraBox.h/8;
-            }
-            else if( gpe::input->mouse_scrolling_down)
-            {
-                yScroll->contextRect.y+=cameraBox.h/8;
-            }
-        }
+            gpe::input->reset_all_input();
+            process_self(view_space, cam );
+            return;
+        }*/
 
-        if( hasScrollControl)
+        if( gpe::input->check_mouse_released( mb_left) && isHovered &&  pawgui::resource_last_clicked->is_clicked() )
         {
-            if( gpe::input->check_kb_down(kb_up) && !gpe::input->check_kb_pressed(kb_up) )
+            pawgui::resource_dragged = nullptr;
+
+            if( selected_folder_option != nullptr && pawgui::resource_last_clicked!= nullptr )
             {
-                upDelayTime++;
+                if( pawgui::resource_last_clicked->matches( backbutton_option) == 1 )
+                {
+                    if( past_resource_folder != nullptr )
+                    {
+                        selected_folder_option = past_resource_folder->parentResource;
+                    }
+                    else
+                    {
+                        selected_folder_option = selected_folder_option->parentResource;
+                    }
+
+                }
+                else if( pawgui::resource_last_clicked->is_folder() || pawgui::resource_last_clicked->is_super_folder() || pawgui::resource_last_clicked->is_super_project_folder() )
+                {
+                    current_res_id = pawgui::resource_last_clicked->get_global_id();
+                    selected_folder_option = pawgui::resource_last_clicked;
+                }
             }
-            else if( gpe::input->check_kb_down(kb_down)  && !gpe::input->check_kb_pressed(kb_down) )
+            else if( pawgui::resource_last_clicked->is_folder() || pawgui::resource_last_clicked->is_super_folder() || pawgui::resource_last_clicked->is_super_project_folder() )
             {
-                downDelayTime++;
+                current_res_id = pawgui::resource_last_clicked->get_global_id();
+                selected_folder_option = pawgui::resource_last_clicked;
             }
 
-            if( upDelayTime > pawgui::main_settings->normalInputDelayTime || gpe::input->check_kb_pressed(kb_up) )
-            {
-                yScroll->contextRect.y-=cameraBox.h/8;
-                upDelayTime = 0;
-            }
-            else if( downDelayTime > pawgui::main_settings->normalInputDelayTime || gpe::input->check_kb_pressed(kb_down) )
-            {
-                yScroll->contextRect.y+=cameraBox.h/8;
-                downDelayTime = 0;
-            }
-        }
-        yScroll->process_self( view_space, cam );
-        //if( yScroll->has_moved() || yScroll->is_scrolling() || hasScrollControl)
-        if( yScroll->has_moved() || yScroll->is_scrolling() || mouseInRange)
-        {
-            cameraBox.y = yScroll->contextRect.y;
-            if( cameraBox.y +cameraBox.h> entireBox.h)
-            {
-                cameraBox.y = entireBox.h - cameraBox.h;
-            }
-            if( cameraBox.y < 0)
-            {
-                cameraBox.y = 0;
-            }
-            yScroll->process_self( view_space, cam );
+
+            gpe::input->reset_all_input();
+            backbutton_option->set_clicked( false );
+            backbutton_option->set_hovered( false );
         }
     }
+    else
+    {
+        selected_folder_option = nullptr;
+    }
 
+    int sOpNumber = -1;
     //Processes if a previous right click was made and if so, make context menu
-    if( pawgui::resourcemenu_rightclicked && pawgui::resource_last_clicked!=nullptr)
+    if( pawgui::resourcemenu_rightclicked && pawgui::resource_last_clicked!=nullptr )
     {
         pawgui::resourcemenu_rightclicked = false;
         pawgui::context_menu_open(gpe::input->mouse_position_x-256,gpe::input->mouse_position_y,256);
         if( !pawgui::resource_last_clicked->is_folder() && !pawgui::resource_last_clicked->is_super_project_folder() && !pawgui::resource_last_clicked->is_super_project_folder() )
         {
             int tempResType= pawgui::resource_last_clicked->get_resource_type() ;
-            pawgui::main_context_menu->add_menu_option("Open Resource",-1,nullptr,-1,nullptr,false,true);
-
             if( tempResType!=gpe::resource_type_texture && tempResType!=gpe::resource_type_tilesheet && tempResType!=gpe::resource_type_animation && tempResType!=gpe::resource_type_audio && tempResType!=gpe::resource_type_video && tempResType!=gpe::resource_type_project_settings )
             {
                 pawgui::main_context_menu->add_menu_option("Duplicate Resource",-1,nullptr,-1,nullptr,false,true);
@@ -394,8 +445,6 @@ void GPE_ResourceTree::process_self( gpe::shape_rect * view_space, gpe::shape_re
         else if( pawgui::resource_last_clicked->is_folder()==false)
         {
             int tempResType= pawgui::resource_last_clicked->get_resource_type() ;
-            pawgui::main_context_menu->add_menu_option("Open Resource",-1,nullptr,-1,nullptr,false,true);
-
             if( tempResType!=gpe::resource_type_texture && tempResType!= gpe::resource_type_tilesheet && tempResType!= gpe::resource_type_animation && tempResType!= gpe::resource_type_audio && tempResType!= gpe::resource_type_video && tempResType!= gpe::resource_type_project_settings )
             {
                 pawgui::main_context_menu->add_menu_option("Duplicate Resource",-1,nullptr,-1,nullptr,false,true);
@@ -420,7 +469,8 @@ void GPE_ResourceTree::process_self( gpe::shape_rect * view_space, gpe::shape_re
                     selectedSubOption = pawgui::resource_dragged->get_global_id();
                     pawgui::resource_dragged = nullptr;
                     pawgui::resource_last_clicked = nullptr;
-                    process_self();
+                    process_self( view_space, cam);
+                    return;
                 }
             }
             else if( pawgui::resource_dragged->parentResource!=nullptr && pawgui::resource_last_clicked->parentResource!=nullptr && pawgui::resource_last_clicked->parentResource->can_obtain(pawgui::resource_dragged) )
@@ -436,11 +486,11 @@ void GPE_ResourceTree::process_self( gpe::shape_rect * view_space, gpe::shape_re
                     selectedSubOption = pawgui::resource_dragged->get_global_id();
                     gpe::input->reset_all_input();
                     pawgui::resource_dragged = nullptr;
-                    pawgui::resource_last_clicked = nullptr;
+                    //pawgui::resource_last_clicked = nullptr;
                     process_self();
+                    return;
                 }
             }
-            pawgui::resource_last_clicked= nullptr;
         }
     }
 }
@@ -452,6 +502,13 @@ void GPE_ResourceTree::render_self( gpe::shape_rect *view_space, gpe::shape_rect
     gpe::renderer_main->reset_viewpoint( );
     gpe::renderer_main->set_viewpoint( view_space);
 
+    searchBox->render_self( view_space, cam );
+    treeModeBar->render_self( view_space, cam );
+    treeGuiList->render_self( view_space, cam );
+    //return;
+
+    gpe::renderer_main->reset_viewpoint( );
+    gpe::renderer_main->set_viewpoint( nullptr);
     if( pawgui::theme_main->theme_texture_bg == nullptr)
     {
         //gpe::gcanvas->render_rect( &widget_box,pawgui::theme_main->panel_color,false);
@@ -462,11 +519,17 @@ void GPE_ResourceTree::render_self( gpe::shape_rect *view_space, gpe::shape_rect
         gpe::gcanvas->render_roundrect_filled_color( widget_box.x,widget_box.y,widget_box.x+widget_box.w,widget_box.y+widget_box.h, pawgui::theme_main->button_box_highlight_color );
     }
 
+    return;
+
+    searchBox->render_self( view_space, cam );
+    treeModeBar->render_self( view_space, cam );
     pawgui::widget_resource_container * cResource = nullptr;
     int xDrawPos = pawgui::padding_default;
     int yDrawPos = pawgui::padding_default;
-    int optionSize = (int)sub_options.size();
-    for(int i=0; i< optionSize; i++ )
+    int optionSize = (int)options_in_browser.size();
+    int i_max = std::min( optionSize, options_position + options_max_in_view );
+
+    for( int i = options_position; i< i_max; i++ )
     {
         cResource = sub_options[i];
         if(cResource!=nullptr)
@@ -500,6 +563,7 @@ void GPE_ResourceTree::remove_project_resources(std::string projectFileName)
 {
     if( (int)projectFileName.size()>0 )
     {
+        selected_option = nullptr; //To be safe we're going to just reset our selection option
         pawgui::widget_resource_container * tContainer = nullptr;
         for( int i = (int)sub_options.size()-1; i>=0; i--)
         {

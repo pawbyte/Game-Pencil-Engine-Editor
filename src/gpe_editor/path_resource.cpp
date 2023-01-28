@@ -3,10 +3,10 @@ path_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -186,6 +186,7 @@ gpe::game_path_point2d * gamePathResource::add_point( int point_x, int point_y, 
         {
             pathPoints.insert( pathPoints.begin()+pointPos+1,newPoint );
             pathOptions->insert_option(pointPos+1,"X:"+ stg_ex::int_to_string(point_x)+" Y:"+ stg_ex::int_to_string(point_y)+" Spd:"+ stg_ex::float_to_string(pointSpeed),nullptr,nullptr,-1, true );
+            return pathPoints[(int) pathPoints.size()-1 ];
         }
         else
         {
@@ -196,7 +197,9 @@ gpe::game_path_point2d * gamePathResource::add_point( int point_x, int point_y, 
             }
         }
         pointPos =  pathOptions->get_selection();
+        return pathPoints[ pointPos ];
     }
+    return nullptr;
 }
 
 bool gamePathResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount)
@@ -468,7 +471,7 @@ void gamePathResource::prerender_self( )
 
 void gamePathResource::load_resource(std::string file_path )
 {
-    if( resourcePostProcessed ==false  || gpe::main_file_url_manager->file_exists(file_path) )
+    if( resourcePostProcessed ==false  || sff_ex::file_exists(file_path) )
     {
         if( main_gpe_splash_page != nullptr )
         {
@@ -478,7 +481,7 @@ void gamePathResource::load_resource(std::string file_path )
 
         std::string newFileIn ="";
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/paths/";
-        if( gpe::main_file_url_manager->file_exists(file_path) )
+        if( sff_ex::file_exists(file_path) )
         {
             newFileIn = file_path;
             soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -1044,6 +1047,7 @@ void gamePathResource::render_self( gpe::shape_rect * view_space, gpe::shape_rec
                 if( pointI >=1)
                 {
                     gpe::gcanvas->render_line_color(  tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathLineColor, 255);
+                    gpe::gcanvas->render_bezier_curve_width_color(  tempXPoint, tempYPoint, tempX2Point, tempY2Point,4, pathLineColor, 255);
                 }
                 tempX2Point = tempXPoint;
                 tempY2Point = tempYPoint;
@@ -1058,6 +1062,7 @@ void gamePathResource::render_self( gpe::shape_rect * view_space, gpe::shape_rec
                 tempXPoint = floor( tempPoint->x_pos*zoomValue - scenePreviewRect.x*zoomValue );
                 tempYPoint = floor( tempPoint->y_pos*zoomValue - scenePreviewRect.y*zoomValue );
                 gpe::gcanvas->render_line_color(  tempXPoint, tempYPoint, tempX2Point, tempY2Point, pathLineColor, 255);
+                gpe::gcanvas->render_bezier_curve_width_color(  tempXPoint, tempYPoint, tempX2Point, tempY2Point, 4,pathLineColor, 255);
             }
         }
 
@@ -1188,7 +1193,7 @@ void gamePathResource::save_resource(std::string file_path, int backupId )
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( gpe::main_file_url_manager->path_exists(soughtDir) )
+    if( sff_ex::path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
@@ -1227,7 +1232,7 @@ void gamePathResource::save_resource(std::string file_path, int backupId )
         {
             newSaveDataFile << "PointColor="+ stg_ex::int_to_string( (int)pathPointColor->get_r() )+","+ stg_ex::int_to_string( (int)pathPointColor->get_g() )+","+ stg_ex::int_to_string( (int)pathPointColor->get_b() )+",\n";
         }
-        std::string resFileLocation = "";
+        std::string resfile_location = "";
         std::string resFileCopySrc;
         std::string resFileCopyDest;
         gpe::game_path_point2d * tempPoint = nullptr;

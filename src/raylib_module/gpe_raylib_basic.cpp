@@ -1,5 +1,5 @@
 /*
-gpe_raylib_basic.cpp
+gpe_sdl_basic.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,37 +31,88 @@ SOFTWARE.
 
 */
 
-#include "gpe_raylib_basic.h"
+#include "gpe_sdl_basic.h"
 
 namespace gpe
 {
-    bool using_raylib_system_underneath;
+    bool using_sdl_system_underneath;
 
-    //initialize raylib
-    bool init_raylib_main_system()
+    //initialize sdl
+    bool init_sdl_main_system()
     {
-        //Initialize all raylib subsystems
-        error_log->report(" ");
-        error_log->report("Starting raylib_module...");
-        error_log->report("--raylib_module systems started...");
+        //Initialize all SDL subsystems
+        error_log->report("--Starting SDL2...");
 
-        //raylib is so simple it appears we don't need to do anything here just yet.
-        using_raylib_system_underneath = true;
-        SetConfigFlags(FLAG_MSAA_4X_HINT);
+        error_log->report("--SDL2 systems started...");
+
+        if( SDL_Init( SDL_INIT_VIDEO ) == -1 )
+        {
+            error_log->report("---Error initializing SDL!");
+            return false;
+        }
+
+        error_log->report("--Attempting to initialize SDL_INIT_TIMER");
+        if( SDL_InitSubSystem( SDL_INIT_TIMER ) == -1 )
+        {
+            error_log->report("---Error initializing SDL_INIT_TIMER");
+            return false;
+        }
+
+        error_log->report("--Attempting to initialize SDL_INIT_EVENTS");
+        if( SDL_InitSubSystem( SDL_INIT_EVENTS ) == -1 )
+        {
+            error_log->report("---Error initializing SDL_INIT_EVENTS");
+            return false;
+        }
+
+
+        error_log->report("--Attempting to initialize SDL_INIT_gamepad");
+        if( SDL_InitSubSystem( SDL_INIT_GAMECONTROLLER ) == -1 )
+        {
+            error_log->report("---Error initializing SDL_INIT_gamepad");
+            return false;
+        }
+
+        error_log->report("--Attempting to initialize SDL_INIT_HAPTIC");
+        if( SDL_InitSubSystem( SDL_INIT_HAPTIC ) == -1 )
+        {
+            error_log->report("---Error initializing SDL_INIT_HAPTIC");
+            return false;
+        }
+
+        error_log->report("-Setting event system..");
+
+        //enable the event state, cursor and sdl_img
+        SDL_EventState(SDL_DROPFILE,SDL_ENABLE);
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+        SDL_SetHint(SDL_HINT_RENDER_BATCHING, "1");
+        SDL_ShowCursor(SDL_ENABLE);
+
+        error_log->report("-GPE_Img_System...");
+        //loads support for JPG and other image formats.
+        int flags=IMG_INIT_JPG|IMG_INIT_PNG |IMG_INIT_TIF;
+        if( (IMG_Init(flags)&flags) != flags)
+        {
+            error_log->report("--IMG_Init: Failed to init required jpg and png support!\n");
+            std::string imgError = IMG_GetError();
+            error_log->report("--IMG_Init: " + imgError );
+            error_log->report("--Error initializing SDL_Mixer.");
+            error_log->report("--Error initializing SDL_Mixer.");
+            return false;
+            // handle error
+        }
+        using_sdl_system_underneath = true;
         return true;
     }
 
-    bool raylib_is_initted()
+    bool sdl_is_initted()
     {
-        return using_raylib_system_underneath;
+        return using_sdl_system_underneath;
     }
 
-    void quit_raylib_main_system()
+    void quit_sdl_main_system()
     {
-        error_log->report("Exiting raylib module...");
-
-        using_raylib_system_underneath = false;
-        error_log->report("Exited raylib module successfully...");
-
+        SDL_Quit();
+        using_sdl_system_underneath = false;
     }
 }

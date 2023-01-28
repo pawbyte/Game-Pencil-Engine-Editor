@@ -134,7 +134,7 @@ gamePencilExtraTools::~gamePencilExtraTools()
 
 bool gamePencilExtraTools::include_local_files( std::string pBuildDir , int buildType )
 {
-    return true;
+    return true; //WIPNOTFUNCTIONALYET
 }
 
 void gamePencilExtraTools::load_resource(std::string file_path)
@@ -145,7 +145,7 @@ void gamePencilExtraTools::load_resource(std::string file_path)
 int gamePencilExtraTools::modify_folder_images(std::string folderLocation, int modifcationType)
 {
     int imagesModifiedCount = -1;
-    if( gpe::main_file_url_manager->path_exists(folderLocation) && modifcationType >=0 && modifcationType < 3)
+    if( sff_ex::path_exists(folderLocation) && modifcationType >=0 && modifcationType < 3)
     {
         gpe::file_directory_class * foundFolder = new gpe::file_directory_class();
         foundFolder->open_directory_sorted(folderLocation);
@@ -179,10 +179,13 @@ int gamePencilExtraTools::modify_folder_images(std::string folderLocation, int m
                     continueWithAction = true;
                 }
             }
+            /*
             if( continueWithAction)
             {
                 std::string newImageName = "";
                 gpe::file_object * tempFile = nullptr;
+                SDL_Surface * oTempSurface = nullptr;
+                SDL_Surface *nTempSurface = nullptr;
                 for( int i = 0; i < foundFolder->get_count(); i++)
                 {
                     tempFile = foundFolder->get_file(i);
@@ -191,36 +194,61 @@ int gamePencilExtraTools::modify_folder_images(std::string folderLocation, int m
                         if( tempFile->get_type()=="bmp" || tempFile->get_type()=="png")
                         {
                             newImageName = folderLocation+"/"+tempFile->get_name();
-                            gpe::error_log->report("Modifying image at: "+newImageName+".");
-
-                            if( main_gpe_splash_page != nullptr )
+                            oTempSurface = sdl2_surface_ex::load_surface_image( newImageName.c_str() );
+                            if( oTempSurface->w > 0 && oTempSurface->h > 0)
                             {
-                                main_gpe_splash_page->update_messages( "Modifying Image", tempFile->get_name(),"Please wait..." );
-                            }
-
-                            if( modifcationType==0)
-                            {
-                                if( pawgui::get_color_from_popup("Image Background Color To Remove",colorToRemove) )
+                                nTempSurface = nullptr;
+                                if( oTempSurface!=nullptr)
                                 {
-                                    if( pawgui::display_prompt_message("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                                    {
-                                        gpe::renderer_main->file_perform_effect_color_erase(newImageName, colorToRemove );
+                                    gpe::error_log->report("Modifying image at: "+newImageName+".");
 
+                                    if( main_gpe_splash_page != nullptr )
+                                    {
+                                        main_gpe_splash_page->update_messages( "Modifying Image", tempFile->get_name(),"Please wait..." );
                                     }
+
+                                    if( modifcationType==0)
+                                    {
+                                        if( pawgui::get_color_from_popup("Image Background Color To Remove",colorToRemove) )
+                                        {
+                                            if( pawgui::display_prompt_message("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
+                                            {
+                                                nTempSurface= sdl2_surface_ex::surface_remove_color_rgba(oTempSurface, colorToRemove->get_r(), colorToRemove->get_r(), colorToRemove->get_b() );
+
+                                            }
+                                        }
+                                    }
+                                    else if( modifcationType==1 )
+                                    {
+                                        nTempSurface= sdl2_surface_ex::surface_invert(oTempSurface);
+                                    }
+                                    else if( modifcationType==2 )
+                                    {
+                                        nTempSurface= sdl2_surface_ex::surface_grayscale(oTempSurface);
+                                    }
+                                    if( nTempSurface!=nullptr)
+                                    {
+                                        if( tempFile->get_type()=="bmp" || tempFile->get_type()=="png")
+                                        {
+                                            SDL_SaveBMP(nTempSurface,newImageName.c_str() );
+                                        }
+                                        else if( tempFile->get_type()=="png")
+                                        {
+                                            IMG_SavePNG(nTempSurface,newImageName.c_str() );
+                                        }
+                                        SDL_FreeSurface(nTempSurface);
+                                        nTempSurface = nullptr;
+                                        imagesModifiedCount++;
+                                    }
+                                    SDL_FreeSurface(oTempSurface);
+                                    oTempSurface = nullptr;
                                 }
-                            }
-                            else if( modifcationType==1 )
-                            {
-                                gpe::renderer_main->file_perform_effect_color_invert( newImageName);
-                            }
-                            else if( modifcationType==2 )
-                            {
-                                gpe::renderer_main->file_perform_effect_grayscale(newImageName );
                             }
                         }
                     }
                 }
             }
+            */
         }
         foundFolder->close_directory();
         delete foundFolder;
@@ -380,5 +408,5 @@ void gamePencilExtraTools::save_resource(std::string file_path , int backupId )
 
 bool gamePencilExtraTools::write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn )
 {
-
+    return true; //WIPNOTFUNCTIONALYET
 }

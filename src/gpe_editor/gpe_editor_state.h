@@ -3,10 +3,10 @@ gpe_editor_state.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -51,10 +51,12 @@ protected:
     gpe::texture_base * message;
     pawgui::widget_toolbar * main_toolbar;
     pawgui::widget_button_iconbar * main_buttonbar;
+    pawgui::widget_button_icon * editor_view_icon;
 
 public:
     gpe::texture_base * country_language_image;
-
+    //SDL_version SDL_compiled_version;
+    std::string SDL_VersionText;
     //Loads intro resources
     gpe_editor_state( std::string s_name = "");
     //Frees intro resources
@@ -62,6 +64,7 @@ public:
 
     //Main loop functions
     void process_input();
+    void process_view_mode();
     void apply_logic();
     void clean_up();
     void end_state();

@@ -3,10 +3,10 @@ pawgui_stree.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -115,6 +115,10 @@ namespace pawgui
                         if( addedSelf )
                         {
                             current_branch->indentationLevel = indentationLevel+1;
+                        }
+                        else
+                        {
+                            current_branch->indentationLevel;
                         }
                         current_branch->add_to_searched_list( tList, needlestring );
                     }
@@ -422,6 +426,7 @@ namespace pawgui
                     {
                         gpe::gfs->render_text( widget_box.x-cam->x, widget_box.y-cam->y,"-",pawgui::theme_main->main_box_font_color,FONT_STREE_BRANCH,gpe::fa_left,gpe::fa_top);
                     }
+                    widget_branch * foundBranch = nullptr;
 
                     /*
                     for( int i=0; i< (int)sub_elements.size();i++ )
@@ -557,6 +562,7 @@ namespace pawgui
         indentationLevel = 0;
         //if( widget_visible )
         {
+            int sOpNumber = -1;
             just_resized = false;
 
             bool mouseInRange = false;

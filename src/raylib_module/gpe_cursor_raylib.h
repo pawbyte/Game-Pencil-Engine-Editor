@@ -1,5 +1,5 @@
 /*
-gpe_cursor_raylib.h
+gpe_cursor_sdl.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,41 +31,29 @@ SOFTWARE.
 
 */
 
-#ifndef gpe_cursor_raylib_h
-#define gpe_cursor_raylib_h
+#ifndef gpe_cursor_sdl_h
+#define gpe_cursor_sdl_h
 
 #include <string>
 #include <map>
 
+#include <SDL2/SDL.h>
+#include "sdl_surface_ex.h"
 #include "../gpe/gpe_cursor_base.h"
 #include "../gpe/gpe_error_logger.h"
-#include "../gpe/gpe_file_system.h"
-#include "../gpe/gpe_timer_base.h"
+#include "../other_libs/sff_ex.h"
 #include "../other_libs/stg_ex.h"
-#include "raylib.h"
 
 namespace gpe
 {
-    class cursor_controller_raylib: public gpe::cursor_controller_base
+    class cursor_controller_sdl: public gpe::cursor_controller_base
     {
         protected:
-            int cursor_raylib_id;
-           std::map <std::string, int> cursor_raylib_map;
-
-           //custom wait animation
-           float wait_cursor_frame;
-           float wait_cursor_frame_inc;
-           float wait_cursor_frame_max;
-
-           //Custom wait arrow animation
-           float wait_arrow_cursor_frame;
-           float wait_arrow_cursor_frame_inc;
-           float wait_arrow_cursor_frame_max;
-
-           Vector2 mouse_vector;
+            SDL_Cursor * cursor_sdl;
+           std::map <std::string, SDL_Cursor *> cursor_sdl_map;
         public:
-            cursor_controller_raylib( int window_id = -1 );
-            virtual ~cursor_controller_raylib();
+            cursor_controller_sdl( int window_id = -1 );
+            virtual ~cursor_controller_sdl();
             //Cursor logic
             void cursor_change( std::string new_cursor );
             void cursor_change_system( int system_cursor_id );
@@ -74,17 +62,14 @@ namespace gpe
             bool cursor_create_from_image(std::string f_name );
             int cursor_map_size();
             std::string cursor_system_name( int cId );
-            void hide_cursor();
             void name_default_cursors();
             void process_cursors();
-            void render();
-            void show_cusor( );
     };
 
-    extern cursor_controller_raylib * cursor_main_raylib_controller;
+    extern cursor_controller_sdl * cursor_main_sdl_controller;
 
-    bool init_raylib_cursor_system();
-    void quit_raylib_cursor_system();
+    bool init_sdl_cursor_system();
+    void quit_sdl_cursor_system();
 }
 
-#endif //gpe_cursor_raylib_h
+#endif //gpe_cursor_sdl_h

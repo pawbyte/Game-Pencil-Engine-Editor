@@ -3,10 +3,10 @@ game_entity_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -72,7 +72,7 @@ public:
     int imageIndex;
     int selectedMode;
     int parentObjectId;
-    gpe::animaton2d * animInEditor;
+    gpe::animation2d * animInEditor;
     pawgui::widget_drop_down_resource_menu * animationField;
     pawgui::widget_drop_down_resource_menu * parentObjectField;
 
@@ -94,7 +94,7 @@ public:
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
     pawgui::widget_resource_container * get_parent_resource();
-    gpe::animaton2d * get_resource_animation();
+    gpe::animation2d * get_resource_animation();
     bool include_local_files( std::string pBuildDir , int buildType );
     bool is_build_ready();
     void integrate_into_syntax();

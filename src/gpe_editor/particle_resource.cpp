@@ -3,10 +3,10 @@ particle_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2021 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2021 PawByte LLC.
-Copyright (c) 2014-2021 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,13 +39,12 @@ particleResource::particleResource(pawgui::widget_resource_container * pFolder)
 {
     //bottomPaneList = new pawgui::widget_panel_list();
     projectParentFolder = pFolder;
-    myEmitter = new gpe::particle_emitter(0, 0,true, 500 );
+    myEmitter = new gpe::particle_emitter(0, 0,0,0 );
     myEmitter->showBox = true;
     myEmitter->set_emission_rate( 60 );
     emitterTexture = nullptr;
-    //emitterTexture->load_new_texture( renderer_main, gpe::app_directory_name+"resources/gfx/animations/c_snow.png",-1,true );
+    //emitterTexture->load_new_texture(  gpe::app_directory_name+"resources/gfx/animations/c_snow.png",-1,true );
     myEmitter->change_texture( emitterTexture, gpe::blend_mode_blend );
-    transformResource_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/magic.png","Transform the Image",-1);
     openExternalEditor_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/rocket.png","Opens Texture Image In External Editor");
     refreshResourceData_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/refresh.png","Refreshes the loaded texture image");
     clearTexture_button = new pawgui::widget_button_label("Clear Image...","Clears texture and reverts to shape" );
@@ -196,16 +195,11 @@ bool particleResource::is_build_ready()
 
 void particleResource::load_image(std::string new_file_name, bool autoProcess )
 {
-    if( new_file_name.size() > 4 && gpe::main_file_url_manager->file_exists( new_file_name ) )
+    if( new_file_name.size() > 4 && sff_ex::file_exists( new_file_name ) )
     {
         textureLocationField->set_string( new_file_name );
         emitterTexture = gpe::rsm->texture_add_filename( new_file_name );
-
-        if( emitterTexture == nullptr )
-        {
-            return;
-        }
-        if( emitterTexture->get_width() > 512 || emitterTexture->get_height() > 512 )
+        if( emitterTexture!=nullptr && emitterTexture->get_width() > 512 || emitterTexture->get_height() > 512 )
         {
             if( main_editor_log!=nullptr )
             {
@@ -224,7 +218,7 @@ void particleResource::load_image(std::string new_file_name, bool autoProcess )
         texturePreviewImgLabel->set_height( 64 );
         if( autoProcess )
         {
-            gpe::main_file_url_manager->file_copy( new_file_name, stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/particles/"+ stg_ex::get_local_from_global_file(new_file_name) );
+            sff_ex::file_copy( new_file_name, stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/particles/"+ stg_ex::get_local_from_global_file(new_file_name) );
         }
     }
     else
@@ -235,7 +229,7 @@ void particleResource::load_image(std::string new_file_name, bool autoProcess )
 
 void particleResource::load_resource(std::string file_path )
 {
-    if( resourcePostProcessed ==false || gpe::main_file_url_manager->file_exists(file_path))
+    if( resourcePostProcessed ==false || sff_ex::file_exists(file_path))
     {
         if( main_gpe_splash_page != nullptr )
         {
@@ -246,7 +240,7 @@ void particleResource::load_resource(std::string file_path )
 
         std::string newFileIn = "";
         std::string soughtDir = stg_ex::file_to_dir(parentProjectName)+"/gpe_project/resources/particles/";
-        if( gpe::main_file_url_manager->file_exists(file_path) )
+        if( sff_ex::file_exists(file_path) )
         {
             newFileIn = file_path;
             soughtDir = stg_ex::get_path_from_file(newFileIn);
@@ -274,6 +268,7 @@ void particleResource::load_resource(std::string file_path )
                 std::string currLine="";
                 std::string currLineToBeProcessed;
 
+                int i = 0;
                 while ( gameResourceFileIn.good() )
                 {
                     getline (gameResourceFileIn,currLine); //gets the next line of the file
@@ -303,7 +298,7 @@ void particleResource::load_resource(std::string file_path )
                             }
                         }
                     }
-                    else if( foundFileVersion <= 2.f )
+                    else if( foundFileVersion <= 2)
                     {
                         //Begin processing the file.
                         if(!currLineToBeProcessed.empty() )
@@ -453,7 +448,6 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
         panel_main_editor->add_gui_element(refreshResourceData_button,false);
         panel_main_editor->add_gui_element(loadResource_button,false);
         //panel_main_editor->add_gui_element(saveResource_button,false);
-        panel_main_editor->add_gui_element(transformResource_button,false);
         panel_main_editor->add_gui_element( openExternalEditor_button,true);
 
         panel_main_editor->add_gui_element(textureLabel,true);
@@ -508,7 +502,7 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
         if( loadResource_button!=nullptr && loadResource_button->is_clicked() )
         {
             std::string newTextureLocation = pawgui::get_filename_open_from_popup("Choose Particle Texture","Images",pawgui::main_settings->fileOpenTextureDir);
-            if( gpe::main_file_url_manager->file_exists( newTextureLocation) && stg_ex::file_is_image(newTextureLocation) )
+            if( sff_ex::file_exists( newTextureLocation) && stg_ex::file_is_image(newTextureLocation) )
             {
                 load_image( newTextureLocation);
             }
@@ -532,70 +526,21 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
             texturePreviewImgLabel->set_width( 16 );
             texturePreviewImgLabel->set_height( 16 );
         }
-
-        else if( transformResource_button!=nullptr && transformResource_button->is_clicked())
-        {
-            if (emitterTexture!=nullptr && emitterTexture->get_width() > 0 && emitterTexture->get_height() > 0)
-            {
-                pawgui::context_menu_open(-1,-1,256);
-                pawgui::main_context_menu->add_menu_option("Erase BG Color",0);
-                pawgui::main_context_menu->add_menu_option("Invert Colors",1);
-                pawgui::main_context_menu->add_menu_option("Make Gray_scale",2);
-                pawgui::main_context_menu->add_menu_option("Exit",10);
-                int menuSelection = pawgui::context_menu_process();
-
-                if( menuSelection>=0 && menuSelection <=3)
-                {
-                    std::string current_file_name = emitterTexture->get_filename();
-                    if( menuSelection==0)
-                    {
-                        gpe::color * foundBGColor = gpe::c_fuchsia->duplicate_color();
-                        if( pawgui::get_color_from_popup("Image Background Color To Remove",foundBGColor) )
-                        {
-                            if( pawgui::display_prompt_message("Are you sure you want to erase this Color from this image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                            {
-                                gpe::error_log->report("Modifying image at: "+ current_file_name +".");
-                                gpe::renderer_main->file_perform_effect_color_erase( current_file_name, foundBGColor );
-                            }
-                        }
-                        delete foundBGColor;
-                        foundBGColor = nullptr;
-
-                    }
-                    else if( menuSelection==1 )
-                    {
-                        if( pawgui::display_prompt_message("Are you sure you want to invert your image's colors?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                        {
-                            gpe::renderer_main->file_perform_effect_color_invert( current_file_name );
-                        }
-                    }
-                    else if( menuSelection==2 )
-                    {
-                        if( pawgui::display_prompt_message("Are you sure you want to grayscale your image?","This action is irreversible and will change your image's format to a .png file!")==pawgui::display_query_yes)
-                        {
-                            gpe::renderer_main->file_perform_effect_grayscale( current_file_name );
-                        }
-                    }
-                    load_image(current_file_name);
-                }
-
-            }
-        }
         else if( openExternalEditor_button!=nullptr && openExternalEditor_button->is_clicked() )
         {
             if(  emitterTexture!=nullptr )
             {
-                if( gpe::main_file_url_manager->file_exists(emitterTexture->get_filename() ) )
+                if( sff_ex::file_exists(emitterTexture->get_filename() ) )
                 {
                     if( main_editor_settings!=nullptr && main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]!=nullptr)
                     {
-                        gpe::main_file_url_manager->external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]->get_string(),emitterTexture->get_filename(), true );
+                        gpe::external_open_program(main_editor_settings->pencilExternalEditorsFile[GPE_EXTERNAL_EDITOR_IMG]->get_string(),emitterTexture->get_filename(), true );
                     }
                     else
                     {
-                        gpe::main_file_url_manager->external_open_url(emitterTexture->get_filename());
+                        gpe::external_open_url(emitterTexture->get_filename());
                     }
-                    gpe::main_file_url_manager->file_ammend_string( gpe::main_file_url_manager->get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit texture ["+emitterTexture->get_filename()+"]...");
+                    sff_ex::append_to_file( gpe::get_user_settings_folder()+"gpe_error_log2.txt","Attempting to edit texture ["+emitterTexture->get_filename()+"]...");
                 }
             }
         }
@@ -697,10 +642,11 @@ void particleResource::render_self( gpe::shape_rect * view_space, gpe::shape_rec
     view_space = gpe::camera_find( view_space);
     cam = gpe::camera_find( cam );
     gpe::gcanvas->render_rectangle( 0,0,view_space->w, view_space->h, pawgui::theme_main->program_color, false, 255 );
-    if( myEmitter!=nullptr )
+    //if( myEmitter!=nullptr )
     {
         myEmitter->render( );
     }
+    //gpe::gfs->render_text( view_space->w/2, view_space->h-32, "C++ Feature. Currently not supported in HTML5 runtime",pawgui::theme_main->main_box_font_color,gpe::font_default, gpe::fa_center, gpe::fa_bottom, 255);
 }
 
 void particleResource::revert_data_fields()
@@ -718,7 +664,7 @@ void particleResource::save_resource(std::string file_path, int backupId )
     bool usingAltSaveSource = false;
     std::string newFileOut ="";
     std::string soughtDir = stg_ex::get_path_from_file(file_path);
-    if( gpe::main_file_url_manager->path_exists(soughtDir) )
+    if( sff_ex::path_exists(soughtDir) )
     {
         newFileOut = file_path;
         usingAltSaveSource= true;
