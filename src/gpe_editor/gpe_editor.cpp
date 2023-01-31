@@ -2377,7 +2377,7 @@ void init_gpe_editor_globals()
     SUPPORTED_FONT_EXT[FONT_WOFF2] = "WOFF2";
     editor_theme_controller = new pawgui::themes_controller();
 
-    gpe::error_log->report("globals all inited");
+    gpe::error_log->report("GPE_Editor_Globals are all initialized.");
 
     if( texture_gpe_logo == nullptr )
     {

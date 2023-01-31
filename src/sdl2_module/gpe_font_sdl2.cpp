@@ -110,18 +110,26 @@ namespace gpe
         font_family_name = "";
         font_nickname = f_nickname;
 
+
+
         if( (int)file_loc.size() > 0 )
         {
             if( !sff_ex::file_exists( file_loc) )
             {
-                gpe::error_log->report("Font-Error: Unable to located [" + file_loc + "]!" );
+                gpe::error_log->report("SDL-TTF-Font-Error: Unable to locate font file for ["+f_nickname+"] at [" + file_loc + "]"+stg_ex::int_to_string(f_size)+" pt size [Monospaced="+stg_ex::int_to_string(make_monospaced)+"]!!" );
             }
             else
             {
-                gpe::error_log->report("Font-Update: Attempting to load font from ["+file_loc +"] file!" );
+                gpe::error_log->report("SDL-TTF-Font-Update: Attempting to load font ["+f_nickname+"]from ["+file_loc +"] file "+stg_ex::int_to_string(f_size)+" pt size [Monospaced="+stg_ex::int_to_string(make_monospaced)+"]!!" );
             }
         }
+        else
+        {
+            gpe::error_log->report("SDL-TTF-Font-Update: Attempting to load font [BLANK] from ["+file_loc +"] file "+stg_ex::int_to_string(f_size)+" pt size [Monospaced="+stg_ex::int_to_string(make_monospaced)+"]!!" );
+
+        }
         heldSDLFont = TTF_OpenFontIndex(file_loc.c_str(), f_size,0);
+
 
         int i = 0;
         if( heldSDLFont!=NULL)
@@ -180,10 +188,15 @@ namespace gpe
                     }
                 }
             }
+            gpe::error_log->report("SDL-TTF-Font-Update: Font loaded ["+f_nickname+"]" );
         }
-        else if( (int)file_loc.size() > 0 )
+        else
         {
-            gpe::error_log->report("Font-Error: Unable to load [" + file_loc + "]!" );
+            gpe::error_log->report("SDL-TTF-Font-Error: Unable to load ["+f_nickname+"]from ["+file_loc +"] file!");
+            for( i = 0; i < 10; i++)
+            {
+                characterPairs[ stg_ex::int_to_string(i)] =  nullptr;
+            }
         }
     }
 
@@ -470,7 +483,7 @@ namespace gpe
                         render_alpha = 255;
                     }
                     int tex_width = 0;
-                    int tex_height =0;
+                    int tex_height = 0;
                     SDL_SetTextureColorMod( fPairTex, text_color->get_r(), text_color->get_g(), text_color->get_b() );
 
                     if( strTex->lastAlphaRendered!=render_alpha )

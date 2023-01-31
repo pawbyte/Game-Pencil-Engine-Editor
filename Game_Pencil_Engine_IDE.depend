@@ -1,12 +1,12 @@
 # depslib dependency file v1.0
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_credits_base.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_credits_base.cpp
 	"game_state_credits_base.h"
 
-1670818084 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_credits_base.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_credits_base.h
 	"gpe/gpe.h"
 	"gpe/internal_libs/semath.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe.h
 	"gpe_artist_base.h"
 	"gpe_animation2d.h"
 	"gpe_basic_object_list.h"
@@ -32,7 +32,7 @@
 	<ctime>
 	<stdlib.h>
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_artist_base.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_artist_base.h
 	"gpe_camera.h"
 	"gpe_common_includes.h"
 	"gpe_globals.h"
@@ -40,18 +40,18 @@
 	"gpe_shared_resources.h"
 	"gpe_texture_target_base.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_camera.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_camera.h
 	"gpe_globals.h"
 	"gpe_shapes.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_globals.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_globals.h
 	<string>
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_shapes.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_shapes.h
 	<stdio.h>
 	<math.h>
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_common_includes.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_common_includes.h
 	<istream>
 	<algorithm>
 	<fstream>
@@ -75,17 +75,17 @@
 	<fstream>
 	<sys/stat.h>
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_renderer_base.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_renderer_base.h
 	"gpe_module_version_info.h"
 	"gpe_shapes.h"
 	<string>
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_shared_resources.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_shared_resources.h
 	"gpe_common_includes.h"
 	"gpe_input_base.h"
 	"gpe_resources_controller.h"
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_input_base.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_input_base.h
 	<ctime>
 	<string>
 	<vector>
@@ -94,7 +94,7 @@
 	"gpe_module_version_info.h"
 	"gpe_window_controller_base.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_error_logger.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_error_logger.h
 	<string>
 	<vector>
 	"internal_libs/sff_ex.h"
@@ -107,11 +107,11 @@
 	<sstream>
 	<iostream>
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_input_event.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_input_event.h
 	<cstdint>
 	<string>
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_window_controller_base.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_window_controller_base.h
 	"gpe_common_includes.h"
 	"gpe_input_event.h"
 	"gpe_module_version_info.h"
@@ -119,16 +119,16 @@
 	"gpe_settings.h"
 	"gpe_shapes.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_settings.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_settings.h
 	"internal_libs/stg_ex.h"
 	"gpe_parser.h"
 	"gpe_error_logger.h"
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_parser.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_parser.h
 	<string>
 	<vector>
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_resources_controller.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_resources_controller.h
 	<istream>
 	<algorithm>
 	<fstream>
@@ -147,7 +147,7 @@
 	"gpe_tilesheet.h"
 	"internal_libs/stg_ex.h"
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_animation2d.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_animation2d.h
 	<vector>
 	<string>
 	<cmath>
@@ -159,38 +159,38 @@
 	"gpe_texture_base.h"
 	"internal_libs\stg_ex.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_collisions.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_collisions.h
 	<algorithm>
 	"gpe_common_includes.h"
 	"gpe_shapes.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_branch.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_branch.h
 	"gpe_common_includes.h"
 	"gpe_globals.h"
 	<memory>
 
-1670819806 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_render_package.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_render_package.h
 	"gpe_common_includes.h"
 	"gpe_renderer_base.h"
 	"gpe_animation2d.h"
 	"gpe_texture_base.h"
 	"gpe_window_controller_base.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_texture_base.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_texture_base.h
 	<string>
 	"gpe_color.h"
 	"gpe_renderer_base.h"
 	"gpe_shapes.h"
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_color.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_color.h
 	<cstdint>
 	<string>
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_audio_base.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_audio_base.h
 	<string>
 	"gpe_module_version_info.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_color_manager.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_color_manager.h
 	"gpe_common_includes.h"
 	"gpe_color.h"
 	"gpe_constants.h"
@@ -198,26 +198,26 @@
 	<string>
 	<vector>
 
-1670821880 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_constants.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_constants.h
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_tilesheet.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_tilesheet.h
 	"gpe_texture_base.h"
 	<vector>
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_texture_target_base.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_texture_target_base.h
 	"gpe_texture_base.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object_list.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object_list.h
 	"gpe_basic_object.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object.h
 	"gpe_camera.h"
 	"gpe_color.h"
 	"gpe_constants.h"
 	"gpe_branch.h"
 	"gpe_animation2d.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_file_system.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_file_system.h
 	"gpe_common_includes.h"
 	"gpe_constants.h"
 	"gpe_globals.h"
@@ -225,19 +225,19 @@
 	"gpe_texture_base.h"
 	"internal_libs/stg_ex.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_font_base.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_font_base.h
 	"gpe_common_includes.h"
 	"gpe_shared_resources.h"
 	"gpe_globals.h"
 	"gpe_branch.h"
 	"internal_libs/stg_ex.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_ini_file.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_ini_file.h
 	"internal_libs/sff_ex.h"
 	"internal_libs/stg_ex.h"
 	"gpe_parser.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_layer.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_layer.h
 	"gpe_background.h"
 	"gpe_basic_object.h"
 	"gpe_branch.h"
@@ -245,15 +245,15 @@
 	"gpe_spatial_partition_controller.h"
 	"gpe_tiles.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_background.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_background.h
 	"gpe_shared_resources.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_lights2d.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_lights2d.h
 	"gpe_artist_base.h"
 	"gpe_branch.h"
 	"gpe_runtime.h"
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_runtime.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_runtime.h
 	"gpe_common_includes.h"
 	"gpe_cursor_base.h"
 	"gpe_shared_resources.h"
@@ -264,46 +264,46 @@
 	"gpe_spatial_partition_controller.h"
 	"gpe_timer_base.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_cursor_base.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_cursor_base.h
 	<string>
 	<vector>
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_program_state.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_program_state.h
 	"gpe_artist_base.h"
 	"gpe_common_includes.h"
 	"gpe_render_package_handler.h"
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_render_package_handler.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_render_package_handler.h
 	"gpe_render_package.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_spatial_partition_controller.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_spatial_partition_controller.h
 	"gpe_collision_controller_base.h"
 	"gpe_spatial_partition_layer.h"
 	"gpe_error_logger.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_collision_controller_base.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_collision_controller_base.h
 	"gpe_basic_object.h"
 	<string>
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_spatial_partition_layer.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_spatial_partition_layer.h
 	"gpe_spatial_partition.h"
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_spatial_partition.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_spatial_partition.h
 	"gpe_basic_object.h"
 	"gpe_shapes.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_timer_base.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_timer_base.h
 	<cstdint>
 	<string>
 	<vector>
 	"gpe_module_version_info.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_tiles.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_tiles.h
 	"gpe_branch.h"
 	"gpe_shapes.h"
 	"gpe_runtime.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_particles2d.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_particles2d.h
 	<vector>
 	<string>
 	<cmath>
@@ -320,38 +320,38 @@
 	<cmath>
 	<stdlib.h>
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_path2d.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_path2d.h
 	"gpe_common_includes.h"
 	"gpe_branch.h"
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_scene.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_scene.h
 	"gpe_basic_object.h"
 	"gpe_branch.h"
 	"gpe_layer.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_load.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_load.cpp
 	"game_state_load.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_load.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_load.h
 	"gpe/gpe.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_main_menu_base.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_main_menu_base.cpp
 	"game_state_main_menu_base.h"
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_main_menu_base.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_main_menu_base.h
 	"gpe/gpe.h"
 	"gpe/internal_libs/semath.h"
 
-1670819806 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_master.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_master.cpp
 	"game_state_master.h"
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_master.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_master.h
 	"gpe/gpe.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_splash.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_splash.cpp
 	"game_state_splash.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_splash.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_splash.h
 	"gpe/gpe.h"
 	"gpe/internal_libs/semath.h"
 
@@ -362,77 +362,77 @@
 	"gpe/gpe.h"
 	"other_libs/semath.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe.cpp
 	"gpe.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_animation2d.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_animation2d.cpp
 	"gpe_animation2d.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_artist_base.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_artist_base.cpp
 	"gpe_artist_base.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_audio_base.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_audio_base.cpp
 	"gpe_audio_base.h"
 	<math.h>
 
-1670819804 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_background.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_background.cpp
 	"gpe_background.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object.cpp
 	"gpe_artist_base.h"
 	"gpe_basic_object.h"
 	"gpe_color_manager.h"
 	"gpe_runtime.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object_list.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object_list.cpp
 	"gpe_basic_object_list.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object_type_mapper.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object_type_mapper.cpp
 	"gpe_basic_object_type_mapper.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object_type_mapper.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object_type_mapper.h
 	"gpe_basic_object.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_branch.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_branch.cpp
 	"gpe_branch.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_camera.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_camera.cpp
 	"gpe_camera.h"
 	"gpe_constants.h"
 
-1670819806 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_collision_controller_base.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_collision_controller_base.cpp
 	"gpe_collision_controller_base.h"
 
-1670819804 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_collisions.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_collisions.cpp
 	"gpe_collisions.h"
 
-1670819806 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_color.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_color.cpp
 	"gpe_color.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_color_manager.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_color_manager.cpp
 	"gpe_color_manager.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_common_includes.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_common_includes.cpp
 	"gpe_common_includes.h"
 	"gpe_constants.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_cursor_base.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_cursor_base.cpp
 	"gpe_cursor_base.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_error_logger.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_error_logger.cpp
 	"gpe_error_logger.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_file_system.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_file_system.cpp
 	<cstring>
 	"gpe_file_system.h"
 	"gpe_globals.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_font_base.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_font_base.cpp
 	"gpe_artist_base.h"
 	"gpe_runtime.h"
 	"gpe_font_base.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_globals.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_globals.cpp
 	"gpe_globals.h"
 
 1641148567 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_group.cpp
@@ -441,103 +441,103 @@
 1641148567 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_group.h
 	"gpe_branch.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_ini_file.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_ini_file.cpp
 	"gpe_ini_file.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_input_base.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_input_base.cpp
 	<istream>
 	<iostream>
 	"gpe_globals.h"
 	"gpe_input_base.h"
 	"internal_libs/stg_ex.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_input_event.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_input_event.cpp
 	"gpe_input_event.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_layer.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_layer.cpp
 	"gpe_layer.h"
 	"gpe_runtime.h"
 
-1670819806 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_lights2d.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_lights2d.cpp
 	"gpe_artist_base.h"
 	"gpe_lights2d.h"
 	"internal_libs/semath.h"
 
-1670819806 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_parser.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_parser.cpp
 	"gpe_parser.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_particles2d.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_particles2d.cpp
 	"gpe_artist_base.h"
 	"gpe_runtime.h"
 	"gpe_particles2d.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_path2d.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_path2d.cpp
 	"gpe_path2d.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_program_state.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_program_state.cpp
 	"gpe_artist_base.h"
 	"gpe_program_state.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_render_package.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_render_package.cpp
 	"gpe_render_package.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_render_package_handler.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_render_package_handler.cpp
 	"gpe_render_package_handler.h"
 
-1670819806 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_renderer_base.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_renderer_base.cpp
 	"gpe_renderer_base.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_resources_controller.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_resources_controller.cpp
 	"gpe_resources_controller.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_runtime.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_runtime.cpp
 	"gpe_runtime.h"
 	"gpe_artist_base.h"
 	"internal_libs/semath.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_scene.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_scene.cpp
 	"gpe_scene.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_settings.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_settings.cpp
 	"gpe_settings.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_shapes.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_shapes.cpp
 	"gpe_shapes.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_shared_resources.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_shared_resources.cpp
 	"gpe_shared_resources.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_spatial_partition.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_spatial_partition.cpp
 	"gpe_spatial_partition.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_spatial_partition_controller.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_spatial_partition_controller.cpp
 	"gpe_spatial_partition_controller.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_spatial_partition_layer.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_spatial_partition_layer.cpp
 	"gpe_spatial_partition_layer.h"
 
-1670819804 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_texture_base.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_texture_base.cpp
 	"gpe_texture_base.h"
 
-1670819806 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_texture_target_base.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_texture_target_base.cpp
 	"gpe_texture_target_base.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_tiles.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_tiles.cpp
 	"gpe_tiles.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_tilesheet.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_tilesheet.cpp
 	"gpe_tilesheet.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_timer_base.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_timer_base.cpp
 	"gpe_timer_base.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_window_controller_base.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_window_controller_base.cpp
 	"gpe_window_controller_base.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_basic_resource_page.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_basic_resource_page.cpp
 	"gpe_basic_resource_page.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_basic_resource_page.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_basic_resource_page.h
 	"../gpe/gpe_render_package_handler.h"
 	"../pawgui/pawgui_dock_system.h"
 	"../pawgui/pawgui_general_resource.h"
@@ -545,82 +545,82 @@
 	"gpe_editor_globals.h"
 	"gpe_editor_project.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_dock_system.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_dock_system.h
 	"pawgui_resource_dropdown.h"
 	"pawgui_general_resource.h"
 	"pawgui_buttons.h"
 	"pawgui_tab_basic.h"
 	"pawgui_panel_list.h"
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_resource_dropdown.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_resource_dropdown.h
 	"pawgui_base.h"
 	"pawgui_context.h"
 	"pawgui_general_resource_container.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_base.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_base.h
 	"pawgui_constants.h"
 	"pawgui_globals.h"
 	"pawgui_settings.h"
 	"pawgui_themes.h"
 	"pawgui_overlay.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_constants.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_constants.h
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_globals.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_globals.h
 	"../gpe/gpe_resources_controller.h"
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_settings.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_settings.h
 	"../gpe/gpe_shapes.h"
 	<string>
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_themes.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_themes.h
 	"../gpe/gpe.h"
 	"pawgui_constants.h"
 	"pawgui_globals.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_overlay.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_overlay.h
 	"pawgui_themes.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_context.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_context.h
 	"pawgui_base.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_general_resource_container.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_general_resource_container.h
 	"pawgui_base.h"
 	"pawgui_general_resource.h"
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_general_resource.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_general_resource.h
 	<string>
 	"../gpe/gpe_font_base.h"
 	"../gpe/gpe_shapes.h"
 	"../gpe/gpe_renderer_base.h"
 	"../gpe/gpe_resources_controller.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_buttons.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_buttons.h
 	"pawgui_base.h"
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_tab_basic.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_tab_basic.h
 	"pawgui_base.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_panel_list.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_panel_list.h
 	"pawgui_scrollbars.h"
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_scrollbars.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_scrollbars.h
 	"pawgui_base.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_globals.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_globals.h
 	"../pawgui/pawgui_theme_controller.h"
 	"../pawgui/pawgui_dock_system.h"
 	"gpe_editor_splash_page.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_theme_controller.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_theme_controller.h
 	"pawgui_themes.h"
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_splash_page.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_splash_page.h
 	<string>
 	"../gpe/gpe.h"
 	"../pawgui/pawgui.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui.h
 	"pawgui_base.h"
 	"pawgui_buttons.h"
 	"pawgui_checkbox.h"
@@ -652,25 +652,25 @@
 	"pawgui_theme_controller.h"
 	"pawgui_themes.h"
 
-1670819806 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_checkbox.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_checkbox.h
 	"pawgui_base.h"
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_color_picker.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_color_picker.h
 	"pawgui_base.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_content_selector.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_content_selector.h
 	"pawgui_base.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_dropdown.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_dropdown.h
 	"pawgui_base.h"
 	"pawgui_parsers.h"
 	"pawgui_context.h"
 	"../gpe/gpe_parser.h"
 
-1670819806 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_parsers.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_parsers.h
 	"pawgui_base.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_file_popups.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_file_popups.h
 	"pawgui_base.h"
 	"pawgui_panel_list.h"
 	"pawgui_buttons.h"
@@ -678,24 +678,24 @@
 	"pawgui_popups.h"
 	"pawgui_text_input.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_popups.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_popups.h
 	<string>
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_text_input.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_text_input.h
 	"pawgui_base.h"
 	"pawgui_context.h"
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_labels.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_labels.h
 	"pawgui_base.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_notifications.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_notifications.h
 	"pawgui_base.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_radiobuttons.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_radiobuttons.h
 	"pawgui_base.h"
 	"pawgui_parsers.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_search_controller.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_search_controller.h
 	"pawgui_base.h"
 	"pawgui_buttons.h"
 	"pawgui_checkbox.h"
@@ -703,28 +703,28 @@
 	"pawgui_labels.h"
 	"pawgui_text_input.h"
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_selectbox.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_selectbox.h
 	"pawgui_base.h"
 	"pawgui_parsers.h"
 	"pawgui_scrollbars.h"
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_sliders.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_sliders.h
 	"pawgui_base.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_statusbar.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_statusbar.h
 	"pawgui_base.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_stree.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_stree.h
 	"pawgui_panel_list.h"
 	"pawgui_buttons.h"
 	"pawgui_text_input.h"
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_tab_manager.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_tab_manager.h
 	"pawgui_base.h"
 	"pawgui_buttons.h"
 	"pawgui_general_resource.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_text_editor.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_text_editor.h
 	"pawgui_syntax_handler.h"
 	"pawgui_base.h"
 	"pawgui_buttons.h"
@@ -732,13 +732,13 @@
 	"pawgui_parsers.h"
 	"pawgui_scrollbars.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_syntax_handler.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_syntax_handler.h
 	"../gpe/gpe_file_system.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_text_url.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_text_url.h
 	"pawgui_base.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_project.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_project.h
 	"../pawgui/pawgui.h"
 	"../pawgui/pawgui_resource_dropdown.h"
 	"../pawgui/pawgui_general_resource.h"
@@ -748,12 +748,12 @@
 	"gpe_editor_project_helper.h"
 	"gpe_resource_tree.h"
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_constants.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_constants.h
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_log_manager.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_log_manager.h
 	"../pawgui/pawgui.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_project_helper.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_project_helper.h
 	<string>
 	"../gpe/gpe_constants.h"
 	"../gpe/gpe_file_system.h"
@@ -763,20 +763,20 @@
 	"gpe_editor_constants.h"
 	"gpe_editor_globals.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_resource_tree.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_resource_tree.h
 	"../pawgui/pawgui.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\internal_libs\sff_ex.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\internal_libs\sff_ex.h
 	<istream>
 	<string>
 	<iostream>
 	<fstream>
 	<sys/stat.h>
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_module_version_info.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_module_version_info.h
 	<string>
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\internal_libs\stg_ex.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\internal_libs\stg_ex.h
 	<istream>
 	<algorithm>
 	<string>
@@ -784,14 +784,14 @@
 	<sstream>
 	<iostream>
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_branch_factory.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_branch_factory.h
 	"gpe_branch.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\internal_libs\semath.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\internal_libs\semath.h
 	<cmath>
 	<stdlib.h>
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\internal_libs\\stg_ex.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\internal_libs\\stg_ex.h
 	<istream>
 	<algorithm>
 	<string>
@@ -799,18 +799,18 @@
 	<sstream>
 	<iostream>
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\animation_resource.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\animation_resource.cpp
 	"animation_resource.h"
 	"gpe_editor_settings.h"
 
-1674792711 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\animation_resource.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\animation_resource.h
 	"gpe_basic_resource_page.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_settings.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_settings.h
 	"gpe_basic_resource_page.h"
 	"gpe_editor.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor.h
 	"../pawgui/pawgui.h"
 	"../pawgui/pawgui_resource_dropdown.h"
 	"../pawgui/pawgui_dock_system.h"
@@ -821,36 +821,36 @@
 	"gpe_log_manager.h"
 	"gpe_resource_tree.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\audio_resource.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\audio_resource.cpp
 	"audio_resource.h"
 	"gpe_editor_settings.h"
 
-1670819806 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\audio_resource.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\audio_resource.h
 	"gpe_basic_resource_page.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\class_resource.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\class_resource.cpp
 	"class_resource.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\class_resource.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\class_resource.h
 	"gpe_basic_resource_page.h"
 
-1670819804 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\font_resource.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\font_resource.cpp
 	"font_resource.h"
 	"gpe_editor_settings.h"
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\font_resource.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\font_resource.h
 	"gpe_basic_resource_page.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\function_resource.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\function_resource.cpp
 	"function_resource.h"
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\function_resource.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\function_resource.h
 	"gpe_basic_resource_page.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\game_entity_resource.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\game_entity_resource.cpp
 	"game_entity_resource.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\game_entity_resource.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\game_entity_resource.h
 	"gpe_basic_resource_page.h"
 	"gpe_editor_settings.h"
 	"gpe_js_compiler_settings.h"
@@ -858,7 +858,7 @@
 1644791468 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_js_compiler_settings.h
 	"gpe_basic_resource_page.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\game_scene_resource.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\game_scene_resource.cpp
 	"game_scene_resource.h"
 	"gpe_editor_settings.h"
 	"animation_resource.h"
@@ -866,7 +866,7 @@
 	"texture_resource.h"
 	"tilesheet_resource.h"
 
-1670819806 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\game_scene_resource.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\game_scene_resource.h
 	"../gpe/gpe_layer.h"
 	"animation_resource.h"
 	"font_resource.h"
@@ -887,71 +887,71 @@
 	"gpe_scene_text_class.h"
 	"gpe_scene_tilemap_class.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\project_properties.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\project_properties.h
 	"gpe_basic_resource_page.h"
 	"gpe_cpp_builder_settings.h"
 
 1644791467 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_cpp_builder_settings.h
 	"gpe_basic_resource_page.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\texture_resource.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\texture_resource.h
 	"gpe_basic_resource_page.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\tilesheet_resource.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\tilesheet_resource.h
 	"gpe_basic_resource_page.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_animation_class.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_animation_class.h
 	"gpe_scene_basic_class.h"
 	"animation_resource.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_basic_class.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_basic_class.h
 	"gpe_basic_resource_page.h"
 	"gpe_editor_globals.h"
 	"../pawgui/pawgui_stree.h"
 
-1670819806 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_background_class.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_background_class.h
 	"gpe_scene_basic_class.h"
 	"gpe_scene_helper_class.h"
 	"texture_resource.h"
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_helper_class.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_helper_class.h
 	"gpe_scene_basic_class.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_group_class.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_group_class.h
 	"gpe_scene_basic_class.h"
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_layer_class.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_layer_class.h
 	"gpe_scene_basic_class.h"
 	"gpe_scene_light_class.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_light_class.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_light_class.h
 	"gpe_scene_basic_class.h"
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_object_class.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_object_class.h
 	"gpe_scene_basic_class.h"
 	"gpe_scene_helper_class.h"
 	"animation_resource.h"
 	"game_entity_resource.h"
 
-1670819804 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_particle_class.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_particle_class.h
 	"gpe_scene_basic_class.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_text_class.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_text_class.h
 	"gpe_scene_basic_class.h"
 	"gpe_scene_helper_class.h"
 	"font_resource.h"
 
-1670819806 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_tilemap_class.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_tilemap_class.h
 	"../gpe/gpe_tiles.h"
 	"gpe_scene_basic_class.h"
 	"gpe_scene_helper_class.h"
 	"tilesheet_resource.h"
 	"gpe_editor_globals.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_cpp_builder_settings.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_cpp_builder_settings.cpp
 	"gpe_cpp_builder_settings.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor.cpp
+1675618433 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor.cpp
 	"../gpe/gpe.h"
 	"gpe_editor.h"
 	"gpe_editor_start_page.h"
@@ -959,15 +959,15 @@
 	"gpe_cpp_builder_settings.h"
 	"gpe_gamepad_tester.h"
 
-1670819803 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_start_page.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_start_page.h
 	"gpe_basic_resource_page.h"
 	"gpe_editor.h"
 	"gpe_editor_aboutpage.h"
 
-1670819806 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_aboutpage.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_aboutpage.h
 	"gpe_basic_resource_page.h"
 
-1670819800 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_project_resources.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_project_resources.h
 	"animation_resource.h"
 	"audio_resource.h"
 	"class_resource.h"
@@ -985,56 +985,56 @@
 	"game_scene_resource.h"
 	"gpe_gamepad_tester.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\light_resource.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\light_resource.h
 	"../gpe/gpe_lights2d.h"
 	"gpe_basic_resource_page.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\path_resource.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\path_resource.h
 	"gpe_basic_resource_page.h"
 	"game_scene_resource.h"
 	"../gpe/gpe_path2d.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\particle_resource.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\particle_resource.h
 	"../gpe/gpe_particles2d.h"
 	"gpe_basic_resource_page.h"
 
-1670819806 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\video_resource.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\video_resource.h
 	"gpe_basic_resource_page.h"
 
-1670819805 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_extra_tools.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_extra_tools.h
 	"gpe_basic_resource_page.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_gamepad_tester.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_gamepad_tester.h
 	"gpe_basic_resource_page.h"
 
-1670820123 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_aboutpage.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_aboutpage.cpp
 	"gpe_editor_aboutpage.h"
 
-1670819804 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_globals.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_globals.cpp
 	"gpe_editor_constants.h"
 	"gpe_editor_globals.h"
 
 1641148569 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_helppage.cpp
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_project.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_project.cpp
 	"gpe_editor_project.h"
 	"gpe_project_resources.h"
 	"project_properties.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_project_helper.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_project_helper.cpp
 	"gpe_editor_project_helper.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_settings.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_settings.cpp
 	"gpe_editor_settings.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_start_page.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_start_page.cpp
 	"gpe_editor_start_page.h"
 	"gpe_editor_settings.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_state.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_state.cpp
 	"gpe_editor_state.h"
 
-1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_state.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_state.h
 	"gpe_editor.h"
 	"gpe_editor_settings.h"
 	"project_properties.h"
@@ -1044,93 +1044,93 @@
 	"../gpe/gpe_program_state.h"
 	"../pawgui/pawgui.h"
 
-1673066421 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_extra_tools.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_extra_tools.cpp
 	"gpe_extra_tools.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_game_master_itenary.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_game_master_itenary.cpp
 	"gpe_game_master_itenary.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_game_master_itenary.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_game_master_itenary.h
 	"../gpe/gpe.h"
 	"gpe_editor_state.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_gamepad_tester.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_gamepad_tester.cpp
 	"gpe_gamepad_tester.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_js_compiler_settings.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_js_compiler_settings.cpp
 	"gpe_js_compiler_settings.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_log_manager.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_log_manager.cpp
 	"gpe_log_manager.h"
 	"gpe_editor.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_project_resources.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_project_resources.cpp
 	"gpe_project_resources.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_resource_tree.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_resource_tree.cpp
 	"gpe_resource_tree.h"
 
-1670819804 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_animation_class.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_animation_class.cpp
 	"gpe_scene_animation_class.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_background_class.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_background_class.cpp
 	"gpe_scene_background_class.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_basic_class.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_basic_class.cpp
 	"gpe_scene_basic_class.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_group_class.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_group_class.cpp
 	"gpe_scene_group_class.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_helper_class.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_helper_class.cpp
 	"gpe_editor.h"
 	"gpe_scene_helper_class.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_layer_class.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_layer_class.cpp
 	"gpe_scene_layer_class.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_light_class.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_light_class.cpp
 	"gpe_scene_light_class.h"
 
-1670819806 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_object_class.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_object_class.cpp
 	"gpe_scene_object_class.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_particle_class.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_particle_class.cpp
 	"gpe_scene_particle_class.h"
 
-1670819806 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_text_class.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_text_class.cpp
 	"gpe_scene_text_class.h"
 
-1670819804 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_tilemap_class.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_scene_tilemap_class.cpp
 	"gpe_scene_tilemap_class.h"
 
-1670819804 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\light_resource.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\light_resource.cpp
 	"light_resource.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\particle_resource.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\particle_resource.cpp
 	"particle_resource.h"
 	"gpe_editor_settings.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\path_resource.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\path_resource.cpp
 	"path_resource.h"
 
-1670819804 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\project_properties.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\project_properties.cpp
 	"project_properties.h"
 	"game_scene_resource.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\texture_resource.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\texture_resource.cpp
 	"texture_resource.h"
 	"gpe_editor_settings.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\tilesheet_resource.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\tilesheet_resource.cpp
 	"tilesheet_resource.h"
 	"gpe_editor_settings.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\video_resource.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\video_resource.cpp
 	"video_resource.h"
 	"gpe_editor_settings.h"
 
-1674927032 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\main.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\main.cpp
 	"gpe/gpe.h"
 	"sdl2_module/gpe_sdl2.h"
 	"game_state_credits_base.h"
@@ -1272,7 +1272,7 @@
 	<math.h>
 	<SDL2/SDL.h>
 
-1673066258 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_shape_test.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_shape_test.h
 	"gpe/gpe.h"
 	"gpe/internal_libs/semath.h"
 	"sdl2_module/gpe_artist_sdl2.h"
@@ -1293,122 +1293,122 @@
 1672241430 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\other_libs\stg_ex.cpp
 	"stg_ex.h"
 
-1670819804 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui.cpp
 	"pawgui.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_base.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_base.cpp
 	"pawgui_base.h"
 
-1670819806 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_buttons.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_buttons.cpp
 	"pawgui_buttons.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_checkbox.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_checkbox.cpp
 	"pawgui_checkbox.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_color_picker.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_color_picker.cpp
 	"pawgui_text_input.h"
 	"pawgui_buttons.h"
 	"pawgui_color_picker.h"
 	"pawgui_labels.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_content_selector.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_content_selector.cpp
 	"pawgui_content_selector.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_context.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_context.cpp
 	"pawgui_context.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_dock_system.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_dock_system.cpp
 	"pawgui_dock_system.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_dropdown.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_dropdown.cpp
 	"pawgui_dropdown.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_file_popups.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_file_popups.cpp
 	"pawgui_file_popups.h"
 	"windows.h"
 
-1670819804 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_general_resource.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_general_resource.cpp
 	"pawgui_general_resource.h"
 
-1670819806 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_general_resource_container.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_general_resource_container.cpp
 	"pawgui_general_resource_container.h"
 	"pawgui_parsers.h"
 	"pawgui_popups.h"
 	"pawgui_tab_manager.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_globals.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_globals.cpp
 	"pawgui_globals.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_iconpack.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_iconpack.cpp
 	"pawgui_iconpack.h"
 
-1670819801 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_iconpack.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_iconpack.h
 	"pawgui_base.h"
 
-1670819804 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_labels.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_labels.cpp
 	"pawgui_labels.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_notifications.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_notifications.cpp
 	"pawgui_notifications.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_overlay.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_overlay.cpp
 	"pawgui_overlay.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_panel_list.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_panel_list.cpp
 	"pawgui_panel_list.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_parsers.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_parsers.cpp
 	"pawgui_parsers.h"
 	"pawgui_themes.h"
 
-1670819806 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_popups.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_popups.cpp
 	"pawgui_base.h"
 	"pawgui_buttons.h"
 	"pawgui_labels.h"
 	"pawgui_popups.h"
 	"pawgui_text_input.h"
 
-1670819804 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_radiobuttons.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_radiobuttons.cpp
 	"pawgui_radiobuttons.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_resource_dropdown.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_resource_dropdown.cpp
 	"pawgui_resource_dropdown.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_scrollbars.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_scrollbars.cpp
 	"pawgui_scrollbars.h"
 
-1670819804 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_search_controller.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_search_controller.cpp
 	"pawgui_search_controller.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_selectbox.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_selectbox.cpp
 	"pawgui_selectbox.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_settings.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_settings.cpp
 	"pawgui_settings.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_sliders.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_sliders.cpp
 	"pawgui_sliders.h"
 
-1670819805 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_statusbar.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_statusbar.cpp
 	"pawgui_statusbar.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_stree.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_stree.cpp
 	"pawgui_stree.h"
 	"pawgui_popups.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_syntax_handler.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_syntax_handler.cpp
 	"pawgui_syntax_handler.h"
 	"pawgui_themes.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_tab_basic.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_tab_basic.cpp
 	"pawgui_tab_basic.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_tab_manager.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_tab_manager.cpp
 	"pawgui_tab_manager.h"
 	"pawgui_search_controller.h"
 	"pawgui_text_editor.h"
 
-1670819804 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_text_editor.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_text_editor.cpp
 	"pawgui_context.h"
 	"pawgui_file_popups.h"
 	"pawgui_general_resource_container.h"
@@ -1416,16 +1416,16 @@
 	"pawgui_statusbar.h"
 	"pawgui_text_editor.h"
 
-1670819802 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_text_input.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_text_input.cpp
 	"pawgui_text_input.h"
 
-1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_text_url.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_text_url.cpp
 	"pawgui_text_url.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_theme_controller.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_theme_controller.cpp
 	"pawgui_theme_controller.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_themes.cpp
+1675135680 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\pawgui\pawgui_themes.cpp
 	"pawgui_themes.h"
 
 1670819806 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_artist_sdl.cpp
@@ -1472,11 +1472,11 @@
 	"gpe_renderer_sdl.h"
 	"../gpe/gpe_texture_target_base.h"
 
-1672241756 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_audio_sdl2_mixer.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_audio_sdl2_mixer.cpp
 	"gpe_audio_sdl2_mixer.h"
 	"../gpe/gpe_error_logger.h"
 
-1672241756 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_audio_sdl2_mixer.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_audio_sdl2_mixer.h
 	<SDL2/SDL_mixer.h>
 	"../gpe/gpe_audio_base.h"
 
@@ -1521,10 +1521,10 @@
 	"gpe_renderer_sdl.h"
 	<SDL2/SDL_ttf.h>
 
-1672241756 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_font_sdl2.cpp
+1675620073 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_font_sdl2.cpp
 	"gpe_font_sdl2.h"
 
-1672241756 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_font_sdl2.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_font_sdl2.h
 	"../gpe/gpe_artist_base.h"
 	"../gpe/gpe_branch.h"
 	"../gpe/gpe_common_includes.h"
@@ -1537,7 +1537,7 @@
 	"gpe_renderer_sdl2.h"
 	<SDL2/SDL_ttf.h>
 
-1673066318 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_renderer_sdl2.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_renderer_sdl2.h
 	<ctime>
 	"../gpe/gpe_common_includes.h"
 	"../gpe/gpe_shapes.h"
@@ -1545,7 +1545,7 @@
 	"gpe_sdl2_constants.h"
 	"thirdparty/sdl2_surface_ex.h"
 
-1672241756 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_sdl2_constants.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_sdl2_constants.h
 
 1670819802 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\thirdparty\sdl_surface_ex.h
 	"SDL2/SDL.h"
@@ -1565,10 +1565,10 @@
 	"../gpe/gpe_timer_base.h"
 	<string>
 
-1672241756 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_input_sdl2.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_input_sdl2.cpp
 	"gpe_input_sdl2.h"
 
-1672315536 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_input_sdl2.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_input_sdl2.h
 	<SDL2/SDL.h>
 	<SDL2/SDL_version.h>
 	<SDL2/SDL_video.h>
@@ -1609,10 +1609,10 @@
 	"../gpe/gpe_settings.h"
 	"../gpe/internal_libs/stg_ex.h"
 
-1672241756 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_cursor_sdl2.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_cursor_sdl2.cpp
 	"gpe_cursor_sdl2.h"
 
-1673066318 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_cursor_sdl2.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_cursor_sdl2.h
 	<string>
 	<map>
 	<SDL2/SDL.h>
@@ -1622,7 +1622,7 @@
 	"../gpe/internal_libs/sff_ex.h"
 	"../gpe/internal_libs/stg_ex.h"
 
-1672241756 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_renderer_sdl2.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_renderer_sdl2.cpp
 	"gpe_renderer_sdl2.h"
 	"../gpe/gpe_constants.h"
 	"../gpe/gpe_globals.h"
@@ -1664,15 +1664,15 @@
 	<math.h>
 	<SDL2/SDL.h>
 
-1671797631 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_animiation2d_sdl2.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_animiation2d_sdl2.cpp
 	"gpe_animiation2d_sdl2.h"
 
-1672316377 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_animiation2d_sdl2.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_animiation2d_sdl2.h
 	"../gpe/gpe_animation2d.h"
 	"gpe_renderer_sdl2.h"
 	"gpe_texture_sdl2.h"
 
-1673066348 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_texture_sdl2.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_texture_sdl2.h
 	"../gpe/gpe_branch.h"
 	"../gpe/gpe_color_manager.h"
 	"../gpe/gpe_common_includes.h"
@@ -1685,10 +1685,10 @@
 	"gpe_renderer_sdl2.h"
 	"thirdparty/sdl2_surface_ex.h"
 
-1672241756 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_artist_sdl2.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_artist_sdl2.cpp
 	"gpe_artist_sdl2.h"
 
-1673066348 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_artist_sdl2.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_artist_sdl2.h
 	"../gpe/gpe_artist_base.h"
 	"../gpe/gpe_common_includes.h"
 	"../gpe/gpe_globals.h"
@@ -1700,14 +1700,14 @@
 	"gpe_texture_sdl2.h"
 	"gpe_texture_target_sdl2.h"
 
-1672241756 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_texture_target_sdl2.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_texture_target_sdl2.h
 	"gpe_renderer_sdl2.h"
 	"../gpe/gpe_texture_target_base.h"
 
-1672241756 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_render_package_sdl2.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_render_package_sdl2.cpp
 	"gpe_render_package_sdl2.h"
 
-1672241756 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_render_package_sdl2.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_render_package_sdl2.h
 	"../gpe/gpe_render_package.h"
 	"../gpe/gpe_render_package_handler.h"
 	"gpe_animiation2d_sdl2.h"
@@ -1717,7 +1717,7 @@
 	"gpe_texture_target_sdl2.h"
 	"gpe_window_controller_sdl2.h"
 
-1673066348 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_window_controller_sdl2.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_window_controller_sdl2.h
 	"../gpe/gpe_globals.h"
 	"../gpe/gpe_shared_resources.h"
 	"../gpe/gpe_window_controller_base.h"
@@ -1750,49 +1750,49 @@
 	<math.h>
 	"sdl_surface_ex.h"
 
-1641148428 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\resource.rc
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\resource.rc
 
-1673066421 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_window_controller_sdl2.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_window_controller_sdl2.cpp
 	"gpe_window_controller_sdl2.h"
 
 1670819801 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_sdl.2cpp
 	"gpe_sdl.h"
 
-1672241756 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_sdl2_basic.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_sdl2_basic.cpp
 	"gpe_sdl2_basic.h"
 
-1672315625 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_sdl2_basic.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_sdl2_basic.h
 	"../gpe/gpe_error_logger.h"
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
 
-1672241756 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_sdl2_converter.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_sdl2_converter.cpp
 	"gpe_sdl2_converter.h"
 
-1672315621 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_sdl2_converter.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_sdl2_converter.h
 	"../gpe/gpe_color.h"
 	<SDL2/SDL.h>
 
-1672241756 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_texture_sdl2.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_texture_sdl2.cpp
 	"gpe_texture_sdl2.h"
 
-1672241756 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_texture_target_sdl2.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_texture_target_sdl2.cpp
 	"gpe_texture_target_sdl2.h"
 
-1672241756 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_timer_sdl2.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_timer_sdl2.cpp
 	"../gpe/internal_libs/stg_ex.h"
 	"gpe_timer_sdl2.h"
 
-1672315626 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_timer_sdl2.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_timer_sdl2.h
 	"../gpe/gpe_runtime.h"
 	"../gpe/gpe_timer_base.h"
 	<math.h>
 	<SDL2/SDL.h>
 
-1672241756 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_sdl2.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_sdl2.cpp
 	"gpe_sdl2.h"
 
-1673067032 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_sdl2.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_sdl2.h
 	"gpe_artist_sdl2.h"
 	"gpe_audio_sdl2_mixer.h"
 	"gpe_sdl2_constants.h"
@@ -1809,22 +1809,22 @@
 	"gpe_window_controller_sdl2.h"
 	"thirdparty/sdl2_surface_ex.h"
 
-1673066421 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\thirdparty\sdl2_surface_ex.h
+1675133771 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\thirdparty\sdl2_surface_ex.h
 	"SDL2/SDL.h"
 	"SDL2/SDL_image.h"
 	<vector>
 
-1673066421 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\thirdparty\sdl2_surface_ex.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\thirdparty\sdl2_surface_ex.cpp
 	<algorithm>
 	<math.h>
 	"sdl2_surface_ex.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_branch_factory.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_branch_factory.cpp
 	"gpe_branch_factory.h"
 
-1670819800 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_splash_page.cpp
+1675620177 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe_editor\gpe_editor_splash_page.cpp
 	"gpe_editor_splash_page.h"
 
-1670819803 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_shape_test.cpp
+1675133771 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_shape_test.cpp
 	"game_state_shape_test.h"
 
