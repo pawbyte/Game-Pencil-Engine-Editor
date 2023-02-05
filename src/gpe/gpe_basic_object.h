@@ -58,8 +58,11 @@ namespace gpe
     };
 
     //The base class for Game Objects
+
     class game_object: public branch
     {
+        private:
+            bool isMovingObject;
         protected:
             //Path Related Variables [BEGIN]
             std::string pathId;
@@ -71,10 +74,11 @@ namespace gpe
             int pathTargetY;
             int pathTargetPosition;
             bool pathReplayOnEnd;
+            bool pathGoingForward;
+
             float pathSpeed;
             float pathCurrentSpeed;
             float pathCurrentDirection;
-            bool pathGoingForward;
             //Path Related Variables [END]
             int gpeObjectType;
             std::string gpeObjName;
@@ -114,7 +118,6 @@ namespace gpe
             float speed;
             float defaultSpeed;
             bool isInit;
-            bool isMovingObject;
             bool isViewIndependent;
 
             shape_rect * updatedCollisionBox;
@@ -127,6 +130,7 @@ namespace gpe
             int partitionIndexNextID;
             std::vector< game_object *> collisionList;
             int beganCollisionSearch;
+            bool objectMovedLastFrame;
         public:
             bool useCollisonRect;
             bool isContinuousObject;
@@ -145,42 +149,66 @@ namespace gpe
 
             game_object(  int object_layer_id, int x_pos_in,  int y_pos_in, int z_pos_in = 0 );
             virtual ~game_object();
+
+            /*
+            Functions are now all alphabetized for consistency
+            */
+
+            //A Functions
+            void add_collision_object( game_object * other );
             void apply_gravity();
+
+            //B functions
+            void bounce_from( game_object * otherObj);
+
+            //C functions
+            bool check_collison_with_object(  game_object * otherObj );
             void check_spatial_movement();
             void clear_collisions();
-            void add_collision_object( game_object * other );
             static game_object * create_object( int object_layer_id, int x_pos_in,  int y_pos_in , int z_pos_in = 0 ) { return new game_object( object_layer_id, x_pos_in,   y_pos_in, z_pos_in ); }
-            bool check_collison_with_object(  game_object * otherObj );
-            bool under_mouse( int cameraId );
-            void bounce_from( game_object * otherObj);
-            void initialize();
-            bool equals(game_object * otherObj);
-            void default_load();
-            std::string get_animation_name();
 
+            //D Functions
+            void default_load();
+
+            //E functions
+            virtual void end_frame_logic();
+            bool equals(game_object * otherObj);
+
+
+            //G / Get functions
             animation2d * get_animation();
+
+            std::string get_animation_name();
             int get_collision_height();
             std::string get_collision_mask_name();
             animation2d * get_collision_mask();
-
             int get_collision_space_id();
             int get_collision_width();
             std::string get_component(std::string componentName);
             int get_depth();
-
             float get_my_direction(float x2,float  y2);
             float get_my_distance(float x2, float y2);
             int get_id();
-            int get_object_type();
+            int get_layer_id();
             std::string get_name();
+            int get_object_type();
+            int get_path_id();
+            int get_path_original_size();
+            int get_path_position();
+            int get_path_size();
+            float get_path_targetx();
+            float get_path_targety();
             float getx2();
             float gety2();
 
-            int get_layer_id();
-            virtual void end_frame_logic();
-
+            //I functions
+            void initialize();
             bool is_init();
             bool is_moving_object();
+
+            //M functions
+            bool make_moving_object();
+            bool make_static_object();
             void make_view_dependent();
             void make_view_independent();
             void move_left(float leftMore);
@@ -188,24 +216,22 @@ namespace gpe
             void move_up(float upMore);
             void move_down(float downMore);
             void move_towards( float targX, float targY, float newSpeed);
+
+            //P functions
+
             void path_begin(int path, float pathSpeed, bool continueOnEnd = true, bool relativePath = false);
-            void path_start(int path, float pathSpeed, bool continueOnEnd = true, bool relativePath = false);
-            bool path_move_along();
-            bool path_move_towards_point(int pointId);
             void path_end();
+            bool path_move_towards_point(int pointId);
+            bool path_move_along();
+            void path_start(int path, float pathSpeed, bool continueOnEnd = true, bool relativePath = false);
             void path_stop();
-            bool using_path();
-            int get_path_id();
-            //get_path_object();
-            float get_path_targetx();
-            float get_path_targety();
-            int get_path_position();
-            int get_path_original_size();
-            int get_path_size();
             virtual void perform_object_logic();
             virtual void perform_object_prelogic();
+            virtual void process_collision( game_object * other );
             void process_gpe_movement();
             void process_timed_functions();
+
+            //R Functions
             virtual void render();
             virtual void render_start(); //Useful for rendering on start(i.e, floors and shadows)
             virtual void render_end(); //Useful for post-rendering(i.e  effects and texts)
@@ -214,30 +240,40 @@ namespace gpe
             virtual void render_hud_end(); //Useful for rendering on last layer of HUD level
 
             void reset_branch();
+
+            //S Functions
             virtual void scene_end();
             virtual void scene_start();
             virtual bool self_destruct();
 
             void set_animation(std::string nextAnimation, bool animIsMaskToo = false);
+            void set_angle(float angle );
             void set_collision_mask( std::string animationMask );
             void set_collision_space_id( int nSpaceId, bool updatedOnGrid = false );
+            void set_countdown ( int timerId, int countDownStart);
             void set_layer_id( int nLayerId, bool updatedOnGrid = false );
+            void set_timer ( int timerId, int secondsToCount);
+            void set_velocity(float newDir, float newSpeed );
 
-            void set_angle(float angle );
             void setx(float x_new);
             void sety(float y_new);
+
             void speed_move();
-            void set_velocity(float newDir, float newSpeed );
             void start_countdown ( int timerId, int countDownStart);
-            void set_countdown ( int timerId, int countDownStart);
-            void set_timer ( int timerId, int secondsToCount);
-            void start_timer ( int timerId, int secondsToCount);
             virtual void start_frame_logic();
-            void update();
-            void update_animation();
-            void update_cords( float x_new,  float y_new);
+            void start_timer ( int timerId, int secondsToCount);
+
+            //T Functions
             bool touches_tile(int layerToCheck);
             bool touches_certain_tile(int layerToCheck, int needleTile);
+
+            //U functions
+            bool under_mouse( int cameraId );
+            void update_cords( float x_new,  float y_new);
+            bool using_path();
+            void update();
+            void update_animation();
+
     };
 }
 

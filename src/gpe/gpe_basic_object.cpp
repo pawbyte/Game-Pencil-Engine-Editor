@@ -236,6 +236,32 @@ namespace gpe
         return isMovingObject;
     }
 
+    bool game_object::make_moving_object()
+    {
+        isMovingObject = true;
+        if( GPE_AddedToGridSystem )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    bool game_object::make_static_object()
+    {
+        isMovingObject = false;
+        if( GPE_AddedToGridSystem )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     void game_object::move_left(float leftMore)
     {
 
@@ -262,6 +288,11 @@ namespace gpe
     }
 
     void game_object::perform_object_prelogic()
+    {
+
+    }
+
+    void game_object::process_collision( game_object * other )
     {
 
     }

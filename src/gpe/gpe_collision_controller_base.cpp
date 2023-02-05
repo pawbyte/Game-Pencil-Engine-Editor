@@ -67,7 +67,7 @@ SOFTWARE.
 
 namespace gpe
 {
-    int collision_controller_counter = 0;
+
     collision_controller_base * main_collision_controller = nullptr;
 
     collision_controller_base::collision_controller_base()
@@ -75,6 +75,7 @@ namespace gpe
         controller_id = collision_controller_counter;
         collision_controller_counter++;
         layer_id = -1;
+        collision_controller_counter = 0;
     }
 
     collision_controller_base::~collision_controller_base()
@@ -82,7 +83,7 @@ namespace gpe
 
     }
 
-    void collision_controller_base::activate_layer(int l_id )
+    void collision_controller_base::activate_layer(int layer_id )
     {
 
     }
@@ -132,6 +133,7 @@ namespace gpe
         }
         return 1;
     }
+
     void collision_controller_base::deactivate_layer(int l_id )
     {
 

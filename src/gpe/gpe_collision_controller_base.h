@@ -39,11 +39,10 @@ SOFTWARE.
 
 namespace gpe
 {
-    extern int collision_controller_counter;
-
     class collision_controller_base
     {
         protected:
+            int collision_controller_counter;
             int layer_id;
             int controller_id;
             std::string controller_name;

@@ -531,6 +531,11 @@ namespace pawgui
             mainGuiFontLocation = "C:/Windows/Fonts/Candara.ttf";
             font_is_monospaced = false;
         }
+        else
+        {
+            gpe::error_log->report("FATAL ERROR, unable to find system based fonts. Program likely to crash or suffer performance issues!" );
+            return false;
+        }
         gpe::error_log->report("Using "+mainGuiFontLocation+" font..." );
         //Open the fonts
         font_buttons = gpe::gfs->open_font(textEditorFontLocation,font_min_size,true, "_buttons Font");

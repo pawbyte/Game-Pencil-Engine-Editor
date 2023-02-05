@@ -173,10 +173,10 @@
 		<Unit filename="src/game_state_main_menu_base.h" />
 		<Unit filename="src/game_state_master.cpp" />
 		<Unit filename="src/game_state_master.h" />
+		<Unit filename="src/game_state_shape_test.cpp" />
+		<Unit filename="src/game_state_shape_test.h" />
 		<Unit filename="src/game_state_splash.cpp" />
 		<Unit filename="src/game_state_splash.h" />
-		<Unit filename="src/game_state_triangle_test.cpp" />
-		<Unit filename="src/game_state_triangle_test.h" />
 		<Unit filename="src/gpe/gpe.cpp" />
 		<Unit filename="src/gpe/gpe.h" />
 		<Unit filename="src/gpe/gpe_animation2d.cpp" />

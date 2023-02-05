@@ -286,6 +286,11 @@ namespace gpe
         return sceneHeight;
     }
 
+    bool game_scene::is_continuous()
+    {
+        return sceneIsContinuous;
+    }
+
     void game_scene::reset_scene_meta()
     {
         sceneIsSpatiallyPartitioned = false;
@@ -722,5 +727,11 @@ namespace gpe
     void game_scene::update_tilemap()
     {
 
+    }
+
+    bool game_scene::was_visited()
+    {
+
+        return sceneWasVisitedBefore;
     }
 }

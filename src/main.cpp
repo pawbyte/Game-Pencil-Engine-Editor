@@ -105,10 +105,10 @@ int main( int argc, char* args[] )
     gpe::game_runtime->state_set( shape_tester->get_state_name() );
 
 
-    if( init_gpe_master_itenary( argc, args ) == false )
+    /*if( init_gpe_master_itenary( argc, args ) == false )
     {
         gameFailed = -2000;
-    }
+    }*/
 
     gpe::time_keeper->set_fps( 60 );
 
