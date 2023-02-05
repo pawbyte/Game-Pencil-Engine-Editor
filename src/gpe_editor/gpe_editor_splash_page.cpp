@@ -216,10 +216,11 @@ void gpe_splash_page::render_loader()
             }
             else
             {
+                    current_y_pos += line_height_with_padding;
                     gpe::gfs->render_text( gpe::screen_width/2 + x_padding,current_y_pos - y_padding, "Game Penciil Engine" ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_top );
+                    current_y_pos += line_height_with_padding;
                     gpe::gfs->render_text( gpe::screen_width/2 + x_padding,current_y_pos - y_padding, "Version" + stg_ex::float_to_string( gpe::version_number_total ) ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_top );
-                    current_y_pos += (line_height_with_padding) * 2;
-
+                    current_y_pos += line_height_with_padding;
             }
 
             current_y_pos += y_padding;
