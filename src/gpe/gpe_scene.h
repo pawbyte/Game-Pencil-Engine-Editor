@@ -110,6 +110,7 @@ namespace gpe
             int get_thsize();
             int get_map_width();
             int get_map_height();
+            bool is_continuous();
             void apply_logic();
             void apply_postlogic();
             std::string get_scene_name();
@@ -126,6 +127,7 @@ namespace gpe
             void render_scene();
             bool scene_is_ready();
             void scene_restart();
+            bool was_visited();
     };
 }
 

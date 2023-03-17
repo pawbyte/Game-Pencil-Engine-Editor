@@ -6,5 +6,6 @@ build/
 obj/
 
 **/*.o
+**/*.dll
 Game_Pencil_Engine_IDE
-game_errrors.txt
+game_errors.txt

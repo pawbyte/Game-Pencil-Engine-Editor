@@ -51,13 +51,19 @@ game_master::game_master( std::string s_name )
         mouse_in_cam[imCam] = true;
     }
 
-    scene_current = NULL;
+    scene_current = nullptr;
     scene_currentId = -1;
 
-    if(  gpe::main_spatial_grid != NULL)
+    if( gpe::main_collision_controller != nullptr )
     {
         delete gpe::main_spatial_grid;
-        gpe::main_spatial_grid = NULL;
+        gpe::main_spatial_grid = nullptr;
+    }
+
+    if(  gpe::main_spatial_grid != nullptr)
+    {
+        delete gpe::main_spatial_grid;
+        gpe::main_spatial_grid = nullptr;
     }
     spatialPartitonController = new gpe::spatial_partition_controller("main_sp_grid");
 }
@@ -91,7 +97,7 @@ void game_master::apply_logic()
     }
 
     process_scene_movement();
-    if( scene_current == NULL )
+    if( scene_current == nullptr )
     {
         return;
     }
@@ -105,11 +111,11 @@ void game_master::apply_logic()
     {
         return;
     }
-    gpe::game_object * foundRegObj = NULL;
-    gpe::game_object * foundTypedObj = NULL;
+    gpe::game_object * foundRegObj = nullptr;
+    gpe::game_object * foundTypedObj = nullptr;
     int iObjectType = -1;
     int jObject = -1;
-    gpe::game_object_list *  foundObjTypeHolder = NULL;
+    gpe::game_object_list *  foundObjTypeHolder = nullptr;
     int jj = 0;
     int kItr = 0;
     int fcSpace = 0;
@@ -137,7 +143,7 @@ void game_master::apply_logic()
 
 void game_master::init_collision_handler()
 {
-    if( scene_current!=NULL )
+    if( scene_current!=nullptr )
     {
         scene_current->init_collision_handler();
     }
@@ -145,30 +151,30 @@ void game_master::init_collision_handler()
 
 void game_master::clean_up()
 {
-    scene_current = NULL;
-    gpe::game_scene * cScene = NULL;
+    scene_current = nullptr;
+    gpe::game_scene * cScene = nullptr;
     gpe::error_log->report("Attempting to remove ["+ stg_ex::int_to_string( (int)gpeScenes.size() )+"] scenes");
     for( int iScene = (int)gpeScenes.size()-1; iScene >=0; iScene--)
     {
         cScene = gpeScenes[iScene];
-        if( cScene!=NULL)
+        if( cScene!=nullptr)
         {
             delete cScene;
-            cScene = NULL;
+            cScene = nullptr;
         }
     }
     gpeScenes.clear();
 
-    gpe::game_path2d * cPath = NULL;
+    gpe::game_path2d * cPath = nullptr;
     gpe::error_log->report("Attempting to remove ["+ stg_ex::int_to_string( (int)gamePaths.size() )+"] paths");
 
     for( int iPath = (int)gamePaths.size()-1; iPath >=0; iPath--)
     {
         cPath = gamePaths[iPath];
-        if( cPath!=NULL)
+        if( cPath!=nullptr)
         {
             delete cPath;
-            cPath = NULL;
+            cPath = nullptr;
         }
     }
     gamePaths.clear();
@@ -228,7 +234,7 @@ void game_master::process_scene_movement()
                 }
             }
         }
-        //if( this.scene_current.sceneIsContinuous ==false )
+        if( scene_current->is_continuous() ==false )
         {
             //Restart Object and scene related things
             scene_restart_object_info();
@@ -246,7 +252,7 @@ void game_master::render()
 {
     gpe::renderer_main->reset_viewpoint();
     gpe::gcanvas->render_rectangle( 0, 0, gpe::screen_width, gpe::screen_height, gpe::c_white, false, 255 );
-    if( scene_current!=NULL )
+    if( scene_current!=nullptr )
     {
         scene_current->render_scene();
         //gpe::gfs->render_text(32,32,"Current Scene = ["+scene_current->get_scene_name()+"]", gpe::c_white, gpe::font_default,  gpe::fa_left, gpe::fa_top );
@@ -254,7 +260,7 @@ void game_master::render()
     }
     else
     {
-        //gpe::gfs->render_text(32,32,"Error: Current Scene = NULL", gpe::c_red, gpe::font_default,  gpe::fa_left, gpe::fa_top );
+        //gpe::gfs->render_text(32,32,"Error: Current Scene = nullptr", gpe::c_red, gpe::font_default,  gpe::fa_left, gpe::fa_top );
     }
     //gpe::gfs->render_fps( gpe::font_default, gpe::c_green, gpe::screen_logical_width -32, 32, gpe::fa_right, gpe::fa_top );
     gpe::gfs->render_text( 32,  32,"Screen Size = ("+ stg_ex::int_to_string( gpe::screen_width ) +" , "+stg_ex::int_to_string( gpe::screen_height ) + ")", gpe::c_black, gpe::font_default, gpe::fa_left, gpe::fa_top, 255 );
@@ -267,12 +273,12 @@ int game_master::remove_deleted_objects()
     int objectsDeleted = 0;
     int jObject = 0;
     int kItr = 0;
-    gpe::game_object * foundRegObj = NULL;
-    gpe::game_object_list * foundObjTypeHolder = NULL;
+    gpe::game_object * foundRegObj = nullptr;
+    gpe::game_object_list * foundObjTypeHolder = nullptr;
     for( int iObjectType = (int)game_objects.size()-1; iObjectType>=0; iObjectType--)
     {
         foundObjTypeHolder = game_objects[iObjectType];
-        if( foundObjTypeHolder!=NULL )
+        if( foundObjTypeHolder!=nullptr )
         {
             for( jObject = (int)foundObjTypeHolder->internal_list.size() -1; jObject >=0; iObjectType-- )
             {
