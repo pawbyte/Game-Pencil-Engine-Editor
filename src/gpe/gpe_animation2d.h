@@ -43,7 +43,7 @@ SOFTWARE.
 #include "gpe_branch.h"
 #include "gpe_renderer_base.h"
 #include "gpe_texture_base.h"
-#include "internal_libs\stg_ex.h"
+#include "internal_libs/stg_ex.h"
 
 namespace gpe
 {
