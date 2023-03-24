@@ -51,7 +51,7 @@
 	<stdio.h>
 	<math.h>
 
-1675137371 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_common_includes.h
+1679652617 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_common_includes.h
 	<istream>
 	<algorithm>
 	<fstream>
@@ -60,7 +60,7 @@
 	<sstream>
 	<string>
 	<vector>
-	"limits.h"
+	<climits>
 	<windows.h>
 	<Commdlg.h>
 	<cerrno>
@@ -147,7 +147,7 @@
 	"gpe_tilesheet.h"
 	"internal_libs/stg_ex.h"
 
-1675137371 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_animation2d.h
+1679610171 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_animation2d.h
 	<vector>
 	<string>
 	<cmath>
@@ -157,7 +157,7 @@
 	"gpe_branch.h"
 	"gpe_renderer_base.h"
 	"gpe_texture_base.h"
-	"internal_libs\stg_ex.h"
+	"internal_libs/stg_ex.h"
 
 1675137371 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_collisions.h
 	<algorithm>
@@ -210,7 +210,7 @@
 1675137371 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object_list.h
 	"gpe_basic_object.h"
 
-1679016602 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object.h
+1679017165 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object.h
 	"gpe_camera.h"
 	"gpe_color.h"
 	"gpe_constants.h"
@@ -281,7 +281,7 @@
 	"gpe_spatial_partition_layer.h"
 	"gpe_error_logger.h"
 
-1675787088 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_collision_controller_base.h
+1679017165 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_collision_controller_base.h
 	"gpe_basic_object.h"
 	<string>
 
@@ -324,7 +324,7 @@
 	"gpe_common_includes.h"
 	"gpe_branch.h"
 
-1675787675 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_scene.h
+1679017165 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_scene.h
 	"gpe_basic_object.h"
 	"gpe_branch.h"
 	"gpe_layer.h"
@@ -342,7 +342,7 @@
 	"gpe/gpe.h"
 	"gpe/internal_libs/semath.h"
 
-1675784077 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_master.cpp
+1679017165 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_master.cpp
 	"game_state_master.h"
 
 1675137371 c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\game_state_master.h
@@ -378,7 +378,7 @@
 1675137371 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_background.cpp
 	"gpe_background.h"
 
-1675625842 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object.cpp
+1679017165 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_basic_object.cpp
 	"gpe_artist_base.h"
 	"gpe_basic_object.h"
 	"gpe_color_manager.h"
@@ -400,7 +400,7 @@
 	"gpe_camera.h"
 	"gpe_constants.h"
 
-1675786967 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_collision_controller_base.cpp
+1679017165 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_collision_controller_base.cpp
 	"gpe_collision_controller_base.h"
 
 1675137371 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_collisions.cpp
@@ -495,7 +495,7 @@
 	"gpe_artist_base.h"
 	"internal_libs/semath.h"
 
-1675787762 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_scene.cpp
+1679017165 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_scene.cpp
 	"gpe_scene.h"
 
 1675137371 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\gpe\gpe_settings.cpp
@@ -1472,7 +1472,8 @@
 	"gpe_renderer_sdl.h"
 	"../gpe/gpe_texture_target_base.h"
 
-1675137371 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_audio_sdl2_mixer.cpp
+1679652617 source:c:\users\thewe\onedrive\documents\pawbyte_workspace\game-pencil-engine-editor\src\sdl2_module\gpe_audio_sdl2_mixer.cpp
+	"../gpe/gpe_common_includes.h"
 	"gpe_audio_sdl2_mixer.h"
 	"../gpe/gpe_error_logger.h"
 

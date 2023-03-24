@@ -77,9 +77,7 @@ int main( int argc, char* args[] )
         gameFailed = 1;
     }
 
-    gpe::time_keeper->set_fps( 60 );
-
-    //gpe::time_keeper->set_fps( gpe::settings->defaultFPS );
+    gpe::time_keeper->set_fps( gpe::settings->defaultFPS );
 
     //Our preferred order, although some people may do it in their own way
     game_state_credits_base  * game_credits = new game_state_credits_base("game_credits");
@@ -105,10 +103,10 @@ int main( int argc, char* args[] )
     gpe::game_runtime->state_set( shape_tester->get_state_name() );
 
 
-    /*if( init_gpe_master_itenary( argc, args ) == false )
+    if( init_gpe_master_itenary( argc, args ) == false )
     {
         gameFailed = -2000;
-    }*/
+    }
 
     gpe::time_keeper->set_fps( 60 );
 
