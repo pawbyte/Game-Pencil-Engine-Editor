@@ -46,7 +46,7 @@ SOFTWARE.
 #include <string>
 #include <vector>
 
-#include "limits.h"
+#include <climits>
 
 #ifdef _WIN32
 

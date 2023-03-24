@@ -31,6 +31,7 @@ SOFTWARE.
 
 */
 
+#include "../gpe/gpe_common_includes.h"
 #include "gpe_audio_sdl2_mixer.h"
 #include "../gpe/gpe_error_logger.h"
 
