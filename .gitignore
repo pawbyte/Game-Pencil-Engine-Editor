@@ -14,5 +14,9 @@ src/sfml_module
 **/*.o
 Game_Pencil_Engine_IDE
 game_errors.txt
+Game-Pencil-Engine-Editor.cbp
+Game-Pencil-Engine-Editor.depend
+Game-Pencil-Engine-Editor.layout
 Game_Pencil_Engine_IDE.cbp
+Game_Pencil_Engine_IDE.depend
 Game_Pencil_Engine_IDE.layout
