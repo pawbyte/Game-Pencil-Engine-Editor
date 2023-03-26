@@ -3,8 +3,16 @@ bin/
 bin/Release/
 bin/Debug/
 build/
+examples/
 obj/
+screenshots/
+src/raylib_module
+src/sfml_module
+.vscode/
 
+**/*.dll
 **/*.o
 Game_Pencil_Engine_IDE
 game_errors.txt
+Game_Pencil_Engine_IDE.cbp
+Game_Pencil_Engine_IDE.layout
