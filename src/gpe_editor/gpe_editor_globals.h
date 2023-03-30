@@ -39,6 +39,7 @@ SOFTWARE.
 #include "gpe_editor_splash_page.h"
 
 extern int release_current_mode;
+extern bool release_is_lts_version;
 extern pawgui::themes_controller * editor_theme_controller;
 
 extern pawgui::widget_dock * gpe_dock;

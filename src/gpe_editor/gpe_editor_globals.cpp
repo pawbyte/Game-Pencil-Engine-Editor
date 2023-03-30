@@ -35,6 +35,7 @@ SOFTWARE.
 #include "gpe_editor_globals.h"
 
 int release_current_mode = release_type_alpha;
+bool release_is_lts_version = false;
 pawgui::themes_controller * editor_theme_controller = nullptr;
 
 pawgui::widget_dock * gpe_dock = nullptr;
