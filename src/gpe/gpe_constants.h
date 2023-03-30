@@ -49,6 +49,7 @@ namespace gpe
     const float version_number_minor = 5;
     const float version_number_update = 0;
     const float version_number_total = version_number_major + version_number_minor/10.f + version_number_update/100.f;
+    const bool version_is_lts = false;
 
     const int is_null = -1;
 
