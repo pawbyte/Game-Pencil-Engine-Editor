@@ -42,10 +42,13 @@ classResource::classResource(pawgui::widget_resource_container * pFolder)
     classHeaderCode = nullptr;
     classHeaderCode = new pawgui::widget_text_editor(false);
     classHeaderCode->set_placeholder("Header Code...");
-
+    classHeaderCode->isCodeEditor = false;
+    classHeaderCode->set_read_only();
 
     classSourceCode = new pawgui::widget_text_editor(false);
     classSourceCode->set_placeholder("Source Code...");
+    classSourceCode->isCodeEditor = false;
+    classSourceCode->set_read_only();
 
     projectParentFolder = pFolder;
 
