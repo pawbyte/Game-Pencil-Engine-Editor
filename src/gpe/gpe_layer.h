@@ -104,7 +104,7 @@ namespace gpe
             void scroll_backgrounds();
             void set_default_grid_size();
             void set_layer_background ( int layerBeingChanged, int bg_id, int newBgId );
-            void update();
+            void update( float delta_time );
     };
 
     struct scene_layer_meta_data

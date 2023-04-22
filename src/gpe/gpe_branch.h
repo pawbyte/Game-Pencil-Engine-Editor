@@ -146,7 +146,7 @@ namespace gpe
 
             bool is_visible();
 
-            virtual void update();
+            virtual void update( float delta_time );
 
             bool remove_branch_by_name( std::string branch_name , bool nest_down = true );
             bool remove_typed_branch_by_name( int branch_type_id, std::string branch_name , bool nest_down = true );

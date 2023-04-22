@@ -222,7 +222,7 @@ namespace gpe
         }
     }
 
-    void scene_layer::update()
+    void scene_layer::update(float delta_time)
     {
 
     }

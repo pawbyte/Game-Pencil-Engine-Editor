@@ -220,7 +220,7 @@ namespace gpe
         bg_color=color_in;
     }
 
-    void background::update()
+    void background::update(float delta_time)
     {
 
     }
