@@ -203,7 +203,7 @@ namespace pawgui
         hasLineBreak = true;
         show_buttonBar = true;
         isReadOnly = false;
-        isCodeEditor = true;
+        isCodeEditor = false;
         isTextLog= false;
         codeEditorType = 0;
         showXScroll = false;

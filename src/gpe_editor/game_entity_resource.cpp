@@ -86,9 +86,12 @@ gameEntityResource::gameEntityResource(pawgui::widget_resource_container * pFold
 
 
     headerCodeArea = new pawgui::widget_text_editor( true);
-    headerCodeArea->set_read_only(  );
+    headerCodeArea->set_read_only();
+    headerCodeArea->isCodeEditor = false;
+
     sourceCodeArea = new pawgui::widget_text_editor(true);
-    sourceCodeArea->set_read_only(  );
+    sourceCodeArea->set_read_only();
+    sourceCodeArea->isCodeEditor = false;
 
     objModeSelector = new pawgui::widget_selectbox("Entity Functions");
     objModeSelector->add_option("Components",OBJ_MODE_COMPONENTS,pawgui::rsm_gui->texture_add("componentsIcon", gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/tags.png"),nullptr,0,false,true);

@@ -47,10 +47,13 @@ functionResource::functionResource(pawgui::widget_resource_container * pFolder)
     parametersField->set_label("Function Parameters");
     functionCodeHeader = new pawgui::widget_text_editor(false);
     functionCodeHeader->set_placeholder("Header Code...");
+    functionCodeHeader->isCodeEditor = false;
+    functionCodeHeader->set_read_only();
 
     functionCodeSource = new pawgui::widget_text_editor(false);
     functionCodeSource->set_placeholder("Header Code...");
-
+    functionCodeSource->isCodeEditor = false;
+    functionCodeHeader->set_read_only();
 
     renameBox->set_coords(pawgui::padding_default,-1 );
     save_button = new pawgui::widget_button_icon( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/save.png","Save Changes",-1,24);
