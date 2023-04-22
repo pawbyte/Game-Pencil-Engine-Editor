@@ -271,7 +271,7 @@ namespace gpe
             bool under_mouse( int cameraId );
             void update_cords( float x_new,  float y_new);
             bool using_path();
-            void update();
+            void update( float delta_time );
             void update_animation();
 
     };

@@ -141,7 +141,7 @@ namespace gpe
 
     void game_scene::apply_logic()
     {
-        branch::update();
+        branch::update( time_keeper->get_delta_performance() );
     }
 
     void game_scene::apply_postlogic()
@@ -264,7 +264,7 @@ namespace gpe
         scene_layer * foundLayer = find_layer( layerIdIn );
         if( foundLayer !=nullptr )
         {
-            foundLayer;
+            return foundLayer;
         }
 
         if(  layerIdIn >=0 && layerIdIn < 32)

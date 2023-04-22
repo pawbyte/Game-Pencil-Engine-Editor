@@ -352,7 +352,7 @@ namespace gpe
         yscale = new_scale;
     }
 
-    void branch::update()
+    void branch::update(float delta_time )
     {
         branch * current_branch = nullptr;
         for( int branch_itr = 0; branch_itr < (int)sub_elements.size(); branch_itr++ )
@@ -360,7 +360,7 @@ namespace gpe
             current_branch = sub_elements[ branch_itr ];
             if( current_branch != nullptr)
             {
-                current_branch->update();
+                current_branch->update( delta_time );
             }
         }
     }

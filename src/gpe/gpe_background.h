@@ -65,7 +65,7 @@ namespace gpe
         void set_bgoffsets( float nextX, float nextY );
         void set_background( int new_bg_id);
         void set_background_color( color * color_in);
-        void update();
+        void update( float delta_time );
     };
 }
 

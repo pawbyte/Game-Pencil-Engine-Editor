@@ -390,7 +390,7 @@ namespace gpe
     }
 
 
-    void game_object::update()
+    void game_object::update(float delta_time )
     {
         apply_gravity();
         perform_object_logic();
