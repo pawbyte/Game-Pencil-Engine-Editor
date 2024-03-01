@@ -3,10 +3,10 @@ gpe_editor.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -466,7 +466,7 @@ void GPE_Gui_Engine::apply_logic()
     }
     else if( gpe::input->check_kb_released(kb_f5) )
     {
-        editor_gui_main->export_current_project_html5( gpe::input->check_kb_down(kb_ctrl)==false );
+        //TODO: BUILD AND RUN CURRENT PLATFORM
     }
     if( gpe::input->check_kb_released(kb_f6) )
     {
@@ -1329,6 +1329,8 @@ void GPE_Gui_Engine::open_new_project()
 
 void GPE_Gui_Engine::open_project(std::string newProjectFileName)
 {
+    gpe::error_log->report("Attempting to load Project["+newProjectFileName + "]");
+
     if( (int)newProjectFileName.size()> 5 )
     {
         newProjectFileName = stg_ex::string_replace_all(newProjectFileName,"\\","/");
@@ -1663,62 +1665,6 @@ void GPE_Gui_Engine::process_overlay_message()
             current_project->clean_build_folder( gpe::system_os_mac);
         }
     }
-    else if( pawgui::action_message_text=="Build HTML5 APP" || pawgui::action_message_text=="Build HTML5 GAME")
-    {
-        if( current_project!=nullptr)
-        {
-            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_PROJECT_SETTINGS->get_held_resource() );
-            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_PROJECT_SETTINGS->get_held_resource();
-            tProjectProps->project_settingsBar->set_selected_option("Platforms");
-            tProjectProps->export_settingsBar->set_selected_option("HTML5");
-        }
-        else if( main_editor_log!=nullptr)
-        {
-            main_editor_log->log_build_comment("You need to first open a project to use this option!");
-        }
-    }
-    else if( pawgui::action_message_text=="Build HTML5 APP & RUN" || pawgui::action_message_text=="Build HTML5 GAME & RUN")
-    {
-        if( current_project!=nullptr)
-        {
-            /*
-            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_PROJECT_SETTINGS->get_held_resource() );
-            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_PROJECT_SETTINGS->get_held_resource();
-            tProjectProps->project_settingsBar->set_selected_option("Platforms");
-            tProjectProps->export_settingsBar->set_selected_option("HTML5");
-            */
-            editor_gui_main->export_current_project_html5(true);
-        }
-        else if( main_editor_log!=nullptr)
-        {
-            main_editor_log->log_build_comment("You need to first open a project to use this option!");
-        }
-    }
-    else if(pawgui::action_message_text=="RUN HTML5 GAME")
-    {
-        if( current_project!=nullptr)
-        {
-            rum_current_project("", gpe::system_os_html5);
-        }
-        else if( main_editor_log!=nullptr)
-        {
-            main_editor_log->log_build_comment("You need to first open a project to use this option!");
-        }
-    }
-    else if( pawgui::action_message_text=="Build Nintendo Switch GAME")
-    {
-        if( current_project!=nullptr && current_project->RESC_PROJECT_SETTINGS!=nullptr )
-        {
-            pawgui::main_tab_resource_bar->add_new_tab(current_project->RESC_PROJECT_SETTINGS->get_held_resource() );
-            projectPropertiesResource * tProjectProps = (projectPropertiesResource *)current_project->RESC_PROJECT_SETTINGS->get_held_resource();
-            tProjectProps->project_settingsBar->set_selected_option("Platforms");
-            tProjectProps->export_settingsBar->set_selected_option("Switch");
-        }
-        else if( main_editor_log!=nullptr)
-        {
-            main_editor_log->log_build_comment("You need to first open a project to use this option!");
-        }
-    }
     else if( pawgui::action_message_text=="Build WINDOWS GAME")
     {
         if( current_project!=nullptr && current_project->RESC_PROJECT_SETTINGS!=nullptr )
@@ -2006,7 +1952,16 @@ void GPE_Gui_Engine::process_window_title()
             windowCurrentTitle+= "Game Pencil Engine   "+ stg_ex::float_to_string( gpe::version_number_total )+" -";
         }
 
-        if( release_current_mode==relesae_type_production)
+        if( gpe::version_is_lts )
+        {
+            windowCurrentTitle+=" [LTS]";
+        }
+
+        if( release_current_mode==release_type_production)
+        {
+            windowCurrentTitle+=" [Production]";
+        }
+        if( release_current_mode==release_type_production)
         {
             windowCurrentTitle+=" [Production]";
         }
@@ -2174,15 +2129,6 @@ void GPE_Gui_Engine::save_all_projects()
 
 }
 
-void GPE_Gui_Engine::export_current_project_html5(bool runGameOnCompile)
-{
-    GPE_ProjectFolder * fFolder = find_project_from_filename(pawgui::project_current_name);
-    if( fFolder!=nullptr)
-    {
-        fFolder->save_project();
-        fFolder->export_project_html5("","", gpe::system_os_html5,runGameOnCompile);
-    }
-}
 
 void GPE_Gui_Engine::rum_current_project(std::string projectBuildDirectory, int buildMetaTemplate)
 {

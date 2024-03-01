@@ -3,10 +3,10 @@ animation_resource.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -44,12 +44,30 @@ extern std::string animation2d_LABELS[ANIMATION_DATA_FIELD_COUNT];
 
 
 const float GPE_ANIM_FCOUNT_VERSION = 1.04;
+const float GPE_ANIM_CBOX_VERSION = 1.6;
+
+//New as of 1.6.0 ( Useful for keeping track of every collision point in 2D
+const int collision_box_fields = 5;
+
+const int collision_area_x = 0;
+const int collision_area_y = 1;
+const int collision_area_w = 2;
+const int collision_area_h = 3;
+const int collision_area_r = 4;
+
+class colision_area_resource
+{
+    public:
+        pawgui::widget_input_number * animation_collision_property[collision_box_fields];
+        colision_area_resource();
+        ~colision_area_resource();
+};
 
 class animationResource: public standardEditableGameResource
 {
 protected:
     gpe::shape_point2d quad_points[4];
-    char quad_place_position;
+    int quad_place_position;
 public:
     bool areaIsScrollable;
     float animationSpeed;
@@ -95,15 +113,7 @@ public:
 
     pawgui::widget_panel_section * animationCollisionSection;
 
-    pawgui::widget_input_number * animationCollisionRectX;
-    pawgui::widget_input_number * animationCollisionRectY;
-    pawgui::widget_input_number * animationCollisionRectW;
-    pawgui::widget_input_number * animationCollisionRectH;
-
-    pawgui::widget_input_number * animationCollisionCircleX;
-    pawgui::widget_input_number * animationCollisionCircleY;
-    pawgui::widget_input_number * animationCollisionCircleR;
-
+    std::vector <colision_area_resource * > collision_areas;
     pawgui::widget_button_label * animationCenterCollision_button;
 
     pawgui::widget_dropdown_menu * animationCollisionShapeMenu;
@@ -118,10 +128,11 @@ public:
     float subImageMiniAnimationNumber;
     pawgui::widget_label_text  * labelInfoMaxTextureSize;
 
+    pawgui::widget_dropdown_menu * animationAlignmentMenu;
+
     animationResource(pawgui::widget_resource_container * pFolder = nullptr);
     ~animationResource();
 
-    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     void compile_cpp();
     //bool get_mouse_coords( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
@@ -133,7 +144,7 @@ public:
     void load_image(std::string new_file_name, bool autoProcess = false);
     void load_resource(std::string file_path = "");
     void prerender_self( );
-    void process_collision_box();
+    void process_collision_box(int frame_id = 0 );
     void process_data_fields(float versionToProcess = -1);
     void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);

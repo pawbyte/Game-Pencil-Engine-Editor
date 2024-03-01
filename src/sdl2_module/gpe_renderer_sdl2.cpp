@@ -3,10 +3,10 @@ gpe_renderer_sdl2.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -70,9 +70,15 @@ namespace gpe
         SDL_SetRenderTarget(sdlRenderer,NULL);
         SDL_SetRenderDrawBlendMode(sdlRenderer,SDL_BLENDMODE_BLEND);
 
+        for( int i_rm = 0; i_rm < render_mode_max; i_rm++ )
+        {
+            render_mode_supported[ i_rm ] = 0; //(defaults to not supported);
+        }
+
+        render_mode_supported[ render_mode_2D ] = 1; //supported
         render_mode_supported[ render_mode_2D_iso ] = 1; //supported, coded by user, soon scene editor should support it
         render_mode_supported[ render_mode_pseudo3d_m7 ] = 0; //alpha phase
-        render_mode_supported[ render_mode_psuedo3d_stacked ] = 1; //supported, coded by user
+        render_mode_supported[ render_mode_psuedo3d_stacked ] = 0; //supported, coded by user
         render_mode_supported[ render_mode_psuedo3d_raycast ] = 0; //no code yet, but possible
     }
 

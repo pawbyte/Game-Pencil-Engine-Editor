@@ -3,10 +3,10 @@ video_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -88,52 +88,6 @@ videoResource::~videoResource()
         refreshResourceData_button = nullptr;
     }
 }
-
-bool videoResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount)
-{
-    if( fileTarget!=nullptr && fileTarget->is_open() )
-    {
-        std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
-        std::string nestedTabsStrObjFunc = pawgui::generate_tabs( leftTabAmount +1 );
-        std::string html5SpShName = get_name();
-
-        *fileTarget << nestedTabsStr << "var " + html5SpShName + " =  GPE.rsm.add_video(";
-        *fileTarget << stg_ex::int_to_string (exportBuildGlobalId ) + ",";
-        *fileTarget << "'"+html5SpShName + "',";
-        for( int i = 0; i < SUPPORTED_VIDEO_FORMAT_COUNT; i++)
-        {
-            if( (int)videoFileName[i].size() > 3)
-            {
-                *fileTarget << "'resources/videos/"+stg_ex::get_short_filename( videoFileName[i] )+"',";
-            }
-            else
-            {
-                *fileTarget << "'',";
-            }
-        }
-        if( videoGroupName!=nullptr)
-        {
-            *fileTarget << "'"+videoGroupName->get_string()+"',";
-        }
-        else
-        {
-            *fileTarget << "'',";
-        }
-        if( defaultVolume!=nullptr)
-        {
-            *fileTarget << defaultVolume->get_held_number() << "";
-        }
-        else
-        {
-            *fileTarget << "100";
-        }
-        *fileTarget << "); \n";
-
-        return true;
-    }
-    return false;
-}
-
 
 bool videoResource::build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount  )
 {

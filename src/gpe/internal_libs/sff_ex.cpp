@@ -3,9 +3,9 @@ sff_ex.cpp
 This file is part of:
 Simple File Functions Extension
 https://pawbyte.com/sff_ex/
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
+Copyright (c) 2014-2024 PawByte LLC.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal

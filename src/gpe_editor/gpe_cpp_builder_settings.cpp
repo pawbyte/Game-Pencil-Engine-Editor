@@ -3,10 +3,10 @@ gpe_cpp_builder_settings.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -761,10 +761,10 @@ bool gameCPPBuilder_settingsResource::write_cpp_header_file(std::ofstream * file
     *fileTarget << "GAME PENCIL ENGINE's Editor \n";
     *fileTarget << "Version "+ stg_ex::float_to_string( gpe::version_number_total)+" \n";
     *fileTarget << "https://www.pawbyte.com/gamepencilengine \n";
-    *fileTarget << "Copyright (c) 2014-2023 Nathan Hurde, Chase Lee. \n";
+    *fileTarget << "Copyright (c) 2014-2024 Nathan Hurde, Chase Lee. \n";
     *fileTarget << "\n";
-    *fileTarget << "Copyright (c) 2014-2023 PawByte. \n";
-    *fileTarget << "Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page ) \n";
+    *fileTarget << "Copyright (c) 2014-2024 PawByte. \n";
+    *fileTarget << "Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page ) \n";
     *fileTarget << "\n";
     *fileTarget << "Permission is hereby granted, free of charge, to any person obtaining a copy \n";
     *fileTarget << "of this software and associated documentation files (the “Software”), to deal \n";

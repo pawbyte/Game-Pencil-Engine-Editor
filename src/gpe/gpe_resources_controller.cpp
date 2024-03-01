@@ -3,10 +3,10 @@ gpe_resources_controller.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -90,7 +90,7 @@ namespace gpe
             error_log->report("Loading" +resource_file_name+" animation...");
             //loads in the animation's texture
             new_animation = rr_package->create_animation2d(  resource_name,resource_file_name, transparent );
-            new_animation->edit_collision_box(cx, cy, cw, ch);
+            new_animation->edit_collision_box(imgnumb,cx, cy, cw, ch);
             atlas_animations[resource_name] = new_animation;
             last_animation_loaded = resource_name;
             return new_animation;

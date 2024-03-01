@@ -3,10 +3,10 @@ gpe_scene_group_class.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -42,7 +42,6 @@ public:
     sceneBranchGroup(std::string nName = "");
     ~sceneBranchGroup();
     void add_typed_elements();
-    bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
     void calculate_size();
     void process_elements();
     void render_branch();

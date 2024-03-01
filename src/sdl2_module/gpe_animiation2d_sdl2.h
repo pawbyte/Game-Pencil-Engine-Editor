@@ -36,8 +36,8 @@ namespace gpe
 
             //So far is the only render function that needs to be virtual in case implementation differs too greatly per backend
             virtual bool render_quad( int sub_image_to_draw, shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha = 255, shape_rect * cam = NULL  );
-            virtual void setup_animation( int frame_count, int aw, int ah, int sofx, int sofy, int hPad, int vPad );
-            virtual void setup_fullimg_animation(  int aw, int ah, int sofx, int sofy, int hPad, int vPad );
+            virtual void setup_animation( int frame_count, int aw, int ah, int sofx, int sofy, int hPad, int vPad,int animAlign = dir_top_left );
+            virtual void setup_fullimg_animation(  int aw, int ah, int sofx, int sofy, int hPad, int vPad,int animAlign = dir_top_left );
             void setup_quad_coordinates();
 
     };

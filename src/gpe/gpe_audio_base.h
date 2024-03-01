@@ -3,10 +3,10 @@ gpe_audio_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -81,7 +81,7 @@ namespace gpe
         public:
             sound_base();
             sound_base( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
-            ~sound_base();
+            virtual ~sound_base();
             virtual sound_base * create_new( std::string s_name, std::string s_file , int group_id_number =-1, int s_id = -1 );
             void computer_lengths();
             std::string get_error();

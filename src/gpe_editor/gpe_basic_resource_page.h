@@ -3,10 +3,10 @@ gpe_basic_resource_page.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -89,7 +89,6 @@ public:
     virtual ~standardEditableGameResource() = 0;
     std::string get_current_name();
     pawgui::widget_basic * add_gui_component(std::string componentData);
-    virtual bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     virtual bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
     virtual void compile_cpp();
     virtual bool get_mouse_coords( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
@@ -104,6 +103,9 @@ public:
     virtual void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     virtual void process_resource( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
     virtual void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+    virtual void render_axis_2d(int x_pos, int y_pos,  bool render_sphere = false,gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+    virtual void render_axis_3d(int x_pos, int y_pos,  bool render_sphere = false, gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+
     void seek_parent_name();
     void set_name(std::string new_name);
     void set_parent_name(std::string new_name);

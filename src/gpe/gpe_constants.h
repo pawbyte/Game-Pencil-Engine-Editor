@@ -3,10 +3,10 @@ gpe_constants.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -46,10 +46,10 @@ namespace gpe
 
     //Game Pencil Runtime
     const float version_number_major = 1;
-    const float version_number_minor = 5;
+    const float version_number_minor = 6;
     const float version_number_update = 0;
     const float version_number_total = version_number_major + version_number_minor/10.f + version_number_update/100.f;
-    const bool version_is_lts = false;
+    const bool version_is_lts = true;
 
     const int is_null = -1;
 

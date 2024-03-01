@@ -3,10 +3,10 @@ animation_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,6 +35,52 @@ SOFTWARE.
 #include "gpe_editor_settings.h"
 
 std::string animation2d_LABELS[ANIMATION_DATA_FIELD_COUNT];
+
+colision_area_resource::colision_area_resource()
+{
+    pawgui::widget_input_number *  current_field = nullptr;
+    for( int i = 0; i < collision_box_fields;  i++ )
+    {
+        current_field = new pawgui::widget_input_number("",true, 0 );
+        animation_collision_property[i] = current_field;
+    }
+
+    //Adds the default values for the collision box( Updated as of 1.6.0 LTS)
+    animation_collision_property[0]->set_label("X-Pos");
+    animation_collision_property[0]->set_string("0");
+    animation_collision_property[0]->scale_width(0.5);
+
+    animation_collision_property[1]->set_label("Y-Pos");
+    animation_collision_property[1]->set_string("0");
+    animation_collision_property[1]->scale_width(0.5);
+
+    animation_collision_property[2]->set_label("Width");
+    animation_collision_property[2]->set_string("0");
+    animation_collision_property[2]->scale_width(0.5);
+
+
+    animation_collision_property[3]->set_label("Height");
+    animation_collision_property[3]->set_string("0");
+    animation_collision_property[3]->scale_width(0.5);
+
+    animation_collision_property[4]->set_label("Radius");
+    animation_collision_property[4]->set_string("0");
+}
+
+colision_area_resource::~colision_area_resource()
+{
+    pawgui::widget_input_number *  current_field = nullptr;
+    for( int i = collision_box_fields-1; i>=0;  i--)
+    {
+        current_field = animation_collision_property[i];
+        if( current_field !=nullptr)
+        {
+            delete current_field;
+            current_field = nullptr;
+            animation_collision_property[i] = nullptr;
+        }
+    }
+}
 
 animationResource::animationResource(pawgui::widget_resource_container * pFolder)
 {
@@ -79,6 +125,23 @@ animationResource::animationResource(pawgui::widget_resource_container * pFolder
     preloadCheckBox = new pawgui::widget_checkbox("Preload animation","Check to load animation at game open", true);
     showCollisionShapeCheckBox = new pawgui::widget_checkbox("Preview Collision Shape","", true);
     showAnimationCheckBox = new pawgui::widget_checkbox("Preview animation Animation","", true);
+
+
+    animationAlignmentMenu = new pawgui::widget_dropdown_menu( "Animation Alignment",true);
+
+    animationAlignmentMenu->add_menu_option("Top-Left","topleft",gpe::dir_top_left,true);
+    animationAlignmentMenu->add_menu_option("Top-Center","topcenter",gpe::dir_top_center,false);
+    animationAlignmentMenu->add_menu_option("Top-Right","topright",gpe::dir_top_right,false);
+
+    animationAlignmentMenu->add_menu_option("Middle-Left","middleleft",gpe::dir_middle_left,false);
+    animationAlignmentMenu->add_menu_option("Middle-Center","middlecenter",gpe::dir_middle_center,false);
+    animationAlignmentMenu->add_menu_option("Middle-Right","middleright",gpe::dir_middle_right,false);
+
+    animationAlignmentMenu->add_menu_option("Bottom-Left","bottomleft",gpe::dir_bottom_left,false);
+    animationAlignmentMenu->add_menu_option("Bottom-Center","bottomcenter",gpe::dir_bottom_center,false);
+    animationAlignmentMenu->add_menu_option("Bottom-Right","bottomright",gpe::dir_bottom_right,false);
+
+
     animationCollisionShapeMenu = new pawgui::widget_dropdown_menu( "Collision Shape",true);
     animationCollisionShapeMenu->add_menu_option("Rectangle","rectangle",0,true);
     animationCollisionShapeMenu->add_menu_option("Circle","circle",1,false);
@@ -87,37 +150,9 @@ animationResource::animationResource(pawgui::widget_resource_container * pFolder
     //animationCollisionShapeMenu->add_menu_option("Hexagon [ Coming Soon]");
 
     animationCenterCollision_button = new pawgui::widget_button_label( "Center Collision Shape","Centers the collision box");
-    animationCollisionRectX = new pawgui::widget_input_number("0",true,0);
-    animationCollisionRectX->set_label("X-Pos");
-    animationCollisionRectX->set_string("0");
-    animationCollisionRectX->scale_width(0.5);
 
-    animationCollisionRectY = new pawgui::widget_input_number("0",true,0);
-    animationCollisionRectY->set_label("Y-Pos");
-    animationCollisionRectY->set_string("0");
-    animationCollisionRectY->scale_width(0.5);
-
-    animationCollisionRectW = new pawgui::widget_input_number("0",true,0);
-    animationCollisionRectW->set_label("Width");
-    animationCollisionRectW->set_string("0");
-    animationCollisionRectW->scale_width(0.5);
-
-    animationCollisionRectH = new pawgui::widget_input_number("0",true,0);
-    animationCollisionRectH->set_label("Height");
-    animationCollisionRectH->set_string("0");
-    animationCollisionRectH->scale_width(0.5);
-
-    animationCollisionCircleX = new pawgui::widget_input_number("0",true,0);
-    animationCollisionCircleX->set_label("X-Pos");
-    animationCollisionCircleX->set_string("0");
-
-    animationCollisionCircleY = new pawgui::widget_input_number("0",true,0);
-    animationCollisionCircleY->set_label("Y-Pos");
-    animationCollisionCircleY->set_string("0");
-
-    animationCollisionCircleR = new pawgui::widget_input_number("0",true,0);
-    animationCollisionCircleR->set_label("Radius");
-    animationCollisionCircleR->set_string("0");
+    colision_area_resource * default_collision_box = new colision_area_resource();
+    collision_areas.push_back(  default_collision_box );
     int i = 0;
 
     animationDataFields[i] = new pawgui::widget_input_number("");
@@ -247,6 +282,13 @@ animationResource::~animationResource()
         delete showCollisionShapeCheckBox;
         showCollisionShapeCheckBox = nullptr;
     }
+
+
+    if( animationAlignmentMenu!=nullptr)
+    {
+        delete animationAlignmentMenu;
+        animationAlignmentMenu = nullptr;
+    }
     if( animationCollisionShapeMenu!=nullptr)
     {
         delete animationCollisionShapeMenu;
@@ -257,41 +299,15 @@ animationResource::~animationResource()
         delete animationCenterCollision_button;
         animationCenterCollision_button = nullptr;
     }
-    if( animationCollisionRectX!=nullptr)
+
+    colision_area_resource * current_collison_area = nullptr;
+    for( int iCollisionBoxes = (int)collision_areas.size() -1; iCollisionBoxes >=0; iCollisionBoxes-- )
     {
-        delete animationCollisionRectX;
-        animationCollisionRectX = nullptr;
+        current_collison_area = collision_areas[iCollisionBoxes];
+        delete current_collison_area;
+        current_collison_area = nullptr;
     }
-    if( animationCollisionRectY!=nullptr)
-    {
-        delete animationCollisionRectY;
-        animationCollisionRectY = nullptr;
-    }
-    if( animationCollisionRectW!=nullptr)
-    {
-        delete animationCollisionRectW;
-        animationCollisionRectW = nullptr;
-    }
-    if( animationCollisionRectH!=nullptr)
-    {
-        delete animationCollisionRectH;
-        animationCollisionRectH = nullptr;
-    }
-    if( animationCollisionCircleX!=nullptr)
-    {
-        delete animationCollisionCircleX;
-        animationCollisionCircleX = nullptr;
-    }
-    if( animationCollisionCircleY!=nullptr)
-    {
-        delete animationCollisionCircleY;
-        animationCollisionCircleY = nullptr;
-    }
-    if( animationCollisionCircleR!=nullptr)
-    {
-        delete animationCollisionCircleR;
-        animationCollisionCircleR = nullptr;
-    }
+    collision_areas.clear();
 
     if( previousSubImage_button!=nullptr)
     {
@@ -335,47 +351,6 @@ animationResource::~animationResource()
 
 }
 
-bool animationResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount)
-{
-    if( fileTarget!=nullptr && fileTarget->is_open() )
-    {
-        std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
-        std::string html5SpShName = get_name();
-        if( is_build_ready() )
-        {
-            std::string nestedTabsStrObjFunc = pawgui::generate_tabs( leftTabAmount +1 );
-
-            *fileTarget << nestedTabsStr << "var " << html5SpShName << " =  GPE.rsm.add_animation(";
-            *fileTarget << stg_ex::int_to_string (exportBuildGlobalId ) +",";
-            *fileTarget << stg_ex::int_to_string ( (int)animInEditor->get_frame_count() )  +",";
-            *fileTarget << "'resources/animations/"+ stg_ex::get_short_filename (animInEditor->get_file_name(),true )+"',";
-            *fileTarget << stg_ex::int_to_string (animInEditor->get_frame_xoffset() ) +",";
-            *fileTarget << stg_ex::int_to_string (animInEditor->get_frame_yoffset() ) +",";
-            *fileTarget << stg_ex::int_to_string (animInEditor->get_width() ) +",";
-            *fileTarget << stg_ex::int_to_string (animInEditor->get_height() ) +",";
-            *fileTarget << stg_ex::int_to_string (animationCollisionShapeMenu->get_selected_id() ) +",";
-            if( animationCollisionShapeMenu->get_selected_value()==1)
-            {
-                *fileTarget << stg_ex::int_to_string (animationCollisionCircleX->get_held_number() ) +",";
-                *fileTarget << stg_ex::int_to_string (animationCollisionCircleY->get_held_number() ) +",";
-                *fileTarget << stg_ex::int_to_string (animationCollisionCircleR->get_held_number() );
-            }
-            else
-            {
-
-                *fileTarget << stg_ex::int_to_string (animationCollisionRectX->get_held_number() ) +",";
-                *fileTarget << stg_ex::int_to_string (animationCollisionRectY->get_held_number() ) +",";
-                *fileTarget << stg_ex::int_to_string (animationCollisionRectW->get_held_number() ) +",";
-                *fileTarget << stg_ex::int_to_string (animationCollisionRectH->get_held_number() );
-            }
-            *fileTarget << ");\n";
-            return true;
-        }
-        *fileTarget << nestedTabsStr << "var " << html5SpShName << " = GPE.rsm.add_animation_empty();\n";
-        return true;
-    }
-    return false;
-}
 
 bool animationResource::build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount  )
 {
@@ -393,21 +368,21 @@ bool animationResource::build_intocpp_file(std::ofstream * fileTarget, int leftT
             *fileTarget << stg_ex::int_to_string (animInEditor->get_frame_yoffset() ) +",";
             *fileTarget << stg_ex::int_to_string (animInEditor->get_width() ) +",";
             *fileTarget << stg_ex::int_to_string (animInEditor->get_height() ) +",";
-            *fileTarget << stg_ex::int_to_string (animationCollisionShapeMenu->get_selected_id() ) +",";
-            if( animationCollisionShapeMenu->get_selected_value()==1)
+            *fileTarget << stg_ex::int_to_string (animationCollisionShapeMenu->get_selected_id() ) +",\n";
+
+            colision_area_resource * c_box_area = nullptr;
+            int j_col_property = 0;
+            //Loops through every stored frame and store it's collision frame data
+            for( int i_col_box = 0; i_col_box < (int)collision_areas.size(); i_col_box++ )
             {
-                *fileTarget << stg_ex::int_to_string (animationCollisionCircleX->get_held_number() ) +",";
-                *fileTarget << stg_ex::int_to_string (animationCollisionCircleY->get_held_number() ) +",";
-                *fileTarget << stg_ex::int_to_string (animationCollisionCircleR->get_held_number() );
+                c_box_area = collision_areas[i_col_box];
+                *fileTarget << "CollisionInfo[" << stg_ex::int_to_string (i_col_box ) +"]=";
+                for( j_col_property = 0; j_col_property <= collision_area_r; j_col_property++ )
+                {
+                    *fileTarget << stg_ex::int_to_string (c_box_area->animation_collision_property[j_col_property]->get_held_number() )+",";
+                }
+                *fileTarget << "\n";
             }
-            else
-            {
-                *fileTarget << stg_ex::int_to_string (animationCollisionRectX->get_held_number() ) +",";
-                *fileTarget << stg_ex::int_to_string (animationCollisionRectY->get_held_number() ) +",";
-                *fileTarget << stg_ex::int_to_string (animationCollisionRectW->get_held_number() ) +",";
-                *fileTarget << stg_ex::int_to_string (animationCollisionRectH->get_held_number() );
-            }
-            *fileTarget << "\");\n";
             return true;
         }
     }
@@ -634,6 +609,7 @@ void animationResource::load_image(std::string new_file_name, bool autoProcess)
             }
             else if( autoProcess )
             {
+                int j = 0;
                 for( int i =0; i < ANIMATION_DATA_FIELD_COUNT; i++)
                 {
                     animationDataFields[i]->set_number(0);
@@ -642,14 +618,36 @@ void animationResource::load_image(std::string new_file_name, bool autoProcess)
                 animationDataFields[ gpe::anim_frame_height ]->set_number( animInEditor->get_texture_height() );
 
                 int radMin = std::min ( animInEditor->get_texture_width(),animInEditor->get_texture_height() )/2;
-                animationCollisionCircleX->set_number( animInEditor->get_texture_width()/2);
-                animationCollisionCircleY->set_number( animInEditor->get_texture_height()/2 );
-                animationCollisionCircleR->set_number(  radMin );
 
-                animationCollisionRectX->set_number(0);
-                animationCollisionRectY->set_number(0);
-                animationCollisionRectW->set_number( animInEditor->get_texture_width() );
-                animationCollisionRectH->set_number( animInEditor->get_texture_height() );
+                colision_area_resource * c_box = nullptr;
+
+                for( j = 0; j < (int)animInEditor->get_frame_count(); j ++ )
+                {
+                    c_box = new colision_area_resource();
+                    collision_areas.push_back( c_box);
+                }
+                for( j = 0; j < (int)collision_areas.size(); j++)
+                {
+                    c_box = collision_areas[j];
+                    if( c_box !=nullptr )
+                    {
+                        if( animationCollisionShapeMenu->get_selected_value()  == 0 )
+                        {
+                            c_box->animation_collision_property[collision_area_x]->set_number(0);
+                            c_box->animation_collision_property[collision_area_y]->set_number(0);
+
+                        }
+                        else
+                        {
+                            c_box->animation_collision_property[collision_area_x]->set_number( animInEditor->get_texture_width()/2);
+                            c_box->animation_collision_property[collision_area_y]->set_number( animInEditor->get_texture_height()/2 );
+                        }
+
+                        c_box->animation_collision_property[collision_area_r]->set_number(  radMin );
+                        c_box->animation_collision_property[collision_area_w]->set_number( animInEditor->get_texture_width() );
+                        c_box->animation_collision_property[collision_area_h]->set_number( animInEditor->get_texture_height() );
+                    }
+                }
             }
         }
         else
@@ -665,6 +663,7 @@ void animationResource::load_resource(std::string file_path)
     {
         return;
     }
+    gpe::error_log->report("[animationResource] loading" + file_path + "file...");
     if( main_gpe_splash_page != nullptr )
     {
         main_gpe_splash_page->update_submessages( "Loading Animation", resource_name );
@@ -694,7 +693,7 @@ void animationResource::load_resource(std::string file_path)
 
     //error_log->report("Loading animation - "+newFileIn);
     //If the level file could be loaded
-    float foundFileVersion = -1;
+    float found_file_version = -1;
     if( gameResourceFileIn.fail() )
     {
         gameResourceFileIn.close();
@@ -717,14 +716,18 @@ void animationResource::load_resource(std::string file_path)
     std::string currLineToBeProcessed;
     std::string sprDataStr;
 
-    int i = 0;
+    int i = 0, j = 0, k = 0;
+
+    bool one_collision_version = true;
+
+    int temp_col_x = 0, temp_col_y = 0, temp_col_w = 0, temp_col_h = 0, temp_col_r = 0, temp_col_shape = 0 ;
     while ( gameResourceFileIn.good() )
     {
         getline (gameResourceFileIn,currLine); //gets the next line of the file
         currLineToBeProcessed = stg_ex::trim_left_inplace(currLine);
         currLineToBeProcessed = stg_ex::trim_right_inplace(currLineToBeProcessed);
 
-        if( foundFileVersion <=0)
+        if( found_file_version <=0)
         {
             //Empty Line skipping is only allowed at the top of the file
             if(!currLineToBeProcessed.empty() )
@@ -741,13 +744,22 @@ void animationResource::load_resource(std::string file_path)
                         valstring = currLineToBeProcessed.substr(equalPos+1,currLineToBeProcessed.length());
                         if( key_string=="Version")
                         {
-                            foundFileVersion = stg_ex::string_to_float(valstring);
+                            found_file_version = stg_ex::string_to_float(valstring);
+
+                            if( found_file_version < GPE_ANIM_CBOX_VERSION )
+                            {
+                                one_collision_version = true;
+                            }
+                            else
+                            {
+                                one_collision_version = false;
+                            }
                         }
                     }
                 }
             }
         }
-        else if( foundFileVersion <= 2)
+        else if( found_file_version <= 2)
         {
             //Begin processing the file.
             if(!currLineToBeProcessed.empty() )
@@ -796,20 +808,39 @@ void animationResource::load_resource(std::string file_path)
                     }
                     else if( key_string=="collisionshape" )
                     {
-                        animationCollisionShapeMenu->set_option_value( stg_ex::string_to_int(valstring) );
+                        temp_col_shape = stg_ex::string_to_int(valstring);
+                        if( temp_col_shape < 0 || temp_col_shape > 1 )
+                        {
+                            temp_col_shape = 0;
+                        }
+                        animationCollisionShapeMenu->set_option_value( temp_col_shape );
                     }
-                    else if( key_string=="circlecollisionregion")
+                    else if( key_string == "circlecollisionregion")
                     {
-                        animationCollisionCircleX->set_number(stg_ex::split_first_int(valstring,',') );
-                        animationCollisionCircleY->set_number(stg_ex::split_first_int(valstring,',') );
-                        animationCollisionCircleR->set_number( stg_ex::string_to_int(valstring,0) );
+                        //We will attempt to process older formats from 1.6x or earlier
+
+                        temp_col_x = stg_ex::split_first_int(valstring,',');
+                        temp_col_y = stg_ex::split_first_int(valstring,',');
+                        temp_col_r = stg_ex::string_to_int(valstring,0);
+                        temp_col_w = temp_col_h = temp_col_r;
+
+                        for( i = 0; i < animInEditor->get_frame_count(); i ++)
+                        {
+                            animInEditor->edit_collision_circle(i, temp_col_x, temp_col_y, temp_col_r);
+                        }
                     }
                     else if( key_string=="rectanglecollisionbox")
                     {
-                        animationCollisionRectX->set_number( stg_ex::split_first_int(valstring,',') );
-                        animationCollisionRectY->set_number( stg_ex::split_first_int(valstring,',') );
-                        animationCollisionRectW->set_number( stg_ex::split_first_int(valstring,',') );
-                        animationCollisionRectH->set_number( stg_ex::string_to_int(valstring,0) );
+                        //We will attempt to process older formats from 1.6x or earlier
+                        temp_col_x = stg_ex::split_first_int(valstring,',');
+                        temp_col_y = stg_ex::split_first_int(valstring,',');
+                        temp_col_w = stg_ex::split_first_int(valstring,',');
+                        temp_col_h = stg_ex::string_to_int(valstring,0);
+                        temp_col_w = std::min( temp_col_w, temp_col_h);
+                        for( i = 0; i < animInEditor->get_frame_count(); i ++)
+                        {
+                            animInEditor->edit_collision_box(i, temp_col_x, temp_col_y, temp_col_w, temp_col_h );
+                        }
                     }
                     else if( key_string=="subimageinview")
                     {
@@ -818,7 +849,7 @@ void animationResource::load_resource(std::string file_path)
                     }
                     else
                     {
-                        if( semath::compare_floats(foundFileVersion, GPE_ANIM_FCOUNT_VERSION) || foundFileVersion > GPE_ANIM_FCOUNT_VERSION )
+                        if( semath::compare_floats(found_file_version, GPE_ANIM_FCOUNT_VERSION) || found_file_version > GPE_ANIM_FCOUNT_VERSION )
                         {
                             //error_log->report("Proper animation system used ["+resource_name+"]");
                             for( i = 0; i <ANIMATION_DATA_FIELD_COUNT ; i++)
@@ -866,36 +897,46 @@ void animationResource::load_resource(std::string file_path)
         }
         else
         {
-            gpe::error_log->report("Invalid FoundFileVersion ="+ stg_ex::float_to_string(foundFileVersion)+".");
+            gpe::error_log->report("Invalid found_file_version ="+ stg_ex::float_to_string(found_file_version)+".");
         }
     }
-    if( foundFileVersion > 0 )
+
+
+    if( found_file_version > 0 )
     {
         resourcePostProcessed= true;
     }
-    process_data_fields(foundFileVersion);
+
+    process_data_fields(found_file_version);
+    gpe::error_log->report("[animationResource] loaded" + file_path + "successfully...");
+
 }
 
-void animationResource::process_collision_box()
+void animationResource::process_collision_box(int frame_id)
 {
-    if( animInEditor== nullptr)
+    if( animInEditor== nullptr || frame_id < 0 || frame_id >= animInEditor->get_frame_count() )
     {
         return;
     }
-    if( animationCollisionShapeMenu->get_selected_name()=="Circle")
+    if( frame_id >= (int)collision_areas.size() )
     {
-        int colX = animationCollisionCircleX->get_held_number();
-        int colY = animationCollisionCircleY->get_held_number();
-        int colR = animationCollisionCircleR->get_held_number();
-        animInEditor->edit_collision_circle(colX, colY, colR );
+        return;
+    }
+    colision_area_resource * t_col_box = collision_areas[frame_id];
+    if( animationCollisionShapeMenu->get_selected_value()==1)
+    {
+        int colX = t_col_box->animation_collision_property[collision_area_x]->get_held_number();
+        int colY = t_col_box->animation_collision_property[collision_area_y]->get_held_number();
+        int colR = t_col_box->animation_collision_property[collision_area_r]->get_held_number();
+        animInEditor->edit_collision_circle(frame_id,colX, colY, colR );
     }
     else
     {
-        int colX = animationCollisionRectX->get_held_number();
-        int colW = animationCollisionRectW->get_held_number();
-        int colY = animationCollisionRectY->get_held_number();
-        int colH = animationCollisionRectH->get_held_number();
-        animInEditor->edit_collision_box(colX, colY, colW,  colH );
+        int colX = t_col_box->animation_collision_property[collision_area_x]->get_held_number();
+        int colY = t_col_box->animation_collision_property[collision_area_y]->get_held_number();
+        int colW = t_col_box->animation_collision_property[collision_area_w]->get_held_number();
+        int colH = t_col_box->animation_collision_property[collision_area_h]->get_held_number();
+        animInEditor->edit_collision_box(frame_id,colX, colY, colW,  colH );
     }
 }
 
@@ -943,16 +984,39 @@ void animationResource::process_data_fields(float versionToProcess)
 
                 if( versionToProcess > 0 && ( semath::compare_floats(versionToProcess,GPE_ANIM_FCOUNT_VERSION) || versionToProcess > GPE_ANIM_FCOUNT_VERSION  ) && maxanimationFrames > 0)
                 {
-                    animInEditor->setup_animation( maxanimationFrames,fWidth, fHeight, fPixelOffsetH, fPixelOffsetV, hPadding, vPadding);
+                    animInEditor->setup_animation( maxanimationFrames,fWidth, fHeight, fPixelOffsetH, fPixelOffsetV, hPadding, vPadding, animInEditor->get_alignment() );
                 }
                 else
                 {
-                    animInEditor->setup_fullimg_animation(fWidth, fHeight, fPixelOffsetH, fPixelOffsetV, hPadding, vPadding);
+                    animInEditor->setup_fullimg_animation(fWidth, fHeight, fPixelOffsetH, fPixelOffsetV, hPadding, vPadding, animInEditor->get_alignment() );
                     animationDataFields[ gpe::anim_frame_count]->set_number( animInEditor->get_frame_count() );
                 }
             }
         }
-        process_collision_box();
+        process_collision_box(0);
+
+        colision_area_resource * c_box = nullptr;
+        if( semath::compare_floats(versionToProcess, GPE_ANIM_CBOX_VERSION) || versionToProcess < GPE_ANIM_CBOX_VERSION )
+        {
+
+            for( int i_box = 1; i_box < (int)animInEditor->frame_data.size(); i_box++)
+            {
+                animInEditor->frame_data[i_box]->collision_box->x = animInEditor->frame_data[0]->collision_box->x;
+                animInEditor->frame_data[i_box]->collision_box->y = animInEditor->frame_data[0]->collision_box->y;
+                animInEditor->frame_data[i_box]->collision_box->w = animInEditor->frame_data[0]->collision_box->w;
+                animInEditor->frame_data[i_box]->collision_box->h = animInEditor->frame_data[0]->collision_box->h;
+
+
+                c_box = new colision_area_resource();
+                c_box->animation_collision_property[collision_area_x]->set_number(animInEditor->frame_data[0]->collision_box->x );
+                c_box->animation_collision_property[collision_area_y]->set_number(animInEditor->frame_data[0]->collision_box->y );
+                c_box->animation_collision_property[collision_area_w]->set_number(animInEditor->frame_data[0]->collision_box->w);
+                c_box->animation_collision_property[collision_area_h]->set_number(animInEditor->frame_data[0]->collision_box->h );
+                c_box->animation_collision_property[collision_area_r]->set_number(animInEditor->frame_data[0]->collision_radius );
+                collision_areas.push_back( c_box);
+            }
+        }
+
     }
 }
 
@@ -1004,6 +1068,7 @@ void animationResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
         animRect.h = animInEditor->get_texture_height();
     }
 
+    colision_area_resource *  col_area = nullptr;
     if( minZoomValue == 0)
     {
        minZoomValue = 0.0625;
@@ -1144,6 +1209,9 @@ void animationResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
         panel_main_editor->add_gui_element(labelInfoMaxTextureSize,true);
         panel_main_editor->add_gui_element( labelanimationDimensions,true);
 
+
+        panel_main_editor->add_gui_element( animationAlignmentMenu,true);
+
         panel_main_editor->add_gui_element(imageUsesColorKey,true);
         panel_main_editor->add_gui_element(imageColorKey,true);
         panel_main_editor->add_gui_element(imageColorKey,true);
@@ -1174,25 +1242,34 @@ void animationResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
     collisionAndPreviewDataPanel->add_gui_element( animationCenterCollision_button,true);
 
     //Rectangle collision box
-    if( animationCollisionShapeMenu->get_selected_value()==0 )
-    {
-        collisionAndPreviewDataPanel->add_gui_element( animationCollisionRectX,false);
-        collisionAndPreviewDataPanel->add_gui_element( animationCollisionRectY,true);
-        collisionAndPreviewDataPanel->add_gui_element( animationCollisionRectW,false);
-        collisionAndPreviewDataPanel->add_gui_element( animationCollisionRectH,true);
-    }
-    else
-    {
-        //Circle collision box
-        animationCollisionCircleX->set_width( (collisionAndPreviewDataPanel->get_width()-pawgui::padding_default*3 )/3 );
-        animationCollisionCircleY->set_width( animationCollisionCircleX->get_width( ) );
-        animationCollisionCircleR->set_width(animationCollisionCircleX->get_width( ) );
 
-        collisionAndPreviewDataPanel->add_gui_element( animationCollisionCircleX,false);
-        collisionAndPreviewDataPanel->add_gui_element( animationCollisionCircleY,false);
-        collisionAndPreviewDataPanel->add_gui_element( animationCollisionCircleR,true);
-        collisionAndPreviewDataPanel->add_gui_element( showCollisionShapeCheckBox,true);
+    if( subImagePreviewNumber >= (int)collision_areas.size() )
+    {
+        subImageEditorPreviewId = 0;
     }
+    if( subImagePreviewNumber >=0 && subImagePreviewNumber < (int)collision_areas.size() )
+    {
+        col_area = collision_areas[subImagePreviewNumber];
+        if( animationCollisionShapeMenu->get_selected_value()==0 )
+        {
+            collisionAndPreviewDataPanel->add_gui_element( col_area->animation_collision_property[collision_area_x],false);
+            collisionAndPreviewDataPanel->add_gui_element( col_area->animation_collision_property[collision_area_y],true);
+            collisionAndPreviewDataPanel->add_gui_element( col_area->animation_collision_property[collision_area_w],false);
+            collisionAndPreviewDataPanel->add_gui_element( col_area->animation_collision_property[collision_area_h],true);
+        }
+        else
+        {
+            //Circle collision box
+            col_area->animation_collision_property[collision_area_x]->set_width( (collisionAndPreviewDataPanel->get_width()-pawgui::padding_default*3 )/3 );
+            col_area->animation_collision_property[collision_area_y]->set_width( col_area->animation_collision_property[collision_area_x]->get_width( ) );
+            col_area->animation_collision_property[collision_area_h]->set_width(col_area->animation_collision_property[collision_area_x]->get_width( ) );
+
+            collisionAndPreviewDataPanel->add_gui_element( col_area->animation_collision_property[collision_area_x],false);
+            collisionAndPreviewDataPanel->add_gui_element( col_area->animation_collision_property[collision_area_y],false);
+            collisionAndPreviewDataPanel->add_gui_element( col_area->animation_collision_property[collision_area_r],true);
+        }
+    }
+    collisionAndPreviewDataPanel->add_gui_element( showCollisionShapeCheckBox,true);
 
     if( panel_inspector != nullptr)
     {
@@ -1238,14 +1315,28 @@ void animationResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
             }
 
             int radMin = std::min (animationDataFields[ gpe::anim_frame_width]->get_held_number(), animationDataFields[ gpe::anim_frame_height]->get_held_number() )/2;
-            animationCollisionCircleX->set_number( animationDataFields[ gpe::anim_frame_width]->get_held_number()/2);
-            animationCollisionCircleY->set_number( animationDataFields[ gpe::anim_frame_height]->get_held_number()/2 );
-            animationCollisionCircleR->set_number(  radMin );
 
-            animationCollisionRectX->set_number(0);
-            animationCollisionRectY->set_number(0);
-            animationCollisionRectW->set_number( animationDataFields[ gpe::anim_frame_width]->get_held_number() );
-            animationCollisionRectH->set_number( animationDataFields[ gpe::anim_frame_height]->get_held_number() );
+            col_area = nullptr;
+            for( int i_col_frame = 0; i_col_frame < (int)collision_areas.size(); i_col_frame++)
+            {
+                col_area = collision_areas[i_col_frame];
+                if( animationCollisionShapeMenu->get_selected_value()  == 0 )
+                {
+                    col_area->animation_collision_property[collision_area_x]->set_number(0);
+                    col_area->animation_collision_property[collision_area_y]->set_number(0);
+                    col_area->animation_collision_property[collision_area_w]->set_number( animationDataFields[ gpe::anim_frame_width]->get_held_number() );
+                    col_area->animation_collision_property[collision_area_h]->set_number( animationDataFields[ gpe::anim_frame_height]->get_held_number() );
+                }
+                else
+                {
+                    col_area->animation_collision_property[collision_area_x]->set_number( animationDataFields[ gpe::anim_frame_width]->get_held_number()/2);
+                    col_area->animation_collision_property[collision_area_r]->set_number( animationDataFields[ gpe::anim_frame_height]->get_held_number()/2 );
+                    col_area->animation_collision_property[collision_area_y]->set_number(  radMin );
+                }
+            }
+
+
+
             requestedMode = 0;
             gpe::input->reset_all_input();
             save_resource();
@@ -1328,134 +1419,164 @@ void animationResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
 
     if( animationCollisionShapeMenu!=nullptr)
     {
-        if( animationCollisionShapeMenu->get_selected_value()==0 )
+        if( animationCenterCollision_button->is_clicked() && animInEditor!=nullptr)
         {
-            if( animationCenterCollision_button->is_clicked() && animInEditor!=nullptr)
+            int col_box_numb = 0;
+            colision_area_resource *  temp_bol_box = nullptr;
+            if( animationCollisionShapeMenu->get_selected_value()==0 )
             {
-                animationCollisionRectX->set_string( stg_ex::int_to_string( 0 ) );
-                animationCollisionRectY->set_string( stg_ex::int_to_string( 0 ) );
-                animationCollisionRectW->set_string( stg_ex::int_to_string( animInEditor->get_width() ) );
-                animationCollisionRectH->set_string( stg_ex::int_to_string( animInEditor->get_height() ) );
+                for( col_box_numb = 0; col_box_numb < (int)collision_areas.size(); col_box_numb++ )
+                {
+                    temp_bol_box= collision_areas[col_box_numb];
+                    temp_bol_box->animation_collision_property[collision_area_x]->set_string( stg_ex::int_to_string( 0 ) );
+                    temp_bol_box->animation_collision_property[collision_area_y]->set_string( stg_ex::int_to_string( 0 ) );
+                    temp_bol_box->animation_collision_property[collision_area_w]->set_string( stg_ex::int_to_string( animInEditor->get_width() ) );
+                    temp_bol_box->animation_collision_property[collision_area_h]->set_string( stg_ex::int_to_string( animInEditor->get_height() ) );
+                }
             }
-        }
-        else if( animationCollisionShapeMenu->get_selected_value()==1 )
-        {
-            if( animationCenterCollision_button->is_clicked() && animInEditor!=nullptr)
+            else if( animationCollisionShapeMenu->get_selected_value()==1 )
             {
                 int smallestCenter = std::min( animInEditor->get_width(), animInEditor->get_height() )/2;
-                animationCollisionCircleX->set_string( stg_ex::int_to_string( animInEditor->get_width()/2 ) );
-                animationCollisionCircleY->set_string( stg_ex::int_to_string( animInEditor->get_height()/2 ) );
-                animationCollisionCircleR->set_string( stg_ex::int_to_string(smallestCenter ) );
+                for( col_box_numb = 0; col_box_numb < (int)collision_areas.size(); col_box_numb++ )
+                {
+                    temp_bol_box= collision_areas[col_box_numb];
+                    temp_bol_box->animation_collision_property[collision_area_x]->set_string( stg_ex::int_to_string( animInEditor->get_width()/2 ) );
+                    temp_bol_box->animation_collision_property[collision_area_y]->set_string( stg_ex::int_to_string( animInEditor->get_height()/2 ) );
+                    temp_bol_box->animation_collision_property[collision_area_r]->set_string( stg_ex::int_to_string(smallestCenter ) );
+                }
             }
         }
+    }
 
-        //Animates animation
-        if( playPauseResource_button->get_name()=="Stop" )
+    if( animationAlignmentMenu != nullptr )
+    {
+        if( animationAlignmentMenu->just_activated() )
         {
-            animationSpeed = gpe::fps_cap/4.f;
-            //animationSpeed = std::max( 1, animationSpeed );
-            subImageMiniAnimationNumber += ( animationSpeed * gpe::time_keeper->get_delta_performance() )/ 100.f ;
-            //error_log->report("Animating animation by "+ stg_ex::float_to_string(animationSpeed)+"..."+ stg_ex::int_to_string(random(0,100) )+"...");
+            int selected_align_value = animationAlignmentMenu->get_selected_value();
+            gpe::error_log->report("[Animation DEBUG:] animationAlignmentMenu just activated");
 
-            if( subImageMiniAnimationNumber >= animationSpeed )
+            if( selected_align_value >=0 && selected_align_value <= gpe::dir_bottom_right )
             {
-                subImagePreviewNumber++;
-                subImageNumberField->set_number( subImagePreviewNumber);
-                subImageMiniAnimationNumber = 0;
+                gpe::error_log->report("[Animation DEBUG:] animationAlignmentMenu's selected_align_value = " + stg_ex::int_to_string(selected_align_value) );
+                if( animInEditor!=nullptr )
+                {
+                    gpe::error_log->report("[Animation DEBUG:] Changing animInEditor's alignment to " + stg_ex::int_to_string(selected_align_value) );
+                    animInEditor->set_alignment( selected_align_value );
+                }
             }
         }
+    }
+    else
+    {
+        gpe::error_log->report("[Animation DEBUG:] animationAlignmentMenu = nullptr");
+    }
 
-        if( previousSubImage_button!=nullptr && previousSubImage_button->is_clicked() && subImagePreviewNumber > 0)
-        {
-            subImagePreviewNumber--;
-            subImageNumberField->set_number( subImagePreviewNumber);
-            playPauseResource_button->set_name("Play");
-            playPauseResource_button->change_texture( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png" );
-        }
+    //Animates animation
+    if( playPauseResource_button->get_name()=="Stop" )
+    {
+        animationSpeed = gpe::fps_cap/4.f;
+        //animationSpeed = std::max( 1, animationSpeed );
+        subImageMiniAnimationNumber += ( animationSpeed * gpe::time_keeper->get_delta_performance() )/ 100.f ;
+        //error_log->report("Animating animation by "+ stg_ex::float_to_string(animationSpeed)+"..."+ stg_ex::int_to_string(random(0,100) )+"...");
 
-        if( subImageNumberField!=nullptr && subImageNumberField->is_inuse() )
-        {
-            subImagePreviewNumber = subImageNumberField->get_held_number();
-            playPauseResource_button->set_name("Play");
-            playPauseResource_button->change_texture( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png" );
-        }
-
-        if( nextSubImage_button!=nullptr &&  nextSubImage_button->is_clicked() )
+        if( subImageMiniAnimationNumber >= animationSpeed )
         {
             subImagePreviewNumber++;
             subImageNumberField->set_number( subImagePreviewNumber);
-            playPauseResource_button->set_name("Play");
-            playPauseResource_button->change_texture( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png" );
+            subImageMiniAnimationNumber = 0;
         }
+    }
 
-        if( subImagePreviewNumber >= (int)animInEditor->get_frame_count() )
-        {
-            subImagePreviewNumber = 0;
-            subImageNumberField->set_number( subImagePreviewNumber);
-        }
+    if( previousSubImage_button!=nullptr && previousSubImage_button->is_clicked() && subImagePreviewNumber > 0)
+    {
+        subImagePreviewNumber--;
+        subImageNumberField->set_number( subImagePreviewNumber);
+        playPauseResource_button->set_name("Play");
+        playPauseResource_button->change_texture( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png" );
+    }
 
-        if(subImagePreviewNumber < 0 )
-        {
-            subImagePreviewNumber = 0;
-            subImageNumberField->set_number( subImagePreviewNumber);
-        }
+    if( subImageNumberField!=nullptr && subImageNumberField->is_inuse() )
+    {
+        subImagePreviewNumber = subImageNumberField->get_held_number();
+        playPauseResource_button->set_name("Play");
+        playPauseResource_button->change_texture( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png" );
+    }
 
-        if( panel_main_editor!=nullptr)
-        {
-            editorHasControl = panel_main_editor->hasScrollControl || collisionAndPreviewDataPanel->hasScrollControl;
-        }
-        else
-        {
-            editorHasControl = collisionAndPreviewDataPanel->hasScrollControl;
-        }
-        //actual saving of the animation onto the engine and files
-        if( get_mouse_coords(view_space, cam) )
-        {
-            areaIsScrollable = true;
-        }
-        else
-        {
-            areaIsScrollable = false;
-        }
-        handle_scrolling();
+    if( nextSubImage_button!=nullptr &&  nextSubImage_button->is_clicked() )
+    {
+        subImagePreviewNumber++;
+        subImageNumberField->set_number( subImagePreviewNumber);
+        playPauseResource_button->set_name("Play");
+        playPauseResource_button->change_texture( gpe::app_directory_name+"resources/gfx/iconpacks/fontawesome/play.png" );
+    }
 
-        if( areaIsScrollable )
+    if( subImagePreviewNumber >= (int)animInEditor->get_frame_count() )
+    {
+        subImagePreviewNumber = 0;
+        subImageNumberField->set_number( subImagePreviewNumber);
+    }
+
+    if(subImagePreviewNumber < 0 )
+    {
+        subImagePreviewNumber = 0;
+        subImageNumberField->set_number( subImagePreviewNumber);
+    }
+
+    if( panel_main_editor!=nullptr)
+    {
+        editorHasControl = panel_main_editor->hasScrollControl || collisionAndPreviewDataPanel->hasScrollControl;
+    }
+    else
+    {
+        editorHasControl = collisionAndPreviewDataPanel->hasScrollControl;
+    }
+    //actual saving of the animation onto the engine and files
+    if( get_mouse_coords(view_space, cam) )
+    {
+        areaIsScrollable = true;
+    }
+    else
+    {
+        areaIsScrollable = false;
+    }
+    handle_scrolling();
+
+    if( areaIsScrollable )
+    {
+        if( gpe::input->check_mouse_released( mb_right) )
         {
-            if( gpe::input->check_mouse_released( mb_right) )
+            /*
+            pawgui::context_menu_open( gpe::input->mouse_position_x, gpe::input->mouse_position_y );
+                pawgui::main_context_menu->add_menu_option("Change Box Color",0);
+                pawgui::main_context_menu->add_menu_option("Change Number Color",1);
+                pawgui::main_context_menu->add_menu_option("Return to Mode 0",2);
+                int menuSelection = pawgui::context_menu_process();
+
+                if( menuSelection == 2)
+                {
+                    gpe::input->reset_all_input();
+                    requestedMode = 0;
+                    error_log->report("Reverting to Editor Mode 0");
+                    gpe::input->reset_all_input();
+                    process_self(view_space,cam);
+                    return;
+                }
+                */
+        }
+    }
+
+    //if( !editorHasControl )
+    if( areaIsScrollable )
+    {
+        if( gpe::input->check_kb_down(kb_ctrl) )
+        {
+            if( gpe::input->check_kb_released(kb_minus) || gpe::input->mouse_scrolling_down )
             {
-                /*
-                pawgui::context_menu_open( gpe::input->mouse_position_x, gpe::input->mouse_position_y );
-                    pawgui::main_context_menu->add_menu_option("Change Box Color",0);
-                    pawgui::main_context_menu->add_menu_option("Change Number Color",1);
-                    pawgui::main_context_menu->add_menu_option("Return to Mode 0",2);
-                    int menuSelection = pawgui::context_menu_process();
-
-                    if( menuSelection == 2)
-                    {
-                        gpe::input->reset_all_input();
-                        requestedMode = 0;
-                        error_log->report("Reverting to Editor Mode 0");
-                        gpe::input->reset_all_input();
-                        process_self(view_space,cam);
-                        return;
-                    }
-                    */
+                editorZoomValue -= minZoomValue;
             }
-        }
-
-        //if( !editorHasControl )
-        if( areaIsScrollable )
-        {
-            if( gpe::input->check_kb_down(kb_ctrl) )
+            else if( gpe::input->check_kb_released(kb_plus) || gpe::input->mouse_scrolling_up )
             {
-                if( gpe::input->check_kb_released(kb_minus) || gpe::input->mouse_scrolling_down )
-                {
-                    editorZoomValue -= minZoomValue;
-                }
-                else if( gpe::input->check_kb_released(kb_plus) || gpe::input->mouse_scrolling_up )
-                {
-                    editorZoomValue += minZoomValue;
-                }
+                editorZoomValue += minZoomValue;
             }
         }
     }
@@ -1487,29 +1608,37 @@ void animationResource::render_self( gpe::shape_rect * view_space, gpe::shape_re
         gpe::gcanvas->render_rectangle( 0,0,view_space->w, view_space->h, pawgui::theme_main->program_color, false, 255 );
     }
 
+    if( gpe::gcanvas->is_render_mode_supported( gpe::gcanvas->get_render_mode() ) !=1 )
+    {
+        //We draw the message that our current render can not draw the preview in this editor and then exit the render function :-(
+        gpe::gfs->render_text( view_space->w/2,view_space->h/2,
+                          "Render Mode ["+gpe::gcanvas->get_render_mode_name( gpe::gcanvas->get_render_mode())+"] is not supported by "+gpe::gcanvas->get_artist_name()+ " artist backend",
+                              pawgui::theme_main->program_color_header, gpe::font_default, gpe::fa_center, gpe::fa_middle );
+        return;
+    }
+
+    render_axis_2d( animationPreviewCam->x+animationPreviewCam->w/2, animationPreviewCam->y+animationPreviewCam->h/2 , true );
     if( animInEditor!=nullptr &&animInEditor->has_texture() )
     {
-        if( subImagePreviewNumber >=0 && subImagePreviewNumber < (int)animInEditor->get_frame_count() )
+        if( subImagePreviewNumber < 0 || subImagePreviewNumber >= (int)animInEditor->get_frame_count() )
         {
-            animInEditor->render_scaled( subImagePreviewNumber, animationPreviewCam->x+animationPreviewCam->w/2,
-            animationPreviewCam->y+animationPreviewCam->h/2, editorZoomValue,editorZoomValue,nullptr );
+            subImagePreviewNumber = 0;
         }
-        else
-        {
-            animInEditor->render_scaled( 0,animationPreviewCam->x+animationPreviewCam->w/2,
-            animationPreviewCam->y+animationPreviewCam->h/2, editorZoomValue,editorZoomValue,nullptr );
-        }
+
+        animInEditor->render_scaled( subImagePreviewNumber, animationPreviewCam->x+animationPreviewCam->w/2,
+        animationPreviewCam->y+animationPreviewCam->h/2, editorZoomValue,editorZoomValue,nullptr );
+
 
         if( showCollisionShapeCheckBox->is_clicked() && animInEditor!=nullptr )
         {
             if( animationCollisionShapeMenu->get_selected_value()==0 )
             {
                 int sprCX = animationPreviewCam->x+animationPreviewCam->w/2;
-                sprCX+=animationCollisionRectX->get_held_number() * editorZoomValue;
+                sprCX+=collision_areas[subImagePreviewNumber]->animation_collision_property[collision_area_x]->get_held_number() * editorZoomValue;
                 int sprCY = animationPreviewCam->y+animationPreviewCam->h/2;
-                sprCY+=animationCollisionRectY->get_held_number() * editorZoomValue;
-                int sprCW = animationCollisionRectW->get_held_number() * editorZoomValue;
-                int sprCH = animationCollisionRectH->get_held_number() * editorZoomValue;
+                sprCY+=collision_areas[subImagePreviewNumber]->animation_collision_property[collision_area_y]->get_held_number() * editorZoomValue;
+                int sprCW = collision_areas[subImagePreviewNumber]->animation_collision_property[collision_area_w]->get_held_number() * editorZoomValue;
+                int sprCH = collision_areas[subImagePreviewNumber]->animation_collision_property[collision_area_h]->get_held_number() * editorZoomValue;
                 sprCX-= sprCW/2;
                 sprCY-= sprCH/2;
 
@@ -1521,12 +1650,12 @@ void animationResource::render_self( gpe::shape_rect * view_space, gpe::shape_re
             else if( animationCollisionShapeMenu->get_selected_value()==1 )
             {
                 int sprCX = animationPreviewCam->x+( animationPreviewCam->w )/2;// - (animInEditor->get_width()*editor0ZoomValue)/2;
-                sprCX+=animationCollisionCircleX->get_held_number() * editorZoomValue;
+                sprCX+=collision_areas[subImagePreviewNumber]->animation_collision_property[collision_area_x]->get_held_number()/2 * editorZoomValue;
 
                 int sprCY = animationPreviewCam->y+( animationPreviewCam->h )/2;// - (animInEditor->get_height()*editor0ZoomValue)/2;
-                sprCY+=animationCollisionCircleY->get_held_number() * editorZoomValue;
+                sprCY+=collision_areas[subImagePreviewNumber]->animation_collision_property[collision_area_y]->get_held_number() * editorZoomValue;
 
-                int sprCR = animationCollisionCircleR->get_held_number() * editorZoomValue;
+                int sprCR = collision_areas[subImagePreviewNumber]->animation_collision_property[collision_area_r]->get_held_number()/2 * editorZoomValue;
                 sprCX-=sprCR;
                 sprCY-=sprCR;
                 if( sprCX >= 0 && sprCY >=0 && sprCR > 0)
@@ -1730,15 +1859,19 @@ void animationResource::save_resource(std::string file_path, int backupId)
                 }
                 newSaveDataFile << "CollisionShape="<< stg_ex::int_to_string (animationCollisionShapeMenu->get_selected_id() ) +"\n";
 
-                newSaveDataFile << "CircleCollisionRegion=" << stg_ex::int_to_string (animationCollisionCircleX->get_held_number() ) +",";
-                newSaveDataFile << stg_ex::int_to_string (animationCollisionCircleY->get_held_number() ) +",";
-                newSaveDataFile << stg_ex::int_to_string (animationCollisionCircleR->get_held_number() )+"\n";
-                //Rectangle info
-
-                newSaveDataFile << "RectangleCollisionBox=" << stg_ex::int_to_string (animationCollisionRectX->get_held_number() ) +",";
-                newSaveDataFile << stg_ex::int_to_string (animationCollisionRectY->get_held_number() ) +",";
-                newSaveDataFile << stg_ex::int_to_string (animationCollisionRectW->get_held_number() ) +",";
-                newSaveDataFile << stg_ex::int_to_string (animationCollisionRectH->get_held_number() )+"\n";
+                colision_area_resource * c_box_area = nullptr;
+                int j_col_property = 0;
+                //Loops through every stored frame and store it's collision frame data
+                for( int i_col_box = 0; i_col_box < (int)collision_areas.size(); i_col_box++ )
+                {
+                    c_box_area = collision_areas[i_col_box];
+                    newSaveDataFile << "CollisionInfo[" << stg_ex::int_to_string (i_col_box ) +"]=";
+                    for( j_col_property = 0; j_col_property <= collision_area_r; j_col_property++ )
+                    {
+                        newSaveDataFile << stg_ex::int_to_string (c_box_area->animation_collision_property[j_col_property]->get_held_number() )+",";
+                    }
+                    newSaveDataFile << "\n";
+                }
                 std::string resFileCopySrc = animInEditor->get_file_name();
                 std::string resfile_location = stg_ex::get_short_filename (resFileCopySrc,true );
                 newSaveDataFile << "ImageLocation="+resfile_location+"\n";

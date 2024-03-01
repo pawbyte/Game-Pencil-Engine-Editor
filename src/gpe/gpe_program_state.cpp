@@ -3,10 +3,10 @@ gpe_program_state.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -95,7 +95,7 @@ namespace gpe
 
     void program_state::set_background_image( std::string bg_file )
     {
-        if( bg_texture = nullptr )
+        if( bg_texture == nullptr )
         {
             bg_texture->load_new_texture(  bg_file );
             return;

@@ -3,10 +3,10 @@ pawgui_general_resource.h
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -63,7 +63,6 @@ namespace pawgui
             bool justOpenedThisFrame;
             general_resource();
             virtual ~general_resource() = 0;
-            virtual bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount = 0);
             virtual bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
             int get_global_rid();
             virtual std::string get_current_name();

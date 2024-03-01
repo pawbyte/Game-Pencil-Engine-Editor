@@ -3,10 +3,10 @@ gpe_editor_aboutpage.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -85,7 +85,11 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
         versionInfoLine = "Version:                       "+ stg_ex::float_to_string( gpe::version_number_total );
     }
 
-    if( release_current_mode==relesae_type_production)
+    if( gpe::version_is_lts )
+    {
+        versionInfoLine+=" [LTS]";
+    }
+    if( release_current_mode==release_type_production)
     {
         versionInfoLine+=" [PRODUCTION]";
     }
@@ -109,7 +113,7 @@ gamePencilAboutPageResource::gamePencilAboutPageResource()
     pencilInformation->add_line("GPE(editor) Version:          "+ stg_ex::int_to_string(editor_version_number_major)+"."+ stg_ex::int_to_string(editor_version_number_minor)+"."+ stg_ex::int_to_string( editor_version_number_update)+"." );
     pencilInformation->add_line("GPE(runtime) Version:          "+ stg_ex::int_to_string(gpe::version_number_major)+"."+ stg_ex::int_to_string(gpe::version_number_minor)+"."+ stg_ex::int_to_string(gpe::version_number_update)+"." );
 
-    pencilInformation->add_line("Release Date:                  01-02-2023");
+    pencilInformation->add_line("Release Date:                  01-02-2024");
     pencilInformation->add_line("Author:                        PawByte");
     pencilInformation->add_line("Lead Developer:                Nathan Hurde aka theweirdn8");
     pencilInformation->add_line("Email:                         help@pawbyte.com");

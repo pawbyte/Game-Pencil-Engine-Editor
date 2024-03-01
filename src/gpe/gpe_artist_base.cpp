@@ -3,10 +3,10 @@ gpe_artist_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -39,6 +39,7 @@ namespace gpe
 
     artist_base::artist_base()
     {
+        artist_name = "default_artist_base";
         use_simple_geometry_rendering = false;
         artist_renderer = nullptr;
 
@@ -70,6 +71,7 @@ namespace gpe
 
     artist_base::artist_base( renderer_base * aRenderer )
     {
+        artist_name = "default_artist_base";
         use_simple_geometry_rendering = false;
         artist_renderer = aRenderer;
 
@@ -203,6 +205,11 @@ namespace gpe
         return blend_current_mode;
     }
 
+    std::string artist_base::get_artist_name()
+    {
+        return artist_name;
+    }
+
     int artist_base::get_render_mode()
     {
         return current_render_mode;
@@ -212,12 +219,12 @@ namespace gpe
     {
     	if( artist_renderer != nullptr )
 		{
-			artist_renderer->get_render_mode_name( rmode_to_check );
+			return artist_renderer->get_render_mode_name( rmode_to_check );
 		}
-		return "";
+		return "Artist Render = nullptr..."; //A failed artist, since it has no renderer. If you see this, debugging is neccesary to see why is this a nullptr
     }
 
-    signed char artist_base::is_render_mode_supported( int rmode_to_check )
+    int artist_base::is_render_mode_supported( int rmode_to_check )
     {
         if( rmode_to_check >=0 && rmode_to_check < render_mode_none )
         {
@@ -659,7 +666,8 @@ namespace gpe
     {
         if( r_mode >=0 && r_mode < render_mode_max )
         {
-            return render_mode_supported[r_mode];
+            current_render_mode = r_mode;
+            return render_mode_supported[current_render_mode];
         }
         return -1;
     }

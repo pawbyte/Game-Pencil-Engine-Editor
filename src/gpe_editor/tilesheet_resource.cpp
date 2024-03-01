@@ -3,10 +3,10 @@ tilesheet_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -649,33 +649,6 @@ tilesheetResource::~tilesheetResource()
     }
 }
 
-bool tilesheetResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount)
-{
-    if( fileTarget!=nullptr && fileTarget->is_open() )
-    {
-        std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
-        std::string html5TSName = get_name();
-        if( tilesheetInEditor!=nullptr)
-        {
-            *fileTarget << nestedTabsStr << "var " << html5TSName << " =  GPE.rsm.add_tilesheet(";
-            *fileTarget << stg_ex::int_to_string (exportBuildGlobalId ) +",";
-            *fileTarget << "'resources/tilesheets/"+stg_ex::get_short_filename (tilesheetInEditor->file_nameLocation,true ) +"',";
-            *fileTarget << stg_ex::int_to_string (tilesheetInEditor->tsWidth ) +",";
-            *fileTarget << stg_ex::int_to_string (tilesheetInEditor->tsHeight ) +",";
-            *fileTarget << stg_ex::int_to_string (tilesheetInEditor->tsXOff ) +",";
-            *fileTarget << stg_ex::int_to_string (tilesheetInEditor->tsYOff ) +",";
-            *fileTarget << stg_ex::int_to_string (tilesheetInEditor->tsXPadding ) +",";
-            *fileTarget << stg_ex::int_to_string (tilesheetInEditor->tsYPadding );
-            *fileTarget << "); \n";
-        }
-        else
-        {
-            *fileTarget << nestedTabsStr << "var " << html5TSName << " = GPE.rsm.add_tilesheet( -1 );\n";
-        }
-    }
-    return false;
-}
-
 bool tilesheetResource::build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount  )
 {
     return true;
@@ -1168,7 +1141,19 @@ void tilesheetResource::render_self( gpe::shape_rect *view_space, gpe::shape_rec
     bool texturePreviewIsRendered = false;
     if( cam!=nullptr && view_space!=nullptr )
     {
-        gpe::gcanvas->render_rect( view_space, gpe::c_blue, false, 255 );
+
+        if( gpe::gcanvas->is_render_mode_supported( gpe::gcanvas->get_render_mode() ) !=1 )
+        {
+            //We draw the message that our current render can not draw the preview in this editor and then exit the render function :-(
+            gpe::gfs->render_text( view_space->w/2,view_space->h/2,
+                          "Render Mode ["+gpe::gcanvas->get_render_mode_name( gpe::gcanvas->get_render_mode())+"] is not supported by "+gpe::gcanvas->get_artist_name()+ " artist backend",
+                              pawgui::theme_main->program_color_header, gpe::font_default, gpe::fa_center, gpe::fa_middle );
+            return;
+        }
+
+        gpe::gcanvas->render_rect( view_space, pawgui::theme_main->program_color, false, 255 );
+
+
         if( tsPreviewer!=nullptr)
         {
             tsPreviewer->render_self( view_space,cam);

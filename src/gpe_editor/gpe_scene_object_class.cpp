@@ -3,10 +3,10 @@ gpe_scene_object_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -66,26 +66,6 @@ void GPE_SceneGameObject::add_typed_elements()
     }
 }
 
-bool GPE_SceneGameObject::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
-{
-
-    pawgui::widget_resource_container * allEntitiesFolder = localResTypeController->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_object]);
-    pawgui::widget_resource_container * fObjToPlace = nullptr;
-
-    fObjToPlace = allEntitiesFolder->find_resource_from_id( objTypeId);
-    std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
-    if( fObjToPlace!=nullptr)
-    {
-        *fileTarget << nestedTabsStr << "newBranch = scn_temp_layer.scnStartObjects.push( {objId:" <<stg_ex::int_to_string(fObjToPlace->exportBuildGlobalId) << "} ); \n";
-    }
-    else
-    {
-        *fileTarget << nestedTabsStr << "newBranch = scn_temp_layer.scnStartObjects.push( {objId: -1} ); \n";
-    }
-    GPE_SceneBasicClass::build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController);
-    return true;
-}
-
 void GPE_SceneGameObject::calculate_size()
 {
 
@@ -123,8 +103,8 @@ void GPE_SceneGameObject::render_branch()
                         animationResource*animRes = (animationResource*) sprTypeContainer->get_held_resource();
                         if( animRes!=nullptr && animRes->animInEditor!=nullptr)
                         {
-                            xPivot = animRes->animInEditor->collision_box->get_center();
-                            yPivot = animRes->animInEditor->collision_box->get_middle();
+                            xPivot = animRes->animInEditor->frame_data[animRes->get_preview_frame()]->collision_box->get_center();
+                            yPivot = animRes->animInEditor->frame_data[animRes->get_preview_frame()]->collision_box->get_middle();
                             width = animRes->animInEditor->get_width();
                             height = animRes->animInEditor->get_height();
                             //animRes->animInEditor->render_rotated( animRes->get_preview_frame(),spm->tempRect->x,spm->tempRect->y, angle, x_scale*spm->zoomValue,y_scale*spm->zoomValue, nullptr );

@@ -3,9 +3,9 @@ gpe_editor_splash_page.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -186,7 +186,7 @@ void gpe_splash_page::increment_and_update( std::string subTitle, std::string me
 }
 
 
-void gpe_splash_page::render_loader()
+void gpe_splash_page::render()
 {
     //if( gpe::input->has_new_input() )
     {
@@ -195,6 +195,11 @@ void gpe_splash_page::render_loader()
         gpe::game_runtime->start_loop();
         gpe::renderer_main->reset_viewpoint();
 
+        std::string version_string = "Version" + stg_ex::float_to_string( gpe::version_number_total );
+        if ( gpe::version_is_lts )
+        {
+            version_string+= " [LTS]";
+        }
         if( startup_mode )
         {
             gpe::gcanvas->render_rectangle( 0, 0, gpe::screen_width,gpe::screen_height,gpe::c_blgray, false);
@@ -212,20 +217,21 @@ void gpe_splash_page::render_loader()
                 float logo_scale_amount = s_width / logo_width;
                 gpe_logo->render_tex_scaled( gpe::screen_width / 4, current_y_pos, logo_scale_amount, logo_scale_amount );
                 current_y_pos += logo_scale_amount * logo_height;
-                gpe::gfs->render_text( gpe::screen_width*3 /4 + x_padding,current_y_pos - y_padding, "Version" + stg_ex::float_to_string( gpe::version_number_total ) ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_left,gpe::fa_bottom );
+                gpe::gfs->render_text( gpe::screen_width*3 /4 + x_padding,current_y_pos - y_padding, version_string ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_left,gpe::fa_bottom );
             }
             else
             {
-                    current_y_pos += line_height_with_padding;
-                    gpe::gfs->render_text( gpe::screen_width/2 + x_padding,current_y_pos - y_padding, "Game Penciil Engine" ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_top );
-                    current_y_pos += line_height_with_padding;
-                    gpe::gfs->render_text( gpe::screen_width/2 + x_padding,current_y_pos - y_padding, "Version" + stg_ex::float_to_string( gpe::version_number_total ) ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_top );
-                    current_y_pos += line_height_with_padding;
+                current_y_pos += line_height_with_padding;
+                gpe::gfs->render_text( gpe::screen_width/2 + x_padding,current_y_pos - y_padding, "Game Penciil Engine" ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_top );
+                current_y_pos += line_height_with_padding;
+
+                gpe::gfs->render_text( gpe::screen_width/2 + x_padding,current_y_pos - y_padding, version_string ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_top );
+                current_y_pos += line_height_with_padding;
             }
 
             current_y_pos += y_padding;
 
-            gpe::gfs->render_text( gpe::screen_width/2,current_y_pos,"Copyright (c) 2014-2023 PawByte LLC. All rights reserved" ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_bottom );
+            gpe::gfs->render_text( gpe::screen_width/2,current_y_pos,"Copyright (c) 2014-2024 PawByte LLC. All rights reserved" ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_bottom );
             current_y_pos += line_height_with_padding * 2;
 
             gpe::gfs->render_text( gpe::screen_width/2,current_y_pos,"Game Pencil Engine is possible thanks to our code&wiki contributors, sponsors & friends " ,pawgui::theme_main->popup_box_font_color,gpe::font_default,gpe::fa_center,gpe::fa_bottom );
@@ -326,7 +332,7 @@ void gpe_splash_page::set_load_percent( float load_percent)
 
     if( past_load_value != load_percent )
     {
-        render_loader();
+        render();
     }
 }
 
@@ -342,6 +348,6 @@ void gpe_splash_page::update_submessages(  std::string subTitle, std::string mes
     displayMessagestring = message;
     if( renderUpdate )
     {
-        render_loader();
+        render();
     }
 }

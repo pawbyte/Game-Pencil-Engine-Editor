@@ -3,10 +3,10 @@ gpe_basic_resource_page.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -338,10 +338,6 @@ pawgui::widget_basic * standardEditableGameResource::add_gui_component(std::stri
     return nullptr;
 }
 
-bool standardEditableGameResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount )
-{
-    return true;
-}
 
 bool standardEditableGameResource::build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount )
 {
@@ -572,6 +568,25 @@ void standardEditableGameResource::process_self( gpe::shape_rect * view_space, g
 }
 
 void standardEditableGameResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *cam  )
+{
+
+}
+void standardEditableGameResource::render_axis_2d(int x_pos, int y_pos, bool render_sphere,  gpe::shape_rect * view_space, gpe::shape_rect * cam )
+{
+    if( render_sphere )
+    {
+        gpe::gcanvas->render_circle_filled_color(x_pos, y_pos, 64, gpe::c_gray, 128);
+        gpe::gcanvas->render_circle_outline_color(x_pos, y_pos, 64, gpe::c_white, 255);
+    }
+    gpe::gcanvas->render_line_width_color(x_pos, y_pos, x_pos + 96, y_pos, 8, gpe::c_red, 255);
+    gpe::gfs->render_text( x_pos + 96, y_pos, "X:", gpe::c_green, gpe::font_default, gpe::fa_left, gpe::fa_middle, 255 );
+    gpe::gcanvas->render_line_width_color(x_pos, y_pos, x_pos , y_pos+ 96,8, gpe::c_blue, 255);
+    gpe::gfs->render_text( x_pos, y_pos+96, "Y:", gpe::c_green, gpe::font_default, gpe::fa_center, gpe::fa_top, 255 );
+
+
+}
+
+void standardEditableGameResource::render_axis_3d(int x_pos, int y_pos, bool render_sphere, gpe::shape_rect * view_space , gpe::shape_rect * cam )
 {
 
 }

@@ -3,10 +3,10 @@ gpe_editor_constants.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -35,7 +35,7 @@ SOFTWARE.
 
 //Game Pencil Engine Editor
 const float editor_version_number_major = 1;
-const float editor_version_number_minor = 4;
+const float editor_version_number_minor = 6;
 const float editor_version_number_update = 1;
 
 const float editor_version_number_total = editor_version_number_major + editor_version_number_minor/10.f + editor_version_number_update/100.f;
@@ -48,6 +48,6 @@ const int native_option_electron = 3;
 const int release_type_alpha = 0;
 const int release_type_beta = 1;
 const int release_type_rc = 2;
-const int relesae_type_production = 3;
+const int release_type_production = 3;
 
 #endif //gpe_editor_constants_h

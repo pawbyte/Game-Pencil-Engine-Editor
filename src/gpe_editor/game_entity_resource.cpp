@@ -3,10 +3,10 @@ game_entity_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -287,91 +287,6 @@ void gameEntityResource::add_component(std::string newComponentData)
     }
 }
 
-bool gameEntityResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount)
-{
-    bool buildSuccessful = true;
-    if( fileTarget!=nullptr && fileTarget->is_open() )
-    {
-        int iFunc = 0;
-        int paramLine = 0;
-        int iErrorLine = 0;
-        std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
-        std::string nestedTabsStrObjFunc = pawgui::generate_tabs( leftTabAmount +1 );
-
-        //*fileTarget << nestedTabsStr << "var " << get_name() << " = " << exportBuildGlobalId << ";\n";
-        *fileTarget << nestedTabsStr << "GPE._obj_" << get_name() << " =  (function (x_pos_in, y_pos_in,object_layer_id) \n";
-        *fileTarget << nestedTabsStr << "{ \n";
-        *fileTarget << nestedTabsStrObjFunc << "function obj_" << get_name() <<" (x_pos_in, y_pos_in,object_layer_id) \n";
-        *fileTarget << nestedTabsStrObjFunc << "{ \n";
-        pawgui::widget_resource_container * parentRes = parentObjectField->get_selected_container();
-        if( parentRes!=nullptr)
-        {
-            *fileTarget << nestedTabsStrObjFunc << "    GPE._obj_" << parentRes->get_name() <<".call(this,x_pos_in, y_pos_in,object_layer_id); \n";
-        }
-        else
-        {
-            *fileTarget << nestedTabsStrObjFunc << "    GPE.game_object.call(this,x_pos_in, y_pos_in,object_layer_id); \n";
-        }
-        *fileTarget << nestedTabsStrObjFunc << "    this.gpeObjectType ="<< exportBuildGlobalId << "; \n";
-        pawgui::widget_resource_container * animationRes = animationField->get_selected_container();
-        if( animationRes!=nullptr)
-        {
-            *fileTarget << nestedTabsStrObjFunc << "    this.init_animation(" << animationRes->exportBuildGlobalId << ");\n";
-        }
-        else
-        {
-            *fileTarget << nestedTabsStrObjFunc << "    this.init_animation(-1);\n";
-        }
-
-        if( checkBoxIsVisible!=nullptr)
-        {
-            *fileTarget << nestedTabsStrObjFunc << "    this.is_visible = " << checkBoxIsVisible->is_clicked() << ";\n";
-        }
-        else
-        {
-            *fileTarget << nestedTabsStrObjFunc << "    this.is_visible = false;\n";
-        }
-        //
-        if( checkBoxIsContinuous!=nullptr)
-        {
-            *fileTarget << nestedTabsStrObjFunc << "    this.gpeIsContinuousObject = " << checkBoxIsContinuous->is_clicked() << ";\n";
-        }
-        else
-        {
-            *fileTarget << nestedTabsStrObjFunc << "    this.gpeIsContinuousObject = false;\n";
-        }
-        //
-        if( checkBoxNeedsCamera!=nullptr)
-        {
-            *fileTarget << nestedTabsStrObjFunc << "    this.isViewIndependent = " << !checkBoxNeedsCamera->is_clicked() << ";\n";
-        }
-        else
-        {
-            *fileTarget << nestedTabsStrObjFunc << "    this.isViewIndependent = false;\n";
-        }
-
-        if( !sourceCodeArea->compile_into_code( fileTarget, leftTabAmount+2,true,true) )
-        {
-            for( iErrorLine=0; iErrorLine < (int)sourceCodeArea->foundSyntaxErrors.size(); iErrorLine++)
-            {
-                main_editor_log->log_build_error(get_name()+"'s SRC: "+sourceCodeArea->foundSyntaxErrors[iErrorLine] );
-                buildSuccessful = false;
-            }
-        }
-        //returns object and gives it its prototype(parent object)
-        if( parentRes!=nullptr)
-        {
-            *fileTarget << nestedTabsStrObjFunc << "_obj_" << get_name() << ".prototype = new GPE._obj_" << parentRes->get_name() <<"(x_pos_in, y_pos_in); \n";
-        }
-        else
-        {
-            *fileTarget << nestedTabsStrObjFunc << "_obj_" << get_name() << ".prototype = new GPE.game_object(x_pos_in, y_pos_in); \n";
-        }
-        *fileTarget << nestedTabsStrObjFunc << "return obj_" << get_name() <<"; \n";
-        *fileTarget << nestedTabsStr << "}());\n\n";
-    }
-    return buildSuccessful;
-}
 
 bool gameEntityResource::build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount  )
 {
