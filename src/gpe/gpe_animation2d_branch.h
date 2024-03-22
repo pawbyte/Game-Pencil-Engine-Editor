@@ -1,5 +1,6 @@
+
 /*
-gpe_branch_factory.cpp
+gpe_animation2d_branch.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
@@ -31,23 +32,33 @@ SOFTWARE.
 
 */
 
-#include "gpe_branch.h"
+#ifndef gpe_animation2d_branch
+#define gpe_animation2d_branch
+
+#include "gpe_animation2d.h"
 
 namespace gpe
 {
-
-    class branch_factory
+    //Introduced 1.6X to decouple animation handling within the gpe_basic_object and to allow for a branch that keeps track of and renders the animation
+    class animation2d_container: branch
     {
-        private:
-            std::map <std::string,   branch *  > factory_map;
+        protected:
+            animation2d * animation_ptr;
+            bool animation_reached_message;
         public:
-            branch_factory();
-            ~branch_factory();
-            int add_to_map( std::string branch_type_name, branch *  ); //returns 1 on success, 0 if name is assigned to another factory object, -1 if factory object is nullptr/NUll
-            void clear_map(); // ONLY CALL ON GAME END!
-            branch *  create_branch( std::string branch_type_name ); //returns NULLPTR if not in map
-            branch *  create_branch_inited( std::string branch_type_name,  int branch_layer_id, float x_pos_in,  float y_pos_in, float z_pos_in = 0  ); //returns NULLPTR if not in map
-            int get_factory_size();
-            bool object_exists( std::string branch_type_name );
+            bool animation_ended;
+            float animation_speed;
+            int animation_duration;
+            float current_frame;
+
+            animation2d_container(animation2d * animation_in, int start_xpos, int start_ypos);
+            ~animation2d_container();
+            bool change_animation(animation2d * animation_in);
+            bool has_message();
+            int get_frame_message_id();
+            virtual void update( float delta_time );
     };
+
 }
+
+#endif //gpe_animation2d_branch

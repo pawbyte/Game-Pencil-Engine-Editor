@@ -3,10 +3,10 @@ gpe_basic_object.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -48,6 +48,11 @@ namespace gpe
     std::map<std::string, bool > spatial_grid_data::collisionsCheckedInFrame;
     bool spatial_grid_data::soryByXAxis = true;
 
+    bool compare_depth(game_object * a, game_object * b)
+    {
+        return a->depth < b->depth;
+    }
+
     game_object::game_object( int object_layer_id, int x_pos_in,  int y_pos_in, int z_pos_in  )
     {
         pathId = -1;
@@ -70,9 +75,9 @@ namespace gpe
         gpeSceneStartId = is_null;
         animation_id = is_null;
         outlineTestColor = c_lime;
-        objectDepth = 0;
-        prevObjectDepth = 0;
-        objectDepthPosition = 0;
+        depth = 0;
+        prevdepth = 0;
+        depthPosition = 0;
         gpeObjectType = 0;
         gpeUniqGameObjectId = -1;
         isContinuousObject = false;

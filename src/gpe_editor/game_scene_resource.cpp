@@ -3,10 +3,10 @@ game_scene_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -921,6 +921,10 @@ GPE_SceneBasicClass *  gameSceneResource::add_new_resource_from_menu()
                         return newTileMap;
                     }
                     break;
+
+                    default:
+                        return NULL;
+                    break;
                 }
             }
         }
@@ -979,13 +983,15 @@ void gameSceneResource::adjust_object_offsets( pawgui::widget_branch *  basicObj
                         if( fAnimType!=nullptr && fAnimType->get_held_resource()!=nullptr )
                         {
                             currentTypeAnim = (animationResource * )fAnimType->get_held_resource();
-                            if( currentTypeAnim!=nullptr && currentTypeAnim->animInEditor!=nullptr && currentTypeAnim->animInEditor->collision_box!=nullptr )
+                            if( currentTypeAnim!=nullptr && currentTypeAnim->animInEditor!=nullptr && (int)currentTypeAnim->animInEditor->frame_data.size() > 0  )
                             {
                                  //cObj->x_pos+=sceneGridX/2;
                                  //cObj->y_pos+=sceneGridY/2;
-
-                                cObj->x_pos+=currentTypeAnim->animInEditor->collision_box->get_center();
-                                cObj->y_pos+=currentTypeAnim->animInEditor->collision_box->get_middle();
+                                if(currentTypeAnim->animInEditor->frame_data[0]!=nullptr )
+                                {
+                                    cObj->x_pos+=currentTypeAnim->animInEditor->frame_data[0]->collision_box->get_center();
+                                    cObj->y_pos+=currentTypeAnim->animInEditor->frame_data[0]->collision_box->get_middle();
+                                }
                                 objectsAdjustedTotal++;
                             }
                         }
@@ -1026,92 +1032,6 @@ GPE_SceneTileMap *  gameSceneResource::add_tilemap( GPE_SceneBasicClass * branch
         }
     }
     return nullptr;
-}
-
-bool gameSceneResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount)
-{
-    bool buildSuccessful = true;
-    if( fileTarget!=nullptr && fileTarget->is_open() )
-    {
-        GPE_ObjectComponent * objCustVariableField = nullptr;
-        int iItr = 0, jItr = 0, kItr = 0;
-        std::string customObjLabel  = "";
-        std::string customObjValue  = "";
-        std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
-        std::string nestedTabsStrObjFunc = pawgui::generate_tabs( leftTabAmount +1 );
-        std::string html5SceneName = "_scn_" + get_name();
-        //*fileTarget << nestedTabsStr << "var " << get_name() << " = " << exportBuildGlobalId << ";\n";
-        //*fileTarget << nestedTabsStr << "var " << html5SceneName << " =  GPE.add_gamescene(); \n";
-
-        *fileTarget << nestedTabsStr << "newGPEScene_000 = "+html5SceneName+";\n";
-
-        *fileTarget << nestedTabsStr << html5SceneName << ".sceneId = " << exportBuildGlobalId << ";\n";
-        *fileTarget << nestedTabsStr << html5SceneName << ".sceneName = \"" << get_name() << "\";\n";
-        *fileTarget << nestedTabsStr << html5SceneName << ".sceneCaption = \"" << sceneCaptionField->get_string() << "\";\n";
-        *fileTarget << nestedTabsStr << html5SceneName << ".sceneWidth = " << sceneRect.w << ";\n";
-        *fileTarget << nestedTabsStr << html5SceneName << ".sceneHeight = " << sceneRect.h << ";\n";
-        /*
-        *fileTarget << nestedTabsStr << html5SceneName << ".defaultTileWidth  = " << ceil(defaultTileWidth) << ";\n";
-        *fileTarget << nestedTabsStr << html5SceneName << ".defaultTileHeight = " << ceil(defaultTileHeight) << ";\n";
-        *fileTarget << nestedTabsStr << html5SceneName << ".tileAmountX = " << floor(defaultTileAmountX) << ";\n";
-        *fileTarget << nestedTabsStr << html5SceneName << ".tileAmountY = " << floor(defaultTileAmountY) << ";\n";
-        */
-        *fileTarget << nestedTabsStr << html5SceneName << ".bg_color = '#" << sceneBackgroundColor->get_hex_string() << "';\n";
-
-        if(checkBoxIsContinuous!=nullptr)
-        {
-            *fileTarget << nestedTabsStr << html5SceneName << ".sceneIsContinuous = " << checkBoxIsContinuous->is_clicked() << ";\n";
-        }
-        pawgui::widget_resource_container * fAudioId = nullptr;
-        if( musicAudioDropDown!=nullptr)
-        {
-            fAudioId = musicAudioDropDown->get_selected_container();
-            if( fAudioId!=nullptr)
-            {
-                *fileTarget << nestedTabsStr << html5SceneName << ".bgMusic = " << fAudioId->exportBuildGlobalId << ";\n";
-            }
-        }
-        if( startAudioDropDown!=nullptr)
-        {
-            fAudioId = startAudioDropDown->get_selected_container();
-            if( fAudioId!=nullptr)
-            {
-                *fileTarget << nestedTabsStr << html5SceneName << ".startAudio = " << fAudioId->exportBuildGlobalId << ";\n";
-            }
-        }
-        if( endAudioDropDown!=nullptr)
-        {
-            fAudioId = endAudioDropDown->get_selected_container();
-            if( fAudioId!=nullptr)
-            {
-                *fileTarget << nestedTabsStr << html5SceneName << ".endAudio = " << fAudioId->exportBuildGlobalId << ";\n";
-            }
-        }
-        pawgui::widget_branch * tempBranch = nullptr;
-        GPE_SceneBasicClass * tempBasicSceneObj = nullptr;
-        sceneLayer * tempLayer = nullptr;
-        GPE_SceneTile* fSceneTile= nullptr;
-        int maxTilesInLayer = 0;
-        GPE_SceneBackground * fSceneBg = nullptr;
-        int tempMax  = 0;
-
-        *fileTarget << nestedTabsStr << "var newBranch = {};\n";
-        for( iItr = 0; iItr < (int)sceneResourceTree->sub_elements.size(); iItr++)
-        {
-            tempBranch = sceneResourceTree->sub_elements[iItr];
-            if( tempBranch!=nullptr && tempBranch->get_type() >= gpe::branch_type::BASIC_SCENE_ELEMENT )
-            {
-                GPE_SceneBasicClass * tempBasicSceneObj = (GPE_SceneBasicClass * )tempBranch;
-                tempBasicSceneObj->build_intohtml5_file(fileTarget,leftTabAmount+1,projectParentFolder );
-            }
-        }
-        return true;
-    }
-    else
-    {
-        buildSuccessful = false;
-    }
-    return buildSuccessful;
 }
 
 bool gameSceneResource::build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount  )
@@ -3652,6 +3572,16 @@ void gameSceneResource::render_self( gpe::shape_rect * view_space, gpe::shape_re
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
+
+    if( gpe::gcanvas->is_render_mode_supported( gpe::gcanvas->get_render_mode() ) !=1 )
+    {
+        //We draw the message that our current render can not draw the preview in this editor and then exit the render function :-(
+        gpe::gfs->render_text( view_space->w/2,view_space->h/2,
+                          "Render Mode ["+gpe::gcanvas->get_render_mode_name( gpe::gcanvas->get_render_mode())+"] is not supported by "+gpe::gcanvas->get_artist_name()+ " artist backend",
+                              pawgui::theme_main->program_color_header, gpe::font_default, gpe::fa_center, gpe::fa_middle );
+        return;
+    }
+
     float i = 0, j = 0, k = 0;
     int gridX1 = 0;
     int gridX2 = 0;

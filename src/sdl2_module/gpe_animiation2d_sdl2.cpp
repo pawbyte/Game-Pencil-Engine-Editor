@@ -152,15 +152,15 @@ namespace gpe
     	return ( SDL_RenderGeometry( renderer_main_sdl2->get_sdl2_renderer(), sprite_tex->get_sdl2_texture(), vert, 4, new_indices, 6 ) == 0 );
     }
 
-    void animation2d_sdl2::setup_animation( int frame_count, int aw, int ah, int sofx, int sofy, int hPad, int vPad )
+    void animation2d_sdl2::setup_animation( int frame_count, int aw, int ah, int sofx, int sofy, int hPad, int vPad,int animAlign )
     {
-        animation2d::setup_animation( frame_count, aw, ah, sofx, sofy, hPad, vPad );
+        animation2d::setup_animation( frame_count, aw, ah, sofx, sofy, hPad, vPad, animAlign );
         setup_quad_coordinates();
     }
 
-    void animation2d_sdl2::setup_fullimg_animation(  int aw, int ah, int sofx, int sofy, int hPad, int vPad )
+    void animation2d_sdl2::setup_fullimg_animation(  int aw, int ah, int sofx, int sofy, int hPad, int vPad,int animAlign )
     {
-        animation2d::setup_fullimg_animation( aw, ah, sofx, sofy, hPad, vPad );
+        animation2d::setup_fullimg_animation( aw, ah, sofx, sofy, hPad, vPad, animAlign );
         setup_quad_coordinates();
     }
 
@@ -179,16 +179,16 @@ namespace gpe
             return;
         }
 
-        shape_rect * c_frame_shape = NULL;
+        animation2d_frame_data * c_frame = NULL;
         for( int i_frame = 0; i_frame < frameCount; i_frame++ )
         {
-            c_frame_shape = animation_frames[i_frame];
-            if( c_frame_shape != NULL )
+            c_frame = frame_data[i_frame];
+            if( c_frame != nullptr )
             {
-                sprite_quad_tex_top_left.push_back( { c_frame_shape->get_x() / tex_width, c_frame_shape->get_y() / tex_height} );
-                sprite_quad_tex_top_right.push_back( {  c_frame_shape->get_x2() /tex_width, c_frame_shape->get_y() /tex_height} );
-                sprite_quad_tex_bottom_left.push_back( { c_frame_shape->get_x() /tex_width,  c_frame_shape->get_y2() / tex_height} );
-                sprite_quad_tex_bottom_right.push_back( { c_frame_shape->get_x2() / tex_width, c_frame_shape->get_y2() / tex_height } );
+                sprite_quad_tex_top_left.push_back( { c_frame->frame_box->get_x() / tex_width, c_frame->frame_box->get_y() / tex_height} );
+                sprite_quad_tex_top_right.push_back( {  c_frame->frame_box->get_x2() /tex_width, c_frame->frame_box->get_y() /tex_height} );
+                sprite_quad_tex_bottom_left.push_back( { c_frame->frame_box->get_x() /tex_width,  c_frame->frame_box->get_y2() / tex_height} );
+                sprite_quad_tex_bottom_right.push_back( { c_frame->frame_box->get_x2() / tex_width, c_frame->frame_box->get_y2() / tex_height } );
             }
             else
             {

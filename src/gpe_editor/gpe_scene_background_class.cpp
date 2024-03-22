@@ -3,10 +3,10 @@ gpe_scene_background_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -92,37 +92,6 @@ void GPE_SceneBackground::add_typed_elements()
         panel_inspector->add_gui_element( checkTileVert, true );
         panel_inspector->add_gui_element( checkStretch, true );
     }
-}
-
-bool GPE_SceneBackground::build_intohtml5_file( std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
-{
-    pawgui::widget_resource_container * allTexturesFolder = localResTypeController->find_resource_from_name( gpe::resource_type_names_plural[ gpe::resource_type_texture]);
-    if( allTexturesFolder == nullptr)
-    {
-        GPE_SceneBasicClass::build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController);
-        return false;
-    }
-    std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount );
-     pawgui::widget_resource_container * tempBgResource = allTexturesFolder->find_resource_from_id( textureId);
-    if( tempBgResource!=nullptr)
-    {
-        *fileTarget << nestedTabsStr << "newBranch = scn_temp_layer.scnStartBackgrounds.push( {bgtex_id:" <<stg_ex::int_to_string(tempBgResource->exportBuildGlobalId) << ",";
-
-        *fileTarget << "bgXPos: " << stg_ex::int_to_string( x_pos) << ",";
-        *fileTarget << "bgYPos: " << stg_ex::int_to_string( y_pos) << ",";
-        *fileTarget << "bg_xspeed: " << stg_ex::int_to_string(bg_xspeed) << ",";
-        *fileTarget << "bg_yspeed: " << stg_ex::int_to_string(bg_yspeed) << ",";
-        *fileTarget << "bgTileHori: " << stg_ex::int_to_string(tileHori) << ",";
-        *fileTarget << "bgTileVert: " << stg_ex::int_to_string(tileVert) << ",";
-        *fileTarget << "bgStartStretch: " << stg_ex::int_to_string(strech_bg);
-        *fileTarget << "} ); \n";
-    }
-    else
-    {
-        *fileTarget << nestedTabsStr << "newBranch = scn_temp_layer.scnStartBackground = -1; \n";
-    }
-    GPE_SceneBasicClass::build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController);
-    return true;
 }
 
 void GPE_SceneBackground::calculate_size()

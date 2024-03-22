@@ -3,10 +3,10 @@ gpe_scene_basic_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -252,60 +252,6 @@ GPE_ObjectComponent * GPE_SceneBasicClass::add_variable(pawgui::widget_basic * n
         }
     }
     return nullptr;
-}
-
-bool GPE_SceneBasicClass::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController )
-{
-    //Loops thru all of his sub-elements
-    std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount );
-    *fileTarget << nestedTabsStr << "newBranch.init_basic(";
-    stg_ex::int_to_string(x_pos)+","+ stg_ex::int_to_string(y_pos)+","+
-    stg_ex::int_to_string(angle)+","+
-    stg_ex::int_to_string(x_scale)+","+ stg_ex::int_to_string(y_scale)+");\n";
-    int componentsSize = (int)objCustomValPairs.size();
-    if( componentsSize > 0 )
-    {
-        GPE_ObjectComponent * objCustVariableField = nullptr;
-        std::string customObjLabel;
-        std::string customObjValue;
-        for( int compItr = 0; compItr < componentsSize -1; compItr++)
-        {
-            objCustVariableField = objCustomValPairs.at(compItr);
-            if( objCustVariableField !=nullptr)
-            {
-                customObjLabel = objCustVariableField->get_name();
-                customObjValue = objCustVariableField->get_plain_string();
-
-                if( (int)customObjLabel.size() > 0)
-                {
-                    if( stg_ex::is_alnum(customObjLabel,false,true)==true)
-                    {
-                        if( (int)customObjValue.size()==0)
-                        {
-                            customObjValue = "0";
-                        }
-                        *fileTarget << nestedTabsStr << "newBranch.add_component( {"+customObjLabel+", "+customObjValue+");\n";
-                    }
-                }
-            }
-        }
-    }
-    int subElementsSize = (int)sub_elements.size();
-    if( subElementsSize > 0 )
-    {
-        pawgui::widget_branch * tBranch = nullptr;
-        GPE_SceneBasicClass * tbasicBranch = nullptr;
-        for( int iSubEl = 0; iSubEl < subElementsSize; iSubEl++)
-        {
-            tBranch = sub_elements.at(iSubEl);
-            if( tBranch!=nullptr && tBranch->get_type() >= gpe::branch_type::BASIC_SCENE_ELEMENT )
-            {
-                tbasicBranch = (GPE_SceneBasicClass * )tBranch;
-                tbasicBranch->build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController );
-            }
-        }
-    }
-    return true;
 }
 
 void GPE_SceneBasicClass::calculate_size()

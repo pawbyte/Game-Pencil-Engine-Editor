@@ -3,10 +3,10 @@ path_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -200,41 +200,6 @@ gpe::game_path_point2d * gamePathResource::add_point( int point_x, int point_y, 
         return pathPoints[ pointPos ];
     }
     return nullptr;
-}
-
-bool gamePathResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount)
-{
-    if( fileTarget!=nullptr && fileTarget->is_open() )
-    {
-        std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
-        std::string html5PathName = "_path_" + get_name();
-
-        *fileTarget << nestedTabsStr << "var " + html5PathName + " =  GPE.add_path(";
-        if( pathTypeIsClosed!=nullptr && pathTypeIsClosed->is_clicked() )
-        {
-            *fileTarget << stg_ex::int_to_string (exportBuildGlobalId ) +",true); \n";
-        }
-        else
-        {
-            *fileTarget << stg_ex::int_to_string (exportBuildGlobalId ) +",false); \n";
-        }
-
-        gpe::game_path_point2d * tempPoint = nullptr;
-        int pointCount = (int)pathPoints.size();
-        for( int pointI = 0; pointI < pointCount; pointI++)
-        {
-            tempPoint = pathPoints[pointI];
-            if( tempPoint!=nullptr )
-            {
-                *fileTarget << nestedTabsStr+html5PathName+".add_original_point( ";
-                *fileTarget << stg_ex::float_to_string(tempPoint->x_pos)+",";
-                *fileTarget << stg_ex::float_to_string(tempPoint->y_pos)+",";
-                *fileTarget << stg_ex::float_to_string(tempPoint->pointSpeed)+");\n";
-            }
-        }
-        return true;
-    }
-    return false;
 }
 
 bool gamePathResource::build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount  )
@@ -1014,6 +979,16 @@ void gamePathResource::render_self( gpe::shape_rect * view_space, gpe::shape_rec
     cam = gpe::camera_find(cam);
     gpe::renderer_main->reset_viewpoint(  );
     gpe::renderer_main->set_viewpoint( &sceneEditorView );
+
+    if( gpe::gcanvas->is_render_mode_supported( gpe::gcanvas->get_render_mode() ) !=1 )
+    {
+        //We draw the message that our current render can not draw the preview in this editor and then exit the render function :-(
+        gpe::gfs->render_text( view_space->w/2,view_space->h/2,
+                          "Render Mode ["+gpe::gcanvas->get_render_mode_name( gpe::gcanvas->get_render_mode())+"] is not supported by "+gpe::gcanvas->get_artist_name()+ " artist backend",
+                              pawgui::theme_main->program_color_header, gpe::font_default, gpe::fa_center, gpe::fa_middle );
+        return;
+    }
+
     if( cam!=nullptr && view_space!=nullptr)
     {
         pawgui::widget_resource_container * sceneTypeContainer =  sceneToPreview->get_selected_container();

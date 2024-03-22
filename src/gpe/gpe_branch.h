@@ -3,10 +3,10 @@ gpe_branch.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -69,9 +69,19 @@ namespace gpe
         LIGHT_DIRECTION = 20,
         LIGHT_POINT = 21,
         SHADER = 22,
-        MAX_TYPE = 23,
-        END = 23
+        SEQUENCE = 23,
+        _3D_MODEL = 24,
+        _3D_ANIMATION = 25,
+        _3D_LIGHT = 26,
+        _3D_OTHER = 27,
+        _3D_OTHER2 = 28,
+        _3D_OTHER3 = 29,
+        MAX_TYPE = 30,
+        END = 30,
     };
+
+    //SEQUENCES, and 3D related branches is an InProgress branch type added for 1.6 LTS and newer, making the MAX_TYPE = END = 30 currently
+
 
     class branch_factory;
 
@@ -85,7 +95,7 @@ namespace gpe
             branch * branch_parent;
             branch * branch_tree;
 
-            int branch_id; //All branches have this on creation
+            int branch_id; //All branches hav e this on creation
             bool branch_was_inited;
             bool branch_is_permanent;
 
@@ -122,6 +132,7 @@ namespace gpe
             bool branch_inited();
             virtual void branch_init( int branch_layer_id, float x_pos_in,  float y_pos_in, float z_pos_in = 0);
 
+            bool compare_zpos( branch * other );
             branch * find_branch_by_name( std::string branch_name , bool nest_down = false );
             branch * find_typed_branch_by_name( int branch_type, std::string branch_name , bool nest_down = false  );
             float get_angle();
@@ -176,6 +187,8 @@ namespace gpe
             virtual void sety(float y_new );
             virtual void set_yscale( float new_scale );
     };
+
+    bool compare_braches_zpos( branch * a, branch * b );
 
 
     class branch_type_id: public branch

@@ -3,10 +3,10 @@ project_properties.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -125,6 +125,8 @@ public:
     pawgui::widget_radio_button_controller * project_scale_settings;
     pawgui::widget_label_text  * project_settingsFPSRateLabel;
     pawgui::widget_dropdown_menu * project_settingsFPSRate;
+    pawgui::widget_dropdown_menu * project_default_animation2d_alignment;
+
     //Publisher Setting
     pawgui::widget_label_title * sectionTitlePublisher;
     pawgui::widget_label_title * sectionTitleGame_settings;

@@ -3,10 +3,10 @@ project_properties.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -1322,45 +1322,7 @@ void projectPropertiesResource::process_self( gpe::shape_rect * view_space, gpe:
             project_settingsList->set_height(subViewedSpace.h );
             if( nExportOptionName=="HTML5" )
             {
-                project_settingsList->add_gui_element(exportApplicationLabel,true);
-                project_settingsList->add_gui_element(warnOnCloseCheckbox,true);
-                project_settingsList->add_gui_element(html5DebugModeCheckbox,true);
-                //Colors Section
-                project_settingsList->add_gui_element(sectionWebColorsTitle,true);
-                project_settingsList->add_gui_element(projectBorderColor,true);
-                project_settingsList->add_gui_element(projectGameBackgroundColor,true);
-                ///
-                project_settingsList->add_gui_element(projectWebsiteBackgroundColor,true);
-                project_settingsList->add_gui_element(projectTextHeaderColor,true);
-                project_settingsList->add_gui_element(projectTextParagraphColor,true);
-
-                project_settingsList->add_gui_element(projectTextLinkColor,true);
-                project_settingsList->add_gui_element(projectTextLinkActiveColor,true);
-                project_settingsList->add_gui_element(projectTextLinkHoverColor,true);
-                project_settingsList->add_gui_element(projectTextLinkVisitedColor,true);
-
-                project_settingsList->add_gui_element(exportPush_button,true);
-                project_settingsList->add_gui_element(exportAndPlayPush_button,true );
-                project_settingsList->add_gui_element(playProgramPush_button, true);
-                project_settingsList->process_self( view_space,cam);
-
-                if( current_project!=nullptr )
-                {
-                    if( exportPush_button->is_clicked() )
-                    {
-                        current_project->save_project();
-                        current_project->export_project_html5("","",gpe::system_os_html5,true);
-                    }
-                    else if( exportAndPlayPush_button->is_clicked() )
-                    {
-                        current_project->save_project();
-                        current_project->export_project_html5("","",gpe::system_os_html5,true);
-                    }
-                    else if( playProgramPush_button->is_clicked() )
-                    {
-                        current_project->run_project("",gpe::system_os_html5);
-                    }
-                }
+               //NO LONGER SUPPORTED BY DESKTOP APPLICATION
             }
             else
             {

@@ -3,10 +3,10 @@ gpe_scene_tilemap_class.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -158,35 +158,6 @@ GPE_SceneTileMap::~GPE_SceneTileMap()
     }
 }
 
-bool GPE_SceneTileMap::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount, pawgui::widget_resource_container * localResTypeController )
-{
-    if( localResTypeController == nullptr )
-    {
-        return false;
-    }
-    std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
-    GPE_SceneTile * fSceneTile = nullptr;
-    pawgui::widget_resource_container * fTSToPlace = nullptr;
-    int maxTilesInLayer = (int)mapTiles.size();
-
-    for(  int i = 0; i < maxTilesInLayer; i++)
-    {
-        fSceneTile = mapTiles.at(i);
-        if( fSceneTile!=nullptr &&fSceneTile->tilesheetIndexId>=0 && fSceneTile->tileIndexId>=0)
-        {
-            fTSToPlace = localResTypeController->find_resource_from_id(fSceneTile->tilesheetIndexId);
-            if( fTSToPlace!=nullptr)
-            {
-                *fileTarget << nestedTabsStr << "_scn_temp_layer.scnStartTiles.push( {tileNumber: " << stg_ex::int_to_string( i ) << ",";
-                *fileTarget << "tileSheetId: " << stg_ex::int_to_string(fTSToPlace->exportBuildGlobalId) << ",";
-                *fileTarget << "tileIndexId: " << stg_ex::int_to_string(fSceneTile->tileIndexId);
-                *fileTarget << "}); \n";
-            }
-        }
-    }
-    GPE_SceneBasicClass::build_intohtml5_file( fileTarget, leftTabAmount+1, localResTypeController);
-    return true;
-}
 
 void GPE_SceneTileMap::calculate_size()
 {

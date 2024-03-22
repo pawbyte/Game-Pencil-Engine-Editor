@@ -3,10 +3,10 @@ gpe_editor.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -109,7 +109,6 @@ public:
     void remove_project(std::string projectFileName );
     void reset_gui_info();
     void reset_settings();
-    void export_current_project_html5(bool runGameOnCompile = false);
     void rum_current_project(std::string projectBuildDirectory, int buildMetaTemplate);
 
     void save_all_projects();

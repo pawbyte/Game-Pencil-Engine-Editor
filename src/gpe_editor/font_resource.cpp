@@ -3,10 +3,10 @@ font_resource.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -99,66 +99,6 @@ fontResource::~fontResource()
         delete openExternalEditor_button;
         openExternalEditor_button= nullptr;
     }
-}
-
-bool fontResource::build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount)
-{
-    if( fileTarget!=nullptr && fileTarget->is_open() )
-    {
-        std::string nestedTabsStr = pawgui::generate_tabs( leftTabAmount  );
-
-        *fileTarget << nestedTabsStr << "var " << resource_name << " =  GPE.rsm.add_font(";
-        *fileTarget << stg_ex::int_to_string (exportBuildGlobalId ) +",'";
-        if( (int)font_family_name.size() > 4)
-        {
-            *fileTarget << font_family_name+"',";
-        }
-        else
-        {
-            *fileTarget << "Arial',";
-        }
-        for( int i = 0; i < FONT_FILE_TYPES; i++)
-        {
-            //*fileTarget  << "'resources/animations/"+stg_ex::get_short_filename (animInEditor->file_name,true )+"',";
-            if( (int)storedFontFileNames[i].size() > 4)
-            {
-                *fileTarget << "'resources/fonts/"+ stg_ex::get_short_filename( storedFontFileNames[i],true) <<  "',";
-            }
-            else
-            {
-                *fileTarget << "'',";
-            }
-        }
-        if( fontInEditor==nullptr )
-        {
-            font_size = font_sizeField->get_held_number();
-        }
-        if( font_size <=8)
-        {
-            font_size = 8;
-        }
-        if( font_size >=256)
-        {
-            font_size = 256;
-        }
-        *fileTarget << stg_ex::int_to_string (font_size ) +",";
-
-        *fileTarget << stg_ex::int_to_string (fontWidth ) +",";
-        *fileTarget << stg_ex::int_to_string (fontHeight ) +",";
-        if( fontType_buttonController!=nullptr)
-        {
-            *fileTarget << stg_ex::int_to_string (fontType_buttonController->get_selected_id() );
-        }
-        else
-        {
-            *fileTarget << "0";
-        }
-
-        *fileTarget << ");\n";
-        return true;
-    }
-    return false;
-
 }
 
 bool fontResource::build_css3_file(std::ofstream * fileTarget, int leftTabAmount)
@@ -592,6 +532,16 @@ void fontResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect *c
 {
     view_space = gpe::camera_find(view_space);
     cam = gpe::camera_find(cam);
+
+    if( gpe::gcanvas->is_render_mode_supported( gpe::gcanvas->get_render_mode() ) !=1 )
+    {
+        //We draw the message that our current render can not draw the preview in this editor and then exit the render function :-(
+        gpe::gfs->render_text( view_space->w/2,view_space->h/2,
+                          "Render Mode ["+gpe::gcanvas->get_render_mode_name( gpe::gcanvas->get_render_mode())+"] is not supported by "+gpe::gcanvas->get_artist_name()+ " artist backend",
+                              pawgui::theme_main->program_color_header, gpe::font_default, gpe::fa_center, gpe::fa_middle );
+        return;
+    }
+
     if( cam!=nullptr && view_space!=nullptr  )
     {
         if(fontType_buttonController!=nullptr)

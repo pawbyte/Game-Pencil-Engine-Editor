@@ -3,10 +3,10 @@ gpe_animation2d.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -47,24 +47,38 @@ SOFTWARE.
 
 namespace gpe
 {
-    enum class animation2d_collision_zone
+    enum
     {
-        colzone_top_left = 0,
-        colzone_top_center = 1,
-        colzone_top_right = 2,
+        dir_top_left = 0,
+        dir_top_center = 1,
+        dir_top_right = 2,
 
-        colzone_middle_left = 3,
-        colzone_middle_center = 4,
-        colzone_middle_right = 5,
+        dir_middle_left = 3,
+        dir_middle_center = 4,
+        dir_middle_right = 5,
 
-        colzone_bottom_left = 6,
-        colzone_bottom_center = 7,
-        colzone_bottom_right = 8,
+        dir_bottom_left = 6,
+        dir_bottom_center = 7,
+        dir_bottom_right = 8,
+    };
+
+    class animation2d_frame_data
+    {
+        public:
+            shape_rect * collision_box;
+            int collision_radius;
+            shape_rect * frame_box;
+            int frame_message_id ;
+
+            animation2d_frame_data();
+            ~animation2d_frame_data();
     };
 
     class animation2d : public branch
     {
         protected:
+            int animation_alignment;
+            float animation_offset_x, animation_offset_y;
             texture_base * animation_texture;
             std::string file_name;
             bool texture_is_transparent;
@@ -72,15 +86,14 @@ namespace gpe
             //texture_base *animationMirFlipSurface;
             int xoffset, yoffset, frameCount;
             int hPadding, vPadding;
-            std::vector <shape_rect * > animation_frames;
             int x_middle, y_middle;
             float tex_width, tex_height;
             uint8_t ck_r, ck_g, ck_b;
+
+
         public:
             int animation_id;
-            int collision_radius;
-            shape_rect * collision_box;
-            animation2d_collision_zone collision_zone;
+            std::vector <animation2d_frame_data *  > frame_data;
 
             animation2d();
             animation2d( std::string anim_name, std::string anim_filename, bool transparent_image=false , uint8_t colorkeyR = 255, uint8_t colorkeyG = 0, uint8_t colorkeyB = 255);
@@ -89,11 +102,12 @@ namespace gpe
             virtual bool copy_image_source(std::string directory_output_name);
             virtual animation2d * copy_self();
             virtual void clean_up();
-            void edit_collision_box(int cx, int cy, int cw, int ch);
-            void edit_collision_circle(int cx, int cy, int cr);
+            void edit_collision_box(int frame_id, int cx, int cy, int cw, int ch); //int 1st parameter frame_id added for 1.6 LTS and newer
+            void edit_collision_circle(int frame_id, int cx, int cy, int cr); //int 1st parameter frame_id added for 1.6 LTS and newer
             virtual animation2d * create_new( const std::string& anim_name= "", const std::string& anim_filename = "", bool transparent_image=false, uint8_t colorkeyR = 255, uint8_t colorkeyG = 0, uint8_t colorkeyB = 255  );
 
             //Getters, should remain the same, but for mos backends, if a change is needed we can make it virtual
+            int get_alignment();
             int get_frame_count();
             int get_width();
             int get_height();
@@ -105,7 +119,8 @@ namespace gpe
             int get_frame_yoffset();
             std::string get_file_name();
             std::string get_name();
-
+            int get_xoffset();
+            int get_yoffset();
             bool has_texture();
 
             virtual void load_image( const std::string& anim_filename, bool transparent = true, uint8_t colorkeyR = 255, uint8_t colorkeyG = 0, uint8_t colorkeyB = 255  );
@@ -124,9 +139,9 @@ namespace gpe
             void render_special(int sub_image_to_draw, int x_pos, int y_pos, float x_scale, float y_scale,float new_angle = 0,color * render_color = nullptr, int alpha = 255, shape_rect * cam= nullptr);
 
             virtual void reset_frames();
-
-            virtual void setup_animation( int frame_count, int aw, int ah, int sofx, int sofy, int hPad, int vPad );
-            virtual void setup_fullimg_animation(  int aw, int ah, int sofx, int sofy, int hPad, int vPad );
+            virtual void set_alignment( int animAlign );
+            virtual void setup_animation( int frame_count, int aw, int ah, int sofx, int sofy, int hPad, int vPad,int animAlign =dir_top_left  );
+            virtual void setup_fullimg_animation(  int aw, int ah, int sofx, int sofy, int hPad, int vPad,int animAlign= dir_top_left  );
     };
 }
 

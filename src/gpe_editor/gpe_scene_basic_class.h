@@ -3,10 +3,10 @@ game_scene_basic_class.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -80,7 +80,6 @@ public:
     bool add_scene_branch( GPE_SceneBasicClass * branch, bool changeId = true, bool openBranch = false );
     virtual void add_typed_elements();
     GPE_ObjectComponent *  add_variable(pawgui::widget_basic * newVariable);
-    virtual bool build_intohtml5_file(std::ofstream * fileTarget, int leftTabAmount,  pawgui::widget_resource_container * localResTypeController );
     virtual void calculate_size();
     virtual void process_elements();
     void refresh_branch();

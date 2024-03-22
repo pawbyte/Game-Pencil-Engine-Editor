@@ -3,10 +3,10 @@ gpe_basic_object.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -138,9 +138,9 @@ namespace gpe
             int sceneLayerStartPos;
             int gpeSceneStartId;
             color * outlineTestColor;
-            int objectDepth;
-            int prevObjectDepth;
-            int objectDepthPosition;
+            int depth;
+            int prevdepth;
+            int depthPosition;
             bool GPE_AddedToGridSystem;
             bool gpeLogicAppliedInFrame;
             bool gpePrelogicAppliedInFrame;
@@ -275,6 +275,8 @@ namespace gpe
             void update_animation();
 
     };
+
+    bool compare_depth(game_object * a, game_object * b);
 }
 
 #endif //gpe_basic_object_h

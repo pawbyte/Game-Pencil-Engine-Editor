@@ -3,10 +3,10 @@ gpe_artist_base.h
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -68,7 +68,8 @@ namespace gpe
             primitive_type current_primitive3d;
 
             int current_render_mode;
-            signed char render_mode_supported[ render_mode_max ];
+            int render_mode_supported[ render_mode_max ];
+            std::string artist_name;
         public:
             artist_base();
             artist_base( renderer_base * aRenderer );
@@ -91,9 +92,10 @@ namespace gpe
 
             int animation_get_number(animation2d* animationIn);
             int get_artist_blend_mode();
+            std::string get_artist_name();
             int get_render_mode();
             std::string get_render_mode_name( int rmode_to_check );
-            signed char is_render_mode_supported( int rmode_to_check );
+            int is_render_mode_supported( int rmode_to_check );
             bool using_simple_geometry(); //Useful for toggling in renderers in which line rendering versus triangle/geometry rendering is possible(Pre SDL 2.0.18, software renderers, etc)
             //Getters [ END ]
 

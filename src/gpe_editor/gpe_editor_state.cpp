@@ -3,10 +3,10 @@ gpe_editor_state.cpp
 This file is part of:
 GAME PENCIL ENGINE
 https://www.pawbyte.com/gamepencilengine
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 Game Pencil Engine contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 Game Pencil Engine contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -238,10 +238,11 @@ void gpe_editor_state::process_view_mode()
         int menuSelection = pawgui::context_menu_process( );
         if( menuSelection>=0 && menuSelection < gpe::render_mode_userdefined0 )
         {
-            if( gpe::renderer_main->is_render_mode_supported( menuSelection ) )
+            //if( gpe::renderer_main->is_render_mode_supported( menuSelection ) )
             {
                 editor_view_icon->descriptionText = "View Mode "+gpe::renderer_main->get_render_mode_name( menuSelection );
                 main_editor_settings->current_editor_view_mode = menuSelection;
+                gpe::gcanvas->set_render_mode(  menuSelection );
             }
         }
     }
@@ -570,7 +571,7 @@ void gpe_editor_state::start_state()
     {
         while( main_gpe_splash_page->exit_startup_mode() == false )
         {
-            main_gpe_splash_page->render_loader();
+            main_gpe_splash_page->render();
         }
     }
 }

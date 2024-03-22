@@ -3,10 +3,10 @@ pawgui_general_resource_container.cpp
 This file is part of:
 PawByte Ambitious Working GUI(PAWGUI)
 https://www.pawbyte.com/pawgui
-Copyright (c) 2014-2023 Nathan Hurde, Chase Lee.
+Copyright (c) 2014-2024 Nathan Hurde, Chase Lee.
 
-Copyright (c) 2014-2023 PawByte LLC.
-Copyright (c) 2014-2023 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
+Copyright (c) 2014-2024 PawByte LLC.
+Copyright (c) 2014-2024 PawByte Ambitious Working GUI(PAWGUI) contributors ( Contributors Page )
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -1125,7 +1125,7 @@ namespace pawgui
             if( myAnim !=nullptr )
             {
                 myAnim->render_scaled(0, x_pos, y_pos, x_scale, y_scale,cam );
-                imageWasRendered= true;
+                imageWasRendered = true;
             }
             else
             {
@@ -1133,7 +1133,7 @@ namespace pawgui
                 if( myTexture!=nullptr)
                 {
                     myTexture->render_tex_scaled( x_pos-cam->x, y_pos-cam->y, x_scale, y_scale,nullptr );
-                    imageWasRendered= true;
+                    imageWasRendered = true;
                 }
             }
         }
