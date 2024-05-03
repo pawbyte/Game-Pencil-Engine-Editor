@@ -46,7 +46,7 @@ SDL 2.0.9 used for this version...
 #include "game_state_main_menu_base.h"
 #include "game_state_master.h"
 #include "game_state_splash.h"
-#include "gpe_editor/gpe_game_master_itenary.h"
+#include "gpe_editor/gpe_editor_state.h"
 #include "game_state_shape_test.h"
 
 int main( int argc, char* args[] )
@@ -103,7 +103,7 @@ int main( int argc, char* args[] )
     gpe::game_runtime->state_set( shape_tester->get_state_name() );
 
 
-    if( init_gpe_master_itenary( argc, args ) == false )
+    if( init_gpe_editor( argc, args ) == false )
     {
         gameFailed = -2000;
     }
@@ -123,7 +123,7 @@ int main( int argc, char* args[] )
     }
 
     //Clean up
-    quit_gpe_master_itenary();
+    quit_gpe_editor();
     gpe::error_log->report("Deleting GPE...");
     gpe::quit_engine();
 
