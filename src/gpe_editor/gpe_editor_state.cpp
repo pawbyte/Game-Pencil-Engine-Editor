@@ -783,5 +783,9 @@ bool quit_gpe_editor()
         delete main_gpe_splash_page;
         main_gpe_splash_page = nullptr;
     }
+
+    gpe::error_log->report("Deleting Gui...");
+    pawgui::quit_gui();
+
     return true;
 }
