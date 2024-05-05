@@ -53,6 +53,11 @@ namespace gpe
         return a->depth < b->depth;
     }
 
+    bool compare_depth_desc(game_object * a, game_object * b)
+    {
+        return a->depth > b->depth;
+    }
+
     game_object::game_object( int object_layer_id, int x_pos_in,  int y_pos_in, int z_pos_in  )
     {
         pathId = -1;

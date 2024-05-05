@@ -124,7 +124,7 @@ namespace gpe
             void render_background_color();
             void render_backgrounds();
             void render_foregrounds();
-            void render_scene();
+            void render();
             bool scene_is_ready();
             void scene_restart();
             bool was_visited();

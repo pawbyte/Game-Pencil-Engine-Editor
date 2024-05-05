@@ -115,6 +115,7 @@ namespace gpe
 
             void render_objects();
             void render();
+            void render_start();
             void replace_all_backgrounds ( int needleBgId, int newBgId );
             void reset_branch();
             void scroll_backgrounds();

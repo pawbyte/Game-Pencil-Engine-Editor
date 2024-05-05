@@ -521,7 +521,7 @@ namespace gpe
 
     }
 
-    void game_scene::render_scene()
+    void game_scene::render()
     {
         render_background_color();
         /*

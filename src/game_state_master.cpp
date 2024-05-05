@@ -254,7 +254,13 @@ void game_master::render()
     gpe::gcanvas->render_rectangle( 0, 0, gpe::screen_width, gpe::screen_height, gpe::c_white, false, 255 );
     if( scene_current!=nullptr )
     {
-        scene_current->render_scene();
+        scene_current->render_start();
+        scene_current->render();
+        scene_current->render_end();
+
+        scene_current->render_hud_start();
+        scene_current->render_hud();
+        scene_current->render_hud_end();
         //gpe::gfs->render_text(32,32,"Current Scene = ["+scene_current->get_scene_name()+"]", gpe::c_white, gpe::font_default,  gpe::fa_left, gpe::fa_top );
 
     }
