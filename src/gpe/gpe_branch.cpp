@@ -243,27 +243,58 @@ namespace gpe
 
     void branch::render_end()
     {
-
+        for( int i_branch = 0;i_branch < (int)sub_elements.size(); i_branch++ )
+        {
+            if( sub_elements[i_branch] != nullptr )
+            {
+                sub_elements[i_branch]->render_end();
+            }
+        }
     }
 
     void branch::render_start()
     {
-
+        for( int i_branch = 0;i_branch < (int)sub_elements.size(); i_branch++ )
+        {
+            if( sub_elements[i_branch] != nullptr )
+            {
+                sub_elements[i_branch]->render_start();
+            }
+        }
     }
 
     void branch::render_hud()
     {
+        for( int i_branch = 0;i_branch < (int)sub_elements.size(); i_branch++ )
+        {
+            if( sub_elements[i_branch] != nullptr )
+            {
+                sub_elements[i_branch]->render_hud();
+            }
+        }
 
     }
 
     void branch::render_hud_end()
     {
-
+        for( int i_branch = 0;i_branch < (int)sub_elements.size(); i_branch++ )
+        {
+            if( sub_elements[i_branch] != nullptr )
+            {
+                sub_elements[i_branch]->render_hud();
+            }
+        }
     }
 
     void branch::render_hud_start()
     {
-
+        for( int i_branch = 0; i_branch < (int)sub_elements.size(); i_branch++ )
+        {
+            if( sub_elements[i_branch] != nullptr )
+            {
+                sub_elements[i_branch]->render_hud_start();
+            }
+        }
     }
 
     void branch::reset_branch()

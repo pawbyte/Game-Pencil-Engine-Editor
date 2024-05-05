@@ -277,6 +277,11 @@ namespace gpe
 
     }
 
+    void scene_layer::render_start()
+    {
+        sorth_depth();
+    }
+
     void scene_layer::render_objects()
     {
         game_object * foundGameObject = nullptr;
@@ -338,9 +343,16 @@ namespace gpe
         }
     }
 
-    void sorth_depth( bool sort_ascending )
+    void scene_layer::sorth_depth( bool sort_ascending )
     {
-
+        if( sort_ascending)
+        {
+            std::sort(layer_entities.begin(), layer_entities.end(), compare_depth );
+        }
+        else
+        {
+            std::sort(layer_entities.begin(), layer_entities.end(), compare_depth_desc );
+        }
     }
 
     void scene_layer::update(float delta_time)

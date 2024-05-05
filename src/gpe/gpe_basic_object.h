@@ -277,6 +277,8 @@ namespace gpe
     };
 
     bool compare_depth(game_object * a, game_object * b);
+    bool compare_depth_desc(game_object * a, game_object * b);
+
 }
 
 #endif //gpe_basic_object_h

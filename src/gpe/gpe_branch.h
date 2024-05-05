@@ -163,11 +163,11 @@ namespace gpe
             bool remove_typed_branch_by_name( int branch_type_id, std::string branch_name , bool nest_down = true );
 
             virtual void render();
-            virtual void render_start(); //Useful for rendering on start(i.e, floors and shadows)
             virtual void render_end(); //Useful for post-rendering(i.e  effects and texts)
+            virtual void render_start();  //Useful for rendering on start(i.e, floors and shadows) Scene Layer useful for pre-depthsort
             virtual void render_hud(); //Useful for rendering on the HUD level
-            virtual void render_hud_start(); //Useful for rendering at start the HUD level
             virtual void render_hud_end(); //Useful for rendering on last layer of HUD level
+            virtual void render_hud_start(); //Useful for rendering at start the HUD level
 
             virtual void reset_branch();
             virtual bool self_destruct();
