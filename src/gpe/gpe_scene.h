@@ -52,17 +52,7 @@ namespace gpe
             std::string sceneFilename;
             std::string defaultLayerName;
 
-            std::vector< game_object * >sceneObjects;
-
-            std::map<std::string, branch * > assetsByName;
-            std::map<std::string, std::vector< branch * > > assetsByTags;
-
-            std::vector< game_object * >persistentObjects;
             std::vector< scene_layer_meta_data * >scenesStartLayers;
-
-            std::vector<branch *> masterBranchList;
-            std::map<std::string, branch * > branchesByName;
-            std::map<std::string, std::vector< branch * > > branchesByTags;
 
             //background data
             color * bg_color;
