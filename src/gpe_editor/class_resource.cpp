@@ -274,7 +274,7 @@ void classResource::load_resource(std::string file_path)
                                     classHeaderCode->set_ycursor(fCursorY);
                                     classHeaderCode->set_xcursor(fCursorX);
                                 }
-                                else if( key_string=="Source_Cursor" & classSourceCode!=nullptr)
+                                else if( key_string=="Source_Cursor" && classSourceCode!=nullptr)
                                 {
                                     fCursorY = stg_ex::split_first_int(valstring,',');
                                     fCursorX = stg_ex::string_to_int(valstring,0);

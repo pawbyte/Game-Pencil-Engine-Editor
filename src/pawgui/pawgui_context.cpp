@@ -752,7 +752,7 @@ namespace pawgui
                         downDelay = -1;
                         keyActivityHappend = true;
                     }
-                    else if( gpe::input->kb_button_released[kb_enter] || gpe::input->kb_button_released[kb_space] && subMenuIsOpen  )
+                    else if( ( gpe::input->kb_button_released[kb_enter] || gpe::input->kb_button_released[kb_space] ) && subMenuIsOpen  )
                     {
                         browsing_result  = activate_hovered();
                         hoverOption = -1;
@@ -1564,7 +1564,7 @@ namespace pawgui
                     }
                     downDelay = -1;
                 }
-                else if( gpe::input->kb_button_released[kb_enter] || gpe::input->kb_button_released[kb_space] && toolBarIsOpen  )
+                else if( ( gpe::input->kb_button_released[kb_enter] || gpe::input->kb_button_released[kb_space] ) && toolBarIsOpen  )
                 {
                     toolBarActionHappened = true;
                     if( fOption!=nullptr)

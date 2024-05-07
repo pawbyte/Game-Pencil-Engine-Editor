@@ -123,7 +123,7 @@ namespace gpe
 
         for( int og_gamepad_id = gp_max_devices; og_gamepad_id >=0 ; og_gamepad_id--)
         {
-            if( game_pads[ og_gamepad_id ] = nullptr )
+            if( game_pads[ og_gamepad_id ] == nullptr )
             {
                 delete game_pads[ og_gamepad_id ];
                 game_pads[ og_gamepad_id ] = nullptr;

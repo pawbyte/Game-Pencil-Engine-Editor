@@ -196,7 +196,7 @@ void particleResource::load_image(std::string new_file_name, bool autoProcess )
     {
         textureLocationField->set_string( new_file_name );
         emitterTexture = gpe::rsm->texture_add_filename( new_file_name );
-        if( emitterTexture!=nullptr && emitterTexture->get_width() > 512 || emitterTexture->get_height() > 512 )
+        if( emitterTexture!=nullptr && ( emitterTexture->get_width() > 512 || emitterTexture->get_height() > 512 ) )
         {
             if( main_editor_log!=nullptr )
             {

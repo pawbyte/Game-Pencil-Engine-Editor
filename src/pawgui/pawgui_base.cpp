@@ -85,7 +85,7 @@ namespace pawgui
 
         int foundPosition = lowered_string.find( s_name );
 
-        if ( foundPosition!=std::string::npos )
+        if ( foundPosition!=(int)std::string::npos )
         {
             return true;
         }

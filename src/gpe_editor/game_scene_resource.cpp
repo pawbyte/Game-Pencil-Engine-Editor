@@ -601,7 +601,7 @@ sceneLayer * gameSceneResource::add_retro_layer(int layerType, int newLayerId, b
     if( layerType >=0 && layerType <= LAYER_TYPE_MAX )
     {
         bool makeNewLayer = false;
-        if( newLayerId >=0 & newLayerId < 32)
+        if( newLayerId >=0 && newLayerId < 32)
         {
             previousFoundLayer = find_layer(newLayerId);
             if(  previousFoundLayer==nullptr )
@@ -691,7 +691,7 @@ sceneLayer * gameSceneResource::add_layer( int newLayerId, bool selectLayer )
     sceneLayer * newLayer = nullptr;
 
     bool makeNewLayer = false;
-    if( newLayerId >=0 & newLayerId < 32)
+    if( newLayerId >=0 && newLayerId < 32)
     {
         previousFoundLayer = find_layer(newLayerId);
         if(  previousFoundLayer==nullptr )
@@ -1238,7 +1238,7 @@ void gameSceneResource::handle_scrolling()
                     yScrollHappened = true;
                     editorCameraRect.y+=(editorCameraRect.h/16)*zoomValue;
                 }
-                else if( editorScrolling = false )
+                else if( editorScrolling == false )
                 {
                     //arrow scrolling
                     if( gpe::input->check_kb_down(kb_up) )
@@ -2146,7 +2146,7 @@ void gameSceneResource::load_resource(std::string file_path)
                                             */
                                             foundNickname = stg_ex::split_first_string( valstring, ",,,");
                                             newSceneGroup = new sceneBranchGroup(foundNickname);
-                                            if(recentObject!=nullptr && recentObject->get_type()==gpe::branch_type::LAYER || recentObject->get_type()==gpe::branch_type::GROUP )
+                                            if(recentObject!=nullptr && ( recentObject->get_type() == gpe::branch_type::LAYER || recentObject->get_type() == gpe::branch_type::GROUP ) )
                                             {
                                                 recentObject->add_scene_branch( newSceneGroup);
                                             }
@@ -3139,7 +3139,7 @@ void gameSceneResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
                         {
                             seek_placeable_branch();
                             //Makes sure we are not stacking identical objects on each other
-                            if( ( lastCreatedObjXPos < 0 || lastCreatedObjYPos < 0 || lastCreatedObjTypeId < 0) || sceneObjMouseX!=lastCreatedObjXPos && lastCreatedObjXPos|| sceneObjMouseY!=lastCreatedObjYPos || lastCreatedObjTypeId!=objTypeBeingPlaced )
+                            if( ( lastCreatedObjXPos < 0 || lastCreatedObjYPos < 0 || lastCreatedObjTypeId < 0) || ( sceneObjMouseX!=lastCreatedObjXPos && lastCreatedObjXPos || sceneObjMouseY!=lastCreatedObjYPos || lastCreatedObjTypeId!=objTypeBeingPlaced ) )
                             {
                                 pawgui::main_overlay_system->update_tooltip("Placing Object");
                                 GPE_SceneGameObject * newPlacedObject = new GPE_SceneGameObject("object");
@@ -3459,7 +3459,7 @@ void gameSceneResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
 void gameSceneResource::render_grid( int x_start, int y_start, int cellW, int cellH, int xMax, int yMax, gpe::color * gridLineColor, int gridLineAlpha )
 {
 
-    if( cellW < 4 && cellH < 4 || gridRenderRect==nullptr || gridLineAlpha <=0 )
+    if( ( cellW < 4 && cellH < 4 ) || gridRenderRect==nullptr || gridLineAlpha <= 0 )
     {
         return;
     }
