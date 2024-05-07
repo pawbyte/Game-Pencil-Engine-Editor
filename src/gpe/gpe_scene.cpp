@@ -70,8 +70,6 @@ namespace gpe
             bg_color = nullptr;
         }
 
-        sceneObjects.clear();
-        persistentObjects.clear();
         sub_elements.clear();
         scenesStartLayers.clear();
 
@@ -147,73 +145,6 @@ namespace gpe
     void game_scene::apply_postlogic()
     {
 
-    }
-
-    bool game_scene::add_to_persistent_objects( game_object * nObject)
-    {
-        if( nObject!= nullptr)
-        {
-            for( int i = (int)persistentObjects.size() - 1; i >=0; i--)
-            {
-                if( persistentObjects[i]->get_id() == nObject->get_id() )
-                {
-                    return false;
-                }
-            }
-        }
-        persistentObjects.push_back( nObject );
-        return true;
-    }
-
-    branch * game_scene::find_branch( const std::string branch_name )
-    {
-        auto branchIterator = branchesByName.find( branch_name );
-
-        if( branchIterator != branchesByName.end() )
-        {
-            return branchIterator->second;
-        }
-        return nullptr;
-    }
-
-    branch * game_scene::find_tagged_branch( const std::string branch_name )
-    {
-        std::vector<branch *> foundVector = find_all_tagged_branches( branch_name );
-        if( foundVector.size() > 0 )
-        {
-            return foundVector[ 0 ];
-        }
-        return nullptr;
-    }
-
-    int game_scene::find_tagged_branch_count( const std::string branch_name )
-    {
-        std::vector< branch * > foundVector = find_all_tagged_branches( branch_name );
-        return (int)foundVector.size();
-    }
-
-    branch * game_scene::find_tagged_branch_last( const std::string branch_name )
-    {
-        auto foundVector = find_all_tagged_branches( branch_name );
-        if( foundVector.size() > 0 )
-        {
-            return foundVector[ foundVector.size() -1 ];
-        }
-        return nullptr;
-    }
-
-    std::vector< branch * > game_scene::find_all_tagged_branches( const std::string branch_name )
-    {
-        std::vector<branch *> foundVector;
-
-        auto branchIterator = branchesByTags.find( branch_name );
-
-        if( branchIterator != branchesByTags.end() )
-        {
-            foundVector = branchIterator->second;
-            return foundVector;
-        }
-        return foundVector;
     }
 
     void game_scene::init_collision_handler()
