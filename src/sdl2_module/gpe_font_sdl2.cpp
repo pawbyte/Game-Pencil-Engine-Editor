@@ -47,7 +47,7 @@ namespace gpe
         {
             //Render text surface
             SDL_Color sdl2_color_white = {255, 255, 255,255};
-            SDL_Surface * textSurface = textSurface = TTF_RenderUTF8_Blended( fontIn, str_in.c_str(),sdl2_color_white );
+            SDL_Surface * textSurface = TTF_RenderUTF8_Blended( fontIn, str_in.c_str(),sdl2_color_white );
             if( textSurface == NULL )
             {
                 std::string ttfError = TTF_GetError();

@@ -99,7 +99,7 @@ namespace gpe
 
         for( int i = preRenderedCircleFilledCount -1; i >=0 ; i--)
         {
-            if( prerenderedCircles[i] = NULL )
+            if( prerenderedCircles[i] == NULL )
             {
                 delete prerenderedCircles[i];
                 prerenderedCircles[i] = NULL;

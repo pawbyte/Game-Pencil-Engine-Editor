@@ -589,7 +589,7 @@ bool projectPropertiesResource::export_and_play_native(bool launchProgram)
     if( current_project!=nullptr)
     {
         int buildBits = 32;
-        if( gpe::system_found_os= gpe::system_os_windows )
+        if( gpe::system_found_os == gpe::system_os_windows )
         {
             if( win64BitCheckbox->is_clicked() )
             {
@@ -1997,7 +1997,7 @@ int projectPropertiesResource::search_and_replace_string(std::string needle, std
 
 void projectPropertiesResource::update_project_layers()
 {
-    if( current_project!=nullptr & current_project->RESC_SCENES!=nullptr)
+    if( current_project!=nullptr && current_project->RESC_SCENES!=nullptr)
     {
         int iLN = 0;
         for(  iLN = 0; iLN < 32; iLN++)

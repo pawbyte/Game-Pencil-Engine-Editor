@@ -150,7 +150,7 @@ namespace pawgui
             int iDirectory = 0;
             bool enterMyComputerMode = false;
             bool exitOperation = false;
-            if( currentDirectory->open_directory_sorted(currentDirectoryInView )==-1)
+            if( currentDirectory->open_directory_sorted(currentDirectoryInView )== false )
             {
                 exitOperation = true;
             }
