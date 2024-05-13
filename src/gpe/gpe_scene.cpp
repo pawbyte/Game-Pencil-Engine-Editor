@@ -77,6 +77,7 @@ namespace gpe
         {
             main_spatial_grid->deactivate_all_layers();
         }
+        delete_layers();
     }
 
     void game_scene::add_branch( branch * new_branch )
@@ -87,33 +88,33 @@ namespace gpe
         }
 
         int branch_layer_id = new_branch->get_layer_id();
-        if( branch_layer_id < 0 || branch_layer_id >=32 )
+        if( branch_layer_id < 0 || branch_layer_id >= MAX_SCENE_LAYER_COUNT )
         {
             return;
         }
 
-        scene_layer * found_layer = find_layer( branch_layer_id );
         if( new_branch->get_type() == branch_type::LAYER )
         {
-            if( found_layer == nullptr )
-            {
-                sub_elements.push_back( new_branch );
-            }
+            add_layer( (scene_layer*) new_branch );
         }
         else
         {
-
+            scene_layer * found_layer = find_layer( branch_layer_id );
+            if( found_layer != nullptr )
+            {
+                found_layer->add_branch( new_branch );
+            }
+            else
+            {
+                branch::add_branch( new_branch );
+            }
         }
     }
 
     scene_layer * game_scene::add_layer(int newLayerId, float newLayerAlpha )
     {
-        if( newLayerId >=0 && newLayerId < 32 )
+        if( newLayerId >=0 && newLayerId < MAX_SCENE_LAYER_COUNT )
         {
-            if( main_spatial_grid != nullptr )
-            {
-                main_spatial_grid->activate_layer( newLayerId );
-            }
             if( find_layer( newLayerId )== nullptr  )
             {
                 scene_layer * new_layer = new scene_layer( newLayerId, newLayerAlpha);
@@ -124,7 +125,20 @@ namespace gpe
         return nullptr;
     }
 
-    scene_layer * game_scene::add_start_layer(   int newLayerId, float newLayerAlpha )
+    void game_scene::add_layer( scene_layer * layer_in )
+    {
+        if( layer_in == nullptr )
+        {
+            return;
+        }
+        if( find_layer( layer_in->get_id() ) !=nullptr )
+        {
+            return;
+        }
+        scene_layers.push_back( layer_in );
+    }
+
+    scene_layer * game_scene::add_start_layer( int newLayerId, float newLayerAlpha )
     {
         scene_layer * newLayer = add_layer(   newLayerId, newLayerAlpha );
         if( newLayer!= nullptr )
@@ -147,13 +161,26 @@ namespace gpe
 
     }
 
+    void game_scene::delete_layers()
+    {
+        for( int i = (int)scene_layers.size()-1; i >=0; i-- )
+        {
+            if( scene_layers[i] != nullptr )
+            {
+                delete scene_layers[i];
+                scene_layers[i] = nullptr;
+            }
+        }
+        scene_layers.clear();
+    }
+
     void game_scene::init_collision_handler()
     {
         branch * current_branch = nullptr;
         scene_layer * current_layer = nullptr;
-        for( int branch_itr = 0; branch_itr < (int)sub_elements.size(); branch_itr++ )
+        for( int branch_index = 0; branch_index < (int)sub_elements.size(); branch_index++ )
         {
-            current_branch = sub_elements[branch_itr];
+            current_branch = sub_elements[branch_index];
 
             current_layer = (scene_layer *)(current_branch);
 
@@ -164,45 +191,40 @@ namespace gpe
         }
     }
 
-    scene_layer * game_scene::find_layer ( int layerIdIn )
+    scene_layer * game_scene::find_layer ( int layer_in_id )
     {
-        scene_layer * foundLayer = nullptr;
-        branch * current_branch = nullptr;
-        if( layerIdIn < 32 && layerIdIn>=0 )
+        scene_layer * found_layer = nullptr;
+        if( layer_in_id > MAX_SCENE_LAYER_COUNT || layer_in_id < 0 )
         {
-            for( int branch_itr = 0; branch_itr < (int)sub_elements.size(); branch_itr++ )
+            return nullptr;
+        }
+
+        for( int layer_index = 0; layer_index < (int)scene_layers.size(); layer_index++ )
+        {
+            found_layer = scene_layers[layer_index];
+            if( found_layer != nullptr )
             {
-                current_branch = sub_elements[branch_itr];
-                if( current_branch != nullptr && current_branch->get_type() == branch_type::LAYER )
+                if( found_layer->get_id() == layer_in_id )
                 {
-                    foundLayer = (scene_layer *)(current_branch);
-                    if( foundLayer!= nullptr )
-                    {
-                        if( foundLayer->get_id()==layerIdIn )
-                        {
-                            return foundLayer;
-                        }
-                    }
+                    return found_layer;
                 }
             }
         }
         return nullptr;
     }
 
-
-    scene_layer * game_scene::get_layer ( int layerIdIn)
+    scene_layer * game_scene::get_layer ( int layer_in_id)
     {
-        scene_layer * foundLayer = find_layer( layerIdIn );
-        if( foundLayer !=nullptr )
+        scene_layer * found_layer = find_layer( layer_in_id );
+        if( found_layer !=nullptr )
         {
-            return foundLayer;
+            return found_layer;
         }
 
-        if(  layerIdIn >=0 && layerIdIn < 32)
+        if(  layer_in_id >=0 && layer_in_id < MAX_SCENE_LAYER_COUNT )
         {
-            //console.log( "Unable to find layer with ID[" +layerIdIn+"]" );
-            return add_layer(  layerIdIn,1);
-
+            //console.log( "Unable to find layer with ID[" +layer_in_id+"]" );
+            return add_layer(  layer_in_id,1);
         }
         return nullptr;
     }
