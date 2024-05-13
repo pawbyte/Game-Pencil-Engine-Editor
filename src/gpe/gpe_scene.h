@@ -40,6 +40,7 @@ SOFTWARE.
 
 namespace gpe
 {
+    const int MAX_SCENE_LAYER_COUNT = 32;
     class game_scene: public branch
     {
         private:
@@ -52,7 +53,8 @@ namespace gpe
             std::string sceneFilename;
             std::string defaultLayerName;
 
-            std::vector< scene_layer_meta_data * >scenesStartLayers;
+            std::vector< scene_layer_meta_data * > scenesStartLayers;
+            std::vector< scene_layer * > scene_layers;
 
             //background data
             color * bg_color;
@@ -69,8 +71,10 @@ namespace gpe
             ~game_scene();
             void add_branch( branch * newBranch );
             scene_layer * add_layer( int newLayerId, float newLayerAlpha );
+            void add_layer( scene_layer * layer_in );
             scene_layer * add_start_layer( int newLayerId, float newLayerAlpha );
 
+            void delete_layers();
             branch * find_branch( const std::string branch_name );
             branch * find_tagged_branch( const std::string branch_name );
             int find_tagged_branch_count( const std::string branch_name );
@@ -81,8 +85,8 @@ namespace gpe
             bool add_to_persistent_objects( game_object * nObject);
             void init_collision_handler();
 
-            scene_layer * find_layer ( int layerIdIn);
-            scene_layer * get_layer ( int layerIdI );
+            scene_layer * find_layer ( int layer_in_id);
+            scene_layer * get_layer ( int layer_in_id );
 
             int get_scene_width();
             int get_scene_height();
