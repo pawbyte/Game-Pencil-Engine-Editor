@@ -176,14 +176,10 @@ namespace gpe
 
     void game_scene::init_collision_handler()
     {
-        branch * current_branch = nullptr;
         scene_layer * current_layer = nullptr;
-        for( int branch_index = 0; branch_index < (int)sub_elements.size(); branch_index++ )
+        for( int layer_index = 0; layer_index < (int)scene_layers.size(); layer_index++ )
         {
-            current_branch = sub_elements[branch_index];
-
-            current_layer = (scene_layer *)(current_branch);
-
+            current_layer = scene_layers[layer_index];
             if( current_layer != nullptr )
             {
                 current_layer->init_collision_handler( sceneWidth, sceneHeight );
@@ -262,7 +258,7 @@ namespace gpe
 
     void game_scene::scene_init()
     {
-
+        main_collision_controller->reset_system();
     }
 
     void game_scene::update_scene_specs( int scene_width, int scene_height)

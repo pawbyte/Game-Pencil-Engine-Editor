@@ -39,26 +39,11 @@ namespace gpe
 {
     scene_layer::scene_layer(  int newLayerId, float newLayerAlpha )
     {
-        spatial_grid_box_size = 128;
-        spatial_grid_width_size = 128;
-        spatial_grid_height_size = 128;
-        spatial_grid_x_amount = 2;
-        spatial_grid_y_amount = 2;
         layer_id = newLayerId;
         layer_alpha = newLayerAlpha;
 
         name = "";
-        spatial_grid_created = false;
-        spatial_map_width_size = 0;
-        spatial_map_height_size = 0;
 
-        spatial_grid_x_amount = 2;
-        spatial_grid_y_amount = 2;
-        entity_collisions_hashes_checked = 0;
-        spatial_collisions_checked_counter = 0;
-
-        collision_pairs_total = 0;
-        parsed_objects = 0;
     }
 
     scene_layer::~scene_layer()
@@ -135,16 +120,11 @@ namespace gpe
 
     void scene_layer::init_collision_handler( int camera_scene_width, int camera_scene_height )
     {
-        if(spatial_grid_created && spatial_map_width_size == camera_scene_width && spatial_map_height_size == camera_scene_height)
-        {
-            return;
-        }
-
         if( camera_scene_width>0 && camera_scene_height>0 )
         {
-            if( main_spatial_grid!=nullptr )
+            if( main_collision_controller!=nullptr )
             {
-                main_spatial_grid->init_system( camera_scene_width, camera_scene_height );
+                main_collision_controller->init_system( camera_scene_width, camera_scene_height );
             }
         }
 
@@ -360,10 +340,5 @@ namespace gpe
 
     }
 
-    void scene_layer::set_default_grid_size()
-    {
-        spatial_grid_box_size = 256;
-        spatial_grid_width_size = 256;
-        spatial_grid_height_size = 256;
-    }
+
 }

@@ -35,12 +35,17 @@ SOFTWARE.
 #define gpe_spatial_partition_h
 
 #include "gpe_basic_object.h"
+#include "gpe_collision_controller_base.h"
 #include "gpe_shapes.h"
 
 namespace gpe
 {
     class spatial_partition
     {
+        private:
+            std::vector< collision_event >  collisions_found;
+            game_object * sought_first_object;
+            game_object * sought_second_object;
         protected:
             std::vector<game_object * > objectsArray;
             int objectsHeld;
@@ -52,9 +57,12 @@ namespace gpe
             void add_object(game_object * newObject);
             void check_collisions();
             void check_collisions_with_other( spatial_partition * other);
+            void check_for_leaving_collisions();
+            collision_event * collision_exist( game_object * object_one, game_object * object_two );
             void empty_list();
             game_object * get_object(int pos);
             int get_size();
+            bool matching_collision( collision_event * col_event );
             void set_space(int x_new, int y_new, int newW, int new_height);
             void remove_held_object(game_object * object_in);
     };

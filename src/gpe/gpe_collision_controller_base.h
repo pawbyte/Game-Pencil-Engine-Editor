@@ -39,6 +39,20 @@ SOFTWARE.
 
 namespace gpe
 {
+    enum class collision_event_type
+    {
+        collision_enter = 0,
+        collision_stay = 1,
+        collision_leave = 2,
+    };
+
+    struct collision_event
+    {
+        game_object * object_one;
+        game_object * object_two;
+        collision_event_type type;
+    };
+
     class collision_controller_base
     {
         protected:
@@ -59,9 +73,12 @@ namespace gpe
             int compare( collision_controller_base * other );
             virtual void deactivate_layer(int l_id );
             virtual void deactivate_all_layers();
+            virtual void end_frame()  = 0;
             virtual bool init_system( int scene_width, int scene_height );
             virtual void remove_object( game_object * g_obj );
+            virtual void reset_system() = 0;
             virtual bool quit_system();
+            virtual void start_frame() = 0;
     };
 
     extern collision_controller_base * main_collision_controller;

@@ -129,7 +129,6 @@ namespace gpe
         while( stg_ex::string_lower( state_seeked_name ) != "exit" )
         {
             start_loop();
-
             //Change state if needed
             if( state_handle_changes() )
             {
