@@ -55,14 +55,19 @@ namespace gpe
             void activate_layer(int layer_id );
             void activate_all_layers();
             void add_object( game_object * g_obj, int layer_id = -1 );
+            void clear_all();
+            void clear_layer( int l_id );
             void clear_spaces();
             void clear_checked_map();
             void check_collisions();
             void deactivate_layer(int layer_id );
             void deactivate_all_layers();
+            void end_frame();
             bool init_system( int scene_width, int scene_height );
             bool quit_system();
             void remove_object( game_object * g_obj );
+            void reset_system();
+            void start_frame();
     };
 
     extern spatial_partition_controller * main_spatial_grid;

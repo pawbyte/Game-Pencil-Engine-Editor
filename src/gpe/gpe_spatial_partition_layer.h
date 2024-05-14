@@ -38,6 +38,12 @@ SOFTWARE.
 
 namespace gpe
 {
+    enum collision_system_properties
+    {
+        collision_system_partion_index = 0,
+        collision_system_partion_next = 1
+    };
+
     class spatial_partition_layer
     {
         protected:
@@ -59,12 +65,14 @@ namespace gpe
             void add_object( game_object * gameObject );
             void check_collisions_self();
             void check_collisions_with_layer( spatial_partition_layer * otherLayer);
+            void check_for_leaving_collisions();
             void clear_spaces();
             void deactivate_layer();
             int find_spatial_at( int xIn, int yIn);
             void init_collision_handler( int camera_scene_width, int camera_scene_height );
             bool is_active();
             void remove_object( game_object * gameObject );
+            void set_game_object_space_id( game_object * g_object, int n_space_id, bool updated_on_grid = false );
     };
 }
 

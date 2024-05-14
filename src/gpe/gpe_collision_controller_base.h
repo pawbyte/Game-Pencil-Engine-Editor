@@ -39,6 +39,20 @@ SOFTWARE.
 
 namespace gpe
 {
+    enum class collision_event_type
+    {
+        collision_enter = 0,
+        collision_stay = 1,
+        collision_leave = 2,
+    };
+
+    struct collision_event
+    {
+        game_object * object_one;
+        game_object * object_two;
+        collision_event_type type;
+    };
+
     class collision_controller_base
     {
         protected:
@@ -50,18 +64,21 @@ namespace gpe
         public:
             collision_controller_base();
             virtual ~collision_controller_base();
-            virtual void activate_layer(int l_id );
-            virtual void activate_all_layers();
-            virtual void add_object( game_object * g_obj, int l_id = -1 );
-            virtual void check_collisions();
-            virtual void clear_all();
-            virtual void clear_layer( int l_id );
+            virtual void activate_layer(int l_id ) = 0;
+            virtual void activate_all_layers() = 0;
+            virtual void add_object( game_object * g_obj, int l_id = -1 ) = 0;
+            virtual void check_collisions() = 0;
+            virtual void clear_all() = 0;
+            virtual void clear_layer( int l_id ) = 0;
             int compare( collision_controller_base * other );
-            virtual void deactivate_layer(int l_id );
-            virtual void deactivate_all_layers();
-            virtual bool init_system( int scene_width, int scene_height );
-            virtual void remove_object( game_object * g_obj );
-            virtual bool quit_system();
+            virtual void deactivate_layer(int l_id ) = 0;
+            virtual void deactivate_all_layers() = 0;
+            virtual void end_frame()  = 0;
+            virtual bool init_system( int scene_width, int scene_height ) = 0;
+            virtual void remove_object( game_object * g_obj ) = 0;
+            virtual void reset_system() = 0;
+            virtual bool quit_system() = 0;
+            virtual void start_frame() = 0;
     };
 
     extern collision_controller_base * main_collision_controller;

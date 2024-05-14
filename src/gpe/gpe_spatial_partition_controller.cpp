@@ -116,6 +116,16 @@ namespace gpe
         collisionlayers[layer_id]->add_object( g_obj );
     }
 
+    void spatial_partition_controller::clear_all()
+    {
+
+    }
+
+    void spatial_partition_controller::clear_layer( int l_id )
+    {
+
+    }
+
     void spatial_partition_controller::clear_spaces()
     {
         spatial_partition_layer * tempLayer = nullptr;
@@ -184,6 +194,11 @@ namespace gpe
         tempLayer->deactivate_layer();
     }
 
+    void spatial_partition_controller::end_frame()
+    {
+
+    }
+
     bool spatial_partition_controller::init_system(  int camera_scene_width, int camera_scene_height )
     {
         spatial_partition_layer * tempLayer = nullptr;
@@ -230,5 +245,25 @@ namespace gpe
         }
 
         collisionlayers[layer_id]->remove_object( g_obj );
+    }
+
+    void spatial_partition_controller::reset_system()
+    {
+
+    }
+
+    void spatial_partition_controller::start_frame()
+    {
+        spatial_partition_layer * tempLayerRow = nullptr;
+        for( int i_layer = 0; i_layer < maxLayerCount; i_layer++ )
+        {
+            tempLayerRow = collisionlayers[i_layer];
+
+            //If the row is active
+            if( tempLayerRow->is_active() )
+            {
+                tempLayerRow->check_for_leaving_collisions();
+            }
+        }
     }
 }

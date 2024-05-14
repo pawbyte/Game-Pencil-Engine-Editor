@@ -83,36 +83,6 @@ namespace gpe
 
     }
 
-    void collision_controller_base::activate_layer(int layer_id )
-    {
-
-    }
-
-    void collision_controller_base::activate_all_layers()
-    {
-
-    }
-
-    void collision_controller_base::add_object( game_object * g_obj, int l_id  )
-    {
-
-    }
-
-    void collision_controller_base::check_collisions()
-    {
-
-    }
-
-    void collision_controller_base::clear_all()
-    {
-
-    }
-
-    void collision_controller_base::clear_layer( int l_id )
-    {
-
-    }
-
     int collision_controller_base::compare( collision_controller_base * other )
     {
         if( other == nullptr )
@@ -132,30 +102,5 @@ namespace gpe
             return 0;
         }
         return 1;
-    }
-
-    void collision_controller_base::deactivate_layer(int l_id )
-    {
-
-    }
-
-    void collision_controller_base::deactivate_all_layers()
-    {
-
-    }
-
-    bool collision_controller_base::init_system( int scene_width, int scene_height )
-    {
-        return false; //WIPNOTFUNCTIONALYET
-    }
-
-    void collision_controller_base::remove_object( game_object * g_obj )
-    {
-
-    }
-
-    bool collision_controller_base::quit_system()
-    {
-        return true;
     }
 }

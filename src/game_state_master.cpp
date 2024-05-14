@@ -105,6 +105,7 @@ void game_master::apply_logic()
     if( scene_current->scene_is_ready()!=true )
     {
         scene_current->scene_init();
+        collision_handler_start();
     }
     scene_current->process_scene();
     if( scene_current->scene_is_ready() == false )
@@ -120,37 +121,30 @@ void game_master::apply_logic()
     int kItr = 0;
     int fcSpace = 0;
 
+    //process collisions
+    collision_handler_begin();
+
     //deletes objects set for deletion
     remove_deleted_objects();
 
     //apply game object prelogics
     apply_game_objects_prelogic();
-    //apply_spatial_game_objects_prelogics(this.collision_spaces_in_view);
-    init_collision_handler();
 
-    update_spaces_in_view();
-
-    //process collisions
-    parse_spatial_collisions();
+    gpe::main_collision_controller->check_collisions();
 
     scene_current->apply_logic();
+    collision_handler_end();
     if( gpe::window_controller_main->window_closed || gpe::input->exit_requested  )
     {
         gpe::game_runtime->state_set( "exit" );
     }
-
 }
 
-void game_master::init_collision_handler()
-{
-    if( scene_current!=nullptr )
-    {
-        scene_current->init_collision_handler();
-    }
-}
+
 
 void game_master::clean_up()
 {
+    collision_handler_quit();
     scene_current = nullptr;
     gpe::game_scene * cScene = nullptr;
     gpe::error_log->report("Attempting to remove ["+ stg_ex::int_to_string( (int)gpeScenes.size() )+"] scenes");
@@ -189,12 +183,33 @@ void game_master::clean_up()
     gpe::error_log->report("State removed..");
 }
 
-void game_master::end_state()
+
+
+void game_master::collision_handler_begin()
+{
+    gpe::main_collision_controller->start_frame();
+}
+
+void game_master::collision_handler_end()
+{
+    gpe::main_collision_controller->end_frame();
+}
+
+void game_master::collision_handler_quit()
 {
 
 }
 
-void game_master::parse_spatial_collisions()
+void game_master::collision_handler_start()
+{
+    if( scene_current!=nullptr )
+    {
+        gpe::main_collision_controller->reset_system();
+        scene_current->init_collision_handler();
+    }
+}
+
+void game_master::end_state()
 {
 
 }
@@ -324,38 +339,3 @@ void game_master::start_state()
 {
     gpe::cursor_main_controller->cursor_change( gpe::cursor_main_controller->cursor_system_name( gpe::cursor_default_type::arrow ) );
 }
-
-void game_master::update_spaces_in_view()
-{
-    collision_spaces_in_view.clear();
-    int cSceneViewFound = 0;
-    int icameraX = 0;
-    int jcameraY = 0;
-    int viewPartitionSpace = 0;
-    int currentSpace = gpe::is_null;
-    if( scene_current->scene_is_ready() )
-    {
-        for( int iV=0; iV < gpe::max_cameras_allowed; iV++)
-        {
-            /*
-            cSceneViewFound = scene_current->sceneView[iV];
-            if( cSceneViewFound->is_visible)
-            {
-                for( icameraX = cSceneViewFound.camera_rect.x_pos; icameraX <= cSceneViewFound.camera_rect.x2Pos+spatial_grid_width_size;icameraX+=spatial_grid_width_size)
-                {
-                    for(  jcameraY = cSceneViewFound.camera_rect.y_pos; jcameraY <= cSceneViewFound.camera_rect.y2Pos+spatial_grid_height_size;jcameraY+=spatial_grid_height_size)
-                    {
-                        viewPartitionSpace = (( icameraX / spatial_grid_width_size)|0) * spatial_grid_y_amount;
-                        viewPartitionSpace+= ( jcameraY / spatial_grid_height_size)|0;
-                        if( viewPartitionSpace < COLLISION_AREA_SPACES.length )
-                        {
-                            collision_spaces_in_view.push_back(viewPartitionSpace);
-                        }
-                    }
-                }
-            }
-            */
-        }
-    }
-}
-

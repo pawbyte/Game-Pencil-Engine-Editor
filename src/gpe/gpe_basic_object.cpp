@@ -60,6 +60,11 @@ namespace gpe
 
     game_object::game_object( int object_layer_id, int x_pos_in,  int y_pos_in, int z_pos_in  )
     {
+        for( int i_c = 0; i_c < collision_system_properties_max; i_c++ )
+        {
+            collision_system_data[i_c] = -1;
+        }
+
         pathId = -1;
         foundPathObject = -1;
         pathPosition = 0;
@@ -129,8 +134,6 @@ namespace gpe
         gpeIsBeingDestroyed = false;
         isInit = true;
         isViewIndependent = false;
-        partitionIndexID = -1;
-        partitionIndexNextID = -1;
     }
 
     game_object::~game_object()
@@ -138,14 +141,6 @@ namespace gpe
 
     }
 
-    void game_object::add_collision_object( game_object * other )
-    {
-        if( other == nullptr )
-        {
-            return;
-        }
-        collisionList.push_back( other );
-    }
     void game_object::apply_gravity()
     {
 
@@ -157,7 +152,6 @@ namespace gpe
         {
             return false;
         }
-
 
         //if both are rects
         if( useCollisonRect )
@@ -188,32 +182,25 @@ namespace gpe
         return false;
     }
 
-    void game_object::check_spatial_movement()
-    {
-        partitionIndexNextID = (  (xpos / spatial_grid_data::sPxWidth ) * spatial_grid_data::sPxHeight  )+ ( ypos /spatial_grid_data::sPxHeight);
-
-        if( partitionIndexNextID < 0 )
-        {
-            partitionIndexNextID = 0;
-        }
-        //else if( partitionIndexNextID >  )
-        {
-
-        }
-        if( partitionIndexNextID != partitionIndexID )
-        {
-
-        }
-    }
-
-    void game_object::clear_collisions()
-    {
-        collisionList.clear();
-    }
-
     void game_object::end_frame_logic()
     {
 
+    }
+
+    bool game_object::equals(game_object * other_obj)
+    {
+        if( other_obj == nullptr)
+        {
+            return false;
+        }
+        if(  gpeUniqGameObjectId == other_obj->gpeUniqGameObjectId  && gpeObjectType == other_obj->gpeObjectType )
+        {
+            if( gpeSceneStartId == other_obj->gpeSceneStartId )
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     int game_object::get_id()
@@ -307,6 +294,16 @@ namespace gpe
 
     }
 
+    void game_object::process_collision_enter( game_object * other )
+    {
+
+    }
+
+    void game_object::process_collision_leave( game_object * other )
+    {
+
+    }
+
     void game_object::render()
     {
         if( gcanvas!=nullptr )
@@ -342,7 +339,6 @@ namespace gpe
 
     void game_object::reset_branch()
     {
-        collisionList.clear();
         beganCollisionSearch = false;
     }
 
@@ -385,14 +381,7 @@ namespace gpe
 
     }
 
-    void game_object::set_collision_space_id( int nSpaceId, bool updatedOnGrid  )
-    {
-        partitionIndexNextID = nSpaceId;
-        if( updatedOnGrid )
-        {
-            partitionIndexID = nSpaceId;
-        }
-    }
+
 
     void game_object::start_frame_logic()
     {
@@ -404,7 +393,6 @@ namespace gpe
     {
         apply_gravity();
         perform_object_logic();
-        collisionList.clear(); //clears the collision list of the object
     }
 
 
