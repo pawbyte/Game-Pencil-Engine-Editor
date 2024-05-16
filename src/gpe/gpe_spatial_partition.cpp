@@ -40,6 +40,8 @@ namespace gpe
         boxArea = new gpe::shape_rect();
         objectsHeld = 0;
         spaceName= "";
+        sought_first_object = nullptr;
+        sought_second_object = nullptr;
     }
 
     spatial_partition::~spatial_partition()
@@ -67,6 +69,7 @@ namespace gpe
         int ii = 0, jj = 0, objectsCount = (int)objectsArray.size();
         std::string tempColPairStr = "";
         std::string otherColPairStr = "";
+        collision_event * found_collision_event = NULL;
         for( ii = 0;  ii < objectsCount; ii++)
         {
             foundHeldObject = objectsArray[ii];
@@ -86,8 +89,19 @@ namespace gpe
                         {
                             if( foundHeldObject->check_collison_with_object( secondHeldObject ) )
                             {
-                                foundHeldObject->add_collision_object( secondHeldObject );
-                                secondHeldObject->add_collision_object( foundHeldObject );
+                                found_collision_event = collision_exist( foundHeldObject, secondHeldObject);
+                                if( found_collision_event != NULL )
+                                {
+                                    found_collision_event->type = collision_event_type::collision_stay;
+                                    foundHeldObject->process_collision( secondHeldObject);
+                                    secondHeldObject->process_collision( foundHeldObject );
+                                }
+                                else
+                                {
+                                    collisions_found.push_back( { foundHeldObject, secondHeldObject,collision_event_type::collision_enter } );
+                                    foundHeldObject->process_collision_enter( secondHeldObject);
+                                    secondHeldObject->process_collision_enter( foundHeldObject );
+                                }
                             }
                             //We add the pair as checked to the giant list
                             spatial_grid_data::collisionsCheckedInFrame[tempColPairStr] = true;
@@ -111,6 +125,7 @@ namespace gpe
         int otherObjectsCount = (int)other->objectsArray.size();
         std::string tempColPairStr = "";
         std::string otherColPairStr = "";
+        collision_event * found_collision_event = NULL;
         for( ii = 0;  ii < objectsCount; ii++)
         {
             foundHeldObject = objectsArray[ii];
@@ -130,8 +145,19 @@ namespace gpe
                         {
                             if( foundHeldObject->check_collison_with_object( secondHeldObject ) )
                             {
-                                foundHeldObject->add_collision_object( secondHeldObject );
-                                secondHeldObject->add_collision_object( foundHeldObject );
+                                found_collision_event = collision_exist( foundHeldObject, secondHeldObject);
+                                if( found_collision_event != NULL )
+                                {
+                                    found_collision_event->type = collision_event_type::collision_stay;
+                                    foundHeldObject->process_collision( secondHeldObject);
+                                    secondHeldObject->process_collision( foundHeldObject );
+                                }
+                                else
+                                {
+                                    collisions_found.push_back( { foundHeldObject, secondHeldObject,collision_event_type::collision_enter } );
+                                    foundHeldObject->process_collision_enter( secondHeldObject);
+                                    secondHeldObject->process_collision_enter( foundHeldObject );
+                                }
                             }
                             //We add the pair as checked to the giant list
                             spatial_grid_data::collisionsCheckedInFrame[tempColPairStr] = true;
@@ -141,6 +167,51 @@ namespace gpe
                 }
             }
         }
+    }
+
+    void spatial_partition::check_for_leaving_collisions()
+    {
+        bool process_leave_collision = false;
+
+        for( int i = (int)collisions_found.size()-1; i >= 0; i-- )
+        {
+            process_leave_collision = false;
+            if( collisions_found[i].type == collision_event_type::collision_leave )
+            {
+                collisions_found.erase( collisions_found.begin() + i );
+            }
+
+            if( collisions_found[i].object_one->being_deleted() || collisions_found[i].object_two->being_deleted() )
+            {
+                process_leave_collision = true;
+            }
+            else if( collisions_found[i].object_one->check_collison_with_object( collisions_found[i].object_two) == false )
+            {
+                process_leave_collision = true;
+            }
+
+            if( process_leave_collision )
+            {
+                collisions_found[i].type = collision_event_type::collision_leave;
+                collisions_found[i].object_one->process_collision_leave( collisions_found[i].object_two );
+                collisions_found[i].object_two->process_collision_leave( collisions_found[i].object_one );
+            }
+        }
+    }
+
+    collision_event * spatial_partition::collision_exist( game_object * object_one, game_object * object_two )
+    {
+        sought_first_object = object_one;
+        sought_first_object = object_two;
+
+        for( int i = (int)collisions_found.size()-1; i >= 0; i-- )
+        {
+            if( matching_collision( &collisions_found[i] ) )
+            {
+                return &collisions_found[i];
+            }
+        }
+        return nullptr;
     }
 
     void spatial_partition::empty_list()
@@ -175,6 +246,24 @@ namespace gpe
                 objectsHeld-=1;
             }
         }
+    }
+
+    bool spatial_partition::matching_collision( collision_event * col_event )
+    {
+        if( col_event == nullptr)
+        {
+            return false;
+        }
+        if( col_event->object_one->equals(sought_first_object) && col_event->object_two->equals( sought_second_object ) )
+        {
+            return true;
+        }
+
+        if( col_event->object_one->equals(sought_second_object ) && col_event->object_two->equals(  sought_first_object ) )
+        {
+            return true;
+        }
+        return false;
     }
 
     void spatial_partition::set_space(int x_new, int y_new, int newW, int new_height)

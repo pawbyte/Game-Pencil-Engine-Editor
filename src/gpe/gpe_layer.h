@@ -41,9 +41,9 @@ SOFTWARE.
 
 #include "gpe_background.h"
 #include "gpe_basic_object.h"
+#include "gpe_collision_controller_base.h"
 #include "gpe_branch.h"
 #include "gpe_lights2d.h"
-#include "gpe_spatial_partition_controller.h"
 #include "gpe_tiles.h"
 
 namespace gpe
@@ -52,20 +52,6 @@ namespace gpe
     {
         private:
             std::vector< branch * > master_layer_list;
-            int collision_pairs_total;
-            int parsed_objects;
-            //Spatial Grid stuff
-            bool spatial_grid_created;
-            int spatial_map_width_size;
-            int spatial_map_height_size;
-            int spatial_grid_box_size;
-            int spatial_grid_width_size;
-            int spatial_grid_height_size;
-            int spatial_grid_x_amount;
-            int spatial_grid_y_amount;
-            int entity_collisions_hashes_checked;
-            int spatial_collisions_checked_counter;
-
             std::vector<layer_tile_map * > layer_maps;
             std::vector<game_object * > layer_entities;
             std::vector<game_object * > independent_entities;
@@ -84,7 +70,6 @@ namespace gpe
             int layer_id;
             int layer_alpha;
             //Collision related variables
-            std::vector<spatial_partition * > collision_spaces_in_view;
 
             std::vector<game_object * > render_list_prerender_entities;
             std::vector<game_object * > render_list_regular_entities;

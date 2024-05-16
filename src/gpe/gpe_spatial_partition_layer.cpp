@@ -63,7 +63,7 @@ namespace gpe
         {
             return;
         }
-        gameObject->set_collision_space_id( layerID );
+        set_game_object_space_id( gameObject,  layerID );
         int objectSpace = find_spatial_at( gameObject->getx(), gameObject->gety() );
         if( objectSpace < 0 )
         {
@@ -136,6 +136,19 @@ namespace gpe
 
     }
 
+    void spatial_partition_layer::check_for_leaving_collisions()
+    {
+        spatial_partition * tempPartition = nullptr;
+        for( int i = (int)layerPartitions.size()-1; i >=0 ; i-- )
+        {
+            tempPartition = layerPartitions[i];
+            if( tempPartition!=nullptr )
+            {
+                tempPartition->check_for_leaving_collisions();
+            }
+        }
+    }
+
     void spatial_partition_layer::clear_spaces( )
     {
         spatial_partition *  tempSpace = nullptr;
@@ -160,6 +173,8 @@ namespace gpe
         }
         isActive = false;
     }
+
+
 
     int spatial_partition_layer::find_spatial_at ( int xIn, int yIn)
     {
@@ -240,6 +255,20 @@ namespace gpe
         if( gameObject == nullptr)
         {
             return;
+        }
+    }
+
+    void spatial_partition_layer::set_game_object_space_id( game_object * g_object, int n_space_id, bool updated_on_grid  )
+    {
+        if( g_object == nullptr )
+        {
+            return;
+        }
+
+        g_object->collision_system_data[collision_system_partion_next] = n_space_id;
+        if( updated_on_grid )
+        {
+            g_object->collision_system_data[collision_system_partion_index] = n_space_id;
         }
     }
 }

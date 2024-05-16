@@ -59,6 +59,8 @@ namespace gpe
 
     //The base class for Game Objects
 
+    const int collision_system_properties_max = 16; //Currently using 2 for spatial partioning system, other systems may require more/less. 16 seems safe for now.
+
     class game_object: public branch
     {
         private:
@@ -92,9 +94,7 @@ namespace gpe
             float imageSpeed;
             bool animationEnded;
             int animationDuration;
-
             int gpeUniqGameObjectId;
-
             bool isOutsideScene;
             int lastCollisionObjId;
             bool applyGravity;
@@ -126,12 +126,11 @@ namespace gpe
             shape_circle * collisionCircle;
 
             int sceneLayerPos;
-            int partitionIndexID;
-            int partitionIndexNextID;
-            std::vector< game_object *> collisionList;
+
             int beganCollisionSearch;
             bool objectMovedLastFrame;
         public:
+            int collision_system_data[ collision_system_properties_max ];
             bool useCollisonRect;
             bool isContinuousObject;
             bool gpeIsBeingDestroyed;
@@ -155,7 +154,6 @@ namespace gpe
             */
 
             //A Functions
-            void add_collision_object( game_object * other );
             void apply_gravity();
 
             //B functions
@@ -163,8 +161,6 @@ namespace gpe
 
             //C functions
             bool check_collison_with_object(  game_object * otherObj );
-            void check_spatial_movement();
-            void clear_collisions();
             static game_object * create_object( int object_layer_id, int x_pos_in,  int y_pos_in , int z_pos_in = 0 ) { return new game_object( object_layer_id, x_pos_in,   y_pos_in, z_pos_in ); }
 
             //D Functions
@@ -172,7 +168,7 @@ namespace gpe
 
             //E functions
             virtual void end_frame_logic();
-            bool equals(game_object * otherObj);
+            bool equals(game_object * other_obj);
 
 
             //G / Get functions
@@ -228,6 +224,8 @@ namespace gpe
             virtual void perform_object_logic();
             virtual void perform_object_prelogic();
             virtual void process_collision( game_object * other );
+            virtual void process_collision_enter( game_object * other );
+            virtual void process_collision_leave( game_object * other );
             void process_gpe_movement();
             void process_timed_functions();
 
@@ -249,7 +247,6 @@ namespace gpe
             void set_animation(std::string nextAnimation, bool animIsMaskToo = false);
             void set_angle(float angle );
             void set_collision_mask( std::string animationMask );
-            void set_collision_space_id( int nSpaceId, bool updatedOnGrid = false );
             void set_countdown ( int timerId, int countDownStart);
             void set_layer_id( int nLayerId, bool updatedOnGrid = false );
             void set_timer ( int timerId, int secondsToCount);

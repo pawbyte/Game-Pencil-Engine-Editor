@@ -35,6 +35,7 @@ SOFTWARE.
 #define game_state_master_h
 
 #include "gpe/gpe.h"
+#include "gpe/gpe_collision_controller_base.h"
 
 class game_master: public gpe::program_state
 {
@@ -102,19 +103,20 @@ class game_master: public gpe::program_state
         void apply_game_objects_logic();
         void apply_game_objects_prelogic();
         void apply_logic();
-        void init_collision_handler();
+        void collision_handler_begin();
+        void collision_handler_end();
+        void collision_handler_quit();
+        void collision_handler_start();
 
         void clean_up();
         void end_state();
 
-        void parse_spatial_collisions();
         void process_input();
         void process_scene_movement();
         void render();
         int remove_deleted_objects();
         void scene_restart_object_info();
         void start_state();
-        void update_spaces_in_view();
 };
 
 
