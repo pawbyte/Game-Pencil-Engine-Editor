@@ -96,6 +96,8 @@ namespace gpe
             //
             virtual void render_align(  int x, int y, int alignment_h, int alignment_v, shape_rect* clip = nullptr, color * render_color = nullptr, int alpha = 255  );
             virtual void render_align_resized(  int x, int y,int new_width, int new_height, int alignment_h, int alignment_v, shape_rect* clip = nullptr, color * render_color = nullptr, int alpha = 255 );
+            virtual bool render_quad( shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha = 255, shape_rect * clip = nullptr  );
+
             virtual void render_tex(  int x, int y, shape_rect* clip = nullptr, int alpha = 255  );
             virtual void render_tex_colored(  int x, int y, color * render_color, int alpha = 255, shape_rect* clip = nullptr  );
             virtual bool render_tex_polygon( int x, int y, int shape_length , int point_count, color * render_color, int alpha = 255, float start_angle = 0 );
@@ -108,6 +110,7 @@ namespace gpe
             virtual void render_tex_rotated_at_point(  int x, int y, float render_angle, int point_x, int point_y, color * render_color = nullptr, shape_rect* clip = nullptr , int alpha = 255 );
             virtual void render_tex_special(  int x, int y, float render_angle, int new_width = -1, int new_height = -1, color * render_color = nullptr, shape_rect* clip = nullptr , int alpha = 255 );
             virtual void render_tex_special_at_point(  int x, int y, float render_angle, int point_x, int point_y,int new_width = -1, int new_height = -1, color * render_color = nullptr, shape_rect* clip = nullptr , int alpha = 255 );
+
 
             virtual bool reset_effect_texture();
 
