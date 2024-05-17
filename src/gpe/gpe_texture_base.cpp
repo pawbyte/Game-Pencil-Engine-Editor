@@ -194,12 +194,6 @@ namespace gpe
 
     }
 
-    bool texture_base::render_quad( shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha, shape_rect * clip  )
-    {
-        return false;
-    }
-
-
     void texture_base::render_align_resized(  int x, int y,int new_width, int new_height, int alignment_h, int alignment_v, shape_rect* clip , color * render_color , int alpha)
     {
 
@@ -230,7 +224,7 @@ namespace gpe
 
     }
 
-    void texture_base::render_tex_quad(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha , shape_rect * clip )
+    void texture_base::render_tex_quad_clipped(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha , shape_rect * clip )
     {
 
     }
