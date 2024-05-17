@@ -179,8 +179,8 @@ namespace gpe
             if( collisions_found[i].type == collision_event_type::collision_leave )
             {
                 collisions_found.erase( collisions_found.begin() + i );
+                continue;
             }
-
             if( collisions_found[i].object_one->being_deleted() || collisions_found[i].object_two->being_deleted() )
             {
                 process_leave_collision = true;
