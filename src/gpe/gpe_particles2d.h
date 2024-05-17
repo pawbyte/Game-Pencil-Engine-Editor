@@ -143,7 +143,6 @@ namespace gpe
             int get_count();
             int get_remaining();
             void emit_particles();
-            void process_emitter(  );
             void render();
             void respawn_particle( particle * part );
             void reset();
@@ -151,6 +150,7 @@ namespace gpe
             void set_emission_rate( float emr = 30 );
             void set_fallback_shape( int newFBS );
             void set_max_particles( int newMax = 50, bool removeExtra = false );
+            void update( float delta );
     };
 }
 #endif //gpe_particles_h

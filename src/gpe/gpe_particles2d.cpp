@@ -394,60 +394,6 @@ namespace gpe
         return maxParticles-currentParticleCount;
     }
 
-    void particle_emitter::process_emitter( )
-    {
-        if( emission_paused || emission_disabled )
-        {
-            return;
-        }
-        particle * cParticle = nullptr;
-        particle * tempParticle = nullptr;
-        float delta = time_keeper->get_delta_ticks();
-
-        bool particleIsAlive = true;
-
-        if( !emission_paused && !emission_disabled  )
-        {
-            emissionCounter+= delta;
-            if( emissionCounter >= emissionMSRate && can_emit() )
-            {
-                emit_particles();
-                emissionCounter = 0;
-            }
-        }
-        else
-        {
-            emissionCounter = 0;
-            error_log->report("Emission Paused...");
-        }
-
-        for( int i = 0; i <  currentParticleCount; i++ )
-        {
-            particleIsAlive = true;
-            cParticle = particles[i];
-            if( cParticle !=nullptr )
-            {
-                cParticle->update( delta );
-                if( cParticle->particleLife <= 0.1f  )
-                {
-                    cParticle->die();
-                    tempParticle = particles[i];
-                    cParticle = particles[currentParticleCount -1];
-
-                    particles[i] = cParticle;
-                    particles[currentParticleCount  -1 ] = tempParticle;
-                    currentParticleCount--;
-                    if( cParticle->particleLife <= 0.1f  )
-                    {
-                        respawn_particle( cParticle );
-                    }
-                    particleIsAlive = false;
-                }
-            }
-        }
-
-
-    }
 
     void particle_emitter::render()
     {
@@ -687,5 +633,59 @@ namespace gpe
         }
         maxParticles = newMax;
         //else do nothing its the same size
+    }
+
+    void particle_emitter::update( float delta )
+    {
+        if( emission_paused || emission_disabled )
+        {
+            return;
+        }
+        particle * cParticle = nullptr;
+        particle * tempParticle = nullptr;
+
+        bool particleIsAlive = true;
+
+        if( !emission_paused && !emission_disabled  )
+        {
+            emissionCounter+= delta;
+            if( emissionCounter >= emissionMSRate && can_emit() )
+            {
+                emit_particles();
+                emissionCounter = 0;
+            }
+        }
+        else
+        {
+            emissionCounter = 0;
+            error_log->report("Emission Paused...");
+        }
+
+        for( int i = 0; i <  currentParticleCount; i++ )
+        {
+            particleIsAlive = true;
+            cParticle = particles[i];
+            if( cParticle !=nullptr )
+            {
+                cParticle->update( delta );
+                if( cParticle->particleLife <= 0.1f  )
+                {
+                    cParticle->die();
+                    tempParticle = particles[i];
+                    cParticle = particles[currentParticleCount -1];
+
+                    particles[i] = cParticle;
+                    particles[currentParticleCount  -1 ] = tempParticle;
+                    currentParticleCount--;
+                    if( cParticle->particleLife <= 0.1f  )
+                    {
+                        respawn_particle( cParticle );
+                    }
+                    particleIsAlive = false;
+                }
+            }
+        }
+
+
     }
 }

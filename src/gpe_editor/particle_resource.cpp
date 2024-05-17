@@ -630,7 +630,7 @@ void particleResource::process_self( gpe::shape_rect * view_space, gpe::shape_re
         {
             myEmitter->rotateTexture = textureIsRotated->is_clicked();
         }
-        myEmitter->process_emitter(  );
+        myEmitter->update( gpe::time_keeper->get_delta_ticks() );
     }
 }
 
