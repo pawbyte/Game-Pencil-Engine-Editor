@@ -35,7 +35,8 @@ namespace gpe
             virtual void load_image(  const std::string &anim_filename, bool transparent = true, uint8_t colorkeyR = 255, uint8_t colorkeyG = 0, uint8_t colorkeyB = 255  );
 
             //So far is the only render function that needs to be virtual in case implementation differs too greatly per backend
-            virtual bool render_quad( int sub_image_to_draw, shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha = 255, shape_rect * cam = NULL  );
+            bool render_quad( int sub_image_to_draw, shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha = 255, shape_rect * cam = nullptr  );
+
             virtual void setup_animation( int frame_count, int aw, int ah, int sofx, int sofy, int hPad, int vPad,int animAlign = dir_top_left );
             virtual void setup_fullimg_animation(  int aw, int ah, int sofx, int sofy, int hPad, int vPad,int animAlign = dir_top_left );
             void setup_quad_coordinates();

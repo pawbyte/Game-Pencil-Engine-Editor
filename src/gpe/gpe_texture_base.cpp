@@ -216,17 +216,18 @@ namespace gpe
 
     bool texture_base::render_tex_polygon_clipped( int x, int y, int shape_length , int point_count, color * render_color,shape_rect* clip, int alpha, float start_angle )
     {
+
         return false;
     }
 
-    void texture_base::render_tex_quad(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha)
+    bool texture_base::render_tex_quad(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha)
     {
-
+        return false;
     }
 
-    void texture_base::render_tex_quad_clipped(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha , shape_rect * clip )
+    bool texture_base::render_tex_quad_clipped(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha , shape_rect * clip )
     {
-
+        return false;
     }
 
     void texture_base::render_tex_resized(  int x, int y,float new_width, float new_height, shape_rect* clip, color * render_color, int alpha)

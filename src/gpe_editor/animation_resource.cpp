@@ -1162,8 +1162,7 @@ void animationResource::process_self( gpe::shape_rect * view_space, gpe::shape_r
     {
         if( gpe::input->check_mouse_released( mb_left) )
         {
-        //The fun sprite/animation test zone
-
+            //The fun sprite/animation test zone
             if( quad_place_position < 0 )
             {
                 quad_place_position = 0;

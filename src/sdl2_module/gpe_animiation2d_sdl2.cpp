@@ -67,7 +67,7 @@ namespace gpe
         animation_texture = sprite_tex;
     }
 
-	bool animation2d_sdl2::render_quad( int sub_image_to_draw, shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha , shape_rect * cam   )
+	bool animation2d_sdl2::render_quad( int sub_image_to_draw, shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha, shape_rect * cam )
 	{
 		   //This function assumes there are at least 4 vertices
 		if( sprite_tex == nullptr || frameCount == 0 )

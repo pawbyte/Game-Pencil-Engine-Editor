@@ -37,33 +37,36 @@ SOFTWARE.
 
 class textureResource: public standardEditableGameResource
 {
-public:
-    bool isPreloaded;
-    gpe::texture_base * textureInEditor;
-    pawgui::widget_checkbox * preloadCheckBox;
-    pawgui::widget_checkbox * textureUsesPixels;
-    pawgui::widget_checkbox * imageUsesColorKey;
-    pawgui::gpe_widget_color_picker * imageColorKey;
-    pawgui::widget_label_text  * labelImageDimensions;
-    pawgui::widget_label_text  * labelTextureMessage;
-    pawgui::widget_button_icon * openExternalEditor_button;
-    pawgui::widget_button_icon * refreshResourceData_button;
-    textureResource(pawgui::widget_resource_container * pFolder = nullptr);
-    ~textureResource();
-    pawgui::widget_label_text  * labelInfoMaxTextureSize;
-    bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
-    void compile_cpp();
-    gpe::texture_base * get_resource_texture();
-    bool include_local_files( std::string pBuildDir , int buildType );
-    bool is_build_ready();
-    int load_image(std::string new_file_name);
-    void load_resource(std::string file_path = "");
-    void prerender_self( );
-    void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
-    void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
-    void save_resource(std::string file_path = "", int backupId = -1);
-    void update_box(int x_new=-1, int y_new=-1, int newW=-1, int newH=-1);
-    bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
+    protected:
+        gpe::shape_point2d quad_points[4];
+        int quad_place_position;
+    public:
+        bool isPreloaded;
+        gpe::texture_base * textureInEditor;
+        pawgui::widget_checkbox * preloadCheckBox;
+        pawgui::widget_checkbox * textureUsesPixels;
+        pawgui::widget_checkbox * imageUsesColorKey;
+        pawgui::gpe_widget_color_picker * imageColorKey;
+        pawgui::widget_label_text  * labelImageDimensions;
+        pawgui::widget_label_text  * labelTextureMessage;
+        pawgui::widget_button_icon * openExternalEditor_button;
+        pawgui::widget_button_icon * refreshResourceData_button;
+        textureResource(pawgui::widget_resource_container * pFolder = nullptr);
+        ~textureResource();
+        pawgui::widget_label_text  * labelInfoMaxTextureSize;
+        bool build_intocpp_file(std::ofstream * fileTarget, int leftTabAmount = 0);
+        void compile_cpp();
+        gpe::texture_base * get_resource_texture();
+        bool include_local_files( std::string pBuildDir , int buildType );
+        bool is_build_ready();
+        int load_image(std::string new_file_name);
+        void load_resource(std::string file_path = "");
+        void prerender_self( );
+        void process_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+        void render_self( gpe::shape_rect * view_space = nullptr, gpe::shape_rect * cam = nullptr);
+        void save_resource(std::string file_path = "", int backupId = -1);
+        void update_box(int x_new=-1, int y_new=-1, int newW=-1, int newH=-1);
+        bool write_data_into_projectfile(std::ofstream * fileTarget, int nestedFoldersIn = 0);
 };
 
 #endif
