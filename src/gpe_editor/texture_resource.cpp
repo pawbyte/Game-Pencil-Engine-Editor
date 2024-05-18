@@ -36,7 +36,12 @@ SOFTWARE.
 
 textureResource::textureResource(pawgui::widget_resource_container * pFolder)
 {
-
+    for( int i_quad = 0; i_quad < 4; i_quad ++ )
+    {
+        quad_points[i_quad].x = 0;
+        quad_points[i_quad].y = 0;
+    }
+    quad_place_position = 0;
     projectParentFolder = pFolder;
     editorMode = 0;
     textureInEditor = nullptr;
@@ -317,6 +322,37 @@ void textureResource::process_self( gpe::shape_rect * view_space, gpe::shape_rec
                 "Image not loaded",pawgui::theme_main->main_box_font_color,gpe::font_default,gpe::fa_left,gpe::fa_top);
             }
         */
+
+        if( get_mouse_coords( view_space, cam ) )
+        {
+            if( gpe::input->check_mouse_released( mb_left) )
+            {
+                //The fun sprite/animation test zone
+                if( quad_place_position < 0 )
+                {
+                    quad_place_position = 0;
+                }
+                else if ( quad_place_position > 3 )
+                {
+                    quad_place_position = 0;
+                }
+
+                quad_points[quad_place_position].x = local_mouse_x;
+                quad_points[quad_place_position].y = local_mouse_y;
+
+                quad_place_position++;
+
+                if( quad_place_position < 0 )
+                {
+                    quad_place_position = 0;
+                }
+                else if ( quad_place_position > 3 )
+                {
+                    quad_place_position = 0;
+                }
+            }
+        }
+
         panel_main_editor->clear_panel();
 
         panel_main_editor->add_gui_element(renameBox,true);
@@ -473,7 +509,20 @@ void textureResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect
                 float neededTexture_scale= (float)std::min( (float)view_space->w/ (float)textureInEditor->get_width(),  (float)view_space->h / (float)textureInEditor->get_height() );
                 textureInEditor->render_tex_scaled( 0, 0,neededTexture_scale,neededTexture_scale,nullptr);
             }
-        }
+
+            if( textureInEditor->render_tex_quad( quad_points[0], quad_points[1], quad_points[2], quad_points[3], gpe::c_white, 255 ) == false )
+            {
+                gpe::error_log->report("Failed to draw quad of texture...");
+            }
+
+            for( int i_quad_pos = 0; i_quad_pos < 4; i_quad_pos++ )
+            {
+                gpe::gfs->render_text_boxed( quad_points[i_quad_pos].x,quad_points[i_quad_pos].y,
+                        stg_ex::float_to_string(i_quad_pos ),
+                            gpe::c_white, gpe::c_black, gpe::font_default, gpe::fa_center, gpe::fa_middle );
+            }
+
+            }
     }
 }
 

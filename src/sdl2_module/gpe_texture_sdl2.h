@@ -93,6 +93,11 @@ namespace gpe
             void render_align_resized(  int x, int y,int new_width, int new_height, int alignment_h, int alignment_v, gpe::shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
             void render_tex(  int x, int y, gpe::shape_rect* clip = NULL, int alpha = 255  );
             void render_tex_colored(  int x, int y, color * render_color, int alpha = 255, gpe::shape_rect* clip = NULL  );
+
+
+            bool render_tex_quad(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha = 255 );
+            bool render_tex_quad_clipped(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha, shape_rect * clip );
+
             void render_tex_resized(  int x, int y,float new_width, float new_height, gpe::shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
             void render_tex_scaled(  int x, int y,float x_scale, float y_scale, gpe::shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
             void render_tex_rotated(  int x, int y, float render_angle,  color * render_color = NULL, gpe::shape_rect* clip = NULL , int alpha = 255 );

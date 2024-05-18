@@ -594,6 +594,115 @@ namespace gpe
         }
     }
 
+    bool texture_sdl2::render_tex_quad(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha  )
+    {
+        return render_tex_quad_clipped( p1, p2, p3, p4, render_color, alpha, nullptr );
+    }
+
+    bool texture_sdl2::render_tex_quad_clipped(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha, shape_rect * clip )
+    {
+        //This function assumes there are at least 4 vertices
+		if( texImg == NULL )
+		{
+			return false;
+		}
+
+		if( tex_width < 8 || tex_height < 8 )
+		{
+			return false; //For this function we need at least 16x16px...
+		}
+
+		//The 6 vertices used to draw 2 triangles to create a quad
+		SDL_Vertex vert[4];
+
+		//Vertices must move in a clock-wise manner, thus the last 2 are essentially flipped.
+
+        //Top left vert
+		vert[0].position.x = p1.x;
+		vert[0].position.y = p1.y;
+
+		//Top right vert
+		vert[1].position.x = p2.x;
+		vert[1].position.y = p2.y;
+
+		//Bottom left vert
+		vert[2].position.x = p3.x;
+		vert[2].position.y = p3.y;
+
+		//Second triangle
+		//Top left ( 2nd triangle) vertex
+		vert[3].position.x = p4.x;
+		vert[3].position.y = p4.y;
+
+		if( clip != nullptr )
+        {
+            //top-left
+            vert[0].tex_coord.x = clip->get_x() / tex_width;
+            vert[0].tex_coord.y = clip->get_y() / tex_height;
+
+            //top-right
+            vert[1].tex_coord.x = clip->get_x2() / tex_width;
+            vert[1].tex_coord.y = clip->get_y()  / tex_height;
+            //Bottom right vert
+            vert[2].tex_coord.x = clip->get_x2() / tex_width;;
+            vert[2].tex_coord.y = clip->get_y2() / tex_height;
+
+            //Bottom left vert
+            vert[3].tex_coord.x = clip->get_x()  / tex_width;
+            vert[3].tex_coord.y = clip->get_y2() / tex_height;
+        }
+        else
+        {
+            //top-left
+            vert[0].tex_coord.x = 0;
+            vert[0].tex_coord.y = 0;
+
+            //top-right
+            vert[1].tex_coord.x = 1;
+            vert[1].tex_coord.y = 0;
+
+            //Bottom right vert
+            vert[2].tex_coord.x = 1;
+            vert[2].tex_coord.y = 1;
+
+            //Bottom left vert
+            vert[3].tex_coord.x = 0;
+            vert[3].tex_coord.y = 1;
+        }
+
+		int i_col = 0;
+		if( render_color != NULL )
+		{
+			for(  i_col =0; i_col < 4; i_col++ )
+			{
+				vert[i_col].color.r = render_color->get_r();
+				vert[i_col].color.g = render_color->get_g();
+				vert[i_col].color.b = render_color->get_b();
+				vert[i_col].color.a = alpha;
+			}
+		}
+		else
+		{
+			for( i_col = 0; i_col < 4; i_col++ )
+			{
+				vert[i_col].color.r = 255;
+				vert[i_col].color.g = 255;
+				vert[i_col].color.b = 255;
+				vert[i_col].color.a = 255;
+			}
+		}
+
+		int new_indices[ 6];
+		new_indices[0] = 0;
+		new_indices[1] = 1;
+		new_indices[2] = 3;
+		new_indices[3] = 1;
+		new_indices[4] = 2;
+		new_indices[5] = 3;
+
+    	return ( SDL_RenderGeometry( renderer_main_sdl2->get_sdl2_renderer(), texImg, vert, 4, new_indices, 6 ) == 0 );
+    }
+
     void texture_sdl2::render_tex_resized(  int x, int y, float new_width, float new_height, gpe::shape_rect* clip, color * render_color, int alpha )
     {
         if(texImg!=NULL && alpha > 0 )
