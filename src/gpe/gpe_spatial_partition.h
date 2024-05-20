@@ -57,7 +57,7 @@ namespace gpe
             void add_object(game_object * newObject);
             void check_collisions();
             void check_collisions_with_other( spatial_partition * other);
-            void check_for_leaving_collisions();
+            void check_for_leaving_collisions( bool execute_collision_function = true );
             collision_event * collision_exist( game_object * object_one, game_object * object_two );
             void empty_list();
             game_object * get_object(int pos);

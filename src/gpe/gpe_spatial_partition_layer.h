@@ -64,8 +64,8 @@ namespace gpe
             void activate_layer();
             void add_object( game_object * gameObject );
             void check_collisions_self();
-            void check_collisions_with_layer( spatial_partition_layer * otherLayer);
-            void check_for_leaving_collisions();
+            void check_collisions_with_layer( spatial_partition_layer * other_layer, bool execute_collisions = true );
+            void check_for_leaving_collisions( bool execute_collisions = true  );
             void clear_spaces();
             void deactivate_layer();
             int find_spatial_at( int xIn, int yIn);

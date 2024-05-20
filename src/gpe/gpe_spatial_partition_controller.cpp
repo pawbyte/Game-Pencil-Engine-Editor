@@ -41,7 +41,7 @@ namespace gpe
     {
         controller_name = c_name;
         controller_type = "gpe_spatial_partition_controller";
-        for( int i = 0; i < maxLayerCount; i++ )
+        for( int i = 0; i < max_collision_layer_count; i++ )
         {
             collisionlayers[i] = new spatial_partition_layer( i );
         }
@@ -50,7 +50,7 @@ namespace gpe
     spatial_partition_controller::~spatial_partition_controller()
     {
         spatial_partition_layer * tempLayer = nullptr;
-        for( int i = maxLayerCount -1; i >=0 ; i--)
+        for( int i = max_collision_layer_count -1; i >=0 ; i--)
         {
             tempLayer = collisionlayers[i];
             if( tempLayer!=nullptr)
@@ -66,7 +66,7 @@ namespace gpe
 
     void spatial_partition_controller::activate_layer(int layer_id )
     {
-        if( layer_id < 0 || layer_id  >= maxLayerCount )
+        if( layer_id < 0 || layer_id  >= max_collision_layer_count )
         {
             return;
         }
@@ -78,7 +78,7 @@ namespace gpe
     void spatial_partition_controller::activate_all_layers()
     {
         spatial_partition_layer * tempLayer = nullptr;
-        for( int i = maxLayerCount -1; i >=0 ; i--)
+        for( int i = max_collision_layer_count -1; i >=0 ; i--)
         {
             tempLayer = collisionlayers[i];
             if( tempLayer!=nullptr)
@@ -103,9 +103,9 @@ namespace gpe
         {
             layer_id =0;
         }
-        else if( layer_id >= maxLayerCount )
+        else if( layer_id >= max_collision_layer_count )
         {
-            layer_id = maxLayerCount -1;
+            layer_id = max_collision_layer_count -1;
         }
 
         if( collisionlayers[layer_id] == nullptr)
@@ -119,7 +119,7 @@ namespace gpe
     void spatial_partition_controller::clear_spaces()
     {
         spatial_partition_layer * tempLayer = nullptr;
-        for( int iLayer = 0; iLayer < maxLayerCount; iLayer++ )
+        for( int iLayer = 0; iLayer < max_collision_layer_count; iLayer++ )
         {
             tempLayer = collisionlayers[iLayer];
 
@@ -137,24 +137,26 @@ namespace gpe
         //loop through every active layer
         spatial_partition_layer * tempLayerRow = nullptr;
         spatial_partition_layer * tempLayerColumn = nullptr;
-        for( iLayer = 0; iLayer < maxLayerCount; iLayer++ )
+        for( iLayer = 0; iLayer < max_collision_layer_count; iLayer++ )
         {
             tempLayerRow = collisionlayers[iLayer];
 
             //If the row is active
             if( tempLayerRow->is_active() )
             {
-                tempLayerRow->check_collisions_self();
-
+                if( collision_layer_grid[iLayer][iLayer] )
+                {
+                    tempLayerRow->check_collisions_self();
+                }
                 //Our for loop starts at iLayer, to avoid double-calculating
-                for( jLayer = iLayer; jLayer < maxLayerCount; jLayer++ )
+                for( jLayer = iLayer; jLayer < max_collision_layer_count; jLayer++ )
                 {
                     tempLayerColumn = collisionlayers[jLayer];
                     //if the current column is active
                     if( tempLayerRow->is_active() )
                     {
                         //We have the row check collision with it
-                        tempLayerRow->check_collisions_with_layer(tempLayerColumn);
+                        tempLayerRow->check_collisions_with_layer(tempLayerColumn,collision_layer_grid[iLayer][jLayer] );
                     }
                 }
             }
@@ -164,7 +166,7 @@ namespace gpe
     void spatial_partition_controller::deactivate_all_layers()
     {
         spatial_partition_layer * tempLayer = nullptr;
-        for( int i = maxLayerCount -1; i >=0 ; i--)
+        for( int i = max_collision_layer_count -1; i >=0 ; i--)
         {
             tempLayer = collisionlayers[i];
             if( tempLayer!=nullptr)
@@ -176,7 +178,7 @@ namespace gpe
 
     void spatial_partition_controller::deactivate_layer(int layer_id )
     {
-        if( layer_id < 0 || layer_id  >= maxLayerCount )
+        if( layer_id < 0 || layer_id  >= max_collision_layer_count )
         {
             return;
         }
@@ -192,7 +194,7 @@ namespace gpe
     bool spatial_partition_controller::init_system(  int camera_scene_width, int camera_scene_height )
     {
         spatial_partition_layer * tempLayer = nullptr;
-        for( int i = maxLayerCount -1; i >=0 ; i--)
+        for( int i = max_collision_layer_count -1; i >=0 ; i--)
         {
             tempLayer = collisionlayers[i];
             if( tempLayer!=nullptr)
@@ -206,6 +208,12 @@ namespace gpe
             }
         }
         return true;
+    }
+
+
+    bool spatial_partition_controller::load_collision_grid( std::string map_file )
+    {
+        return false;
     }
 
     bool spatial_partition_controller::quit_system()
@@ -224,9 +232,9 @@ namespace gpe
         {
             layer_id = 0;
         }
-        else if( layer_id >= maxLayerCount )
+        else if( layer_id >= max_collision_layer_count )
         {
-            layer_id = maxLayerCount -1;
+            layer_id = max_collision_layer_count -1;
         }
 
         if( collisionlayers[layer_id] == nullptr)
@@ -245,14 +253,14 @@ namespace gpe
     void spatial_partition_controller::start_frame()
     {
         spatial_partition_layer * tempLayerRow = nullptr;
-        for( int i_layer = 0; i_layer < maxLayerCount; i_layer++ )
+        for( int i_layer = 0; i_layer < max_collision_layer_count; i_layer++ )
         {
             tempLayerRow = collisionlayers[i_layer];
 
             //If the row is active
             if( tempLayerRow->is_active() )
             {
-                tempLayerRow->check_for_leaving_collisions();
+                tempLayerRow->check_for_leaving_collisions( collision_layer_grid[i_layer][i_layer] );
             }
         }
     }

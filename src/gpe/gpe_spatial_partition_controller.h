@@ -47,8 +47,7 @@ namespace gpe
             int spatial_map_width_size;
             int spatial_map_height_size;
         public:
-            static const int maxLayerCount = 32;
-            spatial_partition_layer * collisionlayers[maxLayerCount];
+            spatial_partition_layer * collisionlayers[max_collision_layer_count];
 
             spatial_partition_controller( std::string c_name );
             ~spatial_partition_controller();
@@ -62,6 +61,7 @@ namespace gpe
             void deactivate_all_layers();
             void end_frame();
             bool init_system( int scene_width, int scene_height );
+            bool load_collision_grid( std::string map_file );
             bool quit_system();
             void remove_object( game_object * g_obj );
             void reset_system();
