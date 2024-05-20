@@ -53,6 +53,7 @@ namespace gpe
         collision_event_type type;
     };
 
+    const int max_collision_layer_count = 32;
     class collision_controller_base
     {
         protected:
@@ -61,6 +62,7 @@ namespace gpe
             int controller_id;
             std::string controller_name;
             std::string controller_type;
+            bool collision_layer_grid[max_collision_layer_count][max_collision_layer_count];
         public:
             collision_controller_base();
             virtual ~collision_controller_base();
@@ -75,6 +77,7 @@ namespace gpe
             virtual void deactivate_all_layers();
             virtual void end_frame()  = 0;
             virtual bool init_system( int scene_width, int scene_height );
+            virtual bool load_collision_grid( std::string map_file );
             virtual void remove_object( game_object * g_obj );
             virtual void reset_system() = 0;
             virtual bool quit_system();

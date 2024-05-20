@@ -131,12 +131,48 @@ namespace gpe
         }
     }
 
-    void spatial_partition_layer::check_collisions_with_layer( spatial_partition_layer * otherLayer)
+    void spatial_partition_layer::check_collisions_with_layer( spatial_partition_layer * other_layer,  bool execute_collisions)
     {
+        if(execute_collisions == false )
+        {
+            return;
+        }
 
+        if(other_layer == nullptr)
+        {
+            return;
+        }
+
+        int i = 0, j = 0, max_i = 0, max_j = 0;
+        if( (int)layerPartitions.size() == other_layer->layerPartitions.size() )
+        {
+            max_i = max_j = (int)layerPartitions.size();
+        }
+        else
+        {
+            max_i = (int)layerPartitions.size();
+            max_j = other_layer->layerPartitions.size();
+        }
+
+        for( i = 0; i < max_i; i++ )
+        {
+            if( layerPartitions[i] == nullptr )
+            {
+                continue;
+            }
+
+            for( j = 0; j < max_j; j++)
+            {
+                if( other_layer->layerPartitions[j] == nullptr )
+                {
+                    continue;
+                }
+                layerPartitions[i]->check_collisions_with_other(  other_layer->layerPartitions[j] );
+            }
+        }
     }
 
-    void spatial_partition_layer::check_for_leaving_collisions()
+    void spatial_partition_layer::check_for_leaving_collisions( bool execute_collisions)
     {
         spatial_partition * tempPartition = nullptr;
         for( int i = (int)layerPartitions.size()-1; i >=0 ; i-- )
@@ -144,7 +180,7 @@ namespace gpe
             tempPartition = layerPartitions[i];
             if( tempPartition!=nullptr )
             {
-                tempPartition->check_for_leaving_collisions();
+                tempPartition->check_for_leaving_collisions( execute_collisions);
             }
         }
     }

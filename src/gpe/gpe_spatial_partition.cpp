@@ -169,7 +169,7 @@ namespace gpe
         }
     }
 
-    void spatial_partition::check_for_leaving_collisions()
+    void spatial_partition::check_for_leaving_collisions( bool execute_collision_function )
     {
         bool process_leave_collision = false;
 
@@ -193,8 +193,11 @@ namespace gpe
             if( process_leave_collision )
             {
                 collisions_found[i].type = collision_event_type::collision_leave;
-                collisions_found[i].object_one->process_collision_leave( collisions_found[i].object_two );
-                collisions_found[i].object_two->process_collision_leave( collisions_found[i].object_one );
+                if( execute_collision_function )
+                {
+                    collisions_found[i].object_one->process_collision_leave( collisions_found[i].object_two );
+                    collisions_found[i].object_two->process_collision_leave( collisions_found[i].object_one );
+                }
             }
         }
     }

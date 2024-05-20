@@ -76,6 +76,15 @@ namespace gpe
         collision_controller_counter++;
         layer_id = -1;
         collision_controller_counter = 0;
+
+        int i= 0, j = 0;
+        for( i = 0; i < max_collision_layer_count; i++ )
+        {
+            for( j = 0; j < max_collision_layer_count; j++ )
+            {
+                collision_layer_grid[i][j] = true;
+            }
+        }
     }
 
     collision_controller_base::~collision_controller_base()
@@ -147,6 +156,11 @@ namespace gpe
     bool collision_controller_base::init_system( int scene_width, int scene_height )
     {
         return false; //WIPNOTFUNCTIONALYET
+    }
+
+    bool collision_controller_base::load_collision_grid( std::string map_file )
+    {
+        return false;
     }
 
     void collision_controller_base::remove_object( game_object * g_obj )
