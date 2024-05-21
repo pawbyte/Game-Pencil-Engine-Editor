@@ -500,6 +500,7 @@ void textureResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect
         //renders the tilesheet in edit
         if( textureInEditor!=nullptr)
         {
+            /*
             if( textureInEditor->get_width() <=view_space->w && textureInEditor->get_height() <=view_space->h )
             {
                 textureInEditor->render_tex( 0, 0,nullptr);
@@ -509,7 +510,9 @@ void textureResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect
                 float neededTexture_scale= (float)std::min( (float)view_space->w/ (float)textureInEditor->get_width(),  (float)view_space->h / (float)textureInEditor->get_height() );
                 textureInEditor->render_tex_scaled( 0, 0,neededTexture_scale,neededTexture_scale,nullptr);
             }
+            */
 
+            textureInEditor->render_tex_circle( view_space->w/2, view_space->h/2, view_space->w/4, 256, nullptr, 255, nullptr );
             if( textureInEditor->render_tex_quad( quad_points[0], quad_points[1], quad_points[2], quad_points[3], gpe::c_white, 255 ) == false )
             {
                 gpe::error_log->report("Failed to draw quad of texture...");

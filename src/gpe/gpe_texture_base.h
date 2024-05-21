@@ -98,6 +98,7 @@ namespace gpe
             virtual void render_align_resized(  int x, int y,int new_width, int new_height, int alignment_h, int alignment_v, shape_rect* clip = nullptr, color * render_color = nullptr, int alpha = 255 );
 
             virtual void render_tex(  int x, int y, shape_rect* clip = nullptr, int alpha = 255  );
+            virtual void render_tex_circle(  int x, int y, int radius, int point_count, color * render_color, int alpha = 255, shape_rect* clip = nullptr  );
             virtual void render_tex_colored(  int x, int y, color * render_color, int alpha = 255, shape_rect* clip = nullptr  );
             virtual bool render_tex_polygon( int x, int y, int shape_length , int point_count, color * render_color, int alpha = 255, float start_angle = 0 );
             virtual bool render_tex_polygon_clipped( int x, int y, int shape_length , int point_count, color * render_color,shape_rect* clip = nullptr , int alpha = 255, float start_angle = 0 );

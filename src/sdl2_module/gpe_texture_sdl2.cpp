@@ -565,7 +565,57 @@ namespace gpe
         }
     }
 
-    void texture_sdl2::render_tex_colored(  int x, int y, color * render_color, int alpha , gpe::shape_rect* clip   )
+
+    void texture_sdl2::render_tex_circle(  int x, int y, int radius, int point_count, color * render_color, int alpha, shape_rect* clip  )
+    {
+        if( texImg == NULL )
+        {
+            return;
+        }
+
+        SDL_Vertex vertices[point_count + 2];
+
+        vertices[0].position.x = x + radius;
+        vertices[0].position.y = y + radius;
+        vertices[0].tex_coord.x = 0;
+        vertices[0].tex_coord.y = 0;
+        vertices[0].color.r = vertices[0].color.g = vertices[0].color.b = vertices[0].color.a = 255;
+
+        int indices_count = point_count * 3.f/2.f;
+        int indice_j = 0;
+        int new_indices[indices_count ];
+        new_indices[0] = 0;
+        float angle = 0, dx =0, dy = 0;
+
+        for( int h = 0; h < indices_count; h++)
+        {
+            new_indices[h] = 0;
+        }
+        for (int i = 1; i <= point_count + 2; i++)
+        {
+            angle = 2.0f * M_PI * (i - 1) / point_count;
+            dx = cosf(angle);
+            dy = sinf(angle);
+            vertices[i].position.x = x + dx * radius;
+            vertices[i].position.y = y + dy * radius;
+            vertices[i].tex_coord.x = 1.f + dx/2.f;
+            vertices[i].tex_coord.y = 1.f + dy/2.f;
+            vertices[i].color.r = vertices[i].color.g = vertices[i].color.b = vertices[i].color.a = 255;
+            new_indices[i] = i;
+            indice_j++;
+            if( indice_j >=2 )
+            {
+                indice_j++;
+                new_indices[indice_j] = 0;
+                indice_j = 0;
+            }
+        }
+
+        SDL_RenderGeometry(renderer_main_sdl2->get_sdl2_renderer(), NULL, vertices, point_count + 2, new_indices, indices_count );
+
+    }
+
+     void texture_sdl2::render_tex_colored(  int x, int y, color * render_color, int alpha , gpe::shape_rect* clip   )
     {
         if(texImg!=NULL && alpha > 0 )
         {
@@ -592,6 +642,17 @@ namespace gpe
                 SDL_RenderCopy( renderer_main_sdl2->get_sdl2_renderer(),texImg,NULL, &render_rect);
             }
         }
+    }
+
+
+    bool texture_sdl2::render_tex_polygon( int x, int y, int shape_length , int point_count, color * render_color, int alpha, float start_angle  )
+    {
+        return false;
+    }
+
+    bool texture_sdl2::render_tex_polygon_clipped( int x, int y, int shape_length , int point_count, color * render_color,shape_rect* clip, int alpha, float start_angle  )
+    {
+        return false;
     }
 
     bool texture_sdl2::render_tex_quad(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha  )

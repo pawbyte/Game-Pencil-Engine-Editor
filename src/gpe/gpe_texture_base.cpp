@@ -204,6 +204,11 @@ namespace gpe
 
     }
 
+    void texture_base::render_tex_circle(  int x, int y, int radius, int point_count, color * render_color, int alpha, shape_rect* clip  )
+    {
+
+    }
+
     void texture_base::render_tex_colored(  int x, int y, color * render_color, int alpha, shape_rect* clip )
     {
 
