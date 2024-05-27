@@ -35,14 +35,27 @@ SOFTWARE.
 
 #include "gpe_basic_resource_page.h"
 
+enum
+{
+    gpe_tex_preview_full = 0,
+    gpe_tex_preview_circle = 1,
+    gpe_tex_preview_quad = 2,
+    gpe_tex_preview_polygon = 3,
+};
+
 class textureResource: public standardEditableGameResource
 {
     protected:
         gpe::shape_point2d quad_points[4];
         int quad_place_position;
+        int polygon_point_count;
     public:
         bool isPreloaded;
         gpe::texture_base * textureInEditor;
+
+        pawgui::widget_checkbox * preview_mode_follows_mouse;
+        pawgui::widget_dropdown_menu * preview_mode_checkbox;
+
         pawgui::widget_checkbox * preloadCheckBox;
         pawgui::widget_checkbox * textureUsesPixels;
         pawgui::widget_checkbox * imageUsesColorKey;

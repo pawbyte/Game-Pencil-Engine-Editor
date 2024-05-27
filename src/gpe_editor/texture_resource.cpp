@@ -42,10 +42,20 @@ textureResource::textureResource(pawgui::widget_resource_container * pFolder)
         quad_points[i_quad].y = 0;
     }
     quad_place_position = 0;
+    polygon_point_count = 3;
     projectParentFolder = pFolder;
     editorMode = 0;
     textureInEditor = nullptr;
     isPreloaded = true;
+    preview_mode_checkbox = new pawgui::widget_dropdown_menu("Texture Preview Mode", false );
+
+
+    preview_mode_checkbox->add_menu_option("Full Texture", "Full Texture", gpe_tex_preview_full, true );
+    preview_mode_checkbox->add_menu_option("Texture Circle", "Texture Circle", gpe_tex_preview_circle, false );
+    preview_mode_checkbox->add_menu_option("Texture Quad", "Texture Quad", gpe_tex_preview_quad, false );
+    preview_mode_checkbox->add_menu_option("Texture Polygon", "Texture Polygon", gpe_tex_preview_polygon, false );
+
+    preview_mode_follows_mouse = new pawgui::widget_checkbox("Preview Mode Follows Mouse","Preview Mode Follows Mouse", true);
     preloadCheckBox = new pawgui::widget_checkbox("Preload Texture","Check to load texture at game open", true);
     textureUsesPixels = new pawgui::widget_checkbox("Pixel Data Accessible","Useful for mode7/raycasting and other effects", false );
     labelImageDimensions = new pawgui::widget_label_text ("","");
@@ -73,6 +83,18 @@ textureResource::~textureResource()
     {
         delete refreshResourceData_button;
         refreshResourceData_button = nullptr;
+    }
+
+    if( preview_mode_checkbox != nullptr )
+    {
+        delete preview_mode_checkbox;
+        preview_mode_checkbox = nullptr;
+    }
+
+    if( preview_mode_follows_mouse != nullptr )
+    {
+        delete preview_mode_follows_mouse;
+        preview_mode_follows_mouse = nullptr;
     }
 
     if( preloadCheckBox!=nullptr)
@@ -325,30 +347,47 @@ void textureResource::process_self( gpe::shape_rect * view_space, gpe::shape_rec
 
         if( get_mouse_coords( view_space, cam ) )
         {
-            if( gpe::input->check_mouse_released( mb_left) )
+            if(preview_mode_checkbox->get_selected_value() == gpe_tex_preview_quad )
             {
-                //The fun sprite/animation test zone
-                if( quad_place_position < 0 )
+                if( gpe::input->check_mouse_released( mb_left) )
                 {
-                    quad_place_position = 0;
-                }
-                else if ( quad_place_position > 3 )
-                {
-                    quad_place_position = 0;
-                }
+                    //The fun sprite/animation test zone
+                    if( quad_place_position < 0 )
+                    {
+                        quad_place_position = 0;
+                    }
+                    else if ( quad_place_position > 3 )
+                    {
+                        quad_place_position = 0;
+                    }
 
-                quad_points[quad_place_position].x = local_mouse_x;
-                quad_points[quad_place_position].y = local_mouse_y;
+                    quad_points[quad_place_position].x = local_mouse_x;
+                    quad_points[quad_place_position].y = local_mouse_y;
 
-                quad_place_position++;
+                    quad_place_position++;
 
-                if( quad_place_position < 0 )
-                {
-                    quad_place_position = 0;
+                    if( quad_place_position < 0 )
+                    {
+                        quad_place_position = 0;
+                    }
+                    else if ( quad_place_position > 3 )
+                    {
+                        quad_place_position = 0;
+                    }
                 }
-                else if ( quad_place_position > 3 )
+            }
+            else if(preview_mode_checkbox->get_selected_value() == gpe_tex_preview_polygon )
+            {
+                if( gpe::input->check_mouse_released( mb_left) )
                 {
-                    quad_place_position = 0;
+                    polygon_point_count++;
+                }
+                else if( gpe::input->check_mouse_released( mb_right) )
+                {
+                    if( polygon_point_count >3 )
+                    {
+                        polygon_point_count--;
+                    }
                 }
             }
         }
@@ -376,11 +415,16 @@ void textureResource::process_self( gpe::shape_rect * view_space, gpe::shape_rec
         panel_main_editor->add_gui_element(imageUsesColorKey,true);
         panel_main_editor->add_gui_element(imageColorKey,true);
 
+        panel_main_editor->add_gui_element(preview_mode_checkbox,true);
+        panel_main_editor->add_gui_element(preview_mode_follows_mouse,true);
+
         panel_main_editor->add_gui_element(preloadCheckBox,true);
         panel_main_editor->add_gui_element(confirmResource_button,true);
         panel_main_editor->add_gui_element(cancelResource_button,true);
         //panel_main_editor->set_maxed_out_width();
         panel_main_editor->process_self(nullptr, nullptr);
+
+
 
         if( loadResource_button!=nullptr && loadResource_button->is_clicked() )
         {
@@ -500,32 +544,50 @@ void textureResource::render_self( gpe::shape_rect * view_space, gpe::shape_rect
         //renders the tilesheet in edit
         if( textureInEditor!=nullptr)
         {
-            /*
-            if( textureInEditor->get_width() <=view_space->w && textureInEditor->get_height() <=view_space->h )
+            int preview_angle = 90;
+
+
+            if( preview_mode_follows_mouse->is_clicked() )
             {
-                textureInEditor->render_tex( 0, 0,nullptr);
+                preview_angle = semath::point_direction( view_space->w/2,view_space->h/2, local_mouse_x, local_mouse_y ) * semath::math_degrees_multiplier;
+            }
+
+            if(preview_mode_checkbox->get_selected_value() == gpe_tex_preview_circle )
+            {
+                gpe::gcanvas->render_circle_filled( view_space->w/2, view_space->h/2, view_space->w/4 );
+                textureInEditor->render_tex_circle( view_space->w/2, view_space->h/2, view_space->w/4, 256, nullptr, 255, nullptr );
+            }
+            else if(preview_mode_checkbox->get_selected_value() == gpe_tex_preview_quad )
+            {
+                if( textureInEditor->render_tex_quad( quad_points[0], quad_points[1], quad_points[2], quad_points[3], gpe::c_white, 255 ) == false )
+                {
+                    gpe::error_log->report("Failed to draw quad of texture...");
+                }
+
+                for( int i_quad_pos = 0; i_quad_pos < 4; i_quad_pos++ )
+                {
+                    gpe::gfs->render_text_boxed( quad_points[i_quad_pos].x,quad_points[i_quad_pos].y,
+                            stg_ex::float_to_string(i_quad_pos ),
+                                gpe::c_white, gpe::c_black, gpe::font_default, gpe::fa_center, gpe::fa_middle );
+                }
+            }
+            else if(preview_mode_checkbox->get_selected_value() == gpe_tex_preview_polygon )
+            {
+                textureInEditor->render_tex_polygon( view_space->w/2, view_space->h/2, std::min( view_space->w/4, view_space->h/4) ,polygon_point_count, nullptr, 255, preview_angle );
             }
             else
             {
-                float neededTexture_scale= (float)std::min( (float)view_space->w/ (float)textureInEditor->get_width(),  (float)view_space->h / (float)textureInEditor->get_height() );
-                textureInEditor->render_tex_scaled( 0, 0,neededTexture_scale,neededTexture_scale,nullptr);
+                if( textureInEditor->get_width() <=view_space->w && textureInEditor->get_height() <=view_space->h )
+                {
+                    textureInEditor->render_tex( 0, 0,nullptr);
+                }
+                else
+                {
+                    float neededTexture_scale= (float)std::min( (float)view_space->w/ (float)textureInEditor->get_width(),  (float)view_space->h / (float)textureInEditor->get_height() );
+                    textureInEditor->render_tex_scaled( 0, 0,neededTexture_scale,neededTexture_scale,nullptr);
+                }
             }
-            */
-
-            textureInEditor->render_tex_circle( view_space->w/2, view_space->h/2, view_space->w/4, 256, nullptr, 255, nullptr );
-            if( textureInEditor->render_tex_quad( quad_points[0], quad_points[1], quad_points[2], quad_points[3], gpe::c_white, 255 ) == false )
-            {
-                gpe::error_log->report("Failed to draw quad of texture...");
-            }
-
-            for( int i_quad_pos = 0; i_quad_pos < 4; i_quad_pos++ )
-            {
-                gpe::gfs->render_text_boxed( quad_points[i_quad_pos].x,quad_points[i_quad_pos].y,
-                        stg_ex::float_to_string(i_quad_pos ),
-                            gpe::c_white, gpe::c_black, gpe::font_default, gpe::fa_center, gpe::fa_middle );
-            }
-
-            }
+        }
     }
 }
 
