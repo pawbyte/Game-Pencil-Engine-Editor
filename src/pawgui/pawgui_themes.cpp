@@ -516,24 +516,13 @@ namespace pawgui
         std::string textEditorFontLocation = gpe::app_directory_name+"resources/fonts/dejavu_sans_mono/DejaVuSansMono.ttf";
         bool font_is_monospaced = true;
 
-        if( sff_ex::file_exists("C:/Windows/Fonts/Arial.ttf") )
+        if( sff_ex::file_exists( mainGuiFontLocation) )
         {
-            mainGuiFontLocation = "C:/Windows/Fonts/Arial.ttf";
-            font_is_monospaced = false;
-        }
-        else if( sff_ex::file_exists("C:/Windows/Fonts/Carlito.ttf") )
-        {
-            mainGuiFontLocation = "C:/Windows/Fonts/Carlito.ttf";
-            font_is_monospaced = false;
-        }
-        else if( sff_ex::file_exists("C:/Windows/Fonts/Candara.ttf") )
-        {
-            mainGuiFontLocation = "C:/Windows/Fonts/Candara.ttf";
             font_is_monospaced = false;
         }
         else
         {
-            gpe::error_log->report("FATAL ERROR, unable to find system based fonts. Program likely to crash or suffer performance issues!" );
+            gpe::error_log->report("FATAL ERROR, unable to find ["+ mainGuiFontLocation +"]. Program likely to crash or suffer performance issues!" );
             return false;
         }
         gpe::error_log->report("Using "+mainGuiFontLocation+" font..." );
