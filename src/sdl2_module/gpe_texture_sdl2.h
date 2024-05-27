@@ -92,8 +92,11 @@ namespace gpe
             void render_align(  int x, int y, int alignment_h, int alignment_v, gpe::shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255  );
             void render_align_resized(  int x, int y,int new_width, int new_height, int alignment_h, int alignment_v, gpe::shape_rect* clip = NULL, color * render_color = NULL, int alpha = 255 );
             void render_tex(  int x, int y, gpe::shape_rect* clip = NULL, int alpha = 255  );
-            void render_tex_colored(  int x, int y, color * render_color, int alpha = 255, gpe::shape_rect* clip = NULL  );
 
+            void render_tex_circle(  int x, int y, int radius, int point_count, color * render_color, int alpha = 255, shape_rect* clip = nullptr  );
+            void render_tex_colored(  int x, int y, color * render_color, int alpha = 255, shape_rect* clip = nullptr  );
+            bool render_tex_polygon( int x, int y, int shape_length , int point_count, color * render_color, int alpha = 255, float start_angle = 0 );
+            bool render_tex_polygon_clipped( int x, int y, int shape_length , int point_count, color * render_color,shape_rect* clip = nullptr , int alpha = 255, float start_angle = 0 );
 
             bool render_tex_quad(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha = 255 );
             bool render_tex_quad_clipped(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha, shape_rect * clip );

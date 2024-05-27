@@ -32,6 +32,8 @@ SOFTWARE.
 */
 
 
+#define SDL2_RENDERPARTY_IMPLEMENTATION
+#include "thirdparty/sdl2_renderparty.h"
 #include "gpe_texture_sdl2.h"
 
 namespace gpe
@@ -565,7 +567,32 @@ namespace gpe
         }
     }
 
-    void texture_sdl2::render_tex_colored(  int x, int y, color * render_color, int alpha , gpe::shape_rect* clip   )
+
+    void texture_sdl2::render_tex_circle(  int x, int y, int radius, int point_count, color * render_color, int alpha, shape_rect* clip  )
+    {
+        if( texImg == NULL )
+        {
+            return;
+        }
+
+        SDL_Point render_point = {};
+        render_point.x = x;
+        render_point.y = y;
+
+        SDL_Color temp_render_color = {255, 255, 255, 255};
+        if( render_color != nullptr )
+        {
+            temp_render_color.r = render_color->get_r();
+            temp_render_color.g = render_color->get_g();
+            temp_render_color.b = render_color->get_b();
+            temp_render_color.a = render_color->get_a();
+        }
+
+        SDL_RenderParty_Circle( renderer_main_sdl2->get_sdl2_renderer(), texImg, render_point, radius, &temp_render_color, temp_render_color.a, 90,sdl_partyeffect_none );
+
+    }
+
+     void texture_sdl2::render_tex_colored(  int x, int y, color * render_color, int alpha , gpe::shape_rect* clip   )
     {
         if(texImg!=NULL && alpha > 0 )
         {
@@ -594,6 +621,40 @@ namespace gpe
         }
     }
 
+
+    bool texture_sdl2::render_tex_polygon( int x, int y, int shape_length , int point_count, color * render_color, int alpha, float start_angle  )
+    {
+        if( texImg == NULL )
+        {
+            return false;
+        }
+        int max_size = std::min( tex_width, tex_height);
+
+        SDL_Point render_point = {};
+        render_point.x = x;
+        render_point.y = y;
+
+        SDL_Color temp_render_color = {255, 255, 255, 255};
+        if( render_color != nullptr )
+        {
+            temp_render_color.r = render_color->get_r();
+            temp_render_color.g = render_color->get_g();
+            temp_render_color.b = render_color->get_b();
+            temp_render_color.a = render_color->get_a();
+        }
+
+        return SDL_RenderParty_Polygon( renderer_main_sdl2->get_sdl2_renderer(), texImg, render_point, max_size, point_count, &temp_render_color, temp_render_color.a, start_angle, sdl_partyeffect_texture_mapped,0 );
+    }
+
+    bool texture_sdl2::render_tex_polygon_clipped( int x, int y, int shape_length , int point_count, color * render_color,shape_rect* clip, int alpha, float start_angle  )
+    {
+        if( texImg == NULL )
+        {
+            return false;
+        }
+        return false;
+    }
+
     bool texture_sdl2::render_tex_quad(   shape_point2d p1 , shape_point2d p2, shape_point2d p3, shape_point2d p4, color * render_color, int alpha  )
     {
         return render_tex_quad_clipped( p1, p2, p3, p4, render_color, alpha, nullptr );
@@ -611,6 +672,7 @@ namespace gpe
 		{
 			return false; //For this function we need at least 16x16px...
 		}
+
 
 		//The 6 vertices used to draw 2 triangles to create a quad
 		SDL_Vertex vert[4];
@@ -692,15 +754,7 @@ namespace gpe
 			}
 		}
 
-		int new_indices[ 6];
-		new_indices[0] = 0;
-		new_indices[1] = 1;
-		new_indices[2] = 3;
-		new_indices[3] = 1;
-		new_indices[4] = 2;
-		new_indices[5] = 3;
-
-    	return ( SDL_RenderGeometry( renderer_main_sdl2->get_sdl2_renderer(), texImg, vert, 4, new_indices, 6 ) == 0 );
+		return SDL_RenderParty_Quad( renderer_main_sdl2->get_sdl2_renderer(), texImg, vert, true, true );
     }
 
     void texture_sdl2::render_tex_resized(  int x, int y, float new_width, float new_height, gpe::shape_rect* clip, color * render_color, int alpha )
