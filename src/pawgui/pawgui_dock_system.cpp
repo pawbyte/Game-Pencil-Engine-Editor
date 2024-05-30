@@ -542,12 +542,12 @@ namespace pawgui
                 if( panelId < panel_x_count )
                 {
                     panel_height_percentages[panelId ] = 100.f;
-                    panel_height_percentages[panelId + panel_x_count ] = 0.0d;
+                    panel_height_percentages[panelId + panel_x_count ] = 0.0;
                 }
                 else
                 {
                     panel_height_percentages[panelId ] = 100.f;
-                    panel_height_percentages[panelId - panel_x_count ] = 0.0d;
+                    panel_height_percentages[panelId - panel_x_count ] = 0.0;
                 }
             }
             else if( panel_height_percentages[panelId ] <= dock_minimum_row_percentage )
@@ -817,7 +817,7 @@ namespace pawgui
                                     panel_resize_difference = ( gpe::input->mouse_position_x - currentpanel_x );
 
                                     //Panel resizing only is between two panels, so let's calculate the differences;
-                                    panel_resize_difference = (float)panel_resize_difference / (  dock_width_minus_column_padding / 100.00000d);
+                                    panel_resize_difference = (float)panel_resize_difference / (  dock_width_minus_column_padding / 100.00000);
                                     if( panel_resize_difference >= 0.0001 )
                                     {
                                         panel_width_percentage[ column_being_resized_id ] -=  panel_resize_difference;
