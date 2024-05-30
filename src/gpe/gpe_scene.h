@@ -74,7 +74,17 @@ namespace gpe
             void add_layer( scene_layer * layer_in );
             scene_layer * add_start_layer( int newLayerId, float newLayerAlpha );
 
+            game_object * check_objects_circle(int layer_id, int x, int y, int r, int object_type );
+            virtual bool check_objects_circle_all(int layer_id, int x, int y, int r, int object_type, std::vector<game_object *>& obj_vector );
+
+            virtual game_object * check_objects_rectangle(int layer_id, int x, int y, int w, int h, int object_type );
+            virtual bool check_objects_rectangle_all(int layer_id, int x, int y, int w, int h, int object_type, std::vector<game_object *>& obj_vector );
+
             void delete_layers();
+
+            bool detect_objects_circle(int layer_id,int x, int y, int r, int object_type );
+            bool detect_objects_rectangle(int layer_id,int x, int y, int w, int h, int object_type );
+
             branch * find_branch( const std::string branch_name );
             branch * find_tagged_branch( const std::string branch_name );
             int find_tagged_branch_count( const std::string branch_name );
