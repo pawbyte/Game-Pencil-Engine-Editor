@@ -57,8 +57,18 @@ namespace gpe
             void clear_spaces();
             void clear_checked_map();
             void check_collisions();
+
+            game_object * check_objects_circle(int layer_id, int x, int y, int r, int object_type );
+            bool check_objects_circle_all(int layer_id, int x, int y, int r, int object_type, std::vector<game_object *>& obj_vector );
+            game_object * check_objects_rectangle(int layer_id, int x, int y, int w, int h, int object_type );
+            bool check_objects_rectangle_all(int layer_id, int x, int y, int w, int h, int object_type, std::vector<game_object *>& obj_vector );
+
             void deactivate_layer(int layer_id );
             void deactivate_all_layers();
+
+            bool detect_objects_circle(int layer_id,int x, int y, int r, int object_type );
+            bool detect_objects_rectangle(int layer_id,int x, int y, int w, int h, int object_type );
+
             void end_frame();
             bool init_system( int scene_width, int scene_height );
             bool load_collision_grid( std::string map_file );

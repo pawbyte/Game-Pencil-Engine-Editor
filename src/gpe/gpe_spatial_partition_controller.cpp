@@ -186,6 +186,16 @@ namespace gpe
         tempLayer->deactivate_layer();
     }
 
+    bool spatial_partition_controller::detect_objects_circle(int layer_id,int x, int y, int r, int object_type )
+    {
+        return false;
+    }
+
+    bool spatial_partition_controller::detect_objects_rectangle(int layer_id,int x, int y, int w, int h, int object_type )
+    {
+        return false;
+    }
+
     void spatial_partition_controller::end_frame()
     {
 
