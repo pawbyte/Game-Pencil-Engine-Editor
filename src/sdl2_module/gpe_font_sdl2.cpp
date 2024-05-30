@@ -170,8 +170,7 @@ namespace gpe
             characterPairs[")" ] = new font_pair_sdl2(heldSDLFont,")" );
             if( make_monospaced == false)
             {
-                std::map<std::string,font_pair_sdl2 *>::iterator foundIterator;
-                foundIterator = characterPairs.find("9");
+                auto foundIterator = characterPairs.find("9");
                 if( foundIterator!= characterPairs.end() )
                 {
                     font_pair_sdl2 * tempfont_pair_sdl2 = foundIterator->second;
@@ -209,7 +208,7 @@ namespace gpe
         }
         clear_cache();
         font_pair_sdl2 * tempfont_pair_sdl2 = NULL;
-        for (std::map<std::string,font_pair_sdl2 *>::iterator it=characterPairs.begin(); it!=characterPairs.end(); ++it)
+        for (auto it=characterPairs.begin(); it!=characterPairs.end(); ++it)
         {
             tempfont_pair_sdl2 = it->second;
             if( tempfont_pair_sdl2!=NULL)
@@ -225,7 +224,7 @@ namespace gpe
     void font_sdl2_tff::clear_cache()
     {
         font_pair_sdl2 * tempfont_pair_sdl2 = NULL;
-        for (std::map<std::string,font_pair_sdl2 *>::iterator it=textPairs.begin(); it!=textPairs.end(); ++it)
+        for (auto it=textPairs.begin(); it!=textPairs.end(); ++it)
         {
             tempfont_pair_sdl2 = it->second;
             if( tempfont_pair_sdl2!=NULL)
@@ -332,8 +331,7 @@ namespace gpe
     {
         font_pair_sdl2 * fPair = NULL;
         SDL_Texture * fSDLTexture = NULL;
-        std::map<std::string,font_pair_sdl2 *>::iterator foundVal;
-        foundVal = characterPairs.find( id_number );
+        auto foundVal = characterPairs.find( id_number );
         if( foundVal !=  characterPairs.end() )
         {
             fPair = foundVal->second;
