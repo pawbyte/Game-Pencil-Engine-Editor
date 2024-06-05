@@ -42,6 +42,11 @@ namespace gpe
 {
     class spatial_partition_controller : public collision_controller_base
     {
+        private:
+            gpe::shape_point2d * temp_collision_point2d;
+            gpe::shape_point3d * temp_collision_point3d;
+            gpe::shape_circle * temp_collision_circle;
+            gpe::shape_rect * temp_collision_rect;
         protected:
             std::map<std::string, bool > collisionsCheckedInFrame;
             int spatial_map_width_size;
@@ -58,10 +63,12 @@ namespace gpe
             void clear_checked_map();
             void check_collisions();
 
-            game_object * check_objects_circle(int layer_id, int x, int y, int r, int object_type );
-            bool check_objects_circle_all(int layer_id, int x, int y, int r, int object_type, std::vector<game_object *>& obj_vector );
-            game_object * check_objects_rectangle(int layer_id, int x, int y, int w, int h, int object_type );
-            bool check_objects_rectangle_all(int layer_id, int x, int y, int w, int h, int object_type, std::vector<game_object *>& obj_vector );
+            game_object * check_objects_circle(int layer_id, int x, int y, int r, int object_type, bool check_for_children  );
+            bool check_objects_circle_all(int layer_id, int x, int y, int r, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children  );
+            game_object * check_objects_point(int layer_id, int x, int y, int object_type, bool check_for_children );
+            bool check_objects_point_all(int layer_id, int x, int y, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children );
+            game_object * check_objects_rectangle(int layer_id, int x, int y, int w, int h, int object_type, bool check_for_children  );
+            bool check_objects_rectangle_all(int layer_id, int x, int y, int w, int h, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children  );
 
             void deactivate_layer(int layer_id );
             void deactivate_all_layers();

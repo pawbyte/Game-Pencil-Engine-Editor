@@ -146,6 +146,19 @@ namespace gpe
 
     }
 
+    bool game_object::check_collides_with_circle( gpe::shape_circle checked_circle)
+    {
+        if( useCollisonRect )
+        {
+            return check_collision_circle_rect( *collisionBox, checked_circle );
+        }
+        else
+        {
+            check_collision_circles( *collisionCircle, checked_circle );
+        }
+        return false;
+    }
+
     bool game_object::check_collison_with_object(  game_object * otherObj )
     {
         if( otherObj == nullptr )
@@ -178,6 +191,39 @@ namespace gpe
                 //defaults to circle and circle check
                 return check_collision_circles( *collisionCircle, *otherObj->collisionCircle );
             }
+        }
+        return false;
+    }
+
+    bool game_object::check_collides_with_point2d( gpe::shape_point2d checked_point)
+    {
+        if( useCollisonRect )
+        {
+            //check the AABB between the two rects
+            return point_within_rect( checked_point.x, checked_point.y, collisionBox );
+        }
+        else
+        {
+            return point_within_circle( checked_point.x, checked_point.y, collisionCircle );
+        }
+        return false;
+    }
+
+    bool game_object::check_collides_with_point3d( gpe::shape_point3d checked_point)
+    {
+        return false; //Not yet ready for 1.6 LTS
+    }
+
+    bool game_object::check_collides_with_rectangle( gpe::shape_rect checked_rect)
+    {
+        if( useCollisonRect )
+        {
+            //check the AABB between the two rects
+            return check_collision_rects( *collisionBox, checked_rect );
+        }
+        else
+        {
+            return check_collision_circle_rect( checked_rect, *collisionCircle );
         }
         return false;
     }

@@ -202,6 +202,188 @@ namespace gpe
         }
     }
 
+
+    game_object * spatial_partition::check_objects_circle(gpe::shape_circle * checked_circle, int object_type, bool check_for_children  )
+    {
+        game_object * found_held_object = nullptr;
+        int ii = 0, objectsCount = (int)objectsArray.size();
+        std::string tempColPairStr = "";
+        std::string otherColPairStr = "";
+        collision_event * found_collision_event = NULL;
+
+        for( ii = 0;  ii < objectsCount; ii++)
+        {
+            found_held_object = objectsArray[ii];
+            if( found_held_object->get_object_type() != object_type )
+            {
+                continue;
+            }
+            if( found_held_object->check_collides_with_circle( *checked_circle ) )
+            {
+                return found_held_object;
+            }
+        }
+        return nullptr;
+    }
+
+    bool spatial_partition::check_objects_circle_all( gpe::shape_circle * checked_circle, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children  )
+    {
+        bool found_one_obj = false;
+        game_object * found_held_object = nullptr;
+        int ii = 0, objectsCount = (int)objectsArray.size();
+        std::string tempColPairStr = "";
+        std::string otherColPairStr = "";
+        collision_event * found_collision_event = NULL;
+
+        for( ii = 0;  ii < objectsCount; ii++)
+        {
+            found_held_object = objectsArray[ii];
+            if( found_held_object->get_object_type() != object_type )
+            {
+                continue;
+            }
+            if( found_held_object->check_collides_with_circle( *checked_circle ) )
+            {
+                found_one_obj = true;
+                obj_vector.push_back( found_held_object );
+            }
+        }
+        return found_one_obj;
+    }
+
+     game_object * spatial_partition::check_objects_point( gpe::shape_point2d * checked_point, int object_type, bool check_for_children  )
+    {
+        game_object * found_held_object = nullptr;
+        int ii = 0, objectsCount = (int)objectsArray.size();
+        std::string tempColPairStr = "";
+        std::string otherColPairStr = "";
+        collision_event * found_collision_event = NULL;
+
+        for( ii = 0;  ii < objectsCount; ii++)
+        {
+            found_held_object = objectsArray[ii];
+            if( found_held_object->get_object_type() != object_type )
+            {
+                continue;
+            }
+            if( found_held_object->check_collides_with_point2d( *checked_point ) )
+            {
+                return found_held_object;
+            }
+        }
+        return nullptr;
+    }
+
+    bool spatial_partition::check_objects_point_all(gpe::shape_point2d * checked_point, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children  )
+    {
+        bool found_one_obj = false;
+        game_object * found_held_object = nullptr;
+        int ii = 0, objectsCount = (int)objectsArray.size();
+        std::string tempColPairStr = "";
+        std::string otherColPairStr = "";
+        collision_event * found_collision_event = NULL;
+
+        for( ii = 0;  ii < objectsCount; ii++)
+        {
+            found_held_object = objectsArray[ii];
+            if( found_held_object->get_object_type() != object_type )
+            {
+                continue;
+            }
+            if( found_held_object->check_collides_with_point2d( *checked_point ) )
+            {
+                found_one_obj = true;
+                obj_vector.push_back( found_held_object );
+            }
+        }
+        return found_one_obj;
+    }
+
+
+    game_object * spatial_partition::check_objects_rectangle( gpe::shape_rect * checked_rect, int object_type, bool check_for_children  )
+    {
+        game_object * found_held_object = nullptr;
+        int ii = 0, objectsCount = (int)objectsArray.size();
+        std::string tempColPairStr = "";
+        std::string otherColPairStr = "";
+        collision_event * found_collision_event = NULL;
+
+        for( ii = 0;  ii < objectsCount; ii++)
+        {
+            found_held_object = objectsArray[ii];
+            if( found_held_object->get_object_type() != object_type )
+            {
+                continue;
+            }
+            if( found_held_object->check_collides_with_rectangle( *checked_rect ) )
+            {
+                return found_held_object;
+            }
+        }
+        return nullptr;
+    }
+
+    bool spatial_partition::check_objects_rectangle_all(gpe::shape_rect * checked_rect, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children  )
+    {
+        bool found_one_obj = false;
+        game_object * found_held_object = nullptr;
+        int ii = 0, objectsCount = (int)objectsArray.size();
+        std::string tempColPairStr = "";
+        std::string otherColPairStr = "";
+        collision_event * found_collision_event = NULL;
+
+        for( ii = 0;  ii < objectsCount; ii++)
+        {
+            found_held_object = objectsArray[ii];
+            if( found_held_object->get_object_type() != object_type )
+            {
+                continue;
+            }
+            if( found_held_object->check_collides_with_rectangle( *checked_rect ) )
+            {
+                found_one_obj = true;
+                obj_vector.push_back( found_held_object );
+            }
+        }
+        return found_one_obj;
+    }
+
+    bool spatial_partition::collides_with_circle(  gpe::shape_circle * checked_circle )
+    {
+        if( checked_circle == nullptr )
+        {
+            return false;
+        }
+        return gpe::check_collision_circle_rect( *boxArea, *checked_circle );
+    }
+
+    bool spatial_partition::collides_with_point2d(  gpe::shape_point2d * checked_point )
+    {
+        if( checked_point == nullptr )
+        {
+            return false;
+        }
+        return gpe::point_within_rect( checked_point->x, checked_point->y, boxArea );
+    }
+
+    bool spatial_partition::collides_with_point3d(  gpe::shape_point3d * checked_point )
+    {
+        if( checked_point == nullptr )
+        {
+            return false;
+        }
+        return gpe::point_within_rect( checked_point->x, checked_point->y, boxArea );
+    }
+
+    bool spatial_partition::collides_with_rectangle( gpe::shape_rect * checked_rect)
+    {
+        if( checked_rect == nullptr )
+        {
+            return false;
+        }
+        return gpe::check_collision_rects( *boxArea, *checked_rect );
+    }
+
     collision_event * spatial_partition::collision_exist( game_object * object_one, game_object * object_two )
     {
         sought_first_object = object_one;

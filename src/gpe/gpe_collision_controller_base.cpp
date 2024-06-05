@@ -112,23 +112,34 @@ namespace gpe
 
     }
 
-    game_object * collision_controller_base::check_objects_circle(int layer_id, int x, int y, int r, int object_type )
+    game_object * collision_controller_base::check_objects_circle(int layer_id, int x, int y, int r, int object_type, bool check_for_children )
     {
         return nullptr;
     }
 
-    bool collision_controller_base::check_objects_circle_all(int layer_id, int x, int y, int r, int object_type, std::vector<game_object *>& obj_vector )
+    bool collision_controller_base::check_objects_circle_all(int layer_id, int x, int y, int r, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children )
     {
         return false;
     }
 
-    game_object * collision_controller_base::check_objects_rectangle(int layer_id, int x, int y, int w, int h, int object_type )
+    game_object * collision_controller_base::check_objects_point(int layer_id, int x, int y, int object_type, bool check_for_children )
+    {
+        return nullptr;
+    }
+
+    bool collision_controller_base::check_objects_point_all(int layer_id, int x, int y, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children )
+    {
+        return false;
+    }
+
+
+    game_object * collision_controller_base::check_objects_rectangle(int layer_id, int x, int y, int w, int h, int object_type, bool check_for_children )
     {
         return nullptr;
     }
 
 
-    bool collision_controller_base::check_objects_rectangle_all(int layer_id, int x, int y, int w, int h, int object_type, std::vector<game_object *>& obj_vector )
+    bool collision_controller_base::check_objects_rectangle_all(int layer_id, int x, int y, int w, int h, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children )
     {
         return false;
     }
@@ -179,6 +190,11 @@ namespace gpe
         return false; //Done via child classes / collision system modules
     }
 
+    bool collision_controller_base::detect_objects_point(int layer_id,int x, int y, int object_type )
+    {
+        return false; //Done via child classes / collision system modules
+    }
+
     bool collision_controller_base::detect_objects_rectangle(int layer_id,int x, int y, int w, int h, int object_type )
     {
         return false; //Done via child classes / collision system modules
@@ -201,6 +217,6 @@ namespace gpe
 
     bool collision_controller_base::quit_system()
     {
-        return true;
+        return true; //Done via child classes / collision system modules
     }
 }

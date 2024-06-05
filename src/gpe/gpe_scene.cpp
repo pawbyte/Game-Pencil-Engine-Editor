@@ -161,24 +161,36 @@ namespace gpe
 
     }
 
-    game_object * check_objects_circle(int layer_id, int x, int y, int r, int object_type )
+    game_object * game_scene::check_objects_circle(int layer_id, int x, int y, int r, int object_type, bool check_for_children )
     {
-        return main_collision_controller->check_objects_circle( layer_id, x, y, r, object_type);
+        return main_collision_controller->check_objects_circle( layer_id, x, y, r, object_type, check_for_children);
     }
 
-    bool check_objects_circle_all(int layer_id, int x, int y, int r, int object_type, std::vector<game_object *>& obj_vector )
+    bool game_scene::check_objects_circle_all(int layer_id, int x, int y, int r, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children )
     {
-        return main_collision_controller->check_objects_circle_all( layer_id, x, y, r, object_type, obj_vector);
+        return main_collision_controller->check_objects_circle_all( layer_id, x, y, r, object_type, obj_vector, check_for_children);
     }
 
-    game_object * check_objects_rectangle(int layer_id, int x, int y, int w, int h, int object_type )
+
+
+    game_object * game_scene::check_objects_point(int layer_id, int x, int y, int object_type, bool check_for_children )
     {
-        return main_collision_controller->check_objects_rectangle( layer_id, x, y, w, h, object_type);
+        return main_collision_controller->check_objects_point( layer_id, x, y, object_type, check_for_children);
     }
 
-    bool check_objects_rectangle_all(int layer_id, int x, int y, int w, int h, int object_type, std::vector<game_object *>& obj_vector )
+    bool game_scene::check_objects_point_all(int layer_id, int x, int y, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children )
     {
-        return main_collision_controller->check_objects_rectangle_all( layer_id, x, y, w,h, object_type, obj_vector);
+        return main_collision_controller->check_objects_point_all( layer_id, x, y,object_type, obj_vector, check_for_children );
+    }
+
+    game_object * game_scene::check_objects_rectangle(int layer_id, int x, int y, int w, int h, int object_type, bool check_for_children )
+    {
+        return main_collision_controller->check_objects_rectangle( layer_id, x, y, w, h, object_type, check_for_children);
+    }
+
+    bool game_scene::check_objects_rectangle_all(int layer_id, int x, int y, int w, int h, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children )
+    {
+        return main_collision_controller->check_objects_rectangle_all( layer_id, x, y, w,h, object_type, obj_vector, check_for_children );
     }
 
     void game_scene::delete_layers()
@@ -197,6 +209,11 @@ namespace gpe
     bool game_scene::detect_objects_circle(int layer_id,int x, int y, int r, int object_type )
     {
         return main_collision_controller->detect_objects_circle( layer_id, x,y,r, object_type);
+    }
+
+    bool game_scene::detect_objects_point(int layer_id,int x, int y, int object_type )
+    {
+        return main_collision_controller->detect_objects_point( layer_id, x,y, object_type);
     }
 
     bool game_scene::detect_objects_rectangle(int layer_id,int x, int y, int w, int h, int object_type )

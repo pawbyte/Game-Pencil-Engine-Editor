@@ -145,6 +145,86 @@ namespace gpe
     }
 
 
+    bool point_between_circle(gpe::shape_point2d * point_in, gpe::shape_circle * circle_in )
+    {
+        if( point_in == nullptr || circle_in == nullptr )
+        {
+            return false;
+        }
+        //Alot of math, but sqrt operation is apparently costly
+        float squared_distance = (point_in->x - circle_in->position.x) * (point_in->x - circle_in->position.x) + (point_in->y - circle_in->position.y) * (point_in->y - circle_in->position.y);
+        float squared_radius = circle_in->radius * circle_in->radius;
+
+        // Check if the squared distance is less than the squared radius
+        if (squared_distance < squared_radius)
+        {
+            return true; // Point is within the circle
+        }
+        return false;
+    }
+
+    bool point_between_circle(int point_x, int point_y, gpe::shape_circle * circle_in )
+    {
+        if( circle_in == nullptr )
+        {
+            return false;
+        }
+        //Alot of math, but sqrt operation is apparently costly
+        float squared_distance = (point_x- circle_in->position.x) * (point_x - circle_in->position.x) + (point_y - circle_in->position.y) * (point_y- circle_in->position.y);
+        float squared_radius = circle_in->radius * circle_in->radius;
+
+        // Check if the squared distance is less than the squared radius
+        if (squared_distance < squared_radius)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    bool point_within_circle(gpe::shape_point2d * point_in, gpe::shape_circle * circle_in )
+    {
+        if( point_in == nullptr || circle_in == nullptr )
+        {
+            return false;
+        }
+
+        if( point_in == nullptr || circle_in == nullptr )
+        {
+            return false;
+        }
+        //Alot of math, but sqrt operation is apparently costly
+        float squared_distance = (point_in->x - circle_in->position.x) * (point_in->x - circle_in->position.x) + (point_in->y - circle_in->position.y) * (point_in->y - circle_in->position.y);
+        float squared_radius = circle_in->radius * circle_in->radius;
+
+        // Check if the squared distance is less than OR EQUALTO(WITHIN) the squared radius
+        if (squared_distance <= squared_radius)
+        {
+            return true; // Point is within the circle
+        }
+        return false;
+    }
+
+
+
+    bool point_within_circle(int point_x, int point_y, gpe::shape_circle * circle_in )
+    {
+        if( circle_in == nullptr )
+        {
+            return false;
+        }
+
+        //Alot of math, but sqrt operation is apparently costly
+        float squared_distance = (point_x- circle_in->position.x) * (point_x - circle_in->position.x) + (point_y - circle_in->position.y) * (point_y- circle_in->position.y);
+        float squared_radius = circle_in->radius * circle_in->radius;
+
+        // Check if the squared distance is less than OR EQUAL(WITHIN) the squared radius
+        if (squared_distance <= squared_radius)
+        {
+            return true;
+        }
+        return false;
+    }
+
     bool point_within_rect(int point_x, int point_y, gpe::shape_rect * rect_in)
     {
         if( rect_in!=nullptr)
