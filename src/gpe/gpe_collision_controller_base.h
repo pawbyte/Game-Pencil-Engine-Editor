@@ -70,11 +70,26 @@ namespace gpe
             virtual void activate_all_layers();
             virtual void add_object( game_object * g_obj, int l_id = -1 );
             virtual void check_collisions();
+            virtual game_object * check_objects_circle(int layer_id, int x, int y, int r, int object_type, bool check_for_children );
+            virtual bool check_objects_circle_all(int layer_id, int x, int y, int r, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children );
+
+            virtual game_object * check_objects_point(int layer_id, int x, int y, int object_type, bool check_for_children );
+            virtual bool check_objects_point_all(int layer_id, int x, int y, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children );
+
+
+            virtual game_object * check_objects_rectangle(int layer_id, int x, int y, int w, int h, int object_type, bool check_for_children );
+            virtual bool check_objects_rectangle_all(int layer_id, int x, int y, int w, int h, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children );
+
+
             virtual void clear_all();
             virtual void clear_layer( int l_id );
             int compare( collision_controller_base * other );
             virtual void deactivate_layer(int l_id );
             virtual void deactivate_all_layers();
+            virtual bool detect_objects_circle(int layer_id,int x, int y, int r, int object_type );
+            virtual bool detect_objects_point(int layer_id,int x, int y, int object_type );
+            virtual bool detect_objects_rectangle(int layer_id,int x, int y, int w, int h, int object_type );
+
             virtual void end_frame()  = 0;
             virtual bool init_system( int scene_width, int scene_height );
             virtual bool load_collision_grid( std::string map_file );

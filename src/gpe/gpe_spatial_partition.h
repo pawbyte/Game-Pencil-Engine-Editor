@@ -47,6 +47,11 @@ namespace gpe
             game_object * sought_first_object;
             game_object * sought_second_object;
         protected:
+            /*
+            std::vector<game_object * > objects_static;
+            std::vector<game_object * > objects_rigid;
+            std::vector<game_object * > objects_characters;
+            */
             std::vector<game_object * > objectsArray;
             int objectsHeld;
             gpe::shape_rect * boxArea;
@@ -54,10 +59,26 @@ namespace gpe
             std::string spaceName;
             spatial_partition();
             ~spatial_partition();
+
             void add_object(game_object * newObject);
             void check_collisions();
+
+
             void check_collisions_with_other( spatial_partition * other);
             void check_for_leaving_collisions( bool execute_collision_function = true );
+
+
+            game_object * check_objects_circle( gpe::shape_circle * checked_circle, int object_type, bool check_for_children  );
+            bool check_objects_circle_all( gpe::shape_circle * checked_circle, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children  );
+            game_object * check_objects_point( gpe::shape_point2d * checked_point, int object_type, bool check_for_children  );
+            bool check_objects_point_all( gpe::shape_point2d * checked_point, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children  );
+            game_object * check_objects_rectangle( gpe::shape_rect * checked_rect, int object_type, bool check_for_children  );
+            bool check_objects_rectangle_all( gpe::shape_rect * checked_rect, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children  );
+
+            bool collides_with_circle( gpe::shape_circle * checked_circle);
+            bool collides_with_point2d( gpe::shape_point2d * checked_point);
+            bool collides_with_point3d( gpe::shape_point3d * checked_point);
+            bool collides_with_rectangle( gpe::shape_rect * checked_rect);
             collision_event * collision_exist( game_object * object_one, game_object * object_two );
             void empty_list();
             game_object * get_object(int pos);

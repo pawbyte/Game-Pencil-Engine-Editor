@@ -45,6 +45,10 @@ namespace gpe
         {
             collisionlayers[i] = new spatial_partition_layer( i );
         }
+        temp_collision_circle = {};
+        temp_collision_point2d = {};
+        temp_collision_point3d = {};
+        temp_collision_rect = new shape_rect(0,0,32,32);
     }
 
     spatial_partition_controller::~spatial_partition_controller()
@@ -61,6 +65,19 @@ namespace gpe
             collisionlayers[i] = nullptr;
         }
         clear_checked_map();
+
+
+        if( temp_collision_circle!=nullptr)
+        {
+            delete temp_collision_circle;
+            temp_collision_circle = nullptr;
+        }
+
+        if( temp_collision_rect!=nullptr)
+        {
+            delete temp_collision_rect;
+            temp_collision_rect = nullptr;
+        }
     }
 
 
@@ -163,6 +180,73 @@ namespace gpe
         }
     }
 
+    game_object * spatial_partition_controller::check_objects_circle(int layer_id, int x, int y, int r, int object_type, bool check_for_children )
+    {
+        if( layer_id < 0 || layer_id >= max_collision_layer_count )
+        {
+            return nullptr;
+        }
+        temp_collision_circle->position.x = x;
+        temp_collision_circle->position.y = y;
+        temp_collision_circle->radius = r;
+        return collisionlayers[layer_id]->check_objects_circle(temp_collision_circle,object_type,check_for_children );
+    }
+
+    bool spatial_partition_controller::check_objects_circle_all(int layer_id, int x, int y, int r, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children )
+    {
+        if( layer_id < 0 || layer_id >= max_collision_layer_count )
+        {
+            return false;
+        }
+        temp_collision_circle->position.x = x;
+        temp_collision_circle->position.y = y;
+        temp_collision_circle->radius = r;
+        return collisionlayers[layer_id]->check_objects_circle_all(temp_collision_circle,object_type,obj_vector, check_for_children );
+    }
+
+     game_object * spatial_partition_controller::check_objects_point(int layer_id, int x, int y, int object_type, bool check_for_children )
+    {
+        if( layer_id < 0 || layer_id >= max_collision_layer_count )
+        {
+            return nullptr;
+        }
+        temp_collision_point2d->x = x;
+        temp_collision_point2d->y = y;
+        return collisionlayers[layer_id]->check_objects_point(temp_collision_point2d,object_type,check_for_children );
+    }
+
+    bool spatial_partition_controller::check_objects_point_all(int layer_id, int x, int y, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children )
+    {
+        if( layer_id < 0 || layer_id >= max_collision_layer_count )
+        {
+            return false;
+        }
+        temp_collision_point2d->x = x;
+        temp_collision_point2d->y = y;
+        return collisionlayers[layer_id]->check_objects_point_all(temp_collision_point2d,object_type,obj_vector, check_for_children );
+    }
+
+    game_object * spatial_partition_controller::check_objects_rectangle(int layer_id, int x, int y, int w, int h, int object_type, bool check_for_children )
+    {
+        if( layer_id < 0 || layer_id >= max_collision_layer_count )
+        {
+            return nullptr;
+        }
+        temp_collision_rect->update_box(x,y,w,h);
+        return collisionlayers[layer_id]->check_objects_rectangle(temp_collision_rect,object_type,check_for_children );
+    }
+
+
+    bool spatial_partition_controller::check_objects_rectangle_all(int layer_id, int x, int y, int w, int h, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children )
+    {
+        if( layer_id < 0 || layer_id >= max_collision_layer_count )
+        {
+            return false;
+        }
+        temp_collision_rect->update_box(x,y,w,h);
+        return collisionlayers[layer_id]->check_objects_rectangle_all(temp_collision_rect,object_type,obj_vector,check_for_children );
+    }
+
     void spatial_partition_controller::deactivate_all_layers()
     {
         spatial_partition_layer * tempLayer = nullptr;
@@ -184,6 +268,16 @@ namespace gpe
         }
         spatial_partition_layer * tempLayer = collisionlayers[layer_id];
         tempLayer->deactivate_layer();
+    }
+
+    bool spatial_partition_controller::detect_objects_circle(int layer_id,int x, int y, int r, int object_type )
+    {
+        return false;
+    }
+
+    bool spatial_partition_controller::detect_objects_rectangle(int layer_id,int x, int y, int w, int h, int object_type )
+    {
+        return false;
     }
 
     void spatial_partition_controller::end_frame()

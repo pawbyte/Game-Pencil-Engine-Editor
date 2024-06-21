@@ -65,6 +65,14 @@ namespace gpe
             void add_object( game_object * gameObject );
             void check_collisions_self();
             void check_collisions_with_layer( spatial_partition_layer * other_layer, bool execute_collisions = true );
+
+            game_object * check_objects_circle( gpe::shape_circle * checked_circle, int object_type, bool check_for_children  );
+            bool check_objects_circle_all(gpe::shape_circle * checked_circle, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children  );
+            game_object * check_objects_point( gpe::shape_point2d * checked_point, int object_type, bool check_for_children  );
+            bool check_objects_point_all( gpe::shape_point2d * checked_point, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children  );
+            game_object * check_objects_rectangle( gpe::shape_rect * checked_rect, int object_type, bool check_for_children  );
+            bool check_objects_rectangle_all( gpe::shape_rect * checked_rect, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children  );
+
             void check_for_leaving_collisions( bool execute_collisions = true  );
             void clear_spaces();
             void deactivate_layer();

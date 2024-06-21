@@ -160,7 +160,11 @@ namespace gpe
             void bounce_from( game_object * otherObj);
 
             //C functions
+            bool check_collides_with_circle( gpe::shape_circle checked_circle);
             bool check_collison_with_object(  game_object * otherObj );
+            bool check_collides_with_point2d( gpe::shape_point2d checked_point);
+            bool check_collides_with_point3d( gpe::shape_point3d checked_point);
+            bool check_collides_with_rectangle( gpe::shape_rect checked_rect);
             static game_object * create_object( int object_layer_id, int x_pos_in,  int y_pos_in , int z_pos_in = 0 ) { return new game_object( object_layer_id, x_pos_in,   y_pos_in, z_pos_in ); }
 
             //D Functions

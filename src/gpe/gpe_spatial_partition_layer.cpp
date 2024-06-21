@@ -144,7 +144,7 @@ namespace gpe
         }
 
         int i = 0, j = 0, max_i = 0, max_j = 0;
-        if( (int)layerPartitions.size() == other_layer->layerPartitions.size() )
+        if( (int)layerPartitions.size() == (int)other_layer->layerPartitions.size() )
         {
             max_i = max_j = (int)layerPartitions.size();
         }
@@ -171,6 +171,123 @@ namespace gpe
             }
         }
     }
+
+
+    game_object * spatial_partition_layer::check_objects_circle(gpe::shape_circle * checked_circle, int object_type, bool check_for_children  )
+    {
+        if( checked_circle == nullptr )
+        {
+            return nullptr;
+        }
+        game_object *  temp_found_obj = nullptr;
+        for( int i = (int)layerPartitions.size() -1; i >=0; i-- )
+        {
+            if( layerPartitions[i]->collides_with_circle( checked_circle) )
+            {
+                temp_found_obj = layerPartitions[i]->check_objects_circle( checked_circle, object_type, check_for_children );
+
+                if( temp_found_obj != nullptr )
+                {
+                    return temp_found_obj;
+                }
+            }
+        }
+        return nullptr;
+    }
+
+    bool spatial_partition_layer::check_objects_circle_all(gpe::shape_circle * checked_circle, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children  )
+    {
+        if( checked_circle == nullptr )
+        {
+            return false;
+        }
+
+        bool  found_an_object = false;
+        for( int i = (int)layerPartitions.size() -1; i >=0; i-- )
+        {
+            if( layerPartitions[i]->collides_with_circle( checked_circle) )
+            {
+                if( layerPartitions[i]->check_objects_circle_all( checked_circle, object_type,obj_vector, check_for_children ) )
+                {
+                    found_an_object = true;
+                }
+            }
+        }
+        return found_an_object;
+    }
+
+     game_object * spatial_partition_layer::check_objects_point( gpe::shape_point2d * checked_point, int object_type, bool check_for_children  )
+     {
+        if( checked_point == nullptr )
+        {
+            return nullptr;
+        }
+        int found_spatial = find_spatial_at(checked_point->x, checked_point->y);
+        if( found_spatial == is_null )
+        {
+            return nullptr;
+        }
+        return layerPartitions[found_spatial]->check_objects_point( checked_point, object_type, check_for_children );
+     }
+
+    bool spatial_partition_layer::check_objects_point_all( gpe::shape_point2d * checked_point, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children  )
+    {
+        if( checked_point == nullptr )
+        {
+            return false;
+        }
+        int found_spatial = find_spatial_at(checked_point->x, checked_point->y );
+        if( found_spatial == is_null )
+        {
+            return false;
+        }
+        return layerPartitions[found_spatial]->check_objects_point_all( checked_point, object_type,obj_vector, check_for_children );
+    }
+
+    game_object * spatial_partition_layer::check_objects_rectangle( gpe::shape_rect * checked_rect, int object_type, bool check_for_children  )
+    {
+        if( checked_rect == nullptr )
+        {
+            return nullptr;
+        }
+
+
+        game_object *  temp_found_obj = nullptr;
+        for( int i = (int)layerPartitions.size() -1; i >=0; i-- )
+        {
+            if( layerPartitions[i]->collides_with_rectangle( checked_rect) )
+            {
+                temp_found_obj = layerPartitions[i]->check_objects_rectangle( checked_rect, object_type, check_for_children );
+
+                if( temp_found_obj != nullptr )
+                {
+                    return temp_found_obj;
+                }
+            }
+        }
+        return nullptr;
+    }
+
+    bool spatial_partition_layer::check_objects_rectangle_all( gpe::shape_rect * checked_rect, int object_type, std::vector<game_object *>& obj_vector, bool check_for_children  )
+    {
+        if( checked_rect == nullptr )
+        {
+            return false;
+        }
+        bool  found_an_object = false;
+        for( int i = (int)layerPartitions.size() -1; i >=0; i-- )
+        {
+            if( layerPartitions[i]->collides_with_rectangle( checked_rect) )
+            {
+                if( layerPartitions[i]->check_objects_rectangle_all( checked_rect, object_type,obj_vector, check_for_children ) )
+                {
+                    found_an_object = true;
+                }
+            }
+        }
+        return found_an_object;
+    }
+
 
     void spatial_partition_layer::check_for_leaving_collisions( bool execute_collisions)
     {

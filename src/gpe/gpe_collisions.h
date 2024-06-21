@@ -50,8 +50,14 @@ namespace gpe
 
     bool point_within(int point_x, int point_y,int mxmin,int mymin, int mxmax, int mymax);
     bool point_between(int point_x, int point_y,int mxmin,int mymin, int mxmax, int mymax);
-    bool point_between_rect(int point_x, int point_y, gpe::shape_rect * rect_in= nullptr);
-    bool point_within_rect(int point_x, int point_y, gpe::shape_rect * rect_in= nullptr);
+    bool point_between_circle(gpe::shape_point2d * point_in, gpe::shape_circle * circle_in );
+    bool point_between_circle(int point_x, int point_y, gpe::shape_circle * circle_in );
+
+    bool point_within_circle(gpe::shape_point2d * point_in, gpe::shape_circle * circle_in );
+    bool point_within_circle(int point_x, int point_y, gpe::shape_circle * circle_in );
+
+    bool point_between_rect(int point_x, int point_y, gpe::shape_rect * rect_in );
+    bool point_within_rect(int point_x, int point_y, gpe::shape_rect * rect_in );
     //bool mouse_btw(int mxmin,int mymin, int mxmax, int mymax);
 }
 #endif //gpe_collisions_h
