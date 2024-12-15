@@ -8,7 +8,7 @@ obj/
 screenshots/
 src/raylib_module
 src/sfml_module
-.vscode/
+
 
 **/*.dll
 **/*.o
@@ -20,3 +20,5 @@ Game-Pencil-Engine-Editor.layout
 Game_Pencil_Engine_IDE.cbp
 Game_Pencil_Engine_IDE.depend
 Game_Pencil_Engine_IDE.layout
+GamePencil
+.vscode

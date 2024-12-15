@@ -34,7 +34,7 @@ SOFTWARE.
 #ifndef gpe_audio_sdl2_mixer_h
 #define gpe_audio_sdl2_mixer_h
 
-#include <SDL2/SDL_mixer.h>
+#include "SDL_mixer.h"
 #include "../gpe/gpe_audio_base.h"
 namespace gpe
 {

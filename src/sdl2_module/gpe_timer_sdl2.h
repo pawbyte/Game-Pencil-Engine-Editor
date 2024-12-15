@@ -37,7 +37,7 @@ SOFTWARE.
 #include "../gpe/gpe_runtime.h"
 #include "../gpe/gpe_timer_base.h"
 #include <math.h>
-#include <SDL2/SDL.h>
+#include "SDL.h"
 
 namespace gpe
 {

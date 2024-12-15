@@ -46,7 +46,7 @@ SDL 2.0.9 used for this version...
 #include "game_state_main_menu_base.h"
 #include "game_state_master.h"
 #include "game_state_splash.h"
-#include "gpe_editor/gpe_editor_state.h"
+#include "gpe_editor/editor/gpe_editor_state.h"
 #include "game_state_shape_test.h"
 
 int main( int argc, char* args[] )

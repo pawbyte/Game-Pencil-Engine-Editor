@@ -37,9 +37,9 @@
 
 using std::string;
 
-const char *cocoa_widget_get_button_name(int type) {
-  return dialog_module::widget_get_button_name(type);
-}
+// const char *cocoa_widget_get_button_name(int type) {
+//   return dialog_module::widget_get_button_name(type);
+// }
 
   namespace {
 

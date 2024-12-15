@@ -55,38 +55,38 @@ namespace gpe
             window_controller_sdl2(std::string windowTitle,int wWidth, int wHeight,bool showBorder, bool fullScreen, bool maximized, bool isResizable );
             ~window_controller_sdl2();
 
-            bool disable_scaling();
-            bool enable_scaling();
+            bool disable_scaling() override;
+            bool enable_scaling() override;
             virtual bool disable_window_resize() override;
             virtual bool enable_window_resize() override;
 
             SDL_Window * get_sdl2_window();
 
             //Handle window events
-            bool hide_window();
-            bool minimize_window();
-            bool maximize_window();
+            bool hide_window() override;
+            bool minimize_window() override;
+            bool maximize_window() override;
 
-            void process_event( input_event_container * event_holder );
+            void process_event( input_event_container * event_holder ) override;
 
-            //SDL_SysWMinfo * get_info();
-            void reset_input();
-            void resize_window();
+             //SDL_SysWMinfo * get_info();
+            void reset_input() override;
+            void resize_window() override;
 
-            bool scale_window( int s_width, int s_height , bool scale_int );
-            bool scale_window_factor( float s_width, float s_height, bool scale_int );
+            bool scale_window( int s_width, int s_height , bool scale_int ) override;
+            bool scale_window_factor( float s_width, float s_height, bool scale_int ) override;
 
             void set_renderer( renderer_base * new_renderer, bool remove_current );
-            void set_vysnc( bool vs_on );
-            void set_window_position( int new_x, int new_y );
-            bool set_window_size( int n_width, int n_height );
+            void set_vysnc( bool vs_on ) override;
+            void set_window_position( int new_x, int new_y ) override;
+            bool set_window_size( int n_width, int n_height ) override;
             //std::string save_screenshot(std::string file_location = "");
-            void set_window_title(std::string new_title);
-            bool show_window();
-            void start_loop();
+            void set_window_title(std::string new_title) override;
+            bool show_window() override;
+            void start_loop() override;
 
             //Turn fullscreen on/off
-            void toggle_fullscreen();
+            void toggle_fullscreen() override;
 
             bool window_changed();
     };

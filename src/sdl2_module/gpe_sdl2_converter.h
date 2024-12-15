@@ -35,7 +35,7 @@ SOFTWARE.
 #define gpe_sdl2_converter_h
 
 #include "../gpe/gpe_color.h"
-#include <SDL2/SDL.h>
+#include "SDL.h"
 
 namespace gpe
 {

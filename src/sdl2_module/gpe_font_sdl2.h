@@ -44,7 +44,7 @@ SOFTWARE.
 #include "../gpe/gpe_shared_resources.h"
 #include "../gpe/internal_libs/stg_ex.h"
 #include "gpe_renderer_sdl2.h"
-#include <SDL2/SDL_ttf.h>
+#include "SDL_ttf.h"
 
 namespace gpe
 {

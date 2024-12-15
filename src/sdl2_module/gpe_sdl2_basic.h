@@ -35,8 +35,8 @@ SOFTWARE.
 #define gpe_sdl2_basic_h
 
 #include "../gpe/gpe_error_logger.h"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include "SDL.h"
+#include "SDL_image.h"
 
 #ifdef _WIN32
 

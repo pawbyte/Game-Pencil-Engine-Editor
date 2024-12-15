@@ -34,9 +34,9 @@ SOFTWARE.
 #ifndef gpe_input_sdl2_h
 #define gpe_input_sdl2_h
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_version.h>
-#include <SDL2/SDL_video.h>
+#include "SDL.h"
+#include "SDL_version.h"
+#include "SDL_video.h"
 #include "../gpe/gpe_input_base.h"
 #include "../gpe/gpe_render_package_handler.h"
 #include "../gpe/gpe_shared_resources.h"

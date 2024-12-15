@@ -32,8 +32,8 @@ SOFTWARE.
 #ifndef sdl_surface_ex_h
 #define sdl_surface_ex_h
 
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_image.h"
+#include "SDL.h"
+#include "SDL_image.h"
 #include <vector>
 
 namespace sdl2_surface_ex

@@ -37,7 +37,7 @@ SOFTWARE.
 #include <string>
 #include <map>
 
-#include <SDL2/SDL.h>
+#include "SDL.h"
 #include "thirdparty/sdl2_surface_ex.h"
 #include "../gpe/gpe_cursor_base.h"
 #include "../gpe/gpe_error_logger.h"

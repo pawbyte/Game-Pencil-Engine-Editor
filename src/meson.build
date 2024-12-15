@@ -1,3 +1,39 @@
-sources += files('animation_resource.cpp','audio_resource.cpp','class_resource.cpp','dictionaryresource.cpp','font_resource.cpp','function_resource.cpp','game_object_resource.cpp','game_scene_resource.cpp','gpe_basic_resource_page.cpp','gpe_cpp_compiler_settings.cpp','gpe_dock_system.cpp','gpe_editor_aboutpage.cpp','gpe_editor.cpp','gpe_editor_helppage.cpp','gpe_editor_settings.cpp','gpe_editor_start_page.cpp','gpe_extra_tools.cpp','gpe_gamecontroller_tester.cpp','gpe_js_compiler_settings.cpp','gpe_log_manager.cpp','gpe_project_resources.cpp','gpe_resource_tree.cpp','gpe_scene_animation_class.cpp','gpe_scene_background_class.cpp','gpe_scene_basic_class.cpp','gpe_scene_group_class.cpp','gpe_scene_helper_class.cpp','gpe_scene_layer_class.cpp','gpe_scene_light_class.cpp','gpe_scene_object_class.cpp','gpe_scene_particle_class.cpp','gpe_scene_text_class.cpp','gpe_scene_tilemap_class.cpp','light_resource.cpp','main.cpp','particle_resource.cpp','path_resource.cpp','project_properties.cpp','texture_resource.cpp','tilesheet_resource.cpp','video_resource.cpp')
-subdir('GPE_Engine')
-subdir('AOSGUI')
+project('GamePencil', 'cpp',
+    version: '1.0',
+    default_options: ['cpp_std=c++11', 'warning_level=3'])
+
+# Dependencies
+sdl2_dep = dependency('sdl2', version: '>=2.0.0', required: true)
+sdl2_image_dep = dependency('sdl2_image', version: '>=2.0.0', required: true)
+sdl2_mixer_dep = dependency('sdl2_mixer', version: '>=2.0.0', required: true)
+sdl2_ttf_dep = dependency('sdl2_ttf', version: '>=2.0.0', required: true)
+x11_dep = dependency('x11', required: host_machine.system() != 'windows')
+
+# Include directories
+inc = include_directories('.')
+
+# Get all source files
+find_program = find_program('find')
+cpp_files = run_command(find_program, meson.source_root(), '-name', '*.cpp').stdout().strip().split()
+
+# Exclude platform-specific files
+filtered_cpp_files = []
+foreach f : cpp_files
+    if host_machine.system() == 'darwin' and not f.contains('win32')
+        filtered_cpp_files += f
+    elif host_machine.system() == 'windows' and not f.contains('macos') and not f.contains('unix')
+        filtered_cpp_files += f
+    elif host_machine.system() == 'linux' and not f.contains('win32') and not f.contains('macos')
+        filtered_cpp_files += f
+    endif
+endforeach
+
+cpp_files = filtered_cpp_files
+
+# Executable
+executable(
+    'GamePencil',
+    cpp_files,
+    include_directories: inc,
+    dependencies: [sdl2_dep, sdl2_image_dep, sdl2_mixer_dep, sdl2_ttf_dep, x11_dep]
+)

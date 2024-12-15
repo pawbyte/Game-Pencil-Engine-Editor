@@ -46,7 +46,7 @@ extern "C" {
     #define SDL2_RENDERPARTY_CIRCLE_POINT_MIN 4
 
     #include <stdbool.h>
-    #include "SDL2/SDL.h"
+    #include "SDL.h"
 
     /*
     Requires SDL_RenderGeometry, which was introduced in SDL 2.0.18
